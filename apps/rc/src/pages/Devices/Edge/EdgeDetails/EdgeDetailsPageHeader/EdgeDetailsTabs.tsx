@@ -13,6 +13,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgePingTraceRouteReady = useIsSplitOn(Features.EDGES_PING_TRACEROUTE_TOGGLE)
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -36,7 +37,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       {
-        isEdgeReady && props.isOperational &&
+        isEdgePingTraceRouteReady && props.isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
       {
