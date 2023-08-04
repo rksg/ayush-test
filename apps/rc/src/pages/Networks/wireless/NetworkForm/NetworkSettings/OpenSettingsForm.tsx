@@ -6,7 +6,6 @@ import {
   Row, Space,
   Switch
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
@@ -83,6 +82,28 @@ function SettingsForm () {
       }
     })
   }
+  const onOweChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open
+        }
+      }
+    })
+  }
+  const onOweTransitionChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+        }
+      }
+    })
+  }
   useEffect(()=>{
     if(data?.wlan?.wlanSecurity){
       form.setFieldValue('enableOwe',
@@ -111,12 +132,7 @@ function SettingsForm () {
               initialValue={false}
               valuePropName='checked'
               children={<Switch
-                onChange={function (checked: boolean) {
-                  let mutableData = _.cloneDeep(data) ?? {}
-                  _.set(mutableData, 'wlan.wlanSecurity',
-                    checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open)
-                  setData && setData(mutableData)
-                }} />}
+                onChange={onOweChange} />}
             />
             <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>
             <Tooltip.Question
@@ -130,12 +146,7 @@ function SettingsForm () {
               initialValue={false}
               valuePropName='checked'
               children={<Switch
-                onChange={function (checked: boolean) {
-                  let mutableData = _.cloneDeep(data) ?? {}
-                  _.set(mutableData, 'wlan.wlanSecurity',
-                    checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE)
-                  setData && setData(mutableData)
-                }} />}
+                onChange={onOweTransitionChange} />}
             />
             <span>{$t({ defaultMessage: 'Enable OWE Transition mode' })}</span>
             <Tooltip.Question
