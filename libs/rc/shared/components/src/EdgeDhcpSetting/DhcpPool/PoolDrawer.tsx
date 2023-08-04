@@ -63,7 +63,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
     initialValues={initPoolData}
   >
     <Row>
-      <Col span={12}>
+      <Col span={16}>
         <Form.Item
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
@@ -90,6 +90,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
         />
         <Form.Item
           label={$t({ defaultMessage: 'Pool Range' })}
+          required
         >
           <Space>
             <Form.Item

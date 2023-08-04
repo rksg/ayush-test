@@ -90,14 +90,12 @@ describe('DHCP Pool table(Edge)', () => {
     const drawer1 = await screen.findByRole('dialog')
     await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Pool Name' }), 'pool1')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0'
-    )
+      within(drawer1).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer1).getAllByRole('textbox')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4'
-    )
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.2.3.4')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5'
-    )
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.2.3.5')
     await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
     await userEvent.click(within(drawer1).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(drawer1).not.toBeVisible())
@@ -119,14 +117,12 @@ describe('DHCP Pool table(Edge)', () => {
     const drawer1 = await screen.findByRole('dialog')
     await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Pool Name' }), 'pool1')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0'
-    )
+      within(drawer1).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer1).getAllByRole('textbox')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4'
-    )
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.2.3.4')
     await userEvent.type(
-      within(drawer1).getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5'
-    )
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.2.3.5')
     await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
 
     await userEvent.click(within(drawer1).getByRole('button', { name: 'Add' }))
@@ -152,12 +148,13 @@ describe('DHCP Pool table(Edge)', () => {
     const drawer = await screen.findByRole('dialog')
     await userEvent.type(within(drawer).getByRole('textbox', { name: 'Pool Name' }), 'pool1')
     await userEvent.type(
-      within(drawer).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0'
-    )
+      within(drawer).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
     await userEvent.type(
-      within(drawer).getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4'
-    )
-    await userEvent.type(within(drawer).getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.2.3.4')
+    await userEvent.type(
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.2.3.5')
+
     await userEvent.type(within(drawer).getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
 
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
@@ -285,10 +282,11 @@ describe('DHCP Pool table(Edge)', () => {
       within(drawer).getByRole('textbox', { name: 'Pool Name' }), 'pool_test_relay')
     await userEvent.type(
       within(drawer).getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
     await userEvent.type(
-      within(drawer).getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4')
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.2.3.4')
     await userEvent.type(
-      within(drawer).getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.2.3.5')
 
     const gw = within(drawer).queryByRole('textbox', { name: 'Gateway' })
     // eslint-disable-next-line testing-library/no-node-access

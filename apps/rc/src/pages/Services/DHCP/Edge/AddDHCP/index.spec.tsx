@@ -115,16 +115,14 @@ describe('AddEdgeDhcp', () => {
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
     await userEvent.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
     let drawer = await screen.findByRole('dialog')
-    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
-    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
-    fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
-    fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
-    fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
-    fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Pool Name' }), 'Pool1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
+    await userEvent.type(
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
+    await userEvent.type(
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.4')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(drawer).not.toBeVisible())
     await userEvent.click(screen.getByRole('radio', { name: 'Infinite' }))
@@ -180,10 +178,11 @@ describe('AddEdgeDhcp', () => {
       screen.getByRole('textbox', { name: 'Pool Name' }), 'Pool1')
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Start IP Address' }), '1.1.1.1')
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'End IP Address' }), '1.1.1.5')
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.4')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
@@ -275,8 +274,7 @@ describe('AddEdgeDhcp api fail', () => {
     )
   })
 
-  it('should add edge dhcp successfully', async () => {
-    const user = userEvent.setup()
+  it('should trigger error log', async () => {
     render(
       <Provider>
         <AddDhcp />
@@ -284,20 +282,21 @@ describe('AddEdgeDhcp api fail', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
-    fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
-    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
-    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
-    fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
-    fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
-    fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
-    fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
-    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
-    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.type(serviceNameInput, 'myTest')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Pool Name' }), 'Pool1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
+    await userEvent.type(
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
+    await userEvent.type(
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.4')
+
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(drawer).not.toBeVisible())
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedErrorFn).toBeCalled())
   })
 })

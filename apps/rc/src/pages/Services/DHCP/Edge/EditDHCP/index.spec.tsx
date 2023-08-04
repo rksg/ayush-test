@@ -181,10 +181,11 @@ describe('EditEdgeDhcp', () => {
       screen.getByRole('textbox', { name: 'Pool Name' }), 'Pool2')
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
+    const textBoxs = within(drawer).getAllByRole('textbox')
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Start IP Address' }), '2.2.2.0')
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '2.2.2.0')
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'End IP Address' }), '2.2.2.5')
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '2.2.2.5')
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Gateway' }), '2.2.3.4')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
