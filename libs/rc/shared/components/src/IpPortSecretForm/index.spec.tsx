@@ -3,11 +3,10 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { act }   from 'react-dom/test-utils'
 
 import { AaaServerTypeEnum, AaaServerOrderEnum } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { render, screen, fireEvent }             from '@acx-ui/test-utils'
+import { render, screen }                        from '@acx-ui/test-utils'
 
 import { IpPortSecretForm } from './index'
 
@@ -70,11 +69,8 @@ describe('IpPortSecretForm', () => {
 
 
     const ipTextbox = await screen.findAllByLabelText('IP Address')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(ipTextbox[0], { target: { value: '192.168.1.1' } })
-      fireEvent.change(ipTextbox[1], { target: { value: '192.168.1.1' } })
-    })
+    await userEvent.type(ipTextbox[0], '192.168.1.1')
+    await userEvent.type(ipTextbox[1], '192.168.1.1')
 
     const alertMsg = await screen.findAllByRole('alert')
     expect(alertMsg[1]).toBeVisible()

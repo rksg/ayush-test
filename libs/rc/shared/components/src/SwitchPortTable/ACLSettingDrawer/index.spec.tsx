@@ -3,14 +3,13 @@ import { useState } from 'react'
 import userEvent             from '@testing-library/user-event'
 import { DefaultOptionType } from 'antd/lib/select'
 import { rest }              from 'msw'
-import { act }               from 'react-dom/test-utils'
 
 import { switchApi } from '@acx-ui/rc/services'
 import {
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store }                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { ACLSettingDrawer } from '.'
 
@@ -63,9 +62,9 @@ describe('ACLSettingDrawer', () => {
       /></Provider>
     )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
     const dialog = await screen.findAllByRole('dialog')
-    fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'Cancel' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
@@ -90,21 +89,14 @@ describe('ACLSettingDrawer', () => {
     )
 
     const aclNameInput = await screen.findByLabelText('ACL Name')
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(aclNameInput, { target: { value: '11' } })
-    })
+    await userEvent.type(aclNameInput, '11')
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Extended' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
 
     const dialog = await screen.findAllByRole('dialog')
     const sequenceInput = await within(dialog[1]).findByLabelText('Sequence')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(sequenceInput, { target: { value: '11' } })
-    })
+    await userEvent.type(sequenceInput, '11')
 
     const specSubnet = await within(dialog[1]).findAllByRole('radio', { name: 'Specific Subnet' })
     await userEvent.click(specSubnet[0])
@@ -112,11 +104,8 @@ describe('ACLSettingDrawer', () => {
 
     const specInput = await within(dialog[1]).findAllByPlaceholderText('e.g 1.1.1.1/24')
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(specInput[0], { target: { value: '1.1.1.1/24' } })
-      fireEvent.change(specInput[1], { target: { value: '2.2.2.2/24' } })
-    })
+    await userEvent.type(specInput[0], '1.1.1.1/24')
+    await userEvent.type(specInput[1], '2.2.2.2/24')
 
     const protocolCombo = await within(dialog[1]).findByRole('combobox', { name: 'Protocol' })
     await userEvent.click(protocolCombo)
@@ -124,18 +113,11 @@ describe('ACLSettingDrawer', () => {
 
     const srcPortInput = await within(dialog[1]).findByLabelText('Source Port')
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(srcPortInput, { target: { value: '123' } })
-    })
+    await userEvent.type(srcPortInput, '123')
 
     const destPortInput = await within(dialog[1]).findByLabelText('Destination Port')
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(destPortInput, { target: { value: '234' } })
-    })
-
+    await userEvent.type(destPortInput, '234')
     await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
@@ -158,16 +140,10 @@ describe('ACLSettingDrawer', () => {
     )
 
     const aclNameInput = await screen.findByLabelText('ACL Name')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(aclNameInput, { target: { value: '111' } })
-    })
+    await userEvent.type(aclNameInput, '111')
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      const extRadio = await screen.findByRole('radio', { name: 'Extended' })
-      fireEvent.click(extRadio)
-    })
+    const extRadio = await screen.findByRole('radio', { name: 'Extended' })
+    await userEvent.click(extRadio)
 
     const row = await screen.findByRole('row', { name: /65000/ })
     await userEvent.click(await within(row).findByRole('radio'))
@@ -183,12 +159,8 @@ describe('ACLSettingDrawer', () => {
 
     const okButton = await within(dialog[1]).findByRole('button', { name: 'OK' })
     const saveButton = await screen.findByRole('button', { name: 'Save' })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(okButton)
-      fireEvent.click(saveButton)
-      drawerVisible.current.setVisible(false)
-    })
+    await userEvent.click(okButton)
+    await userEvent.click(saveButton)
   })
 
   it('should delete rule correctly', async () => {
@@ -209,10 +181,7 @@ describe('ACLSettingDrawer', () => {
     )
 
     const aclNameInput = await screen.findByLabelText('ACL Name')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(aclNameInput, { target: { value: '11' } })
-    })
+    await userEvent.type(aclNameInput, '11')
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Standard' }))
 
@@ -221,10 +190,7 @@ describe('ACLSettingDrawer', () => {
     const dialog = await screen.findAllByRole('dialog')
 
     const sequenceInput = await within(dialog[1]).findByLabelText('Sequence')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(sequenceInput, { target: { value: '11' } })
-    })
+    await userEvent.type(sequenceInput, '11')
 
     await userEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 
