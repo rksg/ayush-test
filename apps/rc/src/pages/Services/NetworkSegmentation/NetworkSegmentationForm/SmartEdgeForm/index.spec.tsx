@@ -111,21 +111,23 @@ describe('SmartEdgeForm', () => {
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
-    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
+    await user.type(
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.0')
+    await user.type(
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
     await user.type(poolNameInput, 'Pool1')
     await user.type(subnetMaskInput, '255.255.255.0')
-    await user.type(startIpInput, '1.1.1.1')
-    await user.type(endIpInput, '1.1.1.5')
     await user.type(gatewayInput, '1.2.3.4')
-    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
     const addDhcpModal = screen.getAllByRole('dialog')[0]
     await user.click(within(addDhcpModal).getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(addDhcpModal).not.toBeVisible())
   })
 
   it('Add DHCP pool', async () => {
@@ -150,18 +152,20 @@ describe('SmartEdgeForm', () => {
     user.click(await screen.findByRole('button', { name: 'Select Pool' }))
 
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
-    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
+    await user.type(
+      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
+    await user.type(
+      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
     await user.type(poolNameInput, 'Pool1')
     await user.type(subnetMaskInput, '255.255.255.0')
-    await user.type(startIpInput, '1.1.1.1')
-    await user.type(endIpInput, '1.1.1.5')
     await user.type(gatewayInput, '1.2.3.4')
-    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
   })
 
   it('Step2 - Smart edge success', async () => {
