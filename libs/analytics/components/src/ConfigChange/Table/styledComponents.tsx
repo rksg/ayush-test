@@ -7,3 +7,4 @@ export const Badge = styled(AntBadge)`
     height: 12px;
   }
 `
+export const CascaderFilterWrapper = styled.div`padding-bottom: 15px;`

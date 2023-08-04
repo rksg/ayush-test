@@ -1,4 +1,3 @@
-/*
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Row, Switch } from 'antd'
@@ -6,22 +5,17 @@ import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { useLazyGetVenueQuery }                             from '@acx-ui/rc/services'
-import { VenueExtended, VenueLed }                          from '@acx-ui/rc/utils'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                from '@acx-ui/components'
+import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useLazyGetVenueQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
+import { ApBssColoringSettings, VenueBssColoring, VenueExtended }                                                          from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
-*/
 
 
 export function BssColoring () {
 
-  return (
-    <div> Bss Coloring is implementing </div>
-  )
-  /*
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
 
@@ -41,8 +35,6 @@ export function BssColoring () {
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
     = useUpdateApBssColoringMutation()
-  const [resetApBssColoring, { isLoading: isResetBssColoring }]
-    = useResetApBssColoringMutation()
 
   const [getVenueBssColoring] = useLazyGetVenueBssColoringQuery()
 
@@ -50,9 +42,9 @@ export function BssColoring () {
 
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
-  const [initData, setInitData] = useState({})
+  const [initData, setInitData] = useState({} as ApBssColoringSettings)
   const [apBssColoring, setApBssColoring] = useState({})
-  const [venueBssColoring, setVenueBssColoring] = useState({} as VenueLed)
+  const [venueBssColoring, setVenueBssColoring] = useState({} as VenueBssColoring)
   const [venue, setVenue] = useState({} as VenueExtended)
   const [formInitializing, setFormInitializing] = useState(true)
 
@@ -116,21 +108,14 @@ export function BssColoring () {
 
       const isUseVenue = isUseVenueSettingsRef.current
 
-      if (isUseVenue) {
-        await resetApBssColoring({
-          params: { serialNumber }
-        }).unwrap()
-      } else {
-        const payload = {
-          ...values,
-          useVenueSettings: false
-        }
-
-        await updateApBssColoring({
-          params: { serialNumber },
-          payload
-        }).unwrap()
+      const payload: ApBssColoringSettings = {
+        ...values,
+        useVenueSettings: isUseVenue
       }
+      await updateApBssColoring({
+        params: { serialNumber },
+        payload
+      }).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -165,7 +150,7 @@ export function BssColoring () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingBssColoring || isResetBssColoring
+    isFetching: isUpdatingBssColoring
   }]}>
     <StepsFormLegacy
       formRef={formRef}
@@ -180,12 +165,12 @@ export function BssColoring () {
             <FieldLabel width='180px' >
               {$t({ defaultMessage: 'Enable BSS Coloring' })}
               <Form.Item
-                name='ledEnabled'
+                name='bssColoringEnabled'
                 valuePropName='checked'
                 style={{ marginTop: '-5px' }}
                 children={isUseVenueSettings
                   ?<span data-testid='ApBssColoring-text'>
-                    {venueBssColoring?.ledEnabled ? $t({ defaultMessage: 'On' })
+                    {venueBssColoring?.bssColoringEnabled ? $t({ defaultMessage: 'On' })
                       : $t({ defaultMessage: 'Off' })}</span>
                   :<Switch data-testid='ApBssColoring-switch'/>
                 }
@@ -198,5 +183,4 @@ export function BssColoring () {
     </StepsFormLegacy>
   </Loader>
   )
-  */
 }
