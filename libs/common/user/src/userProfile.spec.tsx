@@ -25,7 +25,7 @@ describe('hasAccess', () => {
       expect(hasAccess()).toBe(false)
     })
   })
- 
+
   it('deny when id not defined in allowedOperations', () => {
     expect(hasAccess('random-key')).toBe(false)
   })
