@@ -98,17 +98,6 @@ describe('RadiusAttributeDrawer', () => {
     await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
-    // const comboBoxes = await screen.findAllByRole('combobox')
-    // const attributeType = comboBoxes[0]
-    // await userEvent.click(attributeType)
-    //
-    // const treeNodes = await screen.findAllByRole('img')
-    // await userEvent.click(treeNodes[0])
-    //
-    // await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-    //
-    // await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
-
     const addButton = screen.getByText('Done')
     expect(addButton).toBeInTheDocument()
     await userEvent.click(addButton)

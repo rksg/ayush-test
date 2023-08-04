@@ -62,11 +62,6 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
       radiusAttributeListQuery({ payload }).then(result => {
         if (result.data) {
           setAttributesList(result.data.data)
-          if(isEdit && editAttribute) {
-            form.setFieldValue('attribute', editAttribute.attributeName )
-          } else {
-            form.setFieldValue('attribute', undefined)
-          }
         }
       })
     }
@@ -83,10 +78,12 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
       radiusAttributeListQuery({ payload }).then(result => {
         if (result.data && result.data.data.length !== 0) {
           form.setFieldValue('vendorName', result.data.data[0].vendorName)
+          form.setFieldValue('attributeName', editAttribute.attributeName )
         }
       })
     } else{
       form.setFieldValue('vendorName', commonAttributeKey)
+      form.setFieldValue('attributeName', undefined)
     }
   }, [editAttribute])
 
@@ -133,10 +130,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
     <Loader states={[{ isLoading: vendorListIsLoading }]}>
       <Form layout='vertical' form={form}>
         <Form.Item name='id' hidden children={<Input />}/>
-        <Form.Item name='attributeName'
+        <Form.Item
           label={$t({ defaultMessage: 'Attribute Type' })}
-          rules={[{ required: true },
-            { validator: (_, value) => attributeValidator(value) }]}
           children={
             <>
               <Form.Item name='vendorName'
@@ -145,10 +140,16 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
                     showSearch={true}
                     allowClear
                     placeholder={$t({ defaultMessage: 'Select vendor...' })}
-                    options={vendorList.sort().map(set => ({ value: set, label: set }))}
+                    options={vendorList.map(set => ({ value: set, label: set }))}
+                    onChange={() => {
+                      form.setFieldValue('attributeName', undefined)
+                    }}
                   />
                 }/>
-              <Form.Item name='attribute'
+              <Form.Item name='attributeName'
+                rules={[ { required: true,
+                  message: $t({ defaultMessage: 'Please enter Attribute Type' }) },
+                { validator: (_, value) => attributeValidator(value) }]}
                 children={
                   <Select
                     showSearch={true}
@@ -158,13 +159,12 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
                       // eslint-disable-next-line max-len
                       ({ value: attribute.name, label: `${attribute.name} (${attribute.dataType})` }))}
                     // eslint-disable-next-line max-len
-                    onChange={(value: string) => form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })}
+                    onChange={(value: string) => form.setFieldsValue({ dataType: getAttributeDataType(value) })}
                   />
                 }/>
             </>
           }
         />
-        {/*</Form.Item>*/}
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
           <FieldSpace>
             <Form.Item name='operator' initialValue={OperatorType.ADD}>
