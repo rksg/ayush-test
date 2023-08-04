@@ -4,6 +4,7 @@ import { rest }                                                from 'msw'
 import { IntlProvider }                                        from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
@@ -49,6 +50,8 @@ const defaultContextData = {
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
@@ -227,6 +230,27 @@ describe('EditEdge ports - sub-interface', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+  })
+
+  it('should not display import from file when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const btn = screen.queryByRole('button', { name: 'Import from file' })
+    expect(btn).toBeNull()
   })
 })
 
