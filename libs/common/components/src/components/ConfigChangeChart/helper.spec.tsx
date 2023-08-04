@@ -199,7 +199,7 @@ describe('useDataZoom', () => {
     renderHook(() => useDataZoom(eChartsRef, [0, 1000], setBoundary))
     expect(setBoundary).not.toBeCalled()
   })
-  it('should handle datazoom', () => {
+  it('should handle datazoom when zoomBoundary start is different', () => {
     const testParams = {
       type: 'datazoom',
       batch: [{ startValue: 0, endValue: 1000 }]
@@ -217,7 +217,40 @@ describe('useDataZoom', () => {
       }
     } as RefObject<ReactECharts>
     const setBoundary = jest.fn()
-    const { unmount, result } = renderHook(() => useDataZoom(eChartsRef, [0, 1000], setBoundary))
+    const zoomBoundary = { start: 1, end: 1 }
+    const setZoomBoundary = jest.fn()
+    const { unmount, result } = renderHook(() => useDataZoom(
+      eChartsRef, [0, 1000], setBoundary, zoomBoundary, setZoomBoundary))
+    expect(mockOnFn).toBeCalledTimes(1)
+    expect(mockDispatchAction).toBeCalledTimes(2)
+    expect(setBoundary).toBeCalledTimes(1)
+    expect(setBoundary).toBeCalledWith({ min: 0, max: 1000 })
+    expect(result.current.canResetZoom).toEqual(false)
+    unmount()
+    expect(mockOffFn).toBeCalled()
+  })
+  it('should handle datazoom when zoomBoundary end is diffeent', () => {
+    const testParams = {
+      type: 'datazoom',
+      batch: [{ startValue: 0, endValue: 1000 }]
+    }
+    const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
+    const mockOffFn = jest.fn()
+    const mockDispatchAction = jest.fn() as DispatchAction
+    const eChartsRef = {
+      current: {
+        getEchartsInstance: ()=>({
+          dispatchAction: mockDispatchAction,
+          on: (eventType:string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
+          off: (eventType:string, fn: Function) => mockOffFn(eventType, fn)
+        })
+      }
+    } as RefObject<ReactECharts>
+    const setBoundary = jest.fn()
+    const zoomBoundary = { start: 0, end: 1 }
+    const setZoomBoundary = jest.fn()
+    const { unmount, result } = renderHook(() => useDataZoom(
+      eChartsRef, [0, 1000], setBoundary, zoomBoundary, setZoomBoundary))
     expect(mockOnFn).toBeCalledTimes(1)
     expect(mockDispatchAction).toBeCalledTimes(2)
     expect(setBoundary).toBeCalledTimes(1)
