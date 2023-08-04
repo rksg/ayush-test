@@ -66,6 +66,7 @@ export interface UserProfile {
   email: string
   initials?: string
   fullName: string
+  preferredLanguage?: string
 }
 
 export type GuestErrorRes = {
