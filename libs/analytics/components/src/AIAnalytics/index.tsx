@@ -28,6 +28,7 @@ interface Tab {
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
+  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -55,7 +56,7 @@ const useTabs = () : Tab[] => {
   ]
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') ? recommendationTab : []),
+    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : []),
     ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : [])
   ]
 }
