@@ -65,7 +65,7 @@ describe('Edge Details Tabs', () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          isOperational={false}
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
         />
       </Provider>, {
         route: { params }
@@ -88,7 +88,6 @@ describe('Edge Details Tabs', () => {
     expect(screen.queryByText('Troubleshooting')).toBeFalsy()
   })
 
-
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
@@ -107,16 +106,17 @@ describe('Edge Details Tabs', () => {
     })
   })
 
-  it('should render services count correctly', async () => {
+  it('should render correctly', async () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL} />
+          isOperational={true} />
       </Provider>
       , {
         route: { params }
       })
 
     expect(await screen.findByText('Services (3)')).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
   })
 })
