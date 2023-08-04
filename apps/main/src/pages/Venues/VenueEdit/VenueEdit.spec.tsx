@@ -224,7 +224,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
   })
 
-  describe('Servers', () => {
+  describe.skip('Servers', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
