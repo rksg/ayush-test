@@ -291,24 +291,27 @@ const addRuleWithoutEdit = async (
 }
 
 describe('RogueAPDetectionForm', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        RogueApUrls.getVenueRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(venueTable)
+        )
+      ), rest.post(
+        RogueApUrls.addRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(policyResponse)
+        )
+      ), rest.get(
+        RogueApUrls.getRoguePolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(policyListContent)
+        )
+      )
+    )
+  })
   it('should render RogueAPDetectionForm successfully and edit rule', async () => {
-    mockServer.use(rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ), rest.post(
-      RogueApUrls.addRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(policyResponse)
-      )
-    ))
-
     render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
@@ -356,23 +359,6 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm successfully', async () => {
-    mockServer.use(rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ), rest.post(
-      RogueApUrls.addRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(policyResponse)
-      )
-    ))
-
     render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
@@ -413,18 +399,6 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm successfully with mac oui rule', async () => {
-    mockServer.use(rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ))
-
     render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
@@ -448,18 +422,6 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm successfully with ssid rule', async () => {
-    mockServer.use(rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ))
-
     render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
@@ -483,18 +445,6 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm successfully with snr rule', async () => {
-    mockServer.use(rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ))
-
     render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
@@ -518,27 +468,18 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {
-    mockServer.use(rest.get(
-      RogueApUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ), rest.post(
-      RogueApUrls.getVenueRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
-      )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ), rest.put(
-      RogueApUrls.updateRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(policyResponse)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(detailContent)
+        )
+      ), rest.put(
+        RogueApUrls.updateRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(policyResponse)
+        )
+      ))
 
     render(
       <RogueAPDetectionContext.Provider value={{

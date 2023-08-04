@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { venueApi }                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
+import { Provider, store }             from '@acx-ui/store'
 import { mockServer, render, screen }  from '@acx-ui/test-utils'
 
 import {
@@ -24,31 +25,10 @@ const params = {
   venueId: 'f892848466d047798430de7ac234e940'
 }
 
-const policyListContent = [
-  {
-    id: 'policyId1',
-    name: 'test',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1664790827392,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  },
-  {
-    id: 'be62604f39aa4bb8a9f9a0733ac07add',
-    name: 'test6',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1667215711375,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  }
-]
-
 describe('SecurityTab', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -68,30 +48,16 @@ describe('SecurityTab', () => {
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(policyListContent))),
       rest.put(
         CommonUrlsInfo.updateVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
-  })
-  it('should render correctly', async () => {
-    mockServer.use(
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList))),
+        (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         RogueApUrls.getRoguePolicy.url,
         (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json(venueRogueAp))),
-      rest.put(
-        CommonUrlsInfo.updateVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json({})))
+      )
     )
+  })
+  it('should render correctly', async () => {
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -111,31 +77,13 @@ describe('SecurityTab', () => {
     // await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
-  //   it('should render disabled switch button correctly', async () => {
-  //     venueSetting.dhcpServiceSetting.enabled = true
-  //     const { asFragment } = render(<Provider><SecurityTab /></Provider>, { route: { params } })
-
-  //     expect(asFragment()).toMatchSnapshot()
-  //     await userEvent.click(await screen.findByRole('switch'))
-  //   })
 
   it('should render correctly with RogueApProfile settings', async () => {
     mockServer.use(
       rest.get(
         RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList))),
-      rest.get(
-        RogueApUrls.getRoguePolicy.url,
-        (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json(venueRogueAp))),
-      rest.put(
-        CommonUrlsInfo.updateVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
     )
-
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -169,17 +117,7 @@ describe('SecurityTab', () => {
     mockServer.use(
       rest.get(
         RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList))),
-      rest.get(
-        RogueApUrls.getRoguePolicy.url,
-        (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json(venueRogueAp))),
-      rest.put(
-        CommonUrlsInfo.updateVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
     )
 
     render(

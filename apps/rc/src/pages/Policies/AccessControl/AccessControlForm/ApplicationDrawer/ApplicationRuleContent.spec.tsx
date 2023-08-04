@@ -93,12 +93,7 @@ describe('ApplicationRuleContent Component', () => {
 
   it('Render ApplicationDrawer component successfully for access control part', async () => {
     mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
+      rest.post(
         AccessControlUrls.addAppPolicy.url,
         (_, res, ctx) => {
           mockedUpdateApplication()
@@ -106,16 +101,6 @@ describe('ApplicationRuleContent Component', () => {
             ctx.json(applicationResponse)
           )
         }
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
       ))
 
     render(
@@ -194,29 +179,6 @@ describe('ApplicationRuleContent Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully for qos content', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ))
-
     render(
       <Provider>
         <Form>

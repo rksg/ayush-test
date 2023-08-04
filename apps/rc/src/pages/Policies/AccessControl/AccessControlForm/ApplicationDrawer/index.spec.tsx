@@ -161,29 +161,6 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully with UserDefined rule', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ) )
-
     render(
       <Provider>
         <Form>
@@ -246,29 +223,6 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully with edit and del action', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ))
-
     render(
       <Provider>
         <Form>

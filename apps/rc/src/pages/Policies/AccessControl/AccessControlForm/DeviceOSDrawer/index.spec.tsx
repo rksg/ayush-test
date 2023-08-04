@@ -423,17 +423,18 @@ describe('DeviceOSDrawer Component setting II', () => {
   it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(queryDevice)
+        )
+      ), rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>

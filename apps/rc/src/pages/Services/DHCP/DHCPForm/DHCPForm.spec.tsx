@@ -69,28 +69,15 @@ describe('DHCPForm', () => {
       rest.post(
         DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))
-      ))
-
-    jest.clearAllMocks()
-  })
-  it('should create DHCP successfully', async () => {
-
-    mockServer.use(
-      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-        res(ctx.json({ COMMON: '{}' }))
-      ),
-      rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
-        res(ctx.json(dhcpProfilesList))
       ),
       rest.put(DHCPUrls.updateDHCPService.url,
         (_, res, ctx) => res(ctx.status(202))
-      ),
-      rest.post(
-        DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))
-      ))
+      )
+    )
 
-
+    // jest.clearAllMocks()
+  })
+  it('should create DHCP successfully', async () => {
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 
     render(<Provider><DHCPForm /></Provider>, {
@@ -143,18 +130,6 @@ describe('DHCPForm', () => {
 
   it('should cancel DHCP form successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-        res(ctx.json({ COMMON: '{}' }))
-      ),
-      rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
-        res(ctx.json(dhcpProfilesList))
-      ),
-      rest.post(
-        DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))
-      ))
-
 
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 

@@ -344,7 +344,7 @@ export default function DHCPPoolTable ({
             min={1}
             max={4094} />}
         />
-        <Form.Item name='dhcpOptions' children={<></>} style={{ height: 0 }} />
+        <Form.Item name='dhcpOptions' children={<></>} hidden />
       </Col>
     </Row>
   </Form>
