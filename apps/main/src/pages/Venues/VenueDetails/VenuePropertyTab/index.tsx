@@ -395,7 +395,6 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        setDrawerState({ isEdit: false, visible: false })
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -545,12 +544,12 @@ export function VenuePropertyTab () {
           onClick: downloadUnit
         }}
       />
-      {venueId && drawerState.visible &&
+      {venueId &&
         <PropertyUnitDrawer
-          visible={true}
           venueId={venueId}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
+          visible={drawerState.visible}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
         />
       }

@@ -1102,7 +1102,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           })
         })
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     downloadPropertyUnits: build.query<Blob, RequestPayload>({

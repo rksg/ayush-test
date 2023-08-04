@@ -43,12 +43,6 @@ FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
-# FROM build-base as acx-ui-tslint
-# COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
-# RUN chmod +x tools/docker/tscValidator.sh
-# RUN tools/docker/tscValidator.sh
-# RUN touch tslint-done
-
 ###############################################################
 FROM node:14.21.1-alpine as build-locales
 WORKDIR /app
@@ -76,7 +70,6 @@ ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-# COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 COPY cicd_tool ./cicd_tool
