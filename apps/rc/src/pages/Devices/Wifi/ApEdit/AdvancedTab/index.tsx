@@ -8,7 +8,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { redirectPreviousPage }   from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '..'
+import { ApDataContext, ApEditContext } from '..'
 
 import { ApLed }       from './ApLed'
 import { BssColoring } from './BssColoring'
@@ -36,10 +36,11 @@ export function AdvancedTab () {
     setEditAdvancedContextData
   } = useContext(ApEditContext)
 
-
+  const { apCapabilities } = useContext(ApDataContext)
 
   const supportLed = useIsSplitOn(Features.WIFI_FR_6029_FG3_2_TOGGLE)
-  const supportBssColor = false //useIsSplitOn(Features.xxxxxx)
+  const supportBssColor = useIsSplitOn(Features.WIFI_AP_BSS_COLORING_TOGGLE)
+    && apCapabilities?.support11AX
 
 
   const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
