@@ -65,7 +65,21 @@ describe('Edge Details Tabs', () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
+          isOperational={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
+
+  it('should not display troubleshooting tab when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatusOperational=== EdgeStatusEnum.OPERATIONAL}
         />
       </Provider>, {
         route: { params }
