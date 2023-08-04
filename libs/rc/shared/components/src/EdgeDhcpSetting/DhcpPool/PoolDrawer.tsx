@@ -1,6 +1,6 @@
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Col, Form, Input, Row, Space, Typography } from 'antd'
+import { useIntl }                                  from 'react-intl'
 
 import { Drawer }                                                                from '@acx-ui/components'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
@@ -89,30 +89,37 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           children={<Input />}
         />
         <Form.Item
-          name='poolStartIp'
-          label={$t({ defaultMessage: 'Start IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
-          ]}
-          children={<Input />}
-        />
-        <Form.Item
-          name='poolEndIp'
-          label={$t({ defaultMessage: 'End IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) },
-            {
-              validator: (_, value) => IpInSubnetPool(
-                value,
-                form.getFieldValue('poolStartIp'),
-                form.getFieldValue('subnetMask')
-              )
-            }
-          ]}
-          children={<Input />}
-        />
+          label={$t({ defaultMessage: 'Pool Range' })}
+        >
+          <Space>
+            <Form.Item
+              name='poolStartIp'
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) }
+              ]}
+              noStyle
+              children={<Input />}
+            />
+            <Typography>-</Typography>
+            <Form.Item
+              name='poolEndIp'
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) },
+                {
+                  validator: (_, value) => IpInSubnetPool(
+                    value,
+                    form.getFieldValue('poolStartIp'),
+                    form.getFieldValue('subnetMask')
+                  )
+                }
+              ]}
+              noStyle
+              children={<Input />}
+            />
+          </Space>
+        </Form.Item>
         <Form.Item
           name='gatewayIp'
           label={$t({ defaultMessage: 'Gateway' })}
