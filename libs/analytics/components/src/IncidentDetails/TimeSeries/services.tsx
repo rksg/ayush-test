@@ -13,6 +13,7 @@ export interface ChartDataProps {
   incident: Incident
   buffer: BufferType
   minGranularity: string
+  test: string
 }
 
 interface Response <TimeSeriesChartResponse> {
