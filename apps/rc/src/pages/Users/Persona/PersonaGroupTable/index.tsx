@@ -84,7 +84,8 @@ function useColumns (
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       key: 'propertyId',
@@ -101,7 +102,7 @@ function useColumns (
     },
     {
       key: 'dpskPoolId',
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       dataIndex: 'dpskPoolId',
       sorter: true,
       filterMultiple: false,

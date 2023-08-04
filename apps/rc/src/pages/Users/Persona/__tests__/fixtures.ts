@@ -11,7 +11,8 @@ import {
   PropertyConfigs,
   PropertyConfigStatus,
   ConnectionMetering,
-  BillingCycleType
+  BillingCycleType,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -237,6 +238,16 @@ export const mockDpskList = {
   },
   sort: []
 }
+
+export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
+  {
+    mac: '22:22:22:22:22:22',
+    online: true,
+    lastConnected: '06/15/2023 03:24 AM',
+    lastConnectedNetwork: 'test',
+    devicePassphrase: 'a%sdfa@gw342r3f'
+  }
+]
 
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,

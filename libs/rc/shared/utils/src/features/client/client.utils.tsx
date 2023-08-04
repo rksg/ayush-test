@@ -41,6 +41,7 @@ export const getDeviceTypeIcon = (deviceType: string) => {
     'printer': <PrinterOutlined />,
     'iot': <IotOutlined />,
     'wds': <WdsOutlined />,
+    'bridge': <WdsOutlined />,
     'home av equipment': <HomeAvOutlined />,
     'ap': <ApOutlined />,
     'router': <RouterOutlined />,

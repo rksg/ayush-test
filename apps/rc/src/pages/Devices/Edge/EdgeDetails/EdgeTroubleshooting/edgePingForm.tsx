@@ -6,9 +6,9 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, Tooltip }                       from '@acx-ui/components'
-import { usePingEdgeMutation }                           from '@acx-ui/rc/services'
-import { targetHostRegExp, EdgeTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                from '@acx-ui/components'
+import { usePingEdgeMutation }                                                    from '@acx-ui/rc/services'
+import { targetHostRegExp, EdgeTroubleshootingMessages, EdgeTroubleshootingType } from '@acx-ui/rc/utils'
 
 
 export function EdgePingForm () {
@@ -21,7 +21,7 @@ export function EdgePingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
-        action: 'ping'
+        action: EdgeTroubleshootingType.PING
       }
       const pingEdgeResult = await pingEdge(
         { params: { tenantId, serialNumber }, payload }).unwrap()

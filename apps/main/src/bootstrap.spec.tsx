@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import { AdministrationUrlsInfo }                             from '@acx-ui/rc/utils'
 import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                       from '@acx-ui/user'
 
 import * as bootstrap from './bootstrap'
 
@@ -41,6 +42,12 @@ describe('bootstrap.init', () => {
         AdministrationUrlsInfo.getPreferences.url,
         (_req, res, ctx) => res(ctx.json({ global: {
           defaultLanguage: 'en-US'
+        } }))
+      ),
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (_req, res, ctx) => res(ctx.json({ data: {
+          preferredLanguage: 'en-US'
         } }))
       )
     )

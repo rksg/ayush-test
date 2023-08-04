@@ -359,6 +359,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/sync',
     newApi: true
   },
+  syncSwitchesData: {
+    method: 'post',
+    url: '/switches/deviceRequests'
+  },
   retryFirmwareUpdate: {
     method: 'post',
     url: '/switches/:switchId/firmwareUpgrade',

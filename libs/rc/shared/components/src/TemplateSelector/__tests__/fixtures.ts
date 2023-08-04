@@ -1,16 +1,3 @@
-export const mockedTemplateScope = {
-  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
-  messageType: 'EMAIL',
-  nameLocalizationKey: 'unit.assigned.email',
-  defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
-}
-
-export const mockedTemplateScopeNoDefault = {
-  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
-  messageType: 'EMAIL',
-  nameLocalizationKey: 'unit.assigned.email'
-}
-
 export const mockedTemplates = {
   paging: {
     totalCount: 9,
@@ -46,6 +33,27 @@ export const mockedRegistration = {
   id: 'selected-registration-id',
   templateId: '44305c2c-9cb0-48cc-a967-c735e9a8cfbd',
   usageLocalizationKey: 'description.of.template.usage'
+}
+
+export const mockedTemplateScope = {
+  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
+  messageType: 'EMAIL',
+  nameLocalizationKey: 'unit.assigned.email',
+  defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
+}
+
+export const mockedTemplateScopeWithRegistration = {
+  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
+  messageType: 'EMAIL',
+  nameLocalizationKey: 'unit.assigned.email',
+  defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9',
+  registrations: [mockedRegistration]
+}
+
+export const mockedTemplateScopeNoDefault = {
+  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
+  messageType: 'EMAIL',
+  nameLocalizationKey: 'unit.assigned.email'
 }
 
 export const emailTemplate = {

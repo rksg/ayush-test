@@ -102,6 +102,7 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   speedKbps: 12* Math.pow(12, 6),
   duplex: 'Full',
   ip: '1.1.1.1',
+  ipMode: 'DHCP',
   sortIdx: 1,
   vlan: '',
   subnet: ''
@@ -116,6 +117,7 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   speedKbps: 10* Math.pow(12, 6),
   duplex: 'Half',
   ip: '1.1.1.2',
+  ipMode: 'Static',
   sortIdx: 2,
   vlan: '',
   subnet: ''
@@ -198,7 +200,7 @@ export const mockEdgePortStatus = [
   },
   {
     portId: mockEdgePortConfig.ports[1].id,
-    ip: '10.206.78.153'
+    ip: ''
   }
 ]
 
@@ -617,7 +619,7 @@ export const mockFirewallData = {
 }
 
 export const mockEdgeSubInterfacesStatus = {
-  fields: ['subnet','vlan','ip','name','serial_number','type','sort_idx','mac','status'],
+  fields: ['subnet','vlan','ip','name','serialNumber','type','sortIdx','mac','status','ipMode'],
   totalCount: 2,
   page: 1,
   data: [
@@ -629,6 +631,7 @@ export const mockEdgeSubInterfacesStatus = {
       type: 'LAN',
       mac: 'AA:BB:CC:DD:EE:FF',
       ip: '192.168.5.3/25',
+      ipMode: 'Static',
       subnet: '255.255.255.128',
       vlan: '4'
     },{
@@ -639,6 +642,7 @@ export const mockEdgeSubInterfacesStatus = {
       type: 'LAN',
       mac: 'AA:BB:CC:DD:EE:FF',
       ip: '',
+      ipMode: 'DHCP',
       subnet: '',
       vlan: '3'
     }]
