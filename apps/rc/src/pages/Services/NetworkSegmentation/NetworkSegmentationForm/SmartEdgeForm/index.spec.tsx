@@ -114,14 +114,14 @@ describe('SmartEdgeForm', () => {
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
     const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
     await user.type(
       textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.0')
     await user.type(
       textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    await user.type(poolNameInput, 'Pool1')
-    await user.type(subnetMaskInput, '255.255.255.0')
     await user.type(gatewayInput, '1.2.3.4')
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
@@ -155,14 +155,14 @@ describe('SmartEdgeForm', () => {
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
     const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
     await user.type(
       textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
     await user.type(
       textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    await user.type(poolNameInput, 'Pool1')
-    await user.type(subnetMaskInput, '255.255.255.0')
     await user.type(gatewayInput, '1.2.3.4')
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
