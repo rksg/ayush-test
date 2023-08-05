@@ -61,24 +61,38 @@ describe('Edge Details Tabs', () => {
     )
   })
 
-  // it('should not have troubleshooting tab if not OPERATIONAL', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDetailsTabs
-  //         currentEdge={currentEdge}
-  //       />
-  //     </Provider>, {
-  //       route: { params }
-  //     })
+  it('should not have troubleshooting tab if not OPERATIONAL', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
+        />
+      </Provider>, {
+        route: { params }
+      })
 
-  //   expect(screen.queryByText('Troubleshooting')).toBeFalsy()
-  // })
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
 
+  it('should not display troubleshooting tab when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
 
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs/>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}/>
       </Provider>
       , {
         route: { params }
@@ -92,15 +106,17 @@ describe('Edge Details Tabs', () => {
     })
   })
 
-  it('should render services count correctly', async () => {
+  it('should render correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs />
+        <EdgeDetailsTabs
+          isOperational={true} />
       </Provider>
       , {
         route: { params }
       })
 
     expect(await screen.findByText('Services (3)')).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
   })
 })

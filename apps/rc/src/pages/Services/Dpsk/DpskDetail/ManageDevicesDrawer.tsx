@@ -233,10 +233,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     <Button key='cancel' onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='ok' onClick={onOk} type='secondary'>
+    <Button key='ok' onClick={onOk} type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>
   ]
+
+  const filterWithoutFormat = (mac: string, value: string) => {
+    const regex = /[.\-:]/gi
+    let macStr = mac.replace(regex, '').toLowerCase()
+    let valueStr = value.replace(regex, '').toLowerCase()
+    return macStr === valueStr
+  }
 
   return (
     <>
@@ -274,7 +281,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
               { required: true },
               { validator: (_, value) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
-                  .filter(mac => mac === value).length) {
+                  .filter(mac => filterWithoutFormat(mac, value)).length) {
                   return Promise.reject($t({
                     defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))

@@ -1,10 +1,7 @@
 import { Input as AntInput } from 'antd'
 import styled                from 'styled-components/macro'
 
-import {
-  LayoutUI,
-  Button
-}                        from '@acx-ui/components'
+import { LayoutUI }     from '@acx-ui/components'
 import {
   SendMessageOutlined
 }                          from '@acx-ui/icons'
@@ -48,32 +45,37 @@ export const SendSearch = styled(SendMessageOutlined)`
     }
   }
 `
-export const SearchSolid = styled(Button)`
-  border: none;
-  cursor: default;
-  > svg path {
-    stroke: var(--acx-primary-white);
-  }
-  background-color: var(--acx-accents-orange-55);
-  :hover, &:focus {
+export const SearchSolid = styled(LayoutUI.ButtonSolid)`
+  &&& {
+    border: none;
+    cursor: default;
+    > svg path {
+      stroke: var(--acx-primary-white);
+    }
     background-color: var(--acx-accents-orange-55);
+    :hover, &:focus {
+      background-color: var(--acx-accents-orange-55);
+    }
   }
 `
 
 export const Divider = styled(LayoutUI.Divider)`
   border-right: 1px solid var(--acx-neutrals-60);
 `
-export const Close = styled(Button)`
-  margin-left: -5px;
-  > svg path {
-    stroke: var(--acx-neutrals-50);
-  }
-  border: none;
-  background: transparent;
-  :hover, &:focus {
-    background: transparent;
+
+export const Close = styled(LayoutUI.ButtonOutlined)`
+  &&& {
+    margin-left: -5px;
     > svg path {
-      stroke: var(--acx-primary-white);
+      stroke: var(--acx-neutrals-50);
+    }
+    border: none;
+    background: transparent;
+    :hover, &:focus {
+      background: transparent;
+      > svg path {
+        stroke: var(--acx-primary-white);
+      }
     }
   }
 `

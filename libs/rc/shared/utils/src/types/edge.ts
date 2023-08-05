@@ -13,16 +13,16 @@ export interface EdgeGeneralSetting {
 }
 
 export interface EdgeResourceUtilization {
-  cpuCores? :number,
-  cpuUsedPercentage? :number,
-  memoryUsedKb? :number,
-  memoryTotalKb? :number,
-  diskUsedKb? :number,
-  diskTotalKb? :number,
-  memoryUsed? :number,   // Bytes
-  memoryTotal? :number,  // Bytes
-  diskUsed? :number,     // Bytes
-  diskTotal? :number     // Bytes
+  cpuCores?: number,
+  cpuUsedPercentage?: number,
+  memoryUsedKb?: number,
+  memoryTotalKb?: number,
+  diskUsedKb?: number,
+  diskTotalKb?: number,
+  memoryUsed?: number,   // Bytes
+  memoryTotal?: number,  // Bytes
+  diskUsed?: number,     // Bytes
+  diskTotal?: number     // Bytes
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string
@@ -104,13 +104,14 @@ export interface EdgeStaticRouteConfig {
 export interface EdgePortStatus {
   type: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
   portId: string
-  name:string
+  name: string
   status: string
-  adminStatus:string
-  mac:string
-  speedKbps:number
-  duplex:string
-  ip: string
+  adminStatus: string
+  mac: string
+  speedKbps: number
+  duplex: string
+  ip: string,
+  ipMode: string,
   sortIdx: number
   vlan: string
   subnet: string
@@ -162,12 +163,12 @@ export interface EdgeTopTraffic {
 }
 
 export type EdgeResourceTimeSeries = {
-    cpu: number[]        // percentage
-    memory: number[]     // percentage
-    disk: number[]       // percentage
-    time: string[]
-    memoryUsedBytes: number[] // bytes
-    diskUsedBytes: number[]   // bytes
+  cpu: number[]        // percentage
+  memory: number[]     // percentage
+  disk: number[]       // percentage
+  time: string[]
+  memoryUsedBytes: number[] // bytes
+  diskUsedBytes: number[]   // bytes
 }
 
 export type EdgeResourceUtilizationData = {
@@ -181,16 +182,16 @@ export interface EdgePortTrafficTimeSeries {
 }
 export interface EdgeAllPortTrafficData {
   timeSeries: {
-    ports : EdgePortTrafficTimeSeries[]
+    ports: EdgePortTrafficTimeSeries[]
     time: TimeStamp[],
   },
   portCount: number
 }
 export interface EdgeTimeSeriesPayload {
-    start : string,
-    end : string,
-    granularity : string
-    venueIds?: string[]
+  start: string,
+  end: string,
+  granularity: string
+  venueIds?: string[]
 }
 
 export interface EdgeService {
@@ -203,36 +204,49 @@ export interface EdgeService {
   targetVersion: string
 }
 
+export interface PingEdge {
+  targetHost: string
+}
+
+export interface TraceRouteEdge {
+  targetHost: string
+}
+
 export interface EdgesTopTraffic {
   topTraffic: {
-      name: string
-      serial: string
-      rxBytes: number
-      txBytes: number
-  } []
+    name: string
+    serial: string
+    rxBytes: number
+    txBytes: number
+  }[]
 }
 
 export interface EdgesTopResources {
   cpu: {
-      name: string
-      serial: string
-      percentage: number
-  } [],
+    name: string
+    serial: string
+    percentage: number
+  }[],
   memory: {
     name: string
     serial: string
     percentage: number
     usedBytes: number
-  } [],
+  }[],
   disk: {
     name: string
     serial: string
     percentage: number
     usedBytes: number
-  } []
+  }[]
 }
 
 export interface EdgePasswordDetail {
   loginPassword: string
   enablePassword: string
+}
+
+export enum EdgeTroubleshootingType {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE'
 }

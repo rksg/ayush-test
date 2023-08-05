@@ -27,6 +27,9 @@ exports[`Test getDeviceTypeIcon function should return device type icon 1`] = `
     data-testid="WdsOutlined"
   />
   <svg
+    data-testid="WdsOutlined"
+  />
+  <svg
     data-testid="IotOutlined"
   />
   <svg

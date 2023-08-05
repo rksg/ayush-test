@@ -113,7 +113,7 @@ export function SwitchIpRouteForm () {
             {$t({ defaultMessage: 'Clear' })}
           </Button>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={isLoading}
             onClick={onSubmit}>

@@ -221,7 +221,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage MSP Administrators' })}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       footer={footer}

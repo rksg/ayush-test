@@ -6,7 +6,7 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { stackMemberStandalone } from './__tests__/fixtures'
+import { stackMembersData } from './__tests__/fixtures'
 
 import { SwitchOverviewPanel } from '.'
 
@@ -46,7 +46,7 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview'
     }
     render(<Provider>
-      <SwitchOverviewPanel filters={filters} stackMember={stackMemberStandalone} />
+      <SwitchOverviewPanel filters={filters} stackMember={stackMembersData} />
     </Provider>, {
       route: {
         params,

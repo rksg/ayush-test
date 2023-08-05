@@ -19,7 +19,8 @@ import {
 import {
   venue,
   preference,
-  availableVersions
+  availableVersions,
+  availableABFList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -35,7 +36,14 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json(availableVersions))
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+
+          if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
+
+          return res(ctx.json([...availableVersions]))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
@@ -90,7 +98,8 @@ describe('Firmware Venues Table', () => {
     const changeButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
     await userEvent.click(changeButton)
 
-    const defaultVersionRegExp = new RegExp(availableVersions[0].id)
+    const firstActiveABF = availableABFList.find(abfVersion => abfVersion.abf === 'active')
+    const defaultVersionRegExp = new RegExp(firstActiveABF!.id)
     expect(await screen.findByRole('radio', { name: defaultVersionRegExp })).toBeVisible()
 
     const saveButton = await screen.findByRole('button',{ name: 'Save' })

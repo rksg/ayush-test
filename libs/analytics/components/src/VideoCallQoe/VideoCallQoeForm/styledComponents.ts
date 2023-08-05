@@ -22,7 +22,8 @@ export const LinkButton = styled(Button)`
   border-color: var(--acx-neutrals-50) !important;
   border: 1px solid;
   text-align: start;
-  padding: 2px 12px;
+  padding: 2px 12px !important;
+  height: 32px !important;
   width: 528px;
   white-space: nowrap;
   overflow: hidden;

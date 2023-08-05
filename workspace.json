@@ -26,10 +26,10 @@
     "rc-services": "libs/rc/shared/services",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
-    "reports": "apps/reports",
     "reports-components": "libs/reports/components",
     "reports-services": "libs/reports/services",
-    "reports-utils": "libs/reports/utils"
+    "reports-utils": "libs/reports/utils",
+    "reports-routes": "libs/reports/routes"
   },
   "architect": {
     "serve": {

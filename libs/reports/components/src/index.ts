@@ -1,3 +1,6 @@
 export * from './EmbeddedReport'
 export * from './mapping/reportsMapping'
 export * from './PageHeaderExtra'
+export * from './Report'
+export * from './ReportList'
+export * from './DataStudio'
