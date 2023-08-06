@@ -18,8 +18,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 const traceRouteResponse = {
   requestId: '2261f786-45b4-48c1-887d-7b13f3a4fb9f',
-  response:
-    { response: 'traceroute to 1.1.1.1 (1.1.1.1)' }
+  response: 'traceroute to 1.1.1.1 (1.1.1.1)'
 }
 
 describe('EdgeTraceRouteForm', () => {
