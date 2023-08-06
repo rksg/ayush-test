@@ -17,7 +17,8 @@ import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
-  UserUrlsInfo
+  UserUrlsInfo,
+  useGetUserProfileQuery
 } from '@acx-ui/user'
 import {
   getTenantId,
@@ -191,24 +192,21 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  // const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  // const lang = String(request.data?.global?.defaultLanguage) as LangKey
-  //
-  // return <Loader
-  //   fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-  //   states={[{ isLoading: request.isLoading || request.isFetching }]}
-  //   children={<ConfigProvider {...props} lang={[lang]} />}
-  // />
-
   let browserLang = loadMessages(navigator.languages) as LangKey// browser detection
+  const result = useGetUserProfileQuery({})
+  const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
+  const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
 
-  const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang : defaultLang
+  const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang : userPreflang? userPreflang : defaultLang
+
+  // const lang = userPreflang? userPreflang : defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: request.isLoading || request.isFetching }]}
+    states={[{ isLoading: result.isLoading || result.isFetching
+        || request.isLoading || request.isFetching }]}
     children={<ConfigProvider {...props} lang={lang} />}
   />
 }
