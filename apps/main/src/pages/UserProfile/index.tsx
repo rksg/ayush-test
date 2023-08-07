@@ -6,7 +6,8 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { MultiFactor } from '@acx-ui/msp/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MultiFactor }            from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
@@ -20,6 +21,7 @@ import {
   roleStringMap
 } from '@acx-ui/user'
 
+import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
 } from './RecentLogin'
@@ -31,14 +33,14 @@ interface fromLoc {
 
 export function UserProfile () {
   const { $t } = useIntl()
+  const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
   const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfileContext()
+  const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const location = useLocation().state as fromLoc
-
-  const [updateUserProfile] = useUpdateUserProfileMutation()
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -121,6 +123,9 @@ export function UserProfile () {
                   </Select>
                 }
               />
+              { isI18n2 && (
+                <PreferredLanguageFormItem />
+              )}
             </Col>
           </Row>
         </StepsForm.StepForm>
