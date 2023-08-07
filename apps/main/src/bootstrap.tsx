@@ -15,7 +15,8 @@ import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
-  UserUrlsInfo
+  UserUrlsInfo,
+  useGetUserProfileQuery
 } from '@acx-ui/user'
 import {
   getTenantId,
@@ -118,13 +119,19 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const result = useGetUserProfileQuery({})
+  const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const lang = String(request.data?.global?.defaultLanguage)
+  const userPreflang = String(userProfile?.preferredLanguage) as LangKey
+  const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
+
+  const lang = userPreflang? userPreflang : defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: request.isLoading || request.isFetching }]}
-    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
+    states={[{ isLoading: result.isLoading || result.isFetching
+        || request.isLoading || request.isFetching }]}
+    children={<ConfigProvider {...props} lang={lang} />}
   />
 }
 
