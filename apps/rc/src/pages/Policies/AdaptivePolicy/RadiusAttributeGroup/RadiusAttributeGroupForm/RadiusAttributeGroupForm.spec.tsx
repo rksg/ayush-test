@@ -105,14 +105,12 @@ describe('RadiusAttributeGroupForm', () => {
     const attributeValue = inputs[2]
     await userEvent.type(attributeValue, '123')
 
+    await screen.findByText('Common Attributes')
     const comboBoxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboBoxes[0])
+    await userEvent.click(await screen.findByText('UKERNA'))
 
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[1])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
+    await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const buttons = screen.getAllByText('Add')
