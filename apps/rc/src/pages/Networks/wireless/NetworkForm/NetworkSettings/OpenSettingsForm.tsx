@@ -85,34 +85,36 @@ function SettingsForm () {
   const onOweChange = (checked: boolean) => {
     setData && setData({
       ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          wlanSecurity: checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open
-        }
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open
       }
     })
   }
   const onOweTransitionChange = (checked: boolean) => {
     setData && setData({
       ...data,
-      ...{
-        wlan: {
-          ...data?.wlan,
-          wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
-        }
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
       }
     })
   }
   useEffect(()=>{
+    if (data && 'enableOwe' in data) {
+      delete data['enableOwe']
+    }
+    if (data && 'enableOweTransition' in data) {
+      delete data['enableOweTransition']
+    }
+    form.setFieldsValue(data)
     if(data?.wlan?.wlanSecurity){
       form.setFieldValue('enableOwe',
-        data.wlan.wlanSecurity === WlanSecurityEnum.OWE ||
-        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition ? true : false)
+        (data.wlan.wlanSecurity === WlanSecurityEnum.OWE ||
+        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition) ? true : false)
       form.setFieldValue('enableOweTransition',
         data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition ? true : false)
     }
-    form.setFieldsValue(data)
   },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
