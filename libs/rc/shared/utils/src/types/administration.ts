@@ -29,6 +29,24 @@ export enum NotificationEndpointType {
   mobile_push = 'MOBILE_PUSH'
 }
 
+export enum TenantAuthenticationType {
+  idm = 'IDM',
+  saml = 'SAML',
+  oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
+  oauth2_oidc = 'OAUTH2_OIDC',
+  ldap = 'LDAP'
+}
+
+export enum SamlFileType {
+  direct_url = 'DIRECT_URL',
+  file = 'FILE'
+}
+
+export enum ApplicationAuthenticationStatus {
+  REVOKED = 'REVOKED',
+  ACTIVE = 'ACTIVE'
+}
+
 export interface TenantDelegation {
   id: string
   type: TenantDelegationType
@@ -74,6 +92,7 @@ export interface Administrator {
   detailLevel?: string;
   roleDsc?: string;
   fullName?: string;
+  authenticationId?: string;
 }
 
 export interface TenantMspEc {
@@ -171,6 +190,22 @@ export interface NotificationRecipientResponse {
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
+}
+
+export interface TenantAuthentications {
+  id?: string;
+  name: string;
+  authenticationType: string;
+  clientID?: string;
+  clientIDStatus?: string;
+  clientSecret?: string;
+  tokenURL?: string;
+  samlFileType?: string;
+  samlFileURL?: string;
+  authorizationURL?: string;
+  tenant?: string;
+  url?: string;
+  scopes?: string;
 }
 
 export interface Entitlement {
