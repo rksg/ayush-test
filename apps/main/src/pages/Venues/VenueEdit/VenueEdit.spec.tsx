@@ -16,7 +16,6 @@ import {
   venueLanPorts,
   venueLed,
   venueSwitchSetting,
-  venueExternalAntenna,
   syslogServerProfiles
 } from '../__tests__/fixtures'
 
@@ -49,33 +48,6 @@ jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => () => {
 jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => () => {
   return <div data-testid='ApSnmp' />
 })
-
-const onOk = jest.fn()
-// jest.spyOn(CommonComponent, 'showActionModal').mockImplementation((props: ModalProps) => {
-//   const modal = Modal.confirm({})
-//   const config = CommonComponent.transformProps({
-//     ...props,
-//     customContent: {
-//       action: 'CUSTOM_BUTTONS',
-//       buttons: props?.customContent?.buttons?.map(b => {
-//         return {
-//           ...b,
-//           closeAfterAction: true,
-//           handler: b.key !== 'close' ? async () => {
-//             await b.handler()
-//             onOk()
-//           } : b.handler
-//         }
-//       })
-//     }
-//   }, modal)
-//   modal.update({
-//     ...config,
-//     content: <RawIntlProvider value={getIntl()} children={config.content} />,
-//     icon: <> </>
-//   })
-//   return pick(modal, 'destroy')
-// })
 
 let dialog = null
 const buttonAction = {
@@ -187,10 +159,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     )
   })
 
-  afterEach(async () => {
-    onOk.mockClear()
-  })
-
   describe('Switch Configuration', () => {
     describe('General', () => {
       const params = {
@@ -277,6 +245,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await showUnsavedChangesModal('Advanced Settings', buttonAction.SAVE_CHANGES)
       })
     })
+
     describe('Networking', () => {
       const params = {
         tenantId: 'tenant-id',
@@ -318,22 +287,57 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         activeTab: 'wifi',
         activeSubTab: 'radio'
       }
-      it.skip('should open unsaved changes modal and handle changes discarded', async () => {
-        const requestSpy = jest.fn()
+      it('should open unsaved changes modal and handle changes saved', async () => {
         mockServer.use(
           rest.get(
             WifiUrlsInfo.getVenueExternalAntenna.url,
-            (_, res, ctx) => {
-              requestSpy()
-              return res(ctx.json(venueExternalAntenna))
-            })
+            (_, res, ctx) => res(ctx.json([{
+              enable24G: true,
+              enable50G: true,
+              gain24G: 3,
+              gain50G: 3,
+              model: 'E510'
+            }])
+            )
+          ),
+          rest.put(
+            WifiUrlsInfo.updateVenueExternalAntenna.url,
+            (_, res, ctx) => res(ctx.json({}))
+          )
         )
 
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
         await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-        await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+        await waitFor(() => screen.findByText('AP Model'))
+
+        const sectionEl = await screen.findByTestId('external-antenna-section')
+        const section = within(sectionEl)
+        await section.findByText('No model selected')
+        const apModelSelect = await section.findByRole('combobox')
+        await userEvent.click(apModelSelect)
+
+        await userEvent.click(await screen.findByTitle('E510'))
+        expect(await section.findByText('Enable 2.4 GHz:')).toBeVisible()
+        expect(await section.findByText('Enable 5 GHz:')).toBeVisible()
+
+        const toggle24G = await section.findByRole('switch', { name: /Enable 2.4 GHz:/i })
+        const toggle50G = await section.findByRole('switch', { name: /Enable 5 GHz:/i })
+        await userEvent.click(toggle24G)
+        await userEvent.click(toggle50G)
+
+        expect(await section.findAllByRole('spinbutton')).toHaveLength(2)
+
+        const gain24G = await section.findByTestId('gain24G')
+        const gain50G = await section.findByTestId('gain50G')
+        await userEvent.type(gain24G, '1')
+        await userEvent.type(gain50G, '1')
+        await userEvent.click(toggle24G)
+        await userEvent.click(toggle50G)
+
+        fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
+        await showUnsavedChangesModal('Radio', buttonAction.SAVE_CHANGES)
       })
     })
 
