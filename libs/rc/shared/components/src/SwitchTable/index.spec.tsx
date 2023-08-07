@@ -54,6 +54,54 @@ const switchList = {
       cliApplied: false,
       formStacking: false,
       suspendingDeployTime: ''
+    }, {
+      activeSerial: 'FEK3224R0AG',
+      cliApplied: false,
+      clientCount: 2,
+      configReady: true,
+      deviceStatus: 'ONLINE',
+      firmware: 'SPR09010f',
+      id: 'c0:c5:20:aa:32:79',
+      ipAddress: '10.206.10.27',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      name: 'ICX7150-C12 Router',
+      serialNumber: 'FEK3224R0AG',
+      suspendingDeployTime: '',
+      switchMac: 'c0:c5:20:aa:32:79',
+      switchName: 'ICX7150-C12 Router',
+      switchType: 'router',
+      syncDataEndTime: '',
+      syncDataId: '',
+      syncedAdminPassword: true,
+      syncedSwitchConfig: true,
+      uptime: '7 days, 0 hours',
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue'
+    }, {
+      activeSerial: 'FEK3224R1AG',
+      cliApplied: false,
+      clientCount: 2,
+      configReady: true,
+      deviceStatus: 'ONLINE',
+      firmware: 'SPR09010f',
+      id: 'c0:c5:20:aa:32:78',
+      ipAddress: '10.206.10.27',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      name: 'ICX7150-C12 Router',
+      serialNumber: 'FEK3224R1AG',
+      suspendingDeployTime: '',
+      switchMac: 'c0:c5:20:aa:32:78',
+      switchName: 'ICX7150-C12 Router',
+      switchType: 'router',
+      syncDataEndTime: '',
+      syncDataId: '',
+      syncedAdminPassword: false,
+      syncedSwitchConfig: true,
+      uptime: '7 days, 0 hours',
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue'
     }
   ]
 }
@@ -132,6 +180,10 @@ describe('SwitchTable', () => {
       rest.post(
         SwitchUrlsInfo.getMemberList.url,
         (req, res, ctx) => res(ctx.json(stackMemberList))
+      ),
+      rest.post(
+        SwitchUrlsInfo.syncSwitchesData.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -161,6 +213,39 @@ describe('SwitchTable', () => {
 
     expect(await within(row1).findByRole('button', { expanded: true })).toBeVisible()
     expect(await within(tbody).findByText('stack-member')).toBeVisible()
+  })
+
+  it('should render correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(switchList.data.length)
+
+    for (const [index, item] of Object.entries(switchList.data)) {
+      expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
+    }
+
+    const row = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    const matchButton = await screen.findByRole('button', { name: 'Match Admin Password to Venue' })
+    expect(matchButton).toBeVisible()
+    expect(matchButton).toBeDisabled()
+
+    const row1 = await screen.findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row1).findByRole('checkbox'))
+    expect(matchButton).not.toBeDisabled()
+
+    await userEvent.click(matchButton)
+    await screen.findByText(/The switch admin password will be set same as the venue setting/)
+    await userEvent.click(await screen.findByRole('button', { name: 'Match Password' }))
+
   })
 
   it('should clicks add switch correctly', async () => {

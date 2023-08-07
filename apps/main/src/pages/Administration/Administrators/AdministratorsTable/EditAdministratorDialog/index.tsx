@@ -172,6 +172,15 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
           {editData.email}
         </Form.Item>
 
+        <Form.Item
+          label={$t({ defaultMessage: 'Authentication Type' })}
+        >
+          {editData.authenticationId
+            ? $t({ defaultMessage: 'SSO with 3rd Party' })
+            : $t({ defaultMessage: 'RUCKUS Identity Management' })
+          }
+        </Form.Item>
+
         <RoleSelector disabled={editNameOnly === true} />
       </Form>
     </Modal>

@@ -61,7 +61,8 @@ export enum TroubleshootingType {
 
 export enum DeviceRequestAction {
   SYNC = 'sync',
-  REBOOT = 'reboot'
+  REBOOT = 'reboot',
+  SYNC_ADMIN_PASSWORD = 'syncAdminPassword'
 }
 
 export enum TroubleshootingMacAddressOptionsEnum {
@@ -236,6 +237,8 @@ export class SwitchViewModel extends Switch {
   xPercent?: number
   yPercent?: number
   position?: NetworkDevicePosition
+  syncedAdminPassword?: boolean
+  adminPassword?: string
 }
 
 export interface SwitchRow {
@@ -270,6 +273,8 @@ export interface SwitchRow {
   members?: number
   clients?: number
   incidents?: number
+  syncedAdminPassword?: boolean
+  adminPassword?: string
 }
 
 export interface StackMember {
@@ -430,11 +435,10 @@ export interface SwitchPortViewModel extends GridDataRow {
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
   portnumber?: string
+  usedInUplink?: boolean
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
-  portnumber?: string
-  usedInUplink?: boolean
   neighborMacAddress?: string
   portTagged?: PortTaggedEnum
 }

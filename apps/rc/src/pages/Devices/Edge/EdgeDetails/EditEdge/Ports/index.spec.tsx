@@ -4,7 +4,8 @@ import { rest }  from 'msw'
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
-  mockServer, render,
+  mockServer,
+  render,
   screen
 } from '@acx-ui/test-utils'
 
@@ -28,6 +29,11 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('./SubInterface', () => ({
+  ...jest.requireActual('./SubInterface'),
+  default: () => <div data-testid='rc-edge-subInterface'></div>
 }))
 
 const defaultContextData = {
@@ -101,7 +107,7 @@ describe('EditEdge ports', () => {
         }
       })
     await screen.findByRole('tab', {
-      name: 'Sub-interface', selected: true
+      name: 'Sub-Interface', selected: true
     })
   })
 
@@ -124,10 +130,11 @@ describe('EditEdge ports', () => {
 
     for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
       await user.click(await screen.findByRole('radio', { name: 'Port ' + (i + 1) }))
-      const expectedIp = mockEdgePortStatus[i]?.ip ?? 'N/A'
+      const expectedIp = mockEdgePortStatus[i]?.ip || 'N/A'
       await screen.findByText(
         'IP Address: ' + expectedIp + ' | ' +
-        'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+          'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+
     }
   })
 
@@ -147,7 +154,7 @@ describe('EditEdge ports', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(screen.getByRole('tab', { name: 'Sub-interface' }))
+    await user.click(screen.getByRole('tab', { name: 'Sub-Interface' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,

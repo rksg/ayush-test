@@ -33,4 +33,19 @@ describe('MulticastForm', () => {
     expect(await screen.findByTestId('enableMulticastUpLimit6G')).toBeVisible()
     expect(await screen.findByTestId('enableMulticastDownLimit6G')).toBeVisible()
   })
+
+  it('Test case for Multicast Filter', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    // eslint-disable-next-line testing-library/no-render-in-setup
+    render(
+      <Provider>
+        <Form>
+          <MulticastForm/>
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
+  })
 })

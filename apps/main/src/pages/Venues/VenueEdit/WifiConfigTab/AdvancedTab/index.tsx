@@ -3,12 +3,14 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy }            from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { redirectPreviousPage }       from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
 import { AccessPointLED } from './AccessPointLED'
+import { BssColoring }    from './BssColoring'
 
 
 export interface ModelOption {
@@ -18,7 +20,7 @@ export interface ModelOption {
 
 export interface AdvanceSettingContext {
   updateAccessPointLED?: (() => void),
-  updateCssColoring?: (() => void)
+  updateBssColoring?: (() => void)
 }
 
 export function AdvancedTab () {
@@ -34,7 +36,7 @@ export function AdvancedTab () {
     previousPath } = useContext(VenueEditContext)
 
 
-  const supportBssColoring = false //useIsSplitOn(Features.RADIUS_OPTIONS)
+  const supportBssColoring = useIsSplitOn(Features.WIFI_FR_6029_FG1_TOGGLE)
 
 
   const anchorItems = [{
@@ -56,7 +58,7 @@ export function AdvancedTab () {
       <StepsFormLegacy.SectionTitle id='bss-coloring'>
         { $t({ defaultMessage: 'BSS Coloring' }) }
       </StepsFormLegacy.SectionTitle>
-      <div>implementing...</div>
+      <BssColoring />
     </>
   }] : []
   )]
@@ -66,7 +68,7 @@ export function AdvancedTab () {
   const handleUpdateAllSettings = async () => {
     try {
       await editAdvancedContextData?.updateAccessPointLED?.()
-      await editAdvancedContextData?.updateCssColoring?.()
+      await editAdvancedContextData?.updateBssColoring?.()
 
       setEditContextData({
         ...editContextData,
@@ -77,7 +79,7 @@ export function AdvancedTab () {
       if (editAdvancedContextData) {
         const newData = { ...editAdvancedContextData }
         delete newData.updateAccessPointLED
-        delete newData.updateCssColoring
+        delete newData.updateBssColoring
         setEditAdvancedContextData(newData)
       }
 

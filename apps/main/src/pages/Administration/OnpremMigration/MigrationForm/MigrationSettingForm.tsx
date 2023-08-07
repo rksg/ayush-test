@@ -249,7 +249,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
               { min: 2 },
               { max: 32 },
               { // eslint-disable-next-line max-len
-                pattern: /^\w+$/, message: $t({ defaultMessage: 'New Venue Name does not match the pattern [a-zA-Z0-9_]' }) },
+                pattern: /\s*\S+\s*\S+.*/, message: $t({ defaultMessage: 'Venue name must contain at least two non-whitespace characters.' }) },
               {
                 validator: (_, value) => nameValidator(value)
               }

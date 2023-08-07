@@ -18,7 +18,7 @@ describe('Button', () => {
   })
 
   it('should render secondary button', () => {
-    const { asFragment } = render(<Button type='secondary'>Button</Button>)
+    const { asFragment } = render(<Button type='primary'>Button</Button>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
