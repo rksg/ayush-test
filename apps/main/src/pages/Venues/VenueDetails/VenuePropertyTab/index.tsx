@@ -537,7 +537,7 @@ export function VenuePropertyTab () {
         dataSource={queryUnitList.data?.data}
         pagination={queryUnitList.pagination}
         onChange={queryUnitList.handleTableChange}
-        actions={actions}
+        actions={hasAssociation ? actions : []}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
         iconButton={{

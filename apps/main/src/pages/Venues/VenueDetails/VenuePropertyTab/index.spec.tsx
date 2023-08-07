@@ -222,7 +222,12 @@ describe('Property Unit Page', () => {
 
     render(
       <Provider><VenuePropertyTab /></Provider>,
-      { route: { params } }
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/units'
+        }
+      }
     )
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
