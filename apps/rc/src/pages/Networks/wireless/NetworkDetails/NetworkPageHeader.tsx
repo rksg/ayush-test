@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react'
+
+import { truncate } from 'fs/promises'
+
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -27,6 +31,14 @@ function NetworkPageHeader ({
   const { $t } = useIntl()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const [ disableConfigure, setDisableConfigure ] = useState(false)
+
+  useEffect(() => {
+    if (network.isSuccess && network.data) {
+      setDisableConfigure('isOweMaster' in network.data ? !(network.data?.isOweMaster) : false)
+    }
+  }, [network.data])
+
   return (
     <PageHeader
       title={network.data?.name || ''}
@@ -56,6 +68,7 @@ function NetworkPageHeader ({
           : <></>,
         <Button
           type='primary'
+          disabled={disableConfigure}
           onClick={() =>
             navigate({
               ...basePath,

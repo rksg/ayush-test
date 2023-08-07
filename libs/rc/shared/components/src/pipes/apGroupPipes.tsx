@@ -15,7 +15,8 @@ import {
   vlanContents,
   RadioEnum,
   RadioTypeEnum,
-  VLAN_PREFIX
+  VLAN_PREFIX,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -83,7 +84,7 @@ export const transformVLAN = (
   callback?: React.MouseEventHandler<HTMLElement>
 ): JSX.Element => {
   const { $t } = getIntl()
-  const button = (text: string) => <Button type='link' onClick={callback}>{text}</Button>
+  const button = (text: string) => <Button type='link' onClick={callback} disabled={network?.wlan?.wlanSecurity === WlanSecurityEnum.OWE}>{text}</Button>
 
   if (!currentVenue) return <></>
 

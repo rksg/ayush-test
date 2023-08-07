@@ -38,7 +38,8 @@ import {
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
-  SchedulingModalState
+  SchedulingModalState,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -101,9 +102,12 @@ export function NetworkVenuesTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [systemOweTransition, setSystemOweTransition] = useState(false)
+
 
   const params = useParams()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
 
@@ -147,6 +151,8 @@ export function NetworkVenuesTab () {
           // work around of read-only records from RTKQ
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
+        const oweTransitionChild = networkQuery.data?.wlan?.wlanSecurity === WlanSecurityEnum.OWE
+        setSystemOweTransition(oweTransitionChild)
       })
       setTableData(data)
     }
@@ -339,7 +345,7 @@ export function NetworkVenuesTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if(networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled) || systemOweTransition){
           disabled = true
         }else{
           title = ''
@@ -489,8 +495,8 @@ export function NetworkVenuesTab () {
       <Table
         settingsId='network-venues-table'
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && {
+        rowActions={filterByAccess(!systemOweTransition ? rowActions : [])}
+        rowSelection={hasAccess() && !systemOweTransition && {
           type: 'checkbox'
         }}
         columns={columns}

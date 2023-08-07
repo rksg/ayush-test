@@ -171,7 +171,8 @@ export const defaultNetworkPayload = {
 const rowSelection = () => {
   const params = {
     getCheckboxProps: (record: Network) => ({
-      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1 ||
+      ('isOweMaster' in record && record.isOweMaster === false)
     })
   }
   return params
