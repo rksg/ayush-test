@@ -1,3 +1,5 @@
+import { ReactNode, useEffect, useState } from 'react'
+
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
@@ -15,7 +17,7 @@ import {
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess }            from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -33,8 +35,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
           return data
         }else{
-          return (
-            <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+          return (row?.isOnBoarded
+            ? <span>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }</span>
+            : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
               {data}
               {data !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
@@ -72,10 +79,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return count
         }else{
           return (
-            <TenantLink
-              to={`/networks/wireless/${row.id}/network-details/venues`}
-              children={count ? count : 0}
-            />
+            row?.isOnBoarded
+              ? <span>{count}</span>
+              : <TenantLink
+                to={`/networks/wireless/${row.id}/network-details/venues`}
+                children={count ? count : 0}
+              />
           )
         }
       }
@@ -92,7 +101,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
+            row?.isOnBoarded
+              ? <span>{data}</span>
+              : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+                {data}</TenantLink>
           )
         }
       }
@@ -120,6 +132,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         return transformVLAN(row)
       }
+    },
+    {
+      key: 'securityProtocol',
+      title: intl.$t({ defaultMessage: 'Security Protocol' }),
+      dataIndex: 'securityProtocol',
+      sorter: false,
+      render: (data, row) => row?.securityProtocol || noDataDisplay
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
@@ -162,19 +181,27 @@ export const defaultNetworkPayload = {
     'ssid',
     'vlanPool',
     'captiveType',
-    'id'
+    'id',
+    'securityProtocol',
+    'dsaeOnboardNetwork'
   ],
   page: 1,
   pageSize: 2048
 }
 
 const rowSelection = () => {
-  const params = {
+  return {
     getCheckboxProps: (record: Network) => ({
-      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-    })
+      disabled: !!record?.isOnBoarded
+        || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+    }),
+    renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
+      if (record?.isOnBoarded) {
+        return <></>
+      }
+      return node
+    }
   }
-  return params
 }
 
 /* eslint-disable max-len */
@@ -196,10 +223,28 @@ interface NetworkTableProps {
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+
+  useEffect(() => {
+    if (tableQuery?.data?.data) {
+      const _rows: string[]=[]
+
+      tableQuery?.data?.data.map((record: Network) => {
+        if (record?.children) _rows.push(record.id)})
+
+      if (expandOnBoaroardingNetworks) {
+        setExpandedRowKeys(_rows)
+      } else {
+        setExpandedRowKeys([])
+      }
+    }
+
+  }, [tableQuery?.data?.data, expandOnBoaroardingNetworks])
 
   const { tenantId } = useParams()
   const [
@@ -268,6 +313,15 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     }
   ]
 
+  function toggleOnboardNetworks () {
+    setExpandOnBoaroardingNetworks(!expandOnBoaroardingNetworks)
+  }
+
+  const expandable = {
+    expandedRowKeys
+  }
+
+
   return (
     <Loader states={[
       tableQuery,
@@ -280,8 +334,22 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
+        expandedRowKeys={expandedRowKeys}
+        expandIconColumnIndex={-1}
+        expandIcon={
+          () => <></>
+        }
+        expandable={expandable}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={selectable ? { type: 'radio', ...rowSelection() } : undefined}
+        rowSelection={selectable ? { type: 'radio',
+          ...rowSelection() } : undefined}
+        actions={[{
+          key: 'addGuestNetwork',
+          label: expandOnBoaroardingNetworks
+            ? $t({ defaultMessage: 'Hide Onboard Networks' })
+            : $t({ defaultMessage: 'Show Onboard Networks' }),
+          onClick: () => toggleOnboardNetworks()
+        }]}
       />
     </Loader>
   )
