@@ -61,7 +61,9 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
         { ...defaultPayload, filters: { vendorName: vendor } }
       radiusAttributeListQuery({ payload }).then(result => {
         if (result.data) {
-          setAttributesList(result.data.data)
+          // merged attributes with the same name
+          setAttributesList(result.data.data.filter((value, index, array) =>
+            array.findIndex(item => item.name === value.name) === index))
         }
       })
     }
@@ -88,12 +90,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }, [editAttribute])
 
   const getAttributeDataType = (attributeName: string) => {
-    return getAttribute(attributeName)?.dataType
-  }
-
-  const getAttribute = (attributeName: string) : RadiusAttribute | undefined => {
-    const findAttribute = attributesList.filter(attribute => attribute.name === attributeName)
-    return findAttribute && findAttribute.length !== 0 ? findAttribute[0] : undefined
+    const findAttribute = attributesList.find(attribute => attribute.name === attributeName)
+    return findAttribute?.dataType
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
