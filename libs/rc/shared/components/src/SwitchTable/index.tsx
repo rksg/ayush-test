@@ -265,9 +265,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       disabled: true,
       show: false,
       render: (data:boolean, row:SwitchRow) => {
-        return <Tooltip title={getPasswordTooltip(row)}>{
-          getAdminPassword(row, PasswordInput)
-        }</Tooltip>
+        const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
+        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+          <Tooltip title={getPasswordTooltip(row)}>{
+            getAdminPassword(row, PasswordInput)
+          }</Tooltip>
+        </div>
       }
     }] : []),
     {
