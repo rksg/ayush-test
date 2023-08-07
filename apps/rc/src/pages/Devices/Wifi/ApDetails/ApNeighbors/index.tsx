@@ -6,7 +6,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useApContext }           from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
-import { ApRfNeighbors } from './ApRfNeighbors'
+import ApRfNeighbors from './ApRfNeighbors'
 
 
 type ApNeighborTypes = 'lldp' | 'rf'

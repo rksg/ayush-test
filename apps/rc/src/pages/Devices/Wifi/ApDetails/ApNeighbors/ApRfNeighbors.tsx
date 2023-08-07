@@ -17,15 +17,14 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { DetectionStatus, useApNeighborSocket } from './useApNeighborSocket'
+import { DetectionStatus, useApNeighbors } from './useApNeighbors'
 
-export function ApRfNeighbors () {
+export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const [ getApRfNeighbors, { isLoading: isLoadingApRfNeighbors }] = useLazyGetApRfNeighborsQuery()
   const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
-  // eslint-disable-next-line max-len
-  const { setRequestId, detectionStatus, handleError } = useApNeighborSocket('', socketHandler)
+  const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
   const [ tableData, setTableData ] = useState<ApRfNeighborsResponse>()
 
   useEffect(() => {
@@ -65,7 +64,6 @@ export function ApRfNeighbors () {
     return isLoadingApRfNeighbors || detectionStatus === DetectionStatus.FETCHING
   }
 
-  // eslint-disable-next-line max-len
   return <Loader states={[{ isLoading: isTableLoading() }]}>
     <Table
       settingsId='ap-rf-neighbors-table'
@@ -128,7 +126,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
       key: 'channel24G',
       dataIndex: 'channel24G',
       title: $t({ defaultMessage: 'Channel (2.4G)' }),
-      sorter: { compare: sortProp('channel24G', compareNumberStrings) },
+      sorter: { compare: sortProp('channel24G', compareChannelAndSnr) },
       searchable: true,
       render: emtpyRenderer
     },
@@ -136,7 +134,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
       key: 'channel5G',
       dataIndex: 'channel5G',
       title: $t({ defaultMessage: 'Channel (5G)' }),
-      sorter: { compare: sortProp('channel5G', compareNumberStrings) },
+      sorter: { compare: sortProp('channel5G', compareChannelAndSnr) },
       searchable: true,
       render: emtpyRenderer
     },
@@ -144,7 +142,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
       key: 'snr24G',
       dataIndex: 'snr24G',
       title: $t({ defaultMessage: 'SNR (2.4G)' }),
-      sorter: { compare: sortProp('snr24G', compareNumberStrings) },
+      sorter: { compare: sortProp('snr24G', compareChannelAndSnr) },
       searchable: true,
       render: emtpyRenderer
     },
@@ -152,7 +150,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
       key: 'snr5G',
       dataIndex: 'snr5G',
       title: $t({ defaultMessage: 'SNR (5G)' }),
-      sorter: { compare: sortProp('snr5G', compareNumberStrings) },
+      sorter: { compare: sortProp('snr5G', compareChannelAndSnr) },
       searchable: true,
       render: emtpyRenderer
     },
@@ -160,19 +158,19 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
       key: 'snr6G',
       dataIndex: 'snr6G',
       title: $t({ defaultMessage: 'SNR (6G/5G)' }),
-      sorter: { compare: sortProp('snr6G', compareNumberStrings) },
+      sorter: { compare: sortProp('snr6G', compareChannelAndSnr) },
       searchable: true,
       render: emtpyRenderer
     }
   ]
 }
 
-function emtpyRenderer (value?: React.ReactNode): React.ReactNode | string {
+export function emtpyRenderer (value?: React.ReactNode): React.ReactNode | string {
   const { $t } = getIntl()
   return value ? value : $t({ defaultMessage: 'N/A' })
 }
 
-function compareNumberStrings (str1: string | null, str2: string | null): SortResult {
+export function compareChannelAndSnr (str1: string | null, str2: string | null): SortResult {
   const int1: number = str1 ? parseInt(str1, 10) : -1
   const int2: number = str2 ? parseInt(str2, 10) : -1
 

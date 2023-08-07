@@ -18,16 +18,14 @@ export enum DetectionStatus {
 
 type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
 const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
-  'WIFI-10130': 'SERIAL_NUMBER_ALREADY_REGISTERED' // TODO: temporary
+  'WIFI-99999': 'ERROR_OCCURRED' // TODO: temporary
 }
 
-// eslint-disable-next-line max-len
-export function useApNeighborSocket (initRequestId: string, handler: () => void) {
+export function useApNeighbors (initRequestId: string, handler: () => void) {
   const [ detectionStatus, setDetectionStatus ] = useState<DetectionStatus>(DetectionStatus.IDLE)
   const [ requestId, setRequestId ] = useState(initRequestId)
   const { $t } = useIntl()
 
-  // Handle websocket
   useEffect(() => {
     cleanUp()
 
@@ -37,6 +35,7 @@ export function useApNeighborSocket (initRequestId: string, handler: () => void)
 
     pokeSocket = initPokeSocket(requestId, () => {
       setDetectionStatus(DetectionStatus.COMPLETEED)
+      clearTimeout(socketTimeoutId)
       handler()
     })
     socketTimeoutId = setTimeout(onSocketTimeout, socketTimeout)
@@ -69,6 +68,7 @@ export function useApNeighborSocket (initRequestId: string, handler: () => void)
   const onSocketTimeout = () => {
     showError($t({ defaultMessage: 'The AP is not reachable' }))
     setDetectionStatus(DetectionStatus.TIMEOUT)
+    // handler() // TODO: should remove, just for display the table
   }
 
   return {
