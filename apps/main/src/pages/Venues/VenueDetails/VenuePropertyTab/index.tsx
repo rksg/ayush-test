@@ -468,7 +468,7 @@ export function VenuePropertyTab () {
           }
         })
 
-        return switchList.map(s => <div>{s}</div>)
+        return switchList.map((s, index) => <div key={index}>{s}</div>)
       }
     },
     {
