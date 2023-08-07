@@ -1,3 +1,5 @@
+import React from 'react'
+
 import {
   Form,
   Radio,
@@ -6,6 +8,7 @@ import {
 import { useIntl, defineMessage } from 'react-intl'
 
 import { SpaceWrapper } from '@acx-ui/rc/components'
+
 
 interface AuthenticationSelectorProps {
   ssoConfigured: boolean
@@ -66,10 +69,12 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
         <SpaceWrapper full direction='vertical' size='middle'>
           {authTypesList.map((item) => {
             return (
-              <Radio disabled={!ssoConfigured && item.value === AuthTypeRadioButtonEnum.sso}
-                value={item.value}>
-                {item.label}
-              </Radio>
+              <React.Fragment key={item.value}>
+                <Radio disabled={!ssoConfigured && item.value === AuthTypeRadioButtonEnum.sso}
+                  value={item.value}>
+                  {item.label}
+                </Radio>
+              </React.Fragment>
             )})}
         </SpaceWrapper>
       </Radio.Group>
