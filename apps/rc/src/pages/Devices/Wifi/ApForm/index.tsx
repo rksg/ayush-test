@@ -116,7 +116,7 @@ export function ApForm () {
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
 
-  const BASE_VERSION = '7.2.1'
+  const BASE_VERSION = '6.2.1'
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
