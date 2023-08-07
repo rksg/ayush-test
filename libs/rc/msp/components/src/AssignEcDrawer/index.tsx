@@ -148,6 +148,9 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
         { skip: isSkip })
     const queryResults = useTableQuery({
       useQuery: useMspCustomerListQuery,
+      pagination: {
+        pageSize: 10000
+      },
       defaultPayload
     })
 
@@ -175,6 +178,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
         <Table
           columns={columns}
           dataSource={dataSource}
+          type='form'
           rowKey='id'
           rowSelection={{
             type: 'checkbox',
