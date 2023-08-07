@@ -122,12 +122,12 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
-  const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
+  const defaultLang = Boolean(request?.data?.global?.defaultLanguage)?
+    String(request?.data?.global?.defaultLanguage) as LangKey : DEFAULT_SYS_LANG
 
   // this condition userPreflang !== DEFAULT_SYS_LANG is needed when FF is off
   // need to be cleaned up once FF acx-ui-i18n-phase2-toggle is globally enabled
   const lang = userPreflang !== DEFAULT_SYS_LANG? userPreflang : defaultLang
-
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: result.isLoading || result.isFetching
