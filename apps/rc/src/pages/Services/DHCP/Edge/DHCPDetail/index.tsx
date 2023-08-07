@@ -21,6 +21,7 @@ const EdgeDHCPDetail = () => {
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const getDhcpStatsPayload = {
     fields: [
+      'id',
       'serviceName',
       'dhcpRelay',
       'dhcpPoolNum',
@@ -94,7 +95,7 @@ const EdgeDHCPDetail = () => {
       render: (data, row) => {
         if(!dhcpStats) return '--'
         const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.find(
-          item => item.edgeId === row.edgeId
+          item => item.edgeId.toLocaleLowerCase() === row.edgeId?.toLocaleLowerCase()
         )
         return <EdgeServiceStatusLight data={targetAlarmSummary ? [targetAlarmSummary] : []} />
       }
