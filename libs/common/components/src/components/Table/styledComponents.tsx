@@ -427,30 +427,22 @@ export const Wrapper = styled.div<StyledTable>`
 
     .ant-table {
       .parent-row-data {
-        background-color: var(--acx-neutrals-20) !important;
-
-        .ant-table-cell-row-hover {
-          background-color: var(--acx-neutrals-20) !important;
-        }
-
-        .ant-table-cell-fix-right {
-          background-color: var(--acx-neutrals-20) !important;
-        }
-        .ant-table-cell-fix-left{
-          background-color: var(--acx-neutrals-20) !important;
-        }
+        &,
+        .ant-table-cell-row-hover,
+        .ant-table-cell-fix-right,
+        .ant-table-cell-fix-left,
         .ant-table-column-sort {
           background-color: var(--acx-neutrals-20) !important;
+          overflow: visible !important;
         }
-        .ant-table-cell-with-append{
-          .ant-table-row-expand-icon-expanded{
+        .ant-table-cell-with-append {
+          .ant-table-row-expand-icon-expanded {
             display: none;
           }
         }
-
       }
-      .ant-table-cell-with-append{
-        .indent-level-2{
+      .ant-table-cell-with-append {
+        .indent-level-2 {
           padding-left: 10px !important;
         }
       }
@@ -583,6 +575,7 @@ export const GroupCell = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  color: var(--acx-primary-black);
 `
 
 export const ActionsContainer = styled(Space)`
