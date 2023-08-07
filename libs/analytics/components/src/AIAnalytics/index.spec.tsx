@@ -100,8 +100,13 @@ describe('NetworkAssurance', () => {
   it('should render config recommendation tab for R1 when feature flag is ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(mockGet).mockReturnValue(false)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    render(<AIAnalytics />, {
+      wrapper: Provider,
+      route: {
+        path: '/:tenantId/t/analytics/recommendations/:activeTab',
+        params: { tenantId: 'tenant-id', activeTab: 'crrm' }
+      }
+    })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeVisible()
@@ -109,8 +114,13 @@ describe('NetworkAssurance', () => {
   it('should not render config recommendation tab for R1 when feature flag is OFF', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.mocked(mockGet).mockReturnValue(false)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    render(<AIAnalytics />, {
+      wrapper: Provider,
+      route: {
+        path: '/:tenantId/t/analytics/recommendations/:activeTab',
+        params: { tenantId: 'tenant-id', activeTab: 'crrm' }
+      }
+    })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()

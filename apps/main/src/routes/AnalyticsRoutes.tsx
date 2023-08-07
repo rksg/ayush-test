@@ -61,9 +61,8 @@ export default function AnalyticsRoutes () {
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
           : <HealthPage/>} />
       {isNavbarEnhanced && canUseAnltAdv && recommendationsEnabled &&
-      <Route path='analytics/recommendations'>
-        <Route path='aiOps' element={<AIAnalytics tab={AIAnalyticsTabEnum.AIOPS} />} />
-        <Route path='crrm' element={<AIAnalytics tab={AIAnalyticsTabEnum.CRRM} />} />
+      <Route path='analytics/recommendations/'>
+        <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path=':activeTab/:id' element={<RecommendationDetails />} />
       </Route>}
       {isNavbarEnhanced && canUseAnltAdv && isConfigChangeEnabled &&
