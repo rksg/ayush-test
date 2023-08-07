@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import _             from 'lodash'
 import { Resizable } from 'react-resizable'
 
-import { ResizableHover, ResizableHandle } from './styledComponents'
+import { ResizableHover, ResizableHandle }    from './styledComponents'
+import { defaultColumnWidth, minColumnWidth } from './useColumnsState'
 
 interface ResizableColumnProps extends React.PropsWithChildren {
   onResize: (width: number) => void
@@ -34,7 +35,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   return <Resizable
     width={width}
     height={0}
-    minConstraints={[Math.min(definedWidth || 99, 90), 0]}
+    minConstraints={[Math.min(definedWidth || defaultColumnWidth, minColumnWidth), 0]}
     handle={<ResizableHandle />}
     onResizeStart={() => {
       setCurrentHeaderCell(headerCellRef.current!)

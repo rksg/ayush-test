@@ -7,7 +7,7 @@ import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cle
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
 import { GroupTable }                                       from './stories/GroupTable'
-import { minColumnWidth, settingsKeyWidth }                 from './useColumnsState'
+import { defaultColumnWidth, settingsKeyWidth }             from './useColumnsState'
 
 import { Table, TableProps } from '.'
 
@@ -172,7 +172,7 @@ describe('Table component', () => {
     />)
     // not sure where the 20px comes from but have to add it
     const width = 20 + settingsKeyWidth + columns
-      .map(col => col.ellipsis ? minColumnWidth : 100)
+      .map(col => col.ellipsis ? defaultColumnWidth : 100)
       .reduce((a, b) => a + b, 0)
 
     const table = screen.getByRole('table')
@@ -536,7 +536,7 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe(`${minColumnWidth}px`)
+    expect(asFragment().querySelector('col')?.style.width).toBe(`${defaultColumnWidth}px`)
     await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('col')?.style.width).toBe('99px')

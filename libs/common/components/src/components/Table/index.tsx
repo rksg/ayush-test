@@ -22,11 +22,11 @@ import {
   renderSearch,
   MIN_SEARCH_LENGTH
 } from './filters'
-import { useGroupBy, GroupSelect }                                        from './groupBy'
-import { IconButton }                                                     from './IconButton'
-import { ResizableColumn }                                                from './ResizableColumn'
-import * as UI                                                            from './styledComponents'
-import { minColumnWidth, settingsKey, settingsKeyWidth, useColumnsState } from './useColumnsState'
+import { useGroupBy, GroupSelect }                                            from './groupBy'
+import { IconButton }                                                         from './IconButton'
+import { ResizableColumn }                                                    from './ResizableColumn'
+import * as UI                                                                from './styledComponents'
+import { defaultColumnWidth, settingsKey, settingsKeyWidth, useColumnsState } from './useColumnsState'
 
 import type {
   TableColumn,
@@ -145,7 +145,7 @@ function Table <RecordType extends Record<string, any>> ({
       if (_.has(col, 'children')) return _.get(col, 'children').reduce(colWidthReducer, acc)
       const num = Number.isFinite(col.width)
         ? Number(col.width)
-        : minColumnWidth * (Number(col.width === Infinity) * 2 + 1)
+        : defaultColumnWidth * (Number(col.width === Infinity) * 2 + 1)
       acc[col.key] = num
       return acc
     }, {} as Record<string, number>)
@@ -667,6 +667,6 @@ function scrollXReducer (
   const width = Number.isFinite(col.width)
     ? col.width
     // multiply col with Infinity by 2
-    : minColumnWidth * (Number(col.width === Infinity))
+    : defaultColumnWidth * (Number(col.width === Infinity))
   return scrollX + width
 }
