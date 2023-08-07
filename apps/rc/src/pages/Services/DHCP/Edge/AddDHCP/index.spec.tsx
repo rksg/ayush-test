@@ -143,7 +143,6 @@ describe('AddEdgeDhcp', () => {
         serviceName: 'myTest',
         dhcpRelay: false,
         leaseTime: -1,
-        leaseTimeType: 'Infinite',
         leaseTimeUnit: 'HOURS',
         dhcpPools: [{
           id: '',
@@ -204,7 +203,6 @@ describe('AddEdgeDhcp', () => {
         serviceName: 'myTest',
         dhcpRelay: false,
         leaseTime: 24,
-        leaseTimeType: 'Limited',
         leaseTimeUnit: 'HOURS',
         dhcpPools: [{
           id: '',

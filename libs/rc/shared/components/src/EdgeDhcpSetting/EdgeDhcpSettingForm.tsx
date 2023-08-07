@@ -45,11 +45,6 @@ interface EdgeDhcpSettingFormProps {
   className?: string
 }
 
-export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
-  enableSecondaryDNSServer?: boolean
-  leaseTimeType?: LeaseTimeType
-}
-
 export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeDhcpSetting>()

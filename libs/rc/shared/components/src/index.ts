@@ -25,7 +25,6 @@ export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
-export type { EdgeDhcpSettingFormData } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   AdminLogTable,

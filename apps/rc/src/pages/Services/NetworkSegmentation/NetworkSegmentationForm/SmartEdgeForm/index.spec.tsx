@@ -106,11 +106,12 @@ describe('SmartEdgeForm', () => {
       await screen.findByRole('combobox', { name: 'SmartEdge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
 
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    await screen.findByText('Add DHCP for SmartEdge Service')
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
