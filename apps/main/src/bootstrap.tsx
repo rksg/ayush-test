@@ -123,7 +123,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
-  
+
   const lang = userPreflang? userPreflang : defaultLang
 
   return <Loader
