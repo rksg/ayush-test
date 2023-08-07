@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -24,6 +26,26 @@ const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   venueId: 'f892848466d047798430de7ac234e940'
 }
+const mockedUpdateFn = jest.fn()
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {children ? children : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
 
 describe('SecurityTab', () => {
   beforeEach(() => {
@@ -50,12 +72,19 @@ describe('SecurityTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(
         CommonUrlsInfo.updateVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => {
+          mockedUpdateFn()
+          return res(ctx.json({ requestId: 'req1' }))
+        }),
       rest.get(
         RogueApUrls.getRoguePolicy.url,
         (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
       )
     )
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
   it('should render correctly', async () => {
     render(
@@ -72,10 +101,6 @@ describe('SecurityTab', () => {
     await userEvent.click(switchButton[0])
     await userEvent.click(switchButton[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-    // await userEvent.click(await screen.findByRole('switch'))
-
-    // await userEvent.click(await screen.findByRole('switch'))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('should render correctly with RogueApProfile settings', async () => {
@@ -84,6 +109,7 @@ describe('SecurityTab', () => {
         RogueApUrls.getRoguePolicyList.url,
         (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
     )
+
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -94,9 +120,12 @@ describe('SecurityTab', () => {
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    await screen.findByRole('option', { name: 'roguePolicy1' })
 
-    await screen.findByTitle('roguePolicy1')
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'roguePolicy1' })
+    )
 
     await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
 
@@ -110,7 +139,18 @@ describe('SecurityTab', () => {
 
     expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
 
+    await screen.findByRole('option', { name: 'Default profile' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'Default profile' })
+    )
+
+    expect(screen.queryByRole('option', { name: 'Default profile' })).toBeVisible()
+
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
+    expect(mockedUpdateFn).toHaveBeenCalledTimes(1)
   })
 
   it('should render correctly with RogueApProfile settings then cancel', async () => {
@@ -130,9 +170,12 @@ describe('SecurityTab', () => {
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    await screen.findByRole('option', { name: 'roguePolicy1' })
 
-    await screen.findByTitle('roguePolicy1')
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'roguePolicy1' })
+    )
 
     await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
 

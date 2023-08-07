@@ -199,12 +199,10 @@ describe('DeviceOSDrawer Component setting I', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
-    const mockedAddDevice = jest.fn()
     mockServer.use(
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => {
-          mockedAddDevice()
           return res(ctx.json(deviceResponse))
         }
       ))
@@ -367,6 +365,7 @@ describe('DeviceOSDrawer Component setting II', () => {
         ctx.json(devicePolicyListResponse)
       )
     ))
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
@@ -421,8 +420,6 @@ describe('DeviceOSDrawer Component setting II', () => {
   })
 
   it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
     mockServer.use(
       rest.get(
         AccessControlUrls.getDevicePolicy.url,

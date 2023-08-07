@@ -115,9 +115,7 @@ describe('ApplicationRuleContent Component', () => {
       }
     )
 
-    await screen.findByText('Add New')
-
-    await userEvent.click(screen.getByText('Add New'))
+    await userEvent.click(await screen.findByText('Add New'))
 
     await screen.findByText(/application access settings/i)
 

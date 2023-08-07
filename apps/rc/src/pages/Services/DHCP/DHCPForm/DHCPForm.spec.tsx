@@ -40,9 +40,6 @@ const dhcpProfilesList = [
 async function fillInBeforeSettings (dhcpName: string) {
   const insertInput = screen.getByLabelText('Service Name')
   fireEvent.change(insertInput, { target: { value: dhcpName } })
-  // insertInput.focus()
-  // const validating = await screen.findByRole('img', { name: 'loading' })
-  // await waitForElementToBeRemoved(validating)
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -75,7 +72,6 @@ describe('DHCPForm', () => {
       )
     )
 
-    // jest.clearAllMocks()
   })
   it('should create DHCP successfully', async () => {
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
