@@ -407,6 +407,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBssColoring: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    newApi: true
+  },
+  updateApBssColoring: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    newApi: true
+  },
   getApCustomization: {
     method: 'get',
     url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
@@ -465,6 +475,26 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/loadBalancingSettings',
     oldUrl: '/api/venues/:venueId/loadBalancingSettings',
+    newApi: true
+  },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateVenueBssColoring: {
+    method: 'put',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  getVenueClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateVenueClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
     newApi: true
   },
   getApNetworkSettings: {

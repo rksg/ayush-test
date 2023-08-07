@@ -49,6 +49,7 @@ import {
   VenueRadioCustomization,
   VenueDirectedMulticast,
   VenueLoadBalancing,
+  VenueBssColoring,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -60,7 +61,8 @@ import {
   RequestFormData,
   VenueRadiusOptions,
   ApMeshTopologyData,
-  FloorPlanMeshAP
+  FloorPlanMeshAP,
+  VenueClientAdmissionControl
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -901,6 +903,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     }),
+    getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueBssColoring, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueBssColoring, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -1083,6 +1102,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           })
         })
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     downloadPropertyUnits: build.query<Blob, RequestPayload>({
@@ -1154,6 +1174,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
+    }),
+    getVenueClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
+    }),
+    updateVenueClientAdmissionControl: build.mutation<VenueClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueClientAdmissionControl, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
     })
   })
 })
@@ -1239,6 +1278,9 @@ export const {
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
+  useGetVenueBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
+  useUpdateVenueBssColoringMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,
@@ -1259,5 +1301,7 @@ export const {
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueRadiusOptionsQuery,
-  useUpdateVenueRadiusOptionsMutation
+  useUpdateVenueRadiusOptionsMutation,
+  useGetVenueClientAdmissionControlQuery,
+  useUpdateVenueClientAdmissionControlMutation
 } = venueApi

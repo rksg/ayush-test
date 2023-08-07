@@ -61,6 +61,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       transformResponse (result: NewTableResult<PersonaGroup>) {
         return transferToTableResult<PersonaGroup>(result)
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
@@ -70,6 +71,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
           ...req
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [
         { type: 'PersonaGroup', id: 'LIST' },
         { type: 'Persona', id: 'ID' }
@@ -209,6 +211,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
           })
         })
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
