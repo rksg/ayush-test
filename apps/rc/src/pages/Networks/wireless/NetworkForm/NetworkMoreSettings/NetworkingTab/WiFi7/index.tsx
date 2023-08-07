@@ -100,8 +100,8 @@ function WiFi7 () {
   const [enableMlo, setEnableMlo] = useState(defaultValueOfEnableMlo)
 
   useEffect(() => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], enableWiFi)
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], enableWiFi)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], enableWiFi)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifi7Enabled'], enableWiFi)
     form.setFieldValue(
       ['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
       enableWiFi ? enableMlo : false)
@@ -173,7 +173,7 @@ function WiFi7 () {
             />
           </Space>
           <Form.Item
-            name={['wlan', 'advancedCustomization', 'enableWifi7']}
+            name={['wlan', 'advancedCustomization', 'wifi7Enabled']}
             style={{ marginBottom: '10px', width: '300px' }}
             valuePropName='checked'
             children={
