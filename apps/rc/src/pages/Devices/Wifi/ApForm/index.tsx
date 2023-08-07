@@ -114,9 +114,9 @@ export function ApForm () {
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
+  const [triApModels, setTriApModels] = useState([] as string[])
 
-  const BASE_VERSION = '6.2.1'
-  const ALERT_AP_MODELS = ['R560', 'R760']
+  const BASE_VERSION = '7.2.1'
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -131,11 +131,12 @@ export function ApForm () {
 
   const venueInfos = (venueFwVersion: string) => {
     const contentInfo = <><br/><br/>{$t({
-      defaultMessage: 'If you are adding an <b>{apModels}</b> AP, ' +
+      defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
-      apModels: ALERT_AP_MODELS.join(' or '),
+      apModels: triApModels.slice(0, -1).join(','),
+      lastApModel: triApModels[triApModels.length - 1],
       baseVersion: BASE_VERSION,
       fwManagementLink: (<TenantLink
         to={'/administration/fwVersionMgmt'}>{
@@ -156,7 +157,7 @@ export function ApForm () {
   const checkBelowFwVersion = (version: string) => {
     if (version === '-') return false
     if (isEditMode && apDetails) {
-      if (!ALERT_AP_MODELS.includes(apDetails.model)) return false
+      if (!triApModels.includes(apDetails.model)) return false
     }
     return compareVersions(version, BASE_VERSION) < 0
   }
@@ -165,6 +166,9 @@ export function ApForm () {
     if (!wifiCapabilities.isLoading) {
       setCellularApModels(wifiCapabilities?.data?.apModels
         ?.filter(apModel => apModel.canSupportCellular)
+        .map(apModel => apModel.model) ?? [])
+      setTriApModels(wifiCapabilities?.data?.apModels
+        ?.filter(apModel => apModel.supportTriRadio)
         .map(apModel => apModel.model) ?? [])
     }
   }, [wifiCapabilities])
