@@ -217,6 +217,9 @@ export function ManageCustomer () {
       useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload: {
       filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
       fields: [
@@ -224,7 +227,6 @@ export function ManageCustomer () {
         'name',
         'tenantType'
       ],
-      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
     },
