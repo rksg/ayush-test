@@ -23,6 +23,7 @@ import {
   WifiApSetting,
   ApLanPort,
   ApLedSettings,
+  ApBssColoringSettings,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
@@ -563,6 +564,26 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApBssColoring, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
+    updateApBssColoring: build.mutation<ApBssColoringSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApBssColoring, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
     getApCustomization: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCustomization, params)
@@ -800,6 +821,8 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApBssColoringQuery,
+  useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
   useGetApCustomizationQuery,
