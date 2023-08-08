@@ -305,7 +305,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'source',
       key: 'source',
-      render: (data, row) => {
+      render: (_, row) => {
         return <NetworkColumnComponent network={row.source} row={row} />
       }
     },
@@ -313,7 +313,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Destination' }),
       dataIndex: 'destination',
       key: 'destination',
-      render: (data, row) => {
+      render: (_, row) => {
         return <NetworkColumnComponent network={row.destination} row={row} />
       }
     },
@@ -321,7 +321,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
       key: 'protocol',
-      render: (data, row) => {
+      render: (_, row) => {
         const protocol = row.protocol ?? Layer3ProtocolType.ANYPROTOCOL
         return $t(layer3ProtocolLabelMapping[protocol as keyof typeof Layer3ProtocolType])
       }
@@ -330,7 +330,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (data, row) => {
+      render: (_, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
           <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>

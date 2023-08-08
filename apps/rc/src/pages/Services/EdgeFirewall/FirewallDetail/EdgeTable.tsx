@@ -52,10 +52,10 @@ export const EdgeTable = (props: EdgeTableProps) => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -65,9 +65,9 @@ export const EdgeTable = (props: EdgeTableProps) => {
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-          {data}
+          {row.venueName}
         </TenantLink>
       )
     },
