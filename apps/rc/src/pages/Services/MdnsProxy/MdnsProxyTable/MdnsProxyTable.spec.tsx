@@ -138,6 +138,9 @@ describe('MdnsProxyTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should navigate to the Edit view', async () => {
@@ -164,6 +167,10 @@ describe('MdnsProxyTable', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 })

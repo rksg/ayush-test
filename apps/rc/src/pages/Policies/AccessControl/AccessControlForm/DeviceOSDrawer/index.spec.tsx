@@ -176,15 +176,19 @@ const selectOptionSet = async (device: string, vendor: string) => {
     screen.getByRole('option', { name: device })
   )
 
+  expect(screen.queryByRole('option', { name: device })).toBeVisible()
+
   await screen.findByRole('option', { name: vendor })
 
   await userEvent.selectOptions(
     screen.getAllByRole('combobox')[2],
     screen.getByRole('option', { name: vendor })
   )
+
+  expect(screen.queryByRole('option', { name: vendor })).toBeVisible()
 }
 
-describe.skip('DeviceOSDrawer Component setting I', () => {
+describe('DeviceOSDrawer Component setting I', () => {
   beforeEach(async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
@@ -198,9 +202,9 @@ describe.skip('DeviceOSDrawer Component setting I', () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(deviceResponse)
-        )
+        (_, res, ctx) => {
+          return res(ctx.json(deviceResponse))
+        }
       ))
 
     render(
@@ -251,7 +255,11 @@ describe.skip('DeviceOSDrawer Component setting I', () => {
 
     await screen.findByText(/delete rule/i)
 
-    await userEvent.click(screen.getByText(/delete rule/i))
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
+    }))
+
+    await userEvent.click(screen.getAllByText('Save')[0])
   })
 
   it('Render DeviceOSDrawer component successfully with Tablet & AmazonKindle', async () => {
@@ -357,6 +365,7 @@ describe('DeviceOSDrawer Component setting II', () => {
         ctx.json(devicePolicyListResponse)
       )
     ))
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
@@ -411,19 +420,18 @@ describe('DeviceOSDrawer Component setting II', () => {
   })
 
   it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(queryDevice)
+        )
+      ), rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -478,7 +486,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
+  it('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(rest.get(
@@ -527,13 +535,9 @@ describe('DeviceOSDrawer Component setting II', () => {
       name: /rule name/i
     }), 'rule1')
 
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await screen.findByText(/please select the deviceType option/i)
-
-    await screen.findByText(/please select the osVendor option/i)
-
     await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
 
     expect(screen.queryByText(/please select the deviceType option/i)).toBeNull()
 

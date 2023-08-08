@@ -328,7 +328,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length === 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -443,7 +443,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         type={ImportFileDrawerType.Persona}
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={512}
+        maxEntries={1000}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

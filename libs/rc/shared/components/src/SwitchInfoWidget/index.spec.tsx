@@ -2,6 +2,7 @@
 import { rest } from 'msw'
 
 import { AnalyticsFilter }                         from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import {  Alarm, CommonUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 import { Provider  }                               from '@acx-ui/store'
 import { render,
@@ -150,6 +151,22 @@ describe('Switch Information Widget', () => {
     fireEvent.click(button)
   })
 
+  it('should render switch drawer correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SwitchInfoWidget switchDetail={switchDetail as unknown as SwitchViewModel} filters={filters}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
+    fireEvent.click(screen.getByText('More Details'))
+    expect(screen.getByText('Switch Details')).toBeVisible()
+    expect(await screen.findByText('FMF2249Q0JT')).toBeVisible()
+    expect(await screen.findByText(/Admin Password/)).toBeVisible()
+    const button = screen.getByRole('button', { name: /close/i })
+    fireEvent.click(button)
+  })
 
   it('should render stack drawer correctly', async () => {
     render(

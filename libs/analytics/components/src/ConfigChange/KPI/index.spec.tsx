@@ -1,7 +1,11 @@
+import userEvent from '@testing-library/user-event'
+
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
-import { kpiChanges } from '../__tests__/fixtures'
+import { kpiForOverview,  kpiForConnection } from '../__tests__/fixtures'
+import { ConfigChangeProvider }              from '../context'
 
 import { KPIs } from '.'
 
@@ -18,14 +22,21 @@ jest.mock('@acx-ui/analytics/utils', () => ({
         'onlineAPs',
         'switchPoeUtilization'
       ]
+    },
+    connection: {
+      kpis: [
+        'userAuthentication'
+      ]
     }
   })
 }))
 
 describe('KPIs', () => {
   it('should render KPIs correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiChanges } })
-    render(<KPIs kpiTimeRanges={[[0, 50], [950, 1000]]}/>, { wrapper: Provider, route: {} })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <KPIs />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
 
     expect(await screen.findByText('Connection Success')).toBeVisible()
     expect(await screen.findByText('Before: 74.76% | After: 69.2%')).toBeVisible()
@@ -48,5 +59,37 @@ describe('KPIs', () => {
     expect(await screen.findByText('Online APs Count')).toBeVisible()
     expect(await screen.findByText('Before: 7 | After: 3')).toBeVisible()
     expect(await screen.findByText('-57.14%')).toBeVisible()
+  })
+  it('should show corresponding KPIs when dropdown changes', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForConnection } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <KPIs />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+
+    expect(await screen.findByText('Connection Success')).toBeVisible()
+    const trigger = await screen.findByText('Overview')
+    expect(trigger).toHaveTextContent('Overview')
+    await userEvent.click(trigger)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Connection' }))
+    expect(trigger).toHaveTextContent('Connection')
+    expect(await screen.findByText('802.11 Authentication Success')).toBeVisible()
+  })
+  it('should handle onClick when KPI is clicked', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    const { asFragment } = render(
+      <ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+        <KPIs />
+      </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+
+    expect(await screen.findByText('Connection Success')).toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('.statistic-selected')).toBeNull()
+
+    await userEvent.click(await screen.findByText('Connection Success'))
+
+    expect(await screen.findByText('Connection Success')).toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('.statistic-selected')).not.toBeNull()
   })
 })

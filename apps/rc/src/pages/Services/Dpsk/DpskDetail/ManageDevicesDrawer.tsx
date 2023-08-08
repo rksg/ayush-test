@@ -238,6 +238,13 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     </Button>
   ]
 
+  const filterWithoutFormat = (mac: string, value: string) => {
+    const regex = /[.\-:]/gi
+    let macStr = mac.replace(regex, '').toLowerCase()
+    let valueStr = value.replace(regex, '').toLowerCase()
+    return macStr === valueStr
+  }
+
   return (
     <>
       <Drawer
@@ -274,7 +281,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
               { required: true },
               { validator: (_, value) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
-                  .filter(mac => mac === value).length) {
+                  .filter(mac => filterWithoutFormat(mac, value)).length) {
                   return Promise.reject($t({
                     defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))

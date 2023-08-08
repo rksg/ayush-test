@@ -147,6 +147,9 @@ describe('ClientIsolationTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should not delete selected row when it is applied to Venue', async () => {

@@ -131,6 +131,7 @@ export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
 export { useEdgeActions } from './useEdgeActions'
+export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

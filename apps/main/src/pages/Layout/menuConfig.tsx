@@ -23,12 +23,19 @@ import {
   SwitchSolid,
   WiFi
 } from '@acx-ui/icons'
-import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
-import { RolesEnum }                                           from '@acx-ui/types'
-import { hasRoles }                                            from '@acx-ui/user'
+import {
+  getServiceCatalogRoutePath,
+  getServiceListRoutePath,
+  hasAdministratorTab
+} from '@acx-ui/rc/utils'
+import { RolesEnum }                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }                     from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const tenantID = useTenantId()
+  const { data: userProfileData } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
@@ -41,6 +48,7 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -296,10 +304,10 @@ export function useMenuConfig () {
               uri: '/administration/accountSettings',
               label: $t({ defaultMessage: 'Settings' })
             },
-            {
+            ...(isAdministratorAccessible ? [{
               uri: '/administration/administrators',
               label: $t({ defaultMessage: 'Administrators' })
-            },
+            }] : []),
             {
               uri: '/administration/notifications',
               label: $t({ defaultMessage: 'Notifications' })

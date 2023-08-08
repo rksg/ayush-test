@@ -158,13 +158,15 @@ export function MspCustomers () {
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload: {
       filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
       fields: [
         'id',
         'name'
       ],
-      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
     }

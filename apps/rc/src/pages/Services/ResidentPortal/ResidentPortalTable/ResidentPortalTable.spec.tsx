@@ -121,6 +121,9 @@ describe('ResidentPortalTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).toBeNull()
+    )
   })
 
   it('should not delete the selected row when it is mapped to Venue', async () => {

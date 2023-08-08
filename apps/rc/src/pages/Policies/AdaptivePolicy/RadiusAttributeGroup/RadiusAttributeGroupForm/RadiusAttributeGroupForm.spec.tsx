@@ -104,14 +104,12 @@ describe('RadiusAttributeGroupForm', () => {
     const attributeValue = inputs[2]
     await userEvent.type(attributeValue, '123')
 
+    await screen.findByText('Common Attributes')
     const comboBoxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboBoxes[0])
+    await userEvent.click(await screen.findByText('UKERNA'))
 
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[1])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
+    await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const buttons = screen.getAllByText('Add')
@@ -178,7 +176,7 @@ describe('RadiusAttributeGroupForm', () => {
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
     const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Attribute Type')

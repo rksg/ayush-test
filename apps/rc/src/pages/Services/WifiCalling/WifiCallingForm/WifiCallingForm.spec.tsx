@@ -2,10 +2,11 @@ import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
-import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
-import { mockServer, render, screen }       from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen }                       from '@acx-ui/test-utils'
 
+import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingForm from './WifiCallingForm'
@@ -91,22 +92,56 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-describe.skip('WifiCallingForm', () => {
+const wifiCallingResponse = {
+  networkIds: [
+    '62b18f6cd1ae455cbbf1e2c547d8d422'
+  ],
+  description: '--',
+  qosPriority: 'WIFICALLING_PRI_VOICE',
+  serviceName: 'service-name-test2',
+  id: 'bb21e5fad7ca4b639ee9a9cd157bc5fc',
+  epdgs: [
+    {
+      ip: '1.1.1.1',
+      domain: 'a.b.c.com'
+    }
+  ]
+}
+
+const mockedUseNavigate = jest.fn()
+const mockedUseTenantLink = jest.fn()
+const mockedAddService = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: () => mockedUseTenantLink
+}))
+
+describe('WifiCallingForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
         WifiCallingUrls.addWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))
+        (req, res, ctx) => {
+          mockedAddService()
+          return res(ctx.json(wifiCallingServiceResponse))
+        }
       ),
       rest.get(
         WifiCallingUrls.getWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
+      ),
+      rest.get(
+        WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(
+          ctx.json(wifiCallingResponse)
+        )
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
-  })
-
-  afterAll(() => {
-    mockServer.close()
   })
 
   it('should render wifiCallingForm successfully', async () => {
@@ -121,7 +156,6 @@ describe.skip('WifiCallingForm', () => {
       </WifiCallingFormContext.Provider>
       , {
         route: {
-          path: '/services/wifiCalling/create',
           params: { tenantId: 'tenantId1' }
         }
       }
@@ -183,6 +217,8 @@ describe.skip('WifiCallingForm', () => {
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    expect(mockedAddService).toBeCalledTimes(1)
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -197,8 +233,7 @@ describe.skip('WifiCallingForm', () => {
       </WifiCallingFormContext.Provider>
       , {
         route: {
-          path: '/services/wifiCalling/create',
-          params: { tenantId: 'tenantId1' }
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId' }
         }
       }
     )
@@ -223,8 +258,7 @@ describe.skip('WifiCallingForm', () => {
       </WifiCallingFormContext.Provider>
       , {
         route: {
-          path: '/services/wifiCalling/create',
-          params: { tenantId: 'tenantId1' }
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId' }
         }
       }
     )
@@ -236,5 +270,7 @@ describe.skip('WifiCallingForm', () => {
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).toBeCalledTimes(2)
   })
 })
