@@ -136,7 +136,7 @@ function useColumns (type: AAAServerTypeEnum) {
       render: function (data: React.ReactNode, row: LocalUser) {
         return row?.switchCountInVenue
           ? $t({ defaultMessage: '{syncedCount} out of {totalCount} switches' }, {
-            syncedCount: data || 0,
+            syncedCount: row.syncedPasswordSwitchCount || 0,
             totalCount: row.switchCountInVenue
           })
           : '--'
