@@ -76,12 +76,10 @@ export const OptionDrawer = (props: OptionDrawerProps) => {
           children={
             <Select
               placeholder={$t({ defaultMessage: 'Select...' })}
+              options={dhcpOptionDropdownOptions}
               onChange={onOptionChange}
-            >
-              {dhcpOptionDropdownOptions.map(({ label, value }) =>
-                (<Select.Option value={value} key={value} children={label}/>)
-              )}
-            </Select>
+            />
+
           }
         />
         <Form.Item

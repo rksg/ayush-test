@@ -18,26 +18,29 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
 jest.mock('antd', () => {
-  const antd = jest.requireActual('antd')
-
-  // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      {children ? <><option value={undefined}></option>{children}</> : null}
+      {options?.map((option) => (
+        <option
+          key={`option-${option.value}`}
+          value={option.value as string}>
+          {option.label}
+        </option>
+      ))}
     </select>
-
-  // @ts-ignore
-  Select.Option = ({ children, ...otherProps }) =>
-    <option role='option' {...otherProps}>{children}</option>
-
-  return { ...antd, Select }
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
 })
-
 describe('AddEdgeDhcp', () => {
   let params: { tenantId: string }
   const mockedReqFn = jest.fn()
@@ -191,7 +194,7 @@ describe('AddEdgeDhcp', () => {
 
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Option Name' }),
-      '15')
+      await screen.findByRole('option', { name: 'Domain name' }))
     await userEvent.type(await screen.findByRole('textbox', { name: 'Option Value' }),
       'testOpt')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
