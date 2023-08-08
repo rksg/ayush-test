@@ -50,10 +50,8 @@ export function CliStepVenues () {
     key: 'switches',
     dataIndex: 'switches',
     sorter: true,
-    render: function (data) {
-      return (
-        data ? data : 0
-      )
+    render: function (_, { switches }) {
+      return switches ? switches : 0
     }
   },
   {
@@ -62,8 +60,7 @@ export function CliStepVenues () {
     dataIndex: 'id',
     sorter: true,
     width: 180,
-    ellipsis: true,
-    render: (data, row) => (row as VenueExtend)?.models?.join(', ') ?? ''
+    render: (_, row) => (row as VenueExtend)?.models?.join(', ') ?? ''
   }]
 
   const tableQuery = useTableQuery<Venue>({
