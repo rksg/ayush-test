@@ -33,9 +33,9 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <TenantLink
-          to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
+          to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
       }
     },
     {
@@ -49,8 +49,8 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => {
-        return <NetworkType networkType={data as NetworkTypeEnum} row={row} />
+      render: (_, row) => {
+        return <NetworkType networkType={row.nwSubType as NetworkTypeEnum} row={row} />
       }
     },
     {
@@ -58,9 +58,12 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
-      render: function (count, row) {
+      render: function (_, row) {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/networks/wireless/${row.id}/network-details/venues`} children={count ? count : 0} />
+        return <TenantLink
+          to={`/networks/wireless/${row.id}/network-details/venues`}
+          children={row.venues?.count ? row.venues?.count : 0}
+        />
       }
     }
   ]

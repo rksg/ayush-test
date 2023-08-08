@@ -77,7 +77,7 @@ const SyslogVenueTable = () => {
       key: 'aggregatedApStatus',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
     },
@@ -87,7 +87,7 @@ const SyslogVenueTable = () => {
       key: 'syslogServer',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (row.syslogServer?.enabled) {
           return <div>
             <div>
@@ -106,7 +106,7 @@ const SyslogVenueTable = () => {
       dataIndex: 'activate',
       key: 'activate',
       align: 'center',
-      render: (data, row) => {
+      render: (_, row) => {
         return <Switch
           data-testid={`switchBtn_${row.id}`}
           checked={

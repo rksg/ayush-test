@@ -53,7 +53,7 @@ const RuleTable = (props: RuleTableProps) => {
       title: $t({ defaultMessage: 'Rule Type' }),
       dataIndex: 'type',
       key: 'type',
-      render: (data, row: RogueAPRule) => {
+      render: (_, row: RogueAPRule) => {
         return $t(rogueRuleLabelMapping[row.type as RogueRuleType])
       }
     },
@@ -66,7 +66,7 @@ const RuleTable = (props: RuleTableProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (data, row) => {
+      render: (_, row) => {
         return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
           <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>

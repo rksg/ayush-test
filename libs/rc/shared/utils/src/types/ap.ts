@@ -96,7 +96,8 @@ export interface APExtended extends AP {
   },
   name?: string,
   switchSerialNumber?: string,
-  switchId?: string
+  switchId?: string,
+  switchName?: string
 }
 
 export interface CelluarInfo {

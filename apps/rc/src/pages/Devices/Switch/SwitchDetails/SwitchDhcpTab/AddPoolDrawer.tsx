@@ -101,7 +101,7 @@ export function AddPoolDrawer (props: {
       title: $t({ defaultMessage: 'Option Name' }),
       dataIndex: 'seq',
       key: 'seq',
-      render: (data, row) => DHCP_OPTIONS[row.seq as keyof typeof DHCP_OPTIONS].label
+      render: (_, row) => DHCP_OPTIONS[row.seq as keyof typeof DHCP_OPTIONS].label
     }, {
       title: $t({ defaultMessage: 'Format' }),
       dataIndex: 'type',

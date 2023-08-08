@@ -67,7 +67,7 @@ export function PoolTable (props:{
       title: $t({ defaultMessage: 'Address Pool' }),
       dataIndex: 'startIpAddress',
       sorter: { compare: sortProp('startIpAddress', defaultSort) },
-      render: function (_data, row) {
+      render: function (_, row) {
         return $t({ defaultMessage: '{start} - {end}' },
           { start: row.startIpAddress, end: row.endIpAddress })
       }
@@ -77,12 +77,18 @@ export function PoolTable (props:{
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',
       sorter: { compare: sortProp('leaseTime', defaultSort) },
-      render: (data, row) =>{
+      render: (_, row) =>{
         if(row.leaseUnit===LeaseUnit.HOURS){
-          return <FormattedMessage defaultMessage='{number} Hours' values={{ number: data }} />
+          return <FormattedMessage
+            defaultMessage='{number} Hours'
+            values={{ number: row.leaseTime }}
+          />
         }
         if(row.leaseUnit===LeaseUnit.MINUTES){
-          return <FormattedMessage defaultMessage='{number} Minutes' values={{ number: data }} />
+          return <FormattedMessage
+            defaultMessage='{number} Minutes'
+            values={{ number: row.leaseTime }}
+          />
         }
         else {
           return ''
