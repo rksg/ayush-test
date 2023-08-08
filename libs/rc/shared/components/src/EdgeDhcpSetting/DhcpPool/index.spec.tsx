@@ -1,6 +1,6 @@
-import { waitFor, waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                              from '@testing-library/user-event'
-import { Form }                               from 'antd'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { Form }    from 'antd'
 
 import { StepsForm }    from '@acx-ui/components'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
