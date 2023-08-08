@@ -35,7 +35,7 @@ export default function AccessControlTable () {
     defaultPayload
   })
 
-  return (
+  return (<>
     <PageHeader
       title={
         $t({
@@ -65,8 +65,9 @@ export default function AccessControlTable () {
           </Button>
         </TenantLink>
       ])}
-      footer={<AccessControlTabs />}
+
     />
-  )
+    <AccessControlTabs />
+  </>)
 }
 

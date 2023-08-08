@@ -27,7 +27,7 @@ export const MeshUplinkApsTable = (props: MeshUplinkApsTableProps) => {
     {
       key: 'mac',
       dataIndex: 'mac',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Checkbox
           checked={selected.includes(row.mac)}
           onChange={(e) => handleClick(e, row.mac)}
@@ -44,7 +44,7 @@ export const MeshUplinkApsTable = (props: MeshUplinkApsTableProps) => {
       title: $t({ defaultMessage: 'Signal' }),
       dataIndex: 'rssi',
       sorter: { compare: sortProp('rssi', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         return (<WifiSignal
           snr={row?.rssi}
           text={row?.rssi ? row.rssi + ' dB' : '--'}

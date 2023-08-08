@@ -31,9 +31,10 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       key: 'name',
       sorter: true,
       fixed: 'left',
-      render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+      render: (_, row) => {
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+          {row.name}
+        </TenantLink>
       }
     },
     {
@@ -41,8 +42,10 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       dataIndex: 'venueName',
       key: 'venueName',
       sorter: true,
-      render: (data, row) => {
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_, row) => {
+        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       }
     }
     // {

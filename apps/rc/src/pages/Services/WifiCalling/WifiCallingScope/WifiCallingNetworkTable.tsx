@@ -47,7 +47,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'nwSubType',
       key: 'nwSubType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
     },
@@ -56,7 +56,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.venues.count
       }
     },
@@ -64,7 +64,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
       key: 'activate',
-      render: (data, row) => {
+      render: (_, row) => {
         return <Switch
           checked={state.networkIds.includes(row.id)}
           onClick={(_, e) => {

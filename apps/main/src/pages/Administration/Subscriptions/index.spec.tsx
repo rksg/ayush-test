@@ -153,7 +153,7 @@ describe('Subscriptions', () => {
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
     const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
-    expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('')
+    expect((cells[0] as HTMLTableCellElement).textContent).toBe('')
   })
 
   it('should correctly handle device sub type', async () => {

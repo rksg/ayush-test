@@ -46,14 +46,14 @@ export const AclDetail = (props: { row : Acl }) => {
       key: 'action',
       title: $t({ defaultMessage: 'Action' }),
       dataIndex: 'action',
-      render: (data) => transformTitleCase(data as string)
+      render: (_, { action }) => transformTitleCase(action as string)
     },
     {
       key: 'protocol',
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
-      render: (data) => {
-        return _.isString(data) ? _.toUpper(data) : data
+      render: (__, { protocol }) => {
+        return _.isString(protocol) ? _.toUpper(protocol) : protocol
       }
     },
     {

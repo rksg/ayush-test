@@ -94,14 +94,14 @@ export default function RadiusAttributeGroupDetail () {
         title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={getAdaptivePolicyDetailLink({
                 oper: PolicyOperation.DETAIL,
                 policyId: row.id!,
                 templateId: templateList.get(row.policyType) ?? ''
-              })}>{data}</TenantLink>
+              })}>{row.name}</TenantLink>
           )
         }
       },

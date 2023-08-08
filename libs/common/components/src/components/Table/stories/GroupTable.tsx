@@ -20,6 +20,7 @@ export type APExtendedGroupedResponse = {
   clients: number
   name?: string
   aps: APExtended[]
+  IP?: string
 }
 
 function cleanResponse (response: APExtendedGroupedResponse[]): APExtendedGroupedResponse[] {
@@ -759,7 +760,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     dataIndex: 'IP',
     key: 'ip',
     sorter: true,
-    render: (dom) => dom
+    render: (_, { IP }) => IP
   },
   {
     title: 'MAC Addresses',
@@ -783,7 +784,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     key: 'clients',
     dataIndex: 'clients',
     sorter: true,
-    render: (dom) => dom
+    render: (_, { clients }) => clients
   },
   {
     title: 'AP Group',
