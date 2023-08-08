@@ -5,7 +5,14 @@ import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile, Wr
 
 function setRole (role: RolesEnum) {
   const profile = getUserProfile()
-  setUserProfile({ ...profile, profile: { ...profile.profile, roles: [role] } })
+  setUserProfile({
+    ...profile,
+    profile: {
+      ...profile.profile,
+      roles: [role]
+    },
+    allowedOperations: ['GET:/networks']
+  })
 }
 
 describe('hasAccess', () => {
@@ -26,14 +33,16 @@ describe('hasAccess', () => {
     })
   })
 
-  it('allow when id not defined in operationMap', () => {
-    expect(hasAccess('random-key')).toBe(true)
-  })
+  describe('when id in allowedOperations', () => {
+    it('allow when operation in allowedOperations', () => {
+      setRole(RolesEnum.READ_ONLY)
+      expect(hasAccess('GET:/networks')).toBe(true)
+    })
 
-  describe('when id defined in map', () => {
-    it.todo('allow when operation in allowedOperations')
-
-    it.todo('block when operation NOT in allowedOperations')
+    it('block when operation NOT in allowedOperations', () => {
+      setRole(RolesEnum.READ_ONLY)
+      expect(hasAccess('GET:/network')).toBe(false)
+    })
   })
 })
 

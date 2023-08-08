@@ -7,7 +7,7 @@ import { useIntl }                from 'react-intl'
 import { GridRow, GridCol, Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
 import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
-import { DateRange, dateRangeMap }                 from '@acx-ui/utils'
+import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
 
