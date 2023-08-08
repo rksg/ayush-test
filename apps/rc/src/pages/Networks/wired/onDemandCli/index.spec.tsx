@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { SwitchUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { OnDemandCliTab } from '.'
 
@@ -84,10 +84,17 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByText('cli-test'))
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete CLI template'))
+
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    await waitFor(async () => {
+      expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+    })
+    expect(dialog).not.toBeVisible()
   })
 
-  it.skip('should delete multi onDemandCli correctly', async () => {
+  it('should delete multi onDemandCli correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       activeTab: 'onDemandCli'
@@ -102,6 +109,14 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete "2 CLI templates"?'))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    await waitFor(async () => {
+      expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+    })
+    expect(dialog).not.toBeVisible()
   })
 
   it('should edit onDemandCli correctly', async () => {
