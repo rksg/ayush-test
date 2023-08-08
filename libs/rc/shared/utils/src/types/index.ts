@@ -91,6 +91,7 @@ export interface NetworkDetail {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
   }
+  isOweMaster?: boolean
 }
 
 export interface Venue {

@@ -168,11 +168,11 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = () => {
+const rowSelection = (supportOweTransition: boolean) => {
   const params = {
     getCheckboxProps: (record: Network) => ({
       disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1 ||
-      ('isOweMaster' in record && record.isOweMaster === false)
+      (supportOweTransition && record?.isOweMaster === false)
     })
   }
   return params
@@ -197,6 +197,7 @@ interface NetworkTableProps {
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
@@ -282,7 +283,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={selectable ? { type: 'radio', ...rowSelection() } : undefined}
+        rowSelection={selectable ?
+          { type: 'radio', ...rowSelection(supportOweTransition) } : undefined}
       />
     </Loader>
   )

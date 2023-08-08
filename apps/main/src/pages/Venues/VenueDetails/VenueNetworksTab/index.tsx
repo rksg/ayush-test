@@ -103,6 +103,7 @@ export function VenueNetworksTab () {
     defaultPayload
   })
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -243,7 +244,8 @@ export function VenueNetworksTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
-        if(_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')){
+        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')) ||
+        (supportOweTransition && row.deepNetwork?.isOweMaster === false)){
           disabled = true
         }else{
           title = ''
@@ -266,7 +268,8 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       width: 80,
       render: function (data, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
+          supportOweTransition && row.deepNetwork?.isOweMaster === false)
       }
     },
     {
@@ -275,7 +278,8 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
+          supportOweTransition && row.deepNetwork?.isOweMaster === false)
       }
     },
     {
@@ -284,7 +288,8 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
+          supportOweTransition && row.deepNetwork?.isOweMaster === false)
       }
     },
     {
@@ -292,7 +297,8 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e),
+          supportOweTransition && row.deepNetwork?.isOweMaster === false)
       }
     }
   ]
