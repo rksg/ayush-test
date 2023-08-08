@@ -59,6 +59,14 @@ export const showApiError = {
   'Build-In-Error-Modal': 'showApiError'
 }
 
+export const isIgnoreErrorModal = (request?: Request) => {
+  return request && request.headers.get('Build-In-Error-Modal') === 'ignore'
+}
+
+export const isShowApiError = (request?: Request) => {
+  return request && request.headers.get('Build-In-Error-Modal') === 'showApiError'
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,

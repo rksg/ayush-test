@@ -3,9 +3,9 @@ import React from 'react'
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
-import { CatchErrorResponse }                                  from '@acx-ui/rc/utils'
-import { getIntl, setUpIntl, IntlSetUpError }                  from '@acx-ui/utils'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                    from '@acx-ui/components'
+import { CatchErrorResponse }                                                     from '@acx-ui/rc/utils'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal } from '@acx-ui/utils'
 
 export type ErrorAction = {
   type: string,
@@ -105,7 +105,6 @@ export const getErrorContent = (action: ErrorAction) => {
    ?? action.payload?.originalStatus
    ?? action.payload?.status
   const request = action.meta.baseQueryMeta?.request
-  const showApiError = request && request.headers.get('Build-In-Error-Modal') === 'showApiError'
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
@@ -159,9 +158,14 @@ export const getErrorContent = (action: ErrorAction) => {
       break
   }
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
-  if (errors && 'errors' in errors && showApiError) {
-    const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
-    content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+  if (errors && isShowApiError(request)) {
+    if (typeof errors === 'string') {
+      content = errors // Cannot use 'in' operator for string
+    }
+    else if ('errors' in errors) {
+      const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
+      content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+    }
   }
 
   return {
@@ -200,16 +204,17 @@ export const showErrorModal = (details: {
   }
 }
 
+const shouldIgnoreErrorModal = (action?: ErrorAction) => {
+  const endpoint = action?.meta?.arg?.endpointName || ''
+  const request = action?.meta?.baseQueryMeta?.request
+  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+}
+
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
-  const endpoint = action?.meta?.arg?.endpointName || ''
-
-  const request = action?.meta?.baseQueryMeta?.request
-  const ignoreErrorModal = request && request.headers.get('Build-In-Error-Modal') === 'ignore'
-
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
-    if (!ignoreEndpointList.includes(endpoint) && !ignoreErrorModal) {
+    if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {
