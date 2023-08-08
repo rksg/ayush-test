@@ -129,33 +129,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(WifiUrlsInfo.getVenueApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(venueLed))),
-      rest.put(CommonUrlsInfo.updateVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(CommonUrlsInfo.getVenueApModels.url,
-        (_, res, ctx) => res(ctx.json(venueApModels))),
-      rest.get(CommonUrlsInfo.getVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => res(ctx.json(venueData))
+      ),
       rest.get(CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.post(CommonUrlsInfo.getConfigProfiles.url,
-        (_, res, ctx) => res(ctx.json({ data: configProfiles } ))),
-      rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))),
-      rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.put(CommonUrlsInfo.updateVenueMesh.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
-      rest.get(SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
@@ -167,6 +145,22 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         activeTab: 'switch',
         activeSubTab: 'general'
       }
+      beforeEach(() => {
+        mockServer.use(
+          rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
+            (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))
+          ),
+          rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
+            (_, res, ctx) => res(ctx.json({}))
+          ),
+          rest.post(CommonUrlsInfo.getConfigProfiles.url,
+            (_, res, ctx) => res(ctx.json({ data: configProfiles } ))
+          ),
+          rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
+            (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))
+          )
+        )
+      })
 
       it('should open unsaved changes modal', async () => {
         render(<Provider><VenueEdit /></Provider>, {
@@ -207,6 +201,29 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
   })
 
   describe('Wi-Fi Configuration', () => {
+    beforeEach(() => {
+      mockServer.use(
+        rest.get(CommonUrlsInfo.getVenueApModels.url,
+          (_, res, ctx) => res(ctx.json(venueApModels))
+        ),
+        rest.get(WifiUrlsInfo.getVenueApCapabilities.url,
+          (_, res, ctx) => res(ctx.json(venueCaps))
+        ),
+        rest.get(CommonUrlsInfo.getVenueLedOn.url,
+          (_, res, ctx) => res(ctx.json(venueLed))
+        ),
+        rest.put(CommonUrlsInfo.updateVenueLedOn.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+          (_, res, ctx) => res(ctx.json(venueLanPorts))
+        ),
+        rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
+          (_, res, ctx) => res(ctx.json({}))
+        )
+      )
+    })
+
     describe('Advanced Settings', () => {
       const params = {
         tenantId: 'tenant-id',
@@ -214,7 +231,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         activeTab: 'wifi',
         activeSubTab: 'settings'
       }
-
       it('should open invalid changes modal', async () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -253,6 +269,13 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         activeTab: 'wifi',
         activeSubTab: 'networking'
       }
+      beforeEach(() => {
+        mockServer.use(
+          rest.put(CommonUrlsInfo.updateVenueMesh.url,
+            (_, res, ctx) => res(ctx.json({}))
+          )
+        )
+      })
       it('should open unsaved changes modal and handle changes discarded', async () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -350,12 +373,16 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       }
       beforeEach(() => {
         store.dispatch(policyApi.util.resetApiState())
-        store.dispatch(venueApi.util.resetApiState())
         mockServer.use(
+          rest.get(SyslogUrls.getSyslogPolicyList.url,
+            (_, res, ctx) => res(ctx.json(syslogServerProfiles))
+          ),
           rest.get(SyslogUrls.getVenueSyslogAp.url,
-            (_, res, ctx) => res(ctx.json({ enabled: false }))),
+            (_, res, ctx) => res(ctx.json({ enabled: false }))
+          ),
           rest.post(SyslogUrls.getVenueSyslogAp.url,
-            (_, res, ctx) => res(ctx.json({})))
+            (_, res, ctx) => res(ctx.json({}))
+          )
         )
       })
       it('should open unsaved changes modal and handle changes discarded', async () => {

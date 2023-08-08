@@ -47,6 +47,12 @@ async function showInvalidChangesModal (tabKey: string, action: string) {
   fireEvent.click(
     within(dialog).getAllByRole('button', { name: action })[0]
   )
+
+  await waitFor(async () => {
+    expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+  })
+  expect(dialog).not.toBeVisible()
+  dialog = null
 }
 
 async function showUnsavedChangesModal (tabKey: string, action: string) {
@@ -57,6 +63,12 @@ async function showUnsavedChangesModal (tabKey: string, action: string) {
   fireEvent.click(
     within(dialog).getAllByRole('button', { name: action })[0]
   )
+
+  await waitFor(async () => {
+    expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+  })
+  expect(dialog).not.toBeVisible()
+  dialog = null
 }
 
 let dialog = null
@@ -95,13 +107,6 @@ describe('ApEdit', () => {
         (req, res, ctx) => res(ctx.json(venueVersionList))
       )
     )
-  })
-  afterEach(async () => {
-    if (dialog) {
-      Modal.destroyAll()
-      await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
-      dialog = null
-    }
   })
 
   describe('Ap Edit - General', () => {
