@@ -114,6 +114,7 @@ export function ApForm () {
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
+  const [triApModels, setTriApModels] = useState([] as string[])
 
   const BASE_VERSION = '6.2.1'
 
@@ -129,28 +130,35 @@ export function ApForm () {
   }
 
   const venueInfos = (venueFwVersion: string) => {
+    const contentInfo = <><br/><br/>{$t({
+      defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
+        'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
+        'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
+      b: chunks => <strong>{chunks}</strong>,
+      apModels: triApModels.slice(0, -1).join(','),
+      lastApModel: triApModels[triApModels.length - 1],
+      baseVersion: BASE_VERSION,
+      fwManagementLink: (<TenantLink
+        to={'/administration/fwVersionMgmt'}>{
+          $t({ defaultMessage: 'Firmware Management' })
+        }</TenantLink>)
+    })}</>
+
     return <span>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
       {
-        checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
-          defaultMessage: 'If you are adding an <b>R560 or R760</b> AP, ' +
-            'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
-            'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
-          b: chunks => <strong>{chunks}</strong>,
-          baseVersion: BASE_VERSION,
-          fwManagementLink: (<TenantLink
-            to={'/administration/fwVersionMgmt'}>{
-              $t({ defaultMessage: 'Firmware Management' })
-            }</TenantLink>)
-        })}</> : ''
+        checkBelowFwVersion(venueFwVersion) ? contentInfo : ''
       }
     </span>
   }
 
   const checkBelowFwVersion = (version: string) => {
     if (version === '-') return false
+    if (isEditMode && apDetails) {
+      if (!triApModels.includes(apDetails.model)) return false
+    }
     return compareVersions(version, BASE_VERSION) < 0
   }
 
@@ -158,6 +166,9 @@ export function ApForm () {
     if (!wifiCapabilities.isLoading) {
       setCellularApModels(wifiCapabilities?.data?.apModels
         ?.filter(apModel => apModel.canSupportCellular)
+        .map(apModel => apModel.model) ?? [])
+      setTriApModels(wifiCapabilities?.data?.apModels
+        ?.filter(apModel => apModel.supportTriRadio)
         .map(apModel => apModel.model) ?? [])
     }
   }, [wifiCapabilities])
