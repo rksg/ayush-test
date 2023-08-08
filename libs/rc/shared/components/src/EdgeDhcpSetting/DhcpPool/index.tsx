@@ -5,11 +5,12 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
 
-import { useTableControl }           from '..'
-import { CsvSize, ImportFileDrawer } from '../../ImportFileDrawer'
+import { useTableControl }                                 from '..'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 
 import { PoolDrawer } from './PoolDrawer'
 import { PoolTable }  from './PoolTable'
@@ -26,6 +27,7 @@ export default function DhcpPoolTable ({
   onChange
 }: DhcpPoolTableProps) {
   const { $t } = useIntl()
+  const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
   const form = Form.useFormInstance()
   const {
@@ -147,10 +149,9 @@ export default function DhcpPoolTable ({
           </>
         }}
       </Form.Item>
-      { // prevent `Warning: Instance created by `useForm` is not connected to any Form element. Forget to pass `form` prop?`
-        importModalvisible &&
+      {isDHCPCSVEnabled &&
         <ImportFileDrawer
-          type='EdgeDHCP'
+          type={ImportFileDrawerType.EdgeDHCP}
           title={$t({ defaultMessage: 'Import from file' })}
           maxSize={CsvSize['5MB']}
           maxEntries={MAX_IMPORT_ENTRIES}
@@ -162,8 +163,8 @@ export default function DhcpPoolTable ({
             const dataArray = content!.split('\n').filter(row => {
               const trimmed = row.trim()
               return trimmed
-                  && !trimmed.startsWith('#')
-                  && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
+                    && !trimmed.startsWith('#')
+                    && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
             })
 
             if (dataArray.length > MAX_IMPORT_ENTRIES) {
@@ -181,8 +182,7 @@ export default function DhcpPoolTable ({
             )
           }}
           onClose={() => setImportModalvisible(false)}
-        />
-      }
+        />}
     </>
   )
 }

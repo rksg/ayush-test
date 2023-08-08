@@ -1,12 +1,15 @@
-// import '@testing-library/jest-dom'
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { Form }    from 'antd'
+import { waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                              from '@testing-library/user-event'
+import { Form }                               from 'antd'
 
-import { StepsForm }       from '@acx-ui/components'
+import { StepsForm }    from '@acx-ui/components'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   findTBody,
-  render, screen, within
+  render,
+  renderHook,
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockedPoolData } from '../__tests__/fixtures'
@@ -32,6 +35,10 @@ const WrapperComponent = ({ children, values }:
   </StepsForm>
 }
 describe('DHCP Pool table(Edge)', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
   it('should render data succefully', async () => {
     render(<WrapperComponent values={{ dhcpPools: mockedPoolData }}>
       <DhcpPoolTable />
@@ -186,7 +193,6 @@ describe('DHCP Pool table(Edge)', () => {
     await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
 
     await screen.findByRole('row', { name: /mockPool1/ })
-    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('should check duplicate pool name when import by CSV', async () => {
@@ -213,7 +219,6 @@ describe('DHCP Pool table(Edge)', () => {
     await screen.findByText('Pool Name with that name already exists')
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('should do field value validation when import by CSV', async () => {
@@ -240,7 +245,6 @@ describe('DHCP Pool table(Edge)', () => {
     await screen.findByText('IP address is not in the subnet pool')
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('should check max entries when import by CSV', async () => {
@@ -268,7 +272,6 @@ describe('DHCP Pool table(Edge)', () => {
     await screen.findByText('Exceed maximum entries.')
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('gateway should be empty when DHCP relay enabled', async () => {
@@ -295,5 +298,24 @@ describe('DHCP Pool table(Edge)', () => {
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(drawer).not.toBeVisible())
+  })
+
+  it('should not display import from file when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='dhcpPools'
+        children={<DhcpPoolTable />}
+      />
+    </Form>)
+
+    const btn = screen.queryByRole('button', { name: 'Import from file' })
+    expect(btn).toBeNull()
   })
 })

@@ -1,3 +1,4 @@
+import { EdgeAlarmSummary }             from '../..'
 import { LeaseTimeType, LeaseTimeUnit } from '../../models'
 
 export interface EdgeDhcpSetting {
@@ -66,6 +67,7 @@ export interface DhcpStats {
   targetVersion?: string
   currentVersion?: string
   tags?: string[]
+  edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
 export interface DhcpHostStats {
