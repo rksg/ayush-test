@@ -1,14 +1,21 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { ToastProps }                                       from '@acx-ui/components'
+import { CatchErrorResponse, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor }         from '@acx-ui/test-utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
 import { mockedAp, mockedApRfNeighbors }                      from './__tests__/fixtures'
 import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer } from './ApRfNeighbors'
-import { mockedSocket }                                       from './useApNeighbors.spec'
+
+const mockedSocket = {
+  on: jest.fn(),
+  off: jest.fn(),
+  disconnect: jest.fn(),
+  disconnected: false
+}
 
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -17,6 +24,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
     return mockedInitPokeSocketFn(requestId, handler)
   },
   closePokeSocket: () => jest.fn()
+}))
+
+const mockedShowToast = jest.fn()
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: (config: ToastProps) => mockedShowToast(config)
 }))
 
 const wrapper = (props: { children: JSX.Element }) => <Provider>
@@ -31,8 +44,15 @@ describe('ApRfNeighbors', () => {
   }
 
   beforeEach(() => {
-    mockedInitPokeSocketFn.mockRestore()
+    jest.useFakeTimers()
+    jest.clearAllMocks()
+  })
 
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
@@ -59,10 +79,9 @@ describe('ApRfNeighbors', () => {
   })
 
   it('should render RF Neighbors view', async () => {
-    jest.useFakeTimers()
-
+    const simDelayForWebsocket = 10
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
-      setTimeout(handler, 10) // Simulate triggering the handler when receving the message from websocket
+      setTimeout(handler, simDelayForWebsocket)
       return mockedSocket
     })
 
@@ -72,12 +91,66 @@ describe('ApRfNeighbors', () => {
     })
 
     await act(() => {
-      jest.advanceTimersByTime(10)
+      jest.advanceTimersByTime(simDelayForWebsocket) // Simulate receving the message from websocket
     })
 
     const targetApName = new RegExp(mockedApRfNeighbors.neighbors[0].deviceName)
     expect(await screen.findByRole('row', { name: targetApName })).toBeVisible()
 
-    jest.useRealTimers()
+    mockedInitPokeSocketFn.mockRestore()
+  })
+
+  it('should show error when timeout', async () => {
+    render(<ApRfNeighbors />, {
+      wrapper,
+      route: { params, path: tabPath }
+    })
+
+    await waitFor(() => {
+      expect(mockedInitPokeSocketFn).toHaveBeenCalled()
+    })
+
+    await act(() => {
+      jest.runAllTimers() // Simulate websocket timeout
+    })
+
+    expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
+      content: 'The AP is not reachable',
+      type: 'error'
+    }))
+  })
+
+  it('should handle error correctly', async () => {
+    const mockedError: CatchErrorResponse = {
+      data: {
+        errors: [
+          {
+            code: 'WIFI-99999',
+            message: 'error occurs'
+          }
+        ],
+        requestId: 'REQUEST_ID'
+      },
+      status: 400
+    }
+
+    mockServer.use(
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => res(ctx.status(400), ctx.json(mockedError))
+      )
+    )
+
+    render(<ApRfNeighbors />, {
+      wrapper,
+      route: { params, path: tabPath }
+    })
+
+    await waitFor(() => {
+      expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
+        content: 'Error occurred while detecting AP',
+        type: 'error'
+      }))
+    })
   })
 })
