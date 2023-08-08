@@ -26,7 +26,7 @@ export function DistributionSwitchTable (props: Omit<TableProps<DistributionSwit
       title: $t({ defaultMessage: 'Access Switch' }),
       dataIndex: 'accessSwitches',
       sorter: false,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.accessSwitches?.map(as => `${as.name}`).join(', ')
       }
     }, {

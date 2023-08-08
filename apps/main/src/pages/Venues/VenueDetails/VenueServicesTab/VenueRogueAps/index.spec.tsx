@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi } from '@acx-ui/rc/services'
+import { venueApi }              from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo
+  CommonUrlsInfo, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -270,6 +270,46 @@ const rogueAps = {
   ]
 }
 
+const apDetail = {
+  apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+  clientCount: 0,
+  indoorModel: false,
+  lastUpdated: '2022-07-05T08:29:15.484Z',
+  mac: '456789876554',
+  meshRole: 'DISABLED',
+  model: 'R650',
+  name: 'test ap',
+  position: { xPercent: 0, yPercent: 0 },
+  radio: {
+    apRadioParams24G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    apRadioParams50G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    useVenueSettings: true
+  },
+  serialNumber: '456789876554',
+  softDeleted: false,
+  state: 'InSetupPhase',
+  subState: 'NeverContactedCloud',
+  updatedDate: '2022-07-05T08:29:15.484+0000',
+  uptime_seconds: 0,
+  venueId: '908c47ee1cd445838c3bf71d4addccdf'
+}
+
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
     <Form>
@@ -278,7 +318,7 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
   </Provider>
 }
 
-describe.skip('RogueVenueTable', () => {
+describe('RogueVenueTable', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(venueApi.util.resetApiState())
@@ -294,7 +334,9 @@ describe.skip('RogueVenueTable', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
-      )
+      ),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetail)))
     )
     render(
       <VenueRogueAps />

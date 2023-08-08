@@ -23,7 +23,7 @@ export const MSPAdministratorsTable = () => {
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
       sorter: { compare: sortProp('status', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return row.delegatedToName
       }
     }

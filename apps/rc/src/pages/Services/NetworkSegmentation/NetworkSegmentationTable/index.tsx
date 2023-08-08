@@ -134,7 +134,7 @@ const NetworkSegmentationTable = () => {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -142,7 +142,7 @@ const NetworkSegmentationTable = () => {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -154,7 +154,7 @@ const NetworkSegmentationTable = () => {
       sorter: true,
       filterable: venueOptions,
       filterKey: 'venueInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         const venueInfo = row.venueInfos[0]
         return (
           <TenantLink to={`/venues/${venueInfo?.venueId}/venue-details/overview`}>
@@ -170,7 +170,7 @@ const NetworkSegmentationTable = () => {
       sorter: true,
       filterable: edgeOptions,
       filterKey: 'edgeInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
           <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
@@ -186,7 +186,7 @@ const NetworkSegmentationTable = () => {
       align: 'center',
       filterable: networkOptions,
       filterKey: 'networkIds',
-      render: (data, row) => {
+      render: (_, row) => {
         return (row.networkIds?.length)
       }
     },
@@ -197,7 +197,7 @@ const NetworkSegmentationTable = () => {
       align: 'center',
       filterable: switchOptions,
       filterKey: 'distributionSwitchInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
       }
     },
@@ -221,7 +221,7 @@ const NetworkSegmentationTable = () => {
       key: 'serviceVersion',
       dataIndex: 'edgeInfos',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
           edgeInfo?.serviceVersion
