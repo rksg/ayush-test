@@ -108,7 +108,7 @@ export default function PortalTable () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -125,7 +125,7 @@ export default function PortalTable () {
       key: 'language',
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
-      render: (data, row) =>{
+      render: (_, row) =>{
         return getLanguage((row.content?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
       }
     },
@@ -134,7 +134,7 @@ export default function PortalTable () {
       title: intl.$t({ defaultMessage: 'Preview' }),
       dataIndex: 'demo',
       align: 'center',
-      render: (data, row) =>{
+      render: (_, row) =>{
         return (<div aria-label={row.id}
           onClick={async (e)=>{
             const demoValue = { ...row.content }
@@ -166,7 +166,7 @@ export default function PortalTable () {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkNameMap,
-      render: (data,row) =>{
+      render: (_,row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len

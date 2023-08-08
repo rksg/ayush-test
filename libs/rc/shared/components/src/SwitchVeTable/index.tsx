@@ -84,8 +84,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
     defaultSortOrder: 'ascend',
     sorter: true,
     fixed: 'left',
-    render: function (data) {
-      return `VE-${data}`
+    render: function (_, { veId }) {
+      return `VE-${veId}`
     }
   }, {
     key: 'vlanId',
