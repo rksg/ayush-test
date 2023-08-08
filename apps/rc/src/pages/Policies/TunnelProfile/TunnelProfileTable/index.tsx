@@ -67,14 +67,14 @@ const TunnelProfileTable = () => {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.TUNNEL_PROFILE,
             oper: PolicyOperation.DETAIL,
             policyId: row.id
           })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -84,7 +84,7 @@ const TunnelProfileTable = () => {
       key: 'mtuType',
       dataIndex: 'mtuType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return MtuTypeEnum.AUTO === row.mtuType ?
           $t({ defaultMessage: 'Auto' }) :
           `${$t({ defaultMessage: 'Manual' })} (${row.mtuSize})`
@@ -95,7 +95,7 @@ const TunnelProfileTable = () => {
       key: 'forceFragmentation',
       dataIndex: 'forceFragmentation',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.forceFragmentation ?
           $t({ defaultMessage: 'ON' }) :
           $t({ defaultMessage: 'OFF' })
@@ -108,7 +108,7 @@ const TunnelProfileTable = () => {
       align: 'center',
       filterable: nsgOptions,
       sorter: true,
-      render: (data, row) => row.networkSegmentationIds?.length || 0
+      render: (_, row) => row.networkSegmentationIds?.length || 0
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
@@ -117,7 +117,7 @@ const TunnelProfileTable = () => {
       align: 'center',
       filterable: networkOptions,
       sorter: true,
-      render: (data, row) => row.networkIds?.length || 0
+      render: (_, row) => row.networkIds?.length || 0
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),

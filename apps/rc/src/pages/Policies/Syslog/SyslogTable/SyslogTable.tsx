@@ -157,7 +157,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -165,7 +165,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -175,7 +175,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Primary Server' }),
       dataIndex: 'primaryServer',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.primaryServer ?? '--'
       }
     },
@@ -184,7 +184,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Secondary Server' }),
       dataIndex: 'secondaryServer',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.secondaryServer && row.secondaryServer.length > 0 ? row.secondaryServer : '--'
       }
     },
@@ -193,7 +193,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Event Facility' }),
       dataIndex: 'facility',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.facility ? $t(facilityLabelMapping[row.facility as FacilityEnum]) : '--'
       }
     },
@@ -202,7 +202,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Send Logs' }),
       dataIndex: 'flowLevel',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.flowLevel ? $t(flowLevelLabelMapping[row.flowLevel as FlowLevelEnum]) : '--'
       }
     },
@@ -212,7 +212,7 @@ function useColumns () {
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len

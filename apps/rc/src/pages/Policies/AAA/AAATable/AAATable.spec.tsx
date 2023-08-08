@@ -27,21 +27,13 @@ const mockTableResult = {
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
     type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1811,
-      sharedSecret: 'xxxxxxxx'
-    }
+    primary: '35.195.204.77:1812'
   },
   {
     id: 'abcdeefwef-26a7-4d34-870f-b7f312fcfccb',
     name: 'Test AAA Server',
     type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1811,
-      sharedSecret: 'xxxxxxxx'
-    },
+    primary: '34.72.60.107:1811',
     networkIds: ['123', '456']
   }]
 }

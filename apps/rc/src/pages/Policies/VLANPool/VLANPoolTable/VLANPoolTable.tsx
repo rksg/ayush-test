@@ -147,7 +147,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -155,7 +155,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -165,8 +165,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'vlanMembers',
       sorter: true,
-      render: (data) =>{
-        return data?.toString()
+      render: (_, { vlanMembers }) =>{
+        return vlanMembers?.toString()
       }
     },
     {
@@ -175,7 +175,7 @@ function useColumns () {
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: (data, row) =>{
+      render: (__, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds
         const venueApGroups = row.venueApGroups

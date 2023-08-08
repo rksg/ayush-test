@@ -266,9 +266,9 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
-          (row.status === 'Active') ? <Link to=''>{highlightFn(data as string)}</Link> : data
+          (row.status === 'Active') ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
         )
       }
     },
@@ -277,7 +277,7 @@ export function MspCustomers () {
       dataIndex: 'status',
       key: 'status',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return getStatus(row)
       }
     },
@@ -301,7 +301,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
             ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
@@ -329,7 +329,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data: React.ReactNode, row: MspEc) {
+      render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
@@ -351,7 +351,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data: React.ReactNode, row: MspEc) {
+      render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
@@ -365,7 +365,7 @@ export function MspCustomers () {
       key: 'wifiLicense',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformApEntitlement(row)
       }
     },
@@ -375,7 +375,7 @@ export function MspCustomers () {
       align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformApUtilization(row)
       }
     },
@@ -385,7 +385,7 @@ export function MspCustomers () {
       align: 'center',
       key: 'switchLicense',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformSwitchEntitlement(row)
       }
     },
@@ -396,7 +396,7 @@ export function MspCustomers () {
       key: 'edgeLicenses',
       sorter: true,
       show: edgeEnabled,
-      render: function (data, row) {
+      render: function (_, row) {
         return row?.edgeLicenses ? row?.edgeLicenses : 0
       }
     },
@@ -405,7 +405,7 @@ export function MspCustomers () {
       dataIndex: 'creationDate',
       key: 'creationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformCreationDate(row)
       }
     },
@@ -414,7 +414,7 @@ export function MspCustomers () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformExpirationDate(row)
       }
     },

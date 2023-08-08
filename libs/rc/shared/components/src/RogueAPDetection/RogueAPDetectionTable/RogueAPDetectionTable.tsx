@@ -219,7 +219,7 @@ function useColumns (venueIds: string[]) {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -227,7 +227,7 @@ function useColumns (venueIds: string[]) {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -252,7 +252,7 @@ function useColumns (venueIds: string[]) {
       filterable: venueFilterOptions,
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len

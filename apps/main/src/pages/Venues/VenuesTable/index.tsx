@@ -42,22 +42,22 @@ function useColumns (
       fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
           <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-            {searchable ? highlightFn(row.name) : data}</TenantLink>
+            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
+      width: Infinity,
       key: 'country',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
-      width: 120,
-      render: function (data, row) {
+      render: function (_, row) {
         return `${row.country}, ${row.city}`
       }
     },
@@ -100,7 +100,7 @@ function useColumns (
       dataIndex: 'aggregatedApStatus',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: function (data, row) {
+      render: function (_, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
@@ -120,11 +120,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients`}
-            children={data ? data : 0}
+            children={row.clients ? row.clients : 0}
           />
         )
       }
@@ -136,11 +136,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/switch`}
-            children={data ? data : 0}
+            children={row.switches ? row.switches : 0}
           />
         )
       }
@@ -152,11 +152,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients/switch`}
-            children={data ? data : 0}
+            children={row.switchClients ? row.switchClients : 0}
           />
         )
       }
@@ -166,11 +166,11 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/edge`}
-            children={data ? data : 0}
+            children={row.edges ? row.edges : 0}
           />
         )
       }

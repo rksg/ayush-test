@@ -18,8 +18,7 @@ import {
   ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath,
-  MdnsProxyViewModel,
-  MdnsProxyForwardingRule
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
@@ -137,7 +136,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -145,7 +144,7 @@ function useColumns () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -156,8 +155,7 @@ function useColumns () {
       dataIndex: 'rules',
       align: 'center',
       sorter: true,
-      render: function (data) {
-        const rules = data as MdnsProxyForwardingRule[]
+      render: function (_, { rules }) {
         return (rules && rules.length > 0
           ? <Tooltip
             title={<MdnsProxyForwardingRulesTable readonly={true} rules={rules}/>}
@@ -176,7 +174,7 @@ function useColumns () {
       filterKey: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         const venueIds = [...new Set(row.venueIds)]

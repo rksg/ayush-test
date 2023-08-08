@@ -82,7 +82,7 @@ export default function ResidentPortalTable () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -90,7 +90,7 @@ export default function ResidentPortalTable () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {highlightFn(data as string)}
+            {highlightFn(row.name)}
           </TenantLink>
         )
       }

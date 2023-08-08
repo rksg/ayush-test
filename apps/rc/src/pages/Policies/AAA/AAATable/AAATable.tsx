@@ -147,7 +147,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -155,7 +155,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -165,8 +165,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
-      render: (data) =>{
-        return data?AAAPurposeEnum[data as keyof typeof AAAPurposeEnum]:''
+      render: (_, { type }) =>{
+        return type ? AAAPurposeEnum[type] : ''
       }
     },
     {
@@ -188,7 +188,7 @@ function useColumns () {
       align: 'center',
       filterable: networkNameMap,
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
