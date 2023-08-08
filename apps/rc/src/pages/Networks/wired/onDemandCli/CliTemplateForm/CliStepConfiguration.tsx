@@ -79,7 +79,7 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
-const maxVariableCount = 200
+export const maxVariableCount = 200
 const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
   pageSize: 9999,
@@ -132,6 +132,12 @@ export function CliStepConfiguration () {
       const cli = form?.getFieldValue('cli')
       codeMirrorInstance?.setValue(cli ?? cliDefaultString)
       !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+
+      const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+      form?.setFieldsValue({
+        variables: variableList,
+        cliValid: validation
+      })
     }
   }, [codeMirrorInstance])
 
@@ -253,7 +259,7 @@ export function CliStepConfiguration () {
           name='cliValid'
           children={<Input />}
           rules={[
-            { validator: (_, value) => value.valid ? Promise.resolve() : Promise.reject() }
+            { validator: (_, value) => value?.valid ? Promise.resolve() : Promise.reject() }
           ]}
         />
         <Form.Item
@@ -422,14 +428,14 @@ export function CliStepConfiguration () {
       </Col>
     </Row>
 
-    <CliVariableModal
+    {variableModalvisible && <CliVariableModal
       data={selectedEditVariable}
       editMode={variableModalEditMode}
       modalvisible={variableModalvisible}
       setModalvisible={setVariableModalvisible}
       variableList={variableList}
       setVariableList={setVariableList}
-    />
+    />}
 
     <ImportFileDrawer
       type={ImportFileDrawerType.CLI}
