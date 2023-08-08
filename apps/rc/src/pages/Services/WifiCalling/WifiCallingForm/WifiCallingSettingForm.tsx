@@ -27,7 +27,9 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const {
     state, dispatch
   } = useContext(WifiCallingFormContext)
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const { data: dataList } = useGetWifiCallingServiceListQuery({ params: useParams() })
 
