@@ -8,7 +8,6 @@ import {
   useAdaptivePolicyListByQueryQuery,
   useAdaptivePolicySetListQuery,
   useDeleteAdaptivePolicyMutation,
-  useLazyGetConditionsInPolicyQuery,
   useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -28,8 +27,6 @@ export default function AdaptivePolicyTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const [conditionCountMap, setConditionCountMap] = useState(new Map())
-  const [templateIdMap, setTemplateIdMap] = useState(new Map())
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   const tableQuery = useTableQuery({
@@ -39,7 +36,19 @@ export default function AdaptivePolicyTable () {
   })
 
   // eslint-disable-next-line max-len
-  const { data: templateList, isLoading: templateIsLoading } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
+    { payload: { page: '1', pageSize: '2147483647' } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const templateIds = new Map()
+        data?.data.forEach( template => {
+          templateIds.set(template.ruleType, template.id)
+        })
+        return {
+          templateIdMap: templateIds,
+          templateIsLoading: isLoading
+        }
+      }
+    })
 
   // eslint-disable-next-line max-len
   const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
@@ -50,34 +59,6 @@ export default function AdaptivePolicyTable () {
     deletePolicy,
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicyMutation()
-
-  const [getConditionsPolicy]
-    = useLazyGetConditionsInPolicyQuery()
-
-  useEffect(() => {
-    if (tableQuery.isLoading || templateIsLoading)
-      return
-
-    const templateIds = new Map()
-    templateList?.data.forEach( template => {
-      templateIds.set(template.ruleType, template.id)
-    })
-    setTemplateIdMap(templateIds)
-
-    tableQuery.data?.data.forEach(policy => {
-      const { id, policyType } = policy
-      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) },
-        payload: {
-          page: 1,
-          pageSize: 10000
-        } })
-        .then(result => {
-          if (result.data) {
-            setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
-          }
-        })
-    })
-  }, [tableQuery.data, templateList?.data])
 
   useEffect(() => {
     if(adaptivePolicySetList) {
@@ -119,22 +100,22 @@ export default function AdaptivePolicyTable () {
       {
         title: $t({ defaultMessage: 'Policy Type' }),
         key: 'policyType',
-        dataIndex: 'policyType'
+        dataIndex: 'policyType',
+        sorter: true
       },
       {
         title: $t({ defaultMessage: 'Access Conditions' }),
-        key: 'accessConditions',
-        dataIndex: 'accessConditions',
+        key: 'conditionsCount',
+        dataIndex: 'conditionsCount',
         align: 'center',
-        render: (_, row) => {
-          return conditionCountMap.get(row.id) ?? '0'
-        }
+        sorter: true
       },
       {
         title: $t({ defaultMessage: 'Policy Set Membership' }),
         key: 'policySetCount',
         dataIndex: 'policySetCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
           const policySets = [] as string []
           policySetPoliciesMap.forEach((value, key) => {
