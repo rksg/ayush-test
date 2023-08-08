@@ -214,7 +214,7 @@ export function VenueRogueAps () {
           pagination={tableQuery.pagination}
           onFilterChange={tableQuery.handleFilterChange}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
+          rowKey='rogueMac'
         />
       </Loader>
     )

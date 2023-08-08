@@ -19,15 +19,15 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  aclList,
+  aclList, applicationDetail, avcApp, avcCat,
   deviceDetailResponse, devicePolicyListResponse,
   enhancedAccessControlList,
   enhancedApplicationPolicyListResponse,
   enhancedDevicePolicyListResponse,
   enhancedLayer2PolicyListResponse,
   enhancedLayer3PolicyListResponse,
-  layer2PolicyListResponse, layer2Response,
-  networkListResponse
+  layer2PolicyListResponse, layer2Response, layer3PolicyListResponse, layer3Response,
+  networkListResponse, queryApplication
 } from '../__tests__/fixtures'
 
 import AccessControlTable from './AccessControlTable'
@@ -56,7 +56,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe.skip('AccessControlTable', () => {
+describe('AccessControlTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
@@ -109,6 +109,11 @@ describe.skip('AccessControlTable', () => {
         (_, res, ctx) => res(
           ctx.json(layer2PolicyListResponse)
         )
+      ),rest.get(
+        AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(layer3PolicyListResponse)
+        )
       ), rest.get(
         AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(
@@ -118,6 +123,31 @@ describe.skip('AccessControlTable', () => {
         AccessControlUrls.getL2AclPolicy.url,
         (_, res, ctx) => res(
           ctx.json(layer2Response)
+        )
+      ), rest.get(
+        AccessControlUrls.getL3AclPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(layer3Response)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationDetail)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
         )
       )
     )
