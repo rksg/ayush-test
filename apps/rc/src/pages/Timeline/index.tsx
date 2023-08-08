@@ -1,12 +1,11 @@
 import moment                                        from 'moment-timezone'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs, RangePicker }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { TimelineTypes }                              from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { TimelineTypes }                         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -60,15 +59,14 @@ function Timeline () {
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }
-        extra={filterByAccess([
+        extra={[
           <RangePicker
-            key={getShowWithoutRbacCheckKey('range-picker')}
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
-        ])}
+        ]}
       />
       {Tab && <Tab/>}
     </>
