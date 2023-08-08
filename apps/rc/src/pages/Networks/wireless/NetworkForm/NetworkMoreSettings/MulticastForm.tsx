@@ -27,6 +27,8 @@ export function MulticastForm () {
   const enableMulticastRateLimitingFieldName = ['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']
   const enableMulticastUpLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']
   const enableMulticastDownLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']
+  const enableMulticastUpLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']
+  const enableMulticastDownLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']
   const enableMulticastFilterFieldName = ['wlan', 'advancedCustomization', 'multicastFilterEnabled']
   const [
     enableMulticastRateLimiting,
@@ -46,7 +48,10 @@ export function MulticastForm () {
 
   useEffect(() => {
     let multicastRateLimitingSwitch = false
-    if(form.getFieldValue(enableMulticastUpLimitFieldName) || form.getFieldValue(enableMulticastDownLimitFieldName)) {
+    if(form.getFieldValue(enableMulticastUpLimitFieldName) ||
+    form.getFieldValue(enableMulticastDownLimitFieldName) ||
+    form.getFieldValue(enableMulticastUpLimit6GFieldName) ||
+    form.getFieldValue(enableMulticastDownLimit6GFieldName)) {
       multicastRateLimitingSwitch = true
     }
     form.setFieldValue(enableMulticastRateLimitingFieldName, multicastRateLimitingSwitch )
