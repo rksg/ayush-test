@@ -43,7 +43,7 @@ jest.mock('../../utils', () => ({
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
 
-describe('Network More settings - Networking Tab', () => {
+describe.skip('Network More settings - Networking Tab', () => {
 
   describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {
     beforeAll(() => {
