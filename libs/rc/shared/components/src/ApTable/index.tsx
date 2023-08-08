@@ -17,6 +17,7 @@ import {
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
+  CheckMark,
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
@@ -60,7 +61,7 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion'
+    'fwVersion', 'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -134,6 +135,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
+  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -340,7 +342,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </span>
         )
       }
-    }]
+    },
+    ...(secureBootFlag ? [
+      {
+        key: 'secureBoot',
+        title: $t({ defaultMessage: 'Secure Boot' }),
+        dataIndex: 'secureBootEnabled',
+        show: false,
+        sorter: false,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const secureBootEnabled = row.apStatusData?.APSystem?.secureBootEnabled || false
+
+          return (secureBootEnabled ? <CheckMark /> : null)
+        }
+      }] : [])
+    ]
 
     return columns
   }, [$t, tableQuery.data?.extra])
