@@ -31,7 +31,7 @@ export default function AAAInstancesTable (){
       searchable: true,
       sorter: true,
       fixed: 'left',
-      render: function (_data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/networks/wireless/${row.networkId}/network-details/aps`}>
@@ -44,9 +44,9 @@ export default function AAAInstancesTable (){
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'networkType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
-        return data === 'GUEST'
+        return row.networkType === 'GUEST'
           ? <FormattedMessage
             defaultMessage={'Captive Portal - {captiveNetworkType}'}
             values={{

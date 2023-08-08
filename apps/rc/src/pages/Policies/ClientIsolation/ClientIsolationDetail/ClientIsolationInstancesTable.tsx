@@ -28,9 +28,11 @@ export function ClientIsolationInstancesTable () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
-          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+            {row.venueName}
+          </TenantLink>
         )
       }
     },
@@ -44,8 +46,8 @@ export function ClientIsolationInstancesTable () {
       dataIndex: 'networkCount',
       key: 'networkCount',
       align: 'center',
-      render: (data, row) => {
-        return data
+      render: (_, row) => {
+        return row.networkCount
           ? <SimpleListTooltip items={row.networkNames} displayText={row.networkCount} />
           : 0
       }

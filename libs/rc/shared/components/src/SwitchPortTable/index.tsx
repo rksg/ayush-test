@@ -102,7 +102,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     sorter: true,
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    render: (data, row) => row['portIdentifier']
+    render: (_, row) => row['portIdentifier']
   }, {
     key: 'name',
     title: $t({ defaultMessage: 'Port Name' }),
@@ -147,8 +147,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     title: $t({ defaultMessage: 'PoE Usage' }),
     dataIndex: 'poeUsage',
     sorter: true,
-    render: (data, row) => {
-      if (!data) {
+    render: (_, row) => {
+      if (!row.poeUsage) {
         if (row.poeEnabled === false) {
           return 'off'
         }
@@ -157,7 +157,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
         const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
         return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
       } else {
-        return data
+        return row.poeUsage
       }
     }
   }, {
@@ -166,7 +166,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     dataIndex: 'vlanIds',
     filterable: vlanFilterOptions || false,
     sorter: true,
-    render: (data, row) => <Space size={2}>
+    render: (_, row) => <Space size={2}>
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
       <UI.TagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
     </Space>

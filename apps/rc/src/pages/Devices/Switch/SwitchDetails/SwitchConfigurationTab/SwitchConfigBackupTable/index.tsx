@@ -127,7 +127,7 @@ export function SwitchConfigBackupTable () {
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
     sorter: true,
-    render: (data, row) => row.backupStatus
+    render: (_, row) => row.backupStatus
   }
   ]
 
