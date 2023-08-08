@@ -1,5 +1,7 @@
 export * from './DescriptionSection'
 export { AnalyticsTabs } from './AnalyticsTabs'
+export { AIDrivenRRM } from './Recommendations/Widgets/AIDrivenRRM'
+export { AIOperations } from './Recommendations/Widgets/AIOperations'
 export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
 export { ClientTroubleshooting } from './ClientTroubleshooting'
 export { ConnectedClientsOverTime } from './ConnectedClientsOverTime'

@@ -1,7 +1,7 @@
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities }          from '@acx-ui/analytics/components'
+import { DidYouKnow, IncidentsCountBySeverities, AIDrivenRRM, AIOperations }          from '@acx-ui/analytics/components'
 import { GridRow, GridCol, Card, PageHeader, RangePicker } from '@acx-ui/components'
 import { useDashboardFilter, useDateFilter }               from '@acx-ui/utils'
 
@@ -48,7 +48,7 @@ export default function Dashboard () {
             <IncidentsCountBySeverities filters={filters} />
           </GridCol>
           <GridCol col={{ span: 24 }} style={{ height: 310 }}>
-            <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
+            <AIDrivenRRM filters={filters} />
           </GridCol>
         </GridRow>
       </GridCol>
@@ -58,7 +58,7 @@ export default function Dashboard () {
             <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
           </GridCol>
           <GridCol col={{ span: 24 }} style={{ height: 310 }}>
-            <Card title={$t({ defaultMessage: 'AI Operations' })} />
+            <AIOperations filters={filters} />
           </GridCol>
         </GridRow>
       </GridCol>
