@@ -1,4 +1,4 @@
-import { act, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { act, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import Dashboard, { useMonitorHeight } from '.'
 
