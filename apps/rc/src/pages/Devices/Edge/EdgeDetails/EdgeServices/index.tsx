@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Loader, Table, TableProps, showActionModal }        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                          from '@acx-ui/icons'
-import { useEdgeExportCsv }                                          from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, useEdgeExportCsv }                  from '@acx-ui/rc/components'
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeService,
@@ -80,9 +80,10 @@ export const EdgeServices = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      sorter: true
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      render: (data, row) =>
+        <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
