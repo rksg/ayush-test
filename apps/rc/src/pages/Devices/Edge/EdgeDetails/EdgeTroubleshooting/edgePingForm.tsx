@@ -27,7 +27,7 @@ export function EdgePingForm () {
         { params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingEdgeResult) {
 
-        pingForm.setFieldValue('result', _.get(pingEdgeResult, 'response.response'))
+        pingForm.setFieldValue('result', _.get(pingEdgeResult, 'response'))
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
