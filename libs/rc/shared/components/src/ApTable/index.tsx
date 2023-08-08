@@ -181,8 +181,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       render: (status: unknown, row : APExtended) => {
         /* eslint-disable max-len */
         // TODO add Feature flag and pending for PLM
-        if (ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
-          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) {
+        if (true || (ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
+          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
 
           const afcInfo = row.apStatusData?.afcInfo
 
