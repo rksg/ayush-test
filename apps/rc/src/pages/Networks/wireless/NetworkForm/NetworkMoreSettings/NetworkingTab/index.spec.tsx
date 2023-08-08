@@ -28,7 +28,8 @@ const mockWlanData = {
     advancedCustomization: {
       bssPriority: BasicServiceSetPriorityEnum.LOW,
       enableTransientClientManagement: true,
-      enableOptimizedConnectivityExperience: true
+      enableOptimizedConnectivityExperience: true,
+      enableAdditionalRegulatoryDomains: true
     } as OpenWlanAdvancedCustomization
   }
 } as NetworkSaveData
@@ -185,6 +186,19 @@ describe.skip('Network More settings - Networking Tab', () => {
 
     expect(screen.getByTestId('BSS-Radio-Group')).toBeVisible()
     expect(screen.getByTestId('BSS-Radio-LOW')).toBeChecked()
+  })
+
+  it('Test case for 80211D additional regulatory domains', async ()=> {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE ? true : false
+    })
+
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
+    const tabs = await screen.findAllByRole('tab')
+    const networkingTab = tabs[3]
+    await userEvent.click(networkingTab)
+
+    expect(screen.getByTestId('enable-additional-regulatory-domains-80211d')).toBeVisible()
   })
 
 })
