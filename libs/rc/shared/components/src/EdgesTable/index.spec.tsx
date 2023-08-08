@@ -22,14 +22,13 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockedDeleteApi = jest.fn()
-const mockedBuckDeleteApi = jest.fn()
+const mockedBulkDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
 
 describe('Edge Table', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    document.body.innerHTML = '' //FIXME:
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -53,7 +52,7 @@ describe('Edge Table', () => {
       rest.delete(
         EdgeUrlsInfo.deleteEdges.url,
         (req, res, ctx) => {
-          mockedBuckDeleteApi()
+          mockedBulkDeleteApi()
           return res(ctx.status(202))
         }
       ),
@@ -164,10 +163,13 @@ describe('Edge Table', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
     const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText('Delete "Smart Edge 2"?')
+    within(dialog).getByText('Delete "Smart Edge 2"?')
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
       expect(mockedDeleteApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 
@@ -182,10 +184,14 @@ describe('Edge Table', () => {
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send OTP' }))
-    await screen.findByText('Are you sure you want to send OTP?')
-    await user.click(screen.getByRole('button', { name: 'OK' }))
+    const dialog = await screen.findByRole('dialog')
+    within(dialog).getByText('Are you sure you want to send OTP?')
+    await user.click(within(dialog).getByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedSendOtpApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 
@@ -211,15 +217,18 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
-    const row3 = await screen.findByRole('row', { name: /Smart Edge 3/i })
+    const row3 = screen.getByRole('row', { name: /Smart Edge 3/i })
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(within(row3).getByRole('checkbox'))
     await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
     const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText('Delete "2 SmartEdges"?')
+    within(dialog).getByText('Delete "2 SmartEdges"?')
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
-      expect(mockedBuckDeleteApi).toBeCalledTimes(1)
+      expect(mockedBulkDeleteApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 
@@ -235,10 +244,13 @@ describe('Edge Table', () => {
     await user.click(within(row5).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Reboot' }))
     const rebootDialg = await screen.findByRole('dialog')
-    await within(rebootDialg).findByText('Reboot "Smart Edge 5"?')
+    within(rebootDialg).getByText('Reboot "Smart Edge 5"?')
     await user.click(within(rebootDialg).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(rebootDialg).not.toBeVisible()
     })
   })
 })
