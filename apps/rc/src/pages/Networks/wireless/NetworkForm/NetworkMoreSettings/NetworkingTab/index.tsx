@@ -28,7 +28,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     `Agile Multiband prioritizes roaming performance in indoor environments,
      supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
-  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
+  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
@@ -78,7 +79,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
 
   return (
     <>
-      {AmbAndDtimFlag &&
+      {ambFlag &&
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
@@ -379,7 +380,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         </UI.FieldLabel>
       }
 
-      {AmbAndDtimFlag &&
+      {dtimFlag &&
         <Form.Item
           name={['wlan','advancedCustomization','dtimInterval']}
           label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}

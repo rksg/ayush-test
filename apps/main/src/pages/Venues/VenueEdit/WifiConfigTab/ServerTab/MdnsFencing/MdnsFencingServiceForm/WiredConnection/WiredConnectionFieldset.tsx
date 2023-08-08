@@ -163,7 +163,7 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (data, row) => <Button
+    render: (_, row) => <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
@@ -457,15 +457,15 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     title: $t({ defaultMessage: 'Fencing Range' }),
     dataIndex: 'fencingRange',
     key: 'fencingRange',
-    render: function (data) {
-      return (data === 'SAME_AP')?
+    render: function (_, { fencingRange }) {
+      return (fencingRange === 'SAME_AP')?
         $t({ defaultMessage: 'Same AP' }) : $t({ defaultMessage: '1-hop AP neighbors' })
     }
   }, {
     title: $t({ defaultMessage: 'MAC Address' }),
     dataIndex: 'deviceMacAddresses',
     key: 'deviceMacAddresses',
-    render: function (data, row) {
+    render: function (_, row) {
       const { deviceMacAddresses: macAddrs } = row
       return macAddrs.map(d => <div>{d}</div>)
     }
@@ -473,9 +473,9 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     title: $t({ defaultMessage: 'Closest AP' }),
     dataIndex: 'closestApMac',
     key: 'closestApMac',
-    render: function (data) {
-      const ap = _.find(venueAps, (ap) => ap.apMac === data)
-      return ap?.name || data
+    render: function (__, { closestApMac }) {
+      const ap = _.find(venueAps, (ap) => ap.apMac === closestApMac)
+      return ap?.name || closestApMac
     }
   }]
 

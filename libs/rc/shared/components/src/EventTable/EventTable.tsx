@@ -125,6 +125,7 @@ export const EventTable = ({
     },
     {
       key: 'message',
+      width: Infinity,
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       render: function (_, row, __, highlightFn) {
