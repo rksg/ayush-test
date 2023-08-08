@@ -9,9 +9,9 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import { includes, isEmpty, dropRight, intersection } from 'lodash'
-import { useIntl }                                    from 'react-intl'
-import styled                                         from 'styled-components/macro'
+import { includes, isEmpty, dropRight } from 'lodash'
+import { useIntl }                      from 'react-intl'
+import styled                           from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
@@ -22,7 +22,8 @@ import { ApRadioTypeEnum,
   channelBandwidth6GOptions,
   SelectItemOption,
   SingleRadioSettings,
-  findIsolatedGroupByChannel }                               from '@acx-ui/rc/components'
+  findIsolatedGroupByChannel,
+  split5GChannels }                               from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -396,10 +397,24 @@ export function RadioSettings () {
     const { radioParamsLower5G, radioParamsUpper5G,
       inheritParamsLower5G, inheritParamsUpper5G } = radioParamsDual5G || {}
 
+    let indoorLower5GChs, indoorUpper5GChs
+    if (indoorChannel5) {
+      const { lower5GChannels, upper5GChannels } = split5GChannels(indoorChannel5 as string[])
+      indoorLower5GChs = lower5GChannels
+      indoorUpper5GChs = upper5GChannels
+    }
+
+    let outdoorLower5GChs, outdoorUpper5GChs
+    if (outdoorChannel5) {
+      const { lower5GChannels, upper5GChannels } = split5GChannels(outdoorChannel5 as string[])
+      outdoorLower5GChs = lower5GChannels
+      outdoorUpper5GChs = upper5GChannels
+    }
+
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
 
     const indoorLowerChannel5 = inheritParamsLower5G
-      ? intersection(support5GLowerChannels.indoor.auto, indoorChannel5)
+      ? indoorLower5GChs
       : radioParamsLower5G?.allowedIndoorChannels
     const indoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
@@ -407,7 +422,7 @@ export function RadioSettings () {
     if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5, lower5GName)) return false
 
     const outdoorLowerChannel5 = inheritParamsLower5G
-      ? intersection(support5GLowerChannels.outdoor.auto, outdoorChannel5)
+      ? outdoorLower5GChs
       : radioParamsLower5G?.allowedOutdoorChannels
     const outdoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
@@ -417,7 +432,7 @@ export function RadioSettings () {
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
 
     const indoorUpperChannel5 = inheritParamsUpper5G
-      ? intersection(support5GUpperChannels.indoor.auto, indoorChannel5)
+      ? indoorUpper5GChs
       : radioParamsUpper5G?.allowedIndoorChannels
     const indoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
@@ -425,7 +440,7 @@ export function RadioSettings () {
     if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5, upper5GName)) return false
 
     const outdoorUpperChannel5 = inheritParamsUpper5G
-      ? intersection(support5GUpperChannels.outdoor.auto, outdoorChannel5)
+      ? outdoorUpper5GChs
       : radioParamsUpper5G?.allowedOutdoorChannels
     const outdoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
