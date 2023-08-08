@@ -49,3 +49,10 @@ export enum EdgeServiceTypeEnum {
   FIREWALL = 'FIREWALL',
   NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION'
 }
+
+export enum EdgeServiceStatusEnum {
+  GOOD = 'GOOD',
+  REQUIRES_ATTENTION = 'REQUIRES_ATTENTION',
+  POOR = 'POOR',
+  UNKNOWN = 'UNKNOWN'
+}
