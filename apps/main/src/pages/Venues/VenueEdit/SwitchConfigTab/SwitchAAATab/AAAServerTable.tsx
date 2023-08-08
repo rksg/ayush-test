@@ -131,10 +131,15 @@ function useColumns (type: AAAServerTypeEnum) {
     },
     ...( enableSwitchAdminPassword ? [{
       title: $t({ defaultMessage: 'Use In' }),
-      key: 'useIn',
-      dataIndex: 'useIn',
-      render: function (data: React.ReactNode) {
-        return data || '--'  //TODO: wait for API response
+      key: 'syncedPasswordSwitchCount',
+      dataIndex: 'syncedPasswordSwitchCount',
+      render: function (data: React.ReactNode, row: LocalUser) {
+        return row?.switchCountInVenue
+          ? $t({ defaultMessage: '{syncedCount} out of {totalCount} switches' }, {
+            syncedCount: data || 0,
+            totalCount: row.switchCountInVenue
+          })
+          : '--'
       }
     }] : []),
     {
