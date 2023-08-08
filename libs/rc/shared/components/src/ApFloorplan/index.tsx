@@ -18,11 +18,14 @@ import { ApMeshConnections }             from '../FloorPlan/NetworkDevices/useAp
 import { ApMeshTopologyContextProvider } from '../FloorPlan/PlainView/ApMeshTopologyContext'
 
 
-export function ApFloorplan (props: { activeDevice: NetworkDevice,
+export function ApFloorplan (props: {
+    activeDevice: NetworkDevice,
     venueId: string,
-    apPosition: ApPosition }) {
+    apPosition: ApPosition,
+    allDevices?: NetworkDevice[]
+}) {
 
-  const { activeDevice, venueId, apPosition } = props
+  const { activeDevice, venueId, apPosition, allDevices = [] } = props
 
   const params = useParams()
   const imageRef = useRef<HTMLImageElement>(null)
@@ -46,6 +49,13 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
     if (extendedApList) {
       const _apDeviceList: NetworkDevice[] = []
       extendedApList?.data.map(apDevice => {
+        let rogueCategory = {}
+        if (allDevices.some(device => device.id === apDevice.serialNumber)) {
+          rogueCategory = {
+            rogueCategory: allDevices
+              .filter(device => device.id === apDevice.serialNumber)[0].rogueCategory
+          }
+        }
         const _apDevice: NetworkDevice = {
           id: apDevice.serialNumber,
           name: apDevice.name,
@@ -59,7 +69,8 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
           },
           // highlighting only current AP device
           // other AP devices will be blured with low opacity
-          isActive: apDevice.serialNumber === activeDevice?.serialNumber
+          isActive: apDevice.serialNumber === activeDevice?.serialNumber,
+          ...rogueCategory
         } as NetworkDevice
 
         _apDeviceList.push(_apDevice)
@@ -68,7 +79,7 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
       setApList(_apDeviceList)
 
     }
-  }, [extendedApList])
+  }, [extendedApList, allDevices])
 
   const { data: floorplan } =
    useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
@@ -153,6 +164,7 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
                 key={device?.serialNumber}
                 galleryMode={false}
                 contextAlbum={false}
+                showRogueAp={true}
                 context={FloorplanContext['ap']}
                 device={device}
                 forbidDrag={true}/>)
