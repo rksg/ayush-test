@@ -95,7 +95,7 @@ const EdgeDhcpTable = () => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       searchable: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -103,7 +103,7 @@ const EdgeDhcpTable = () => {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.serviceName}
           </TenantLink>
         )
       }

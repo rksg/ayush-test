@@ -48,3 +48,51 @@ export const mockedOptionData = [
     optionValue: '34'
   }
 ]
+
+export const mockEdgeDhcpDataRelayOn = {
+  id: '1',
+  serviceName: 'test',
+  dhcpRelay: true,
+  externalDhcpServerFqdnIp: '1.1.1.1',
+  domainName: '',
+  primaryDnsIp: '',
+  secondaryDnsIp: '',
+  leaseTime: -1,
+  leaseTimeType: 'Infinite',  // UI used
+  leaseTimeUnit: 'HOURS',
+  dhcpPools: [{
+    id: '1',
+    poolName: 'PoolTest1',
+    subnetMask: '255.255.255.0',
+    poolStartIp: '1.1.1.1',
+    poolEndIp: '1.1.1.10',
+    gatewayIp: '',
+    activated: true
+  }],
+  dhcpOptions: [],
+  hosts: []
+}
+
+export const mockEdgeDhcpDataRelayOff = {
+  id: '1',
+  serviceName: 'testRelayOff',
+  dhcpRelay: false,
+  externalDhcpServerFqdnIp: '1.1.1.1',
+  domainName: '',
+  primaryDnsIp: '',
+  secondaryDnsIp: '',
+  leaseTime: 25,
+  leaseTimeType: 'Limited',  // UI used
+  leaseTimeUnit: 'HOURS',
+  dhcpPools: [{
+    id: '1',
+    poolName: 'RelayOffPoolTest1',
+    subnetMask: '255.255.255.0',
+    poolStartIp: '1.1.1.1',
+    poolEndIp: '1.1.1.10',
+    gatewayIp: '1.1.1.120',
+    activated: true
+  }],
+  dhcpOptions: [],
+  hosts: []
+}

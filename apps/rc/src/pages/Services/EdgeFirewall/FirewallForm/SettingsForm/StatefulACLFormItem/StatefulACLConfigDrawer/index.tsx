@@ -148,7 +148,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (_data, row) => {
+      render: (_, row) => {
         const isDisabled = isDefaultRule(row)
         return <DragIconWrapper
           disabled={isDisabled}

@@ -99,7 +99,7 @@ export default function AdaptivePolicyTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={
@@ -108,7 +108,7 @@ export default function AdaptivePolicyTable () {
                   policyId: row.id!,
                   templateId: templateIdMap.get(row.policyType) ?? ''
                 })}
-            >{data}</TenantLink>
+            >{row.name}</TenantLink>
           )
         }
       },

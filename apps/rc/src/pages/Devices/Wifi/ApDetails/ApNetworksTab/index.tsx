@@ -39,9 +39,9 @@ export function ApNetworksTab () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
-          {data}
+          {row.name}
         </TenantLink>
       }
     }, {
@@ -54,8 +54,8 @@ export function ApNetworksTab () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => <NetworkType
-        networkType={data as NetworkTypeEnum}
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
     }, {
@@ -63,7 +63,7 @@ export function ApNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return (row.vlanPool) ?
           $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: row.vlanPool?.name ?? '' }) :
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })

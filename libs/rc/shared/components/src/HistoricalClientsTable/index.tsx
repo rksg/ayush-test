@@ -25,7 +25,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     sorter: true,
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    render: (data, { disconnectTime, clientMac }) => {
+    render: (_, { hostname, disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
         startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
         endDate: moment((disconnectTime as number) * 1000).format(),
@@ -33,9 +33,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       })
       /* eslint-disable max-len */
       return <TenantLink
-        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${data}&clientStatus=historical&period=${period}`}
+        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${hostname}&clientStatus=historical&period=${period}`}
       >
-        {data ? data : '--'}
+        {hostname ? hostname : '--'}
       </TenantLink>
       /* eslint-enable max-len */
     }
@@ -49,44 +49,49 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     title: intl.$t({ defaultMessage: 'Last IP Address' }),
     dataIndex: 'clientIP',
     sorter: true,
-    render: (data) => data ? data : '--'
+    render: (_, { clientIP }) => clientIP ? clientIP : '--'
   }, {
     key: 'userName',
     title: intl.$t({ defaultMessage: 'Username' }),
     dataIndex: 'userName',
     sorter: true,
-    render: (data) => data ? data : '--'
+    render: (_, { userName }) => userName ? userName : '--'
   }, {
     key: 'venueId',
     title: intl.$t({ defaultMessage: 'Last Venue' }),
     dataIndex: 'venueId',
     sorter: true,
-    render: (data, row) => row?.isVenueExists && data
-      ? <TenantLink to={`/venues/${data}/venue-details/overview`}>{row?.venueName}</TenantLink>
+    render: (_, row) => row?.isVenueExists && row?.venueId
+      ? <TenantLink to={`/venues/${row?.venueId}/venue-details/overview`}>
+        {row?.venueName}
+      </TenantLink>
       : row?.venueName
   }, {
     key: 'serialNumber',
     title: intl.$t({ defaultMessage: 'Last AP' }),
     dataIndex: 'serialNumber',
     sorter: true,
-    render: (data, row) => row?.isApExists && data
-      ? <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row?.apName}</TenantLink>
+    render: (_, row) => row?.isApExists && row?.serialNumber
+      ? <TenantLink to={`/devices/wifi/${row?.serialNumber}/details/overview`}>
+        {row?.apName}
+      </TenantLink>
       : row?.apName
   }, {
     key: 'ssid',
     title: intl.$t({ defaultMessage: 'Last SSID' }),
     dataIndex: 'ssid',
     sorter: true,
-    render: (data, row) => row?.networkId
-      ? <TenantLink
-        to={`/networks/wireless/${row?.networkId}/network-details/overview`}>{data}</TenantLink>
-      : data
+    render: (_, row) => row?.networkId
+      ? <TenantLink to={`/networks/wireless/${row?.networkId}/network-details/overview`}>
+        {row?.ssid}
+      </TenantLink>
+      : row?.ssid
   }, {
     key: 'disconnectTime',
     title: intl.$t({ defaultMessage: 'Last Seen' }),
     dataIndex: 'disconnectTime',
     sorter: true,
-    render: (data) => dateTimeFormatter((data as number) * 1000)
+    render: (_, { disconnectTime }) => dateTimeFormatter((disconnectTime as number) * 1000)
   // }, { // TODO: Waiting for TAG feature support
   //   key: 'tags',
   //   title: intl.$t({ defaultMessage: 'Tags' }),
