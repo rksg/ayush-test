@@ -52,7 +52,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
             readOnly
@@ -87,7 +87,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
             readOnly
@@ -101,8 +101,8 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Purpose' }),
       key: 'purpose',
       dataIndex: 'purpose',
-      render: function (data) {
-        return <FormattedMessage {...purposeDisplayText[data as AAA_Purpose_Type]}/>
+      render: function (_, { purpose }) {
+        return <FormattedMessage {...purposeDisplayText[purpose as AAA_Purpose_Type]}/>
       }
     }
   ]
@@ -118,7 +118,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Password' }),
       key: 'password',
       dataIndex: 'password',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
             style={{ paddingLeft: 0 }}
@@ -142,8 +142,8 @@ function useColumns (type: AAAServerTypeEnum) {
       key: 'level',
       dataIndex: 'level',
       sorter: true,
-      render: function (data) {
-        return <FormattedMessage {...levelDisplayText[data as AAA_Level_Type]}/>
+      render: function (_, { level }) {
+        return <FormattedMessage {...levelDisplayText[level as AAA_Level_Type]}/>
       }
     }
   ]

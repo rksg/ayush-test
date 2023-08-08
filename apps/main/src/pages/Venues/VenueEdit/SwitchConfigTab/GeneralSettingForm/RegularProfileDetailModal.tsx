@@ -39,7 +39,7 @@ export function RegularProfileDetailModal (props: {
     title: $t({ defaultMessage: 'IGMP Snooping' }),
     dataIndex: 'igmpSnooping',
     key: 'igmpSnooping',
-    render: (data) => transformTitleCase(data as string)
+    render: (_, { igmpSnooping }) => transformTitleCase(igmpSnooping as string)
   }, {
     title: $t({ defaultMessage: 'Multicast Version' }),
     dataIndex: 'multicastVersion',
@@ -48,16 +48,16 @@ export function RegularProfileDetailModal (props: {
     title: $t({ defaultMessage: 'Spanning Tree' }),
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
-    render: (data) => {
-      return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+    render: (_, { spanningTreeProtocol }) => {
+      return data ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
   }, {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (data) => {
-      return data
-        ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
+    render: (_, { switchFamilyModels }) => {
+      return switchFamilyModels
+        ? switchFamilyModels?.reduce((result:number, row: SwitchModel) => {
           const taggedPortsCount = row.taggedPorts?.split(',').length ?? 0
           const untaggedPortsCount = row?.untaggedPorts?.split(',').length ?? 0
           return result + taggedPortsCount + untaggedPortsCount
@@ -74,7 +74,7 @@ export function RegularProfileDetailModal (props: {
     title: $t({ defaultMessage: 'ACL Type' }),
     dataIndex: 'aclType',
     key: 'aclType',
-    render: (data) => transformTitleCase(data as string)
+    render: (_, { aclType }) => transformTitleCase(aclType)
   }]
 
   const closeModal = () => {

@@ -74,23 +74,23 @@ export function ConfigProfileModal (props: {
     title: $t({ defaultMessage: 'Model Affected' }),
     dataIndex: ['venueCliTemplate', 'switchModels'],
     key: 'venueCliTemplate',
-    render: (data) => {
-      const models = (data as string)?.split(',') ?? []
+    render: (_, { venueCliTemplate }) => {
+      const models = venueCliTemplate?.switchModels?.split(',') ?? []
       const title = <>{models.map((m, idx) => <div key={idx}>{m}</div>)}</>
       const content = models?.length > 1 ? $t({
         defaultMessage: '{count} models'
-      }, { count: models.length }) : data
+      }, { count: models.length }) : venueCliTemplate?.switchModels
       return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venues',
     key: 'venues',
-    render: (data) => {
-      const title = data
-        ? <>{(data as string[])?.map((v, idx) => <div key={idx}>{v}</div>)}</>
+    render: (_, { venues }) => {
+      const title = venues
+        ? <>{venues?.map((v, idx) => <div key={idx}>{v}</div>)}</>
         : null
-      const count = (data as string[])?.length ?? 0
+      const count = venues?.length ?? 0
       return <Tooltip title={title} placement='bottom'>{ count }</Tooltip>
     }
   }]

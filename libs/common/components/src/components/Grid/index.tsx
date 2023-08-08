@@ -24,6 +24,8 @@ const Container = styled.div`
   flex-direction: column;
   // Set flex to 1 for it to take up full width
   flex: 1;
+  // Prevent content from overflowing
+  min-width: 0;
 `
 
 export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<

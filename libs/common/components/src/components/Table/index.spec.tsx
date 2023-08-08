@@ -7,6 +7,7 @@ import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cle
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
 import { GroupTable }                                       from './stories/GroupTable'
+import { defaultColumnWidth, settingsKeyWidth }             from './useColumnsState'
 
 import { Table, TableProps } from '.'
 
@@ -169,8 +170,13 @@ describe('Table component', () => {
       columns={columns}
       dataSource={testData}
     />)
+    // not sure where the 20px comes from but have to add it
+    const width = 20 + settingsKeyWidth + columns
+      .map(col => col.ellipsis ? defaultColumnWidth : 100)
+      .reduce((a, b) => a + b, 0)
+
     const table = screen.getByRole('table')
-    expect(table).toHaveStyle('width: 100%')
+    expect(table).toHaveStyle(`width: ${width}px`)
     expect(table).toHaveStyle('table-layout: fixed')
   })
 
@@ -530,7 +536,7 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe('')
+    expect(asFragment().querySelector('col')?.style.width).toBe(`${defaultColumnWidth}px`)
     await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('col')?.style.width).toBe('99px')
@@ -733,16 +739,17 @@ describe('Table component', () => {
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      const tbody = within(await findTBody())
+      expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
 
       const invalidSearchTerm = 'w'
       fireEvent.change(input, { target: { value: invalidSearchTerm } })
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
 
       const validSearchTerm = 'John Doe'
       fireEvent.change(input, { target: { value: validSearchTerm } })
       expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(2)
+      expect(await tbody.findAllByRole('checkbox')).toHaveLength(1)
 
       fireEvent.change(input, { target: { value: 'edna' } })
       expect(await screen.findAllByText('Jane')).toHaveLength(1)
@@ -754,7 +761,7 @@ describe('Table component', () => {
       fireEvent.click(buttons[3])
       expect(await screen.findAllByText('Edna')).toHaveLength(3)
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
     })
 
     it('filtering inputs & searching', async () => {
@@ -848,6 +855,8 @@ describe('Table component', () => {
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       await type(input, 'J')
       expect(onFilterChange).toBeCalledTimes(1)
+      await clear(input)
+
       // but only 1 time / debounced
       await type(input, 'J')
       await type(input, 'JA')
