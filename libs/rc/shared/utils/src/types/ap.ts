@@ -28,14 +28,7 @@ export interface APNetworkSettings extends IpSettings {
 export interface AP {
   IP?: string,
   apMac?: string,
-  apStatusData?: {
-    APRadio?: Array<RadioProperties>,
-    cellularInfo?: CelluarInfo,
-    APSystem?: APSystem,
-    lanPortStatus?: Array<LanPortStatusProperties>,
-    vxlanStatus?: VxlanStatus,
-    afcInfo?: AFCInfo
-  },
+  apStatusData?: ApStatus,
   clients?: number,
   deviceGroupId: string,
   deviceGroupName?: string,
@@ -508,4 +501,13 @@ export enum AFCStatus {
 export interface LowPowerAPQuantity {
   lowPowerAPCount: number,
   allAPCount: number
+}
+
+export interface ApStatus {
+  APRadio?: Array<RadioProperties>,
+  cellularInfo?: CelluarInfo,
+  APSystem?: APSystem,
+  lanPortStatus?: Array<LanPortStatusProperties>,
+  vxlanStatus?: VxlanStatus,
+  afcInfo?: AFCInfo
 }
