@@ -29,7 +29,7 @@ const Filter = (
   return excludeNetworkFilter
     ? null
     : <NetworkFilter
-      key='network-filter'
+      key={getShowWithoutRbacCheckKey('network-filter')}
       shouldQuerySwitch={Boolean(shouldQuerySwitch)}
       withIncidents={withIncidents}
     />

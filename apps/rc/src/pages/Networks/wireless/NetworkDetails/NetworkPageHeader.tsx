@@ -41,7 +41,7 @@ function NetworkPageHeader ({
             <ActiveVenueFilter
               selectedVenues={selectedVenues}
               setSelectedVenues={setSelectedVenues}
-              key='hierarchy-filter'
+              key={getShowWithoutRbacCheckKey('hierarchy-filter')}
             />
           ]
           : [],

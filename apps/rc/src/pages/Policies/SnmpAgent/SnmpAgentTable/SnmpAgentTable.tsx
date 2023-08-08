@@ -14,8 +14,8 @@ import {
   PolicyType,
   SnmpColumnData,
   useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -144,7 +144,6 @@ export default function SnmpAgentTable () {
           // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
-            key={getShowWithoutRbacCheckKey('add')}
           >
             <Button type='primary'>
               {$t({ defaultMessage: 'Add SNMP Agent' })}
