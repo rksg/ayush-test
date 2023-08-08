@@ -74,7 +74,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       dataIndex: 'service',
       key: 'service',
       sorter: { compare: sortProp('service', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return getRuleTypeLabel(row)
       }
     },

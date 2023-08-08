@@ -52,7 +52,7 @@ export default function DHCPInstancesTable (){
       dataIndex: 'venue',
       sorter: true,
       fixed: 'left',
-      render: function (_data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
@@ -64,7 +64,7 @@ export default function DHCPInstancesTable (){
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
@@ -81,11 +81,11 @@ export default function DHCPInstancesTable (){
       key: 'switches',
       dataIndex: 'switches',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/switch`}
-            children={data ? data : 0}
+            children={row.switches ? row.switches : 0}
           />
         )
       }
@@ -94,7 +94,7 @@ export default function DHCPInstancesTable (){
       title: $t({ defaultMessage: 'Capacity' }),
       key: 'usage',
       dataIndex: 'usage',
-      render: function (_data, row) {
+      render: function (__, row) {
         const venueIDIndex = _.find(dhcpProfile?.usage, dhcp => dhcp.venueId===row.id)
         if(venueIDIndex) {
           if(venueIDIndex?.totalIpCount===0 && venueIDIndex?.usedIpCount===0){

@@ -46,7 +46,7 @@ export const columns: TableProps<RecordType>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
+    render: (_, { description }, __, highlightFn) => <u>{highlightFn(description)}</u>,
     searchable: true
   },
   {
@@ -75,7 +75,7 @@ const columnsFilterOnly: TableProps<RecordType>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: text => <u>{text}</u>
+    render: (_, { description }) => <u>{description}</u>
   },
   {
     title: 'Address',
@@ -101,7 +101,7 @@ const columnsSearchOnly: TableProps<RecordType>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
+    render: (_, { description }, __, highlightFn) => <u>{highlightFn(description)}</u>,
     searchable: true
   },
   {
