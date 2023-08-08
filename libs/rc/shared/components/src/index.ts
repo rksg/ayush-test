@@ -58,7 +58,7 @@ export {
 export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
-export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
+export { SingleRadioSettings, RadioSettingsForm, LowerPowerBannerAndModal } from './RadioSettings'
 export { StatusLight } from './StatusLight'
 export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
 export { SwitchInfoWidget } from './SwitchInfoWidget'
