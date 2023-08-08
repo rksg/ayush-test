@@ -59,6 +59,7 @@ export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
 }
 
 const rowHeight = 16, rowGap = 4
+export const brushPeriod = 24 * 60 * 60 * 1000
 export const getChartLayoutConfig = (
   chartWidth: number, chartRowMapping: ChartRowMappingType[]
 ) => ({
@@ -68,7 +69,7 @@ export const getChartLayoutConfig = (
   rowGap,
   xAxisHeight: 30,
   brushHeight: chartRowMapping.length * (rowHeight + rowGap),
-  brushWidth: 24 * 60 * 60 * 1000,
+  brushWidth: brushPeriod,
   brushTextHeight: 12,
   legendHeight: 24,
   symbolSize: 12

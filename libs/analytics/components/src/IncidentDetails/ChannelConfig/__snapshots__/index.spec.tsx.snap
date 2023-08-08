@@ -54,7 +54,7 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
               >
                 <div
                   class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
@@ -73,7 +73,7 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
               >
                 <div
                   class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
@@ -92,7 +92,7 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
               >
                 <div
                   class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"

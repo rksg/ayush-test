@@ -114,7 +114,7 @@ const MigrationTable = () => {
       dataIndex: 'state',
       searchable: true,
       sorter: true,
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'

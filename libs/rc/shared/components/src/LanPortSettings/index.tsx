@@ -151,7 +151,7 @@ export function LanPortSettings (props: {
           || lan?.vni > 0
         }
         onChange={(value) => {
-          if (lan?.type === ApLanPortTypeEnum.ACCESS) {
+          if (lan?.type !== ApLanPortTypeEnum.TRUNK) {
             const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
               index === idx ? {
                 ...lan,
