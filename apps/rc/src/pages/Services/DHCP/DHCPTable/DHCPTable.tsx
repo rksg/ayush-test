@@ -185,7 +185,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Number of hosts' }),
       dataIndex: 'networkAddress',
       align: 'center',
-      render: (data,row)=>{
+      render: (_, row)=>{
         return IpUtilsService.countIpRangeSize(row.startAddress, row.endAddress)
       }
     }
@@ -199,7 +199,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -207,7 +207,7 @@ function useColumns () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -218,7 +218,7 @@ function useColumns () {
       dataIndex: 'dhcpPools',
       align: 'center',
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.dhcpPools || row.dhcpPools.length === 0) return 0
         const dhcpPools = row.dhcpPools
         return <Tooltip title={
@@ -241,7 +241,7 @@ function useColumns () {
       filterable: venueNameMap,
       align: 'center',
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds
         // eslint-disable-next-line max-len

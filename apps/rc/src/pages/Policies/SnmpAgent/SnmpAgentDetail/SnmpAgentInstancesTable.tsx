@@ -27,7 +27,7 @@ export default function SnmpAgentInstancesTable () {
       dataIndex: 'apName',
       searchable: true,
       sorter: true,
-      render: function (_data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         const { apName, apId } = row
         return (
           <TenantLink to={`/devices/wifi/${apId}/details/overview`}>
@@ -42,7 +42,7 @@ export default function SnmpAgentInstancesTable () {
       dataIndex: 'venueName',
       searchable: true,
       sorter: true,
-      render: (_data, row, _, highlightFn) => {
+      render: (_, row, __, highlightFn) => {
         const { venueName, venueId } = row
         return (
           <TenantLink to={`/venues/${venueId}/venue-details/overview`}>

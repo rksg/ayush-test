@@ -171,7 +171,7 @@ function useColumns (
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Layer3Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
@@ -201,7 +201,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (data, row) => row.networkIds?.length
+      render: (_, row) => row.networkIds?.length
     }
   ]
 

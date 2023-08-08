@@ -115,7 +115,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         searchable: true,
         sorter: true,
         defaultSortOrder: 'ascend',
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={
@@ -123,7 +123,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!,
                   templateId: templateIdMap.get(row.policyType) ?? ''
-                })}>{data}</TenantLink>
+                })}>{row.name}</TenantLink>
           )
         }
       },
@@ -132,7 +132,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         key: 'accessConditions',
         dataIndex: 'accessConditions',
         align: 'center',
-        render: (data, row) => {
+        render: (_, row) => {
           return conditionCountMap.get(row.id) ?? 0
         }
       },
@@ -141,7 +141,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         key: 'policySetCount',
         dataIndex: 'policySetCount',
         align: 'center',
-        render: (data, row) => {
+        render: (_, row) => {
           const policySets = [] as string []
           policySetPoliciesMap.forEach((value, key) => {
             if(value.find((item: string) => item === row.id)){
@@ -157,7 +157,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         dataIndex: 'select',
         key: 'activate',
         align: 'center',
-        render: (data, row) => {
+        render: (_, row) => {
           return <Switch
             checked={selectedPolicies.has(row.id)}
             onChange={(checked) => onSelectChange(row, checked)}

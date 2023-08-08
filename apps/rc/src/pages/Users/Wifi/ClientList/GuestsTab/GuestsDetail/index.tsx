@@ -124,8 +124,8 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'osType',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (data) {
-        return <UI.IconContainer>{getOsTypeIcon(data as string)}</UI.IconContainer>
+      render: function (_, { osType }) {
+        return <UI.IconContainer>{getOsTypeIcon(osType as string)}</UI.IconContainer>
       }
     }, {
       key: 'healthCheckStatus',
@@ -133,7 +133,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'healthCheckStatus',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
       }
     }, {
@@ -148,7 +148,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'venueId',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
         </TenantLink>
@@ -159,7 +159,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'serialNumber',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
           {row.apName}
         </TenantLink>
@@ -170,7 +170,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'switchSerialNumber',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDisplayText(row.switchSerialNumber)
       }
     }, {
@@ -179,7 +179,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'connectSince',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return formatter(DateFormatEnum.DateTimeFormat)(row.connectSince)
       }
     }

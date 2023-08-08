@@ -64,7 +64,7 @@ export function useGroupBy<RecordType> (
     const actionsList = targetCol?.groupable?.actions ?? []
     let expandedRows = expandedRowKeys
     const onExpand = (expanded: boolean, record: RecordType & Record<"children"| Key, unknown>) => {
-      const key = typeof rowKey === 'function' ? rowKey(record) : record?.[rowKey as unknown as Key] 
+      const key = typeof rowKey === 'function' ? rowKey(record) : record?.[rowKey as unknown as Key]
       if('children' in record && expanded)
       expandedRows?.push(key as Key)
       if('children' in record && !expanded)
@@ -95,7 +95,7 @@ export function useGroupBy<RecordType> (
           const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
             if ('children' in record && !('isFirstLevel' in record)) {
               return columnIndex === 0 ? renderGroupRow(record) : null
-            } 
+            }
             else {
               if (render) {
                 return render(dom, record, index, highlightFn, action, schema)
@@ -103,7 +103,7 @@ export function useGroupBy<RecordType> (
               if (searchable) {
                 return highlightFn(_.get(record, dataIndex))
               }
-              return typeof dom === 'string' ? dom : null
+              return dom
             }
           }
           return {

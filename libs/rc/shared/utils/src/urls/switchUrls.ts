@@ -361,7 +361,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   syncSwitchesData: {
     method: 'post',
-    url: '/switches/deviceRequests'
+    url: '/switches/deviceRequests',
+    newApi: true
   },
   retryFirmwareUpdate: {
     method: 'post',

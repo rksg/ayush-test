@@ -120,7 +120,7 @@ export interface Venue {
   // aps ??
   switches?: number
   operationalSwitches?: number
-  // switchClients ??
+  switchClients?: number
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
@@ -130,6 +130,8 @@ export interface Venue {
   vlanPoolId?: string
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
+  clients?: number
+  edges?: number
 }
 
 export interface AlarmBase {
