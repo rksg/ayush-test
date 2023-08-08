@@ -85,7 +85,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         title: $t({ defaultMessage: 'Condition Type' }),
         dataIndex: 'name',
         sorter: { compare: sortProp('name', defaultSort) },
-        render: function (data, row) {
+        render: function (_, row) {
           return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
             $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
         }
@@ -95,7 +95,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         key: 'conditionValue',
         dataIndex: 'conditionValue',
         sorter: { compare: sortProp('evaluationRule.regexStringCriteria', defaultSort) },
-        render: function (data, row) {
+        render: function (_, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
             return `${row.evaluationRule?.when},
             ${moment(row.evaluationRule.startTime, 'HH:mm:ss').format('h:mm A')} -

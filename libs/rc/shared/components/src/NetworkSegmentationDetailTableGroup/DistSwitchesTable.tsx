@@ -28,7 +28,7 @@ export const DistSwitchesTable = (props: Omit<TableProps<DistributionSwitch>, 'c
       title: $t({ defaultMessage: 'Access Switches' }),
       key: 'accessSwitches',
       dataIndex: 'accessSwitches',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.accessSwitches?.map(as => `${as.name}`).join(', ')
       }
     },

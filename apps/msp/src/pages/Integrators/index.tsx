@@ -82,9 +82,9 @@ export function Integrators () {
           onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { name }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(name)}</Link>
         )
       }
     },
@@ -93,7 +93,7 @@ export function Integrators () {
       dataIndex: 'tenantType',
       key: 'tenantType',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.tenantType === AccountType.MSP_INTEGRATOR
           ? $t({ defaultMessage: 'Integrator' }) : $t({ defaultMessage: 'Installer' })
       }
@@ -112,9 +112,9 @@ export function Integrators () {
           }
         } : {}
       },
-      render: function (data) {
+      render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
     },
@@ -133,7 +133,7 @@ export function Integrators () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return (isPrimeAdmin || isAdmin)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)

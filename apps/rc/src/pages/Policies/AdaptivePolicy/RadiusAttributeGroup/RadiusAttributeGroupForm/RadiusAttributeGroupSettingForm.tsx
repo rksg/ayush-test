@@ -23,7 +23,7 @@ function useColumns () {
       key: 'attributeValue',
       dataIndex: 'attributeValue',
       sorter: { compare: sortProp('attributeValue', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         // eslint-disable-next-line max-len
         return `${$t(AttributeOperationLabelMapping[row.operator as OperatorType])} '${row.attributeValue}'`
       }

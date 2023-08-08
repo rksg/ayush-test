@@ -189,7 +189,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -197,7 +197,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -218,7 +218,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: (data, row) => row.epdgs?.length
+      render: (_, row) => row.epdgs?.length
     },
     {
       key: 'networkIds',
@@ -228,7 +228,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => {
+      render: (_, row) => {
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
