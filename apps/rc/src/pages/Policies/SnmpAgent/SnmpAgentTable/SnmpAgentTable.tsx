@@ -141,7 +141,6 @@ export default function SnmpAgentTable () {
           link: getPolicyListRoutePath(true)
         }]}
         extra={((list?.totalCount as number) < 64) && filterByAccess([
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >

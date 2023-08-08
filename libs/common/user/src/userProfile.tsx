@@ -35,8 +35,8 @@ export function hasAccess (id?: string) {
   return allowedOperations.includes(id)
 }
 
-export function filterByAccess <Item> (items?: Item[]) {
-  return items?.filter(item => hasAccess((item as { key?: string }).key))
+export function filterByAccess <Item> (items: Item[]) {
+  return items.filter(item => hasAccess((item as { key?: string }).key))
 }
 
 export function WrapIfAccessible ({ id, wrapper, children }: {

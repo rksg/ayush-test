@@ -19,8 +19,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -102,32 +102,33 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
-      extra={filterByAccess([
+      extra={[
         <RangePicker
-          key={getShowWithoutRbacCheckKey('range-picker')}
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>{()=>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )

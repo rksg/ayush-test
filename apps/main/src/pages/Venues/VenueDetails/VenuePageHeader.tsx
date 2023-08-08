@@ -45,9 +45,9 @@ function VenuePageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
-      extra={filterByAccess([
+      extra={[
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
-        <Button
+        ...filterByAccess([<Button
           type='primary'
           onClick={() =>
             navigate({
@@ -59,8 +59,8 @@ function VenuePageHeader () {
               }
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        >{$t({ defaultMessage: 'Configure' })}</Button>])
+      ]}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
   )

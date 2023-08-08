@@ -22,8 +22,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import ApTabs from './ApTabs'
 
@@ -95,38 +95,39 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
       ] : [{ text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }]}
-      extra={filterByAccess([
+      extra={[
         enableTimeFilter()
           ? <RangePicker
-            key={getShowWithoutRbacCheckKey('range-picker')}
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
           : <></>,
-        <Dropdown overlay={menu}>{()=>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>,
-        <Button
-          type='primary'
-          onClick={() => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit/general`
-            }, {
-              state: {
-                from: location
-              }
-            })
-          }}
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/edit/general`
+              }, {
+                state: {
+                  from: location
+                }
+              })
+            }}
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

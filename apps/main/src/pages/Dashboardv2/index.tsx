@@ -142,10 +142,12 @@ function DashboardPageHeader () {
   return (
     <PageHeader
       title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
-      extra={filterByAccess([
-        <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
-          <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
-        }</Dropdown>,
+      extra={[
+        ...filterByAccess([
+          <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
+          }</Dropdown>
+        ]),
         <VenueFilter key={getShowWithoutRbacCheckKey('hierarchy-filter')}/>,
         <RangePicker
           key={getShowWithoutRbacCheckKey('range-picker')}
@@ -154,7 +156,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />
-      ])}
+      ]}
     />
   )
 }
