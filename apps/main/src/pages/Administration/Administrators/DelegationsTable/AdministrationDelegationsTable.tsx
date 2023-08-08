@@ -102,7 +102,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
       sorter: { compare: sortProp('delegatedToName', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return row.delegatedToName
       }
     },

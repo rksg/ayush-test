@@ -72,6 +72,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     },
     {
       key: 'message',
+      width: Infinity,
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       searchable: true,
