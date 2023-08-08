@@ -30,11 +30,12 @@ type settings = {
 }
 
 export function LowerPowerBannerAndModal (props: {
+    context?: string,
     parent: string,
     lowPowerAPs?: LowPowerAPQuantity
 }) {
 
-  const { lowPowerAPs, parent } = props
+  const { lowPowerAPs, parent, context } = props
 
 
   const { $t } = useIntl()
@@ -79,6 +80,10 @@ export function LowerPowerBannerAndModal (props: {
   useEffect(()=> {
     setBannerSettings(lowPowerBannerSettings[parent])
   }, [])
+
+  if (context === 'ap') {
+    return <></>
+  }
 
   // if(!lowPowerAPs && parent === 'venue') {
   //   return <></>

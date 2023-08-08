@@ -51,18 +51,33 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
     // TODO add Feature flag and pending for PLM
 
-    if (!data || !data.apStatusData || !data.apStatusData.afcInfo) return
+    if (!data || !data.apStatusData || !data.apStatusData.afcInfo) {}
+    if (radioType !== ApRadioTypeEnum.Radio6G) return
 
-    const afcInfo = data.apStatusData.afcInfo
+    const afcInfo = data?.apStatusData?.afcInfo ?? {}
     const warningMessages = [] as JSX.Element[]
 
-    if(afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
-      warningMessages.push(<p>${$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}</p>)
-      if (afcInfo.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        warningMessages.push(<p>${$t({ defaultMessage: 'until its geo-location has been established' })}</p>)
+    if(true||afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
+      warningMessages.push(
+        <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+          {$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}
+        </p>
+      )
+
+      if (true||afcInfo.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        warningMessages.push(
+          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+            {$t({ defaultMessage: 'until its geo-location has been established' })}
+          </p>
+        )
       }
+
       if (afcInfo.afcStatus === AFCStatus.REJECTED || afcInfo.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        warningMessages.push(<p>${$t({ defaultMessage: 'Wait for PLM reply' })}</p>)
+        warningMessages.push(
+          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+            {$t({ defaultMessage: 'Wait for PLM reply' })}
+          </p>
+        )
       }
     }
     return warningMessages
@@ -78,13 +93,19 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             name={enabledFieldName}
             valuePropName='checked'
             style={{ marginTop: '16px' }}
-            children={isUseVenueSettings ?
-              <span>{$t({ defaultMessage: 'On' })}</span>
-              :<Switch onChange={handleEnableChanged} />
+            children={<>
+              {/* eslint-disable max-len */}
+              <div style={{ width: '100%' }}>
+                {isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>:
+                  <Switch onChange={handleEnableChanged} />
+                }
+              </div>
+              {displayLowPowerMode(apViewContextData)}
+            </>
             }
           />
         </FieldLabel>
-        { displayLowPowerMode(apViewContextData) }
         { (!isEnabled && !isUseVenueSettings) ? (
           <DisabledDiv>
             {$t({ defaultMessage: '{radioTypeName} Radio is disabled' },

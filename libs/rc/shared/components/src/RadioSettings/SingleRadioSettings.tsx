@@ -395,6 +395,7 @@ export function SingleRadioSettings (props:{
         isSupportRadio &&
       <>
         <LowerPowerBannerAndModal
+          context={context}
           parent={'venue'}
           lowPowerAPs={lowPowerAPs} />
         <Row gutter={20} data-testid={testId}>
