@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { APStatus, LowerPowerBannerAndModal }                            from '@acx-ui/rc/components'
+import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
 import {
@@ -132,7 +132,7 @@ function ApPageHeader () {
       footer={<>
         {/* TODO: Remove the condition */}
         {(true || ApStatusData.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
-          <LowerPowerBannerAndModal parent='ap' />}
+          <LowPowerBannerAndModal parent='ap' />}
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
     />

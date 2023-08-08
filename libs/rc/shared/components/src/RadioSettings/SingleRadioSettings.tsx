@@ -18,7 +18,7 @@ import {
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
-import { LowerPowerBannerAndModal } from './LowerPowerBannerAndModal'
+import { LowPowerBannerAndModal }   from './LowPowerBannerAndModal'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -394,7 +394,7 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        <LowerPowerBannerAndModal
+        <LowPowerBannerAndModal
           context={context}
           parent={'venue'}
           lowPowerAPs={lowPowerAPs} />
