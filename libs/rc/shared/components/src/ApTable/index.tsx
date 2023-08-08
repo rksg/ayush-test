@@ -188,11 +188,11 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
           let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode\nuntil its geo-location has been established' })
+          if (true||afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
           }
           if (afcInfo?.afcStatus === AFCStatus.REJECTED || afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode\nWait for PLM reply' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for PLM reply' })
           }
 
           return (
