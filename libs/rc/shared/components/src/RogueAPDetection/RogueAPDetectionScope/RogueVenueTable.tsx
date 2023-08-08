@@ -112,7 +112,7 @@ export const RogueVenueTable = () => {
       key: 'aggregatedApStatus',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
     },
@@ -122,7 +122,7 @@ export const RogueVenueTable = () => {
       key: 'switches',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.switches ?? 0
       }
     },
@@ -132,7 +132,7 @@ export const RogueVenueTable = () => {
       key: 'rogueDetection',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (row.rogueDetection?.enabled) {
           return <div style={{ textAlign: 'center' }}>
             <div>ON</div>
@@ -149,7 +149,7 @@ export const RogueVenueTable = () => {
       dataIndex: 'activate',
       key: 'activate',
       align: 'center',
-      render: (data, row) => {
+      render: (_, row) => {
         return <Switch
           data-testid={`switchBtn_${row.id}`}
           checked={

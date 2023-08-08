@@ -54,6 +54,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firmwareVersion?: string
   firewallId?: string
   firewallName?: string
+  upTime?: number
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -202,6 +203,7 @@ export interface EdgeService {
   status: string
   currentVersion: string
   targetVersion: string
+  edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
 export interface PingEdge {
@@ -244,6 +246,15 @@ export interface EdgesTopResources {
 export interface EdgePasswordDetail {
   loginPassword: string
   enablePassword: string
+}
+
+export interface EdgeAlarmSummary {
+  edgeId: string
+  severitySummary: {
+    major?: number
+    critical?: number
+  }
+  totalCount: number
 }
 
 export enum EdgeTroubleshootingType {

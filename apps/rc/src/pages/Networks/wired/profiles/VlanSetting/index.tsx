@@ -71,19 +71,19 @@ export function VlanSetting () {
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
     sorter: { compare: sortProp('spanningTreeProtocol', defaultSort) },
-    render: (data) => {
-      return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+    render: (_, { spanningTreeProtocol }) => {
+      return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
   }, {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (data, row) => {
+    render: (_, row) => {
       return <Tooltip
         title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
       >
-        {data
-          ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
+        {row.switchFamilyModels
+          ? row.switchFamilyModels?.reduce((result:number, row: SwitchModel) => {
             const taggedPortsCount = row.taggedPorts ?
               row.taggedPorts?.toString().split(',').length : 0
             const untaggedPortsCount = row.untaggedPorts ?

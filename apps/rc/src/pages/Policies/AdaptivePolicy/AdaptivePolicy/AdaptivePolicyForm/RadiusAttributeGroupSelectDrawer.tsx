@@ -37,7 +37,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <Card title={row.name} type='no-border'>
             <Descriptions labelWidthPercent={30}>

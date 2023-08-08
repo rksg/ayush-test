@@ -6,7 +6,6 @@ import {
   Row, Space,
   Switch
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
@@ -63,10 +62,12 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const [
     macAddressAuthentication,
-    isMacRegistrationList
+    isMacRegistrationList,
+    enableOwe
   ] = [
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
-    useWatch(['wlan', 'isMacRegistrationList'])
+    useWatch(['wlan', 'isMacRegistrationList']),
+    useWatch('enableOwe')
   ]
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -81,17 +82,45 @@ function SettingsForm () {
       }
     })
   }
+  const onOweChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open
+      }
+    })
+  }
+  const onOweTransitionChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+      }
+    })
+  }
   useEffect(()=>{
-    if(data?.wlan?.wlanSecurity){
-      form.setFieldValue('enableOwe',
-        data.wlan.wlanSecurity === WlanSecurityEnum.OWE ? true : false)
+    if (data && 'enableOwe' in data) {
+      delete data['enableOwe']
+    }
+    if (data && 'enableOweTransition' in data) {
+      delete data['enableOweTransition']
     }
     form.setFieldsValue(data)
+    if(data?.wlan?.wlanSecurity){
+      form.setFieldValue('enableOwe',
+        (data.wlan.wlanSecurity === WlanSecurityEnum.OWE ||
+        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition) ? true : false)
+      form.setFieldValue('enableOweTransition',
+        data.wlan.wlanSecurity === WlanSecurityEnum.OWETransition ? true : false)
+    }
   },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
-  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
+  const supportOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
   return (
     <>
@@ -99,22 +128,31 @@ function SettingsForm () {
 
       <div>
         <Form.Item>
-          {enableOweEncryption && <Form.Item>
+          {supportOweEncryption && <Form.Item>
             <Form.Item noStyle
               name='enableOwe'
               initialValue={false}
               valuePropName='checked'
               children={<Switch
-                onChange={function (checked: boolean) {
-                  let mutableData = _.cloneDeep(data) ?? {}
-                  _.set(mutableData, 'wlan.wlanSecurity',
-                    checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open)
-                  setData && setData(mutableData)
-                }} />}
+                onChange={onOweChange} />}
             />
             <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>
             <Tooltip.Question
               title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
+              placement='bottom'
+            />
+          </Form.Item>}
+          {enableOwe && supportOweTransition && <Form.Item>
+            <Form.Item noStyle
+              name='enableOweTransition'
+              initialValue={false}
+              valuePropName='checked'
+              children={<Switch
+                onChange={onOweTransitionChange} />}
+            />
+            <span>{$t({ defaultMessage: 'Enable OWE Transition mode' })}</span>
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_OWE_TRANSITION_TOOLTIP)}
               placement='bottom'
             />
           </Form.Item>}

@@ -105,7 +105,7 @@ export function MdnsProxyScope () {
       title: $t({ defaultMessage: 'Selected APs' }),
       dataIndex: ['activatedApsId', 'length'],
       key: 'activatedApsId',
-      render: function (data, row) {
+      render: function (_, row) {
         const scope: MdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
         const target = scope.find(v => v.venueId === row.id)
 
