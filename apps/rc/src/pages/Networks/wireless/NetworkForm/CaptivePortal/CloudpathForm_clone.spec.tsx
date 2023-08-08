@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
@@ -45,6 +45,8 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
+      rest.get(AaaUrls.getAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
     )

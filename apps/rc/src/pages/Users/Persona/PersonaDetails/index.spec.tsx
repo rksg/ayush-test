@@ -9,8 +9,7 @@ import {
   MacRegListUrlsInfo,
   PersonaBaseUrl,
   ClientUrlsInfo,
-  ConnectionMeteringUrls,
-  DPSKDeviceInfo
+  ConnectionMeteringUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
@@ -27,19 +26,7 @@ import {
   replacePagination
 } from '../__tests__/fixtures'
 
-import { PersonaDevicesTable } from './PersonaDevicesTable'
-
 import PersonaDetails from './index'
-
-const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
-  {
-    mac: '11:11:11:11:11:11',
-    lastConnected: '06/15/2023 03:24 AM',
-    lastConnectedNetwork: 'test',
-    devicePassphrase: 'e4269e5a2d5547299714398404d442fb',
-    online: true
-  }
-]
 
 Object.assign(navigator, {
   clipboard: {
@@ -174,29 +161,6 @@ describe.skip('Persona Details', () => {
     })).toBeVisible()
   })
 
-  it('should add devices', async () => {
-    render(
-      <Provider>
-        <PersonaDevicesTable persona={mockPersona} />
-      </Provider>, {
-        // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
-      }
-    )
-    const addButton = await screen.findByRole('button', { name: /Add Device/i })
-    await userEvent.click(addButton)
-
-    const dialog = await screen.findByRole('dialog', { name: /Add Devices/i })
-    const addBtn = await within(dialog).findByRole('button', { name: /add/i })
-    await userEvent.click(addBtn)
-
-    await userEvent.click(addButton)
-    const cancelBtn = await within(dialog).findByRole('button', { name: /cancel/i })
-    await userEvent.click(cancelBtn)
-
-    expect(screen.queryByRole('dialog', { name: /Add Devices/i })).toBeNull()
-  })
-
   it('should config persona details', async () => {
     render(
       <Provider>
@@ -228,36 +192,6 @@ describe.skip('Persona Details', () => {
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     fireEvent.click(applyButton)
-  })
-
-  it('should delete selected devices', async () => {
-    mockServer.use(
-      rest.get(
-        DpskUrls.getPassphraseDevices.url,
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
-      )
-    )
-    render(
-      <Provider>
-        <PersonaDevicesTable persona={mockPersona} dpskPoolId={mockPersonaGroup.dpskPoolId}/>
-      </Provider>, {
-        // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
-      }
-    )
-
-    const targetDevice = mockPersona?.devices
-      ? mockPersona.devices[0]
-      : { macAddress: 'mock-mac-address', personaId: mockPersona.id }
-    const row = await screen.findByRole('cell', { name: targetDevice.macAddress })
-    fireEvent.click(row)
-
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    await userEvent.click(deleteButton)
-
-    const confirmDialog = await screen.findByRole('dialog')
-    const confirmBtn = await within(confirmDialog).findByRole('button', { name: /Delete/i })
-    await userEvent.click(confirmBtn)
   })
 
   it('should blocked the persona', async () => {

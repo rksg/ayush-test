@@ -1,8 +1,8 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
+  AttributeAssignment,
   DataType,
   OperatorType,
   RadiusAttributeGroupUrlsInfo
@@ -15,6 +15,8 @@ import { radiusAttributeList, vendorList } from '../AdaptivePolicyTable/__test__
 import { RadiusAttributeDialog } from './RadiusAttributeDialog'
 
 describe('RadiusAttributeDialog', () => {
+  const mockFn = jest.fn(()=> [] as AttributeAssignment [])
+
   beforeEach(async () => {
     mockServer.use(
       rest.get(
@@ -35,7 +37,7 @@ describe('RadiusAttributeDialog', () => {
           visible={true}
           onCancel={jest.fn()}
           setAttributeAssignments={jest.fn()}
-          getAttributeAssignments={jest.fn()}/>
+          getAttributeAssignments={mockFn}/>
       </Provider>,
       {
         route: { params: {
@@ -47,15 +49,12 @@ describe('RadiusAttributeDialog', () => {
     const inputs = await screen.findAllByRole('textbox')
     await userEvent.type(inputs[1], '123')
 
+    await screen.findByText('Common Attributes')
     const comboBoxes = await screen.findAllByRole('combobox')
-    const attributeType = comboBoxes[0]
-    await userEvent.click(attributeType)
+    await userEvent.click(comboBoxes[0])
+    await userEvent.click(await screen.findByText('UKERNA'))
 
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[0])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
+    await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     await userEvent.click(screen.getByText('Add'))
@@ -77,7 +76,7 @@ describe('RadiusAttributeDialog', () => {
           isEdit={true}
           setAttributeAssignments={jest.fn()}
           editAttribute={editAttribute}
-          getAttributeAssignments={jest.fn()}/>
+          getAttributeAssignments={mockFn}/>
       </Provider>,
       {
         route: { params: {

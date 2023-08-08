@@ -110,7 +110,8 @@ export interface EdgePortStatus {
   mac: string
   speedKbps: number
   duplex: string
-  ip: string
+  ip: string,
+  ipMode: string,
   sortIdx: number
   vlan: string
   subnet: string
@@ -201,6 +202,7 @@ export interface EdgeService {
   status: string
   currentVersion: string
   targetVersion: string
+  edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
 export interface PingEdge {
@@ -243,4 +245,18 @@ export interface EdgesTopResources {
 export interface EdgePasswordDetail {
   loginPassword: string
   enablePassword: string
+}
+
+export interface EdgeAlarmSummary {
+  edgeId: string
+  severitySummary: {
+    major?: number
+    critical?: number
+  }
+  totalCount: number
+}
+
+export enum EdgeTroubleshootingType {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE'
 }

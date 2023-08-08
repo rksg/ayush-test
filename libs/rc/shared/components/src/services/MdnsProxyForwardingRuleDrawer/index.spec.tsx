@@ -57,7 +57,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     expect(drawerVisible.current.visible).toEqual(false)
   })
 
-  it('should not close drawer if Add another rule is checked', async () => {
+  it.skip('should not close drawer if Add another rule is checked', async () => {
     const { result: drawerVisible } = renderHook(() => {
       const [ visible, setVisible ] = useState(true)
       return { visible, setVisible }

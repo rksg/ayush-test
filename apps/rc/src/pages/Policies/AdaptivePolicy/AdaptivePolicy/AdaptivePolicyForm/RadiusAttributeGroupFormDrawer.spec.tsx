@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { RadiusAttributeGroupUrlsInfo }                                             from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { RadiusAttributeGroupUrlsInfo }                  from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { radiusAttributeList, vendorList } from '../AdaptivePolicyTable/__test__/fixtures'
 
@@ -57,14 +57,12 @@ describe('RadiusAttributeGroupFormDrawer', () => {
     const attributeValue = inputs[2]
     await userEvent.type(attributeValue, '123')
 
+    await screen.findByText('Common Attributes')
     const comboBoxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboBoxes[0])
+    await userEvent.click(await screen.findByText('UKERNA'))
 
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[1])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
+    await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     addBtns = screen.getAllByText('Add')

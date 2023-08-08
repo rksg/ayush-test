@@ -192,6 +192,26 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/mspservice/mspNonVAR/:tenantId',
     newApi: true
+  },
+  getTenantAuthentications: {
+    method: 'get',
+    url: '/tenants/authentications',
+    newApi: true
+  },
+  addTenantAuthentications: {
+    method: 'post',
+    url: '/tenants/authentications',
+    newApi: true
+  },
+  updateTenantAuthentications: {
+    method: 'put',
+    url: '/tenants/authentications/:authenticationId',
+    newApi: true
+  },
+  deleteTenantAuthentications: {
+    method: 'delete',
+    url: '/tenants/authentications/:authenticationId',
+    newApi: true
   }
   // acceptRejectInvitation: {
   //   method: 'put',
