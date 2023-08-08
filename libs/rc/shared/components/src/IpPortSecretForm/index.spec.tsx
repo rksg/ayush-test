@@ -73,7 +73,7 @@ describe('IpPortSecretForm', () => {
     await userEvent.type(ipTextbox[1], '192.168.1.1')
 
     const alertMsg = await screen.findAllByRole('alert')
-    expect(alertMsg[1]).toBeVisible()
+    expect(alertMsg[0]).toBeVisible()
   })
 
 })
