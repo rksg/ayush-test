@@ -112,7 +112,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.wifiLicenses ? row.wifiLicenses : 0
       }
     },
@@ -121,7 +121,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       dataIndex: 'switchLicenses',
       key: 'switchLicenses',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.switchLicenses ? row.switchLicenses : 0
       }
     }

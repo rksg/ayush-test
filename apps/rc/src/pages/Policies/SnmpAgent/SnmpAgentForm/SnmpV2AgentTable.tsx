@@ -50,7 +50,7 @@ const SnmpAgentV2Table = (props: SnmpAgentV2TableProps) => {
       key: 'privilege',
       title: $t({ defaultMessage: 'Privilege' }),
       dataIndex: 'Privilege',
-      render: function (data, row) {
+      render: function (_, row) {
         const { readPrivilege, trapPrivilege, notificationType } = row
         const displayList = []
         if (readPrivilege) {
@@ -65,7 +65,7 @@ const SnmpAgentV2Table = (props: SnmpAgentV2TableProps) => {
       key: 'targetAddr',
       title: $t({ defaultMessage: 'Notification Target' }),
       dataIndex: 'targetAddr',
-      render: function (data, row) {
+      render: function (_, row) {
         const { targetAddr, targetPort } = row
         return (targetAddr)? `${targetAddr}:${targetPort}` : ''
       }
