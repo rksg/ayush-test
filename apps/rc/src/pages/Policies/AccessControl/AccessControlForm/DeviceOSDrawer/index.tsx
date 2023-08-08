@@ -244,7 +244,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       dataIndex: 'access',
       key: 'access',
       sorter: { compare: sortProp('access', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return row.access
       }
     },
@@ -252,7 +252,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       title: $t({ defaultMessage: 'Details' }),
       dataIndex: 'details',
       key: 'details',
-      render: (data, row) => {
+      render: (_, row) => {
         return <GenDetailsColumn row={row} />
       }
     }

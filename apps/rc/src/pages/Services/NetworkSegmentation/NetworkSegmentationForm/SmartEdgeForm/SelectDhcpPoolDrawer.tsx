@@ -17,12 +17,13 @@ interface SelectDhcpPoolDrawerProps {
   dhcpId?: string
   pools?: EdgeDhcpPool[]
   data?: string
+  isRelayOn: boolean
 }
 
 export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, selectPool, pools, data } = props
+  const { visible, setVisible, selectPool, pools, data, isRelayOn } = props
   const [poolDrawerVisible, setPoolDrawerVisible] = useState(false)
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [formRef] = Form.useForm()
@@ -116,6 +117,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         setVisible={setPoolDrawerVisible}
         onAddOrEdit={addPool}
         allPool={pools}
+        isRelayOn={isRelayOn}
       />
       <Drawer
         width={475}

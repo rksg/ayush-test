@@ -41,7 +41,7 @@ export function SwitchOverviewACLs () {
       defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'
@@ -50,7 +50,7 @@ export function SwitchOverviewACLs () {
             setDrawerVisible(true)
           }}
         >
-          {data}
+          {row.name}
         </Button>
     },
     {
@@ -58,7 +58,7 @@ export function SwitchOverviewACLs () {
       title: $t({ defaultMessage: 'ACL Type' }),
       dataIndex: 'aclType',
       sorter: true,
-      render: (data) => transformTitleCase(data as string)
+      render: (_, { aclType }) => transformTitleCase(aclType)
     }
   ]
   return (
