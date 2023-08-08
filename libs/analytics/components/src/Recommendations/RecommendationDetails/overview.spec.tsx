@@ -42,6 +42,8 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('39-IND-BDC-D39-Mayank-Ofc-Z2')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('New')).toBeVisible()
+    expect(await screen.findByText('Date')).toBeVisible()
+    expect(await screen.findByText('06/12/2023 07:05')).toBeVisible()
   })
 
   it('should render correctly for firmware in RA SA', async () => {
@@ -65,6 +67,8 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('39-IND-BDC-D39-Mayank-Ofc-Z2')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('New')).toBeVisible()
+    expect(await screen.findByText('Date')).toBeVisible()
+    expect(await screen.findByText('06/12/2023 07:05')).toBeVisible()
   })
 
   it('should render correctly for firmware drawer', async () => {
@@ -105,6 +109,8 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('21_US_Beta_Samsung')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('Scheduled')).toBeVisible()
+    expect(await screen.findByText('Date')).toBeVisible()
+    expect(await screen.findByText('06/26/2023 06:04')).toBeVisible()
   })
 
   it('should render correctly for low priority (client load)', async () => {

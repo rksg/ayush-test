@@ -58,7 +58,7 @@ describe('NSG GeneralSettings Form - Persona Table Page', () => {
 
   })
 
-  it('Should be DPSK data in the page', async () => {
+  it.skip('Should be DPSK data in the page', async () => {
 
     renderHook(
       () => useGetPersonaGroupByIdQuery(

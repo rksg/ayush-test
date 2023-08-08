@@ -30,7 +30,8 @@ export enum WlanSecurityEnum {
   WPA23Mixed = 'WPA23Mixed',
   WPA3 = 'WPA3',
   None = 'None',
-  OWE = 'OWE'
+  OWE = 'OWE',
+  OWETransition = 'OWETransition'
 }
 
 export enum PassphraseFormatEnum {

@@ -1,0 +1,10 @@
+#Unit Name - Identifying unique name for the unit. Mandatory.
+#Dpsk Secret - Dpsk passphrase for unit users. Optional
+#Unit Vlan - Vlan for unit users.This must be a number in range 1-4094. Optional
+#Guest Dpsk Secret- Dpsk passphrase for guest users. Optional
+#Guest Vlan - Vlan for guest users. This must be a number in range 1-4094. Optional
+#Resident Name - Mandatory
+#Email - Email address of the resident. Optional
+#Phone Number - Phone number of the resident. Format +<country code><phone number>. Optional
+Unit Name,Dpsk Secret,Unit Vlan,Guest Dpsk Secret,Guest Vlan,Resident Name,Email,Phone Number
+unitname,secret@1234,1,guest@1234,2,resident,resident@mail.com,+91*********9

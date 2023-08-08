@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import {
-  getVersionLabel
+  getVersionLabel, isBetaFirmware
 } from '../../FirmwareUtils'
 
 import { filteredOtherActiveVersions, getDefaultActiveVersion } from './AdvancedUpdateNowDialog'
@@ -77,7 +77,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
   const otherOptions = otherVersions.map((version) => {
     return {
-      label: getVersionLabel(intl, version),
+      label: getVersionLabel(intl, version, isBetaFirmware(version.category)),
       value: version.name
     }
   })

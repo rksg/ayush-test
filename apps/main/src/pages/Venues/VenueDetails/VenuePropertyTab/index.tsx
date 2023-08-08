@@ -395,6 +395,7 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
+        setDrawerState({ isEdit: false, visible: false })
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -544,12 +545,12 @@ export function VenuePropertyTab () {
           onClick: downloadUnit
         }}
       />
-      {venueId &&
+      {venueId && drawerState.visible &&
         <PropertyUnitDrawer
+          visible={true}
           venueId={venueId}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
-          visible={drawerState.visible}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
         />
       }
@@ -558,10 +559,10 @@ export function VenuePropertyTab () {
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         type={ImportFileDrawerType.PropertyUnit}
-        acceptType={['xlsx']}
+        acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        templateLink='assets/templates/units_import_template.xlsx'
+        templateLink='assets/templates/units_import_template.csv'
         importRequest={importUnits}
         formDataName={'unitImports'}
         onClose={() => setUploadCsvDrawerVisible(false)}
