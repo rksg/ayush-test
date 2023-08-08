@@ -9,9 +9,9 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import { includes, isEmpty, dropRight } from 'lodash'
-import { useIntl }                      from 'react-intl'
-import styled                           from 'styled-components/macro'
+import { includes, isEmpty, dropRight, intersection } from 'lodash'
+import { useIntl }                                    from 'react-intl'
+import styled                                         from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
@@ -340,17 +340,27 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-    const validateChannels = (channels: unknown[] | undefined, title: string) => {
+    const validateChannels = (channels: unknown[] | undefined,
+      title: string, dual5GName?: string) => {
+
+      const content = dual5GName?
+        $t(
+          { defaultMessage: 'Please select at least two channels under the {dual5GName} block' },
+          { dual5GName }
+        ):
+        $t({ defaultMessage: 'Please select at least two channels' })
+
       if (Array.isArray(channels) && channels.length <2) {
         showActionModal({
           type: 'error',
           title: title,
-          content: $t({ defaultMessage: 'Please select at least two channels' })
+          content: content
         })
         return false
       }
       return true
     }
+
     const validate320MHzIsolatedGroup = (channels: unknown[] | undefined, title: string) => {
       const typeSafeChannels = channels as string[]
       const isolatedGroup = findIsolatedGroupByChannel(typeSafeChannels)
@@ -383,22 +393,44 @@ export function RadioSettings () {
     if (!validateChannels(channel6, title6)) return false
     if (!validate320MHzIsolatedGroup(channel6, title6)) return false
 
-    const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G || {}
-    const indoorLowerChannel5 = radioParamsLower5G?.allowedIndoorChannels
-    const indoorLowerTitle5 = $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5)) return false
+    const { radioParamsLower5G, radioParamsUpper5G,
+      inheritParamsLower5G, inheritParamsUpper5G } = radioParamsDual5G || {}
 
-    const outdoorLowerChannel5 = radioParamsLower5G?.allowedOutdoorChannels
-    const outdoorLowerTitle5 = $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorLowerChannel5, outdoorLowerTitle5)) return false
+    const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
 
-    const indoorUpperChannel5 = radioParamsUpper5G?.allowedIndoorChannels
-    const indoorUpperTitle5 = $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5)) return false
+    const indoorLowerChannel5 = inheritParamsLower5G
+      ? intersection(support5GLowerChannels.indoor.auto, indoorChannel5)
+      : radioParamsLower5G?.allowedIndoorChannels
+    const indoorLowerTitle5 = inheritParamsLower5G
+      ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
+      : $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
+    if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5, lower5GName)) return false
 
-    const outdoorUpperChannel5 = radioParamsUpper5G?.allowedOutdoorChannels
-    const outdoorUpperTitle5 = $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorUpperChannel5, outdoorUpperTitle5)) return false
+    const outdoorLowerChannel5 = inheritParamsLower5G
+      ? intersection(support5GLowerChannels.outdoor.auto, outdoorChannel5)
+      : radioParamsLower5G?.allowedOutdoorChannels
+    const outdoorLowerTitle5 = inheritParamsLower5G
+      ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
+      : $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
+    if (!validateChannels(outdoorLowerChannel5, outdoorLowerTitle5, lower5GName)) return false
+
+    const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
+
+    const indoorUpperChannel5 = inheritParamsUpper5G
+      ? intersection(support5GUpperChannels.indoor.auto, indoorChannel5)
+      : radioParamsUpper5G?.allowedIndoorChannels
+    const indoorUpperTitle5 = inheritParamsUpper5G
+      ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
+      : $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
+    if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5, upper5GName)) return false
+
+    const outdoorUpperChannel5 = inheritParamsUpper5G
+      ? intersection(support5GUpperChannels.outdoor.auto, outdoorChannel5)
+      : radioParamsUpper5G?.allowedOutdoorChannels
+    const outdoorUpperTitle5 = inheritParamsUpper5G
+      ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
+      : $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
+    if (!validateChannels(outdoorUpperChannel5, outdoorUpperTitle5, upper5GName)) return false
 
     return true
   }
