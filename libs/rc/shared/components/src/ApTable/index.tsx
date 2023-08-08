@@ -17,6 +17,7 @@ import {
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
+  CheckMark,
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
@@ -337,14 +338,19 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         )
       }
     },
-    ...(secureBootFlag? [
+    ...(secureBootFlag ? [
       {
         key: 'secureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
         dataIndex: 'secureBootEnabled',
         show: false,
-        sorter: false
-      }] : [] )
+        sorter: false,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const secureBootEnabled = row.apStatusData?.APSystem?.secureBootEnabled || false
+
+          return (secureBootEnabled ? <CheckMark /> : null)
+        }
+      }] : [])
     ]
 
     return columns
