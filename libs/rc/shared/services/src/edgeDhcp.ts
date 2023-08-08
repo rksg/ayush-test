@@ -11,9 +11,9 @@ import {
   PaginationQueryResult,
   TableResult
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeDhcpApi }                     from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
 
@@ -89,7 +89,9 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
     }),
     getDhcpByEdgeId: build.query<EdgeDhcpSetting, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcpByEdgeId, params)
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpByEdgeId, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req
         }
