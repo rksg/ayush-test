@@ -1,5 +1,5 @@
-import { EdgeAlarmSummary } from '../..'
-import { LeaseTimeUnit }    from '../../models'
+import { EdgeAlarmSummary }             from '../..'
+import { LeaseTimeType, LeaseTimeUnit } from '../../models'
 
 export interface EdgeDhcpSetting {
     id: string;
@@ -88,4 +88,9 @@ export interface DhcpUeSummaryStats {
   successfulAllocation?: number
   remainsIps?: number
   droppedPackets?: number
+}
+
+export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
+  enableSecondaryDNSServer?: boolean
+  leaseTimeType?: LeaseTimeType
 }

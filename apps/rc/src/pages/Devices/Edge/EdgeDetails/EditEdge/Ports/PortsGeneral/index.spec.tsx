@@ -173,14 +173,14 @@ describe('EditEdge ports - ports general', () => {
       })
 
     await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
-    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
     await userEvent.clear(ipInput)
     await userEvent.type(ipInput, '1.2.3')
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
     await userEvent.clear(subnetInput)
     await userEvent.type(subnetInput, '2.2.2')
-    await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 3' }))
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     await screen.findByText('Please enter a valid IP address')
     await screen.findByText('Please enter a valid subnet mask')
@@ -203,16 +203,16 @@ describe('EditEdge ports - ports general', () => {
       })
 
     await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
-    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const ipInput1 = await screen.findByRole('textbox', { name: 'IP Address' })
     await userEvent.clear(ipInput1)
     await userEvent.type(ipInput1, '1.1.1.1')
-    await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 5' }))
     const ipInput2 = await screen.findByRole('textbox', { name: 'IP Address' })
     await userEvent.clear(ipInput2)
     await userEvent.type(ipInput2, '1.1.1.1')
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
-    await screen.findByText('The ports have overlapping subnets')
+    await screen.findAllByText('The ports have overlapping subnets')
   })
 
   it('cancel and go back to edge list', async () => {
@@ -253,7 +253,7 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 5' }))
     const portEnabled = await screen.findByRole('switch', { name: 'Port Enabled' })
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(portTypeSelect)
@@ -297,10 +297,10 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(portTypeSelect)
-    await user.click((await screen.findAllByText('WAN'))[1])
+    await user.click((await screen.findAllByText('WAN'))[2])
     const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
     await user.click(ipModeRadio)
     await screen.findByRole('textbox', { name: 'IP Address' })
@@ -323,13 +323,13 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 2' }))
     expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('local0')
-    await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 3' }))
     expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port1')
-    await user.click(await screen.findByRole('radio', { name: 'Port 4' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 4' }))
     expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('tap0')
-    await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
+    await user.click(await screen.findByRole('tab', { name: 'Port 5' }))
     expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port2')
   })
 
