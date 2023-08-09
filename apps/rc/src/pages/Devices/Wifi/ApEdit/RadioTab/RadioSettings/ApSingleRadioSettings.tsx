@@ -57,16 +57,16 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     const afcInfo = data?.apStatusData?.afcInfo ?? {}
     const warningMessages = [] as JSX.Element[]
 
-    if(true||afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
+    if(afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
       warningMessages.push(
-        <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+        <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='main-warning-message'>
           {$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}
         </p>
       )
 
-      if (true||afcInfo.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+      if (afcInfo.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         warningMessages.push(
-          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
             {$t({ defaultMessage: 'until its geo-location has been established' })}
           </p>
         )
@@ -74,7 +74,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
       if (afcInfo.afcStatus === AFCStatus.REJECTED || afcInfo.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
         warningMessages.push(
-          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
             {$t({ defaultMessage: 'Wait for PLM reply' })}
           </p>
         )
@@ -95,7 +95,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             style={{ marginTop: '16px' }}
             children={<>
               {/* eslint-disable max-len */}
-              <div style={{ width: '100%' }}>
+              <div style={{ width: '100%' }} key='switch-button'>
                 {isUseVenueSettings ?
                   <span>{$t({ defaultMessage: 'On' })}</span>:
                   <Switch onChange={handleEnableChanged} />
