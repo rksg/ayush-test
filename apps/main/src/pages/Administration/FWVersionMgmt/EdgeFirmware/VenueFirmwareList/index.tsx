@@ -60,7 +60,7 @@ export function VenueFirmwareList () {
       key: 'versions[0].name',
       dataIndex: 'versions[0].name',
       sorter: { compare: sortProp('versions[0].name', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.versions?.[0]?.name || '--'
       },
       width: 120
@@ -70,7 +70,7 @@ export function VenueFirmwareList () {
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.versions?.[0]) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
@@ -84,7 +84,7 @@ export function VenueFirmwareList () {
       key: 'updatedDate',
       dataIndex: 'updatedDate',
       sorter: { compare: sortProp('updatedDate', dateSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.updatedDate) return '--'
         return toUserDate(row.updatedDate)
       },

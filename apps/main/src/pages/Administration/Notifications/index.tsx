@@ -99,7 +99,7 @@ export const NotificationsTable = () => {
       key: 'email',
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return renderDataWithStatus(row.email, row.emailEnabled)
       }
     },
@@ -108,7 +108,7 @@ export const NotificationsTable = () => {
       key: 'mobile',
       dataIndex: 'mobile',
       sorter: { compare: sortProp('mobile', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return renderDataWithStatus(row.mobile, row.mobileEnabled)
       }
     }

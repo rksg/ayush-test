@@ -110,7 +110,6 @@ export const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const selectRule = (
     <Select
       data-testid='selectRogueRule'
-      defaultValue={type}
       style={{ width: '100%', marginRight: '5px' }}>
       <Option value={RogueRuleType.AD_HOC_RULE}>
         {$t({ defaultMessage: 'Ad Hoc' })}
@@ -157,7 +156,6 @@ export const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const selectCategory = (
     <Select
       data-testid='selectRogueCategory'
-      defaultValue={classification}
       onChange={() => drawerForm.validateFields()}
       style={{ width: '100%', marginRight: '5px' }}>
       <Option value={RogueCategory.IGNORED}>
