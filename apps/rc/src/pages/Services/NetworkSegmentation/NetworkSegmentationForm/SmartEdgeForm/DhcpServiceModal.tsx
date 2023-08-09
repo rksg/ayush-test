@@ -1,30 +1,20 @@
 import { useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsFormLegacy } from '@acx-ui/components'
-import { EdgeDhcpSettingForm }                                          from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation }                                from '@acx-ui/rc/services'
-import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
-
-
+import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
+import { EdgeDhcpSettingForm }                                    from '@acx-ui/rc/components'
+import { useAddEdgeDhcpServiceMutation }                          from '@acx-ui/rc/services'
+import { convertEdgeDHCPFormDataToApiPayload, EdgeDhcpSetting }   from '@acx-ui/rc/utils'
 
 export const DhcpServiceModal = () => {
-
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
   const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
     try {
-      const payload = _.cloneDeep(data)
-
-      // should not create service with id
-      payload.dhcpPools.forEach(item => item.id = '')
-      payload.dhcpOptions?.forEach(item => item.id = '')
-      payload.hosts?.forEach(item => item.id = '')
-
+      const payload = convertEdgeDHCPFormDataToApiPayload(data)
       await addEdgeDhcp({ payload: payload }).unwrap()
       setVisible(false)
     } catch {
@@ -36,15 +26,15 @@ export const DhcpServiceModal = () => {
   }
 
   const content = <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
-    <StepsFormLegacy
+    <StepsForm
       onFinish={handleAddEdgeDhcp}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsForm.StepForm>
         <EdgeDhcpSettingForm />
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+      </StepsForm.StepForm>
+    </StepsForm>
   </Loader>
 
   return (

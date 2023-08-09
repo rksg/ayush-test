@@ -42,10 +42,10 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       searchable: true,
       disable: true,
       sorter: true,
-      render: (data) => {
+      render: (_, { osType }) => {
         return <OSIconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={osType}>
+            { getOsTypeIcon(osType) }
           </Tooltip>
         </OSIconContainer>
       }
@@ -57,7 +57,7 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       searchable: true,
       sorter: true,
       disable: true,
-      render: (data) => data || '--'
+      render: (_, { clientMac }) => clientMac || '--'
     },
     {
       key: 'ipAddress',
@@ -65,7 +65,7 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       dataIndex: 'ipAddress',
       searchable: true,
       sorter: true,
-      render: (data) => data || '--'
+      render: (_, { ipAddress }) => ipAddress || '--'
     },
     {
       key: 'Username',
@@ -73,7 +73,7 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       dataIndex: 'Username',
       searchable: true,
       sorter: true,
-      render: (data) => data || '--'
+      render: (_, { Username: username }) => username || '--'
     },
     {
       key: 'hostname',

@@ -54,7 +54,7 @@ const RogueAPDetectionVenueDetail = () => {
       dataIndex: 'city',
       sorter: { compare: sortProp('country', defaultSort) },
       key: 'city',
-      render: (data, row) => {
+      render: (_, row) => {
         let trimCity = row.city?.trim()
         if (trimCity && trimCity[0] === ',') {
           trimCity.replace(',', '')
@@ -67,7 +67,7 @@ const RogueAPDetectionVenueDetail = () => {
       dataIndex: 'rogueAps',
       key: 'rogueAps',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.rogueAps ?? 0
       }
     }

@@ -72,7 +72,7 @@ export const switchlist = [{
 
 export const cliTemplate = {
   applyLater: true,
-  cli: 'test CLI commands',
+  cli: 'test CLI commands ${test}',
   id: 'f14c4116e30743bfa3180ba4b68cd069',
   name: 'testtt',
   reload: true,

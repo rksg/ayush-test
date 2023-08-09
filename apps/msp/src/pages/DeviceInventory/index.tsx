@@ -162,7 +162,7 @@ export function DeviceInventory () {
       filterable: Object.entries(deviceTypeMapping)
         .map(([key, value])=>({ key, value: $t(value) })),
       key: 'deviceType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceTypeString(row, intl)
       }
     },
@@ -191,7 +191,7 @@ export function DeviceInventory () {
       dataIndex: 'deviceStatus',
       sorter: true,
       key: 'deviceStatus',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceOperStatus(row, intl)
       }
     },

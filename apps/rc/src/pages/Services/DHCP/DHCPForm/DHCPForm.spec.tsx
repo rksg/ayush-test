@@ -9,7 +9,6 @@ import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved,
   fireEvent } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -41,14 +40,22 @@ const dhcpProfilesList = [
 async function fillInBeforeSettings (dhcpName: string) {
   const insertInput = screen.getByLabelText('Service Name')
   fireEvent.change(insertInput, { target: { value: dhcpName } })
-  insertInput.focus()
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
 }
 
-describe.skip('DHCPForm', () => {
-  it('should create DHCP successfully', async () => {
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
+jest.mock('./DHCPPool', () => ({
+  ...jest.requireActual('./DHCPPool'),
+  __esModule: true,
+  default: () => <div data-testid='DHCPPoolTable'><div>Add DHCP Pool</div></div>
+}))
+
+describe('DHCPForm', () => {
+  beforeEach(() => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
@@ -56,15 +63,17 @@ describe.skip('DHCPForm', () => {
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
         res(ctx.json(dhcpProfilesList))
       ),
-      rest.put(DHCPUrls.updateDHCPService.url,
-        (_, res, ctx) => res(ctx.status(202))
-      ),
       rest.post(
         DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))
-      ))
+      ),
+      rest.put(DHCPUrls.updateDHCPService.url,
+        (_, res, ctx) => res(ctx.status(202))
+      )
+    )
 
-
+  })
+  it('should create DHCP successfully', async () => {
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 
     render(<Provider><DHCPForm /></Provider>, {
@@ -74,7 +83,6 @@ describe.skip('DHCPForm', () => {
     fillInBeforeSettings('TEST14')
 
     fillInBeforeSettings('DhcpConfigServiceProfile1')
-
 
     await screen.findByRole('heading', { level: 1, name: 'Add DHCP for Wi-Fi Service' })
 
@@ -97,29 +105,16 @@ describe.skip('DHCPForm', () => {
     // await userEvent.click(screen.getByText('Finish'))
     // await new Promise((r)=>{setTimeout(r, 1000)})
 
-  }, 25000)
-
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
-
-    render(<Provider><DHCPForm /></Provider>, {
-      route: { params }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DHCP Services'
-    })).toBeVisible()
-  }, 25000)
+  })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
+    const params = { tenantId: 'tenant-id' }
 
     render(<Provider><DHCPForm /></Provider>, {
       route: { params }
     })
+
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -127,33 +122,35 @@ describe.skip('DHCPForm', () => {
     expect(screen.getByRole('link', {
       name: 'DHCP'
     })).toBeVisible()
-  }, 25000)
+  })
 
   it('should cancel DHCP form successfully', async () => {
-
-    mockServer.use(
-      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-        res(ctx.json({ COMMON: '{}' }))
-      ),
-      rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
-        res(ctx.json(dhcpProfilesList))
-      ),
-      rest.post(
-        DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))
-      ))
-
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 
-    render(<Provider><DHCPForm /></Provider>, {
+    render(<Provider><DHCPForm editMode={false}/></Provider>, {
       route: { params }
     })
 
     fillInBeforeSettings('TEST14')
 
     await userEvent.click(screen.getByText('Cancel'))
-    await new Promise((r)=>{setTimeout(r, 100)})
 
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = { tenantId: 'tenant-id' }
+
+    render(<Provider><DHCPForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DHCP Services'
+    })).toBeVisible()
   })
 })
