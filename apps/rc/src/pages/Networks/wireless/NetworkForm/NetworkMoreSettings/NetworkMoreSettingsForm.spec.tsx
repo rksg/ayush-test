@@ -93,7 +93,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(asFragment()).toMatchSnapshot()
 
     const tabs = await screen.findAllByRole('tab')
-    expect(tabs.length).toBe(5)
+    expect(tabs.length).toBe(4) // The Advanced tab is hidden when the nwtwork type is not Captive Portal
     const networkControlTab = tabs[1]
     await userEvent.click(networkControlTab)
 
