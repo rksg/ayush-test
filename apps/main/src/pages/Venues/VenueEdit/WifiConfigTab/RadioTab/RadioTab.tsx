@@ -125,11 +125,15 @@ export function RadioTab () {
           isDirty: false
         })
 
-        setEditRadioContextData({
+        const newRadioContextData = {
           ...editRadioContextData,
           isLoadBalancingDataChanged: false,
           isClientAdmissionControlDataChanged: false
-        })
+        }
+        delete newRadioContextData.apModels
+        delete newRadioContextData.radioData
+
+        setEditRadioContextData(newRadioContextData)
       }
 
       if (redirect) {
