@@ -64,20 +64,32 @@ export const mockedDpskPassphraseList = {
       vlanId: 3,
       mac: undefined,
       numberOfDevices: 2,
-      createdDate: '2022-12-22T14:20:00'
+      expirationDate: '2022-12-25T08:39:00',
+      createdDate: '2022-12-22T14:20:00',
+      revocationDate: '2022-12-24T08:00:00.000+0000',
+      revocationReason: 'Revoked by Jacky'
+    },
+    {
+      id: '__PASSPHRASE_ID_4__',
+      passphrase: 'zxcvb123!@#$%',
+      username: 'DPSK_USER_4',
+      vlanId: 4,
+      mac: 'AA:BB:CC:11:22:44',
+      numberOfDevices: 1,
+      createdDate: '2022-12-08T09:00:00'
     }
   ],
   page: 1,
-  totalCount: 3,
+  totalCount: 4,
   totalPages: 1
 }
 
 export const mockedDpskPassphraseListWithPersona = {
   data: [
     {
-      id: '__PASSPHRASE_ID_1__',
+      id: '__PASSPHRASE_ID_99__',
       passphrase: 'abced12345',
-      username: 'DPSK_USER_1',
+      username: 'DPSK_USER_1_With_Persona',
       vlanId: 1,
       mac: null,
       numberOfDevices: 3,

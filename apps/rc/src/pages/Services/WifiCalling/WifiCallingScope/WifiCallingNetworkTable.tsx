@@ -12,7 +12,7 @@ import {
   WifiCallingActionPayload,
   WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -31,7 +31,9 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -45,7 +47,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'nwSubType',
       key: 'nwSubType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
     },
@@ -54,7 +56,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.venues.count
       }
     },
@@ -62,10 +64,11 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
       key: 'activate',
-      render: (data, row) => {
+      render: (_, row) => {
         return <Switch
           checked={state.networkIds.includes(row.id)}
-          onClick={() => {
+          onClick={(_, e) => {
+            e.stopPropagation()
             state.networkIds.includes(row.id)
               ? deactivateNetwork([row])
               : activateNetwork([row])
@@ -141,7 +144,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   )
 }

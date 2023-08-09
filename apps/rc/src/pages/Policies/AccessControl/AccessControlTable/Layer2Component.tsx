@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }     from '@acx-ui/rc/components'
 import {
-  useDelL2AclPolicyMutation,
-  useGetAccessControlProfileListQuery,
+  doProfileDelete,
+  useDelL2AclPoliciesMutation,
   useGetEnhancedL2AclProfileListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                     from '@acx-ui/user'
+import { filterByAccess, hasAccess }                          from '@acx-ui/user'
 
-import { AddModeProps } from '../AccessControlForm/AccessControlForm'
-import Layer2Drawer     from '../AccessControlForm/Layer2Drawer'
+import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
+import Layer2Drawer                        from '../AccessControlForm/Layer2Drawer'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
 
 const defaultPayload = {
   searchString: '',
@@ -23,20 +25,24 @@ const defaultPayload = {
     'id',
     'name',
     'description',
-    'macAddress',
-    'networkIds'
+    'macAddressCount',
+    'networkIds',
+    'networkCount'
   ],
-  page: 1
+  page: 1,
+  sortField: 'macAddressCount',
+  sortOrder: 'DESC'
 }
 
 const Layer2Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const form = Form.useFormInstance()
   const [addModeStatus, setAddModeStatus] = useState(
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ delL2AclPolicy ] = useDelL2AclPolicyMutation()
+  const [ deleteFn ] = useDelL2AclPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -47,16 +53,6 @@ const Layer2Component = () => {
       ...defaultNetworkPayload,
       filters: {
         id: [...networkIds]
-      }
-    }
-  })
-
-  const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: params
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        data: data?.map(accessControl => accessControl?.l2AclPolicy?.id)
       }
     }
   })
@@ -102,37 +98,27 @@ const Layer2Component = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
+  const doDelete = (selectedRows: L2AclPolicy[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networkIds }], clearSelection) => {
-        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
-            })
-          })
-          clearSelection()
-        } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              delL2AclPolicy({ params: { ...params, l2AclPolicyId: id } }).then(clearSelection)
-            }
-          })
-        }
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
@@ -144,22 +130,24 @@ const Layer2Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <Layer2Drawer
-      onlyAddMode={addModeStatus}
-    />
-    <Table<L2AclPolicy>
-      settingsId='policies-access-control-layer2-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-    />
+    <Form form={form}>
+      <Layer2Drawer
+        onlyAddMode={addModeStatus}
+      />
+      <Table<L2AclPolicy>
+        settingsId='policies-access-control-layer2-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
+    </Form>
   </Loader>
 }
 
@@ -180,7 +168,7 @@ function useColumns (
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Layer2Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
@@ -196,22 +184,21 @@ function useColumns (
       sorter: true
     },
     {
-      key: 'macAddress',
+      key: 'macAddressCount',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddress',
+      dataIndex: 'macAddressCount',
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds?.length
+      render: (_, row) => row.networkIds?.length
     }
   ]
 

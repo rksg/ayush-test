@@ -23,6 +23,7 @@ export const PhotoDiv = styled.div`
   .ant-image-img{
     max-height: 125px;
     vertical-align: middle;
+    padding-bottom: 8px;
   }
 `
 export const RoundIconDiv = styled.div`

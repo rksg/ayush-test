@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 
 import { Row, Col, Form, Input, Select } from 'antd'
 import _                                 from 'lodash'
@@ -11,10 +11,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { SearchOutlined }                        from '@acx-ui/icons'
-import { countryCodes, GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  wifiCountryCodes,
+  GoogleMapWithPreference,
+  usePlacesAutocomplete
+} from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -33,6 +37,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { MessageMapping }   from '../../Administration/AccountSettings/MessageMapping'
 import { VenueEditContext } from '../VenueEdit'
@@ -154,7 +159,7 @@ export function VenuesForm () {
   useEffect(() => {
     if (data) {
       const defaultCountryCode = data.address?.countryCode
-      ?? countryCodes.find(code => code.label === data.address.country)?.value
+      ?? wifiCountryCodes.find(code => code.label === data.address.country)?.value
       ?? ''
       setCountryCode(defaultCountryCode)
 
@@ -183,6 +188,23 @@ export function VenuesForm () {
     }
   }, [data, isMapEnabled, window.google])
 
+  useEffect(() => {
+    if (action === 'edit' && address.country && data ) {
+      const isSameCountry = (data.address.country === address.country) || false
+      let errors = []
+      if (!isSameCountry) {
+        errors.push(intl.$t(
+          { defaultMessage: 'Address must be in {country}' },
+          { country: data.address.country }
+        ))
+      }
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        errors
+      }])
+    }
+  }, [data, address, action])
+
   const venuesListPayload = {
     searchString: '',
     fields: ['name', 'id'],
@@ -191,8 +213,10 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
-  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
+    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+      return Promise.reject(intl.$t(validationMessages.name))
+    }
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
@@ -201,50 +225,38 @@ export function VenuesForm () {
 
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
-    const isSameValue = value ===
-      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+    const isSameValue = value === formRef.current?.getFieldValue('address')?.addressLine
+    const isSameCountry = (data && (data?.address.country === address?.country)) || false
 
-    if(Object.keys(address).length === 0){
+    if(!address.addressLine){
       return Promise.reject(
         intl.$t({ defaultMessage: 'Please select address from suggested list' })
       )
     }
 
-    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
+    if (isEdit && !_.isEmpty(value) && isSameValue && !isSameCountry) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
+        intl.$t(
+          { defaultMessage: 'Address must be in {country}' },
+          { country: data?.address.country }
+        )
       )
     }
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    updateAddress({})
-    const autocomplete = new google.maps.places.Autocomplete(event.target)
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
-      const isSameCountry = (data && (data?.address.country === address.country)) || false
-      setSameCountry(isSameCountry)
-      let errorList = []
-
-      if (action === 'edit' && !isSameCountry) {
-        errorList.push(
-          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
-      }
-
-      formRef.current?.setFields([{
-        name: ['address', 'addressLine'],
-        value: place.formatted_address,
-        errors: errorList
-      }])
-
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
-      updateAddress(address)
-      setZoom(16)
-    })
+  const addressOnChange = async (place: google.maps.places.PlaceResult) => {
+    const { latlng, address } = await addressParser(place)
+    formRef.current?.setFieldValue('address',
+      action === 'edit' ? { ...address, countryCode } : address) // Keep countryCode for edit mode
+    setMarker(latlng)
+    setCenter(latlng.toJSON())
+    updateAddress(address)
+    setZoom(16)
   }
+  const { ref: placeInputRef } = usePlacesAutocomplete({
+    onPlaceSelected: addressOnChange
+  })
 
   const handleAddVenue = async (values: VenueExtended) => {
     try {
@@ -347,10 +359,9 @@ export function VenuesForm () {
                     allowClear
                     placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
-                    onChange={addressOnChange}
                     data-testid='address-input'
+                    ref={placeInputRef}
                     disabled={!isMapEnabled}
-                    value={address.addressLine}
                   />
                 </Form.Item>
                 {isMapEnabled ?
@@ -379,7 +390,7 @@ export function VenuesForm () {
                 name={['address', 'countryCode']}
               >
                 <Select
-                  options={countryCodes}
+                  options={wifiCountryCodes}
                   onChange={(countryCode: string) => setCountryCode(countryCode)}
                   showSearch
                   allowClear

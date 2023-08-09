@@ -4,6 +4,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddAdaptivePolicyMutation,
   useAddPolicyConditionsMutation,
@@ -32,14 +33,16 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const { $t } = useIntl()
   const { editMode = false, drawerMode = false } = props
   const { policyId, templateId } = useParams()
-  // eslint-disable-next-line max-len
-  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }))
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()
   const [addConditions] = useAddPolicyConditionsMutation()
   const [updateConditions] = useUpdatePolicyConditionsMutation()
   const [deleteCondition] = useDeletePolicyConditionsMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [updateAdaptivePolicy] = useUpdateAdaptivePolicyMutation()
   // eslint-disable-next-line max-len
@@ -172,12 +175,22 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           title={editMode
             ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
             : $t({ defaultMessage: 'Add Adaptive Policy' })}
-          breadcrumb={[
-            // eslint-disable-next-line max-len
-            { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          breadcrumb={isNavbarEnhanced ? [
+            { text: $t({ defaultMessage: 'Network Control' }) },
+            {
+              text: $t({ defaultMessage: 'Policies & Profiles' }),
+              link: getPolicyListRoutePath(true)
+            },
             { text: $t({ defaultMessage: 'Adaptive Policy' }),
-              // eslint-disable-next-line max-len
-              link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }) }
+              link: tablePath }
+          ] : [
+            {
+              text: $t({ defaultMessage: 'Policies & Profiles' }),
+              link: getPolicyListRoutePath(true)
+            },
+            { text: $t({ defaultMessage: 'Adaptive Policy' }),
+              link: tablePath
+            }
           ]}
         />
       }

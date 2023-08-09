@@ -11,6 +11,7 @@ import { GroupTable }              from './GroupTable'
 import { MultipleSorterTable }     from './MultipleSorterTable'
 import { MultiSelectTable }        from './MultiSelectTable'
 import { NoSelectedBarTable }      from './NoSelectedBarTable'
+import { SelectAllPagesTable }     from './SelectAllPagesTable'
 import { SingleSelectTable }       from './SingleSelectTable'
 import { TableWithIconButton }     from './TableWithIconButton'
 
@@ -20,6 +21,7 @@ storiesOf('Table', module)
   .add('With Filters', FilteredTable)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Multi Select', MultiSelectTable)
+  .add('Select Data from All Pages', SelectAllPagesTable)
   .add('Single Select', SingleSelectTable)
   .add('Column Settings', ColumnSettings)
   .add('No Selected Bar Table', NoSelectedBarTable)

@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { networkApi }      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
@@ -27,6 +28,26 @@ import NetworkFormContext from '../NetworkFormContext'
 import { Venues } from './Venues'
 
 jest.mock('socket.io-client')
+
+type MockDialogProps = React.PropsWithChildren<{
+  visible: boolean
+  onOk?: () => void
+  onCancel?: () => void
+}>
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkApGroupDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>,
+  NetworkVenueScheduleDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkVenueScheduleDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>
+}))
+
 
 function wrapper ({ children }: { children: React.ReactElement }) {
   return <Provider>
@@ -79,11 +100,12 @@ describe('Create Network: Venues Step', () => {
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
     fireEvent.click(within(row).getByText('All APs'))
-    const dialog = await screen.findByRole('dialog', { name: /Select APs/i })
+    const dialog = await screen.findByTestId('NetworkApGroupDialog')
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
     fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should render clone mode correctly', async () => {
@@ -103,8 +125,9 @@ describe('Create Network: Venues Step', () => {
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
     fireEvent.click(within(row).getByText('24/7'))
 
-    const dialog = await screen.findByRole('dialog', { name: /Schedule for Network/i })
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('Activate and Deactivate Network by toogleButton', async () => {
@@ -134,8 +157,9 @@ describe('Create Network: Venues Step', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    fireEvent.click(await body.findByText('My-Venue'))
-    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    const row = await body.findByRole('row', { name: /My-Venue/ })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    const activateButton = await screen.findByRole('button', { name: 'Activate' })
     fireEvent.click(activateButton)
 
     const rows = await screen.findAllByRole('switch')

@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useRef, useCallback, Component } from 'react'
+import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRefObject, ReactNode, RefObject } from 'react'
 
 import {
   DatePicker as AntDatePicker,
@@ -7,8 +7,8 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { ClockOutlined }              from '@acx-ui/icons'
+import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
+import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
   defaultRanges,
   DateRange,
@@ -19,8 +19,10 @@ import {
   dateRangeForLast
 } from '@acx-ui/utils'
 
-import { DatePickerFooter } from './DatePickerFooter'
-import * as UI              from './styledComponents'
+import { Tooltip } from '../Tooltip'
+
+import { DatePickerFooter, DateTimePickerFooter } from './DatePickerFooter'
+import * as UI                                    from './styledComponents'
 
 import type { RangePickerProps }    from 'antd/lib/date-picker/generatePicker'
 import type { CommonPickerMethods } from 'antd/lib/date-picker/generatePicker/interface'
@@ -82,7 +84,7 @@ export const RangePicker = ({
 
   useEffect(
     () => setRange(selectedRange),
-    [selectedRange.startDate, selectedRange.endDate]
+    [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   useEffect(() => {
@@ -154,7 +156,91 @@ export const DatePicker = (props: AntDatePickerProps) => (
   <UI.Wrapper>
     <AntDatePicker
       {...props}
+      format={userDateTimeFormat(DateFormatEnum.DateFormat)}
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
     />
   </UI.Wrapper>
 )
+
+interface DateTimePickerProps {
+  applyFooterMsg?: string;
+  disabled?: boolean;
+  icon?: ReactNode;
+  initialDate: MutableRefObject<Moment>;
+  onApply: (value: Moment) => void;
+  title?: string;
+  disabledDateTime?: {
+    disabledDate?: (value: Moment) => boolean,
+    disabledHours?: (value: Moment) => number[],
+    disabledMinutes?: (value: Moment) => number[],
+  }
+}
+
+let currentDateTimePicker: {
+  ref: RefObject<boolean>,
+  onClose: CallableFunction
+}
+
+export function useClosePreviousDateTimePicker (onClose: CallableFunction, visible: boolean) {
+  const wasVisible = useRef<boolean>(false)
+  useEffect(() => {
+    if (visible && !wasVisible.current && currentDateTimePicker?.ref !== wasVisible) {
+      currentDateTimePicker?.onClose?.()
+      currentDateTimePicker = { ref: wasVisible, onClose }
+    }
+    wasVisible.current = visible
+  }, [onClose, wasVisible, visible])
+}
+
+export const DateTimePicker = ({
+  applyFooterMsg,
+  disabled,
+  icon,
+  initialDate,
+  onApply,
+  title,
+  disabledDateTime
+}: DateTimePickerProps) => {
+  const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [date, setDate] = useState(() => initialDate.current)
+  const [open, setOpen] = useState(false)
+  useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
+  return <Tooltip placement='right' title={title}>
+    <UI.HiddenDateInput ref={wrapperRef}>
+      <AntDatePicker
+        className='datepicker'
+        dropdownClassName='datepicker-popover'
+        picker='date'
+        disabled={disabled}
+        value={date}
+        open={open}
+        onClick={() => setOpen(true)}
+        showTime={false}
+        showNow={false}
+        showToday={false}
+        placement='topLeft'
+        bordered={false}
+        allowClear={false}
+        suffixIcon={icon ? icon : <ClockOutlined />}
+        disabledDate={disabledDate}
+        getPopupContainer={(node) => node}
+        onChange={value => setDate(value!)}
+        renderExtraFooter={() =>
+          <DateTimePickerFooter
+            value={date}
+            setValue={setDate}
+            applyFooterMsg={applyFooterMsg}
+            onApply={() => {
+              onApply(date)
+              setOpen(false)
+            }}
+            onCancel={() => setOpen(false)}
+            disabledHours={disabledHours}
+            disabledMinutes={disabledMinutes}
+          />
+        }
+      />
+    </UI.HiddenDateInput>
+  </Tooltip>
+}

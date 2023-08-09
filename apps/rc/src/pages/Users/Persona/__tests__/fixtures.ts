@@ -1,3 +1,5 @@
+import moment from 'moment-timezone'
+
 import {
   DpskSaveData,
   MacRegistrationPool,
@@ -9,7 +11,8 @@ import {
   PropertyConfigs,
   PropertyConfigStatus,
   ConnectionMetering,
-  BillingCycleType
+  BillingCycleType,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -28,6 +31,13 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
+export const mockUnBlockedPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
@@ -35,17 +45,19 @@ export const mockPersona: Persona = {
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
   identityId: 'unit-id-1',
+  revoked: false,
   devices: [
     {
-      macAddress: '11:11:11:11:11:11',
+      macAddress: '11-11-11-11-11-11',
+      personaId: 'persona-id-1',
+      hasMacRegistered: true
+    },
+    {
+      macAddress: '11-11-11-11-11-12',
       personaId: 'persona-id-1'
     },
     {
-      macAddress: '11:11:11:11:11:12',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:13',
+      macAddress: '11-11-11-11-11-13',
       personaId: 'persona-id-1'
     }
   ],
@@ -58,7 +70,7 @@ export const mockPersona: Persona = {
     }
   ],
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
-  expirationEpoch: 1684000000
+  expirationDate: moment().add(-8, 'days').toISOString()
 }
 
 export const mockPersonaGroup: PersonaGroup = {
@@ -83,14 +95,16 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       name: 'persona-name-1',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-2',
       name: 'persona-name-2',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-3',
@@ -98,7 +112,8 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       groupId: 'persona-group-id-1',
       identityId: 'persona-identity-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     }
   ]
 }
@@ -144,9 +159,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     name: 'Class C',
     description: '',
     macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
+    dpskPoolId: 'dpsk-pool-1'
   }]
 }
 
@@ -225,6 +238,16 @@ export const mockDpskList = {
   },
   sort: []
 }
+
+export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
+  {
+    mac: '22:22:22:22:22:22',
+    online: true,
+    lastConnected: '06/15/2023 03:24 AM',
+    lastConnectedNetwork: 'test',
+    devicePassphrase: 'a%sdfa@gw342r3f'
+  }
+]
 
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,

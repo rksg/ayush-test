@@ -21,14 +21,14 @@ import {
   useMspCustomerListQuery,
   useCheckDelegateAdmin,
   useGetMspLabelQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
-  useTableQuery,
   MspEc
-} from '@acx-ui/rc/utils'
+} from '@acx-ui/msp/utils'
+import { useTableQuery }                                                          from '@acx-ui/rc/utils'
 import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -82,9 +82,9 @@ export function Integrators () {
           onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { name }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(name)}</Link>
         )
       }
     },
@@ -93,7 +93,7 @@ export function Integrators () {
       dataIndex: 'tenantType',
       key: 'tenantType',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.tenantType === AccountType.MSP_INTEGRATOR
           ? $t({ defaultMessage: 'Integrator' }) : $t({ defaultMessage: 'Installer' })
       }
@@ -112,9 +112,9 @@ export function Integrators () {
           }
         } : {}
       },
-      render: function (data) {
+      render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
     },
@@ -133,7 +133,7 @@ export function Integrators () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return (isPrimeAdmin || isAdmin)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)
@@ -220,7 +220,7 @@ export function Integrators () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     )
@@ -253,18 +253,18 @@ export function Integrators () {
         setSelected={() => {}}
         tenantId={tenantId}
       />}
-      {setDrawerEcVisible && <AssignEcDrawer
+      {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
         setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}
-      <ResendInviteModal
+      {modalVisible && <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
         tenantId={tenantId}
-      />
+      />}
     </>
   )
 }

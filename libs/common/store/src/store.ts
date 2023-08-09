@@ -24,10 +24,13 @@ import {
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
+  baseResidentPortalApi as residentPortalApi,
   baseConnectionMeteringApi as connectionMeteringApi,
   dataApi,
   dataApiSearch,
+  recommendationApi,
   serviceGuardApi,
+  reportsApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
   videoCallQoeApi,
@@ -46,6 +49,8 @@ export const store = configureStore({
     [timelineApi.reducerPath]: timelineApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
     [dataApiSearch.reducerPath]: dataApiSearch.reducer,
+    [reportsApi.reducerPath]: reportsApi.reducer,
+    [recommendationApi.reducerPath]: recommendationApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
@@ -68,7 +73,8 @@ export const store = configureStore({
     [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer,
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
-    [sigPackApi.reducerPath]: sigPackApi.reducer
+    [sigPackApi.reducerPath]: sigPackApi.reducer,
+    [residentPortalApi.reducerPath]: residentPortalApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -83,6 +89,7 @@ export const store = configureStore({
       eventAlarmApi.middleware,
       timelineApi.middleware,
       dataApi.middleware,
+      recommendationApi.middleware,
       dataApiSearch.middleware,
       apApi.middleware,
       userApi.middleware,
@@ -106,7 +113,8 @@ export const store = configureStore({
       connectionMeteringApi.middleware,
       videoCallQoeApi.middleware,
       edgeFirewallApi.middleware,
-      sigPackApi.middleware
+      sigPackApi.middleware,
+      residentPortalApi.middleware
     ])
   },
 

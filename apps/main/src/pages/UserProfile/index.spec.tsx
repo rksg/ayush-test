@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
+
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 import { RolesEnum }      from '@acx-ui/types'
@@ -19,12 +21,23 @@ const userProfile = {
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
-  detailLevel: 'su'
+  detailLevel: 'su',
+  preferredLanguage: 'en-US'
 } as UserProfileInterface
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/msp/components'),
+  MultiFactor: () => <div data-testid='MultiFactor' />
+}))
+
+jest.mock('./PreferredLanguageFormItem', () => ({
+  PreferredLanguageFormItem: () => <div data-testid={'rc-PreferredLanguageFormItem'}
+    title='PreferredLanguageFormItem' />
 }))
 
 describe('UserProfile', () => {
@@ -51,5 +64,9 @@ describe('UserProfile', () => {
 
     expect(screen.getByText('YYYY/MM/DD')).toBeVisible()
     expect(screen.getByText('Super User')).toBeVisible()
+
+    userEvent.click(screen.getByRole('tab', { name: 'Security' }))
+    expect(await screen.findByTestId('MultiFactor')).toBeVisible()
   })
+
 })

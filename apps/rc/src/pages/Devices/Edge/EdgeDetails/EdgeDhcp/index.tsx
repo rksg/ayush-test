@@ -5,6 +5,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, Tabs }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
 import {
   useGetDhcpHostStatsQuery,
@@ -14,10 +15,10 @@ import {
 import {
   DhcpPoolStats,
   EdgeDhcpHostStatus,
-  RequestPayload,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 
 import ManageDhcpDrawer from './ManageDhcpDrawer'
 import * as UI          from './styledComponents'
@@ -30,6 +31,7 @@ export const EdgeDhcp = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const getDhcpPoolStatsPayload = {
     fields: [
       'id',
@@ -54,7 +56,11 @@ export const EdgeDhcp = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({ payload: getDhcpHostStatsPayload })
+  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
+    payload: getDhcpHostStatsPayload
+  },{
+    skip: !isEdgeReady
+  })
 
   useEffect(() => {
     setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)

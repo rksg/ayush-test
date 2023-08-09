@@ -1,13 +1,15 @@
-import { useIntl } from 'react-intl'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import {
   Button,
   PageHeader,
   Table,
   TableProps,
-  Loader
+  Loader,
+  TableColumn
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -26,7 +28,8 @@ import {
   displayDeviceCountLimit
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { RolesEnum }                                               from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
 
 import { displayDefaultAccess } from '../utils'
 
@@ -43,6 +46,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -83,15 +87,33 @@ export default function DpskTable () {
     }
   ]
 
+  const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
+    ? (isNavbarEnhanced ? [
+      { text: intl.$t({ defaultMessage: 'Network Control' }) },
+      {
+        text: intl.$t({ defaultMessage: 'My Services' }),
+        link: getServiceListRoutePath(true)
+      }
+    ] : [{
+      text: intl.$t({ defaultMessage: 'My Services' }),
+      link: getServiceListRoutePath(true)
+    }])
+    : []
+
+  const title = !hasRoles(RolesEnum.DPSK_ADMIN)
+    ? intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
+    : <Space split={<Divider type='vertical'/>}>
+      <span>{intl.$t({ defaultMessage: 'DPSK Management' })}</span>
+      <span>{intl.$t({ defaultMessage: 'DPSK Services ({count})' },
+        { count: tableQuery.data?.totalCount })}
+      </span>
+    </Space>
+
   return (
     <>
       <PageHeader
-        title={
-          intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
-        }
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        title={title}
+        breadcrumb={breadCrumb}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
@@ -108,7 +130,7 @@ export default function DpskTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -119,7 +141,7 @@ export default function DpskTable () {
 
 function useColumns () {
   const intl = useIntl()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
   const { networkNameMap } = useNetworkListQuery({
@@ -152,7 +174,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -161,7 +183,7 @@ function useColumns () {
               serviceId: row.id!,
               activeTab: DpskDetailsTabKey.OVERVIEW
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -173,11 +195,11 @@ function useColumns () {
       sorter: true,
       filterKey: 'passphraseFormat',
       filterable: passphraseFormatOptions,
-      render: function (data) {
+      render: function (_, { passphraseFormat }) {
         return transformDpskNetwork(
           intl,
           DpskNetworkType.FORMAT,
-          data as string
+          passphraseFormat
         )
       }
     },
@@ -192,7 +214,7 @@ function useColumns () {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformAdvancedDpskExpirationText(
           intl,
           {
@@ -208,33 +230,33 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.networkIds || row.networkIds.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
         return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
       }
     },
-    {
-      key: 'deviceCountLimit',
-      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
-      dataIndex: 'deviceCountLimit',
-      show: isCloudpathEnabled,
-      sorter: true,
-      render: function (data, row) {
-        return displayDeviceCountLimit(row.deviceCountLimit)
-      }
-    },
-    {
-      key: 'policyDefaultAccess',
-      title: intl.$t({ defaultMessage: 'Default Access' }),
-      dataIndex: 'policyDefaultAccess',
-      show: isCloudpathEnabled,
-      sorter: true,
-      render: function (data, row) {
-        return displayDefaultAccess(row.policyDefaultAccess)
-      }
-    }
+    ...(isCloudpathEnabled
+      ? [{
+        key: 'deviceCountLimit',
+        title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+        dataIndex: 'deviceCountLimit',
+        sorter: true,
+        render: function (_, row) {
+          return displayDeviceCountLimit(row.deviceCountLimit)
+        }
+      } as TableColumn<DpskSaveData>,
+      {
+        key: 'policyDefaultAccess',
+        title: intl.$t({ defaultMessage: 'Default Access' }),
+        dataIndex: 'policyDefaultAccess',
+        sorter: true,
+        render: function (_, row) {
+          return displayDefaultAccess(row.policyDefaultAccess)
+        }
+      } as TableColumn<DpskSaveData>]
+      : [])
   ]
 
   return columns

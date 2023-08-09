@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
-import { ArrowUpOutlined, ArrowDownOutlined }                                  from '@ant-design/icons'
-import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
-import { useWatch }                                                            from 'antd/lib/form/Form'
-import _                                                                       from 'lodash'
-import moment                                                                  from 'moment-timezone'
-import { useIntl }                                                             from 'react-intl'
+import { ArrowUpOutlined, ArrowDownOutlined }                                              from '@ant-design/icons'
+import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Typography } from 'antd'
+import { useWatch }                                                                        from 'antd/lib/form/Form'
+import _                                                                                   from 'lodash'
+import moment                                                                              from 'moment-timezone'
+import { useIntl }                                                                         from 'react-intl'
+import styled                                                                              from 'styled-components'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                    from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip, DatePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -37,12 +38,15 @@ import {
   UnitPersonaConfig,
   VenueLanPorts,
   BillingCycleType,
-  ConnectionMetering
+  ConnectionMetering,
+  PropertyDpskSetting
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
-
-
+const Info = styled(Typography.Text)`
+  overflow-wrap: anywhere;
+  font-size: 12px;
+`
 
 function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
   const { uploadRate, downloadRate } = props
@@ -51,13 +55,15 @@ function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
     <div style={{ display: 'flex' }}>
       <div><ArrowDownOutlined /></div>
       <div>
-        <span>{downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</span>
+        <Info>
+          {downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}
+        </Info>
       </div>
     </div>
     <div style={{ display: 'flex', marginLeft: '4px' }}>
       <div><ArrowUpOutlined /></div>
       <div>
-        <span>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</span>
+        <Info>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
       </div>
     </div>
   </div>)
@@ -71,8 +77,8 @@ function DataConsumptionLable (props: {
   const { $t } = useIntl()
   const { billingCycleRepeat, biilingCycleType, billingCycleDays } = props
 
-  if (!billingCycleRepeat) return <span>{$t({ defaultMessage: 'Once' })}</span>
-  return <span>{ $t({ defaultMessage: `Repeating cycles {
+  if (!billingCycleRepeat) return <Info>{$t({ defaultMessage: 'Once' })}</Info>
+  return <Info>{ $t({ defaultMessage: `Repeating cycles {
     cycleType, select,
     CYCLE_MONTHLY {(Monthly)}
     CYCLE_WEEKLY {(Weekly)}
@@ -81,7 +87,7 @@ function DataConsumptionLable (props: {
   }` }, {
     cycleType: biilingCycleType,
     cycleDays: billingCycleDays
-  })}</span>
+  })}</Info>
 
 }
 
@@ -91,35 +97,35 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
   return (
     <div>
       <div>
-        <StepsForm.Title style={{ fontSize: '12px' }}>
+        <Subtitle level={5}>
           {$t({ defaultMessage: 'Rate limiting' })}
-        </StepsForm.Title>
+        </Subtitle>
       </div>
       <div style={{ display: 'flex' }}>
         <div style={{ width: '40%' }}>
-          <span style={{ fontSize: '10px' }}>{$t({ defaultMessage: 'Rate limit:' })}</span>
+          <Info>{$t({ defaultMessage: 'Rate limit:' })}</Info>
         </div>
-        <div style={{ width: '60%', fontSize: '10px' }}>
+        <div style={{ width: '60%', fontSize: '12px' }}>
           <RateLimitLabel uploadRate={data.uploadRate} downloadRate={data.downloadRate} />
         </div>
       </div>
       <div style={{ marginTop: '4px' }}>
-        <StepsForm.Title style={{ fontSize: '12px' }}>
-          {$t({ defaultMessage: 'Data comsumption' })}
-        </StepsForm.Title>
+        <Subtitle level={5}>
+          {$t({ defaultMessage: 'Data consumption' })}
+        </Subtitle>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
-          <span>{$t({ defaultMessage: 'MaxData:' })}</span>
+          <Info>{$t({ defaultMessage: 'MaxData:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
-          <span>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
-            $t({ defaultMessage: 'Unlimited' })}</span>
+          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
+            $t({ defaultMessage: 'Unlimited' })}</Info>
         </div>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
-          <span>{$t({ defaultMessage: 'Consumption cycle:' })}</span>
+          <Info>{$t({ defaultMessage: 'Consumption cycle:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
           <DataConsumptionLable
@@ -133,35 +139,54 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
 }
 
 
-function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
+function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEdit: boolean })
 {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = props
+  const { data, isEdit } = props
   const [modalVisible, setModalVisible] = useState(false)
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const shouldScrollDown = useRef<boolean>(!isEdit)
+
+  useEffect(()=> {
+    if (shouldScrollDown.current && profileId && bottomRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [profileId])
+
+
+
 
   return (
     <>
       <StepsForm.Title style={{ fontSize: '14px' }}>
         {$t({ defaultMessage: 'Traffic Control' })}
       </StepsForm.Title>
-      <Space direction={'vertical'} size={24} style={{ display: 'flex' }}>
+      <Space direction={'vertical'} size={24} style={{ display: 'flex', marginTop: '5px' }}>
         <Row>
           <Col span={21}>
             <Form.Item
-              label={$t({ defaultMessage: 'Connection Metering' })}
+              label={
+                <>
+                  {$t({ defaultMessage: 'Data Usage Metering' })}
+                  <Tooltip.Question
+                    // eslint-disable-next-line max-len
+                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering profile' })}
+                    placement='top'
+                  />
+                </>
+              }
               name={'meteringProfileId'}
-              // eslint-disable-next-line max-len
-              tooltip={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected connection metering policy' })}
             >
               <Select
                 allowClear
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 options={Array.from(profileMap,
                   (entry) => ({ label: entry[1].name, value: entry[0] }))}
+                onChange={()=> {shouldScrollDown.current = true}}
               />
             </Form.Item>
           </Col>
@@ -175,7 +200,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
             </Button>
           </Col>
         </Row>
-        {profileId &&
+        {profileId && profileMap.has(profileId) &&
         <>
           <Row>
             <Col span={24}>
@@ -190,23 +215,23 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 label={$t({ defaultMessage: 'Expiration Date of Data Consumption' })}
                 required
                 rules={[{ required: true }]}
-                getValueFromEvent={(onChange) => moment(onChange)}
+                getValueFromEvent={(onChange) => onChange ? moment(onChange): undefined}
                 getValueProps={(i) => ({ value: i ? moment(i) : undefined })}
                 initialValue={form.getFieldValue('expirationDate')}
               >
                 <DatePicker
-                  format={'YYYY/MM/DD'}
-                  style={{ width: '90%' }}
+                  style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
               </Form.Item>
+              <div ref={bottomRef}></div>
             </Col>
           </Row>
         </>}
       </Space>
 
       <Modal
-        title={$t({ defaultMessage: 'Add Connection Metering' })}
+        title={$t({ defaultMessage: 'Add Data Usage Metering' })}
         visible={modalVisible}
         type={ModalType.ModalStepsForm}
         children={<ConnectionMeteringForm
@@ -352,6 +377,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { $t } = useIntl()
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
+  const [rawFormValues, setRawFormValues]
+    = useState<PropertyUnitFormFields>({} as PropertyUnitFormFields)
   const [withNsg, setWithNsg] = useState(false)
   const [connectionMeteringList, setConnectionMeteringList] = useState<ConnectionMetering[]>([])
   const [qosSetting, setQosSetting] = useState<QosSetting>()
@@ -362,6 +389,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
     { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
   )
+
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [enableGuestUnit, setEnableGuestUnit]
@@ -430,7 +458,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           const {
-            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationEpoch
+            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
           } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
@@ -445,11 +473,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
           if (isConnectionMeteringEnabled) {
             form.setFieldValue('meteringProfileId', meteringProfileId)
-            form.setFieldValue('expirationDate', expirationEpoch ?
-              moment.unix(expirationEpoch) : undefined)
+            form.setFieldValue('expirationDate', expirationDate ?
+              moment(expirationDate) : undefined)
             setQosSetting({
               profileId: meteringProfileId,
-              expirationDate: expirationEpoch ? moment.unix(expirationEpoch): undefined
+              expirationDate: expirationDate ? moment(expirationDate): undefined
             })
           }
 
@@ -464,6 +492,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           // if no timeout would not render exactly
           setTimeout(() => {
             form.setFieldValue(['guestPersona', 'vlan'], vlan)
+            setRawFormValues(form.getFieldsValue)
           }, 10)
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
@@ -477,57 +506,71 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception for more detail information
-    const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona,
+    const { name, resident, personaId, unitPersona, guestPersona,
       ports, accessAp, apName, meteringProfileId, expirationDate } = formValues
-    // console.log('Edit action :: ', formValues)
+    const { name: rawName, resident: rawResident, unitPersona: rawUnitPersona,
+      guestPersona: rawGuestPersona } = rawFormValues
 
-    // update Unit
-    const unitUpdateResult = await updateUnitMutation({
-      params: { venueId, unitId },
-      payload: { name, resident }
-    }).unwrap()
+    const diffName = name !== rawName && name
+    const diffResident = _.omitBy(resident, (value, key) =>
+      _.isEqual(value, rawResident?.hasOwnProperty(key)
+        ? rawResident[key as keyof typeof resident] : {}))
+    const diffUnitPersona = _.omitBy(unitPersona, (value, key) =>
+      _.isEqual(value, rawUnitPersona?.hasOwnProperty(key)
+        ? rawUnitPersona[key as keyof typeof unitPersona] : {}))
+    const diffGuestPersona = _.omitBy(guestPersona, (value, key) =>
+      _.isEqual(value, rawGuestPersona?.hasOwnProperty(key)
+        ? rawGuestPersona[key as keyof typeof guestPersona] : {}))
+
+    const dpsks: PropertyDpskSetting[] = [
+      {
+        type: PropertyDpskType.UNIT,
+        passphrase: diffUnitPersona?.dpskPassphrase,
+        vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
+      },
+      {
+        type: PropertyDpskType.GUEST,
+        passphrase: diffGuestPersona?.dpskPassphrase,
+        vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan ?? unitPersona?.vlan
+      }
+    ]
 
     const profileId = isConnectionMeteringEnabled ?
       meteringProfileId !== qosSetting?.profileId ? meteringProfileId ?? null : undefined
       : undefined
 
-    let expirationEpoch = isConnectionMeteringEnabled ?
+    let newExpirationDate = isConnectionMeteringEnabled ?
       meteringProfileId ?
-        expirationDate && expirationDate !== qosSetting?.expirationDate ?
-          expirationDate.unix() : undefined
+        expirationDate && expirationDate.startOf('day') !== qosSetting?.expirationDate ?
+          expirationDate.startOf('day').toISOString() : undefined
         : qosSetting?.profileId ? null : undefined
       : undefined
 
-    if (expirationEpoch) {
-      expirationEpoch = expirationEpoch - expirationDate!!.unix() % 86400
-    }
+    // Update Unit
+    const unitUpdateResult = await updateUnitMutation({
+      params: { venueId, unitId },
+      payload: {
+        ...(diffName && { name: diffName }),
+        ...(!_.isEmpty(diffResident) && { resident: diffResident }),
+        dpsks
+      }
+    })
 
-    // update UnitPersona
-    const personaUpdateResult = withNsg
-      ? await patchPersona(personaId, {
-        ...unitPersona,
+    // Update UnitPersona only when AP data or Qos profile changes
+    const personaUpdateResult = await patchPersona(personaId, {
+      ...(withNsg && {
         ethernetPorts: ports?.map(p => ({
           personaId,
           macAddress: accessAp,
           portIndex: p,
           name: apName
-        } as PersonaEthernetPort)) ?? [],
-        meteringProfileId: profileId,
-        expirationEpoch: expirationEpoch
-      })
-      : await patchPersona(personaId, unitPersona)
+        } as PersonaEthernetPort)) ?? []
+      }),
+      meteringProfileId: profileId,
+      expirationDate: newExpirationDate
+    })
 
-    // update GuestPersona
-    const guestUpdateResult = await patchPersona(
-      guestPersonaId,
-      { ...guestPersona,
-        vlan: guestPersona?.vlan ?? unitPersona?.vlan,
-        meteringProfileId: undefined,
-        expirationEpoch: undefined
-      }
-    )
-
-    return Promise.all([unitUpdateResult, personaUpdateResult, guestUpdateResult])
+    return Promise.all([unitUpdateResult, personaUpdateResult])
   }
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
@@ -552,8 +595,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
       {
-        qosProfileId: meteringProfileId,
-        qosExpiryTime: expirationDate.unix() - expirationDate.unix() % 86400
+        meteringProfileId: meteringProfileId,
+        profileExpiry: expirationDate.startOf('day').toISOString()
       } : undefined
 
     return {
@@ -633,7 +676,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   return (
     <Drawer
       destroyOnClose
-      width={'400px'}
+      width={'480px'}
       visible={visible}
       title={isEdit
         ? $t({ defaultMessage: 'Edit Unit' })
@@ -654,6 +697,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             name='propertyUnitForm'
             form={form}
             layout={'vertical'}
+            scrollToFirstError={true}
           >
             <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
             <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
@@ -699,7 +743,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             </Form.Item>
 
             {enableGuestUnit &&
-              <StepsFormLegacy.FieldLabel width={'160px'}>
+              <StepsForm.FieldLabel width={'160px'}>
                 {$t({ defaultMessage: 'Separate VLAN for guests' })}
                 <Form.Item
                   style={{ marginBottom: '10px' }}
@@ -707,7 +751,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   valuePropName={'checked'}
                   children={<Switch />}
                 />
-              </StepsFormLegacy.FieldLabel>
+              </StepsForm.FieldLabel>
             }
 
             {enableGuestUnit && enableGuestVlan &&
@@ -756,6 +800,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
+                isEdit
               />
             }
           </Form>
@@ -764,7 +809,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       footer={<Drawer.FormFooter
         buttonLabel={{
           save: isEdit
-            ? $t({ defaultMessage: 'Save' })
+            ? $t({ defaultMessage: 'Apply' })
             : $t({ defaultMessage: 'Add' })
         }}
         onSave={onSave}

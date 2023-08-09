@@ -12,8 +12,8 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Tooltip, PasswordInput }                     from '@acx-ui/components'
+import { Features, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
 import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {
@@ -49,7 +49,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const numberOfDevices = Form.useWatch('numberOfDevices', form)
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
     { params: ({ ...params, passphraseId: editMode.passphraseId }) },
     { skip: !editMode.isEdit }
@@ -106,7 +106,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
 
   return (
     <Form layout='vertical' form={form}>
-      <Form.Item name='id' noStyle>
+      <Form.Item name='id' initialValue='' noStyle>
         <Input type='hidden' />
       </Form.Item>
       <Form.Item
@@ -210,7 +210,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             { min: 8 },
             { max: 63 }
           ]}
-          children={<Input.Password />}
+          children={<PasswordInput />}
         />
       }
       <Form.Item
@@ -318,7 +318,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             />
           }
         />
-        <Form.Item name='revocationReason' hidden={true}/>
+        <Form.Item name='revocationReason' initialValue='' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
       </>}
     </Form>
   )

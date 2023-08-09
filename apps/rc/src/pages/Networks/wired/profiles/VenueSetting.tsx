@@ -17,8 +17,8 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -120,14 +120,14 @@ export function VenueSetting () {
       dataIndex: 'switches',
       align: 'center',
       sorter: true,
-      render: function (data) { return data ? data : 0 }
+      render: function (_, { switches }) { return switches ? switches : 0 }
     },
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Switch
           checked={form.getFieldValue('venues').includes(row.id)}
           onClick={(checked, event) => {
@@ -175,7 +175,7 @@ export function VenueSetting () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'checkbox',
               ...rowSelection
             }}

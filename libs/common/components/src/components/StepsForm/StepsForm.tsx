@@ -36,6 +36,7 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
 
   const [form] = Form.useForm(props.form)
   const config = useStepsForm<T>({
+    ..._.omit(props, 'children'),
     form,
     steps: children,
     editMode: editMode,

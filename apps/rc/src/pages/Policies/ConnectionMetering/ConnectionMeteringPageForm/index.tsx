@@ -24,8 +24,8 @@ export default function ConnectionMeteringPageForm (props: ConnectionMeteringFor
               link: getPolicyListRoutePath(true) }
           ]}
         title={mode === ConnectionMeteringFormMode.CREATE ?
-          $t({ defaultMessage: 'Add Connection Metering' }):
-          $t({ defaultMessage: 'Edit Connection Metering' })
+          $t({ defaultMessage: 'Add Data Usage Metering' }):
+          $t({ defaultMessage: 'Edit Data Usage Metering' })
         }
       />
       <ConnectionMeteringForm {...props}/>

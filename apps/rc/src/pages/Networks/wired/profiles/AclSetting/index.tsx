@@ -10,8 +10,8 @@ import {
   sortProp,
   transformTitleCase
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -66,7 +66,7 @@ export function AclSetting () {
     dataIndex: 'aclType',
     key: 'aclType',
     sorter: { compare: sortProp('aclType', defaultSort) },
-    render: (data) => transformTitleCase(data as string)
+    render: (_, { aclType }) => transformTitleCase(aclType)
   }]
 
   const rowActions: TableProps<Acl>['rowActions'] = [
@@ -142,7 +142,7 @@ export function AclSetting () {
                 setDrawerVisible(true)
               }
             }])}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'radio',
               onChange: () => {
                 setDrawerVisible(false)

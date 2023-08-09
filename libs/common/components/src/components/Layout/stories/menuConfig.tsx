@@ -256,7 +256,7 @@ const config: LayoutProps['menuConfig'] = [
           },
           {
             uri: '/administration/fwVersionMgmt',
-            label: 'Firmware Version Management'
+            label: 'Version Management'
           },
           {
             uri: '/administration/onpremMigration',

@@ -9,12 +9,9 @@ import { events, eventsMeta } from './__tests__/fixtures'
 
 import { ClientTimelineTab } from '.'
 
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: {
-    detailLevel: 'it',
-    dateFormat: 'mm/dd/yyyy'
-  } })
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  EventTable: () => <div data-testid='EventTable'></div>
 }))
 
 jest.mock('./SessionTable', () => ({
@@ -39,7 +36,7 @@ describe('ClientTimelineTab', ()=>{
 
       }
     })
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(1)
+    expect(await screen.findByTestId('EventTable')).toBeVisible()
   })
 
   it('should render: Sessions', async () => {
@@ -57,7 +54,7 @@ describe('ClientTimelineTab', ()=>{
       }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
-      .toEqual('Sessions')
+      .toEqual('Completed Sessions')
     expect(await screen.findByTestId('rc-SessionTable')).toBeVisible()
   })
 })

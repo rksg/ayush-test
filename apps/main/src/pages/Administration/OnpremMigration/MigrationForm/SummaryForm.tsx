@@ -12,13 +12,19 @@ import {
   Table,
   TableProps,
   Subtitle,
-  Loader
+  Loader,
+  cssStr,
+  StackedBarChart
 } from '@acx-ui/components'
 import {
-  useLazyGetMigrationResultQuery
+  SpaceWrapper
+} from '@acx-ui/rc/components'
+import {
+  useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
-  MigrationResultType
+  MigrationResultType,
+  ZdConfigurationType
 } from '@acx-ui/rc/utils'
 
 type SummaryFormProps = {
@@ -32,22 +38,65 @@ const SummaryForm = (props: SummaryFormProps) => {
 
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
-  // eslint-disable-next-line max-len
-  const [ getMigrationResult, { data: migrateResult, isLoading, isFetching }] = useLazyGetMigrationResultQuery()
+  const [ taskState, setTaskState ] = useState('')
+
+  let usedBarColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-neutrals-30')
+  ]
+
+  let defaultSeries = [
+    { name: 'used',
+      value: 0 },
+    { name: 'available',
+      value: 100 }
+  ]
+
+  const [ series, setSeries ] = useState(defaultSeries)
+  const [ progress, setProgress ] = useState(0)
+
+  const [getZdConfiguration] = useLazyGetZdConfigurationQuery()
+  const [migrateResult, setMigrateResult] = useState<ZdConfigurationType>()
+  const getSummaryResult = async () => {
+    // eslint-disable-next-line max-len
+    const migrateResult = await (getZdConfiguration({ params: { ...params, id: taskId } }).unwrap())
+    setMigrateResult(migrateResult)
+    // eslint-disable-next-line max-len
+    if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
+      // eslint-disable-next-line max-len
+      setValidateZdApsResult(migrateResult.data[0].migrationTaskList[0].apImportResultList ? migrateResult.data[0].migrationTaskList[0].apImportResultList : [])
+      const taskState = migrateResult.data[0].migrationTaskList[0].state ?? ''
+      if (taskState !== 'Completed' && taskState !== 'Failed') {
+        const total = migrateResult.data[0].migrationTaskList[0].apImportResultList?.length
+        // eslint-disable-next-line max-len
+        const used = migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(apCompleted).length
+        let series = [
+          { name: 'used',
+            value: (used / total)*100 },
+          { name: 'available',
+            value: ((total-used) / total)*100 }
+        ]
+        setSeries(series)
+        setProgress(Math.floor((used/total) * 100))
+      }
+      setTaskState(taskState)
+    }
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getMigrationResult({ params: { ...params, id: taskId } })
-      // console.log('This will run every second!')
+      getSummaryResult()
     }, 3000)
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(()=>{
-    if (migrateResult) {
-      setValidateZdApsResult(migrateResult?.apImportResults)
-    }
-  },[migrateResult])
+  const apCompleted = (item: MigrationResultType) => {
+    return item.state === 'Completed' || item.state === 'Invalid'
+  }
+
+  const callbackfn = (item: MigrationResultType) => {
+    return item.state === 'Completed'
+  }
 
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
@@ -78,7 +127,7 @@ const SummaryForm = (props: SummaryFormProps) => {
       title: $t({ defaultMessage: 'Status' }),
       key: 'state',
       dataIndex: 'state',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.state ?? '--'
       }
     },
@@ -87,26 +136,58 @@ const SummaryForm = (props: SummaryFormProps) => {
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {
-        // eslint-disable-next-line max-len
-        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
+        return row.validationErrors ? row.validationErrors.split(';').join(' ') : '--'
       }
     }
   ]
 
   return (
     <Loader states={[
-      { isLoading: isLoading,
-        isFetching: isFetching
+      { isLoading: false,
+        // eslint-disable-next-line max-len
+        isFetching: !(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].state)
       }
     ]}>
       <Row>
         <Col span={12}>
-          <Subtitle level={3}>
-            {$t({ defaultMessage: 'Summary Table' })}
-          </Subtitle>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Summary State' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].state) ?? '--'}
           </Subtitle>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Total' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.length) ?? '--'}
+          </Subtitle>
+        </Col>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Completed' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(callbackfn).length) ?? '--'}
+          </Subtitle>
+        </Col>
+        <Col span={7}>
+          {taskState !== 'Completed' && taskState !== 'Failed' &&
+            <SpaceWrapper full size='small' justifycontent='flex-start'>
+              <Subtitle level={5}>{$t({ defaultMessage: 'Progress' })}:</Subtitle>
+              <StackedBarChart
+                style={{ height: 16, width: 135 }}
+                showLabels={false}
+                showTotal={false}
+                showTooltip={false}
+                barWidth={12}
+                data={[{
+                  category: 'AP Migrations ',
+                  series
+                }]}
+                barColors={usedBarColors}
+              />
+              <Subtitle level={5}>{progress}%</Subtitle>
+            </SpaceWrapper>
+          }
         </Col>
       </Row>
       <Table

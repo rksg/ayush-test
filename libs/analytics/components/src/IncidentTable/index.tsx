@@ -4,6 +4,7 @@ import { Checkbox }                                 from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
+  productNames,
   defaultSort,
   dateSort,
   clientImpactSort,
@@ -40,6 +41,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
   const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
+    ...productNames,
     p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
     ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
     li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
@@ -154,7 +156,6 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     {
@@ -216,7 +217,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
         settingsId='incident-table'
         type='tall'

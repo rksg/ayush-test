@@ -33,10 +33,6 @@ module.exports = {
   '@btn-default-border': 'var(--acx-primary-black)',
   '@btn-font-size-lg': '16px', // var(--acx-body-2-font-size)
   '@btn-font-size-sm': '12px', // var(--acx-body-3-font-size)
-  '@btn-primary-bg': 'var(--acx-primary-black)',
-  '@btn-disable-color': 'var(--acx-neutrals-10)',
-  '@btn-disable-bg': 'var(--acx-neutrals-40)',
-  '@btn-disable-border': 'var(--acx-neutrals-40)',
 
   '@card-background': 'var(--acx-primary-white)',
 
@@ -69,9 +65,11 @@ module.exports = {
 
   '@line-height-base': '1.33',
 
-  '@link-active-color': 'var(--acx-accents-blue-70)',
   '@link-color': 'var(--acx-accents-blue-50)',
-  '@link-hover-color': 'var(--acx-accents-orange-50)',
+  '@link-hover-color': 'var(--acx-accents-blue-60)',
+  '@link-active-color': 'var(--acx-accents-blue-60)',
+  '@link-hover-decoration': 'underline',
+  '@link-focus-decoration': 'underline',
 
   '@menu-dark-bg': '#333333', //var(--acx-primary-black)'
   '@menu-dark-color': 'var(--acx-primary-white)',
@@ -116,10 +114,10 @@ module.exports = {
   '@table-header-bg': 'var(--acx-primary-white)',
   '@table-header-sort-bg': 'var(--acx-primary-white)',
   '@table-body-sort-bg': 'var(--acx-primary-white)',
-  '@table-row-hover-bg': 'var(--acx-primary-white)',
-  '@table-selected-row-bg': '#FFFFFF', // var(--acx-primary-white)
+  '@table-row-hover-bg': 'var(--acx-accents-orange-10)',
+  '@table-selected-row-bg': '#FDE3C9', // var(--acx-accents-orange-20)
   '@table-body-selected-sort-bg': 'var(--acx-primary-white)',
-  '@table-selected-row-hover-bg': 'var(--acx-primary-white)',
+  '@table-selected-row-hover-bg': 'var(--acx-accents-orange-10)',
   '@table-expanded-row-bg': 'var(--acx-primary-white)',
 
   '@text-color': 'var(--acx-primary-black)',

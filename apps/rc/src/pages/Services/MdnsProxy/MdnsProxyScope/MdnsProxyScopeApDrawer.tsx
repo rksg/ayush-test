@@ -8,7 +8,7 @@ import { Loader, Button, Drawer, Table, TableProps }                       from 
 import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                  from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                       from '@acx-ui/user'
 
 export interface SimpleApRecord {
   serialNumber: string;
@@ -140,7 +140,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       disable: true,
       filterKey: 'deviceStatusSeverity',
       filterable: seriesMappingAP().map(item => ({ key: item.key, value: item.name })),
-      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
+      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     },
     {
       title: $t({ defaultMessage: 'Model' }),
@@ -154,15 +154,15 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       dataIndex: 'clients',
       key: 'clients',
       sorter: true,
-      render: function (data) {
-        return data ? data : 0
+      render: function (_, { clients }) {
+        return clients ? clients : 0
       }
     },
     {
       title: $t({ defaultMessage: 'Apply' }),
       dataIndex: 'activated',
       key: 'activated',
-      render: function (data, row: AP) {
+      render: function (_, row: AP) {
         const isActivated = activatedAps.some((a: SimpleApRecord) => {
           return a.serialNumber === row.serialNumber
         })
@@ -195,7 +195,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
         rowActions={filterByAccess(rowActions)}
         dataSource={tableData}
         rowKey='serialNumber'
-        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}

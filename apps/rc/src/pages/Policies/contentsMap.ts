@@ -33,7 +33,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Tunnel Profile' }),
-  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Connection Metering' })
+  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
@@ -42,7 +42,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
-  [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'Create MAC address lists to enable device access to wired or wireless networks' }),
+  [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'Create MAC address lists to enable device access to wireless networks' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy (TBD)' }),
   [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' }),
   [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy (TBD)' }),
@@ -98,6 +98,7 @@ export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.GameCube]: defineMessage({ defaultMessage: 'GameCube' }),
   [OsVendorEnum.Wii]: defineMessage({ defaultMessage: 'Wii' }),
   [OsVendorEnum.PlayStation3]: defineMessage({ defaultMessage: 'PlayStation3' }),
+  [OsVendorEnum.PlayStation]: defineMessage({ defaultMessage: 'PlayStation' }),
   [OsVendorEnum.Xbox]: defineMessage({ defaultMessage: 'Xbox' }),
   [OsVendorEnum.Nintendo]: defineMessage({ defaultMessage: 'Nintendo' }),
   [OsVendorEnum.HpPrinter]: defineMessage({ defaultMessage: 'HpPrinter' }),
@@ -118,7 +119,7 @@ export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.BoseSpeakers]: defineMessage({ defaultMessage: 'BoseSpeakers' }),
   [OsVendorEnum.SonosSpeakers]: defineMessage({ defaultMessage: 'SonosSpeakers' }),
   [OsVendorEnum.RokuStreamingStick]: defineMessage({ defaultMessage: 'RokuStreamingStick' }),
-  [OsVendorEnum.TelnetCpe]: defineMessage({ defaultMessage: 'TelnetCpe' })
+  [OsVendorEnum.TelenetCpe]: defineMessage({ defaultMessage: 'TelenetCpe' })
 }
 
 export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> = {
@@ -172,4 +173,3 @@ export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescrip
   [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
   [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add if it Doesn\'t Exist' })
 }
-

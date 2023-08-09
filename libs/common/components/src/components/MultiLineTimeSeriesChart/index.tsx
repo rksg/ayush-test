@@ -29,7 +29,8 @@ import {
   timeSeriesTooltipFormatter,
   handleSingleBinData,
   ChartFormatterFn,
-  qualitativeColorSet
+  qualitativeColorSet,
+  toolboxDataZoomOptions
 }                       from '../Chart/helper'
 import { ResetButton }            from '../Chart/styledComponents'
 import { useDataZoom }            from '../Chart/useDataZoom'
@@ -276,16 +277,7 @@ export function MultiLineTimeSeriesChart <
         } : {})
       })),
     ...(zoomEnabled ? {
-      toolbox: {
-        feature: {
-          dataZoom: {
-            yAxisIndex: 'none',
-            brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
-            icon: { back: 'path://', zoom: 'path://' }
-          },
-          brush: { type: ['rect'], icon: { rect: 'path://' } }
-        }
-      },
+      toolbox: toolboxDataZoomOptions,
       dataZoom: dataZoomOptions(data)
     } : {
       toolbox: { show: false },

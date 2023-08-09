@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -26,6 +27,7 @@ export function ConfigurationProfileForm () {
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
   const [form] = Form.useForm()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -49,19 +51,17 @@ export function ConfigurationProfileForm () {
   }, [data])
 
   const checkTrustedPortEmpty = (data: Partial<SwitchConfigurationProfile>) => {
-    if(ipv4DhcpSnooping || arpInspection){
-      const trustedPortModels = generateTrustedPortsModels(data)
-      const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
+    const trustedPortModels = generateTrustedPortsModels(data)
+    const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
 
-      if(hasEmptyTrustPorts){
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Error' }),
-          content: $t({ defaultMessage:
-            'Please select trusted ports in order to make this configuration profile valid' })
-        })
-        return true
-      }
+    if(hasEmptyTrustPorts){
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({ defaultMessage:
+          'Please select trusted ports in order to make this configuration profile valid' })
+      })
+      return true
     }
     return false
   }
@@ -133,12 +133,13 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const handleEditProfile = async () => {
+  const handleEditProfile = async (formData: SwitchConfigurationProfile) => {
     try {
-      if(checkTrustedPortEmpty(currentData)){
+      if(checkTrustedPortEmpty(formData)){
         return false
       }
-      await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
+      await updateSwitchConfigProfile({
+        params, payload: proceedData(formData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true
@@ -157,7 +158,14 @@ export function ConfigurationProfileForm () {
         title={editMode
           ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
           : $t({ defaultMessage: 'Add Switch Configuration Profile' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Configuration Profiles' }),
+            link: '/networks/wired/profiles'
+          }
+        ] : [
           { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/profiles' }
         ]}
       />

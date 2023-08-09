@@ -12,7 +12,7 @@ import {
   WifiCallingActionPayload,
   WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -30,7 +30,9 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const [tableData, setTableData] = useState(state.ePDG as EPDG[])
 
@@ -132,7 +134,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
         rowKey='domain'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
       />
     </>
   )

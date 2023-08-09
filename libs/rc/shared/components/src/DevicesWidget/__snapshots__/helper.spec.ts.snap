@@ -1,0 +1,235 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getApStackedBarChartData should return correct formatted data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 8,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 3,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getApStackedBarChartData should return correct formatted data: omit-InSetupPhase 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 3,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 3,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getApStackedBarChartData should return empty array if no data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 0,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 0,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getEdgeStackedBarChartData should return correct formatted data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 0,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 2,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getEdgeStackedBarChartData should return correct formatted data: omit-InSetupPhase 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 0,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 2,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getEdgeStackedBarChartData should return empty array if no data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 0,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 0,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getSwitchStackedBarChartData should return correct formatted data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 5,
+      },
+      Object {
+        "name": "<1>Unknown",
+        "value": 0,
+      },
+      Object {
+        "name": "<2>Requires Attention",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 1,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getSwitchStackedBarChartData should return correct formatted data 2`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 3,
+      },
+      Object {
+        "name": "<1>Unknown",
+        "value": 0,
+      },
+      Object {
+        "name": "<2>Requires Attention",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 1,
+      },
+    ],
+  },
+]
+`;
+
+exports[`getSwitchStackedBarChartData should return empty array if no data 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 0,
+      },
+      Object {
+        "name": "<1>Unknown",
+        "value": 0,
+      },
+      Object {
+        "name": "<2>Requires Attention",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;

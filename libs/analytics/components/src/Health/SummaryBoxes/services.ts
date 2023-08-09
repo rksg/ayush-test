@@ -1,14 +1,15 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }     from '@acx-ui/store'
-import { NetworkPath } from '@acx-ui/utils'
+import { getFilterPayload } from '@acx-ui/analytics/utils'
+import { dataApi }          from '@acx-ui/store'
+import type { NodesFilter } from '@acx-ui/utils'
 
 export interface SummaryData {
-  timeSeries: {
-    connectionSuccessAndAttemptCount: [[number, number]]
-  }
-  avgTTC: {
-    hierarchyNode: {
+  network: {
+    timeSeries: {
+      connectionSuccessAndAttemptCount: [[number, number]]
+    }
+    avgTTC: {
       incidentCharts: {
         ttc: [number]
       }
@@ -17,7 +18,7 @@ export interface SummaryData {
 }
 
 export interface RequestPayload {
-  path: NetworkPath
+  filter: NodesFilter
   start: string
   end: string
 }
@@ -27,23 +28,30 @@ export const api = dataApi.injectEndpoints({
     summary: build.query<SummaryData, RequestPayload>({
       query: payload => ({
         document: gql`
-          query HealthSummary($path: [HierarchyNodeInput],
-          $start: DateTime, $end: DateTime, $granularity: String) {
-            timeSeries(
-              path: $path,
-              start: $start,
-              end: $end,
-              granularity: $granularity
-            ) { connectionSuccessAndAttemptCount }
-            avgTTC: network(start: $start, end: $end) {
-            hierarchyNode(path: $path) {
-              incidentCharts: timeSeries(granularity: $granularity) {
-                ttc: timeToConnect
+          query HealthSummary(
+          $path: [HierarchyNodeInput],
+          $start: DateTime,
+          $end: DateTime,
+          $granularity: String,
+          $filter: FilterInput
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
+              timeSeries(
+                path: $path,
+                start: $start,
+                end: $end,
+                granularity: $granularity
+              ) { connectionSuccessAndAttemptCount }
+              avgTTC: hierarchyNode(path: $path) {
+                incidentCharts: timeSeries(granularity: $granularity) {
+                  ttc: timeToConnect
+                }
               }
-            }}
+            }
           }`,
         variables: {
           ...payload,
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })

@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
 import { useVenuesListQuery }                         from '@acx-ui/rc/services'
 import { useTableQuery, Venue, MdnsProxyScopeData }   from '@acx-ui/rc/utils'
-import { filterByAccess }                             from '@acx-ui/user'
+import { filterByAccess, hasAccess }                  from '@acx-ui/user'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -105,7 +105,7 @@ export function MdnsProxyScope () {
       title: $t({ defaultMessage: 'Selected APs' }),
       dataIndex: ['activatedApsId', 'length'],
       key: 'activatedApsId',
-      render: function (data, row) {
+      render: function (_, row) {
         const scope: MdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
         const target = scope.find(v => v.venueId === row.id)
 
@@ -135,7 +135,7 @@ export function MdnsProxyScope () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={{ type: 'radio' }}
+            rowSelection={hasAccess() && { type: 'radio' }}
             columns={columns}
             dataSource={tableData}
             pagination={tableQuery.pagination}

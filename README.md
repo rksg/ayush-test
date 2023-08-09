@@ -18,7 +18,7 @@ Use an existing SSH key or [create a new one](https://confluence.atlassian.com/b
 using your RUCKUS username.
 
 ```sh
-ssh-keygen -t rsa -C "ruckus.username"
+ssh-keygen -t rsa -C "commscope.username"
 ```
 
 Copy the public key using the command below, then [add it to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
@@ -38,8 +38,8 @@ git clone ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui.git
 Configure Git.
 
 ```sh
-git config user.name "ruckus.username"
-git config user.email "ruckus.username@ruckuswireless.com"
+git config user.name "commscope.username"
+git config user.email "commscope.username@commscope.com"
 ```
 
 ## Branches and pull requests
@@ -116,12 +116,14 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve --devRemotes=rc,analytics,msp,reports
+npx nx run main:serve
 ```
 
-If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
-E.g. `--devRemotes=analytics` will only run `analytics` in dev mode with changes being monitored
-while `rc` will be built statically.
+or for Ruckus Analytics:
+
+```sh
+npx nx run ra:serve
+```
 
 ### Run tests
 

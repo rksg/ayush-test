@@ -3,7 +3,7 @@
 exports[`Button should render default button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 edRCi"
     type="button"
   >
     <span>
@@ -16,7 +16,7 @@ exports[`Button should render default button 1`] = `
 exports[`Button should render primary button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 edRCi"
     type="button"
   >
     <span>
@@ -29,7 +29,7 @@ exports[`Button should render primary button 1`] = `
 exports[`Button should render secondary button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 edRCi"
     type="button"
   >
     <span>
@@ -46,7 +46,7 @@ exports[`DisabledButton should render disabled button with tooltip 1`] = `
     style="cursor: not-allowed;"
   >
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 edRCi"
       disabled=""
       style="pointer-events: none;"
       type="button"
@@ -65,7 +65,7 @@ exports[`DisabledButton should render disabled button without 1`] = `
     style="cursor: not-allowed;"
   >
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 edRCi"
       disabled=""
       style="pointer-events: none;"
       type="button"

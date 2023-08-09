@@ -18,7 +18,8 @@ import {
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
-  useAccessControlProfileListQuery, useAddAccessControlProfileMutation
+  useAccessControlProfileListQuery,
+  useAddAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
@@ -43,11 +44,6 @@ import * as UI from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
-
-const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
-  sortOrder: 'ASC', page: 1, pageSize: 10000
-}
 
 export function AccessControlForm () {
   const { $t } = useIntl()
@@ -74,13 +70,13 @@ export function AccessControlForm () {
       setEnabledProfile(!_.isEmpty(
         get(data, 'wlan.advancedCustomization.accessControlProfileId')))
     }
-  }, [data])
+  }, [])
 
   return (
     <div style={{ marginBottom: '30px' }}>
       <span style={{
         display: 'grid',
-        gridTemplateColumns: '220px 130px auto',
+        gridTemplateColumns: '165px 140px 300px',
         alignItems: 'baseline',
         margin: '20px 0'
       }}>
@@ -228,18 +224,19 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
 
+  const labelWidth = '175px'
+
   const [state, updateState] = useState({
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
 
   const { selectedLayer2 } = useL2AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer2: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'l2AclPolicy'
         )
@@ -248,13 +245,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedLayer3 } = useL3AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer3: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'l3AclPolicy'
         )
@@ -263,13 +259,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedDevicePolicy } = useDevicePolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedDevicePolicy: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'devicePolicy'
         )
@@ -278,13 +273,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedApplicationPolicy: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'applicationPolicy'
         )
@@ -349,7 +343,7 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   }, [enableAccessControlProfile, accessControlProfileId])
 
   return (<>
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
         name='accessControlProfileEnable'
@@ -383,32 +377,32 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
 
     </Form.Item>}
 
-    <UI.FieldLabel width='175px' style={{ fontWeight: 700 }}>
+    <UI.FieldLabel width={labelWidth} style={{ fontWeight: 700 }}>
       <span>{$t({ defaultMessage: 'Access Policy' })}</span>
       <span>{$t({ defaultMessage: 'Policy Details' })}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 2' })}
       <span>{selectedLayer2}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 3' })}
       <span>{selectedLayer3}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Device & OS' })}
       <span>{selectedDevicePolicy}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Applications' })}
       <span>{selectedApplicationPolicy}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
       <span>{(!state.selectedAccessControlProfile ||
         state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
@@ -454,8 +448,30 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
+  const labelWidth = '175px'
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    if (enableLayer2 || enableLayer3 || enableDeviceOs || enableApplications || enableClientRateLimit) {
+      form.setFieldsValue({
+        wlan: {
+          advancedCustomization: {
+            accessControlEnable: false,
+            accessControlProfileId: null
+          }
+        }
+      })
+    }
+  }, [
+    enableLayer2,
+    enableLayer3,
+    enableDeviceOs,
+    enableApplications,
+    enableClientRateLimit
+  ])
+
   return (<>
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 2' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -472,7 +488,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 3' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -489,7 +505,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Device & OS' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -512,7 +528,7 @@ function AccessControlConfigForm () {
     </UI.FieldLabel>
 
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Applications' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -529,7 +545,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
       <Form.Item
         name='enableClientRateLimit'

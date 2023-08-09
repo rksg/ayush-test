@@ -2,7 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -59,6 +60,7 @@ const list = {
       id: '701fe9df5f6b4c17928a29851c07cc05',
       installer: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
+      mspInstallerAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 222',
@@ -75,6 +77,7 @@ const list = {
       id: '701fe9df5f6b4c17928a29851c07cc06',
       integrator: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 333',
@@ -106,7 +109,11 @@ const mspPortal = {
   msp_label: 'eleu1658'
 }
 
-const services = require('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
@@ -132,7 +139,7 @@ describe('MspCustomers', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
@@ -198,6 +205,32 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.queryByText('My Customers')).toBeNull()
+  })
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+  })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
@@ -210,7 +243,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -234,7 +267,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -258,7 +291,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
     fireEvent.click(resendInviteButton)
@@ -277,7 +310,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
 
@@ -310,7 +343,7 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
 
@@ -345,7 +378,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
@@ -370,6 +403,33 @@ describe('MspCustomers', () => {
       expect(services.useDeleteMspEcMutation).toHaveLastReturnedWith(value))
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).toBeNull())
+  })
+  it('should open drawer for multi-selected rows', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    const row1 = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const row2 = await screen.findByRole('row', { name: /ec 333/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    expect(screen.getByText('2 selected')).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Resend Invitation Email' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Reactivate' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Deactivate' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeVisible()
+    expect(screen.getByText('Assign MSP Administrators')).toBeVisible()
   })
   it('should render table for support user', async () => {
     const supportUserProfile = { ...userProfile }
@@ -401,7 +461,7 @@ describe('MspCustomers', () => {
       return { data: userProfile }
     })
     const tenantDetails = { tenantType: AccountType.MSP_INSTALLER }
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: tenantDetails }
     })
     user.hasRoles = jest.fn().mockImplementation(() => {
@@ -428,7 +488,7 @@ describe('MspCustomers', () => {
 
     // Assert MSP Admin Count link works
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+    fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()

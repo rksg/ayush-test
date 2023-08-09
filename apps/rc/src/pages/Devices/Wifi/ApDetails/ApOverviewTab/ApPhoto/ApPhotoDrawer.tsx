@@ -4,13 +4,13 @@ import { Row, Col, Upload, Slider } from 'antd'
 import Cropper                      from 'react-easy-crop'
 import { useIntl }                  from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
+import { Button, Drawer }     from '@acx-ui/components'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
-  useWifiCapabilitiesQuery,
-  useApViewModelQuery
+  useApViewModelQuery,
+  useGetApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import { generateHexKey, useApContext } from '@acx-ui/rc/utils'
 
@@ -64,7 +64,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     filters: { serialNumber: [params.serialNumber] }
   }
   const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const wifiCapabilities = useWifiCapabilitiesQuery({ params })
+  const wifiCapabilities = useGetApCapabilitiesQuery({ params })
 
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {
@@ -108,8 +108,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   const content = <>
     <Row>
-      <Col span={14}>
-        <span style={{ marginTop: '10px', display: 'inline-flex' }}>
+      <Col span={14} style={{ paddingTop: '2px' }}>
+        <span>
           {$t({ defaultMessage: 'Drag to reposition' })}
         </span>
       </Col>
@@ -201,7 +201,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     <Button
       key='saveBtn'
       onClick={onSave}
-      type={'secondary'}>
+      type='primary'>
       {$t({ defaultMessage: 'Apply' })}
     </Button>,
     <Button

@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment-timezone'
 
-import { incidentCodes, IncidentFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                             from '@acx-ui/store'
+import { getFilterPayload, incidentCodes, IncidentFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                                               from '@acx-ui/store'
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -28,7 +28,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkHistory: build.query<
       NetworkHistoryData,
-      IncidentFilter & { hideIncidents: boolean }
+      IncidentFilter & { hideIncidents: boolean, apCount?: number }
     >({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({
@@ -57,15 +57,16 @@ export const api = dataApi.injectEndpoints({
             }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.hideIncidents
-            ? calculateGranularity(payload.startDate, payload.endDate)
+            ? calculateGranularity(
+              payload.startDate, payload.endDate, undefined, payload.apCount ?? 0
+            )
             : calcGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: payload.code ?? incidentCodes,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       providesTags: [

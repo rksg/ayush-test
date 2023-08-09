@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import _                          from 'lodash'
+import moment                     from 'moment-timezone'
+import { useIntl }                from 'react-intl'
 
-import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
-import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
-import { ArrowExpand }                                      from '@acx-ui/icons'
-import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
-import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }                         from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }                           from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -61,6 +61,7 @@ function SwitchPageHeader () {
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -192,9 +193,11 @@ function SwitchPageHeader () {
         title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
         titleExtra={
           <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Switches' }) },
+          { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+        ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
         extra={filterByAccess([
           !checkTimeFilterDisabled() && <RangePicker
             key='range-picker'
@@ -203,14 +206,14 @@ function SwitchPageHeader () {
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu}>
+          <Dropdown overlay={menu}>{() =>
             <Button>
               <Space>
                 {$t({ defaultMessage: 'More Actions' })}
-                <ArrowExpand />
+                <CaretDownSolidIcon />
               </Space>
             </Button>
-          </Dropdown>,
+          }</Dropdown>,
           <Button
             type='primary'
             onClick={() =>

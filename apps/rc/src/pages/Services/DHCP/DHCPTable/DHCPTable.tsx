@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -16,16 +17,18 @@ import {
   IpUtilsService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
 import * as UI                     from '../DHCPForm/styledComponents'
+
 export default function DHCPTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -35,6 +38,7 @@ export default function DHCPTable () {
         'name',
         'dhcpPools',
         'venueIds',
+        'venueCount',
         'technology'
       ]
     },
@@ -69,9 +73,9 @@ export default function DHCPTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedRows) => {
-        return !selectedRows.some((row)=>{
-          return (row.venueIds && row.venueIds.length>0)||
+      disabled: (selectedRows) => {
+        return selectedRows.some((row)=>{
+          return (row.venueIds && row.venueIds.length>0) ||
             row.name === DEFAULT_GUEST_DHCP_NAME
         })
       },
@@ -98,9 +102,14 @@ export default function DHCPTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        ]
+          : [
+            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+          ]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
@@ -120,7 +129,7 @@ export default function DHCPTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -176,7 +185,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Number of hosts' }),
       dataIndex: 'networkAddress',
       align: 'center',
-      render: (data,row)=>{
+      render: (_, row)=>{
         return IpUtilsService.countIpRangeSize(row.startAddress, row.endAddress)
       }
     }
@@ -190,7 +199,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -198,7 +207,7 @@ function useColumns () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -209,7 +218,7 @@ function useColumns () {
       dataIndex: 'dhcpPools',
       align: 'center',
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.dhcpPools || row.dhcpPools.length === 0) return 0
         const dhcpPools = row.dhcpPools
         return <Tooltip title={
@@ -228,11 +237,11 @@ function useColumns () {
     {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueIds',
+      dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds
         // eslint-disable-next-line max-len

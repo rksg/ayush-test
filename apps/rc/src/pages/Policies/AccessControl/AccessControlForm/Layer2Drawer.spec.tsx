@@ -13,43 +13,30 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Layer2Drawer from './Layer2Drawer'
 
-const queryLayer2 = {
-  data: [
-    {
-      id: 'dee8918e1c40474a9f779b39ee672c5b',
-      name: 'block2layer',
-      macAddressesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '36ec4826b5da48cc8118eda83aa4080f',
-      name: 'allowl2',
-      macAddressesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 2,
-  totalPages: 1,
-  page: 1
-}
+const queryLayer2 = [
+  {
+    id: 'dee8918e1c40474a9f779b39ee672c5b',
+    name: 'block2layer',
+    macAddressesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '36ec4826b5da48cc8118eda83aa4080f',
+    name: 'allowl2',
+    macAddressesCount: 1,
+    networksCount: 0
+  }
+]
 
-const queryLayer2Update = {
+const queryLayer2Update = [
   ...queryLayer2,
-  data: [
-    ...queryLayer2.data,
-    {
-      id: 'bb8cd612fc1e4374b28f25128070c99b',
-      name: 'allowl2-new',
-      macAddressesCount: 1,
-      networksCount: 0
-    }
-  ],
-  totalCount: 3
-}
+  {
+    id: 'bb8cd612fc1e4374b28f25128070c99b',
+    name: 'allowl2-new',
+    macAddressesCount: 1,
+    networksCount: 0
+  }
+]
 
 const layer2Detail = {
   name: 'blockL2Acl',
@@ -85,7 +72,7 @@ jest.mock('antd', () => {
 
 describe('Layer2Drawer Component', () => {
   it('Render Layer2Drawer component successfully', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer2)
@@ -155,7 +142,7 @@ describe('Layer2Drawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer2Update)
@@ -167,7 +154,7 @@ describe('Layer2Drawer Component', () => {
   })
 
   it('Render Layer2Drawer component clear list successfully', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer2)
@@ -235,7 +222,7 @@ describe('Layer2Drawer Component', () => {
   })
 
   it('Render Layer2Drawer component in viewMode successfully', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer2)

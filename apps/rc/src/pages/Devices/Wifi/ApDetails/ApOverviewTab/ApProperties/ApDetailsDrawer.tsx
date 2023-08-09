@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Divider, Input }       from 'antd'
+import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                                                                from '@acx-ui/components'
+import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions, PasswordInput }                                                 from '@acx-ui/components'
 import { useApLanPortsQuery, useGetApCapabilitiesQuery, useGetApRadioCustomizationQuery, useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext }                         from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                 from '@acx-ui/react-router-dom'
@@ -155,7 +155,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
             children={<UI.DetailsPassword>
-              <Input.Password
+              <PasswordInput
                 readOnly
                 bordered={false}
                 value={venueSettings?.apPassword}
@@ -243,7 +243,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 label={$t({ defaultMessage: 'Mesh Role' })}
                 children={
                   currentAP?.meshRole ?
-                    currentAP.meshRole + $t({ defaultMessage: ' ({hops} hop)' }, { hops: currentAP.hops }) :
+                    (currentAP.meshRole === 'DISABLED' || currentAP.meshRole === 'DOWN') ? currentAP.meshRole :
+                      currentAP.meshRole + $t({ defaultMessage: ' ({hops} hop)' }, { hops: currentAP.hops }) :
                     $t({ defaultMessage: 'AP' })
                 }
               />

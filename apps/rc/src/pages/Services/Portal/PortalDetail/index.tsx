@@ -2,10 +2,12 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetPortalProfileDetailQuery }               from '@acx-ui/rc/services'
 import {
   Demo,
   getServiceDetailsLink,
+  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
@@ -21,11 +23,20 @@ export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const queryResults = useGetPortalProfileDetailQuery({ params })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   return (
     <>
       <PageHeader
         title={queryResults.data?.serviceName||''}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'Guest Portal' }),
+            link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Portal Services' }),
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })

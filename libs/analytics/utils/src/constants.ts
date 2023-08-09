@@ -1,5 +1,11 @@
 import { defineMessage } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
+export const productNames = get('IS_MLISA_SA')
+  ? { smartZone: 'Smart Zone' }
+  : { smartZone: 'RUCKUS One' }
+
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
@@ -11,9 +17,9 @@ export const incidentCodes = [
   'p-cov-clientrssi-low',
   'p-load-sz-cpu-load',
   'p-switch-memory-high',
-  //'p-channeldist-suboptimal-plan-24g',
-  //'p-channeldist-suboptimal-plan-50g-outdoor',
-  //'p-channeldist-suboptimal-plan-50g-indoor',
+  'p-channeldist-suboptimal-plan-24g',
+  'p-channeldist-suboptimal-plan-50g-outdoor',
+  'p-channeldist-suboptimal-plan-50g-indoor',
   'i-net-time-future',
   'i-net-time-past',
   'i-net-sz-net-latency',
@@ -73,3 +79,16 @@ export const categoryCodeMap = {
     ] as IncidentCode[]
   }
 }
+
+export const PERMISSION_VIEW_ANALYTICS = 'view-analytics'
+export const PERMISSION_VIEW_REPORT_CONTROLLER_INVENTORY = 'view-report-controller-inventory'
+export const PERMISSION_VIEW_DATA_EXPLORER = 'view-data-explorer'
+export const PERMISSION_MANAGE_SERVICE_GUARD = 'manage-service-guard'
+export const PERMISSION_MANAGE_MLISA = 'manage-mlisa'
+export const PERMISSION_MANAGE_CALL_MANAGER = 'manage-call-manager'
+export const PERMISSION_MANAGE_OCCUPANCY = 'manage-occupancy'
+export const PERMISSION_MANAGE_CONFIG_RECOMMENDATION = 'manage-config-recommendation'
+export const PERMISSION_MANAGE_LABEL = 'manage-label'
+export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
+
+export const PERMISSION_FRANCHISOR = 'franchisor'

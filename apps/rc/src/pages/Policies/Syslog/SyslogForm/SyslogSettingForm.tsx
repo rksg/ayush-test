@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Col,
@@ -12,15 +12,15 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm }                   from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
+import { StepsForm }                               from '@acx-ui/components'
+import { useGetSyslogPolicyListQuery }             from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
   ProtocolEnum,
   PriorityEnum,
   SyslogActionTypes,
-  serverIpAddressRegExp
+  serverIpAddressRegExp, servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { facilityLabelMapping, flowLevelLabelMapping, protocolLabelMapping } from '../../contentsMap'
@@ -74,10 +74,8 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
       form.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
       form.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
       form.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
-      // eslint-disable-next-line max-len
       form.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
       form.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
-      // eslint-disable-next-line max-len
       form.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
     }
   }, [data])
@@ -252,7 +250,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
                   $t({ defaultMessage: 'The syslog server with that name already exists' })
                 )
               }
-              return Promise.resolve()
+              return servicePolicyNameRegExp(value)
             } }
           ]}
           validateFirst

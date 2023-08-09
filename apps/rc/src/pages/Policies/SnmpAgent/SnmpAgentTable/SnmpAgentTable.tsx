@@ -3,6 +3,7 @@ import { IntlShape, useIntl }           from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                           from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
@@ -14,7 +15,7 @@ import {
   SnmpColumnData,
   useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }            from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -36,6 +37,7 @@ export default function SnmpAgentTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
@@ -128,10 +130,16 @@ export default function SnmpAgentTable () {
             { count: (list)? `(${list.totalCount})` : '' }
           )
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={((list?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
@@ -151,7 +159,7 @@ export default function SnmpAgentTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     </>
@@ -192,7 +200,7 @@ function useColumns (
       searchable: searchable,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -200,7 +208,7 @@ function useColumns (
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -211,7 +219,7 @@ function useColumns (
       dataIndex: 'v2Agents',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.v2Agents)
       }
     },
@@ -221,7 +229,7 @@ function useColumns (
       dataIndex: 'v3Agents',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.v3Agents)
       }
     },
@@ -233,7 +241,7 @@ function useColumns (
       sorter: true,
       filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.venues)
       }
     },
@@ -243,7 +251,7 @@ function useColumns (
       dataIndex: 'aps',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.aps)
       }
     }/*,

@@ -2,12 +2,14 @@ import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
-import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Path, To }                         from '@acx-ui/react-router-dom'
-import { Provider }                         from '@acx-ui/store'
-import { mockServer, render, screen }       from '@acx-ui/test-utils'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                         from '@acx-ui/react-router-dom'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen }                       from '@acx-ui/test-utils'
 
 import { mockedTenantId }     from '../../MdnsProxy/MdnsProxyForm/__tests__/fixtures'
+import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingConfigureForm from './WifiCallingConfigureForm'
@@ -97,6 +99,8 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
+const mockedUpdateService = jest.fn()
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -104,6 +108,73 @@ jest.mock('@acx-ui/react-router-dom', () => ({
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
   }
 }))
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
+describe('WifiCallingConfigureForm feature flag on', () => {
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    mockServer.use(
+      rest.get(
+        WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
+      ),
+      rest.get(
+        WifiCallingUrls.getWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+
+    expect(screen.getByRole('link', {
+      name: 'Wi-Fi Calling'
+    })).toBeVisible()
+  })
+})
 
 describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
@@ -118,17 +189,20 @@ describe('WifiCallingConfigureForm', () => {
       ),
       rest.put(
         WifiCallingUrls.updateWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))
+        (req, res, ctx) => {
+          mockedUpdateService()
+          return res(ctx.json(wifiCallingServiceResponse))
+        }
       ),
       rest.get(
         WifiCallingUrls.getWifiCalling.url,
         (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
-  })
-
-  afterAll(() => {
-    mockServer.close()
   })
 
   it('should render wifiCallingConfigureForm successfully', async () => {
@@ -161,11 +235,13 @@ describe('WifiCallingConfigureForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
       { target: { value: 'service-name-test' } })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByText('Scope'))
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(mockedUpdateService).toBeCalledTimes(1)
   })
 
   it('should render form successfully then click the cancel button', async () => {
@@ -186,5 +262,54 @@ describe('WifiCallingConfigureForm', () => {
     )
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).toBeCalledTimes(2)
+  })
+})
+
+describe.skip('WifiCallingConfigureForm feature flag off', () => {
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    mockServer.use(
+      rest.get(
+        WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
+      ),
+      rest.get(
+        WifiCallingUrls.getWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
   })
 })

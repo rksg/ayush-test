@@ -1,33 +1,27 @@
-import { useState } from 'react'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Select, Space, Typography } from 'antd'
-import moment                        from 'moment'
-import { useIntl }                   from 'react-intl'
-import styled                        from 'styled-components/macro'
-
-import { Card, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery }                           from '@acx-ui/rc/services'
+import { Loader, SummaryCard }            from '@acx-ui/components'
+import { EdgeFirewallGroupedStatsTables } from '@acx-ui/rc/components'
+import { useGetEdgeFirewallQuery }        from '@acx-ui/rc/services'
 import {
   ACLDirection,
-  getACLDirectionOptions,
-  getServiceDetailsLink,
+  EdgeStatus,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  getServiceDetailsLink
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { DDoSRulesTable }        from './DDoSRulesTable'
-import { StatefulACLRulesTable } from './StatefulACLRulesTable'
-import * as UI                   from './styledComponents'
 
-const EdgeFirewall = styled(({ className, serviceId }:
-   { className?: string, serviceId: string }) => {
+interface EdgeFirewallServiceProps {
+  className?: string;
+  edgeData: EdgeStatus;
+}
+
+const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
-  const directionOpts = getACLDirectionOptions($t)
+  const serviceId = edgeData.firewallId
 
   // get firewall by firewallId
   const {
@@ -55,106 +49,57 @@ const EdgeFirewall = styled(({ className, serviceId }:
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
       content: () => (
-        $t(
+        edgeFirewallData.ddosRateLimitingEnabled ? $t(
           { defaultMessage:
-            '{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
+            'ON ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
           {
-            status: edgeFirewallData.ddosRateLimitingEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
             rulesCount: Object.keys(edgeFirewallData?.ddosRateLimitingRules || []).length
           }
         )
+          : $t({ defaultMessage: 'OFF' })
       )
     },
     {
       title: $t({ defaultMessage: 'Stateful ACL' }),
       content: () => (
-        $t(
-          { defaultMessage: `{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}},
+        edgeFirewallData.statefulAclEnabled
+          ? $t(
+            { defaultMessage: `ON (IN: {inCount} {inCount, plural, one {rule} other {rules}},
              OUT: {outCount} {outCount, plural, one {rule} other {rules}})` },
-          {
-            status: edgeFirewallData.statefulAclEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
-            inCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.INBOUND
-            )[0].rules.length,
-            outCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.OUTBOUND
-            )[0].rules.length
-          }
-        )
+            {
+              inCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.INBOUND
+              )[0].rules.length,
+              outCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.OUTBOUND
+              )[0].rules.length
+            }
+          )
+          : $t({ defaultMessage: 'OFF' })
+      )
+    },
+    {
+      title: $t({ defaultMessage: 'SmartEdge' }),
+      content: (
+        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
+          {edgeData?.name}
+        </TenantLink>
       )
     }
   ] : []
 
-  const handleACLDirectionChange = (val:ACLDirection) => {
-    setACLDirection(val)
-  }
-
-  return (<Loader states={[
-    {
-      isFetching: false,
-      isLoading: isFWInfoLoading
-    }
-  ]}>
+  return (<Loader states={[{
+    isFetching: false,
+    isLoading: isFWInfoLoading
+  }]}>
     <Space direction='vertical' size={30} className={className}>
-      <Card type='solid-bg'>
-        <UI.InfoMargin>
-          <GridRow>
-            {infoFields.map(item =>
-              (<GridCol col={{ span: 3 }} key={item.title}>
-                <Space direction='vertical' size={10}>
-                  <Typography.Text>
-                    {item.title}
-                  </Typography.Text>
-                  <Typography.Text>
-                    {item.content()}
-                  </Typography.Text>
-                </Space>
-              </GridCol>)
-            )}
-          </GridRow>
-        </UI.InfoMargin>
-      </Card>
-      <Tabs type='third'>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'DDoS' })}
-          key='ddos'
-        >
-          <UI.ActionsContainer>
-            {filterByAccess([
-              <RangePicker
-                key='date-filter'
-                selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-                onDateApply={setDateFilter as CallableFunction}
-                showTimePicker
-                selectionType={range}
-              />])
-            }
-          </UI.ActionsContainer>
-          <DDoSRulesTable firewallData={edgeFirewallData} />
-        </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Stateful ACL' })}
-          key='acl'
-        >
-          <UI.ActionsContainer>
-            <Select
-              value={aclDirection}
-              onChange={handleACLDirectionChange}
-            >
-              {directionOpts.map(({ label, value }) =>
-                (<Select.Option value={value} key={value} children={label} />)
-              )}
-            </Select>
-          </UI.ActionsContainer>
-          <StatefulACLRulesTable firewallData={edgeFirewallData} direction={aclDirection} />
-        </Tabs.TabPane>
-      </Tabs>
+      <SummaryCard data={infoFields} />
+      <EdgeFirewallGroupedStatsTables
+        edgeData={edgeData}
+        edgeFirewallData={edgeFirewallData!}
+      />
     </Space>
   </Loader>)
-})`${UI.WrapperStyle}`
+}
 
 export default EdgeFirewall

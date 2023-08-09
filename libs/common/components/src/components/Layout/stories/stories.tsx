@@ -4,7 +4,7 @@ import { HashRouter }   from 'react-router-dom'
 
 import {
   WorldSolid,
-  ArrowExpand,
+  CaretDownSolid,
   AccountCircleSolid,
   NotificationSolid,
   QuestionMarkCircleSolid,
@@ -32,7 +32,7 @@ storiesOf('Layout', module).add('Basic', () => (
             <LayoutUI.DropdownText>
               <LayoutUI.Icon children={<WorldSolid />} />
               {selectedKeys}
-              <LayoutUI.Icon children={<ArrowExpand />} />
+              <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
             </LayoutUI.DropdownText>
           }</Dropdown>
         }

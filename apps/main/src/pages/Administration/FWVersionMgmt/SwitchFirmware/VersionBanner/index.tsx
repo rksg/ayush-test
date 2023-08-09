@@ -13,10 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
-
-import * as UI from './styledComponents'
-
-const transform = firmwareTypeTrans()
+import * as UI                                    from '../../styledComponents'
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
@@ -27,12 +24,15 @@ export const VersionBanner = () => {
   const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
   const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
+  const transform = firmwareTypeTrans($t)
 
   const getFirmwareInformation = function (firmware: FirmwareVersion, models: string) {
     return (<UI.FwContainer>
       <div>
         <span>{$t({ defaultMessage: 'For ICX Models ({models}):' }, { models })} </span>
-        <UI.VersionName>{parseSwitchVersion(firmware?.name)}</UI.VersionName>
+        <UI.BannerVersionName>
+          {parseSwitchVersion(firmware?.name)}
+        </UI.BannerVersionName>
       </div>
       <div>
         <UI.TypeSpace split={<Divider type='vertical' />}>

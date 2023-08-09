@@ -1,0 +1,650 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`incident details should render Incident Details Page correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    >
+      <div
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
+      >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/undefined/t/analytics/incidents"
+                >
+                  Incidents
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
+        <div
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
+          >
+            <span
+              class="ant-page-header-heading-title"
+            >
+              <h1
+                aria-label="Incident Details"
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+              >
+                Incident Details
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                >
+                  lg
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    ...
+                  </span>
+                </span>
+              </h1>
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+                type="P3"
+              >
+                P3
+              </span>
+            </span>
+          </div>
+          <span
+            class="ant-page-header-heading-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  type="button"
+                >
+                  <svg
+                    data-testid="ConfigurationOutlined"
+                  />
+                </button>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div
+          class="ant-page-header-content"
+        >
+          <span
+            aria-label="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+          >
+            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+            >
+              lg
+            </span>
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ...
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__FixedAutoSizer-sc-sbdzeb-0 dpGfEK"
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="width: 1280px;"
+            >
+              <div
+                class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              >
+                <div
+                  class="ant-descriptions-view"
+                >
+                  <table>
+                    <tbody>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Client Impact Count
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              >
+                                5 of 27 clients (18.52%)
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Incident Category
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Connection
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Incident Sub-Category
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                EAP
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Type
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Access Point
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Scope
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Duration
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                21 h 27 m
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Event Start Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                07/19/2022 05:15
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Event End Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                07/20/2022 02:42
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+            type="solid-bg"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <section
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 iGKJsl"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-start"
+                  >
+                    <div
+                      class="ant-space-item"
+                      style="margin-right: 6px;"
+                    >
+                      <svg
+                        class="styledComponents__BulbOutlinedIcon-sc-1t8f1ur-0 euNaoT"
+                        data-testid="BulbOutlined"
+                      />
+                    </div>
+                    <div
+                      class="ant-space-item"
+                    >
+                      <h2
+                        class="ant-typography styledComponents__Title-sc-1t8f1ur-1"
+                      >
+                        Insights
+                      </h2>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: -10px -10px -10px -10px;"
+                  >
+                    <div
+                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                        >
+                          Root Cause Analysis
+                        </div>
+                        <p>
+                          The connection was not completed because the client has left, or is leaving, the network.
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                        >
+                          Recommended Action
+                        </div>
+                        <p>
+                          This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          style="min-height: 228px;"
+        >
+          <div
+            data-testid="networkImpact"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          style="min-height: 250px;"
+        >
+          <div
+            data-testid="timeSeries"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

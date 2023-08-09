@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }             from '@acx-ui/components'
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { Tabs }                           from '@acx-ui/components'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo }                   from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,7 +12,6 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from './Firewall/__tests__/fixtures'
 
 import { VenueServicesTab } from './'
 
@@ -39,6 +38,9 @@ jest.mock('./MdnsProxyInstances', () => ({
   default: () => <div data-testid='MdnsProxyInstances' />,
   __esModule: true
 }))
+jest.mock('./NetworkSegmentation', () => ({
+  NetworkSegmentation: () => (<div data-testid='NetworkSegmentation' />)
+}))
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
 }))
@@ -58,6 +60,7 @@ describe('Venue service tab', () => {
   describe('when edge feature flag is off', () => {
     it('should not render edge related tab', async () => {
       jest.mocked(useIsTierAllowed).mockReturnValue(false)
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
 
       render(
         <Provider>
@@ -73,13 +76,13 @@ describe('Venue service tab', () => {
   describe('when edge feature flag is on', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     it('should not render firewall tab when there is no edge on venue', async () => {
       mockedGetEdgeListFn.mockReset()
 
       const mockNoEdgeList = {
-        ...mockEdgeList,
         totalCount: 0,
         data: []
       }
@@ -112,7 +115,7 @@ describe('Venue service tab', () => {
       mockedGetEdgeListFn.mockReset()
 
       const mockNoFWEdgeList = {
-        ...mockEdgeList,
+        totalCount: 0,
         data: [
           {
             serialNumber: '0000000001',
@@ -152,7 +155,10 @@ describe('Venue service tab', () => {
           EdgeUrlsInfo.getEdgeList.url,
           (req, res, ctx) => {
             mockedGetEdgeListFn()
-            return res(ctx.json(mockEdgeList))
+            return res(ctx.json({
+              totalCount: 0,
+              data: []
+            }))
           }
         )
       )

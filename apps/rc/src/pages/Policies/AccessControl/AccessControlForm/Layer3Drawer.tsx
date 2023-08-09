@@ -35,11 +35,11 @@ import {
   networkWifiIpRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { layer3ProtocolLabelMapping } from '../../contentsMap'
+import { layer3ProtocolLabelMapping }      from '../../contentsMap'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
-import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -202,19 +202,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
 
   const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectOptions: data?.data?.map(
+        layer3SelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer3List: data?.data?.map(item => item.name)
+          }) : [],
+        layer3List: data ? data.map(item => item.name) : []
       }
     }
   })
@@ -309,7 +305,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'source',
       key: 'source',
-      render: (data, row) => {
+      render: (_, row) => {
         return <NetworkColumnComponent network={row.source} row={row} />
       }
     },
@@ -317,7 +313,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Destination' }),
       dataIndex: 'destination',
       key: 'destination',
-      render: (data, row) => {
+      render: (_, row) => {
         return <NetworkColumnComponent network={row.destination} row={row} />
       }
     },
@@ -325,7 +321,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
       key: 'protocol',
-      render: (data, row) => {
+      render: (_, row) => {
         const protocol = row.protocol ?? Layer3ProtocolType.ANYPROTOCOL
         return $t(layer3ProtocolLabelMapping[protocol as keyof typeof Layer3ProtocolType])
       }
@@ -334,7 +330,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (data, row) => {
+      render: (_, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
           <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>
@@ -611,12 +607,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }] as { label: string, onClick: () => void }[]
 
   const EmptyElement = (props: { access: AccessStatus }) => {
-    drawerForm.setFieldValue('layer3DefaultAccess', props.access)
+    useEffect(() => {
+      drawerForm.setFieldValue('layer3DefaultAccess', props.access)
+    }, [props])
     return <></>
   }
 
   const DefaultEmptyElement = (props: { access: AccessStatus }) => {
-    contentForm.setFieldValue('layer3DefaultAccess', props.access)
+    useEffect(() => {
+      contentForm.setFieldValue('layer3DefaultAccess', props.access)
+    }, [props])
     return <></>
   }
 
@@ -656,9 +656,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      {Object.keys(Layer3ProtocolType).map((type) => {
+      {Object.keys(Layer3ProtocolType).map((type, index) => {
         return (
-          <Option value={type}>
+          <Option value={type} key={index}>
             {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
           </Option>
         )
@@ -753,28 +753,50 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           {$t({ defaultMessage: 'Applies if no rule is matched' })}
         </span>
       </div>}
-      children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
+      children={<ContentSwitcher
+        defaultValue={layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)
+          ? layer3PolicyInfo.defaultAccess
+          : AccessStatus.ALLOW}
+        tabDetails={defaultTabDetails}
+        size='large' />}
     />
     <DrawerFormItem
       name='layer3Rule'
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
     <DndProvider backend={HTML5Backend} >
-      <Table
+      {isOnlyViewMode && !editMode.isEdit ? <Table
+        columns={basicColumns}
+        dataSource={layer3RuleList as Layer3Rule[]}
+      /> : <Table
         columns={basicColumns}
         dataSource={layer3RuleList as Layer3Rule[]}
         rowKey='priority'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
         components={{
           body: {
             row: DraggableRow
           }
         }}
-      />
+      />}
     </DndProvider>
   </Form>
+
+  const portRangeValidator = (value: string) => {
+    const validationList: string[] = value.split('-')
+    if (value.includes('-')) {
+      if (validationList[1] === '' || Number(validationList[0]) >= Number(validationList[1])) {
+        return Promise.reject($t({
+          defaultMessage: 'Please enter another valid number between {number} and 65535'
+        }, {
+          number: Number(validationList[0]) + 1
+        }))
+      }
+    }
+    return Promise.all(validationList.map(value => portRegExp(value)))
+  }
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
@@ -872,7 +894,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -958,7 +980,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -1021,6 +1043,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')
@@ -1038,9 +1061,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleLayer3DrawerClose)
-          : handleLayer3DrawerClose()
+        onClose={() => handleLayer3DrawerClose()
         }
         destroyOnClose={true}
         children={content}

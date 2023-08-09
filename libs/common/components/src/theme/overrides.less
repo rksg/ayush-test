@@ -45,10 +45,102 @@
     sup.ant-badge-count {
       box-shadow: unset;
     }
+    &-status-dot {
+      top: unset;
+    }
     &-status-text {
       font-size: var(--acx-body-4-font-size);
       font-weight: var(--acx-body-font-weight);
       line-height: var(--acx-body-4-line-height);
+    }
+  }
+
+  // styles default and primary buttons are overridden here instead of in common-components
+  // button because there are buttons rendered by antd that we can't control e.g. ActionModal
+  .ant-btn {
+    text-shadow: unset;
+    box-shadow: unset;
+
+    &:not(.ant-btn-icon-only):not(.ant-btn-link) {
+      padding: 4px 12px;
+      &:not(.ant-btn-sm):not(.ant-btn-lg) {
+        min-height: 32px;
+        height: fit-content;
+      }
+    }
+
+    &.ant-btn-default {
+      background-color: transparent;
+      border-color: var(--acx-primary-black);
+      &:hover, &:focus, &:active {
+        border-color: var(--acx-primary-black);
+        color: var(--acx-primary-black);
+      }
+    }
+
+    &.ant-btn-primary {
+      background-color: var(--acx-accents-orange-50);
+      border-color: var(--acx-accents-orange-50);
+      &:hover, &:focus {
+        background-color: var(--acx-accents-orange-60);
+        border-color: var(--acx-accents-orange-60);
+      }
+      &:active {
+        background-color: var(--acx-accents-orange-50);
+        border-color: var(--acx-accents-orange-60);
+      }
+    }
+
+    &.ant-btn-icon-only:not(.ant-btn-sm):not(.ant-btn-lg) {
+      width: 32px;
+      height: 32px;
+    }
+
+    &.ant-btn-link:not(.ant-btn-icon-only) {
+      background: transparent;
+      padding: 0;
+      height: var(--acx-body-3-line-height);
+
+      &:focus {
+        color: var(--acx-accents-blue-50);
+        span { text-decoration: underline; }
+      }
+      &:hover, &:active {
+        color: var(--acx-accents-blue-60);
+        span { text-decoration: underline; }
+      }
+
+      &.ant-btn-sm {
+        height: var(--acx-body-4-line-height);
+      }
+
+      &.ant-btn-lg {
+        height: var(--acx-body-2-line-height);
+      }
+    }
+
+    &.ant-btn-background-ghost {
+      border: 0;
+    }
+
+    &[disabled] {
+      &.ant-btn-default {
+        color: var(--acx-neutrals-40);
+        background-color: transparent;
+        border-color: var(--acx-neutrals-40);
+      }
+
+      &.ant-btn-primary {
+        color: var(--acx-neutrals-10);
+        background-color: var(--acx-neutrals-40);
+        border-color: var(--acx-neutrals-40);
+      }
+
+      &.ant-btn-link:not(.ant-btn-icon-only) {
+        &, &:hover, &:focus {
+          color: var(--acx-neutrals-40);
+        }
+      }
     }
   }
 
@@ -184,29 +276,6 @@
     }
   }
 
-  .ant-cascader {
-    width: 100%;
-
-    // fixes extra space appearing when clicking on selected items
-    > [aria-live='polite'] { display: none !important; }
-
-    &-menu {
-      border-right: 1px solid var(--acx-neutrals-20);
-
-      &-item {
-        &:hover {
-          background-color: var(--acx-accents-orange-10);
-        }
-
-        &-active {
-          &:not(:disabled) {
-            background-color: var(--acx-accents-orange-20);
-          }
-        }
-      }
-    }
-  }
-
   .ant-form {
     &-item {
       margin-bottom: 16px;
@@ -287,8 +356,15 @@
     box-shadow: none !important;
   }
 
-  .ant-input-affix-wrapper-readonly.ant-input-password {
-    width: fit-content;
+  .ant-input-password {
+    .ant-input-password-icon {
+      width: 16px;
+      height: auto;
+      cursor: pointer;
+    }
+    &.ant-input-affix-wrapper-readonly {
+      width: fit-content;
+    }
   }
 
   .ant-input-affix-wrapper .ant-input-prefix {
@@ -299,7 +375,6 @@
     .ant-input-clear-icon {
       span[role=img] {
         svg { display: none; }
-
         &::after {
           content: '';
           display: inline-block;
@@ -320,7 +395,6 @@
     .ant-form-item-feedback-icon {
       span[role=img] {
         svg { display: none; }
-
         &::after {
           content: '';
           display: inline-block;
@@ -520,10 +594,6 @@
   }
 
   .ant-select {
-    &-dropdown {
-      font-size: var(--acx-body-4-font-size);
-      font-weight: var(--acx-body-font-weight);
-    }
     .ant-select-arrow {
       margin-right: -3px;
       span[role=img] {
@@ -574,9 +644,6 @@
 
     &.ant-select-sm {
       font-size: var(--acx-body-4-font-size);
-      .ant-select-dropdown .ant-select-item {
-        font-size: var(--acx-body-4-font-size);
-      }
       .ant-select-arrow {
         margin-right: -5px;
         span[role=img] {
@@ -591,6 +658,15 @@
         margin-right: -5px;
         margin-top: -8px;
       }
+    }
+  }
+
+  .ant-select-dropdown {
+    font-size: var(--acx-body-4-font-size);
+    font-weight: var(--acx-body-font-weight);
+    .ant-select-item {
+      font-size: inherit;
+      font-weight: inherit;
     }
   }
 
@@ -736,10 +812,16 @@
       .ant-btn:not(.ant-btn-link) {
         min-width: 85px;
         max-width: 200px;
-        height: auto;
-        padding: 6px 16px;
         white-space: break-spaces;
         margin-bottom: auto;
+        &.ant-btn-primary:not([disabled]):focus {
+          background-color: var(--acx-accents-orange-50);
+          border-color: var(--acx-accents-orange-50);
+        }
+        &.ant-btn-primary:not([disabled]):hover {
+          background-color: var(--acx-accents-orange-60);
+          border-color: var(--acx-accents-orange-60);
+        }
       }
       .ant-btn + .ant-btn {
         margin-left: 12px;

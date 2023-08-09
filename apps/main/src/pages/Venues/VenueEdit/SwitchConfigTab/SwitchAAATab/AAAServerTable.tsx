@@ -1,24 +1,27 @@
 import { useState } from 'react'
 
-import { Input }                     from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  PasswordInput
 } from '@acx-ui/components'
-import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
-import { useParams }                                                            from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                       from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
+import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
+import { useParams }                                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                           from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
+  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -49,9 +52,9 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={row.secret}
@@ -84,9 +87,9 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={row.secret}
@@ -98,8 +101,8 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Purpose' }),
       key: 'purpose',
       dataIndex: 'purpose',
-      render: function (data) {
-        return <FormattedMessage {...purposeDisplayText[data as AAA_Purpose_Type]}/>
+      render: function (_, { purpose }) {
+        return <FormattedMessage {...purposeDisplayText[purpose as AAA_Purpose_Type]}/>
       }
     }
   ]
@@ -115,9 +118,10 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Password' }),
       key: 'password',
       dataIndex: 'password',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
+            style={{ paddingLeft: 0 }}
             readOnly
             bordered={false}
             value={row.password}
@@ -125,13 +129,26 @@ function useColumns (type: AAAServerTypeEnum) {
         </div>
       }
     },
+    ...( enableSwitchAdminPassword ? [{
+      title: $t({ defaultMessage: 'Use In' }),
+      key: 'syncedPasswordSwitchCount',
+      dataIndex: 'syncedPasswordSwitchCount',
+      render: function (data: React.ReactNode, row: LocalUser) {
+        return row?.switchCountInVenue
+          ? $t({ defaultMessage: '{syncedCount} out of {totalCount} switches' }, {
+            syncedCount: row?.syncedPasswordSwitchCount || 0,
+            totalCount: row.switchCountInVenue
+          })
+          : '--'
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Privilege' }),
       key: 'level',
       dataIndex: 'level',
       sorter: true,
-      render: function (data) {
-        return <FormattedMessage {...levelDisplayText[data as AAA_Level_Type]}/>
+      render: function (_, { level }) {
+        return <FormattedMessage {...levelDisplayText[level as AAA_Level_Type]}/>
       }
     }
   ]
@@ -147,7 +164,7 @@ function useColumns (type: AAAServerTypeEnum) {
 
 export const AAAServerTable = (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type:AAAServerTypeEnum, tableQuery: any, aaaSetting?:AAASetting }) => {
+  type:AAAServerTypeEnum, tableQuery: any, aaaSetting?:AAASetting, cliApplied?:boolean }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -163,7 +180,7 @@ export const AAAServerTable = (props: {
     bulkDeleteAAAServer,
     { isLoading: isBulkDeleting }
   ] = useBulkDeleteAAAServerMutation()
-  const { type, tableQuery, aaaSetting } = props
+  const { type, tableQuery, aaaSetting, cliApplied } = props
 
   const handleAddAction = () => {
     setIsEditMode(false)
@@ -172,6 +189,8 @@ export const AAAServerTable = (props: {
   }
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
     label: $t({ defaultMessage: 'Add {serverType}' }, { serverType: $t(serversDisplayText[type]) }),
+    disabled: cliApplied,
+    tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     onClick: handleAddAction
   }]
 
@@ -274,7 +293,7 @@ export const AAAServerTable = (props: {
             customContent: {
               action: 'DELETE',
               entityName: $t(serversDisplayText[type]),
-              entityValue: rows.length === 1 ? rows[0].name : undefined,
+              entityValue: rows.length === 1 ? (rows[0]?.name || rows[0]?.username) : undefined,
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
@@ -307,8 +326,10 @@ export const AAAServerTable = (props: {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
+        rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
+        rowSelection={cliApplied || !hasAccess()
+          ? undefined
+          : { type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>
   )

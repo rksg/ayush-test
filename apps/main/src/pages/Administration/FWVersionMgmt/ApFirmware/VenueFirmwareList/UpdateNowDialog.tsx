@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                  from 'antd/lib/form/Form'
-import { useIntl }                                                  from 'react-intl'
+import { defineMessage, useIntl }                                   from 'react-intl'
 
 import {
   Modal
@@ -19,10 +19,15 @@ import {
 
 import * as UI from './styledComponents'
 
-enum VersionsSelectMode {
+export enum VersionsSelectMode {
   Radio,
   Dropdown
 }
+
+// eslint-disable-next-line max-len
+export const firmwareNote1 = defineMessage({ defaultMessage: 'Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.' })
+// eslint-disable-next-line max-len
+export const firmwareNote2 = defineMessage({ defaultMessage: 'You will be notified once the update process has finished.' })
 
 export interface UpdateApNowDialogProps {
   visible: boolean,
@@ -38,6 +43,7 @@ export interface UpdateApNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions, eol, eolName, latestEolVersion, eolModels } = props
@@ -85,7 +91,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
 
   const otherOptions = otherVersions.map((version) => {
     return {
-      label: getVersionLabel(version),
+      label: getVersionLabel(intl, version),
       value: version.name,
       title: '',
       style: { fontSize: 12 }
@@ -161,21 +167,21 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                 { // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'Choose which version to update the venue to:' })}
               </Typography>
-              <UI.TitleActive>Active Device</UI.TitleActive>
+              <UI.TitleActive>{$t({ defaultMessage: 'Active Device' })}</UI.TitleActive>
               <Radio.Group
                 style={{ margin: 12 }}
                 onChange={onSelectModeChange}
                 value={selectMode}>
                 <Space direction={'vertical'}>
                   <Radio value={VersionsSelectMode.Radio}>
-                    {getVersionLabel(versionOptions[0])}
+                    {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   { otherVersions.length > 0 ?
                     <UI.SelectDiv>
                       <Radio value={VersionsSelectMode.Dropdown}>
                         <Select
                           style={{ width: '420px', fontSize: '12px' }}
-                          placeholder='Select other version...'
+                          placeholder={$t({ defaultMessage: 'Select other version...' })}
                           onChange={handleChange}
                           options={otherOptions}
                         />
@@ -190,21 +196,26 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
           }
           { eol ?
             <UI.Section>
-              <UI.TitleLegacy>Legacy Device</UI.TitleLegacy>
+              <UI.TitleLegacy>{$t({ defaultMessage: 'Legacy Device' })}</UI.TitleLegacy>
               <Radio
                 defaultChecked
                 style={{ margin: 12 }}>
                 {latestEolVersion}
               </Radio>
-              <UI.ItemModel>AP Models: {eolModels?.join(', ')}</UI.ItemModel>
+              <UI.ItemModel>
+                {$t({
+                  defaultMessage: 'AP Models: {apModels}'
+                }, {
+                  apModels: eolModels?.join(', ')
+                })}
+              </UI.ItemModel>
             </UI.Section>
             : null
           }
           <UI.Section>
             <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
-              <UI.Li>You will be notified once the update process has finished.</UI.Li>
+              <UI.Li>{$t(firmwareNote1)}</UI.Li>
+              <UI.Li>{$t(firmwareNote2)}</UI.Li>
             </UI.Ul>
           </UI.Section>
         </Form.Item>

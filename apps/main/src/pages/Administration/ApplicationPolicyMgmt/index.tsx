@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { Divider, Space } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Divider, Space }                            from 'antd'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 
-import {  Tabs }                                                 from '@acx-ui/components'
+import {  Loader, Tabs }                                         from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
@@ -14,35 +14,43 @@ import { UpdateConfirms }                                                       
 import { ChangedAPPTable, MergedAPPTable, NewAPPTable, RemovedAPPTable, UpdateAPPTable } from './UpdateTables'
 import { useSigPackDetails }                                                             from './useSigPackDetails'
 
-const ApplicationPolicyMgmt = ()=>{
+export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, MessageDescriptor> = {
+  [ApplicationUpdateType.APPLICATION_ADDED]: defineMessage({ defaultMessage: 'New Application' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_MERGED]: defineMessage({ defaultMessage: 'Application Merged' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_REMOVED]: defineMessage({ defaultMessage: 'Application Removed' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_RENAMED]: defineMessage({ defaultMessage: 'Application Name Changed' }),
+  [ApplicationUpdateType.CATEGORY_UPDATED]: defineMessage({ defaultMessage: 'Category Updated' })
+}
+
+const ApplicationPolicyMgmt = () => {
   const { $t } = useIntl()
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack ] = useExportSigPackMutation()
   const [ type, setType ] = useState(ApplicationUpdateType.APPLICATION_ADDED)
   const {
     data,
-    added,
-    updated,
-    merged,
-    removed,
-    renamed,
+    changedAppsInfoMap,
     updateAvailable,
     confirmationType,
-    rulesCount
+    isFetching,
+    isLoading
   } = useSigPackDetails()
 
-  const showCurrentInfo = ()=>{
+  const showCurrentInfo = () => {
     return (
-      <UI.BannerVersion>
+      <div>
         <Space split={<Divider type='vertical' style={{ height: '80px' }} />}>
-          {!updateAvailable&&<UI.FwContainer>
+          {!updateAvailable && <UI.FwContainer>
             <UI.LatestVersion>
               {$t({ defaultMessage: 'Latest Application Version:' })}
             </UI.LatestVersion>
             <UI.CheckMarkIcon/>
             {$t({ defaultMessage: 'Now is the latest version' })}
           </UI.FwContainer>}
-          {updateAvailable&&<UI.FwContainer>
+          {updateAvailable && <UI.FwContainer>
             <UI.CurrentDetail>
               <UI.CurrentLabelBold>
                 {$t({ defaultMessage: 'Latest Application Version:' })}
@@ -52,21 +60,13 @@ const ApplicationPolicyMgmt = ()=>{
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
-              <UI.CurrentLabel>
-                {$t({ defaultMessage: 'Support Regular:' })}
-              </UI.CurrentLabel>
-              <UI.CurrentValue>
-                {$t({ defaultMessage: 'No' })}
-              </UI.CurrentValue>
-            </UI.CurrentDetail>
-            <Space split={<Divider type='vertical' style={{ height: '15px' }} />}>
-              <UI.CurrentValue style={{ fontWeight: 600 }}>
+              <UI.CurrentLabelBold>
                 {$t({ defaultMessage: 'Release' })}
-              </UI.CurrentValue>
+              </UI.CurrentLabelBold>
               <UI.CurrentValue>
                 {formatter(DateFormatEnum.DateFormat)(data?.latestReleasedDate)}
               </UI.CurrentValue>
-            </Space>
+            </UI.CurrentDetail>
           </UI.FwContainer>}
           <UI.FwContainer style={{ backgroundColor: 'var(--acx-primary-white)' }}>
             <UI.CurrentDetail>
@@ -78,11 +78,11 @@ const ApplicationPolicyMgmt = ()=>{
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
-              <UI.CurrentLabel>
-                {$t({ defaultMessage: 'Support Regular:' })}
-              </UI.CurrentLabel>
+              <UI.CurrentLabelBold>
+                {$t({ defaultMessage: 'Release' })}
+              </UI.CurrentLabelBold>
               <UI.CurrentValue>
-                {$t({ defaultMessage: 'No' })}
+                {formatter(DateFormatEnum.DateFormat)(data?.currentReleasedDate)}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
@@ -95,18 +95,22 @@ const ApplicationPolicyMgmt = ()=>{
             </UI.CurrentDetail>
           </UI.FwContainer>
         </Space>
-        {updateAvailable&&<div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
-          {$t({ defaultMessage: 'Clicking "Update" will proceed with '+
-            'the below updates under this tenant' })}
-        </div>}
-        {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms rulesCount={rulesCount}
-            confirmationType={confirmationType}/>
-        </div>}
-      </UI.BannerVersion>
+        {updateAvailable && <>
+          <div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
+            {/* eslint-disable-next-line max-len */}
+            {$t({ defaultMessage: 'Clicking "Update" will proceed with the below updates under this tenant' })}
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <UpdateConfirms
+              changedAppsInfoMap={changedAppsInfoMap}
+              confirmationType={confirmationType}
+            />
+          </div>
+        </>}
+      </div>
     )
   }
-  const updateDetails = ()=>{
+  const updateDetails = () => {
     const tableActions = []
     tableActions.push({
       label: $t({ defaultMessage: 'Export All' }),
@@ -124,47 +128,59 @@ const ApplicationPolicyMgmt = ()=>{
         })
       }
     })
+
+    const added = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_ADDED]?.data ?? []
+    const updated = changedAppsInfoMap[ApplicationUpdateType.CATEGORY_UPDATED]?.data ?? []
+    const merged = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_MERGED]?.data ?? []
+    const removed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_REMOVED]?.data ?? []
+    const renamed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_RENAMED]?.data ?? []
+
     const tabs = {
       APPLICATION_ADDED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'New Application ({totalNew})' },
-          { totalNew: added.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_ADDED])}
+          {' (' + added.length + ')'}
         </UI.TabSpan>,
         content: <NewAPPTable actions={tableActions} data={added}/>,
         visible: true
       },
       CATEGORY_UPDATED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Category Update ({totalUpdate})' },
-          { totalUpdate: updated.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.CATEGORY_UPDATED])}
+          {' (' + updated.length + ')'}
         </UI.TabSpan>,
         content: <UpdateAPPTable actions={tableActions} data={updated}/>,
         visible: true
       },
       APPLICATION_MERGED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Merged ({totalMerged})' },
-          { totalMerged: merged.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_MERGED])}
+          {' (' + merged.length + ')'}
         </UI.TabSpan>,
         content: <MergedAPPTable actions={tableActions} data={merged}/>,
         visible: true
       },
       APPLICATION_REMOVED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Removed ({totalRemoved})' },
-          { totalRemoved: removed.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_REMOVED])}
+          {' (' + removed.length + ')'}
         </UI.TabSpan>,
         content: <RemovedAPPTable actions={tableActions} data={removed}/>,
         visible: true
       },
       APPLICATION_RENAMED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Name Changed ({totalChanged})' },
-          { totalChanged: renamed.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_RENAMED])}
+          {' (' + renamed.length + ')'}
         </UI.TabSpan>,
         content: <ChangedAPPTable actions={tableActions} data={renamed}/>,
         visible: true
       }
     }
     return <>
-      <div style={{ fontWeight: 600, marginTop: 20 }}>
+      <UI.CurrentLabelBold style={{ marginTop: 20 }}>
         {$t({ defaultMessage: 'Update Details' })}
-      </div>
+      </UI.CurrentLabelBold>
       <div>
         <Tabs
           defaultActiveKey='APPLICATION_ADDED'
@@ -184,9 +200,9 @@ const ApplicationPolicyMgmt = ()=>{
       </div>
     </>
   }
-  return <>
+  return <Loader states={[{ isLoading: isLoading || isFetching }]}>
     {showCurrentInfo()}
-    {updateAvailable&&updateDetails()}
-  </>
+    {updateAvailable && updateDetails()}
+  </Loader>
 }
 export default ApplicationPolicyMgmt

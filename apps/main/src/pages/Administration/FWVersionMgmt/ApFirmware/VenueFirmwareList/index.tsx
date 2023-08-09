@@ -10,12 +10,12 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
-  useGetAvailableFirmwareListQuery,
+  useGetAvailableABFListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
@@ -31,32 +31,35 @@ import {
   UpdateNowRequest,
   UpdateScheduleRequest,
   TableQuery,
-  RequestPayload,
   firmwareTypeTrans,
   useTableQuery,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  EolApFirmware,
+  ABFVersion
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
   compareVersions,
   getApVersion,
   getApNextScheduleTpl,
-  getNextScheduleTplTooltip,
-  isNextScheduleTooltipDisabled,
-  toUserDate
+  getNextSchedulesTooltip,
+  toUserDate,
+  getApSchedules
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { RevertDialog }         from './RevertDialog'
-import { UpdateNowDialog }      from './UpdateNowDialog'
+import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
+import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
+import { RevertDialog }            from './RevertDialog'
+import { UpdateNowDialog }         from './UpdateNowDialog'
+import { useApEolFirmware }        from './useApEolFirmware'
 
-const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,
@@ -64,17 +67,17 @@ function useColumns (
 ) {
   const intl = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const transform = firmwareTypeTrans(intl.$t)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       searchable: searchable,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.name
       }
     },
@@ -82,23 +85,36 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      // sorter: true,
-      sorter: { compare: sortProp('versions[0].version', defaultSort) },
+      sorter: { compare: sortCurrentApFirmware },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
-      render: function (data, row) {
-        return row.versions ? row.versions[0].version : '--'
+      render: function (_, row) {
+        return getApVersion(row) ?? '--'
+      }
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Legacy AP Firmware' }),
+      key: 'eolApFirmwares',
+      dataIndex: 'eolApFirmwares',
+      sorter: false,
+      render: function (_, row) {
+        const firmwareText = getDisplayEolFirmwareText(row)
+
+        return firmwareText
+          ? <Tooltip title={getDisplayEolFirmwareTooltipText(row)}>
+            <UI.WithTooltip>{firmwareText}</UI.WithTooltip>
+          </Tooltip>
+          : '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      // sorter: true,
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.versions) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
@@ -110,9 +126,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      // sorter: false,
       sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
       }
@@ -121,17 +136,17 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      // sorter: false,
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
-        return (!isNextScheduleTooltipDisabled(row)
-          ? getApNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
-          </Tooltip>
-        )
+      render: function (_, row) {
+        const schedules = getApSchedules(row)
+
+        return schedules.length === 0
+          ? getApNextScheduleTpl(row)
+          : <Tooltip
+            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
+            overlayStyle={{ minWidth: '280px' }}
+          ><UI.WithTooltip>{getApNextScheduleTpl(row)}</UI.WithTooltip></Tooltip>
       }
     }
   ]
@@ -140,22 +155,44 @@ function useColumns (
     (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
 }
 
-export const useDefaultVenuePayload = (): RequestPayload => {
-  return {}
+function sortCurrentApFirmware (a: FirmwareVenue, b: FirmwareVenue) {
+  return compareVersions(getApVersion(a), getApVersion(b))
+}
+
+function getDisplayEolFirmware (venue: FirmwareVenue): EolApFirmware[] {
+  const eolApFirmwares = venue.eolApFirmwares || []
+  const currentVersion = getApVersion(venue)
+  return eolApFirmwares.filter(eol => compareVersions(eol.currentEolVersion, currentVersion) < 0)
+}
+
+function getDisplayEolFirmwareTooltipText (venue: FirmwareVenue): string {
+  // eslint-disable-next-line max-len
+  return getDisplayEolFirmware(venue).map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+}
+
+function getDisplayEolFirmwareText (venue: FirmwareVenue): string {
+  return getDisplayEolFirmware(venue).map(eol => eol.currentEolVersion).join(', ')
 }
 
 type VenueTableProps = {
   tableQuery: TableQuery<FirmwareVenue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<FirmwareVenue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export const VenueFirmwareTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+  { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params })
+  // eslint-disable-next-line max-len
+  const { availableVersions } = useGetAvailableABFListQuery({ params }, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+      }
+    }
+  })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
@@ -165,12 +202,10 @@ export const VenueFirmwareTable = (
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [eol, setEol] = useState(false)
-  const [eolName, setEolName] = useState('')
-  const [latestEolVersion, setLatestEolVersion] = useState('')
-  const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const { canUpdateEolApFirmware } = useApEolFirmware()
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -199,10 +234,8 @@ export const VenueFirmwareTable = (
 
   const handleUpdateModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      updateNow({
-        params: { ...params },
-        payload: data
-      }).unwrap()
+      await updateNow({ params: { ...params }, payload: data }).unwrap()
+      clearSelection()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -226,128 +259,51 @@ export const VenueFirmwareTable = (
     setRevertModelVisible(false)
   }
 
-  const handleRevertModalSubmit = (data: UpdateNowRequest[]) => {
-    try {
-      updateNow({
-        params: { ...params },
-        payload: data
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+  const extractAvailableApFirmwares = (selectedRows: FirmwareVenue[]): FirmwareVersion[] => {
+    if (!availableVersions) {
+      return []
     }
-  }
 
-  const columns = useColumns(searchable, filterables)
+    let filterVersions: FirmwareVersion[]
+
+    if (selectedRows.length === 1) {
+      const version = getApVersion(selectedRows[0])
+      // eslint-disable-next-line max-len
+      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => compareVersions(availVersion.id, version) > 0)
+    } else {
+      let selectedMaxVersion: string | undefined
+      let isSameVersion = true
+
+      selectedRows.forEach((row: FirmwareVenue) => {
+        const version = getApVersion(row)
+        if (selectedMaxVersion && compareVersions(version, selectedMaxVersion) !== 0) {
+          isSameVersion = false
+        }
+        if (!selectedMaxVersion || compareVersions(version, selectedMaxVersion) > 0) {
+          selectedMaxVersion = version
+        }
+      })
+
+      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => {
+        const result = compareVersions(availVersion.id, selectedMaxVersion)
+        return result > 0 || (result === 0 && !isSameVersion)
+      })
+    }
+
+    return filterVersions
+  }
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
-      let eolAp = false
-      let allEolFwlatest = true
-      for (let v of selectedRows) {
-        if (v['eolApFirmwares']) {
-          eolAp = true
-          if (allEolFwlatest) {
-            // eslint-disable-next-line max-len
-            allEolFwlatest = compareVersions(v['eolApFirmwares'][0].latestEolVersion, v['eolApFirmwares'][0].currentEolVersion) === 0 ? true : false
-          }
-        }
-      }
+      const eolAvailable = canUpdateEolApFirmware(selectedRows)
+      const activeApFirmwares = extractAvailableApFirmwares(selectedRows)
 
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (!version) {
-          return false
-        }
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-        return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
-      }
-
-      let minVersion = ''
-      let isSameVersion = true
-      const ok = selectedRows.every((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (!version) {
-          return false
-        }
-        if (minVersion && compareVersions(version, minVersion) !== 0) {
-          isSameVersion = false
-        }
-
-        if (!minVersion || compareVersions(version, minVersion) > 0) {
-          minVersion = version
-        }
-        return true
-      })
-      if (!ok) return false
-      if (availableVersions) {
-        for (let i = 0; i < availableVersions.length; i++) {
-          // eslint-disable-next-line max-len
-          if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-            filterVersions.push(availableVersions[i])
-          }
-        }
-      }
-      return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
+      return eolAvailable || activeApFirmwares.length > 0
     },
     label: $t({ defaultMessage: 'Update Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
-      let eolAp = false
-      let eolName = ''
-      let latestEolVersion = ''
-      let eolModels: string[] = []
-      for (let v of selectedRows) {
-        if (v['eolApFirmwares']) {
-          eolAp = true
-          eolName = v['eolApFirmwares'][0].name
-          latestEolVersion = v['eolApFirmwares'][0].latestEolVersion
-          eolModels = [...new Set([...eolModels, ...v['eolApFirmwares'][0].apModels])]
-        }
-      }
-      setEol(eolAp)
-      setEolName(eolName)
-      setLatestEolVersion(latestEolVersion)
-      setEolModels(eolModels)
-
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      } else {
-        let minVersion = ''
-        let isSameVersion = true
-        selectedRows.forEach((row: FirmwareVenue) => {
-          const version = getApVersion(row)
-          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
-            isSameVersion = false
-          }
-          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
-            minVersion = version as string
-          }
-        })
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            // eslint-disable-next-line max-len
-            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      }
-      setUpgradeVersions(filterVersions)
+      setUpgradeVersions(extractAvailableApFirmwares(selectedRows))
       setUpdateModelVisible(true)
     }
   },
@@ -506,6 +462,9 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
 
   return (
     <Loader states={[
@@ -513,27 +472,23 @@ export const VenueFirmwareTable = (
       { isLoading: false }
     ]}>
       <Table
-        columns={columns}
+        columns={useColumns(searchable, filterables)}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={rowSelection}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }])}
       />
-      <UpdateNowDialog
+      <UpdateNowDialogSwitcher
         visible={updateModelVisible}
         data={venues}
         availableVersions={upgradeVersions}
-        eol={eol}
-        eolName={eolName}
-        latestEolVersion={latestEolVersion}
-        eolModels={eolModels}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
@@ -549,7 +504,7 @@ export const VenueFirmwareTable = (
         data={venues}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
-        onSubmit={handleRevertModalSubmit}
+        onSubmit={handleUpdateModalSubmit}
       />
       <PreferencesDialog
         visible={modelVisible}
@@ -562,14 +517,9 @@ export const VenueFirmwareTable = (
 }
 
 export function VenueFirmwareList () {
-  const venuePayload = useDefaultVenuePayload()
-
   const tableQuery = useTableQuery<FirmwareVenue>({
     useQuery: useGetVenueVersionListQuery,
-    defaultPayload: venuePayload,
-    search: {
-      searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    defaultPayload: {}
   })
 
   const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
@@ -585,7 +535,6 @@ export function VenueFirmwareList () {
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
-      rowSelection={{ type: 'checkbox' }}
       searchable={true}
       filterables={{
         version: versionFilterOptions,
@@ -602,3 +551,29 @@ function hasApSchedule (venue: FirmwareVenue): boolean {
   return venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
 }
 
+interface UpdateNowDialogSwitcherProps {
+  visible: boolean,
+  onCancel: () => void,
+  onSubmit: (data: UpdateNowRequest[]) => void,
+  data?: FirmwareVenue[],
+  availableVersions?: FirmwareVersion[]
+}
+
+function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
+  const isEolApPhase2Enabled = useIsSplitOn(Features.EOL_AP_2022_12_PHASE_2_TOGGLE)
+  const { getAvailableEolApFirmwares } = useApEolFirmware()
+  const eolApFirmwares = getAvailableEolApFirmwares(props.data)
+
+  const eolApFirmware = eolApFirmwares.length > 0
+    ? {
+      eol: true,
+      eolName: eolApFirmwares[0].name,
+      latestEolVersion: eolApFirmwares[0].latestEolVersion,
+      eolModels: eolApFirmwares[0].apModels
+    }
+    : {}
+
+  return isEolApPhase2Enabled
+    ? <AdvancedUpdateNowDialog {...props} />
+    : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
+}

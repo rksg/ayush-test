@@ -12,14 +12,14 @@ const deviceOsVendorMap: Record<string, string[]> = {
   // eslint-disable-next-line max-len
   [DeviceTypeEnum.Voip]: [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone],
   // eslint-disable-next-line max-len
-  [DeviceTypeEnum.Gaming]: [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.Xbox, OsVendorEnum.Nintendo],
+  [DeviceTypeEnum.Gaming]: [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.PlayStation, OsVendorEnum.Xbox, OsVendorEnum.Nintendo],
   // eslint-disable-next-line max-len
   [DeviceTypeEnum.Printer]: [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter],
   // eslint-disable-next-line max-len
   [DeviceTypeEnum.IotDevice]: [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug],
   // eslint-disable-next-line max-len
   [DeviceTypeEnum.HomeAvEquipment]: [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick],
-  [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
+  [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelenetCpe]
 }
 
 export const getDeviceOsVendorMap = () => {
@@ -27,45 +27,36 @@ export const getDeviceOsVendorMap = () => {
 }
 
 export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
-  let OsVendorArray = []
   switch (deviceType) {
     case DeviceTypeEnum.Laptop:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Windows, OsVendorEnum.MacOs, OsVendorEnum.ChromeOs, OsVendorEnum.Linux, OsVendorEnum.Ubuntu]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.Windows, OsVendorEnum.MacOs, OsVendorEnum.ChromeOs, OsVendorEnum.Linux, OsVendorEnum.Ubuntu]
     case DeviceTypeEnum.Smartphone:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows]
     case DeviceTypeEnum.Tablet:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows]
     case DeviceTypeEnum.Voip:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone]
     case DeviceTypeEnum.Gaming:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.Xbox, OsVendorEnum.Nintendo]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.PlayStation, OsVendorEnum.Xbox, OsVendorEnum.Nintendo]
     case DeviceTypeEnum.Printer:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter]
     case DeviceTypeEnum.IotDevice:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug]
     case DeviceTypeEnum.HomeAvEquipment:
       // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick]
     case DeviceTypeEnum.WdsDevice:
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
-      break
+      return [OsVendorEnum.All, OsVendorEnum.TelenetCpe]
+    default:
+      return []
   }
-  return OsVendorArray
 }
 
 export const getDeviceTypeOptions = () => {

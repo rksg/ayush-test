@@ -17,7 +17,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 152px;"
           >
             <div
@@ -46,7 +46,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                           >
-                            Pre-Shared Key (PSK)
+                            Passphrase (PSK/SAE)
                           </div>
                         </div>
                         <div
@@ -80,7 +80,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto; align-items: center;"
                       >
                         <div />
@@ -91,7 +91,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -104,7 +104,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div />
@@ -115,7 +115,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -134,7 +134,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -145,7 +145,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -156,7 +156,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -167,7 +167,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -196,7 +196,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 152px;"
           >
             <div
@@ -252,7 +252,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto; align-items: center;"
                       >
                         <div />
@@ -263,7 +263,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -276,7 +276,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div />
@@ -287,7 +287,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -306,7 +306,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -317,7 +317,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -328,7 +328,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -339,7 +339,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -368,7 +368,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 152px;"
           >
             <div
@@ -397,7 +397,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                           >
-                            Pre-Shared Key (PSK)
+                            Passphrase (PSK/SAE)
                           </div>
                         </div>
                         <div
@@ -431,7 +431,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto; align-items: center;"
                       >
                         <div />
@@ -442,7 +442,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -455,7 +455,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div />
@@ -466,7 +466,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                         style="margin: auto;"
                       >
                         <div>
@@ -485,7 +485,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -496,7 +496,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -507,7 +507,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />
@@ -518,7 +518,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
           style="padding: 10px 10px 10px 10px;"
         >
           <div
-            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            class="Grid__Container-sc-5irhjd-1 dRhDDA"
             style="height: 280px;"
           >
             <div />

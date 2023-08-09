@@ -27,7 +27,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div
@@ -108,7 +108,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div
@@ -189,7 +189,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div

@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery }    from '@acx-ui/rc/services'
+import { PasswordInput }              from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery }        from '@acx-ui/rc/services'
 import {
   AaaServerTypeEnum,
   NetworkSaveData,
@@ -20,7 +21,7 @@ export function PskSummaryForm (props: {
   const { $t } = useIntl()
   const { summaryData } = props
 
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: macRegListOption } = useMacRegListsQuery({
     payload: { pageSize: 10000 }
   }, { skip: !macRegistrationEnabled })
@@ -35,7 +36,7 @@ export function PskSummaryForm (props: {
             $t({ defaultMessage: 'WPA2 Passphrase:' }) :
             $t({ defaultMessage: 'Passphrase:' })
           }
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.passphrase}
@@ -50,7 +51,7 @@ export function PskSummaryForm (props: {
             $t({ defaultMessage: 'SAE Passphrase:' }) :
             $t({ defaultMessage: 'WPA3 SAE Passphrase:' })
           }
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.saePassphrase}
@@ -60,7 +61,7 @@ export function PskSummaryForm (props: {
       {summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wlan?.wepHexKey &&
         <Form.Item
           label={$t({ defaultMessage: 'Hex Key:' })}
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.wepHexKey}

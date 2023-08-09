@@ -1915,7 +1915,7 @@
     "defaultMessage": "FORCERENEW_NONCE_CAPABLE"
   },
   "7NfnJg": {
-    "defaultMessage": "Conexión correcta"
+    "defaultMessage": "Conexiones satisfactorias"
   },
   "7O0zzE": {
     "defaultMessage": "Dirección del servidor"
@@ -2476,8 +2476,9 @@
   "9q7E+6": {
     "defaultMessage": "Sesión CLI: {switchName}"
   },
-  "9qW5S9": {
-    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
+  "jVGVFN": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requiere atención",
+    "description": "Translation string - Requires Attention"
   },
   "9rPWO/": {
     "defaultMessage": "Anular asociación porque un número excesivo de frames necesitan ser reconocidos, pero no lo son debido a transmisiones del AP y/o a malas condiciones del canal"
@@ -2727,7 +2728,7 @@
     "defaultMessage": "Añadir grupo de usuarios"
   },
   "ArhATs": {
-    "defaultMessage": "Experiencia del cliente"
+    "defaultMessage": "Experiencia de usuario"
   },
   "AszHoG": {
     "defaultMessage": "Capturando..."
@@ -3159,7 +3160,7 @@
     "defaultMessage": "La modificación del puerto de enlace ascendente puede provocar problemas de conectividad. ¿Seguro que quiere aplicar estos cambios?"
   },
   "CvT+kc": {
-    "defaultMessage": "Tiempo de conexión"
+    "defaultMessage": "Tiempo en conectarse"
   },
   "CzRokW": {
     "defaultMessage": "WEP",
@@ -3829,7 +3830,7 @@
     "defaultMessage": "Necesitamos actualizar la página para activar la región del mapa. Gracias por su comprensión"
   },
   "GQSMoL": {
-    "defaultMessage": "Capacidad del AP"
+    "defaultMessage": "Capacidad de AP"
   },
   "GT/UvO": {
     "defaultMessage": "Latencia del AP a RUCKUS One"
@@ -4374,8 +4375,9 @@
   "IqBkBl": {
     "defaultMessage": "DHCP"
   },
-  "IrnXwi": {
-    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "HcncMB": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation not needed"
   },
   "ItEQ44": {
     "defaultMessage": "Reenviar invitación"
@@ -4471,7 +4473,7 @@
     "defaultMessage": "Inferior a 5 GHz: selección del canal del AP exterior"
   },
   "JAB4A4": {
-    "defaultMessage": "AP online"
+    "defaultMessage": "APs conectados"
   },
   "JAspuT": {
     "defaultMessage": "Cliente asociado (802.11)"
@@ -5203,8 +5205,9 @@
   "McAp05": {
     "defaultMessage": "La suscripción expirará en {daysText} días"
   },
-  "McKt/u": {
-    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
+  "OkxXZB": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operativo",
+    "description": "Translation string - Operational"
   },
   "MeWmjM": {
     "defaultMessage": "Políticas adaptables (por determinar)"
@@ -5980,7 +5983,7 @@
     "defaultMessage": "Socios tecnológicos"
   },
   "Q7nVr8": {
-    "defaultMessage": "Rendimiento del cliente"
+    "defaultMessage": "Caudal de usuario"
   },
   "Q7q6D5": {
     "defaultMessage": "Escriba un número de teléfono válido",
@@ -6134,7 +6137,7 @@
     "defaultMessage": "N.º de puntos de acceso restantes"
   },
   "Qpk8Ou": {
-    "defaultMessage": "TelnetCpe"
+    "defaultMessage": "TelenetCpe"
   },
   "Qq9Z7z": {
     "defaultMessage": "Utilización de recursos"
@@ -7139,8 +7142,9 @@
     "defaultMessage": "{entityName} con ese {key, select, name {nombre} other {valor} } ya existe{ extra }",
     "description": "Validación: comprobación de duplicación"
   },
-  "VmBHQi": {
-    "defaultMessage": "La dirección IP {ipAddress} fue {editMode, select, true {actualizada} other {añadida}}"
+  "aA90jI": {
+    "defaultMessage": "La dirección IP {ipAddress} fue {editMode, select, true {updated} other {added}}",
+    "description": "Translation strings - IP Address, was"
   },
   "Vnv9od": {
     "defaultMessage": "Configuración de conexión del usuario (por defecto)"
@@ -8428,7 +8432,7 @@
     "defaultMessage": "Seleccione el logotipo"
   },
   "bnaSLU": {
-    "defaultMessage": "Clientes conectados a lo largo del tiempo"
+    "defaultMessage": "Histórico de clientes"
   },
   "bobOH0": {
     "defaultMessage": "Credenciales > Id. de cliente OAuth 2.0 > Haga clic en el nombre del cliente > URI de redirección autorizadas"
@@ -8487,8 +8491,9 @@
   "c3VJQo": {
     "defaultMessage": "Dispositivo"
   },
-  "c3gDWz": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
+  "C8efXI": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}En fase de configuración",
+    "description": "Translation string - In Setup Phase"
   },
   "c4PxNN": {
     "defaultMessage": "La contraseña expirará después de:"
@@ -9220,8 +9225,9 @@
   "fDINOd": {
     "defaultMessage": "Actividad administrativa"
   },
-  "fEE7ng": {
-    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
+  "ZMT2+a": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Problema temporal",
+    "description": "Translation string - Transient Issue"
   },
   "fENfxR": {
     "defaultMessage": "OPTION-IPv4_FQDN-MoS"
@@ -9794,7 +9800,7 @@
     "defaultMessage": "Xgrid"
   },
   "hzSNj4": {
-    "defaultMessage": "Tablero de información"
+    "defaultMessage": "Tablero principal"
   },
   "hzXHmo": {
     "defaultMessage": "modelos"
@@ -10842,7 +10848,7 @@
     "defaultMessage": "También se utilizará como SSID de red por defecto. La longitud está limitada entre 2 y 32 caracteres (dependiendo del idioma que utilice)"
   },
   "mtr3R4": {
-    "defaultMessage": "Incidentes"
+    "defaultMessage": "Incidencias"
   },
   "mu/IQL": {
     "defaultMessage": "Tipo",
@@ -11659,7 +11665,7 @@
     "defaultMessage": "Restablezca la configuración por defecto"
   },
   "qci724": {
-    "defaultMessage": "No se ha informado de ningún incidente"
+    "defaultMessage": "No se ha detectado ninguna incidencia"
   },
   "qeLeFb": {
     "defaultMessage": "Valor de opción"
@@ -11781,8 +11787,9 @@
   "rITqXY": {
     "defaultMessage": "Retraso en la respuesta de la sonda de difusión:"
   },
-  "rIgzAj": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
+  "1WSnFV": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline",
+    "description": "Translation string - Offline"
   },
   "rIw+Gj": {
     "defaultMessage": "Módulo 4"
@@ -13124,8 +13131,9 @@
   "xasuCg": {
     "defaultMessage": "Tipo de IP"
   },
-  "xbKzeb": {
-    "defaultMessage": "Bloquear a un cliente durante <blockingPeriod></blockingPeriod> segundos tras repetir <failThreshold></failThreshold> errores de autenticación en <checkPeriod></checkPeriod> segundos"
+  "VwJEJV": {
+    "defaultMessage": "Bloquear a un cliente durante <blockingPeriod></blockingPeriod> segundos tras repetir <failThreshold></failThreshold> errores de autenticación en <checkPeriod></checkPeriod> segundos",
+    "description": "Translation string - Block a client for, seconds after, repeat authentication failures within, seconds"
   },
   "xciyj1": {
     "defaultMessage": "Utilice la autenticación MAC durante la reconexión:"
@@ -13271,8 +13279,9 @@
   "yCDkU6": {
     "defaultMessage": "El tiempo de conexión es mayor que {threshold} en {scope}"
   },
-  "yCeZ/i": {
-    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "y9b5Vt": {
+    "defaultMessage": "Pool VLAN: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation string - VLAN Pool"
   },
   "yDq3qb": {
     "defaultMessage": "Añadir subinterfaz"

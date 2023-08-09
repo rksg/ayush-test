@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   FirmwareUrlsInfo
@@ -10,16 +11,16 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  within,
-  waitForElementToBeRemoved
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 
 import {
   venue,
   preference,
-  availableVersions
+  availableVersions,
+  availableABFList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -35,7 +36,14 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json(availableVersions))
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+
+          if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
+
+          return res(ctx.json([...availableVersions]))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
@@ -55,20 +63,28 @@ describe('Firmware Venues Table', () => {
     }
   })
 
-  it.skip('should render table', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
-      })
+  it('should save the updated schedule', async () => {
+    Date.now = jest.fn().mockReturnValue(new Date('2023-06-10T07:20:00.000Z'))
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
-  })
+    const updateFn = jest.fn()
 
-  it('should change schedule selected row', async () => {
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.updateVenueSchedules.url,
+        (req, res, ctx) => {
+          updateFn(req.body)
+          res(ctx.json({ requstId: 'request-id' }))
+        }
+      ),
+      rest.post(
+        FirmwareUrlsInfo.updateVenueSchedules.oldUrl!,
+        (req, res, ctx) => {
+          updateFn(req.body)
+          res(ctx.json({ requstId: 'request-id' }))
+        }
+      )
+    )
+
     render(
       <Provider>
         <VenueFirmwareList />
@@ -76,17 +92,32 @@ describe('Firmware Venues Table', () => {
         route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const changeButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
-    fireEvent.click(changeButton)
+    await userEvent.click(changeButton)
 
-    await screen.findByText('Selected time will apply to each venue according to own time-zone')
-    const changeVenueButton = await screen.findByText('Save')
-    fireEvent.click(changeVenueButton)
+    const firstActiveABF = availableABFList.find(abfVersion => abfVersion.abf === 'active')
+    const defaultVersionRegExp = new RegExp(firstActiveABF!.id)
+    expect(await screen.findByRole('radio', { name: defaultVersionRegExp })).toBeVisible()
+
+    const saveButton = await screen.findByRole('button',{ name: 'Save' })
+    expect(saveButton).toBeDisabled()
+
+    await userEvent.click(screen.getByPlaceholderText('Select date'))
+    await userEvent.click(await screen.findByRole('cell', { name: /16/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: new RegExp('12 AM - 02 AM') }))
+    expect(saveButton).not.toBeDisabled()
+
+    await userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(updateFn).toHaveBeenCalledWith(expect.objectContaining({
+        date: '2023-06-16',
+        time: '00:00-02:00'
+      }))
+    })
   })
 
 })

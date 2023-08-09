@@ -28,6 +28,11 @@ export const migrationReducer = (
         ...state,
         address: action.payload.address
       }
+    case MigrationActionTypes.ERRORMSG:
+      return {
+        ...state,
+        errorMsg: action.payload.errorMsg
+      }
     default:
       return state
   }

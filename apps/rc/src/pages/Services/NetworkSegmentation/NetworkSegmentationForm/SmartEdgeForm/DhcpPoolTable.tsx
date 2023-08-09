@@ -44,6 +44,7 @@ export const DhcpPoolTable = (props: DhcpPoolTableProps) => {
 
   return (
     <Table
+      rowKey='poolRange'
       type='form'
       columns={columns}
       dataSource={tableData}

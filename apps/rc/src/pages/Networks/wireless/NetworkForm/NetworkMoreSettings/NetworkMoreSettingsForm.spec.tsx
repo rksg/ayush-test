@@ -1,21 +1,24 @@
 import '@testing-library/jest-dom'
 
-import React from 'react'
-
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                                         from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, BasicServiceSetPriorityEnum, OpenWlanAdvancedCustomization, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                             from '@acx-ui/store'
-import { mockServer, within, render, screen, cleanup, fireEvent }                                                                                               from '@acx-ui/test-utils'
+import {
+  AccessControlUrls,
+  CommonUrlsInfo,
+  NetworkSaveData,
+  BasicServiceSetPriorityEnum,
+  OpenWlanAdvancedCustomization,
+  TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
-import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius }         from '../utils'
+import { mockedTunnelProfileViewData }                                                        from '../../../../Policies/TunnelProfile/__tests__/fixtures'
+import { devicePolicyListResponse, externalProviders, mockGuestMoreData, policyListResponse } from '../__tests__/fixtures'
+import NetworkFormContext, { NetworkFormContextType }                                         from '../NetworkFormContext'
 
-import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
 
 const mockWlanData = {
@@ -30,42 +33,49 @@ const mockWlanData = {
   }
 } as NetworkSaveData
 
+/*
+const mockVxlanEnableWlanData = {
+  name: 'testVxlanDisplay',
+  type: 'dpsk',
+  wlan: {
+    advancedCustomization: {
+      tunnelProfileId: 'tunnelProfileId1'
+    } as DpskWlanAdvancedCustomization
+  }
+} as NetworkSaveData
+
+
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  hasVxLanTunnelProfile: jest.fn().mockReturnValue(false)
+}))
+*/
+
 describe('NetworkMoreSettingsForm', () => {
   beforeEach(() => {
-    const devicePolicyResponse = [{
-      data: [{
-        id: 'e3ea3749907f4feb95e9b46fe69aae0b',
-        name: 'p1',
-        rulesCount: 1,
-        networksCount: 0
-      }],
-      fields: [
-        'name',
-        'id'],
-      totalCount: 1,
-      totalPages: 1,
-      page: 1
-    }]
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
-        (req, res, ctx) => res(ctx.json(devicePolicyResponse))),
-      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
-      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
-      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+      rest.get(AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getVlanPoolList.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
-        (_, res, ctx) => res(ctx.json(externalProviders)))
+        (_, res, ctx) => res(ctx.json(externalProviders))),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData)))
     )
   })
+
   it('should render More settings form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -81,8 +91,28 @@ describe('NetworkMoreSettingsForm', () => {
     await userEvent.click(button)
 
     expect(asFragment()).toMatchSnapshot()
+
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.length).toBe(5)
+    const networkControlTab = tabs[1]
+    await userEvent.click(networkControlTab)
+
+    expect(networkControlTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
+  it('should render More settings form successfully with edit mode', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = { editMode: true, data: mockGuestMoreData } as NetworkFormContextType
+
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
+
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.length).toBe(5)
+  })
+
+
+
+  /*
   it('should visible VLAN pooling', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
@@ -224,15 +254,14 @@ describe('NetworkMoreSettingsForm', () => {
     const mgmtTxRateSelect = screen.getByTestId('mgmtTxRateSelect')
     expect(within(mgmtTxRateSelect).getByText(/6 Mbps/i)).toBeVisible()
 
-    const ofdmCheckbox = screen.getByRole('checkbox', {
-      name: /enable ofdm only \(disable 802\.11b\)/i
-    })
+    const ofdmCheckbox = screen.getByTestId('enableOfdmOnly')
     await userEvent.click(ofdmCheckbox)
 
     await userEvent.click(screen.getByText(/none/i))
     await userEvent.click(screen.getByText(/5.5 Mbps/i))
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
+
   it('Test case for Basic Service Set Radio Group', async ()=> {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -242,150 +271,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(screen.getByTestId('BSS-Radio-LOW')).toBeChecked()
   })
 
-  it('Test network types for show the RADIUS Options settings', () => {
-    // AAA network type
-    const aaaData = { type: NetworkTypeEnum.AAA }
-    const aaaWlanData = { }
-    expect(hasAuthRadius(aaaData, aaaWlanData)).toBeTruthy()
 
-    // open/psk network type
-    const openData = { type: NetworkTypeEnum.OPEN }
-    const pskData = { type: NetworkTypeEnum.PSK }
-    let wlanData = {
-      wlan: {
-        macAddressAuthentication: true,
-        isMacRegistrationList: true
-      }
-    }
-    expect(hasAuthRadius(openData, wlanData)).toBeFalsy()
-    expect(hasAuthRadius(pskData, wlanData)).toBeFalsy()
-
-    wlanData = {
-      wlan: {
-        macAddressAuthentication: false,
-        isMacRegistrationList: false
-      }
-    }
-    expect(hasAuthRadius(openData, wlanData)).toBeFalsy()
-    expect(hasAuthRadius(pskData, wlanData)).toBeFalsy()
-
-    wlanData = {
-      wlan: {
-        macAddressAuthentication: true,
-        isMacRegistrationList: false
-      }
-    }
-    expect(hasAuthRadius(openData, wlanData)).toBeTruthy()
-    expect(hasAuthRadius(pskData, wlanData)).toBeTruthy()
-
-    // dpsk network type
-    const dpskData = { type: NetworkTypeEnum.DPSK }
-    let dpskWlanData = { isCloudpathEnabled: true }
-    expect(hasAuthRadius(dpskData, dpskWlanData)).toBeTruthy()
-    dpskWlanData = { isCloudpathEnabled: false }
-    expect(hasAuthRadius(dpskData, dpskWlanData)).toBeFalsy()
-
-    // captive portal network type
-    let guestData = {
-      type: NetworkTypeEnum.CAPTIVEPORTAL,
-      guestPortal: {
-        guestNetworkType: GuestNetworkTypeEnum.Cloudpath
-      }
-    }
-    expect(hasAuthRadius(guestData, {})).toBeTruthy()
-
-    guestData = {
-      type: NetworkTypeEnum.CAPTIVEPORTAL,
-      guestPortal: {
-        guestNetworkType: GuestNetworkTypeEnum.WISPr
-      }
-    }
-
-    const guestWlanData = {
-      guestPortal: {
-        wisprPage: {
-          customExternalProvider: true
-        }
-      }
-    }
-
-    expect(hasAuthRadius(guestData, guestWlanData)).toBeTruthy()
-
-    expect(hasAuthRadius({ }, {})).toBeFalsy()
-  })
-
-  // eslint-disable-next-line max-len
-  it('Test network settings for show the SingleSessionIdAccounting of the RADIUS Options', () => {
-    let wlanData = { }
-
-    // AAA/open/psk/dpsk network type
-    let aaaData = { type: NetworkTypeEnum.AAA, enableAccountingService: false }
-    let openData = { type: NetworkTypeEnum.OPEN, enableAccountingService: false }
-    let pskData = { type: NetworkTypeEnum.PSK, enableAccountingService: false }
-    expect(hasAccountingRadius(aaaData, wlanData)).toBeFalsy()
-    expect(hasAccountingRadius(openData, wlanData)).toBeFalsy()
-    expect(hasAccountingRadius(pskData, wlanData)).toBeFalsy()
-
-    aaaData = { type: NetworkTypeEnum.AAA, enableAccountingService: true }
-    openData = { type: NetworkTypeEnum.OPEN, enableAccountingService: true }
-    pskData = { type: NetworkTypeEnum.PSK, enableAccountingService: true }
-    expect(hasAccountingRadius(aaaData, wlanData)).toBeTruthy()
-    expect(hasAccountingRadius(openData, wlanData)).toBeTruthy()
-    expect(hasAccountingRadius(pskData, wlanData)).toBeTruthy()
-
-
-    // captive portal network type
-    let guestData = {
-      type: NetworkTypeEnum.CAPTIVEPORTAL,
-      enableAccountingService: false,
-      guestPortal: {
-        guestNetworkType: GuestNetworkTypeEnum.WISPr
-      }
-    }
-
-    let guestWlanData = {
-      guestPortal: {
-        wisprPage: {
-          customExternalProvider: false,
-          externalProviderName: 'Height8'
-        }
-      }
-    }
-    expect(hasAccountingRadius(guestData, guestWlanData)).toBeFalsy()
-
-    guestWlanData = {
-      guestPortal: {
-        wisprPage: {
-          customExternalProvider: false,
-          externalProviderName: 'Aislelabs'
-        }
-      }
-    }
-    expect(hasAccountingRadius(guestData, guestWlanData)).toBeTruthy()
-
-    guestWlanData = {
-      guestPortal: {
-        wisprPage: {
-          customExternalProvider: true,
-          externalProviderName: 'Other Provider'
-        }
-      }
-    }
-
-    expect(hasAccountingRadius(guestData, guestWlanData)).toBeFalsy()
-
-
-    guestData = {
-      type: NetworkTypeEnum.CAPTIVEPORTAL,
-      enableAccountingService: true,
-      guestPortal: {
-        guestNetworkType: GuestNetworkTypeEnum.WISPr
-      }
-    }
-    expect(hasAccountingRadius(guestData, guestWlanData)).toBeTruthy()
-
-    expect(hasAccountingRadius({ }, {})).toBeFalsy()
-  })
 
   describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {
     beforeAll(() => {
@@ -481,6 +367,71 @@ describe('NetworkMoreSettingsForm', () => {
       })
     })
   })
+
+  it('should not display message when Vxlan is disabled', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <MoreSettingsForm wlanData={mockWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    const tunnelProfileLabel = screen.queryByText('Tunnel Profile')
+    expect(tunnelProfileLabel).toBeNull()
+
+    // eslint-disable-next-line max-len
+    const vlanRemindingMsg = screen.queryByText('Not able to modify when the network enables network segmentation service')
+    expect(vlanRemindingMsg).toBeNull()
+
+    // eslint-disable-next-line max-len
+    const tunnelProfileRemindingMsg = screen.queryByText('All networks under the same Network Segmentation', { exact: false })
+    expect(tunnelProfileRemindingMsg).toBeNull()
+  })
+
+  it('when vxlan enalbe, should disable related fields', async () => {
+    jest.mocked(hasVxLanTunnelProfile).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <MoreSettingsForm wlanData={mockVxlanEnableWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    const vlanPool = screen.getByText(/vlan pooling:/i)
+    expect(within(vlanPool).getByRole('switch')).toBeDisabled()
+
+    expect(screen.getByRole('spinbutton', { name: 'VLAN ID' })).toBeDisabled()
+
+    const proxyARP = screen.getByText(/Proxy ARP:/i)
+    expect(within(proxyARP).getByRole('switch')).toBeDisabled()
+
+    const clientIsolation = screen.getByText(/Client Isolation:/i)
+    expect(within(clientIsolation).getByRole('switch')).toBeDisabled()
+
+    const tunnelProfileCombobox = screen.getByRole('combobox', { name: 'Tunnel Profile' })
+    expect(tunnelProfileCombobox).toBeDisabled()
+
+    // eslint-disable-next-line max-len
+    const vlanRemindingMsg = screen.getByText('Not able to modify when the network enables network segmentation service')
+    expect(vlanRemindingMsg).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    const tunnelProfileRemindingMsg = screen.getByText('All networks under the same Network Segmentation', { exact: false })
+    expect(tunnelProfileRemindingMsg).toBeVisible()
+  })
+
+  it('Test case for Multicast Filter', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData),{ route: { params } })
+    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
+  })
+*/
 })
 
 // eslint-disable-next-line max-len

@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink }      from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
@@ -52,7 +52,10 @@ function Layout () {
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const basePath = useTenantLink('/users/guestsManager')
+  const dpskBasePath = useTenantLink('/users/dpskAdmin')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -60,7 +63,13 @@ function Layout () {
         pathname: `${basePath.pathname}`
       })
     }
-  }, [isGuestManager, params['*']])
+    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
+      navigate({
+        ...dpskBasePath,
+        pathname: `${dpskBasePath.pathname}`
+      })
+    }
+  }, [isGuestManager, isDPSKAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
@@ -70,7 +79,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={logo}
+      logo={<TenantNavLink to={indexPath} children={logo} />}
       menuConfig={useMenuConfig()}
       content={
         <>
@@ -109,7 +118,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {!isGuestManager &&
+        {!(isGuestManager || isDPSKAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>

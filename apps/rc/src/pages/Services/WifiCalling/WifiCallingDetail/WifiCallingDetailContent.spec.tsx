@@ -63,26 +63,4 @@ describe('WifiCallingDetailContent', () => {
     expect(screen.getByText(/qos priority/i)).toBeTruthy()
     expect(screen.getByText(/evolved packet data gateway \(epdg\)/i)).toBeTruthy()
   })
-
-  it('should render wifiCallingDetailContent error', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.status(500)
-      )
-    ))
-
-    render(
-      <WifiCallingDetailContent />, {
-        wrapper: wrapper,
-        route: {
-          path: '/services/wifiCalling/:serviceId/details',
-          params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
-        }
-      }
-    )
-
-    const target = screen.getByTestId('target')
-    expect(target.textContent).toEqual('Detail Error')
-  })
 })

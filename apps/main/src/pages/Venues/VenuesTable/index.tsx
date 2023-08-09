@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -20,11 +20,11 @@ import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                     from '@acx-ui/user'
+import { RequestPayload }                     from '@acx-ui/types'
+import { filterByAccess, hasAccess }          from '@acx-ui/user'
 
 function useColumns (
   searchable?: boolean,
@@ -42,21 +42,22 @@ function useColumns (
       fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
           <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-            {searchable ? highlightFn(row.name) : data}</TenantLink>
+            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
+      width: Infinity,
       key: 'country',
       dataIndex: 'country',
       sorter: true,
+      filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
-      width: 120,
-      render: function (data, row) {
+      render: function (_, row) {
         return `${row.country}, ${row.city}`
       }
     },
@@ -99,7 +100,7 @@ function useColumns (
       dataIndex: 'aggregatedApStatus',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: function (data, row) {
+      render: function (_, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
@@ -119,11 +120,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients`}
-            children={data ? data : 0}
+            children={row.clients ? row.clients : 0}
           />
         )
       }
@@ -135,11 +136,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/switch`}
-            children={data ? data : 0}
+            children={row.switches ? row.switches : 0}
           />
         )
       }
@@ -151,11 +152,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients/switch`}
-            children={data ? data : 0}
+            children={row.switchClients ? row.switchClients : 0}
           />
         )
       }
@@ -165,11 +166,11 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/edge`}
-            children={data ? data : 0}
+            children={row.edges ? row.edges : 0}
           />
         )
       }
@@ -249,7 +250,8 @@ export const VenueTable = (
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Venues' }),
+          entityName: rows.length === 1? $t({ defaultMessage: 'Venue' })
+            : $t({ defaultMessage: 'Venues' }),
           entityValue: rows.length === 1 ? rows[0].name : undefined,
           numOfEntities: rows.length,
           confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
@@ -272,6 +274,7 @@ export const VenueTable = (
       <Table
         settingsId='venues-table'
         columns={columns}
+        getAllPagesData={tableQuery.getAllPagesData}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -279,7 +282,7 @@ export const VenueTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={rowSelection}
+        rowSelection={hasAccess() && rowSelection}
       />
     </Loader>
   )
@@ -288,25 +291,35 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    },
+    enableSelectAllPagesData: ['id', 'name']
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
     selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name })) || true
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
     })
   })
+
+  const count = tableQuery?.currentData?.totalCount || 0
 
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Venues' })}
+        title={isNavbarEnhanced
+          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
+          : $t({ defaultMessage: 'Venues' })
+        }
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

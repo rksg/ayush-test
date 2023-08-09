@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useGetAvailableSwitchesQuery }              from '@acx-ui/rc/services'
@@ -21,14 +22,11 @@ export function DistributionSwitchForm () {
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
-  const [dsList, setDsList] = useState<DistributionSwitch[]>([])
   const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
-  const originalAccessSwitchInfos = useWatch('originalAccessSwitchInfos', form)
-  const venueId = useWatch('venueId', form)
-  const edgeId = useWatch('edgeId', form)
+  const venueId = form.getFieldValue('venueId')
 
-  const { availableSwitches } = useGetAvailableSwitchesQuery({
+  const { availableSwitches, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
     params: { tenantId, venueId }
   }, {
     skip: !venueId,
@@ -43,9 +41,9 @@ export function DistributionSwitchForm () {
 
   useEffect(()=>{
     if (distributionSwitchInfos) {
-      setDsList(distributionSwitchInfos)
+      refetchSwitchesQuery()
     }
-  }, [distributionSwitchInfos])
+  }, [distributionSwitchInfos, accessSwitchInfos])
 
   const rowActions: TableProps<DistributionSwitch>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -57,7 +55,7 @@ export function DistributionSwitchForm () {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (selectedRows) => {
       setSelected(undefined)
-      const newList = dsList?.filter(ds=>{
+      const newList = distributionSwitchInfos?.filter(ds=>{
         return !selectedRows.map(r=>r.id).includes(ds.id)
       })
 
@@ -80,7 +78,7 @@ export function DistributionSwitchForm () {
   }
 
   const handleSaveDS = (values: DistributionSwitch) => {
-    let newList = dsList || []
+    let newList = distributionSwitchInfos || []
     if (!selected) { // Add
       newList = newList.concat(values)
     }
@@ -108,16 +106,19 @@ export function DistributionSwitchForm () {
         label: $t({ defaultMessage: 'Add Distribution Switch' }),
         onClick: () => addHandler()
       }]}
-      dataSource={dsList}
-      rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
+      dataSource={distributionSwitchInfos}
+      rowSelection={{
+        type: 'radio',
+        selectedRowKeys: selected ? [selected.id] : [],
+        onChange: (_, selectedRows) => {
+          setSelected(selectedRows[0])
+        }
+      }} />
+    <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches}
-      originalAccessSwitches={originalAccessSwitchInfos}
-      selectedSwitches={dsList}
-      venueId={venueId}
-      edgeId={edgeId}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
   </>)

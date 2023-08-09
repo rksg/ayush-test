@@ -1,12 +1,20 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader }                                                                                                  from '@acx-ui/components'
-import { ServiceInfo }                                                                                                                       from '@acx-ui/rc/components'
-import { useGetTunnelProfileViewDataListQuery }                                                                                              from '@acx-ui/rc/services'
-import { MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                             from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                    from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
+import {
+  MtuTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  TunnelProfileViewData,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
@@ -15,6 +23,11 @@ const TunnelProfileDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath({
+    type: PolicyType.TUNNEL_PROFILE,
+    oper: PolicyOperation.LIST
+  })
 
   const getTunnelProfilePayload = {
     filters: { id: [params.policyId] }
@@ -28,6 +41,8 @@ const TunnelProfileDetail = () => {
       })
     }
   )
+
+  const isDefaultTunnelProfile = tunnelProfileData.id === params.tenantId
 
   const tunnelInfo = [
     // {
@@ -56,17 +71,24 @@ const TunnelProfileDetail = () => {
     <>
       <PageHeader
         title={tunnelProfileData.name}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: getPolicyRoutePath({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.LIST
-            })
+            link: tablePath
+          }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'Tunnel Profile' }),
+            link: tablePath
           }
         ]}
         extra={
@@ -76,7 +98,7 @@ const TunnelProfileDetail = () => {
               oper: PolicyOperation.EDIT,
               policyId: params.policyId as string
             })}>
-              <Button key={'configure'} type={'primary'}>
+              <Button key={'configure'} type={'primary'} disabled={isDefaultTunnelProfile}>
                 {$t({ defaultMessage: 'Configure' })}
               </Button></TenantLink>
           ])
@@ -89,7 +111,7 @@ const TunnelProfileDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <ServiceInfo data={tunnelInfo} />
+          <SummaryCard data={tunnelInfo} colPerRow={6} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

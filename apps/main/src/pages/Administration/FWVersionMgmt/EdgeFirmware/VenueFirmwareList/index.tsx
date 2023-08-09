@@ -20,18 +20,19 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
-  toUserDate
+  toUserDate,
+  compareVersions
 } from '../../FirmwareUtils'
 
 import { UpdateNowDialog } from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
 
 export function VenueFirmwareList () {
   const { $t } = useIntl()
+  const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const {
     data: venueFirmwareList,
@@ -55,11 +56,11 @@ export function VenueFirmwareList () {
       width: 120
     },
     {
-      title: $t({ defaultMessage: 'Current Edge Firmware' }),
+      title: $t({ defaultMessage: 'Current Firmware' }),
       key: 'versions[0].name',
       dataIndex: 'versions[0].name',
       sorter: { compare: sortProp('versions[0].name', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.versions?.[0]?.name || '--'
       },
       width: 120
@@ -69,7 +70,7 @@ export function VenueFirmwareList () {
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.versions?.[0]) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
@@ -83,7 +84,7 @@ export function VenueFirmwareList () {
       key: 'updatedDate',
       dataIndex: 'updatedDate',
       sorter: { compare: sortProp('updatedDate', dateSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.updatedDate) return '--'
         return toUserDate(row.updatedDate)
       },
@@ -95,8 +96,10 @@ export function VenueFirmwareList () {
     {
       visible: (selectedItems) => {
         const hasOutdatedFw = selectedItems?.some(
-          item => item.versions?.[0].id !== latestReleaseVersion?.id
-        )
+          item => latestReleaseVersion?.id &&
+          ((item.versions?.[0].id
+            && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
+          || !item.versions?.[0].id))
         return hasOutdatedFw
       },
       label: $t({ defaultMessage: 'Update Now' }),
@@ -134,7 +137,7 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

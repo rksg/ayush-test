@@ -34,7 +34,6 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
 
   const onClose = () => {
     setVisible(false)
-    form.resetFields()
   }
 
   const content = <Form layout='vertical'
@@ -109,6 +108,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
               }
 
               form.submit()
+              form.resetFields()
 
               if (!addAnotherRuleChecked || state.ePDG.length === 4) {
                 onClose()

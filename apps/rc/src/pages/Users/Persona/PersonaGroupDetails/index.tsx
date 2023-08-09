@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Descriptions } from 'antd'
-import { useIntl }      from 'react-intl'
-import { useParams }    from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -17,9 +17,8 @@ import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '../LinkHelper'
-import { PersonaGroupDrawer }                                                        from '../PersonaGroupDrawer'
-import { BasePersonaTable }                                                          from '../PersonaTable/BasePersonaTable'
+import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
+import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,
@@ -27,6 +26,7 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const extra = filterByAccess([
     <Button type={'primary'} onClick={onClick}>
@@ -38,7 +38,18 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={extra}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        {
+          text: $t({ defaultMessage: 'Clients' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Management' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Groups' }),
+          link: 'users/persona-management'
+        }
+      ] : [
         {
           text: $t({ defaultMessage: 'Persona Group' }),
           link: 'users/persona-management'
@@ -50,7 +61,7 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -111,7 +122,7 @@ function PersonaGroupDetails () {
   const basicInfo = [
     {
       title: $t({ defaultMessage: 'Venue' }),
-      value:
+      content:
       <VenueLink
         name={venueDisplay?.name}
         venueId={venueDisplay?.id}
@@ -119,11 +130,11 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Personas' }),
-      value: detailsQuery.data?.personas?.length ?? 0
+      content: detailsQuery.data?.personas?.length ?? 0
     },
     {
-      title: $t({ defaultMessage: 'DPSK Pool' }),
-      value:
+      title: $t({ defaultMessage: 'DPSK Service' }),
+      content:
       <DpskPoolLink
         name={dpskPoolDisplay?.name}
         dpskPoolId={detailsQuery.data?.dpskPoolId}
@@ -131,7 +142,7 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'MAC Registration' }),
-      value:
+      content:
         <MacRegistrationPoolLink
           name={macPoolDisplay?.name}
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
@@ -139,7 +150,7 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Network Segmentation' }),
-      value:
+      content:
         <NetworkSegmentationLink
           name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
@@ -155,28 +166,11 @@ function PersonaGroupDetails () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <Loader states={[detailsQuery]}>
-            <Card type={'solid-bg'}>
-              <Descriptions
-                layout={'vertical'}
-                column={7}
-                size={'small'}
-                colon={false}
-                style={{ padding: '8px 14px' }}
-              >
-                {
-                  basicInfo.map(info =>
-                    <Descriptions.Item
-                      key={info.title}
-                      label={info.title}
-                    >
-                      {info.value ?? noDataDisplay}
-                    </Descriptions.Item>
-                  )
-                }
-              </Descriptions>
-            </Card>
-          </Loader>
+          <SummaryCard
+            data={basicInfo}
+            colPerRow={6}
+            isLoading={detailsQuery.isLoading}
+          />
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <div>
@@ -184,11 +178,12 @@ function PersonaGroupDetails () {
               {/* eslint-disable-next-line max-len */}
               {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
-
             <BasePersonaTable
               personaGroupId={personaGroupId}
               colProps={{
                 name: { searchable: true },
+                email: { searchable: true },
+                description: { searchable: true },
                 groupId: { show: false, filterable: false },
                 ...!propertyEnabled
                   ? { identityId: { disable: true, show: false } } : {}

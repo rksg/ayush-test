@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -71,6 +72,36 @@ describe('ResidentPortalTable', () => {
       .toBeVisible()
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
   it('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
@@ -107,6 +138,9 @@ describe('ResidentPortalTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).toBeNull()
+    )
   })
 
   it('should not delete the selected row when it is mapped to Venue', async () => {

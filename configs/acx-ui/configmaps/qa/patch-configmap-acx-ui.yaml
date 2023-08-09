@@ -7,3 +7,4 @@ data:
   split.io.key: "rgkslm2jd328tlh1ah1be4e8kcuqm824u511"
   captive.portal.domain.name: "qa.ruckus.cloud"
   new.api.domain.name: "api.qa.ruckus.cloud"
+  api.documentation.url: "https://support.ruckuswireless.com/documents/4485"

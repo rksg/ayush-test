@@ -10,11 +10,21 @@ import { OSIconContainer }                                               from '@
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
+  useGetDpskPassphraseDevicesQuery,
   useLazyGetClientListQuery
 } from '@acx-ui/rc/services'
-import { ClientList, getOsTypeIcon, Persona, PersonaDevice } from '@acx-ui/rc/utils'
-import { filterByAccess }                                    from '@acx-ui/user'
-import { noDataDisplay }                                     from '@acx-ui/utils'
+import {
+  ClientList,
+  dateSort,
+  defaultSort,
+  DPSKDeviceInfo,
+  getOsTypeIcon,
+  Persona,
+  PersonaDevice,
+  sortProp
+} from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -23,49 +33,109 @@ const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
   fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName',
-    'apName', 'lastUpdateTime']
+    'apName', 'lastUpdateTime', 'authmethod']
 }
 
 export function PersonaDevicesTable (props: {
+  disableAddButton?: boolean
   persona?: Persona,
-  title?: string
+  dpskPoolId?: string
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { persona, title } = props
+  const { persona, dpskPoolId, disableAddButton = false } = props
   const [modelVisible, setModelVisible] = useState(false)
-  const [dataSource, setDataSource] = useState<PersonaDevice[]>(persona?.devices ?? [])
+  const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
+  const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
+  const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
+  const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
 
   const [getClientList] = useLazyGetClientListQuery()
+  const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
+    params: {
+      tenantId,
+      serviceId: dpskPoolId,
+      passphraseId: persona?.dpskGuid
+    }
+  }, { skip: !persona?.dpskGuid || !dpskPoolId })
+
+  // ClientMac format should be: 11:22:33:44:55:66
+  const toClientMacFormat = (macAddress: string) => {
+    return macAddress.replaceAll('-', ':')
+  }
 
   useEffect(() => {
     if (!persona?.devices) return
+    setMacDevices(persona.devices)
+    persona.devices.forEach(d => addClientMac(toClientMacFormat(d.macAddress)))
+  }, [persona?.devices])
+
+  useEffect(() => {
+    if (!dpskDevicesData) return
+    const dpskOnlineDevices = toOnlinePersonaDevice(dpskDevicesData)
+    setDpskDevices(dpskOnlineDevices)
+    dpskOnlineDevices.forEach(d => addClientMac(toClientMacFormat(d.macAddress)))
+  }, [dpskDevicesData])
+
+  useEffect(() => {
+    if (clientMac.size === 0) return
 
     getClientList({
       params: { tenantId },
       payload: {
         ...defaultPayload,
-        ...persona.devices
-          ? { filters: { clientMac: persona.devices.map(d => d.macAddress.replaceAll('-', ':')) } }
-          : {}
+        filters: { clientMac: [...clientMac] }
       }
     })
       .then(result => {
         if (!result.data?.data) return
-        setDataSource(aggregatePersonaDevices(result.data.data))
+        setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
+        setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
       })
-  }, [persona?.devices])
+  }, [clientMac])
 
-  const aggregatePersonaDevices = (clientList: ClientList[]) => {
-    // Combine client data and persona devices data
-    return persona?.devices?.map(device => {
+  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+    return devices.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
-      const deviceMac = device.macAddress.replaceAll('-', ':')
+      const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
         .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+      // if UE connected
+      //  via MAC auth, the authmethod would be: "Standard+Mac"
+      //  via DPSK,     the authmethod would be: "Standard+Open"
+      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
 
-      return client
+      return client && !isMacAuth
+        ? {
+          ...device,
+          os: client.osType,
+          deviceName: client.hostname
+        }
+        : {
+          ...device,
+          lastSeenAt: undefined // this device connected via MacAuth not DPSK, do not show lastSeenAt
+        }
+    }) ?? []
+  }
+
+  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+    // Combine client data and persona devices data
+    return devices.map(device => {
+      // this device does not register to MAC pool successfully.
+      if (!device.hasMacRegistered) return device
+
+      // PersonaMAC format: AB-AB-AB-AB-AB-AB
+      // ClientMAC format: ab:ab:ab:ab:ab:ab
+      const deviceMac = toClientMacFormat(device.macAddress)
+      const client = clientList
+        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+      // if UE connected
+      //  via MAC auth, the authmethod would be: "Standard+Mac"
+      //  via DPSK,     the authmethod would be: "Standard+Open"
+      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+
+      return client && isMacAuth
         ? {
           ...device,
           os: client.osType,
@@ -74,6 +144,17 @@ export function PersonaDevicesTable (props: {
         }
         : device
     }) ?? []
+  }
+
+  const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
+    return dpskDevices
+      .filter(d => d.online)
+      .map(device => ({
+        personaId: persona?.id ?? '',
+        macAddress: device.mac,
+        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
+        hasDpskRegistered: true
+      }))
   }
 
   const [
@@ -101,47 +182,55 @@ export function PersonaDevicesTable (props: {
     {
       key: 'deviceName',
       dataIndex: 'deviceName',
-      title: $t({ defaultMessage: 'Device Name' })
+      title: $t({ defaultMessage: 'Device Name' }),
+      sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
       key: 'os',
       dataIndex: 'os',
       align: 'center',
       title: $t({ defaultMessage: 'OS' }),
-      render: (data) => {
+      render: (_, { os }) => {
         return <OSIconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={os}>
+            { getOsTypeIcon(os as string) }
           </Tooltip>
         </OSIconContainer>
-      }
+      },
+      sorter: { compare: sortProp('os', defaultSort) }
     },
     {
       key: 'macAddress',
       dataIndex: 'macAddress',
-      title: $t({ defaultMessage: 'MAC Address' })
+      title: $t({ defaultMessage: 'MAC Address' }),
+      sorter: { compare: sortProp('macAddress', defaultSort) },
+      render: (_, row) => row.macAddress.replaceAll(':', '-').toUpperCase()
     },
     {
-      key: 'dpsk',
-      dataIndex: 'dpsk',
-      title: $t({ defaultMessage: 'DPSK' })
+      key: 'hasDpskRegistered',
+      dataIndex: 'hasDpskRegistered',
+      title: $t({ defaultMessage: 'DPSK' }),
+      render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
+      sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
     {
       key: 'hasMacRegistered',
       dataIndex: 'hasMacRegistered',
       title: $t({ defaultMessage: 'MAC Registration' }),
       align: 'center',
-      render: (data) => { return data ? <SuccessSolid/> : ''}
+      render: (_, { hasMacRegistered }) => hasMacRegistered && <SuccessSolid/>,
+      sorter: { compare: sortProp('hasMacRegistered', defaultSort) }
     },
     {
       key: 'lastSeenAt',
       dataIndex: 'lastSeenAt',
       title: $t({ defaultMessage: 'Last Seen Time' }),
-      render: (data) => {
-        return data
-          ? moment(data as string).format('YYYY/MM/DD HH:mm A')
+      render: (_, { lastSeenAt }) => {
+        return lastSeenAt
+          ? moment(lastSeenAt!).format('YYYY/MM/DD HH:mm A')
           : noDataDisplay
-      }
+      },
+      sorter: { compare: sortProp('lastSeenAt', dateSort) }
     }
   ]
 
@@ -173,7 +262,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: disableAddButton
     }
   ]
 
@@ -186,7 +276,7 @@ export function PersonaDevicesTable (props: {
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
     }).unwrap()
-      .then()
+      .then(() => handleModalCancel())
       .catch(error => {
         console.log(error) // eslint-disable-line no-console
       })
@@ -196,17 +286,29 @@ export function PersonaDevicesTable (props: {
     <Loader
       states={[
         { isLoading: false, isFetching: isAddPersonaDevicesUpdating },
-        { isLoading: false, isFetching: isDeletePersonaDevicesUpdating }
+        { isLoading: false, isFetching: isDeletePersonaDevicesUpdating },
+        { isLoading: false, isFetching: dpskDevicesResult.isFetching }
       ]}
     >
-      <Subtitle level={4}>{title}</Subtitle>
+      <Subtitle level={4}>
+        {$t(
+          { defaultMessage: 'Devices ({deviceCount})' },
+          { deviceCount: dpskDevices.length + macDevices.length }
+        )}
+      </Subtitle>
       <Table
         rowKey={'macAddress'}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() ? {
+          type: 'checkbox',
+          getCheckboxProps: (item) => ({
+            // Those devices auth by DPSK can not edit on this page
+            disabled: !!item?.hasDpskRegistered
+          })
+        } : undefined}
         pagination={{ defaultPageSize: 5 }}
       />
 

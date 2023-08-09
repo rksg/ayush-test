@@ -3,6 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -58,12 +59,11 @@ describe('AP Group Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApGroupForm /></Provider>, {
+    render(<Provider><ApGroupForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP Group')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
@@ -72,6 +72,32 @@ describe('AP Group Form - Add', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><ApGroupForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByRole('link', {
+      name: /access points/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><ApGroupForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('Access Points')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /ap list/i
+    })).toBeTruthy()
   })
 
   it('add ap group', async () => {

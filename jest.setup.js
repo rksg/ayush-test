@@ -45,6 +45,15 @@ var localStorageMock = (function() {
   }
 })()
 
+const cleanStylesFromDOM = function() {
+  const head = document.getElementsByTagName('head')[0];
+  const styles = head.getElementsByTagName('style');
+
+  for (let i = 0; i < styles.length; i++) {
+    head.removeChild(styles[i]);
+  }
+}
+
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 beforeAll(() => {
@@ -106,7 +115,11 @@ afterEach(() => {
   Loader['instance']?.reset()
   mockInstances.clearAll()
 })
-afterAll(() => mockServer.close())
+
+afterAll(() => {
+  mockServer.close()
+  cleanStylesFromDOM()
+})
 
 cleanupRegisteredPaths()
 
@@ -149,7 +162,8 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
-  Features: {}
+  Features: require('libs/common/feature-toggle/src/features').Features,
+  TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures
 }), { virtual: true })
 
 jest.mock('@acx-ui/icons', ()=> {

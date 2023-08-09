@@ -1,8 +1,10 @@
 import { Modal as AntModal } from 'antd'
 import styled, { css }       from 'styled-components/macro'
 
-import { Wrapper as StepsFormWrapper } from '../StepsForm/styledComponents'
-import { ActionsContainer }            from '../StepsFormLegacy/styledComponents'
+import {
+  ActionsContainer,
+  Wrapper as StepsFormWrapper
+} from '../StepsForm/styledComponents'
 
 const withStepsFormStyle = css`
   ${StepsFormWrapper} { padding-bottom: 0; }

@@ -1,11 +1,20 @@
 
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroupList,
+  replacePagination
+} from 'apps/rc/src/pages/Users/Persona/__tests__/fixtures'
+import { rest } from 'msw'
 
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   MacRegListUrlsInfo,
+  MsgTemplateUrls,
   NewDpskBaseUrl,
   NewPersonaBaseUrl,
   PersonaUrls,
@@ -14,15 +23,13 @@ import {
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
-  mockDpskList,
-  mockMacRegistrationList,
-  mockPersonaGroupList,
-  replacePagination
-} from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledNoNSGPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
-import { VenueEditContext }                                                                    from '../index'
+  mockedTemplateScope,
+  mockEnabledNoNSGPropertyConfig,
+  mockPropertyUnitList,
+  mockResidentPortalProfileList
+} from '../../__tests__/fixtures'
+import { VenueEditContext } from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -94,6 +101,10 @@ describe('Property Config Tab', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
+      ),
+      rest.get(
+        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockedTemplateScope))
       )
     )
   })
@@ -134,10 +145,8 @@ describe('Property Config Tab', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // check toggle with 'false' value
-    await screen.findByRole('switch', {
-      name: 'Enable Property Management',
-      checked: false
-    })
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    expect(enableSwitch).toHaveAttribute('aria-checked', 'false')
 
     // other fields should not render(e.g., Persona Group)
     const otherFields = screen.queryByText('Persona Group')
@@ -161,13 +170,9 @@ describe('Property Config Tab', () => {
       </Provider>, { route: { params: enabledParams } }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     // check toggle with 'true' value
-    await screen.findByRole('switch', {
-      name: 'Enable Property Management',
-      checked: true
-    })
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
     // check rending other fields
     await screen.findByText('Persona Group')
@@ -187,5 +192,60 @@ describe('Property Config Tab', () => {
     await userEvent.click(formSaveBtn)
 
     await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
+  })
+
+  it('should render Property config tab with msg-template', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider
+          // @ts-ignore
+          value={{ editContextData: null, setEditContextData: setEditContextDataFn }}
+        >
+          <PropertyManagementTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    // check toggle with 'true' value
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
+
+    // check rending msg-template tab list view
+    await screen.findByRole('tablist')
+  })
+
+  it('should pop up warning dialog while disable property', async () => {
+    render(
+      <Provider>
+        <VenueEditContext.Provider
+          // @ts-ignore
+          value={{ editContextData: null, setEditContextData: setEditContextDataFn }}
+        >
+          <PropertyManagementTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    // check toggle with 'true' value
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
+
+    // try to disable PropertyConfig
+    await userEvent.click(enableSwitch)
+
+    // type confirm text
+    const confirmBox = await screen.findByRole(
+      'textbox',
+      { name: /type the word "disable" to confirm:/i }
+    )
+    await userEvent.type(confirmBox, 'disable')
+
+    const confirmButton = await screen.findByRole('button', { name: /disable/i })
+    await userEvent.click(confirmButton)
+
+    // check switch has been OFF
+    expect(enableSwitch).toHaveAttribute('aria-checked', 'false')
   })
 })

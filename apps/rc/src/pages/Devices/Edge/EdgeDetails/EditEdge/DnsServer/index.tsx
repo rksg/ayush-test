@@ -21,7 +21,7 @@ const DnsServer = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const formRef = useRef<StepsFormLegacyInstance<EdgeDnsServers>>()
   const params = useParams()
   const { data: dnsServersData, isLoading: isLoadingDnsServersData } = useGetDnsServersQuery({

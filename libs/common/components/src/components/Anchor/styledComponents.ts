@@ -1,29 +1,53 @@
 import { Anchor as AntAnchor } from 'antd'
-import styled                  from 'styled-components/macro'
+import styled, { css }         from 'styled-components/macro'
 
-export const Anchor = styled(AntAnchor)`
-  .ant-anchor-ink {
-    display: none;
+export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
+  ${props => props.$customType === 'layout' ? css`
+  &.ant-anchor-wrapper {
+    background-color: var(--acx-neutrals-10);
+    border-radius: 4px;
+    margin-left: -2px;
+    padding-left: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .ant-anchor-ink-ball {
+    display: inline-block;
+    height: 20px;
+    margin-top: -6px;
+    border-width: 1px;
+    border-radius: 0;
+    width: 3px;
+    background-color: var(--acx-accents-orange-50);
   }
   .ant-anchor-link {
-    padding: 0;
-    .ant-anchor-link {
-      padding-left: 16px;
+    padding: 10px 0 10px 16px;
+    > .ant-anchor-link {
+      padding: 15px 0 0px 16px;
     }
   }
   .ant-anchor-link-title {
-    width: fit-content;
-    font-size: var(--acx-body-4-font-size);
-    padding: 2px 8px;
-    margin-bottom: 8px;
-    background: var(--acx-accents-blue-10);
-    border: 1px solid var(--acx-accents-blue-10);
-    border-radius: 12px;
-    color: var(--acx-accents-blue-50);
-    &:hover, &-active {
-      border-color: var(--acx-accents-blue-20);
-      color: var(--acx-accents-blue-55);
-    }
+    color: var(--acx-primary-black);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+  }
+  .ant-anchor-link-active > .ant-anchor-link-title {
+    font-weight: var(--acx-subtitle-5-font-weight);
+  }
+  ` : `
+  .ant-anchor-ink-ball {
+    display: none;
+  }
+  `}
+
+  .ant-anchor-ink:before {
+    display: none;
+  }
+  .ant-anchor-link-title {
+    font-size: var(--acx-subtitle-5-font-size);
+    line-height: var(--acx-subtitle-5-line-height);
   }
 `
 

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useDeleteTunnelProfileMutation,
   useGetNetworkSegmentationViewDataListQuery,
@@ -8,9 +9,8 @@ import {
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                   from '@acx-ui/user'
-
+import { Path, TenantLink, useNavigate, useTenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                                                        from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
@@ -18,6 +18,8 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+  const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -67,14 +69,14 @@ const TunnelProfileTable = () => {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.TUNNEL_PROFILE,
             oper: PolicyOperation.DETAIL,
             policyId: row.id
           })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -84,7 +86,7 @@ const TunnelProfileTable = () => {
       key: 'mtuType',
       dataIndex: 'mtuType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return MtuTypeEnum.AUTO === row.mtuType ?
           $t({ defaultMessage: 'Auto' }) :
           `${$t({ defaultMessage: 'Manual' })} (${row.mtuSize})`
@@ -95,7 +97,7 @@ const TunnelProfileTable = () => {
       key: 'forceFragmentation',
       dataIndex: 'forceFragmentation',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.forceFragmentation ?
           $t({ defaultMessage: 'ON' }) :
           $t({ defaultMessage: 'OFF' })
@@ -108,7 +110,7 @@ const TunnelProfileTable = () => {
       align: 'center',
       filterable: nsgOptions,
       sorter: true,
-      render: (data, row) => row.networkSegmentationIds?.length || 0
+      render: (_, row) => row.networkSegmentationIds?.length || 0
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
@@ -117,7 +119,7 @@ const TunnelProfileTable = () => {
       align: 'center',
       filterable: networkOptions,
       sorter: true,
-      render: (data, row) => row.networkIds?.length || 0
+      render: (_, row) => row.networkIds?.length || 0
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
@@ -132,7 +134,8 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1
+        && selectedRows[0].id !== params.tenantId, // Default Tunnel profile cannot Edit
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -177,10 +180,16 @@ const TunnelProfileTable = () => {
             { count: tableQuery.data?.totalCount }
           )
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}>
@@ -193,7 +202,7 @@ const TunnelProfileTable = () => {
           rowKey='id'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { DataType, OperatorType, RadiusAttributeGroupUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AttributeAssignment, DataType, OperatorType, RadiusAttributeGroupUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen }                                                from '@acx-ui/test-utils'
 
 import { attributeList, vendorList } from './__tests__/fixtures'
 import { RadiusAttributeDrawer }     from './RadiusAttributeDrawer'
@@ -28,6 +28,7 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={false}
           editAttribute={undefined}
           setAttributeAssignments={jest.fn()}
+          getAttributeAssignments={jest.fn()}
         />
       </Provider>,
       {
@@ -48,6 +49,8 @@ describe('RadiusAttributeDrawer', () => {
   })
 
   it('should edit form successfully', async () => {
+    const mockFn = jest.fn(()=> [] as AttributeAssignment [])
+
     mockServer.use(
       rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url,
@@ -70,6 +73,7 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={true}
           editAttribute={editAttribute}
           setAttributeAssignments={jest.fn()}
+          getAttributeAssignments={mockFn}
         />
       </Provider>,
       {
@@ -88,14 +92,10 @@ describe('RadiusAttributeDrawer', () => {
     expect(attributeDataType).toHaveValue(editAttribute.dataType)
 
     const comboBoxes = await screen.findAllByRole('combobox')
-    const attributeType = comboBoxes[0]
-    await userEvent.click(attributeType)
+    await userEvent.click(comboBoxes[0])
+    await userEvent.click(await screen.findByText('UKERNA'))
 
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[0])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
+    await userEvent.click(comboBoxes[1])
     await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const addButton = screen.getByText('Done')

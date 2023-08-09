@@ -18,7 +18,7 @@ import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean) {
   const { $t } = useIntl()
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -69,13 +69,15 @@ export function useMenuConfig (tenantType: string) {
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
-    ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
-      uri: '/portalSetting',
-      label: $t({ defaultMessage: 'Settings' }),
-      tenantType: 'v' as TenantType,
-      inactiveIcon: ConfigurationOutlined,
-      activeIcon: ConfigurationSolid
-    }])
+    ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
+      ? [{ label: '' }]
+      : [{
+        uri: '/portalSetting',
+        label: $t({ defaultMessage: 'Settings' }),
+        tenantType: 'v' as TenantType,
+        inactiveIcon: ConfigurationOutlined,
+        activeIcon: ConfigurationSolid
+      }])
   ]
   return config
 }

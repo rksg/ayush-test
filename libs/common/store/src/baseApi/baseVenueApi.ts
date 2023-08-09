@@ -4,7 +4,7 @@ export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
   tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio',
-    'PropertyConfigs', 'PropertyUnit', 'ResidentPortal'],
+    'PropertyConfigs', 'PropertyUnit'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })

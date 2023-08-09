@@ -1,21 +1,33 @@
+import { useEffect, useState } from 'react'
+
+import { Col }       from 'antd'
+import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
-import styled        from 'styled-components/macro'
 
-
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridRow, Tabs }           from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
-  EdgeInfoWidget,
-  EdgePortsByTrafficWidget,
-  EdgeResourceUtilizationWidget,
-  EdgeTrafficByVolumeWidget,
-  EdgeUpTimeWidget
-} from '@acx-ui/rc/components'
-import {
-  useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
+  useEdgeBySerialNumberQuery,
+  useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
+import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
-export const EdgeOverview = styled(({ className }:{ className?: string }) => {
-  const params = useParams()
+import { MonitorTab }           from './MonitorTab'
+import { PortsTab }             from './PortsTab'
+import { EdgeSubInterfacesTab } from './SubInterfacesTab'
+
+enum OverviewInfoType {
+    MONITOR = 'monitor',
+    PORTS = 'ports',
+    SUB_INTERFACES = 'subInterfaces'
+}
+export const EdgeOverview = () => {
+  const { $t } = useIntl()
+  const { serialNumber, activeSubTab } = useParams()
+  const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+
   const edgeStatusPayload = {
     fields: [
       'name',
@@ -35,15 +47,18 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'memoryUsedKb',
       'memoryTotalKb',
       'diskUsedKb',
-      'diskTotalKb'
+      'diskTotalKb',
+      'description'
     ],
-    filters: { serialNumber: [params.serialNumber] } }
+    filters: { serialNumber: [serialNumber] } }
 
-  const { data: currentEdge, isLoading: isLoadingEdgeStatus } = useEdgeBySerialNumberQuery({
-    params, payload: edgeStatusPayload
+  const {
+    data: currentEdge,
+    isLoading: isLoadingEdgeStatus
+  } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: edgeStatusPayload
   })
-
-  const { data: dnsServers } = useGetDnsServersQuery({ params })
 
   const edgePortStatusPayload = {
     fields: [
@@ -57,48 +72,82 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'speed_kbps',
       'mac',
       'duplex',
-      'sort_idx'
+      'sort_idx',
+      'interface_name',
+      'ip_mode'
     ],
-    filters: { serialNumber: [params.serialNumber] },
-    sortField: 'sort_idx',
+    filters: { serialNumber: [serialNumber] },
+    sortField: 'sortIdx',
     sortOrder: 'ASC'
   }
 
-  const { data: portStatusList, isLoading: isPortListLoading } = useGetEdgePortsStatusListQuery({
-    params, payload: edgePortStatusPayload
+  const {
+    data: portStatusList,
+    isLoading: isPortListLoading
+  } = useGetEdgePortsStatusListQuery({
+    params: { serialNumber },
+    payload: edgePortStatusPayload
   })
 
+  const handleTabChange = (val: string) => {
+    setCurrentTab(val)
+  }
+
+  const handleClickWidget = (type: string) => {
+    if (type === 'port')
+      handleTabChange(OverviewInfoType.PORTS)
+  }
+
+  useEffect(() => {
+    if (activeSubTab && Object.values(OverviewInfoType).includes(activeSubTab as OverviewInfoType))
+      setCurrentTab(activeSubTab)
+  }, [activeSubTab])
+
+  const tabs = [{
+    label: $t({ defaultMessage: 'Monitor' }),
+    value: 'monitor',
+    children: <MonitorTab />
+  }, {
+    label: $t({ defaultMessage: 'Ports' }),
+    value: 'ports',
+    children: <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
+  }, {
+    label: $t({ defaultMessage: 'Sub-Interfaces' }),
+    value: 'subInterfaces',
+    children: <EdgeSubInterfacesTab
+      isLoading={isPortListLoading}
+      ports={portStatusList as EdgePortStatus[]}
+    />
+  }].filter(i => i.value !== 'monitor' || isEdgeReady)
+
   return (
-    <GridRow className={className}>
-      <GridCol col={{ span: 24 }}>
+    <GridRow>
+      <Col span={24}>
         <EdgeInfoWidget
           currentEdge={currentEdge}
           edgePortsSetting={portStatusList}
-          dnsServers={dnsServers}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
+          onClickWidget={handleClickWidget}
         />
-      </GridCol>
-      <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
-        <EdgeUpTimeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeResourceUtilizationWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgePortsByTrafficWidget />
-      </GridCol>
+      </Col>
+      <Col span={24}>
+        <Tabs
+          type='card'
+          activeKey={currentTab}
+          defaultActiveKey={activeSubTab || tabs[0].value}
+          onChange={handleTabChange}
+        >
+          {tabs.map((tab) => (
+            <Tabs.TabPane
+              tab={tab.label}
+              key={tab.value}
+            >
+              {tab.children}
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      </Col>
     </GridRow>
   )
-})`
-div.statistic {
-    height: 280px;
-
-    &.upTimeWidget {
-      height: 100px;
-    }
 }
-`

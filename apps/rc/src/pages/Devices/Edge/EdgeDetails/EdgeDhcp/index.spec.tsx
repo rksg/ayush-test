@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -25,6 +26,7 @@ describe('Edge DHCP no initial data', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
@@ -71,6 +73,7 @@ describe('Edge DHCP', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',

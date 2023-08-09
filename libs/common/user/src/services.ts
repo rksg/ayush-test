@@ -11,7 +11,8 @@ import {
   PlmMessageBanner,
   UserSettings,
   UserProfile,
-  UserSettingsUIModel
+  UserSettingsUIModel,
+  BetaStatus
 } from './types'
 
 export const UserUrlsInfo = {
@@ -120,6 +121,16 @@ export const UserUrlsInfo = {
   disableMFAMethod: {
     method: 'put',
     url: '/mfa/auth-method/:mfaMethod/disable'
+  },
+  getBetaStatus: {
+    method: 'get',
+    url: '/tenants/betaStatus',
+    newApi: true
+  },
+  toggleBetaStatus: {
+    method: 'put',
+    url: '/tenants/betaStatus/:enable',
+    newApi: true
   }
 }
 
@@ -144,7 +155,9 @@ export const {
   useMfaRegisterAdminMutation,
   useMfaRegisterPhoneQuery,
   useMfaResendOTPMutation,
-  useDisableMFAMethodMutation
+  useDisableMFAMethodMutation,
+  useGetBetaStatusQuery,
+  useToggleBetaStatusMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -172,9 +185,13 @@ export const {
     getUserProfile: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getUserProfile, params),
       transformResponse (userProfile: UserProfile) {
-        userProfile.initials =
-          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
-        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        const { firstName, lastName } = userProfile
+        userProfile.fullName = ''
+
+        if (firstName && lastName) {
+          userProfile.initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
+          userProfile.fullName = `${firstName} ${lastName}`
+        }
         return userProfile
       },
       providesTags: ['UserProfile']
@@ -261,6 +278,14 @@ export const {
         body: payload
       }),
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    getBetaStatus: build.query<BetaStatus, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
+      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
+        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
+    }),
+    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
     })
   })
 })

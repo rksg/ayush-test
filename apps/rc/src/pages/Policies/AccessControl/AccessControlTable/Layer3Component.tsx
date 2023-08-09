@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }     from '@acx-ui/rc/components'
 import {
-  useDelL3AclPolicyMutation,
-  useGetAccessControlProfileListQuery,
+  doProfileDelete,
+  useDelL3AclPoliciesMutation,
   useGetEnhancedL3AclProfileListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -17,10 +18,11 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps } from '../AccessControlForm/AccessControlForm'
-import Layer3Drawer     from '../AccessControlForm/Layer3Drawer'
+import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
+import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
 
 const defaultPayload = {
@@ -29,7 +31,8 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -41,7 +44,9 @@ const Layer3Component = () => {
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
+  const form = Form.useFormInstance()
+
+  const [ deleteFn ] = useDelL3AclPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -52,16 +57,6 @@ const Layer3Component = () => {
       ...defaultNetworkPayload,
       filters: {
         id: [...networkIds]
-      }
-    }
-  })
-
-  const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: params
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        data: data?.map(accessControl => accessControl?.l3AclPolicy?.id)
       }
     }
   })
@@ -107,37 +102,27 @@ const Layer3Component = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
+  const doDelete = (selectedRows: L3AclPolicy[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networkIds }], clearSelection) => {
-        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
-            })
-          })
-          clearSelection()
-        } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              delL3AclPolicy({ params: { ...params, l3AclPolicyId: id } }).then(clearSelection)
-            }
-          })
-        }
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
@@ -149,22 +134,24 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <Layer3Drawer
-      onlyAddMode={addModeStatus}
-    />
-    <Table<L3AclPolicy>
-      settingsId='policies-access-control-layer3-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-    />
+    <Form form={form}>
+      <Layer3Drawer
+        onlyAddMode={addModeStatus}
+      />
+      <Table<L3AclPolicy>
+        settingsId='policies-access-control-layer3-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
+    </Form>
   </Loader>
 }
 
@@ -184,7 +171,7 @@ function useColumns (
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Layer3Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
@@ -208,14 +195,13 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds?.length
+      render: (_, row) => row.networkIds?.length
     }
   ]
 

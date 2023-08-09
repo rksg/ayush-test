@@ -1,14 +1,18 @@
 import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Tabs } from '@acx-ui/components'
-import { useGetDpskQuery }          from '@acx-ui/rc/services'
+import { Button, PageHeader, Tabs }                               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath,
+  NewDpskPassphrase,
+  isActivePassphrase
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -21,7 +25,21 @@ export default function DpskDetails () {
   const { tenantId, activeTab, serviceId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  const { data: dpskDetail } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
+    params: { tenantId, serviceId },
+    payload: { filters: {}, page: 1, pageSize: 20000 }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        activePassphraseCount: data?.data.filter((passphrase: NewDpskPassphrase) => {
+          return isActivePassphrase(passphrase, isCloudpathEnabled)
+        }).length
+      }
+    }
+  })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
@@ -44,7 +62,7 @@ export default function DpskDetails () {
 
   const getTabComp = (activeTab: DpskDetailsTabKey) => {
     if (activeTab === DpskDetailsTabKey.OVERVIEW) {
-      return <DpskOverview data={data} />
+      return <DpskOverview data={dpskDetail} />
     }
 
     return <DpskPassphraseManagement />
@@ -53,8 +71,15 @@ export default function DpskDetails () {
   return (
     <>
       <PageHeader
-        title={data?.name}
-        breadcrumb={[
+        title={dpskDetail?.name}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'DPSK' }),
+            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Services' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
@@ -78,7 +103,8 @@ export default function DpskDetails () {
               key={DpskDetailsTabKey.OVERVIEW}
             />
             <Tabs.TabPane
-              tab={$t(dpskTabNameMapping[DpskDetailsTabKey.PASSPHRASE_MGMT])}
+              // eslint-disable-next-line max-len
+              tab={$t(dpskTabNameMapping[DpskDetailsTabKey.PASSPHRASE_MGMT], { activeCount: activePassphraseCount ?? 0 })}
               key={DpskDetailsTabKey.PASSPHRASE_MGMT}
             />
           </Tabs>

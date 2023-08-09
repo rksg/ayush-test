@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -116,6 +117,30 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   }, 30000)
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><CliProfileForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
+    })
+
+    expect(screen.getByRole('link', {
+      name: /wired networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+    render(<Provider><CliProfileForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
+    })
+
+    expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /configuration profiles/i
+    })).toBeTruthy()
+  })
+
   it('should handle models changed', async () => {
     render(<Provider><CliProfileForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
@@ -133,7 +158,7 @@ describe('Cli Profile Form - Add', () => {
       await screen.findByLabelText(/Profile Name/), { target: { value: 'test cli' } }
     )
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('42 Models selected')
+    await screen.findByText('26 Models selected')
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('0 Models selected')
   })
@@ -156,9 +181,9 @@ describe('Cli Profile Form - Add', () => {
     )
     const options = await screen.findAllByRole('checkbox')
 
-    expect(options).toHaveLength(47) // family model group 5 + model 42
+    expect(options).toHaveLength(30) // family model group 4 + model 26
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('42 Models selected')
+    await screen.findByText('26 Models selected')
     await userEvent.click(options[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('11 Models selected')
@@ -254,7 +279,7 @@ describe('Cli Profile Form - Edit', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
   it('should handle error occurred', async () => {
@@ -274,7 +299,7 @@ describe('Cli Profile Form - Edit', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     // await screen.findByText('Server Error')
   })
 

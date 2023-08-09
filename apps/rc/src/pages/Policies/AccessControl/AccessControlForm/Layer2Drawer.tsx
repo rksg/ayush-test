@@ -31,7 +31,8 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { showUnsavedConfirmModal }     from './AccessControlComponent'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
+
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -115,26 +116,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [ updateL2AclPolicy ] = useUpdateL2AclPolicyMutation()
 
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: [
-        'id',
-        'name',
-        'description',
-        'macAddress',
-        'networkIds'
-      ],
-      page: 1,
-      pageSize: 25
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        layer2SelectOptions: data?.data?.map(
+        layer2SelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer2List: data?.data?.map(item => item.name)
+          }) : [],
+        layer2List: data ? data.map(item => item.name) : []
       }
     }
   })
@@ -210,7 +200,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       key: 'macAddress',
       searchable: true,
       sorter: { compare: sortProp('macAddress', defaultSort) },
-      render: (data, row: { macAddress: string }) => {
+      render: (_, row: { macAddress: string }) => {
         return row.macAddress
       }
     },
@@ -218,7 +208,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       dataIndex: 'macAddress',
       key: 'macAddress',
       align: 'right',
-      render: (data, row: { macAddress: string }) => {
+      render: (_, row: { macAddress: string }) => {
         return <div>
           { !isViewMode() && <DeleteSolid
             data-testid={row.macAddress}
@@ -606,6 +596,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')
@@ -622,9 +613,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleLayer2DrawerClose)
-          : handleLayer2DrawerClose()
+        onClose={() => handleLayer2DrawerClose()
         }
         destroyOnClose={true}
         children={content}

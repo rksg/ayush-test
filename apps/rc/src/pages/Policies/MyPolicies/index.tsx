@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -50,6 +50,7 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policies: CardDataProps[] = useCardData()
 
@@ -57,6 +58,9 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) }
+        ]: undefined}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
@@ -94,11 +98,10 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
-  const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   return [
     {
@@ -130,10 +133,10 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.MAC_REGISTRATION_LIST,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useMacRegListsQuery({ params }, { skip: !macRegistrationEnabled }).data?.totalCount,
+      totalCount: useMacRegListsQuery({ params }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: !macRegistrationEnabled
+      disabled: !cloudpathBetaEnabled
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
@@ -175,10 +178,10 @@ function useCardData (): CardDataProps[] {
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
-      }, { skip: !isEdgeEnabled }).data?.totalCount,
+      }, { skip: !isEdgeEnabled || !isEdgeReady }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
       type: PolicyType.CONNECTION_METERING,
@@ -194,10 +197,10 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.ADAPTIVE_POLICY,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !adaptivePolicyEnabled || !attributeGroupEnabled }).data?.totalCount,
+      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
-      disabled: !adaptivePolicyEnabled || !attributeGroupEnabled
+      disabled: !cloudpathBetaEnabled
     }
   ]
 }

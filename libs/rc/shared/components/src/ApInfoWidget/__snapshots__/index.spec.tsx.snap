@@ -1,0 +1,212 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AP Information Widget should render "No active alarms" when no alarms exist 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+    type="solid-bg"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 4px;"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                />
+              </div>
+              <div
+                class="ant-space-item"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+        >
+          <div
+            class="ant-col ant-col-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            />
+          </div>
+          <div
+            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <svg
+                          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+                          data-testid="CheckMarkCircleSolid"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        No active alarms
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <a
+                    class="styledComponents__TenantLinkSvg-sc-btivk0-4 eIfCxp"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics"
+                  >
+                    <div
+                      data-testid="analytics-IncidentBySeverityDonutChart"
+                      title="IncidentBySeverityDonutChart"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-btivk0-3 eQIsIK"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-btivk0-3 eQIsIK"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-TtcTimeWidget"
+                      title="TtcTimeWidget"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-btivk0-3 eQIsIK"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -35,8 +35,9 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const intl = useIntl()
   const { editMode = false, modalMode, modalCallBack } = props
   const { policyId } = useParams()
-  // eslint-disable-next-line max-len
-  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<MacRegistrationPoolFormFields>>()
 
@@ -44,7 +45,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   useEffect(() => {
     if (data && editMode) {
@@ -122,12 +124,20 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         title={editMode
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: intl.$t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: intl.$t({ defaultMessage: 'Network Control' }) },
+          {
+            text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
+            link: tablePath }
+        ] : [{
+          text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        },
+        { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
+          link: tablePath }
         ]}
       />}
       <StepsFormLegacy<MacRegistrationPoolFormFields>

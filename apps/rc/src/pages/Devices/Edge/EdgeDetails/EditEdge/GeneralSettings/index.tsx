@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { Col, Form, Row } from 'antd'
-import { useIntl }        from 'react-intl'
 
 import { StepsForm }                              from '@acx-ui/components'
 import { EdgeSettingForm }                        from '@acx-ui/rc/components'
@@ -14,11 +13,9 @@ import {
 } from '@acx-ui/react-router-dom'
 
 const GeneralSettings = () => {
-
-  const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const { data: edgeGeneralSettings } = useGetEdgeQuery({
     params: { serialNumber: params.serialNumber }
@@ -46,10 +43,10 @@ const GeneralSettings = () => {
 
   return (
     <StepsForm
+      editMode
       form={form}
       onFinish={handleUpdateEdge}
       onCancel={() => navigate(linkToEdgeList)}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >
       <StepsForm.StepForm>
         <Row gutter={20}>

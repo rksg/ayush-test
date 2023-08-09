@@ -1,16 +1,15 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space } from 'antd'
 import { isEqual, replace }                     from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, Tabs }            from '@acx-ui/components'
-import { LanPortSettings }         from '@acx-ui/rc/components'
+import { Loader, Tabs }                                            from '@acx-ui/components'
+import { LanPortSettings }                                         from '@acx-ui/rc/components'
 import {
-  useGetVenueCapabilitiesQuery,
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
-  useUpdateVenueLanPortsMutation
+  useUpdateVenueLanPortsMutation, useGetVenueApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   ApModel,
@@ -38,9 +37,11 @@ export function LanPorts () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
+  const customGuiChagedRef = useRef(false)
+
   const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
-  const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const [updateVenueLanPorts, {
     isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
 
@@ -54,7 +55,7 @@ export function LanPorts () {
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
 
   const form = Form.useFormInstance()
-  const [apModel, poeMode, lanPoeOut, lanPorts] = [
+  const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
     useWatch('model'),
     useWatch('poeMode'),
     useWatch('poeOut'),
@@ -76,13 +77,15 @@ export function LanPorts () {
   }, [venueSettings?.data])
 
   useEffect(() => {
-    const { model, lan, poeOut } = form?.getFieldsValue()
-    if (isEqual(model, apModel) && isEqual(lan, lanPorts)) {
+    const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
+
+    //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
+    if (customGuiChagedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
         return item.model === apModel
           ? {
             ...item,
-            lanPorts: lanPorts,
+            lanPorts: lan,
             ...(poeMode && item.poeMode && { poeMode: poeMode }),
             ...(poeOut && { poeOut: poeOut[activeTabIndex] })
           } : item
@@ -104,8 +107,10 @@ export function LanPorts () {
 
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
+
+      customGuiChagedRef.current = false
     }
-  }, [poeMode, lanPoeOut, lanPorts])
+  }, [apPoeMode, lanPoeOut, lanPorts])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -163,6 +168,12 @@ export function LanPorts () {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGUIChanged = (fieldName: string) => {
+    //console.log('GUI Changed: '+ fieldName)
+    customGuiChagedRef.current = true
+  }
+
   return (<Loader states={[{
     isLoading: venueLanPorts.isLoading || venueCaps.isLoading,
     isFetching: isUpdatingVenueLanPorts
@@ -190,6 +201,7 @@ export function LanPorts () {
             options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
               label: toReadablePoeMode(item), value: item
             }))}
+            onChange={() => handleGUIChanged('poeMode')}
           />}
         /> }
       </Col>
@@ -215,6 +227,7 @@ export function LanPorts () {
                     setSelectedPortCaps={setSelectedPortCaps}
                     selectedModelCaps={selectedModelCaps}
                     isDhcpEnabled={isDhcpEnabled}
+                    onGUIChanged={handleGUIChanged}
                     index={index}
                   />
                 </Col>

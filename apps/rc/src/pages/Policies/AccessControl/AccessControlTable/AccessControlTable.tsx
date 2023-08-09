@@ -2,45 +2,72 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
+
 import AccessControlTabs from './AccessControlTabs'
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name'
+  ]
+}
 
 export default function AccessControlTable () {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  return (
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
+    defaultPayload
+  })
+
+  return (<>
     <PageHeader
       title={
         $t({
           defaultMessage: 'Access Control'
         })
       }
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Network Control' }) },
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }
-      ]}
+      ] : [{
+        text: $t({ defaultMessage: 'Policies & Profiles' }),
+        link: getPolicyListRoutePath(true)
+      }]}
       extra={filterByAccess([
         <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
           })}>
-          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+          <Button
+            type='primary'
+            disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>
+            {$t({ defaultMessage: 'Add Access Control Set' })}
+          </Button>
         </TenantLink>
       ])}
-      footer={<AccessControlTabs />}
+
     />
-  )
+    <AccessControlTabs />
+  </>)
 }
 

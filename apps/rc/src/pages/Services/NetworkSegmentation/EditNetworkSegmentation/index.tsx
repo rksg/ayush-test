@@ -5,7 +5,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, PageHeader }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }        from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationForm } from '../NetworkSegmentationForm'
 import { AccessSwitchForm }        from '../NetworkSegmentationForm/AccessSwitchForm'
@@ -24,6 +26,9 @@ const EditNetworkSegmentation = () => {
     isLoading: isNsgDataLoading
   } = useGetNetworkSegmentationGroupByIdQuery({ params })
   const [updateNetworkSegmentationGroup] = useUpdateNetworkSegmentationGroupMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getServiceRoutePath(
+    { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
 
   useEffect(() => {
     form.resetFields()
@@ -40,6 +45,7 @@ const EditNetworkSegmentation = () => {
       form.setFieldValue('networkIds', nsgData.networkIds)
       form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
       form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
+      form.setFieldValue('originalDistributionSwitchInfos', nsgData.distributionSwitchInfos)
       form.setFieldValue('originalAccessSwitchInfos', nsgData.accessSwitchInfos)
     }
   }, [nsgData])
@@ -71,7 +77,11 @@ const EditNetworkSegmentation = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Network Segmentation Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Network Segmentation' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />

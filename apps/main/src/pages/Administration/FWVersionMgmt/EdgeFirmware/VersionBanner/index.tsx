@@ -10,10 +10,10 @@ import { getReleaseFirmware } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
-const transform = firmwareTypeTrans()
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
+  const transform = firmwareTypeTrans($t)
   const { data: latestReleaseVersions } = useGetLatestEdgeFirmwareQuery({})
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]

@@ -22,9 +22,10 @@ import {
   checkItemNotIncluded,
   DnsProxyRule
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { DnsProxyContext } from './ServicesForm'
+import { DnsProxyContext } from './NetworkControlTab'
+
 
 interface DnsProxyListData {
   cloneList: DnsProxyRule[] | [],
@@ -60,7 +61,7 @@ function useColumns () {
     title: $t({ defaultMessage: 'IP Addresses' }),
     dataIndex: 'ipList',
     key: 'ipList',
-    render: (data) => (data as string[])?.join('; ')
+    render: (_, { ipList }) => ipList?.join('; ')
   }]
   return columns
 }
@@ -191,7 +192,7 @@ export function MultiSelectTable (props: {
       dataSource={dnsProxyList}
       rowActions={filterByAccess(rowActions)}
       rowKey='domainName'
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   </>
   )

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Col, Form, Row, Space, Steps }    from 'antd'
+import _                                   from 'lodash'
 import { useIntl }                         from 'react-intl'
 import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
 
@@ -46,13 +47,12 @@ export function useStepsForm <T> ({
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
-  const total = steps.length
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
-    total,
+    total: steps.length,
     isBackValidate: Boolean(editMode)
   } as UseStepsFormConfig)
   const form = formConfig.form as FormInstance<T>
@@ -113,13 +113,15 @@ export function useStepsForm <T> ({
   }
 
   const formProps: FormProps<T> = {
-    // TODO:
-    // combine props & currentStep?.props
+    layout: 'vertical',
+    // omit defaultFormValues for preventing warning: React does not recognize the `defaultFormValues` prop on a DOM element.
+    ..._.omit(config, 'defaultFormValues'),
     ...props,
+    // omit name for preventing prefix of id
+    ..._.omit(currentStep.props, ['children', 'name', 'title']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
-    layout: 'vertical',
     requiredMark: true,
     preserve: true,
     disabled: submitting
@@ -139,19 +141,17 @@ export function useStepsForm <T> ({
     stepsProps
   }
 
-  const stepsEls = <>
-    <UI.StepsGlobalOverride />
-    <UI.Steps {...stepsProps} $editMode={editMode}>
-      {steps.map(({ props }) => <Steps.Step
-        key={props.name}
-        title={props.title}
-        disabled={submitting || (!editMode && newConfig.current < props.step)}
-      />)}
-    </UI.Steps>
-  </>
+  const stepsEls = <UI.Steps {...stepsProps} $editMode={editMode}>
+    {steps.map(({ props }) => <Steps.Step
+      key={props.name}
+      title={props.title}
+      disabled={submitting || (!editMode && newConfig.current < props.step)}
+    />)}
+  </UI.Steps>
 
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
+    apply: $t({ defaultMessage: 'Apply' }),
     submit: $t({ defaultMessage: 'Finish' }),
     pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' }),
@@ -170,48 +170,50 @@ export function useStepsForm <T> ({
     />,
     // TODO:
     // - handle disable when validation not passed
+    apply: <Button
+      type='primary'
+      loading={loading}
+      onClick={() => submit()}
+      children={labels.apply}
+    />,
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => newConfig.gotoStep(formConfig.current + 1)}
         children={labels.next}
       />
       : <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}
       />
   }
 
-  const buttonsLayout = steps.length > 1
-    ? <>
+  let buttonsLayout: React.ReactNode
+  if (steps.length > 1 && !editMode) {
+    buttonsLayout = <>
       {buttons.cancel}
       <Space align='center' size={12}>
         {buttons.pre}
         {buttons.submit}
       </Space>
     </>
-    : <>
-      {buttons.submit}
-      {buttons.cancel}
-    </>
-
-  const buttonEls = <>
-    <UI.ActionsContainerGlobalOverride />
-    <UI.ActionsContainer data-testid='steps-form-actions'>
-      <Space align='center' size={12}>
-        {buttonsLayout}
-      </Space>
-    </UI.ActionsContainer>
+  } else buttonsLayout = <>
+    {editMode ? buttons.apply : buttons.submit}
+    {buttons.cancel}
   </>
 
-  const currentStepEl = steps[newConfig.current]
+  const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
+    <UI.ActionsButtons
+      $editMode={!!editMode}
+      $multipleSteps={steps.length > 1}
+      children={buttonsLayout}
+    />
+  </UI.ActionsContainer>
 
-  const formEl = <Form {...newConfig.formProps}>
-    {currentStepEl}
-  </Form>
+  const currentStepEl = steps[newConfig.current]
 
   const formLayout = steps.length > 1
     ? <>
@@ -222,7 +224,7 @@ export function useStepsForm <T> ({
 
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
-      <Row>{formLayout}</Row>
+      <Row gutter={20}>{formLayout}</Row>
       {buttonEls}
     </Form>
   </UI.Wrapper>
@@ -231,7 +233,6 @@ export function useStepsForm <T> ({
     steps: stepsEls,
     actionButtons: buttonEls,
     currentStep: currentStepEl,
-    form: formEl,
     stepsForm: stepsFormEl
   }
 

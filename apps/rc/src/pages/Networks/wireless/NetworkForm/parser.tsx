@@ -12,15 +12,18 @@ import {
   RfBandUsageEnum,
   PhyTypeConstraintEnum,
   NetworkVenue,
-  ClientIsolationVenue
+  ClientIsolationVenue,
+  ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
+
+import { hasVxLanTunnelProfile } from './utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
     accountingRadiusId: data.accountingRadiusId,
-    authRadiusId: data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {
@@ -54,12 +57,17 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     }
   }
 
+  const managementFrameProtection = (data.wlanSecurity === WlanSecurityEnum.WPA3)
+    ? ManagementFrameProtectionEnum.Required
+    : ManagementFrameProtectionEnum.Disabled
+
   if (editMode) {
     saveData = {
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity
+          wlanSecurity: data.wlanSecurity,
+          managementFrameProtection
         }
       }
     }
@@ -73,7 +81,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
           bypassCNA: false,
           bypassCPUsingMacAddressAuthentication: false,
           enable: true,
-          managementFrameProtection: 'Disabled',
+          managementFrameProtection,
           vlanId: 1
         }
       }
@@ -126,29 +134,24 @@ const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData
-  if (editMode) {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity
-        }
-      }
-    }
-  } else {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity,
+  const saveData = {
+    ...data,
+    ...{
+      wlan: {
+        wlanSecurity: data.dpskWlanSecurity,
+        ...(editMode ? {} : {
           enable: true,
           vlanId: 1,
           advancedCustomization: new DpskWlanAdvancedCustomization()
-        }
+        })
       }
     }
   }
+
+  if (data.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 
@@ -156,7 +159,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     accountingRadiusId: data.accountingRadiusId,
-    authRadiusId: data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
@@ -261,13 +264,19 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   // loadControlForm
-  if(get(data, 'totalUplinkLimited') === false) {
+  if(get(data, 'maxRate') === 'unlimited' ) {
     advancedCustomization.totalUplinkRateLimiting = 0
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  } else {
+    if(get(data, 'totalUplinkLimited') === false) {
+      advancedCustomization.totalUplinkRateLimiting = 0
+    }
+
+    if(get(data, 'totalDownlinkLimited') === false) {
+      advancedCustomization.totalDownlinkRateLimiting = 0
+    }
   }
 
-  if(get(data, 'totalDownlinkLimited') === false) {
-    advancedCustomization.totalDownlinkRateLimiting = 0
-  }
   // accessControlForm
   if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
     advancedCustomization.devicePolicyId = null
@@ -326,14 +335,38 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
   }
 
+  if (hasVxLanTunnelProfile(data) && data.type === NetworkTypeEnum.DPSK) {
+    (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.dhcpOption82Enabled')) {
+    advancedCustomization.dhcpOption82SubOption1Enabled = false
+    advancedCustomization.dhcpOption82SubOption1Format = null
+    advancedCustomization.dhcpOption82SubOption2Enabled = false
+    advancedCustomization.dhcpOption82SubOption2Format = null
+    advancedCustomization.dhcpOption82SubOption150Enabled = false
+    advancedCustomization.dhcpOption82SubOption151Enabled = false
+    advancedCustomization.dhcpOption82SubOption151Format = null
+    advancedCustomization.dhcpOption82MacFormat = null
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.enableMulticastRateLimiting')) {
+    advancedCustomization.enableMulticastUplinkRateLimiting = false
+    advancedCustomization.enableMulticastDownlinkRateLimiting = false
+    advancedCustomization.enableMulticastUplinkRateLimiting6G = false
+    advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
+    ...data,
     wlan: {
       ...originalData?.wlan,
       vlanId,
       advancedCustomization
     }
   }
+
   if(data.guestPortal){
     saveData = {
       ...saveData,
@@ -343,6 +376,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       }
     }
   }
+
+  if (saveData.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 
@@ -361,8 +399,9 @@ export function transferVenuesToSave (data: NetworkSaveData, originalData: Netwo
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
   const incomingVenues = [...venues!]
-  incomingVenues.forEach((v: NetworkVenue) => {
-    v.clientIsolationAllowlistId = undefined
+
+  incomingVenues.map((v) => {
+    return { ...v, clientIsolationAllowlistId: undefined }
   })
 
   return incomingVenues

@@ -13,13 +13,15 @@ import {
   TableProps,
   Subtitle
 } from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }  from '@acx-ui/msp/services'
+import { MSPUtils }               from '@acx-ui/msp/utils'
 import {
   useGetAdminListQuery,
-  useGetMspProfileQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils, sortProp, defaultSort }       from '@acx-ui/rc/utils'
+import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 
@@ -50,6 +52,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const mspUtils = MSPUtils()
   const currentUserMail = userProfileData?.email
   const currentUserDetailLevel = userProfileData?.detailLevel
+  const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
+  const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -80,7 +84,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       }
     })
 
-    return isAllSelected
+    return (isMspEc && allowDeleteAdminFF) ? false : isAllSelected
   }
 
   const isSelfSelected = (selectedRows: Administrator[]): boolean => {
@@ -122,6 +126,22 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) }
     },
+    ...(idmDecouplngFF ?
+      [
+        {
+          title: $t({ defaultMessage: 'Authentication Type' }),
+          key: 'authenticationId',
+          dataIndex: 'authenticationId',
+          sorter: { compare: sortProp('authenticationId', defaultSort) },
+          render: function (_: unknown, row: Administrator) {
+            return row.authenticationId
+              ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
+          }
+        }
+      ]
+      :
+      []
+    ),
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',

@@ -20,7 +20,7 @@ import {
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
+import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 
 export default function AdaptivePolicyTable () {
@@ -99,7 +99,7 @@ export default function AdaptivePolicyTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={
@@ -108,7 +108,7 @@ export default function AdaptivePolicyTable () {
                   policyId: row.id!,
                   templateId: templateIdMap.get(row.policyType) ?? ''
                 })}
-            >{data}</TenantLink>
+            >{row.name}</TenantLink>
           )
         }
       },
@@ -220,7 +220,7 @@ export default function AdaptivePolicyTable () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {

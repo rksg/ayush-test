@@ -1,4 +1,4 @@
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, pathToFilter }    from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
@@ -12,7 +12,7 @@ describe('TtcTimeWidget', () => {
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'AP', name: '28:B3:71:28:6C:10' }],
+    filter: pathToFilter([{ type: 'AP', name: '28:B3:71:28:6C:10' }]),
     range: DateRange.last24Hours
   }
 

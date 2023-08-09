@@ -39,9 +39,9 @@ describe('AccessControlForm', () => {
     }]
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
         (req, res, ctx) => res(ctx.json(devicePolicyResponse))),
-      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+      rest.get(AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
@@ -49,9 +49,9 @@ describe('AccessControlForm', () => {
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(accessControlListResponse))),
-      rest.post(AccessControlUrls.getL2AclPolicyList.url,
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
-      rest.post(AccessControlUrls.getL3AclPolicyList.url,
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
     )
   })
@@ -148,6 +148,16 @@ describe('AccessControlForm', () => {
   })
 
   it('render access control profile detail with existing profile', async () => {
+
+    mockServer.use(
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json(accessControlListResponse))),
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
+    )
+
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const data = {

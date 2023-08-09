@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { defaultNetworkPath }                from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }       from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen  } from '@acx-ui/test-utils'
-import { DateRange }                         from '@acx-ui/utils'
+import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen  }   from '@acx-ui/test-utils'
+import { DateRange }                           from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
@@ -108,11 +108,11 @@ const mockIncidents = [
   }
 ]
 const mockSetNetworkPath = jest.fn()
-const filters = {
+const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
-  path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 }
 const mockUseAnalyticsFilter = {
   filters,

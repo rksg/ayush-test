@@ -4,22 +4,25 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                      from '@acx-ui/components'
-import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListByQueryQuery, useAdaptivePolicySetListQuery,
-  useGetRadiusAttributeGroupQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListQuery,
+  useGetRadiusAttributeGroupQuery,
+  useLazyGetPrioritizedPoliciesQuery,
+  usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment, defaultSort, getAdaptivePolicyDetailLink,
+  AttributeAssignment, getAdaptivePolicyDetailLink,
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, sortProp
+  PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
@@ -27,13 +30,17 @@ export default function RadiusAttributeGroupDetail () {
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
-  const { data: policyListData, isLoading: getPolicyListDataLoading } =
-    useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
-      fields: [ 'name' ],
-      page: 1, pageSize: 2000,
+  const tableQuery = useTableQuery({
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { excludeContent: 'false' },
+    defaultPayload: {
       filters: { onMatchResponse: policyId }
-    } })
+    }
+  })
 
   // eslint-disable-next-line max-len
   const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
@@ -84,22 +91,22 @@ export default function RadiusAttributeGroupDetail () {
     const columns: TableProps<AdaptivePolicy>['columns'] = [
       {
         key: 'name',
-        title: $t({ defaultMessage: 'Access Policy Name' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
-        sorter: { compare: sortProp('name', defaultSort) },
-        render: function (data, row) {
+        sorter: true,
+        render: function (_, row) {
           return (
             <TenantLink
               to={getAdaptivePolicyDetailLink({
                 oper: PolicyOperation.DETAIL,
                 policyId: row.id!,
                 templateId: templateList.get(row.policyType) ?? ''
-              })}>{data}</TenantLink>
+              })}>{row.name}</TenantLink>
           )
         }
       },
       {
-        title: $t({ defaultMessage: 'Access Policy Set Membership' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Set Membership' }),
         key: 'policySetMemberShip',
         dataIndex: 'policySetMemberShip',
         align: 'center',
@@ -123,13 +130,24 @@ export default function RadiusAttributeGroupDetail () {
     <>
       <PageHeader
         title={data?.name || ''}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-          // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+            link: tablePath
+          }]}
         extra={[
           <TenantLink
             key='edit'
@@ -149,7 +167,7 @@ export default function RadiusAttributeGroupDetail () {
             <Form layout={'vertical'}>
               <Row>
                 <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
+                  <Form.Item label={$t({ defaultMessage: 'Group Name' })}>
                     <Paragraph>{data?.name}</Paragraph>
                   </Form.Item>
                 </Col>
@@ -157,7 +175,7 @@ export default function RadiusAttributeGroupDetail () {
                   <Form.Item
                     label={$t({ defaultMessage: 'Members' })}
                   >
-                    <Paragraph>{policyListData?.totalCount ?? 0}</Paragraph>
+                    <Paragraph>{tableQuery.data?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </Col>
               </Row>
@@ -170,16 +188,16 @@ export default function RadiusAttributeGroupDetail () {
             </Form>
           </Loader>
         </Card>
-        <Loader states={[
-          { isLoading: getPolicyListDataLoading }
-        ]}>
+        <Loader states={[tableQuery]}>
           <Card title={$t({ defaultMessage: 'Instance ({size})' },
-            { size: policyListData?.totalCount })}>
+            { size: tableQuery.data?.totalCount })}>
             <div style={{ width: '100%' }}>
               <Table
                 rowKey='id'
                 columns={useColumns()}
-                dataSource={policyListData?.data}
+                dataSource={tableQuery.data?.data}
+                pagination={tableQuery.pagination}
+                onChange={tableQuery.handleTableChange}
               />
             </div>
           </Card>

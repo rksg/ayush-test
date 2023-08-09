@@ -1,23 +1,17 @@
 import React, { useEffect } from 'react'
 
-import { Cascader } from 'antd'
-import styled       from 'styled-components/macro'
+import styled from 'styled-components/macro'
+
+import { BaseCascader, BaseCascaderProps } from '../Cascader/BaseCascader'
 
 import {
   cascaderStyles,
-  DropdownPortal,
-  ExpandIcon
+  DropdownPortal
 } from './styledComponents'
 
-import type {
-  BaseOptionType,
-  DefaultOptionType,
-  CascaderProps
-} from 'antd/lib/cascader'
-
-export const FlattenCascader = styled(function FlattenCascader <
-  OptionType extends DefaultOptionType | BaseOptionType = DefaultOptionType
-> ({ disabled, ...props }: CascaderProps<OptionType>) {
+export const FlattenCascader = styled(function FlattenCascader (
+  { disabled, ...props }: BaseCascaderProps
+) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [realDisabled, setDisabled] = React.useState(false)
   const [open, setOpen] = React.useState(false)
@@ -31,14 +25,13 @@ export const FlattenCascader = styled(function FlattenCascader <
   }, [disabled, open])
 
   return <>
-    <Cascader
+    <BaseCascader
       {...props}
       open={open}
       disabled={realDisabled}
       getPopupContainer={() => ref.current!}
       dropdownClassName={props.className}
-      suffixIcon={null}
-      expandIcon={<ExpandIcon />}
+      expandTrigger='click'
       animation='none'
     />
     <DropdownPortal ref={ref} />

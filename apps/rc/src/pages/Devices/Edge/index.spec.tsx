@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -31,6 +31,10 @@ describe('EdgeList', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -41,7 +45,7 @@ describe('EdgeList', () => {
       <Provider>
         <EdgeList />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/devices/edge' }
       })
     await screen.findByText('SmartEdge is not enabled')
   })
@@ -51,7 +55,7 @@ describe('EdgeList', () => {
       <Provider>
         <EdgeList />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/devices/edge' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(5)

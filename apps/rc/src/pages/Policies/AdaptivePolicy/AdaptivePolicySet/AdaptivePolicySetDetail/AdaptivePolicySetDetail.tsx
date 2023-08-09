@@ -3,7 +3,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
@@ -26,8 +26,11 @@ export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
   const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
 
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
@@ -65,12 +68,21 @@ export default function AdaptivePolicySetDetail () {
     <>
       <PageHeader
         title={policySetData?.name || ''}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
+            link: tablePath }
         ]}
         extra={filterByAccess([
           <TenantLink
@@ -94,7 +106,7 @@ export default function AdaptivePolicySetDetail () {
             <Form layout={'vertical'}>
               <GridRow>
                 <GridCol col={{ span: 6 }}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
+                  <Form.Item label={$t({ defaultMessage: 'Policy Set Name' })}>
                     <Paragraph>{policySetData?.name}</Paragraph>
                   </Form.Item>
                 </GridCol>

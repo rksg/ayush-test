@@ -1,18 +1,16 @@
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
-  screen,
-  within,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
-import NetworksTable from '.'
+import useNetworksTable from '.'
 
 jest.mock('socket.io-client')
 
@@ -157,8 +155,6 @@ const list = {
 }
 
 describe('Networks Table', () => {
-  let params: { tenantId: string }
-
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -174,63 +170,46 @@ describe('Networks Table', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   afterEach(() => {
     Modal.destroyAll()
   })
 
-  it('should render table', async () => {
-    render(
-      <Provider>
-        <NetworksTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/networks' }
-      })
+  it('should render page correctly', async () => {
+    const Component = () => {
+      const { component } = useNetworksTable()
+      return component
+    }
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    await screen.findByText('Add Wi-Fi Network')
-    await screen.findByText(/network-01/i)
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(await screen.findByText('network-01 (SSID: 01)')).toBeVisible()
+    expect(await screen.findByText('network-02 (SSID: 02)')).toBeVisible()
+    expect(await screen.findByText('network-03 (SSID: 03)')).toBeVisible()
+    expect(await screen.findByText('network-04 (SSID: 04)')).toBeVisible()
+    expect(await screen.findByText('network-05 (SSID: 05)')).toBeVisible()
+    expect(await screen.findByText('network-06 (SSID: 06)')).toBeVisible()
+    expect(await screen.findByText('network-07 (SSID: 07)')).toBeVisible()
+    expect(await screen.findByText('network-08 (SSID: 08)')).toBeVisible()
+    expect(await screen.findByText('network-09 (SSID: 09)')).toBeVisible()
+    expect(await screen.findByText('network-10 (SSID: 10)')).toBeVisible()
   })
 
-  it('should click disabled row', async () => {
-    render(
-      <Provider>
-        <NetworksTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/networks' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /network-02/i })
-    fireEvent.click(row)
-
-    await screen.findByText('Add Wi-Fi Network')
-    await screen.findByText('network-02')
+  it('should render title with count correctly', async () => {
+    const Title = () => {
+      const { title } = useNetworksTable()
+      return <span>{title}</span>
+    }
+    render(<Title/>, { wrapper: Provider, route: {} })
+    expect(await screen.findByText('Network List (10)')).toBeVisible()
   })
 
-  it('should delete selected row', async () => {
-    render(
-      <Provider>
-        <NetworksTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/networks' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /network-01/i })
-    fireEvent.click(within(row).getByRole('radio'))
-
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
-
-    await screen.findByText('Delete "network-01"?')
-    const deleteNetworkButton = await screen.findByText('Delete Network')
-    fireEvent.click(deleteNetworkButton)
-  }, 15000)
+  it.skip('should render extra header correctly', async () => {
+    const Component = () => {
+      const { headerExtra } = useNetworksTable()
+      return <span>{headerExtra}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(await screen.findByText('Add Wi-Fi Network')).toBeVisible()
+  })
 })

@@ -8,7 +8,15 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteNetworkSegmentationGroupMutation, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useDeleteNetworkSegmentationGroupMutation,
+  useGetEdgeListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
+  useNetworkListQuery,
+  useSwitchListQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
@@ -19,7 +27,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -28,8 +36,35 @@ const getNetworkSegmentationPayload = {
     'tags',
     'networkIds',
     'venueInfos',
-    'edgeInfos'
+    'edgeInfos',
+    'distributionSwitchInfos',
+    'accessSwitchInfos'
   ]
+}
+const venueOptionsDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const edgeOptionsDefaultPayload = {
+  fields: ['name', 'serialNumber'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const networkDefaultPayload = {
+  fields: ['name', 'id'],
+  filters: { nwSubType: ['dpsk'] },
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const switchDefaultPayload = {
+  fields: ['name', 'switchMac'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
 
 const NetworkSegmentationTable = () => {
@@ -38,12 +73,16 @@ const NetworkSegmentationTable = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
+    },
+    search: {
+      searchTargetFields: ['name']
     }
   })
   const [
@@ -51,15 +90,51 @@ const NetworkSegmentationTable = () => {
     { isLoading: isNetworkSegmentationGroupDeleting }
   ] = useDeleteNetworkSegmentationGroupMutation()
 
+  const { venueOptions = [] } = useVenuesListQuery(
+    { payload: venueOptionsDefaultPayload }, {
+      selectFromResult: ({ data }) => {
+        return {
+          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+        }
+      }
+    })
+
+  const { edgeOptions = [] } = useGetEdgeListQuery(
+    { payload: edgeOptionsDefaultPayload },
+    {
+      selectFromResult: ({ data }) => {
+        return {
+          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+        }
+      }
+    })
+
+  const { networkOptions = [] } = useNetworkListQuery(
+    { payload: networkDefaultPayload },
+    {
+      selectFromResult: ({ data }) => ({
+        networkOptions: data?.data.map(item => ({ key: item.id, value: item.name }))
+      })
+    })
+
+  const { switchOptions = [] } = useSwitchListQuery(
+    { payload: switchDefaultPayload },
+    {
+      selectFromResult: ({ data }) => ({
+        switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name }))
+      })
+    })
+
   const columns: TableProps<NetworkSegmentationGroupViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -67,7 +142,7 @@ const NetworkSegmentationTable = () => {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -77,7 +152,9 @@ const NetworkSegmentationTable = () => {
       key: 'venue',
       dataIndex: 'venueInfos',
       sorter: true,
-      render: (data, row) => {
+      filterable: venueOptions,
+      filterKey: 'venueInfoIds',
+      render: (_, row) => {
         const venueInfo = row.venueInfos[0]
         return (
           <TenantLink to={`/venues/${venueInfo?.venueId}/venue-details/overview`}>
@@ -91,7 +168,9 @@ const NetworkSegmentationTable = () => {
       key: 'edge',
       dataIndex: 'edgeInfos',
       sorter: true,
-      render: (data, row) => {
+      filterable: edgeOptions,
+      filterKey: 'edgeInfoIds',
+      render: (_, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
           <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
@@ -105,7 +184,9 @@ const NetworkSegmentationTable = () => {
       key: 'networks',
       dataIndex: 'networkIds',
       align: 'center',
-      render: (data, row) => {
+      filterable: networkOptions,
+      filterKey: 'networkIds',
+      render: (_, row) => {
         return (row.networkIds?.length)
       }
     },
@@ -114,7 +195,11 @@ const NetworkSegmentationTable = () => {
       key: 'switches',
       dataIndex: 'switches',
       align: 'center',
-      sorter: true
+      filterable: switchOptions,
+      filterKey: 'distributionSwitchInfoIds',
+      render: (_, row) => {
+        return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
+      }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
@@ -126,19 +211,22 @@ const NetworkSegmentationTable = () => {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
       dataIndex: 'updateAvailable',
-      sorter: true
+      sorter: true,
+      render: () => {
+        return $t({ defaultMessage: 'No' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'version',
-      dataIndex: ['version'],
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true
+      key: 'serviceVersion',
+      dataIndex: 'edgeInfos',
+      sorter: true,
+      render: (_, row) => {
+        const edgeInfo = row.edgeInfos[0]
+        return (
+          edgeInfo?.serviceVersion
+        )
+      }
     }
   ]
 
@@ -187,7 +275,10 @@ const NetworkSegmentationTable = () => {
           $t({ defaultMessage: 'Network Segmentation ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
@@ -206,13 +297,15 @@ const NetworkSegmentationTable = () => {
       ]}>
         <Table
           settingsId='services-network-segmentation-table'
+          rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>

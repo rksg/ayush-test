@@ -1,5 +1,4 @@
-import userEvent             from '@testing-library/user-event'
-import { DefaultOptionType } from 'antd/lib/select'
+import userEvent from '@testing-library/user-event'
 
 import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                           from '@acx-ui/store'
@@ -12,7 +11,7 @@ import { networkFilterResult } from './__tests__/fixtures'
 import { api, Child }          from './services'
 import { NonSelectableItem }   from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender, getNetworkFilterData } from './index'
+import { NetworkFilter, onApply, getNetworkFilterData } from './index'
 
 const mockIncidents = [
   {
@@ -190,6 +189,7 @@ describe('Network Filter', () => {
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'id3' }
@@ -336,6 +336,7 @@ describe('Network Filter', () => {
     const results = await screen.findAllByRole('menuitemcheckbox')
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }
@@ -345,20 +346,10 @@ describe('Network Filter', () => {
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
 
   })
-  it('should return correct value to render', () => {
-    const data = [
-      { input: undefined, output: undefined },
-      { input: [{ displayLabel: 'dp' }], output: 'dp' },
-      { input: [{ label: 'l' }, { label: 'k' }], output: 'l / k' }
-    ]
-    data.forEach(({ input, output }) => {
-      expect(displayRender({}, input as DefaultOptionType[] | undefined)).toEqual(output)
-    })
-  })
   it('should correctly call setNetworkPath', () => {
     const setNetworkPath = jest.fn()
     onApply(undefined, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, [])
+    expect(setNetworkPath).toBeCalledWith([], [])
     const path = [JSON.stringify(defaultNetworkPath)]
     onApply(path, setNetworkPath)
     expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
@@ -377,6 +368,7 @@ describe('Network Filter', () => {
     const results = await screen.findAllByRole('menuitemcheckbox')
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }

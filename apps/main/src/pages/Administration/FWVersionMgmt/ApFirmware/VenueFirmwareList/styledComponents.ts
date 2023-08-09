@@ -26,7 +26,7 @@ export const DateContainer = styled.div`
 `
 
 export const Section = styled.div`
-  margin-top: 12px;
+  margin-bottom: 12px;
 `
 
 export const PreferencesSection = styled.div`
@@ -96,4 +96,21 @@ export const FieldGroup = styled.div`
   display: grid;
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
+`
+
+export const ValueContainer = styled.div`
+  margin: 12px 12px 4px 32px;
+  &.disabled * {
+    color: rgba(0, 0, 0, 0.25)
+  }
+  .ant-radio-group {
+    font-size: unset;
+  }
+`
+export const ApModelsContainer = styled.div`
+  margin-left: 24px;
+  .empty {
+    color: var(--acx-neutrals-50);
+    font-style: italic;
+  }
 `

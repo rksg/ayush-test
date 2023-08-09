@@ -109,7 +109,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
 
   return (
     <Modal
-      title='Change preferred update slot'
+      title={$t({ defaultMessage: 'Change preferred update slot' })}
       visible={visible}
       width={440}
       okText={$t({ defaultMessage: 'Save' })}
@@ -119,8 +119,8 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     >
       <UI.FieldGroup>
         <label>
-          <div style={{ fontWeight: 600 }}>Preferred day(s):</div>
-          <div>Select up to 3 days</div>
+          <div style={{ fontWeight: 600 }}>{$t({ defaultMessage: 'Preferred day(s):' })}</div>
+          <div>{$t({ defaultMessage: 'Select up to 3 days' })}</div>
         </label>
         <Space direction='vertical' style={{ width: '100%' }}>
           <Select {...selectDaysProps} />
@@ -128,8 +128,8 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       </UI.FieldGroup>
       <UI.FieldGroup>
         <label>
-          <div style={{ fontWeight: 600 }}>Preferred Time Slot:</div>
-          <div>Select up to 3 slots</div>
+          <div style={{ fontWeight: 600 }}>{$t({ defaultMessage: 'Preferred Time Slot:' })}</div>
+          <div>{$t({ defaultMessage: 'Select up to 3 slots' })}</div>
         </label>
         <Space direction='vertical' style={{ width: '100%' }}>
           <Select {...selectTimesProps} />

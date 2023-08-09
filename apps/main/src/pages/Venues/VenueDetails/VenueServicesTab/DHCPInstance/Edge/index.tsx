@@ -1,8 +1,9 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader }                              from '@acx-ui/components'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, ServiceInfo }                                           from '@acx-ui/rc/components'
+import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                                                        from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpHostStatus, ServiceOperation, ServiceType, getServiceDetailsLink }                     from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                   from '@acx-ui/react-router-dom'
@@ -11,6 +12,7 @@ const EdgeDhcpTab = () => {
 
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const edgeDataPayload = {
     filters: { venueId: [venueId] }
@@ -53,7 +55,11 @@ const EdgeDhcpTab = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({ payload: getDhcpHostStatsPayload })
+  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
+    payload: getDhcpHostStatsPayload
+  }, {
+    skip: !isEdgeReady
+  })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -114,7 +120,7 @@ const EdgeDhcpTab = () => {
       content: dhcpData?.leaseTime
     },
     {
-      title: $t({ defaultMessage: 'Smart Edge' }),
+      title: $t({ defaultMessage: 'SmartEdge' }),
       content: (
         <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/edge-details/overview`}>
           {edgeData?.name}
@@ -130,7 +136,7 @@ const EdgeDhcpTab = () => {
     }]}>
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <ServiceInfo data={dhcpInfo} />
+          <SummaryCard data={dhcpInfo} />
         </GridCol>
         <ContentSwitcher tabDetails={tabDetails} size='large' />
       </GridRow>

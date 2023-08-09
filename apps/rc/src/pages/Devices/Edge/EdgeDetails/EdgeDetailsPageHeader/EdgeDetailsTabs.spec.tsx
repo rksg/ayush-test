@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeStatus,
   ApVenueStatusEnum,
@@ -32,12 +33,12 @@ const currentEdge:EdgeStatus = {
   ip: '1.1.1.1',
   ports: '62,66',
   tags: [],
-  cpuTotal: 65 * Math.pow(1024, 2),
-  cpuUsed: 5 * Math.pow(1024, 2),
-  memTotal: 120 * Math.pow(1024, 2),
-  memUsed: 50 * Math.pow(1024, 2),
-  diskTotal: 250 * Math.pow(1024, 3),
-  diskUsed: 162 * Math.pow(1024, 3)
+  cpuCores: 2,
+  cpuUsedPercentage: 66,
+  memoryTotalKb: 120 * Math.pow(1024, 2),
+  memoryUsedKb: 50 * Math.pow(1024, 2),
+  diskTotalKb: 250 * Math.pow(1024, 3),
+  diskUsedKb: 162 * Math.pow(1024, 3)
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -51,6 +52,7 @@ describe('Edge Details Tabs', () => {
   { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
@@ -59,26 +61,38 @@ describe('Edge Details Tabs', () => {
     )
   })
 
-  // it('should not have troubleshooting tab if not OPERATIONAL', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDetailsTabs
-  //         currentEdge={currentEdge}
-  //       />
-  //     </Provider>, {
-  //       route: { params }
-  //     })
+  it('should not have troubleshooting tab if not OPERATIONAL', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
+        />
+      </Provider>, {
+        route: { params }
+      })
 
-  //   expect(screen.queryByText('Troubleshooting')).toBeFalsy()
-  // })
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
 
+  it('should not display troubleshooting tab when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
 
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          currentEdge={currentEdge}
-        />
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}/>
       </Provider>
       , {
         route: { params }
@@ -92,17 +106,17 @@ describe('Edge Details Tabs', () => {
     })
   })
 
-  it('should render services count correctly', async () => {
+  it('should render correctly', async () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          currentEdge={currentEdge}
-        />
+          isOperational={true} />
       </Provider>
       , {
         route: { params }
       })
 
     expect(await screen.findByText('Services (3)')).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
   })
 })

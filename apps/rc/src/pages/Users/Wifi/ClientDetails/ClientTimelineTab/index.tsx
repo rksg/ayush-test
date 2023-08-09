@@ -24,17 +24,17 @@ const Events = () => {
 const tabs : {
   key: string,
   title: MessageDescriptor,
-  component: () => JSX.Element
+  component: React.ReactNode
 }[] = [
   {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),
-    component: Events
+    component: <Events />
   },
   {
     key: 'sessions',
-    title: defineMessage({ defaultMessage: 'Sessions' }),
-    component: SessionTable
+    title: defineMessage({ defaultMessage: 'Completed Sessions' }),
+    component: <SessionTable />
   }
 ]
 
@@ -50,13 +50,12 @@ export function ClientTimelineTab () {
     })
   }
 
-  const Tab = tabs.find(tab => tab.key === activeSubTab)?.component
   return <Tabs
     onChange={onTabChange}
     activeKey={activeSubTab}
     type='card'
   >
-    {tabs.map(({ key, title }) =>
-      <Tabs.TabPane tab={$t(title)} key={key} >{Tab && <Tab/>}</Tabs.TabPane>)}
+    {tabs.map(({ key, title, component }) =>
+      <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}
   </Tabs>
 }

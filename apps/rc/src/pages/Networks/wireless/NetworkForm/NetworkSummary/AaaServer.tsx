@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { Form, Input }        from 'antd'
+import { Form }               from 'antd'
 import { get }                from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
+import { PasswordInput }                                          from '@acx-ui/components'
 import { AaaServerOrderEnum, AaaServerTypeEnum, NetworkSaveData } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -52,7 +53,7 @@ function getAaaServerData (
         children={ipPort} />
       <Form.Item
         label={intl.$t({ defaultMessage: 'Shared Secret:' })}
-        children={<Input.Password
+        children={<PasswordInput
           readOnly
           bordered={false}
           value={sharedSecret}

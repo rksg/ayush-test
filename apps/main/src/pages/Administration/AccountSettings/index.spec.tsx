@@ -3,9 +3,11 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { administrationApi, mspApi }                             from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
-import { Provider, store  }                                      from '@acx-ui/store'
+import { mspApi }                                   from '@acx-ui/msp/services'
+import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
+import { administrationApi }                        from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { Provider, store  }                         from '@acx-ui/store'
 import {
   render,
   screen,
@@ -41,6 +43,12 @@ jest.mock('./MFAFormItem', () => ({
 }))
 jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
+}))
+jest.mock('./AuthServerFormItem', () => ({
+  AuthServerFormItem: () => <div data-testid={'rc-AuthServerFormItem'} title='AuthServerFormItem' />
+}))
+jest.mock('./AppTokenFormItem', () => ({
+  AppTokenFormItem: () => <div data-testid={'rc-AppTokenFormItem'} title='AppTokenFormItem' />
 }))
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),

@@ -94,27 +94,23 @@ export function StepsFormLegacy <FormValue = any> (
     if (otherProps.onCurrentChange) otherProps.onCurrentChange(next)
   }
 
-  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (<>
-    <UI.StepsContainerGlobalOverride />
-    <UI.StepsContainer>
-      <Steps current={current} progressDot direction='vertical'>
-        {_children.map((child, index) => {
-          const title = child.props.title
-          const onStepClick = (editMode || current > index) && current !== index
-            ? setStep
-            : undefined
-          const key = child.props.name ?? child.props.step ?? String(index)
-          // Temporary measure until ACX-13452 is fixed by moving to StepsForm
-          return <Steps.Step {...{ key, title, onStepClick, disabled: editMode }} />
-        })}
-      </Steps>
-    </UI.StepsContainer>
-  </>)
+  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (<UI.StepsContainer>
+    <Steps current={current} progressDot direction='vertical'>
+      {_children.map((child, index) => {
+        const title = child.props.title
+        const onStepClick = (editMode || current > index) && current !== index
+          ? setStep
+          : undefined
+        const key = child.props.name ?? child.props.step ?? String(index)
+        // Temporary measure until ACX-13452 is fixed by moving to StepsForm
+        return <Steps.Step {...{ key, title, onStepClick, disabled: editMode }} />
+      })}
+    </Steps>
+  </UI.StepsContainer>)
 
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
       {form}
-      <UI.ActionsContainerGlobalOverride />
       <UI.ActionsContainer>
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
@@ -139,7 +135,7 @@ export function StepsFormLegacy <FormValue = any> (
         const submitButton = <Button
           {...submit.props}
           key={submitKey}
-          type='secondary'
+          type='primary'
           children={buttonLabel[submitKey]}
         />
 

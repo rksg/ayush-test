@@ -6,15 +6,18 @@ import {
   FormInstance,
   Input
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, Button, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                from '@acx-ui/icons'
 import {
   useUpdateSwitchMutation,
-  useSwitchDetailHeaderQuery
+  useSwitchDetailHeaderQuery,
+  useGetSwitchQuery
 } from '@acx-ui/rc/services'
-import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel } from '@acx-ui/rc/utils'
+import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SWITCH_SERIAL_PATTERN_SUPPORT_RODAN } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -87,6 +90,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
+  const { data: switchData } =
+    useGetSwitchQuery({ params: { tenantId, switchId } })
   const { data: switchDetail } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
@@ -95,13 +100,15 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+
   const columns: TableProps<SwitchTable>['columns'] = [
     {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: function (data, row, index) {
+      render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
           validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
@@ -127,14 +134,14 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
       key: 'model',
-      render: function (data: React.ReactNode) {
-        return <div>{data ? data : '--'}</div>
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        return <div>{row.model ? row.model : '--'}</div>
       }
     }] : []),
     {
       key: 'action',
       dataIndex: 'action',
-      render: (data, row, index) => (
+      render: (_, row, index) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -162,7 +169,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }, [form, switchDetail])
 
   const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (serialNumber && !re.test(serialNumber)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -180,7 +188,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
-    const memberExistCount = tableData.filter((item: SwitchTable) => {
+    const member = switchDetail?.stackMembers || []
+    const memberExistCount = member.concat(tableData).filter((item) => {
       return item.id === serialNumber
     }).length
     return memberExistCount > 1
@@ -201,7 +210,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     const dataRows = [...tableData]
     const serialNumber = form.getFieldValue(
       `serialNumber${row.key}`
-    )
+    )?.toUpperCase()
     dataRows[index].id = serialNumber
     dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
     setTableData(dataRows)
@@ -222,14 +231,24 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const onSaveStackMember = async () => {
     try {
-      let payload = {
-        ...switchDetail,
+      const payload = {
+        ...switchData,
+        enableStack: true,
+        spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
           ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
         ]
       }
-      await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      let stackPayload = _.omit(payload, [
+        'dhcpClientEnabled', 'dhcpServerEnabled', 'ipAddressInterface', 'ipAddressInterfaceType', 'rearModule'])
+
+      if (switchDetail?.ipFullContentParsed === false) {
+        stackPayload = _.omit(payload, [
+          'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
+      }
+
+      await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

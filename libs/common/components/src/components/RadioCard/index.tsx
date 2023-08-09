@@ -38,7 +38,7 @@ const categoryMapping = {
     color: '--acx-semantics-green-60'
   },
   edge: {
-    text: defineMessage({ defaultMessage: 'Edge' }),
+    text: defineMessage({ defaultMessage: 'SmartEdge' }),
     color: '--acx-semantics-yellow-60'
   }
 }
@@ -57,7 +57,7 @@ export function RadioCard ({
       })}
       </CategoryWrapper>}
     {(type === 'button' && buttonText) &&
-      <Button onClick={onClick} size='small' type='secondary'>{$t(buttonText)}</Button>}
+      <Button onClick={onClick} size='small' type='primary'>{$t(buttonText)}</Button>}
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }

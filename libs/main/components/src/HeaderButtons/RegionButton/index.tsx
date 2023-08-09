@@ -9,12 +9,12 @@ import {
 }                        from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand
+  CaretDownSolid
 } from '@acx-ui/icons'
 import {
   useGetMspEcProfileQuery
-} from '@acx-ui/rc/services'
-import { MSPUtils }                           from '@acx-ui/rc/utils'
+} from '@acx-ui/msp/services'
+import { MSPUtils }                           from '@acx-ui/msp/utils'
 import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 import { useTenantId }                        from '@acx-ui/utils'
 
@@ -72,7 +72,7 @@ export default function RegionButton () {
     ? <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
       <LayoutUI.Icon children={<WorldSolid />} />
       {selectedKeys}
-      <LayoutUI.Icon children={<ArrowExpand />} />
+      <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
     </LayoutUI.DropdownText>}</Dropdown>
     : null
 }

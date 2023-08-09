@@ -24,12 +24,12 @@ describe('FlattenCascader', () => {
   it('renders cascader with items', async () => {
     render(<FlattenCascader options={options} />)
 
-    expect(await screen.findByRole('menuitemcheckbox', { name: 'Item 1' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitemcheckbox', { name: /Item 1/ })).toBeInTheDocument()
   })
 
   it('renders menu even when disabled', async () => {
     render(<FlattenCascader disabled options={options} />)
 
-    expect(await screen.findByRole('menuitemcheckbox', { name: 'Item 1' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitemcheckbox', { name: /Item 1/ })).toBeInTheDocument()
   })
 })

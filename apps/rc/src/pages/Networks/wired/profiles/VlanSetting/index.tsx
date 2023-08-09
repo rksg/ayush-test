@@ -1,9 +1,10 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, Key } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { VlanSettingDrawer }                                            from '@acx-ui/rc/components'
 import {
   Vlan,
   SwitchModel,
@@ -11,14 +12,13 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import * as UI               from './styledComponents'
-import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
   const { $t } = getIntl()
@@ -30,6 +30,7 @@ export function VlanSetting () {
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ vlanDrawerVisible, setVlanDrawerVisible ] = useState(false)
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
+  const [selectedRows, setSelectedRows] = useState<Key[]>([])
 
   useEffect(() => {
     if(currentData.vlans){
@@ -70,19 +71,19 @@ export function VlanSetting () {
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
     sorter: { compare: sortProp('spanningTreeProtocol', defaultSort) },
-    render: (data) => {
-      return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+    render: (_, { spanningTreeProtocol }) => {
+      return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
   }, {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (data, row) => {
+    render: (_, row) => {
       return <Tooltip
         title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
       >
-        {data
-          ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
+        {row.switchFamilyModels
+          ? row.switchFamilyModels?.reduce((result:number, row: SwitchModel) => {
             const taggedPortsCount = row.taggedPorts ?
               row.taggedPorts?.toString().split(',').length : 0
             const untaggedPortsCount = row.untaggedPorts ?
@@ -107,11 +108,11 @@ export function VlanSetting () {
       }
     })
 
-    return <>{portTooltips.map(item => <div>
+    return <>{portTooltips.map((item, index) => (<div key={index}>
       <div>{item.model}</div>
       <div><UI.TagsOutlineIcon /><UI.PortSpan>{item.untaggedPorts || '--'}</UI.PortSpan></div>
       <div><UI.TagsSolidIcon /><UI.PortSpan>{item.taggedPorts || '--'}</UI.PortSpan></div>
-    </div>)
+    </div>))
     }</>
   }
 
@@ -120,13 +121,14 @@ export function VlanSetting () {
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
       vlanTable
 
-    const sfm = data.switchFamilyModels?.map(item => {
+    const sfm = data.switchFamilyModels?.map((item, index) => {
       return {
         ...item,
         untaggedPorts: Array.isArray(item.untaggedPorts) ?
           item.untaggedPorts?.join(',') : item.untaggedPorts,
         taggedPorts: Array.isArray(item.taggedPorts) ?
-          item.taggedPorts?.join(',') : item.taggedPorts
+          item.taggedPorts?.join(',') : item.taggedPorts,
+        key: index
       }
     })
 
@@ -139,6 +141,7 @@ export function VlanSetting () {
     }
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
+    setSelectedRows([])
     return true
   }
 
@@ -196,12 +199,12 @@ export function VlanSetting () {
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
-            rowKey='vlanId'
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
-            dataSource={vlanTable}
-            rowSelection={{
+            dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
+            rowSelection={hasAccess() && {
               type: 'radio',
+              selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {
                 setDrawerFormRule(
                   vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])

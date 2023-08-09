@@ -10,6 +10,7 @@ import {
 import {
   TaskContextType
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 // import * as UI from '../styledComponents'
 
@@ -36,11 +37,16 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'End Time' })}
-        children={'--'} />
+        // eslint-disable-next-line max-len
+        children={currentTask.completedTime ? formatter(DateFormatEnum.DateTimeFormat)(currentTask.completedTime) : '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'State' })}
         children={currentTask.state ?? '--'} />
+
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Error Message' })}
+        children={currentTask.errorMessage ?? '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Venue' })}
@@ -50,6 +56,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label={$t({ defaultMessage: 'Description' })}
         children={currentTask.description ?? '--'} />
 
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Migrartion Summary' })}
+        children={
+          <TenantLink to={`/administration/onpremMigration/${currentTask.taskId}/summary`}>
+            { $t({ defaultMessage: 'summary' }) }
+          </TenantLink>
+        }
+      />
     </Descriptions>
   )
 }

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -22,14 +23,13 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-
-
 export default function AAATable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -85,10 +85,16 @@ export default function AAATable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
@@ -146,7 +152,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -154,7 +160,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -164,8 +170,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
-      render: (data) =>{
-        return data?AAAPurposeEnum[data as keyof typeof AAAPurposeEnum]:''
+      render: (_, { type }) =>{
+        return type ? AAAPurposeEnum[type] : ''
       }
     },
     {
@@ -187,7 +193,7 @@ function useColumns () {
       align: 'center',
       filterable: networkNameMap,
       sorter: true,
-      render: (data, row) =>{
+      render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len

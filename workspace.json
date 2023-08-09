@@ -1,7 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "analytics": "apps/analytics",
     "analytics-components": "libs/analytics/components",
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",
@@ -10,23 +9,38 @@
     "common-feature-toggle": "libs/common/feature-toggle",
     "common-formatter": "libs/common/formatter",
     "common-icons": "libs/common/icons",
-    "common-user": "libs/common/user",
     "common-store": "libs/common/store",
     "common-test-utils": "libs/common/test-utils",
     "common-types": "libs/common/types",
+    "common-user": "libs/common/user",
     "common-utils": "libs/common/utils",
     "main": "apps/main",
     "main-components": "libs/main/components",
     "msp": "apps/msp",
-    "msp-components": "libs/msp/components",
+    "msp-components": "libs/rc/msp/components",
+    "msp-services": "libs/rc/msp/services",
+    "msp-utils": "libs/rc/msp/utils",
+    "ra": "apps/ra",
     "rc": "apps/rc",
-    "rc-components": "libs/rc/components",
-    "rc-services": "libs/rc/services",
-    "rc-utils": "libs/rc/utils",
+    "rc-components": "libs/rc/shared/components",
+    "rc-services": "libs/rc/shared/services",
+    "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
-    "reports": "apps/reports",
     "reports-components": "libs/reports/components",
     "reports-services": "libs/reports/services",
-    "reports-utils": "libs/reports/utils"
+    "reports-utils": "libs/reports/utils",
+    "reports-routes": "libs/reports/routes"
+  },
+  "architect": {
+    "serve": {
+      "builder": "@nrwl/web:dev-server",
+      "options": {
+        "ignored": "node_modules/**",
+        "nodeModulesIsolate": true,
+        "cacheable": true,
+        "incremental": true,
+        "parallel": true
+      }
+    }
   }
 }

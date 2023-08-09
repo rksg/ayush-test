@@ -6,6 +6,7 @@ import {
   VenueUpdateAdvice,
   VersionHistory
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { compareVersions, compareSwitchVersion, getApVersion, getVersionLabel } from './FirmwareUtils'
 
@@ -59,6 +60,7 @@ describe('FirmwareUtils parser', () => {
       type: 'AP_FIRMWARE_UPGRADE' as FirmwareType,
       category: 'RECOMMENDED' as FirmwareCategory
     }
-    expect(getVersionLabel(mockedFirmwareVersion)).toBe('test (Release - Recommended) ')
+    expect(getVersionLabel(getIntl(), mockedFirmwareVersion)).toBe('test (Release - Recommended) ')
+    expect(getVersionLabel(getIntl(), mockedFirmwareVersion, false)).toBe('test ')
   })
 })

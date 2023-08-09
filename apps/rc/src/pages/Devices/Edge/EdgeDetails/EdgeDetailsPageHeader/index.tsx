@@ -1,6 +1,4 @@
 import {
-  Badge,
-  Dropdown,
   Menu,
   MenuProps,
   Space
@@ -8,14 +6,10 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker, showActionModal } from '@acx-ui/components'
-import { ArrowExpand, BulbOutlined }                        from '@acx-ui/icons'
-import { EdgeStatusLight }                                  from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
-  useDeleteEdgeMutation,
-  useEdgeBySerialNumberQuery,
-  useFactoryResetEdgeMutation,
-  useRebootEdgeMutation
+  useEdgeBySerialNumberQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeStatusEnum
@@ -29,19 +23,6 @@ import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
-
-// TODO: component purpose is TBD
-const EdgeBulb = (
-  { count = 0 }: { count: number | undefined }
-) => {
-  return (
-    <Badge count={count}>
-      <Button>
-        <BulbOutlined />
-      </Button>
-    </Badge>
-  )
-}
 
 export const EdgeDetailsPageHeader = () => {
   const { $t } = useIntl()
@@ -72,20 +53,29 @@ export const EdgeDetailsPageHeader = () => {
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const actions = useEdgeActions(currentEdge?.name, serialNumber)
+  const { reboot, factoryReset, deleteEdges } = useEdgeActions()
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
 
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    if (!serialNumber || serialNumber === 'undefined') return
-    if(e.key === 'delete') {
-      actions[e.key as keyof typeof actions](
-        () => navigate(`${basePath.pathname}/devices/edge/list`)
-      )
-    } else {
-      actions[e.key as keyof typeof actions]()
+    if (!currentEdge) return
+    switch(e.key) {
+      case 'reboot':
+        reboot(currentEdge)
+        break
+      case 'factoryReset':
+        factoryReset(currentEdge)
+        break
+      case 'delete':
+        deleteEdges(
+          [currentEdge],
+          () => navigate(`${basePath.pathname}/devices/edge`)
+        )
+        break
+      default:
+        return
     }
   }
 
@@ -96,7 +86,7 @@ export const EdgeDetailsPageHeader = () => {
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot'
       }, {
-        label: $t({ defaultMessage: 'Factory Reset' }),
+        label: $t({ defaultMessage: 'Reset and Recover' }),
         key: 'factoryReset'
       }, {
         label: $t({ defaultMessage: 'Delete SmartEdge' }),
@@ -108,9 +98,9 @@ export const EdgeDetailsPageHeader = () => {
   return (
     <PageHeader
       title={currentEdge?.name || ''}
-      titleExtra={<EdgeStatusLight data={status} />}
+      titleExtra={<EdgeStatusLight data={status} showText={!currentEdgeOperational}/>}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
+        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
       extra={filterByAccess([
         <RangePicker
@@ -120,14 +110,14 @@ export const EdgeDetailsPageHeader = () => {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu}>{()=>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
-        </Dropdown>,
+        }</Dropdown>,
         <Button
           type='primary'
           onClick={() =>
@@ -136,94 +126,9 @@ export const EdgeDetailsPageHeader = () => {
               pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</Button>,
-        <EdgeBulb key='bulbCount' count={0} />
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
-      footer={<EdgeDetailsTabs />}
+      footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )
-}
-
-const useEdgeActions = (edgeName?: string, serialNumber?: string): {
-  [key: string]: (callback?: () => void) => void
-} => {
-  const { $t } = useIntl()
-  const [ deleteEdge ] = useDeleteEdgeMutation()
-  const [ rebootEdge ] = useRebootEdgeMutation()
-  const [ factoryResetEdge ] = useFactoryResetEdgeMutation()
-
-  return {
-    reboot: () => {
-      showActionModal({
-        type: 'confirm',
-        title: $t(
-          { defaultMessage: 'Reboot "{edgeName}"?' },
-          { edgeName }
-        ),
-        content: $t({
-          defaultMessage: `Rebooting the SmartEdge will disconnect all connected clients.
-            Are you sure you want to reboot?`
-        }),
-        customContent: {
-          action: 'CUSTOM_BUTTONS',
-          buttons: [{
-            text: $t({ defaultMessage: 'Cancel' }),
-            type: 'default',
-            key: 'cancel'
-          }, {
-            text: $t({ defaultMessage: 'Reboot' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: () => {
-              rebootEdge({ params: { serialNumber } })
-            }
-          }]
-        }
-      })
-    },
-    factoryReset: () => {
-      showActionModal({
-        type: 'confirm',
-        title: $t(
-          { defaultMessage: 'Factory reset "{edgeName}"?' },
-          { edgeName }
-        ),
-        content: $t({
-          defaultMessage: 'Are you sure you want to factory reset this SmartEdge?'
-        }),
-        customContent: {
-          action: 'CUSTOM_BUTTONS',
-          buttons: [{
-            text: $t({ defaultMessage: 'Cancel' }),
-            type: 'default',
-            key: 'cancel'
-          }, {
-            text: $t({ defaultMessage: 'Reset' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: () => {
-              factoryResetEdge({ params: { serialNumber } })
-            }
-          }]
-        }
-      })
-    },
-    delete: (callBack) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'SmartEdge' }),
-          entityValue: edgeName,
-          numOfEntities: 1
-        },
-        onOk: () => {
-          deleteEdge({ params: { serialNumber } })
-            .then(() => callBack?.())
-        }
-      })
-    }
-  }
 }

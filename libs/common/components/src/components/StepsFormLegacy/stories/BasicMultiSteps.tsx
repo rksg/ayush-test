@@ -16,10 +16,10 @@ export function BasicMultiSteps () {
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
-      <StepsFormLegacy.StepForm title='Step 1'>
+      <StepsFormLegacy.StepForm title='Step 1' name='aaa-settings'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsFormLegacy.Title children='Step 1' />
+            {/*<StepsFormLegacy.Title children='Step 1' />*/}
             <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>

@@ -145,7 +145,7 @@ export function SecurityTab () {
         setTriggerDoSProtection(false)
       }
 
-      if(triggerRogueAPDetection){
+      if(triggerRogueAPDetection && data?.roguePolicyId){
         const rogueApPayload = {
           enabled: data?.rogueApEnabled,
           reportThreshold: data?.reportThreshold,
@@ -205,10 +205,12 @@ export function SecurityTab () {
             triggerDirtyFunc={setTriggerDoSProtection}>
             <FormattedMessage
               defaultMessage={`
-              Block a client for <blockingPeriod></blockingPeriod> seconds
-              after <failThreshold></failThreshold> repeat authentication failures
-              within <checkPeriod></checkPeriod> seconds
-            `}
+                Block a client for <blockingPeriod></blockingPeriod> seconds
+                after <failThreshold></failThreshold> repeat authentication failures
+                within <checkPeriod></checkPeriod> seconds
+              `}
+              description={'Translation string - ' +
+              'Block a client for, seconds after, repeat authentication failures within, seconds'}
               values={{
                 blockingPeriod: () => (
                   <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>

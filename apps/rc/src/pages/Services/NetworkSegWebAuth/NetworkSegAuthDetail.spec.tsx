@@ -28,6 +28,10 @@ describe( 'NetworkSegAuthDetail', () => {
       rest.get(
         NetworkSegmentationUrls.getWebAuthTemplate.url,
         (req, res, ctx) => res(ctx.json(data))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getWebAuthTemplateSwitches.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })

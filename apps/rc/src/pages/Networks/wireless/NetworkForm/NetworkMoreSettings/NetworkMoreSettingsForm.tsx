@@ -1,63 +1,22 @@
 import { useContext, useState, useEffect } from 'react'
 
 import {
-  Checkbox,
-  Collapse,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Switch,
-  Space
-} from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { get }                 from 'lodash'
-import { useIntl }             from 'react-intl'
+  Form } from 'antd'
+import { get }                    from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Tooltip }                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                                    from '@acx-ui/utils'
+import { Button, Tabs }    from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
-import NetworkFormContext                     from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius } from '../utils'
-import VLANPoolInstance                       from '../VLANPoolInstance'
+import NetworkFormContext from '../NetworkFormContext'
 
-import { AccessControlForm }  from './AccessControlForm'
-import { LoadControlForm }    from './LoadControlForm'
-import { ServicesForm }       from './ServicesForm'
-import * as UI                from './styledComponents'
-import { UserConnectionForm } from './UserConnectionForm'
+import { AdvancedTab }       from './AdvancedTab'
+import { NetworkControlTab } from './NetworkControlTab'
+import { NetworkingTab }     from './NetworkingTab'
+import { RadioTab }          from './RadioTab'
+import * as UI               from './styledComponents'
+import { VlanTab }           from './VlanTab'
 
-
-
-const { Panel } = Collapse
-
-const { useWatch } = Form
-const { Option } = Select
-
-enum BssMinRateEnum {
-  VALUE_NONE = 'default',
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_12 = '12',
-  VALUE_24 = '24'
-}
-
-enum MgmtTxRateEnum {
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_6 = '6',
-  VALUE_9 = '9',
-  VALUE_11 = '11',
-  VALUE_12 = '12',
-  VALUE_18 = '18',
-  VALUE_24 = '24'
-}
 
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
@@ -91,9 +50,23 @@ export function NetworkMoreSettingsForm (props: {
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()
-  const [enableMoreSettings, setEnabled] = useState(false)
+
+  /* Please be advised that why we use clone mode as state here
+   * usually edit mode will show more setting in step form seperately
+   * and clone mode just like usual adding network.
+   * But when MoreSettingForm is not rendered (user didn't click
+   * the show more button), the copied value in more setting will be
+   * ignored.
+   * In cause this scenario happen, MoreSettingsForm will auto expand
+   * under clone mode, user can collapse manually, it will force React
+   * to render MoreSettingsForm.
+   * There should be no side effect when adding/editing a network.
+   */
+  const [enableMoreSettings, setEnabled] = useState(cloneMode)
+
   if (data && editMode) {
-    return <MoreSettingsForm wlanData={wlanData} />
+    //return <MoreSettingsForm wlanData={wlanData} />
+    return <MoreSettingsTabs wlanData={wlanData} />
   } else {
     return <div>
       <Button
@@ -107,18 +80,26 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <MoreSettingsForm wlanData={wlanData} />}
+        //<MoreSettingsForm wlanData={wlanData} />}
+        <MoreSettingsTabs wlanData={wlanData} />}
     </div>
   }
 }
 
-
+// This will be removed when this feature DoD.
+/*
 export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
+
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
+  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
+  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
 
   const [
     enableDhcp,
@@ -152,6 +133,10 @@ export function MoreSettingsForm (props: {
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_EDA_DYNAMIC_VLAN_TOGGLE)
+
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+      `Agile Multiband prioritizes roaming performance in indoor environments,
+       supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -189,6 +174,8 @@ export function MoreSettingsForm (props: {
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
 
+  const enableVxLan = hasVxLanTunnelProfile(wlanData)
+
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
       form.setFieldsValue({
@@ -202,8 +189,8 @@ export function MoreSettingsForm (props: {
     }
   }
 
-  const onOfdmChange = function (e: CheckboxChangeEvent) {
-    if (e.target.checked) {
+  const onOfdmChange = function (checked: boolean) {
+    if (checked) {
       if (!(bssMinimumPhyRate === BssMinRateEnum.VALUE_12 ||
         bssMinimumPhyRate === BssMinRateEnum.VALUE_24)) {
         form.setFieldsValue({
@@ -212,8 +199,12 @@ export function MoreSettingsForm (props: {
         })
       }
     }
-
   }
+
+  const UserConnectionComponent = () => {
+    return (<UserConnectionForm />)
+  }
+
   return (
     <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3', '4', '5']}
@@ -231,7 +222,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch disabled={!useIsSplitOn(Features.POLICIES)}/>}
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
@@ -246,7 +237,8 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
+              children={<InputNumber style={{ width: '80px' }}
+                disabled={isPortalDefaultVLANId || enableVxLan}/>}
             />
 
             {(showDynamicWlan ||
@@ -258,13 +250,29 @@ export function MoreSettingsForm (props: {
                   valuePropName='checked'
                   initialValue={true}
                   children={
-                    <Checkbox children={$t({ defaultMessage: 'Dynamic VLAN' })} />
+                    <Checkbox disabled={enableVxLan}
+                      children={$t({ defaultMessage: 'Dynamic VLAN' })} />
                   }
                 />
               </UI.FieldLabel>
             }
 
           </div>}
+
+          {enableVxLan &&
+            <Space size={1}>
+              <UI.InfoIcon />
+              <UI.Description>
+                {
+                  $t({
+                    defaultMessage: `Not able to modify when the network
+                    enables network segmentation service`
+                  })
+                }
+              </UI.Description>
+            </Space>
+          }
+
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
           <VLANPoolInstance/>
@@ -278,7 +286,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch disabled={enableVxLan}/>}
             />
           </UI.FieldLabel>
         </>
@@ -291,14 +299,16 @@ export function MoreSettingsForm (props: {
       </Panel>
 
       <Panel header='Radio' key='3' >
-        <UI.FormItemNoLabel
-          name={['wlan','advancedCustomization','hideSsid']}
-          initialValue={false}
-          valuePropName='checked'
-          children={
-            <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
-          }
-        />
+        <UI.FieldLabel width='125px'>
+          {$t({ defaultMessage: 'Hide SSID' })}
+          <Form.Item
+            name={['wlan','advancedCustomization','hideSsid']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
 
         <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
         <LoadControlForm />
@@ -306,18 +316,16 @@ export function MoreSettingsForm (props: {
 
         <AccessControlForm/>
 
-
-        <UI.FormItemNoLabel
-          name='enableOfdmOnly'
-          style={{ marginBottom: '15px' }}
-          valuePropName='checked'
-          initialValue={true}
-          children={
-            <Checkbox
-              onChange={onOfdmChange}
-              children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
-          }
-        />
+        <UI.FieldLabel width='250px'>
+          {$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })}
+          <Form.Item
+            name={['enableOfdmOnly']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={true}
+            children={<Switch data-testid='enableOfdmOnly' onChange={onOfdmChange}></Switch>}
+          />
+        </UI.FieldLabel>
 
         <UI.Subtitle>
           {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
@@ -405,28 +413,47 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
-        <UI.FormItemNoLabel
-          name={['wlan','advancedCustomization','enableNeighborReport']}
-          style={{ marginBottom: '15px' }}
-          valuePropName='checked'
-          initialValue={true}
-          children={
-            <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
-          }
-        />
+        {AmbAndDtimFlag &&
+          <UI.FieldLabel width='250px'>
+            <div style={{ display: 'grid', gridTemplateColumns: '170px 80px auto' }}>
+              {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+              <Tooltip.Question
+                title={agileMultibandTooltipContent}
+                placement='right'
+              />
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </div>
+          </UI.FieldLabel>
+        }
 
-        {isFastBssVisible &&
-          <UI.FormItemNoLabel
-            data-testid='enableFastRoaming-full-block'
-            name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
+        <UI.FieldLabel width='250px'>
+          {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
+          <Form.Item
+            name={['wlan','advancedCustomization','enableNeighborReport']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
-            initialValue={false}
-            children={
-              <Checkbox data-testid='enableFastRoaming'
-                children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
-            }
+            initialValue={true}
+            children={<Switch />}
           />
+        </UI.FieldLabel>
+
+        {isFastBssVisible &&
+          <UI.FieldLabel width='125px'>
+            {$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })}
+            <Form.Item
+              data-testid='enableFastRoaming-full-block'
+              name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
+              style={{ marginBottom: '15px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch data-testid='enableFastRoaming' />}
+            />
+          </UI.FieldLabel>
         }
 
         {enableFastRoaming &&
@@ -600,7 +627,7 @@ export function MoreSettingsForm (props: {
 
         }
         <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE):' }) }
+          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE)' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
@@ -609,6 +636,46 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
+        {gtkRekeyFlag &&
+          <>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'GTK Rekey' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={true}
+                children={<Switch/>}/>
+            </UI.FieldLabel></>
+        }
+
+        {AmbAndDtimFlag &&
+          <Form.Item
+            name={['wlan','advancedCustomization','dtimInterval']}
+            label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
+            initialValue={1}
+            rules={[{
+              type: 'number', max: 255, min: 1,
+              message: $t({
+                defaultMessage:
+                  'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
+              })
+            }]}
+            style={{ marginBottom: '15px', width: '300px' }}
+            // eslint-disable-next-line max-len
+            tooltip={$t({ defaultMessage: 'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.' })}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        }
 
         {enableOce &&
           <>
@@ -691,6 +758,9 @@ export function MoreSettingsForm (props: {
         </>
         }
 
+        <MulticastForm/>
+
+
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
@@ -699,9 +769,73 @@ export function MoreSettingsForm (props: {
       </Panel>
       }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='5'>
-        <UserConnectionForm/>
+        <UserConnectionComponent/>
       </Panel>}
     </UI.CollapsePanel>
   )
+}
+*/
+
+const MoreSettingsTabsInfo = [
+  {
+    key: 'vlan',
+    display: defineMessage({ defaultMessage: 'VLAN' }),
+    style: { width: '10px' }
+  }, {
+    key: 'networkControl',
+    display: defineMessage({ defaultMessage: 'Network Control' }),
+    style: { width: '71px' }
+  }, {
+    key: 'radio',
+    display: defineMessage({ defaultMessage: 'Radio' }),
+    style: { width: '11px' }
+  }, {
+    key: 'networking',
+    display: defineMessage({ defaultMessage: 'Networking' }),
+    style: { width: '38px' }
+  }, {
+    key: 'advanced',
+    display: defineMessage({ defaultMessage: 'Advanced' }),
+    style: { width: '37px' }
+  }
+]
+
+export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
+  const { $t } = useIntl()
+  const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+
+  const [currentTab, setCurrentTab] = useState('vlan')
+
+  const onTabChange = (tab: string) => {
+    setCurrentTab(tab)
+  }
+
+  return (<>
+    <Tabs type='third'
+      activeKey={currentTab}
+      onChange={onTabChange}
+    > {MoreSettingsTabsInfo.map(({ key, display, style }) => ( <Tabs.TabPane key={key}
+        tab={<UI.TabLable style={style}>{$t(display)}</UI.TabLable>}
+      />))}
+    </Tabs>
+
+    <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
+      <VlanTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
+      <NetworkControlTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'radio' ? 'block' : 'none' }}>
+      <RadioTab />
+    </div>
+    <div style={{ display: currentTab === 'networking' ? 'block' : 'none' }}>
+      <NetworkingTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'advanced' ? 'block' : 'none' }}>
+      <AdvancedTab />
+    </div>
+  </>)
 }
 

@@ -45,7 +45,7 @@ describe('RadiusServerTab', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const eyeButton = screen.getByRole('img', { name: 'eye-invisible' })
+    const eyeButton = await screen.findByTestId('EyeOpenSolid')
     expect(eyeButton).toBeTruthy()
 
     expect(await screen.findByText(config.ipAddress[0])).toBeVisible()
@@ -83,8 +83,8 @@ describe('RadiusServerTab', () => {
     expect(generateButton).toBeTruthy()
     await userEvent.click(generateButton)
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
     await userEvent.click(saveButton)
+    await screen.findByText('Shared Secret was changed')
   })
 
   it('should change secret and cancel correctly', async () => {

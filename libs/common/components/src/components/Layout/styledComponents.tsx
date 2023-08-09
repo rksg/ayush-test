@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Button as AntButton,
   Divider as AntDivider,
@@ -9,7 +10,10 @@ import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
 
-export const Wrapper = styled.div`
+import bgImageUrl from './background.svg'
+
+export const Wrapper = styled.div<{ showScreen: boolean }>`
+  --acx-header-caret-width: 8px;
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
@@ -17,14 +21,20 @@ export const Wrapper = styled.div`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
-
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);
-
       &.ant-layout-has-sider {
         .ant-layout-sider {
           overflow: visible !important;
+          ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              height: var(--acx-header-height);
+              position: fixed;
+              top: 0;
+              left: 0;
+              z-index: 100;
+            }`)}
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
               padding: 0;
@@ -59,10 +69,18 @@ export const Wrapper = styled.div`
           }
           &:before {
             background-color: var(--acx-primary-black);
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:after {
             background-color: var(--acx-primary-white);
             border-top-left-radius: 20px;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
         }
         .ant-menu {
@@ -71,6 +89,7 @@ export const Wrapper = styled.div`
           display: flex;
           flex-flow: column;
           transition: unset;
+          a { text-decoration: none !important; }
         }
         .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {
@@ -110,6 +129,7 @@ export const Wrapper = styled.div`
           font-family: var(--acx-accent-brand-font);
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
+          color: var(--acx-primary-white);
           margin: 0;
           flex-shrink: 0;
           &:active { background: unset; }
@@ -127,6 +147,10 @@ export const Wrapper = styled.div`
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:last-child {
             margin-top: auto;
@@ -217,6 +241,7 @@ export const Wrapper = styled.div`
                 color: var(--acx-neutrals-20);
                 opacity: 0.6;
                 padding: 8px 16px 4px;
+                white-space: nowrap;
               }
             }
           }
@@ -225,7 +250,17 @@ export const Wrapper = styled.div`
     }
     &.sider-collapsed {
       .ant-layout.ant-layout-has-sider {
-        > div:first-child, .ant-layout-sider {
+        > div:first-child {
+          flex: 0 0 var(--acx-sider-collapsed-width) !important;
+          max-width: var(--acx-sider-collapsed-width) !important;
+          min-width: var(--acx-sider-collapsed-width) !important;
+          width: var(--acx-sider-collapsed-width) !important;
+          ${({ showScreen }) => (!showScreen &&
+          `@media screen and (min-width: 1279px) {
+            display: none;
+          }`)}
+        }
+        .ant-layout-sider {
           flex: 0 0 var(--acx-sider-collapsed-width) !important;
           max-width: var(--acx-sider-collapsed-width) !important;
           min-width: var(--acx-sider-collapsed-width) !important;
@@ -267,6 +302,12 @@ export const Wrapper = styled.div`
     .ant-layout-content {
       margin: 0;
       background-color: var(--acx-primary-white);
+      ${({ showScreen }) => (!showScreen &&
+      `@media screen and (max-width: 1279px) {
+        background-image: url('${bgImageUrl}');
+        background-size: cover;
+        background-repeat: no-repeat;
+      }`)}
     }
   }
 `
@@ -303,7 +344,8 @@ export const MenuIcon = styled.span`
 
 export const Content = styled.div`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
-  min-width: calc(${modifyVars['@screen-xl']}
+  min-width: calc(
+    ${modifyVars['@screen-xl']}
     - var(--acx-sider-width)
     - var(--acx-content-horizontal-space) * 2
   );
@@ -319,8 +361,16 @@ export const Content = styled.div`
     height: var(--acx-content-vertical-space);
     width: 100%;
     background-color: var(--acx-primary-white);
-    z-index: 5;
+    z-index: 6;
   }
+`
+
+export const ResponsiveContent = styled.div`
+  min-width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 `
 
 export const LeftHeaderContentWrapper = styled.div`
@@ -361,24 +411,20 @@ export const CollapseText = styled.div`
 `
 
 const Button = styled(AntButton).attrs({ type: 'primary' })`
-  background-color: var(--acx-neutrals-70);
-  border: none;
-  &:hover, &:focus {
-    border-color: var(--acx-accents-orange-55);
-    background-color: var(--acx-accents-orange-55);
-  }
-  > svg {
-    width: 16px;
-    height: 100%;
+  &&& {
+    background-color: var(--acx-neutrals-70);
+    border: none;
+    &:hover, &:focus {
+      border-color: var(--acx-accents-orange-55);
+      background-color: var(--acx-accents-orange-55);
+    }
+    > svg {
+      width: 16px;
+      height: 100%;
+    }
   }
 `
 export const LayoutUI = {
-  iconOutlinedOverride: css`
-    path { stroke: none !important; }
-  `,
-  iconSolidOverride: css`
-    stroke: none !important;
-  `,
   Icon: styled.span`
     > svg {
       width: 16px;
@@ -389,6 +435,17 @@ export const LayoutUI = {
       }
     }
   `,
+  DropdownCaretIcon: styled.span`{
+    svg {
+      width: var(--acx-header-caret-width);
+      height: 100%;
+      vertical-align: baseline;
+      path {
+        stroke: var(--acx-primary-white);
+        fill: var(--acx-primary-white);
+      }
+    }
+  }`,
   DropdownText: styled.span.attrs(props => ({ children: <Space>{props.children}</Space> }))`
     font-size: var(--acx-body-3-font-size);
     line-height: 1;

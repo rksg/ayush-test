@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
@@ -19,11 +19,16 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
+}))
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
@@ -57,11 +62,18 @@ describe('Subscriptions', () => {
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
+        }
       )
     )
   })
 
   it('should render correctly', async () => {
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     render(
       <Provider>
         <Subscriptions />
@@ -75,6 +87,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
+    expect(await screen.findByText('Essentials')).toBeVisible()
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
@@ -140,7 +153,7 @@ describe('Subscriptions', () => {
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
     const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
-    expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('')
+    expect((cells[0] as HTMLTableCellElement).textContent).toBe('')
   })
 
   it('should correctly handle device sub type', async () => {
@@ -170,6 +183,22 @@ describe('Subscriptions', () => {
       })
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /Edge/i })
+    await screen.findByRole('row', { name: /SmartEdge/i })
+  })
+  it('should filter edge data when PLM FF is not denabled', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('columnheader', { name: 'Device Count' })
+    await screen.findByRole('row', { name: /Wi-Fi/i })
+    expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
   })
 })

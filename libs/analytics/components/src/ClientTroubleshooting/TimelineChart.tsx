@@ -33,7 +33,8 @@ import {
   axisLabelOptions,
   dateAxisFormatter,
   cssStr,
-  cssNumber
+  cssNumber,
+  toolboxDataZoomOptions
 } from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TimeStampRange }        from '@acx-ui/types'
@@ -499,16 +500,7 @@ export function TimelineChart ({
         ...mapping.map(({ key }) => key)
       ]
     },
-    toolbox: {
-      feature: {
-        dataZoom: {
-          yAxisIndex: 'none',
-          brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
-          icon: { back: 'path://', zoom: 'path://' }
-        },
-        brush: { type: ['rect'], icon: { rect: 'path://' } }
-      }
-    },
+    toolbox: toolboxDataZoomOptions,
     dataZoom: [
       {
         id: 'zoom',

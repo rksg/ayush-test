@@ -3,8 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Modal } from '@acx-ui/components'
-import { GuestPortal }   from '@acx-ui/rc/utils'
+import { Button, Modal, PasswordInput } from '@acx-ui/components'
+import { GuestPortal }                  from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -78,12 +78,13 @@ export default function FacebookSetting (props:{
     <Form.Item
       name={['guestPortal','socialIdentities','facebook','config','appSecret']}
       rules={[
-        { required: true }
+        { required: true },
+        { max: 255 }
       ]}
       initialValue=''
       label={$t({ defaultMessage: 'App Secret' })}
       children={
-        <Input.Password/>
+        <PasswordInput />
       }
     />
     <Form.Item><>

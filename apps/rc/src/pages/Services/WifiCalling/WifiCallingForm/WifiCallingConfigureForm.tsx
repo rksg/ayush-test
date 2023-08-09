@@ -7,14 +7,14 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG, getServiceRoutePath,
+  EPDG, getServiceListRoutePath, getServiceRoutePath,
   QosPriorityEnum, ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -25,10 +25,13 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
-  }))
+  const tablePath = getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING,
+    oper: ServiceOperation.LIST
+  })
+  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
 
@@ -72,7 +75,11 @@ const WifiCallingConfigureForm = () => {
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Wi-Fi Calling' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />

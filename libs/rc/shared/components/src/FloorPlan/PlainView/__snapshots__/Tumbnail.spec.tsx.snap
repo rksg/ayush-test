@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-evZas hiznOM"
+  >
+    <div
+      active="0"
+      class="ant-card-grid sc-jqUVSM DFPpS"
+      data-testid="thumbnailBg"
+    >
+      <div
+        style="width: 100%; height: 53px; position: relative;"
+      >
+        <div>
+           
+        </div>
+        <img
+          alt="Thumbnail for TEST_2"
+          data-testid="thumbnailBgImage"
+          src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+          style="width: 100%; height: 100%;"
+        />
+      </div>
+    </div>
+    <div
+      class="sc-crXcEl jIytKA"
+    >
+      TEST_2
+    </div>
+  </div>
+</DocumentFragment>
+`;

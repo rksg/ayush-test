@@ -7,7 +7,7 @@ RUN apk add curl
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
 
@@ -22,19 +22,19 @@ COPY .eslintignore \
   jest.config.ts \
   jest.preset.ts \
   jest.setup.js \
-  modulefederation.config.base.js \
   nx.json \
   webpack.config.base.js \
   tsconfig.base.json \
   workspace.json \
   ./
+
 COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 COPY tools/tests ./tools/tests
 
 # dump git information
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
@@ -51,34 +51,27 @@ RUN touch tslint-done
 
 ###############################################################
 FROM node:14.21.1-alpine as build-locales
-
 WORKDIR /app
-
 RUN apk add curl
-
 ARG ENV_FILE
 COPY ${ENV_FILE} .
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
-
 COPY package.json ./
 RUN npm install react-intl lodash
-
 COPY apps ./apps
 COPY libs ./libs
 COPY tools/docker/locales ./tools/docker/locales
-
 RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
-
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --all
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
 
 ###############################################################
-FROM build-base as acx-ui-tests
+FROM build-base as acx-ui-base-test
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
@@ -86,11 +79,53 @@ COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
+COPY cicd_tool ./cicd_tool
+COPY test_cases.table ./test_cases.table
+RUN chmod a+x ./cicd_tool/run_test_cases_tool.sh
+
+FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT
-RUN [ "${PRECOMMIT}" == "false" ] || node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "false" ] || node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "false" ] || node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "false" ] || node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose
+ARG GIT_COMMIT_BRANCH
+RUN if [ "true" ]; then \
+	    ./cicd_tool/run_test_cases_tool.sh Group1; \
+	else mkdir -p /app/coverage; fi
+
+FROM acx-ui-base-test as acx-ui-group2-test
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
+RUN if [ "true" ]; then \
+        ./cicd_tool/run_test_cases_tool.sh Group2; \
+	else mkdir -p /app/coverage; fi
+
+FROM acx-ui-base-test as acx-ui-group3-test
+ARG PRECOMMIT=true
+ARG GIT_COMMIT_BRANCH
+RUN if [ "true" ]; then \
+        ./cicd_tool/run_test_cases_tool.sh Group3; \
+	else mkdir -p /app/coverage; fi
+
+FROM acx-ui-base-test as acx-ui-group4-test
+ARG PRECOMMIT=true
+ARG GIT_COMMIT_BRANCH
+RUN if [ "true" ]; then \
+        ./cicd_tool/run_test_cases_tool.sh Group4; \
+	else mkdir -p /app/coverage; fi
+
+FROM acx-ui-base-test as acx-ui-group5-test
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
+RUN if [ "true" ]; then \
+        ./cicd_tool/run_test_cases_tool.sh Group5; \
+	else mkdir -p /app/coverage; fi
+
+FROM build-base as acx-ui-sonar-run
+COPY --from=acx-ui-group1-test /app/coverage /app/coverage
+COPY --from=acx-ui-group2-test /app/coverage /app/coverage
+COPY --from=acx-ui-group3-test /app/coverage /app/coverage
+COPY --from=acx-ui-group4-test /app/coverage /app/coverage
+COPY --from=acx-ui-group5-test /app/coverage /app/coverage
+WORKDIR /app
+RUN touch tests-done
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -106,10 +141,11 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-tests /app/dist/apps ./
+COPY --from=build /app/dist/apps ./
+# Multistage: trigger run
+COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
+
 RUN \
-  # Move all other apps into main
-  ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
   mkdir -p tenant/t && \
   # Move all files into it

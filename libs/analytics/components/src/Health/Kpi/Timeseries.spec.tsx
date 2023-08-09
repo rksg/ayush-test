@@ -5,15 +5,16 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { TimeStampRange }                   from '@acx-ui/types'
 import { DateRange }                        from '@acx-ui/utils'
 
+import { HealthPageContext } from '../HealthPageContext'
+
 import KpiTimeseries, { formatYDataPoint } from './Timeseries'
 
-const filters = {
+const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
-  path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours,
   filter: {}
-} as AnalyticsFilter
+}
 
 describe('Kpi timeseries', () => {
   const sampleTS = {
@@ -36,7 +37,12 @@ describe('Kpi timeseries', () => {
   const setTimeWindow = jest.fn()
   const timeWindow = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:15:00.000Z'] as TimeStampRange
   const threshold = 10
-
+  const healthContext = {
+    ...filters,
+    timeWindow,
+    setTimeWindow,
+    apCount: 10
+  }
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
 
@@ -46,7 +52,7 @@ describe('Kpi timeseries', () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { network: { timeSeries: sampleTS } }
     })
-    render(<Provider>
+    render(<Provider><HealthPageContext.Provider value={{ ...healthContext }}>
       <KpiTimeseries
         filters={filters}
         kpi={'onlineAPs'}
@@ -55,14 +61,15 @@ describe('Kpi timeseries', () => {
         timeWindow={timeWindow}
         threshold={threshold}
       />
-    </Provider>)
+    </HealthPageContext.Provider></Provider>
+    )
     expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { network: { timeSeries: sampleTS } }
     })
-    render(<Provider>
+    render(<Provider><HealthPageContext.Provider value={{ ...healthContext }}>
       <KpiTimeseries
         filters={filters}
         kpi={'onlineAPs'}
@@ -71,14 +78,14 @@ describe('Kpi timeseries', () => {
         timeWindow={timeWindow}
         threshold={threshold}
       />
-    </Provider>)
+    </HealthPageContext.Provider></Provider>)
     expect(await screen.findByText('80%')).toBeVisible()
   })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { network: { timeSeries: sampleNoDataTS } }
     })
-    render(<Provider>
+    render(<Provider><HealthPageContext.Provider value={{ ...healthContext }}>
       <KpiTimeseries
         filters={filters}
         kpi={'onlineAPs'}
@@ -87,7 +94,7 @@ describe('Kpi timeseries', () => {
         timeWindow={timeWindow}
         threshold={threshold}
       />
-    </Provider>)
+    </HealthPageContext.Provider></Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should format y value for timeseries', async () => {

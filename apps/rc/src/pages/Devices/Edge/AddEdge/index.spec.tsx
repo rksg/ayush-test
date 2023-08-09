@@ -51,14 +51,13 @@ describe('AddEdge', () => {
   })
 
   it('should create AddEdge successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <AddEdge />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    await screen.findByRole('combobox', { name: 'Venue' })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
   })
 
   it('should be blocked when required field is empty', async () => {
@@ -125,7 +124,7 @@ describe('AddEdge', () => {
     fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     }, { replace: true }))
@@ -141,7 +140,7 @@ describe('AddEdge', () => {
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     })

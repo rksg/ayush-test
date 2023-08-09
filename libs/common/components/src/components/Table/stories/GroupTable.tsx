@@ -1,7 +1,7 @@
 import React from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended } from 'libs/rc/utils/src/types/ap'
+import { APExtended } from 'libs/rc/shared/utils/src/types/ap'
 import { uniqueId }   from 'lodash'
 
 import { Table, TableProps } from '..'
@@ -20,6 +20,7 @@ export type APExtendedGroupedResponse = {
   clients: number
   name?: string
   aps: APExtended[]
+  IP?: string
 }
 
 function cleanResponse (response: APExtendedGroupedResponse[]): APExtendedGroupedResponse[] {
@@ -759,7 +760,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     dataIndex: 'IP',
     key: 'ip',
     sorter: true,
-    render: (dom) => dom
+    render: (_, { IP }) => IP
   },
   {
     title: 'MAC Addresses',
@@ -783,7 +784,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     key: 'clients',
     dataIndex: 'clients',
     sorter: true,
-    render: (dom) => dom
+    render: (_, { clients }) => clients
   },
   {
     title: 'AP Group',
@@ -852,16 +853,22 @@ export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResp
     deviceStatus: cleanResponse(deviceStatusResponse),
     model: cleanResponse(modelResponse)
   }
+  const rowSelection = {
+    defaultSelectedRowKeys: [],
+    ...(props.rowSelection && props.rowSelection)
+  }
+  const tableData = sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))
   return <>
     with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
       {...props}
       columns={groupByColumns}
-      dataSource={sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))}
+      dataSource={tableData}
+      getAllPagesData={() => tableData}
       rowKey='id' // need to set unique entry per record to ensure proper behaviour
       indentSize={6}
       columnEmptyText='-'
-      rowSelection={{ defaultSelectedRowKeys: [] }}
+      rowSelection={rowSelection}
       onFilterChange={(_filter, _search, groupBy) => setGrouping(groupBy)}
     />
   </>

@@ -5,15 +5,14 @@ import {
   Form,
   Switch,
   Select,
-  Input,
   Radio
 } from 'antd'
 import _                             from 'lodash'
-import { get }                       from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip }                               from '@acx-ui/components'
+import { Subtitle, Tooltip, PasswordInput }                from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
 import { useGetAAAPolicyListQuery }                        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
@@ -54,8 +53,15 @@ export function WISPrAuthAccServer (props : {
   const onChange = (value: boolean, fieldName: string) => {
     if(!value){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], undefined)
+      form.setFieldValue(['guestPortal','wisprPage','accountingRadiusId'], undefined)
     }
-    setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
+    setData && setData({
+      ...(!value?
+        _.omit(data,
+          [
+            'guestPortal.wisprPage.accountingRadius',
+            'guestPortal.wisprPage.accountingRadiusId'
+          ]):data),
       [fieldName]: value })
   }
 
@@ -80,7 +86,7 @@ export function WISPrAuthAccServer (props : {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Connections' })}</Subtitle>
+        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
 
         <Form.Item
           name={['guestPortal','wisprPage','authType']}
@@ -160,12 +166,22 @@ export function WISPrAuthAccServer (props : {
               </Radio>
               <Description>
                 <FormattedMessage
-                  values={{ br: () => <br /> }}
-                  defaultMessage={`
-                    Additional external configuration is required for this option to function.
+                  values={{
+                    br: () => <br />,
+                    link: <a
+                      className='link'
+                      target='_blank'
+                      href={get('API_DOCUMENTATION_URL')}
+                      rel='noreferrer'>
+                      {$t({ defaultMessage: 'RUCKUS One WISPr API Reference' })}
+                    </a>
+                  }}
+
+                  defaultMessage={
+                    // eslint-disable-next-line
+                    `Additional external configuration is required for this feature to function properly.
                     <br></br>
-                    Please refer to the WISPr API documentation for more details
-                  `}
+                    For more details, refer to {link}.`}
                 />
               </Description>
             </Space>
@@ -178,17 +194,17 @@ export function WISPrAuthAccServer (props : {
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: get(radiusValue,
+                ipAddress: _.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.ip`),
-                port: get(radiusValue,
+                port: _.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.port`)
               })} />
             <Form.Item
               label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<Input.Password
+              children={<PasswordInput
                 readOnly
                 bordered={false}
-                value={get(radiusValue,
+                value={_.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
               />}
             /></>}
@@ -196,17 +212,17 @@ export function WISPrAuthAccServer (props : {
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: get(radiusValue,
+                ipAddress: _.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.ip`),
-                port: get(radiusValue,
+                port: _.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.port`)
               })} />
             <Form.Item
               label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<Input.Password
+              children={<PasswordInput
                 readOnly
                 bordered={false}
-                value={get(radiusValue,
+                value={_.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
             />

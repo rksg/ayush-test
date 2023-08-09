@@ -56,7 +56,9 @@ import {
   isOperationalSwitch,
   SwitchViewModel,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -94,6 +96,7 @@ export function StackForm () {
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -124,11 +127,21 @@ export function StackForm () {
 
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
     { key: '2', id: '', model: '', disabled: false }
   ]
   const [tableData, setTableData] = useState(isStackSwitches ? [] : defaultArray)
+
+  const getSwitchModelWithRodan = function (serial: string) {
+    if (isSupportIcx8200) {
+      return getSwitchModel(serial)
+    } else {
+      return getSwitchModel(serial)?.includes('8200') ? undefined : getSwitchModel(serial)
+    }
+  }
 
   useEffect(() => {
     if (!isVenuesListLoading) {
@@ -199,7 +212,7 @@ export function StackForm () {
             return {
               ...item,
               key,
-              model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
+              model: `${item.model === undefined ? getSwitchModelWithRodan(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
@@ -208,8 +221,6 @@ export function StackForm () {
             }
           })
 
-        stackMembers.sort((a: { active: boolean }, b: { active: boolean }) =>
-          Number(b.active) - Number(a.active))
         setTableData(stackMembers)
         setRowKey(stackMembers.length)
       }
@@ -262,21 +273,23 @@ export function StackForm () {
   }, [])
 
   const handleChange = (row: SwitchTable, index: number) => {
-    const dataRows = [...tableData]
-    const serialNumber = formRef.current?.getFieldValue(
-      `serialNumber${row.key}`
-    )
-    dataRows[index].id = serialNumber
-    dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
-    setTableData(dataRows)
+    formRef.current?.validateFields([`serialNumber${row.key}`]).then(() => {
+      const dataRows = [...tableData]
+      const serialNumber = formRef.current?.getFieldValue(
+        `serialNumber${row.key}`
+      )?.toUpperCase()
+      dataRows[index].id = serialNumber
+      dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
+      setTableData(dataRows)
 
-    const modelList = dataRows
-      .filter(
-        row => row.model &&
-          modelNotSupportStack.indexOf(row.model) === -1)
-      .map(row => row.model)
-    setValidateModel(modelList)
-    setVisibleNotification(modelList.length > 0)
+      const modelList = dataRows
+        .filter(
+          row => row.model &&
+            modelNotSupportStack.indexOf(row.model) === -1)
+        .map(row => row.model)
+      setValidateModel(modelList)
+      setVisibleNotification(modelList.length > 0)
+    }, () => {})
   }
 
   const handleAddRow = () => {
@@ -366,7 +379,7 @@ export function StackForm () {
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
       const activeSwitch = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
-      const activeSwitchModel = getSwitchModel(activeSwitch ?? '')
+      const activeSwitchModel = getSwitchModelWithRodan(activeSwitch ?? '')
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
       const payload = {
         name: values.name || '',
@@ -392,12 +405,13 @@ export function StackForm () {
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (serialNumber && !re.test(serialNumber)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
 
-    const model = getSwitchModel(serialNumber) || ''
+    const model = getSwitchModelWithRodan(serialNumber) || ''
 
     return modelNotSupportStack.indexOf(model) > -1
       ? Promise.reject(
@@ -437,17 +451,16 @@ export function StackForm () {
       key: 'sort',
       width: 60,
       show: editMode,
-      render: (data, row) => {
-        return activeRow !== row.key &&
-          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}>
-            <DragHandle />
-          </div>
+      render: (_, row) => {
+        return (
+          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
+        )
       }
     },
     {
       dataIndex: 'key',
       key: 'key',
-      render: (id, record, index) => {
+      render: (_, __, index) => {
         return index + 1
       },
       showSorterTooltip: false
@@ -457,7 +470,7 @@ export function StackForm () {
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: function (data, row, index) {
+      render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
           validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
@@ -494,8 +507,8 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
       key: 'model',
-      render: function (data: React.ReactNode) {
-        return <div>{data ? data : '--'}</div>
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        return <div>{row.model ? row.model : '--'}</div>
       }
     }] : []),
     {
@@ -503,9 +516,9 @@ export function StackForm () {
       dataIndex: 'active',
       key: 'active',
       show: !editMode,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
-          <Form.Item name={'active'} initialValue={activeRow}>
+          <Form.Item name={'active'}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
               <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
             </Radio.Group>
@@ -516,7 +529,7 @@ export function StackForm () {
     {
       key: 'action',
       dataIndex: 'action',
-      render: (data, row, index) => (
+      render: (_, row, index) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -578,7 +591,6 @@ export function StackForm () {
       tempDataSource.splice(oldIndex, 1)
       tempDataSource = [...tempDataSource.slice(0, newIndex),
         ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
-      tempDataSource.sort((a, b) => Number(b.active) - Number(a.active))
       setTableData(tempDataSource)
     }
   }
@@ -601,8 +613,9 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-    if(!enableStackUnitLimitationFlag){
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (!enableStackUnitLimitationFlag) {
       return true
     }
 
@@ -614,7 +627,8 @@ export function StackForm () {
   }
 
   const getStackUnitsMinLimitaion = () => {
-    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
     return switchModel?.includes('ICX7150') ? 2 : 4
   }
 
@@ -626,7 +640,11 @@ export function StackForm () {
             name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber
           }) :
           $t({ defaultMessage: 'Add Switch Stack' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Switches' }) },
+          { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+        ] : [
           {
             text: $t({ defaultMessage: 'Switches' }),
             link: '/devices/switch'
@@ -670,8 +688,7 @@ export function StackForm () {
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                   {readOnly &&
-                    // eslint-disable-next-line max-len
-                    <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
+                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Form.Item
                     name='venueId'
                     label={$t({ defaultMessage: 'Venue' })}
@@ -682,27 +699,26 @@ export function StackForm () {
                       }
                     ]}
                     initialValue={null}
-                    children={
-                      <Select
-                        options={venueOption}
-                        onChange={async (value) => await handleVenueChange(value)}
-                        disabled={readOnly || editMode || isStackSwitches}
-                      />
-                    }
-                  />
+                  >
+                    <Select
+                      options={venueOption}
+                      onChange={async (value) => await handleVenueChange(value)}
+                      disabled={readOnly || editMode || isStackSwitches}
+                    />
+                  </Form.Item>
                   <Form.Item
                     name='name'
                     label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
                     rules={[{ max: 255 }]}
-                    children={<Input disabled={readOnly} />}
-                  />
+                  >
+                    <Input disabled={readOnly} />
+                  </Form.Item>
                   {!isStackSwitches && <Form.Item
                     name='description'
                     label={$t({ defaultMessage: 'Description' })}
                     rules={[{ max: 64 }]}
                     initialValue={''}
-                    children={<Input.TextArea rows={4} maxLength={180} disabled={readOnly} />}
-                  />}
+                  ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
                   {!editMode && !isStackSwitches && <Form.Item
                     name='initialVlanId'
                     label={
@@ -719,19 +735,18 @@ export function StackForm () {
                       </>
                     }
                     initialValue={null}
-                    children={
-                      <Select
-                        disabled={readOnly || apGroupOption?.length === 0}
-                        options={[
-                          {
-                            label: $t({ defaultMessage: 'Select VLAN...' }),
-                            value: null
-                          },
-                          ...apGroupOption
-                        ]}
-                      />
-                    }
-                  />
+                  >
+                    <Select
+                      disabled={readOnly || apGroupOption?.length === 0}
+                      options={[
+                        {
+                          label: $t({ defaultMessage: 'Select VLAN...' }),
+                          value: null
+                        },
+                        ...apGroupOption
+                      ]}
+                    />
+                  </Form.Item>
                   }
                   { isIcx7650 &&
                   <Form.Item>
@@ -742,8 +757,9 @@ export function StackForm () {
                       noStyle
                       name='rearModuleOption'
                       valuePropName='checked'
-                      children={<AntSwitch disabled={editMode} />}
-                    />
+                    >
+                      <AntSwitch disabled={editMode} />
+                    </Form.Item>
                   </Form.Item>
                   }
                   <StepFormTitle>
@@ -787,7 +803,8 @@ export function StackForm () {
 
                   <SwitchUpgradeNotification
                     switchModel={
-                      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
+                      // eslint-disable-next-line max-len
+                      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
                     stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
@@ -797,15 +814,16 @@ export function StackForm () {
                 </div>
                 {editMode &&
                   <>
-                    <Form.Item name='id' hidden={true} />
-                    <Form.Item name='firmwareVersion' hidden={true} />
-                    <Form.Item name='isPrimaryDeleted' hidden={true} />
-                    <Form.Item name='sendedHostname' hidden={true} />
-                    <Form.Item name='softDeleted' hidden={true} />
-                    <Form.Item name='trustPorts' hidden={true} />
+                    <Form.Item name='id' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
                 }
-                <Form.Item name='enableStack' initialValue={true} hidden={true} />
+                <Form.Item name='enableStack' initialValue={true} hidden={true}>
+                  <Input /></Form.Item>
                 {editMode &&
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     <SwitchStackSetting

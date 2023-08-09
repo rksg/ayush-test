@@ -11,7 +11,7 @@ import { Button,
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
 import { getIntl }                    from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
@@ -74,23 +74,23 @@ export function ConfigProfileModal (props: {
     title: $t({ defaultMessage: 'Model Affected' }),
     dataIndex: ['venueCliTemplate', 'switchModels'],
     key: 'venueCliTemplate',
-    render: (data) => {
-      const models = (data as string)?.split(',') ?? []
+    render: (_, { venueCliTemplate }) => {
+      const models = venueCliTemplate?.switchModels?.split(',') ?? []
       const title = <>{models.map((m, idx) => <div key={idx}>{m}</div>)}</>
       const content = models?.length > 1 ? $t({
         defaultMessage: '{count} models'
-      }, { count: models.length }) : data
+      }, { count: models.length }) : venueCliTemplate?.switchModels
       return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venues',
     key: 'venues',
-    render: (data) => {
-      const title = data
-        ? <>{(data as string[])?.map((v, idx) => <div key={idx}>{v}</div>)}</>
+    render: (_, { venues }) => {
+      const title = venues
+        ? <>{venues?.map((v, idx) => <div key={idx}>{v}</div>)}</>
         : null
-      const count = (data as string[])?.length ?? 0
+      const count = venues?.length ?? 0
       return <Tooltip title={title} placement='bottom'>{ count }</Tooltip>
     }
   }]
@@ -109,7 +109,7 @@ export function ConfigProfileModal (props: {
         title={disableButton ? $t(VenueMessages.MODEL_OVERLAPPING_TOOLTIP) : null}
       >
         <Space style={{ marginLeft: '8px' }}> {/* Fix Tooltip on disabled button */}
-          <Button key='submit' type='secondary' disabled={disableButton} onClick={onOk}>
+          <Button key='submit' type='primary' disabled={disableButton} onClick={onOk}>
             {$t({ defaultMessage: 'OK' })}
           </Button>
         </Space>
@@ -156,7 +156,7 @@ export function ConfigProfileModal (props: {
             columns={columns}
             dataSource={cliProfiles}
             rowKey='id'
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'checkbox',
               alwaysShowAlert: true,
               defaultSelectedRowKeys: selectedCLIKeys,

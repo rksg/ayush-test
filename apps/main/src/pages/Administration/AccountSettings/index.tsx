@@ -1,13 +1,12 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  useGetRecoveryPassphraseQuery,
-  useGetMspEcProfileQuery
-} from '@acx-ui/rc/services'
-import { MSPUtils, isDelegationMode } from '@acx-ui/rc/utils'
+import { Loader }                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
+import { MSPUtils }                                                        from '@acx-ui/msp/utils'
+import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
+import { isDelegationMode }                                                from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
@@ -15,6 +14,8 @@ import {
 import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
+import { AppTokenFormItem }              from './AppTokenFormItem'
+import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
@@ -44,10 +45,13 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
+  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
+  const authenticationData =
+    useGetTenantAuthenticationsQuery({ params }, { skip: !isIdmDecoupling })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
@@ -92,6 +96,25 @@ const AccountSettings = (props : AccountSettingsProps) => {
             />
           </>
         )}
+
+        { isPrimeAdminUser && isIdmDecoupling && (
+          <>
+            <Divider />
+            <AuthServerFormItem
+              tenantAuthenticationData={authenticationData.data}
+            />
+          </>
+        )}
+
+        { isPrimeAdminUser && isIdmDecoupling && (
+          <>
+            <Divider />
+            <AppTokenFormItem
+              tenantAuthenticationData={authenticationData.data}
+            />
+          </>
+        )}
+
       </Form>
     </Loader>
   )

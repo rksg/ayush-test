@@ -2,6 +2,7 @@ import moment                                        from 'moment-timezone'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                        from '@acx-ui/user'
@@ -39,6 +40,8 @@ function Timeline () {
   const { activeTab = tabs[0].key } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -49,6 +52,9 @@ function Timeline () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Timeline' })}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Administration' }) }
+        ] : undefined}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}

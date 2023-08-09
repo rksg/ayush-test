@@ -25,7 +25,8 @@ import {
   tooltipOptions,
   timeSeriesTooltipFormatter,
   ChartFormatterFn,
-  qualitativeColorSet
+  qualitativeColorSet,
+  toolboxDataZoomOptions
 }                             from '../Chart/helper'
 import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
 import { useDataZoom }               from '../Chart/useDataZoom'
@@ -154,16 +155,7 @@ export function StackedAreaChart <
       lineStyle: { width: 1 },
       areaStyle: { opacity: 0.5 }
     })),
-    toolbox: {
-      feature: {
-        dataZoom: {
-          yAxisIndex: 'none',
-          brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
-          icon: { back: 'path://', zoom: 'path://' }
-        },
-        brush: { type: ['rect'], icon: { rect: 'path://' } }
-      }
-    },
+    toolbox: toolboxDataZoomOptions,
     dataZoom: dataZoomOptions(initialData)
   }
 

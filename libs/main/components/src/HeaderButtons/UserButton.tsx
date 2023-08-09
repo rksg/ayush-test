@@ -1,7 +1,9 @@
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
+import { LayoutUI }                from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
+import { AccountCircleSolid }      from '@acx-ui/icons'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }   from '@acx-ui/user'
 
@@ -59,9 +61,11 @@ const UserButton = () => {
 
   return (
     <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
-      <UserNameButton>
-        {userProfile?.initials || ' '}
-      </UserNameButton>
+      {
+        userProfile?.initials
+          ? <UserNameButton>{userProfile.initials}</UserNameButton>
+          : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+      }
     </Dropdown>
   )
 }

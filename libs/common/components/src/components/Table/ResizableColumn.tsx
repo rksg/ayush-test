@@ -3,18 +3,18 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import _             from 'lodash'
 import { Resizable } from 'react-resizable'
 
-import { ResizableHover, ResizableHandle } from './styledComponents'
+import { ResizableHover, ResizableHandle }    from './styledComponents'
+import { defaultColumnWidth, minColumnWidth } from './useColumnsState'
 
 interface ResizableColumnProps extends React.PropsWithChildren {
   onResize: (width: number) => void
-  hasEllipsisColumn: boolean
   width?: number
   definedWidth?: number
 }
 
 
 export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
-  const { onResize, hasEllipsisColumn, width: columnWidth, definedWidth, ...rest } = props
+  const { onResize, width: columnWidth, definedWidth, ...rest } = props
   const [width, setWidth] = useState(columnWidth)
   const [currentHeaderCell, setCurrentHeaderCell] = useState<HTMLTableHeaderCellElement>()
   const headerCellRef = useRef<HTMLTableHeaderCellElement>(null)
@@ -35,9 +35,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   return <Resizable
     width={width}
     height={0}
-    minConstraints={
-      (hasEllipsisColumn && [Math.min(definedWidth || 99, 90), 0]) || undefined
-    }
+    minConstraints={[Math.min(definedWidth || defaultColumnWidth, minColumnWidth), 0]}
     handle={<ResizableHandle />}
     onResizeStart={() => {
       setCurrentHeaderCell(headerCellRef.current!)
@@ -45,7 +43,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
       headerCellRef.current!.addEventListener('click', handleStopPropagation, { once: true })
     }}
     onResize={(_: React.SyntheticEvent<Element>, { size }) => {
-      onResize(size.width)
+      if (onResize) onResize(size.width)
       setWidth(size.width)
     }}
     draggableOpts={{ enableUserSelectHack: false }}

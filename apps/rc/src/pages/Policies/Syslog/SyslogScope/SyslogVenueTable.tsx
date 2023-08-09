@@ -11,7 +11,7 @@ import {
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import SyslogContext from '../SyslogContext'
 
@@ -77,7 +77,7 @@ const SyslogVenueTable = () => {
       key: 'aggregatedApStatus',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
     },
@@ -87,7 +87,7 @@ const SyslogVenueTable = () => {
       key: 'syslogServer',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (row.syslogServer?.enabled) {
           return <div>
             <div>
@@ -106,7 +106,7 @@ const SyslogVenueTable = () => {
       dataIndex: 'activate',
       key: 'activate',
       align: 'center',
-      render: (data, row) => {
+      render: (_, row) => {
         return <Switch
           data-testid={`switchBtn_${row.id}`}
           checked={
@@ -114,7 +114,8 @@ const SyslogVenueTable = () => {
               ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
               : false
           }
-          onClick={() => {
+          onClick={(_, e) => {
+            e.stopPropagation()
             state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
               ? deactivateVenue([row])
               : activateVenue([row])
@@ -172,7 +173,7 @@ const SyslogVenueTable = () => {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   )
 }

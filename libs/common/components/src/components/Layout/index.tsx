@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { createContext, useContext, useCallback, useEffect, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
 import { ItemType as AntItemType }           from 'antd/lib/menu/hooks/useItems'
 import { get, has, snakeCase }               from 'lodash'
+import { debounce }                          from 'lodash'
 import {
   MenuItemType as RcMenuItemType,
   SubMenuType as RcSubMenuType,
@@ -11,11 +12,13 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                              from '@acx-ui/types'
-import { hasRoles }                               from '@acx-ui/user'
+import { get as getEnv }                                           from '@acx-ui/config'
+import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import modifyVars from '../../theme/modify-vars'
+
+import { Content } from './Responsive/content'
+import * as UI     from './styledComponents'
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -64,6 +67,9 @@ export interface LayoutProps {
 
 function useActiveUri () {
   const { pathname } = useLocation()
+  if (getEnv('IS_MLISA_SA')) {
+    return pathname.replace(MLISA_BASE_PATH, '')
+  }
   const chunks = pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) {
@@ -111,7 +117,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
-    const isActive = activePatterns.some(pattern => activeUri.match(pattern))
+    const isActive = activePatterns?.some(pattern => activeUri.match(pattern))
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
@@ -128,7 +134,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
           data-label={item.label}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
-        popupClassName: item.children.some(child => get(child, 'type') === 'group')
+        popupClassName: item.children?.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',
         children: item.children.map(child => getMenuItem(child, key))
       })
@@ -147,18 +153,15 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
-function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
-  let dashboard: ItemType | undefined
-  for (const item of menuConfig) {
-    if (isMenuItemGroupType(item) || isSubMenuType(item)) {
-      dashboard = findDashboard(item.children!)
-      return dashboard
-    }
-    dashboard = (item?.uri && item.uri.startsWith('/dashboard')) ? item : undefined
-    if (dashboard) break
-  }
-  return dashboard
+type LayoutContextType = {
+  pageHeaderY: number
+  setPageHeaderY: (y: number) => void
 }
+const LayoutContext = createContext({
+  pageHeaderY: 0,
+  setPageHeaderY: () => {}
+} as LayoutContextType)
+export const useLayoutContext = () => useContext(LayoutContext)
 
 export function Layout ({
   logo,
@@ -170,27 +173,47 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const [pageHeaderY, setPageHeaderY] = useState(0)
+  const screenXL = parseInt(modifyVars['@screen-xl'], 10)
+  const [display, setDisplay] = useState(window.innerWidth >= screenXL)
+  const [subOptimalDisplay, setSubOptimalDisplay] = useState(
+    () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
 
-  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
-  const dashboard = findDashboard(menuConfig)
+  const onSubOptimalDisplay = useCallback((state: boolean) => {
+    setSubOptimalDisplay(state)
+    localStorage.setItem('acx-ui-view-suboptimal-display', state.toString())
+  }, [])
 
-  return <UI.Wrapper>
+  const updateScreenWidth = debounce(() => {
+    if(window.innerWidth >= screenXL){
+      setDisplay(true)
+      setSubOptimalDisplay(false)
+    }else{
+      setDisplay(false)
+    }
+  }, 500)
+
+  useEffect(() => {
+    window.addEventListener('resize', updateScreenWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth)
+    }
+  }, [window.innerWidth])
+
+  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
       fixedHeader={true}
-      fixSiderbar={true}
+      fixSiderbar={display || subOptimalDisplay}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
-      menuHeaderRender={() => <TenantNavLink
-        to={indexPath}
-        tenantType={get(dashboard, 'tenantType', 't')}
-        children={logo}
-      />}
+      menuHeaderRender={() => logo}
       headerContentRender={() => leftHeaderContent &&
         <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
-      rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
+      rightContentRender={() => (display || subOptimalDisplay) &&
+        <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
         {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
@@ -201,7 +224,12 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <UI.Content>{content}</UI.Content>
+      <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
+        {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+          <UI.ResponsiveContent>
+            <Content setShowScreen={onSubOptimalDisplay} />
+          </UI.ResponsiveContent>}
+      </LayoutContext.Provider>
     </ProLayout>
   </UI.Wrapper>
 }

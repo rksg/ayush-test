@@ -18,7 +18,9 @@ import {
   NewTablePageable,
   ResidentPortal,
   ConnectionMetering,
-  BillingCycleType
+  BillingCycleType,
+  TemplateScope,
+  MessageType
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -180,6 +182,10 @@ export const venueApModels = [
     models: []
   }
 ]
+
+export const venueBssColoring = {
+  bssColoringEnabled: true
+}
 
 export const autocompleteResult = {
   address_components: [
@@ -1496,6 +1502,7 @@ export const mockAaaSetting = {
 }
 
 export const mockAaaSettingWithOrder = {
+  id: 'aaa-setting-id',
   authnEnabledSsh: false,
   authnEnableTelnet: false,
   authzEnabledCommand: true,
@@ -1530,6 +1537,24 @@ export const mockRadiusOptions = {
   }
 }
 
+export const mockCellularSettings = {
+  model: 'M510',
+  primarySim: {
+    enabled: true,
+    apn: 'defaultapn',
+    roaming: true,
+    networkSelection: 'AUTO'
+  },
+  secondarySim: {
+    enabled: true,
+    apn: 'defaultapn',
+    roaming: true,
+    networkSelection: 'AUTO'
+  },
+  wanConnection: 'ETH_WITH_CELLULAR_FAILOVER',
+  primaryWanRecoveryTimer: 60
+}
+
 export const mockLoadBalabcing = {
   enabled: true,
   loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',
@@ -1539,6 +1564,17 @@ export const mockLoadBalabcing = {
   stickyClientSteeringEnabled: true,
   stickyClientSnrThreshold: 15,
   stickyClientNbrApPercentageThreshold: 20
+}
+
+export const mockVenueClientAdmissionControl = {
+  enable24G: true,
+  enable50G: false,
+  minClientCount24G: 10,
+  minClientCount50G: 20,
+  maxRadioLoad24G: 75,
+  maxRadioLoad50G: 75,
+  minClientThroughput24G: 0,
+  minClientThroughput50G: 0
 }
 
 export const radiusList = {
@@ -1585,7 +1621,17 @@ export const localUserList = {
       purpose: 'DEFAULT',
       level: 'READ_WRITE',
       serverType: 'LOCAL',
-      authPort: 0
+      authPort: 0,
+      switchCountInVenue: 3,
+      syncedPasswordSwitchCount: 2
+    },
+    {
+      id: 'db611edec14e4536845e456fcd132fdb',
+      level: 'READ_WRITE',
+      password: 'Test123',
+      serverType: 'LOCAL',
+      switchCountInVenue: 3,
+      username: 'test'
     },
     {
       id: '6c4aea92d32e4875a5b736db83875eb6',
@@ -2807,6 +2853,7 @@ export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
     type: 'unitConfig',
     guestAllowed: false,
     residentPortalAllowed: true,
+    residentApiAllowed: false,
     useMaxUnitCount: false,
     maxUnitCount: 1
   }
@@ -2820,6 +2867,7 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
     type: 'unitConfig',
     guestAllowed: true,
     residentPortalAllowed: true,
+    residentApiAllowed: false,
     useMaxUnitCount: false,
     maxUnitCount: 1
   }
@@ -3054,4 +3102,11 @@ export const mockConnectionMeteringTableResult : NewTableResult<ConnectionMeteri
   totalPages: 1,
   totalElements: 4,
   sort: defaultPageable.sort
+}
+
+export const mockedTemplateScope: TemplateScope = {
+  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
+  messageType: MessageType.EMAIL,
+  nameLocalizationKey: 'unit.assigned.email',
+  defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
 }

@@ -6,6 +6,13 @@ import { useIsSplitOn }                                                         
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                       from '@acx-ui/store'
 import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
+import { RolesEnum }                                                                      from '@acx-ui/types'
+import {
+  UserProfile as UserProfileInterface,
+  UserProfileContext,
+  UserProfileContextProps,
+  setUserProfile
+}         from '@acx-ui/user'
 
 import {
   mockPersonaGroupWithoutNSG,
@@ -22,6 +29,8 @@ import {
 
 import { PropertyUnitDrawer } from './index'
 
+
+
 const closeFn = jest.fn()
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
@@ -37,21 +46,30 @@ const mockPersona: Persona = {
   groupId: 'persona-group-id-1',
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
+  revoked: false,
   ethernetPorts: [{
     portIndex: 1,
     personaId: 'persona-id-1',
     macAddress: 'ap-mac-address'
   }],
   meteringProfileId: mockConnectionMeterings[0].id,
-  expirationEpoch: moment.now() / 1000
+  expirationDate: moment().toISOString()
 }
+
+const userProfile = {
+  initials: 'FL',
+  fullName: 'First Last',
+  role: RolesEnum.ADMINISTRATOR,
+  email: 'dog12@email.com',
+  dateFormat: 'yyyy/mm/dd',
+  detailLevel: 'su'
+} as UserProfileInterface
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
-
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
@@ -105,26 +123,36 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should render simple drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
 
     await screen.findByText('Unit Name')
     await screen.findByText('VLAN')
     await screen.findByText('Resident Name')
-    await screen.findByLabelText('Connection Metering')
+    await screen.findByLabelText('Data Usage Metering')
     const buttons = await screen.findAllByRole('button', { name: 'Add' })
     expect(buttons.length).toEqual(2)
-    await userEvent.click(buttons[0]) //click to add connection metering
+    await userEvent.click(buttons[0]) //click to add Data Usage Metering
   })
 
   it('should add no nsg drawer', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
     mockServer.use(
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
         (_, res, ctx) => res(ctx.json(mockPropertyUnitList)))
     )
+    window.HTMLElement.prototype.scrollIntoView = function () {}
+
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
 
@@ -137,7 +165,7 @@ describe('Property Unit Drawer', () => {
     const residentField = await screen.findByLabelText(/resident name/i)
     await userEvent.type(residentField, 'new resident name test')
 
-    await screen.findByLabelText('Connection Metering')
+    await screen.findByLabelText('Data Usage Metering')
 
     const buttons = await screen.findAllByRole('button', { name: 'Add' })
     expect(buttons.length).toEqual(2)
@@ -145,7 +173,11 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit no nsg drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer
         isEdit
         visible
@@ -162,15 +194,19 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
     await userEvent.click(await screen.findByText(mockConnectionMeterings[3].name))
 
-    const saveBtn = await screen.findByRole('button', { name: /save/i })
+    const saveBtn = await screen.findByRole('button', { name: /Apply/i })
     await screen.findByText('Rate limiting')
-    await screen.findByText('Data comsumption')
+    await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
     await userEvent.click(saveBtn)
   })
 
   it('should edit nsg drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer
         isEdit
         visible
@@ -184,12 +220,12 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Select AP')
     await screen.findByLabelText(/vxlan/i)
     await screen.findByText('Rate limiting')
-    await screen.findByText('Data comsumption')
+    await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
 
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
     await userEvent.click(await screen.findByText(mockConnectionMeterings[1].name))
-    const saveBtn = await screen.findByRole('button', { name: /save/i })
+    const saveBtn = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(saveBtn)
   })
 })

@@ -18,7 +18,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
+import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -159,7 +159,7 @@ export default function RadiusAttributeGroupTable () {
           sorter: true,
           searchable: true,
           defaultSortOrder: 'ascend',
-          render: function (data, row) {
+          render: function (_, row) {
             return (
               <TenantLink
                 to={getPolicyDetailsLink({
@@ -167,7 +167,7 @@ export default function RadiusAttributeGroupTable () {
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!
                 })}
-              >{data}</TenantLink>
+              >{row.name}</TenantLink>
             )
           }
         },
@@ -176,7 +176,7 @@ export default function RadiusAttributeGroupTable () {
           key: 'attributes',
           dataIndex: 'attributes',
           align: 'center',
-          render: function (data, row) {
+          render: function (_, row) {
             return row.attributeAssignments.length
           }
         },
@@ -185,7 +185,7 @@ export default function RadiusAttributeGroupTable () {
           key: 'policies',
           dataIndex: 'policies',
           align: 'center',
-          render: function (data, row) {
+          render: function (_, row) {
             const policyIds = policyAssignmentMap.get(row.id) ?? [] as string []
             // eslint-disable-next-line max-len
             const policyNames = policyIds.map((id: string) => policyListMap.get(id) ?? '').filter((name: string) => name.length > 0)
@@ -217,7 +217,7 @@ export default function RadiusAttributeGroupTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           onFilterChange={handleFilterChange}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           actions={filterByAccess([{
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {

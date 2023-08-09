@@ -6,8 +6,6 @@ import { countryCodes, usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
-const DEFAULT_MAP_REGION = 'US'
-
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -39,7 +37,7 @@ const MapRegionFormItem = () => {
         >
           {isMapEnabled ? (
             <Select
-              value={currentMapRegion || DEFAULT_MAP_REGION}
+              value={currentMapRegion}
               onChange={handleMapRegionChange}
               showSearch
               optionFilterProp='children'

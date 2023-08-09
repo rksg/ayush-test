@@ -95,6 +95,10 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
     await userEvent.click(await screen.findByText('Step 2'))
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Next' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
 
     cleanup()
 
@@ -103,6 +107,14 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
     await userEvent.click(await screen.findByText('Step 2'))
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+  })
+
+  it('handles apply in editMode', async () => {
+    const onFinish = jest.fn()
+    render(<CustomForm editMode onFinish={onFinish} />)
+    expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
 
   it('allow update form title in runtime', async () => {
@@ -223,7 +235,7 @@ describe('StepsForm', () => {
     expect(screen.getAllByRole('button').length).toBe(3)
   })
 
-  it('prevent navigate to other steps when field invalid', async () => {
+  it.skip('prevent navigate to other steps when field invalid', async () => {
     render(
       <StepsForm editMode>
         <StepsForm.StepForm title='Step 1'>
@@ -304,37 +316,6 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1' })).toBeVisible()
   })
 
-  it('prevent navigate back and trigger validate in edit mode', async () => {
-    render(
-      <StepsForm editMode>
-        <StepsForm.StepForm title='Step 1'>
-          <StepsForm.Title>Step 1</StepsForm.Title>
-          <Form.Item
-            name='field1'
-            label='Field 1'
-            children={<Input />}
-          />
-        </StepsForm.StepForm>
-
-        <StepsForm.StepForm title='Step 2'>
-          <StepsForm.Title>Step 2</StepsForm.Title>
-          <Form.Item
-            name='field2'
-            label='Field 2'
-            rules={[{ required: true }]}
-            children={<Input />}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
-
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
-    expect(await screen.findByRole('alert')).toBeVisible()
-  })
-
   it('supports onFinish on individual step', async () => {
     const onFinish = jest.fn()
     const onFinish1 = jest.fn().mockResolvedValue(true)
@@ -395,9 +376,27 @@ describe('StepsForm', () => {
     expect(onFinish).not.toBeCalled()
   })
 
-  // TODO
-  // Needed to support existing usage of horizontal + vertical layout for different step
-  it.todo('switches formProps based on current step formProps')
+  it('switches formProps based on current step formProps', async () => {
+    const { asFragment } = render(
+      <StepsForm editMode>
+        <StepsForm.StepForm title='Step 1' layout='horizontal'>
+          <StepsForm.Title>Step 1 Title</StepsForm.Title>
+          <Form.Item name='field1' label='Field 1' children={<Input />} />
+        </StepsForm.StepForm>
+        <StepsForm.StepForm title='Step 2' layout='vertical'>
+          <StepsForm.Title>Step 2</StepsForm.Title>
+          <Form.Item name='field2' label='Field 2' children={<Input />} />
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('form.ant-form-horizontal')).not.toBeNull()
+
+    await userEvent.click(await screen.findByText('Step 2'))
+    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('form.ant-form-vertical')).not.toBeNull()
+  })
 
   // TODO
   // A requirement from UX

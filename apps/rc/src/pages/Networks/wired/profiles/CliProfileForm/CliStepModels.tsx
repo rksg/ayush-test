@@ -5,6 +5,7 @@ import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
 import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
 import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
@@ -41,10 +42,11 @@ export function CliStepModels () {
   const { form, editMode } = useStepFormContext()
   const { data: profiles } = useGetProfilesQuery({ params, payload: profilesPayload })
 
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
 
-  const icxModels = ICX_MODELS_MODULES as IcxModel
+  const icxModels = _.omit(ICX_MODELS_MODULES, !isSupportIcx8200 ? ['ICX8200'] : []) as IcxModel
   const allFamilyModels = transformIcxModels(icxModels)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 

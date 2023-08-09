@@ -27,7 +27,9 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const {
     state, dispatch
   } = useContext(WifiCallingFormContext)
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const { data: dataList } = useGetWifiCallingServiceListQuery({ params: useParams() })
 
@@ -98,6 +100,9 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
       form.setFieldValue('serviceName', data.serviceName)
       form.setFieldValue('description', data.description)
       form.setFieldValue('qosPriority', data.qosPriority)
+    }
+    if (state.ePDG.length) {
+      form.validateFields()
     }
   }, [data, state.ePDG.length])
 

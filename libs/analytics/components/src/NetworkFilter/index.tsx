@@ -1,9 +1,7 @@
-import { useState, ReactNode } from 'react'
+import { useState } from 'react'
 
-import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
-import Highlighter                   from 'react-highlight-words'
 import { useIntl }                   from 'react-intl'
 
 import {
@@ -11,14 +9,15 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
-import { useReportsFilter }                  from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl }              from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand } from '@acx-ui/components'
+import type { CascaderOption }         from '@acx-ui/components'
+import { useReportsFilter }            from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { LabelWithSeverityCircle, SeverityCircles } from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
+import { SeverityCircles }                          from './SeverityCircles'
 import * as UI                                      from './styledComponents'
 
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
@@ -97,9 +96,9 @@ export const getNetworkFilterData = (
   nodesWithSeverities: VenuesWithSeverityNodes,
   filterMode: FilterMode,
   replaceVenueNameWithId: boolean
-): Option[] => {
+): CascaderOption[] => {
   const { $t } = getIntl()
-  const venues: { [key: string]: Option } = {}
+  const venues: { [key: string]: CascaderOption } = {}
   for (const { id, name, path, aps, switches } of data) {
     const shouldPushVenue = ()=>{
       if(filterMode === 'both')
@@ -122,33 +121,22 @@ export const getNetworkFilterData = (
         'venue'
       )
       venues[name] = {
-        label: (
-          <LabelWithSeverityCircle
-            severityCircles={severityData}
-            name={name}
-          />
-        ),
+        label: name,
+        extraLabel: <SeverityCircles severityCircles={severityData} />,
         value: JSON.stringify(venuePath),
-        displayLabel: name,
-        children: [] as Option[],
-        extraLabel: <SeverityCircles severityCircles={severityData} />
+        children: [] as CascaderOption[]
       }
     }
     const venue = venues[name]
     if (venue && aps?.length && venue.children && ['ap','both'].includes(filterMode)) {
       venue.children.push({
-        label: (
-          <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCircle
-              severityCircles={getSeverityCircles(
-                aps,
-                nodesWithSeverities[name]
-              )}
-              name={$t({ defaultMessage: 'APs' })}
-            />
-          </UI.NonSelectableItem>
-        ),
-        displayLabel: $t({ defaultMessage: 'APs' }),
+        label: $t({ defaultMessage: 'APs' }),
+        extraLabel: <SeverityCircles
+          severityCircles={getSeverityCircles(
+            aps,
+            nodesWithSeverities[name]
+          )}
+        />,
         ignoreSelection: true,
         value: `aps${replaceVenueNameWithId ? id : name}`,
         children: aps.map((ap: ApOrSwitch) => {
@@ -157,33 +145,22 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: (
-              <LabelWithSeverityCircle
-                severityCircles={severityData}
-                name={ap.name}
-              />
-            ),
-            displayLabel: ap.name,
-            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }]),
-            extraLabel: <SeverityCircles severityCircles={severityData} />
+            label: ap.name,
+            extraLabel: <SeverityCircles severityCircles={severityData} />,
+            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
           }
         })
       })
     }
     if (venue && switches?.length && venue.children && ['switch','both'].includes(filterMode)) {
       venue.children.push({
-        label: (
-          <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCircle
-              severityCircles={getSeverityCircles(
-                switches,
-                nodesWithSeverities[name]
-              )}
-              name={$t({ defaultMessage: 'Switches' })}
-            />
-          </UI.NonSelectableItem>
-        ),
-        displayLabel: $t({ defaultMessage: 'Switches' }),
+        label: $t({ defaultMessage: 'Switches' }),
+        extraLabel: <SeverityCircles
+          severityCircles={getSeverityCircles(
+            switches,
+            nodesWithSeverities[name]
+          )}
+        />,
         ignoreSelection: true,
         value: `switches${replaceVenueNameWithId ? id : name}`,
         children: switches.map((switchNode: ApOrSwitch) => {
@@ -192,74 +169,25 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: (
-              <LabelWithSeverityCircle
-                severityCircles={severityData}
-                name={switchNode.name}
-              />
-            ),
-            displayLabel: switchNode.name,
-            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }]),
-            extraLabel: <SeverityCircles severityCircles={severityData} />
+            label: switchNode.name,
+            extraLabel: <SeverityCircles severityCircles={severityData} />,
+            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }
         })
       })
     }
   }
-  return Object.values(venues).sort((a: Option, b: Option) =>
-    a.displayLabel && b.displayLabel
-      ? a.displayLabel.toString().localeCompare(b.displayLabel.toString())
-      : 0
+  return Object.values(venues).sort((a: CascaderOption, b: CascaderOption) =>
+    (a.label as string).localeCompare(b.label as string)
   )
 }
 
-const searchHelper = (str: string, input: string) =>
-  str.toLowerCase().includes(input.toLowerCase())
-
-const search = (input: string, path: DefaultOptionType[]): boolean => {
-  const item = path.slice(-1)[0]
-  return item.ignoreSelection // non-selection implies non-searchable
-    ? false
-    : searchHelper(item?.displayLabel as string, input)
-}
-
-const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
-  const device = path.slice(-1)[0]
-  const venue = path.slice(0)[0]
-  const matchVenue = searchHelper(venue?.displayLabel as string, input)
-  const matchDevice = searchHelper(device?.displayLabel as string, input)
-  return device.ignoreSelection // non-selection implies non-searchable
-    ? false
-    : matchVenue || matchDevice
-}
-
-const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
-  const items = path.map((val) => (val?.displayLabel as string))
-  const labels = path.map(item => item?.extraLabel as unknown as ReactNode)
-  const label = labels.length ? labels[labels.length - 1] : null
-  const text = items.join(' / ')
-  return <UI.LabelContainer title={text}>
-    <UI.SearchLabel $isDeep={items.length > 1}>
-      <Highlighter
-        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
-        searchWords={[input]}
-        textToHighlight={text}
-        autoEscape
-      />
-    </UI.SearchLabel>
-    {label}
-  </UI.LabelContainer>
-}
-
-// eslint-disable-next-line no-empty-pattern
-export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
-  selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
   value: SingleValueType | SingleValueType[] | undefined,
   setNetworkPath: CallableFunction
 ) => {
   const path = !value || value.length === 0
-    ? defaultNetworkPath
+    ? []
     : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }
@@ -285,9 +213,7 @@ function ConnectedNetworkFilter (
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    omit({
-      ...filters, path: defaultNetworkPath, includeMuted: false
-    }, 'filter'),
+    { ...filters, includeMuted: false },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({
@@ -321,9 +247,12 @@ function ConnectedNetworkFilter (
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
-        <Select
+        <Cascader
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
+          checkable={multiple}
+          menuMaxWidth='460px'
+          labelMaxWidth='150px'
           showRadioBand={showRadioBand}
           defaultValue={defaultValue || rawVal}
           defaultRadioBand={defaultRadioBand || selectedBands || []}
@@ -358,11 +287,6 @@ function ConnectedNetworkFilter (
             }else{
               onApply(value, setNetworkPath)
             }
-          }}
-          displayRender={displayRender}
-          showSearch={{
-            filter: isReports ? reportSearch : search,
-            render: (input, options) => searchResultsRender(input, options)
           }}
           allowClear
           open={open}

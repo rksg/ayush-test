@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
-import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
-import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                              from '@acx-ui/user'
+import { Loader, Table, TableProps, showActionModal, showToast }                                                                                              from '@acx-ui/components'
+import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }                 from '@acx-ui/rc/services'
+import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                                          from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                                                          from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -68,13 +68,14 @@ export function SwitchConfigBackupTable () {
     setCompareVisible(false)
   }
 
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
     defaultPayload: {},
     sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
+      sortField: 'createdDate',
+      sortOrder: 'DESC'
+    },
+    option: { pollingInterval: 60_000 }
   })
 
   const tableData = tableQuery.data?.data ?? []
@@ -109,12 +110,12 @@ export function SwitchConfigBackupTable () {
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
     disable: true,
-    defaultSortOrder: 'ascend',
     sorter: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),
     dataIndex: 'createdDate',
+    defaultSortOrder: 'descend',
     sorter: true
   }, {
     key: 'backupType',
@@ -122,10 +123,11 @@ export function SwitchConfigBackupTable () {
     dataIndex: 'backupType',
     sorter: true
   }, {
-    key: 'status',
+    key: 'backupStatus',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
-    sorter: true
+    sorter: true,
+    render: (_, row) => row.backupStatus
   }
   ]
 
@@ -247,7 +249,7 @@ export function SwitchConfigBackupTable () {
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
-        rowSelection={{
+        rowSelection={hasAccess() ? {
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedData) => {
             const selectedRows = selectedRowKeys.length
@@ -284,7 +286,7 @@ export function SwitchConfigBackupTable () {
             }
             setEnabledRowButton(enabledButton)
           }
-        }}
+        } : undefined}
       />
     </Loader>
     <BackupModal

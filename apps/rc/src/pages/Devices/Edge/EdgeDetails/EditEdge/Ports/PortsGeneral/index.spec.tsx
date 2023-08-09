@@ -1,12 +1,14 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
-  fireEvent,
-  mockServer, render,
-  screen
+  mockServer,
+  render,
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { EdgeEditContext }                                    from '../..'
@@ -47,6 +49,8 @@ const defaultContextData = {
 
 describe('EditEdge ports - ports general', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedUpdateReq = jest.fn()
+
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -54,6 +58,7 @@ describe('EditEdge ports - ports general', () => {
       activeTab: 'ports',
       activeSubTab: 'ports-general'
     }
+    mockedUpdateReq.mockClear()
 
     mockServer.use(
       rest.get(
@@ -62,7 +67,10 @@ describe('EditEdge ports - ports general', () => {
       ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedUpdateReq(req.body)
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -83,12 +91,21 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '1.1.1.1')
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
+    await userEvent.clear(subnetInput)
+    await userEvent.type(subnetInput, '255.255.255.0')
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
+    await userEvent.clear(gatewayInput)
+    await userEvent.type(gatewayInput, '1.1.1.1')
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+
+    const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIp)
+    expectedResult.ports[0].ip = '1.1.1.1'
+    expectedResult.ports[0].subnet = '255.255.255.0'
+    expectedResult.ports[0].gateway = '1.1.1.1'
+    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(expectedResult))
   })
 
   // it('should active ports general successfully', async () => {
@@ -128,11 +145,11 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '' } })
+    await userEvent.clear(ipInput)
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '' } })
+    await userEvent.clear(subnetInput)
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    fireEvent.change(gatewayInput, { target: { value: '' } })
+    await userEvent.clear(gatewayInput)
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     await screen.findByText('Please enter IP Address')
     await screen.findByText('Please enter Subnet Mask')
@@ -154,16 +171,48 @@ describe('EditEdge ports - ports general', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+
     await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '1.2.3' } })
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '1.2.3')
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '2.2.2' } })
+    await userEvent.clear(subnetInput)
+    await userEvent.type(subnetInput, '2.2.2')
     await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     await screen.findByText('Please enter a valid IP address')
     await screen.findByText('Please enter a valid subnet mask')
+  })
+
+  it('should be blocked by overlapped subnet check', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
+    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    const ipInput1 = await screen.findByRole('textbox', { name: 'IP Address' })
+    await userEvent.clear(ipInput1)
+    await userEvent.type(ipInput1, '1.1.1.1')
+    await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
+    const ipInput2 = await screen.findByRole('textbox', { name: 'IP Address' })
+    await userEvent.clear(ipInput2)
+    await userEvent.type(ipInput2, '1.1.1.1')
+    await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    await screen.findByText('The ports have overlapping subnets')
   })
 
   it('cancel and go back to edge list', async () => {
@@ -183,7 +232,7 @@ describe('EditEdge ports - ports general', () => {
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     })
@@ -275,13 +324,13 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('local0')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('local0')
     await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port1')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port1')
     await user.click(await screen.findByRole('radio', { name: 'Port 4' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('tap0')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('tap0')
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port2')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port2')
   })
 
   it('should show no data string when ports data is empty', async () => {
@@ -340,11 +389,11 @@ describe('EditEdge ports - ports general  api fail', () => {
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    await userEvent.type(ipInput, '1.1.1.1')
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
+    await userEvent.type(subnetInput, '255.255.255.0')
     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
+    await userEvent.type(gatewayInput, '1.1.1.1')
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     // TODO
     // await screen.findAllByText('Server Error')

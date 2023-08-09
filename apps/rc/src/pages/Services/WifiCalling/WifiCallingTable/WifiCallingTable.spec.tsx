@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -19,6 +20,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { mockNetworkResult } from '../__tests__/fixtures'
+
 import WifiCallingTable from './WifiCallingTable'
 
 const mockTableResult = {
@@ -32,7 +35,7 @@ const mockTableResult = {
     'tenantId',
     'id'
   ],
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -44,6 +47,20 @@ const mockTableResult = {
       epdgs: [
         {
           domain: 'a.b.comd'
+        }
+      ]
+    },
+    {
+      id: 'a6ebdcae345c42c1935ddaf946f5c341',
+      name: 'wifi-2',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [
+        '28ebc4915a94407faf8885bcd1fe7f0b'
+      ],
+      tenantId: '2347da24c7824b0b975d2d02406e091f',
+      epdgs: [
+        {
+          domain: 'a.b.com'
         }
       ]
     }
@@ -80,6 +97,10 @@ describe('WifiCallingTable', () => {
       rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
   })
@@ -98,12 +119,42 @@ describe('WifiCallingTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <WifiCallingTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <WifiCallingTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
   it('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
       rest.delete(
-        WifiCallingUrls.deleteWifiCalling.url,
+        WifiCallingUrls.deleteWifiCallingList.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -121,11 +172,9 @@ describe('WifiCallingTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
@@ -146,7 +195,7 @@ describe('WifiCallingTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 

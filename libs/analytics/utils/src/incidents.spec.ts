@@ -1,7 +1,8 @@
 import { capitalize, omit } from 'lodash'
 
-import { renderHook }         from '@acx-ui/test-utils'
-import { PathNode, NodeType } from '@acx-ui/utils'
+import * as configUtil           from '@acx-ui/config'
+import { renderHook }            from '@acx-ui/test-utils'
+import { NetworkPath, NodeType } from '@acx-ui/utils'
 
 import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
 import { kpiConfig }                                                                      from './healthKPIConfig'
@@ -18,7 +19,6 @@ import {
 } from './incidents'
 
 import type { Incident } from './types/incidents'
-
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
     const output = [0.1, 0.65, 0.76, 0.92].map((severity) => calculateSeverity(severity))
@@ -94,8 +94,21 @@ describe('nodeTypes', () => {
     expect(nodeTypes('switch')).toEqual('Switch')
     expect(nodeTypes('apMac')).toEqual('Access Point')
     expect(nodeTypes('ap')).toEqual('Access Point')
-    expect(nodeTypes('AP')).toEqual('Access Point')
+    expect(nodeTypes('system')).toEqual('SZ Cluster')
+    expect(nodeTypes('controller')).toEqual('Controller')
+    expect(nodeTypes('domains')).toEqual('Domain')
+    expect(nodeTypes('domain')).toEqual('Domain')
     expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
+  })
+
+  it('should return correct value for RA', () => {
+    const getConfigSpy = jest.spyOn(configUtil, 'get')
+      .mockReturnValue('true')
+    expect(nodeTypes('network')).toEqual('Network')
+    expect(nodeTypes('zone')).toEqual('Zone')
+    expect(nodeTypes('switchGroup')).toEqual('Switch Group')
+    expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
+    getConfigSpy.mockRestore()
   })
 })
 
@@ -107,7 +120,7 @@ describe('formattedPath', () => {
       { type: 'apGroup', name: 'AG' }
     ]
     const sliceValue = 'Name'
-    expect(formattedPath(path as PathNode[], sliceValue)).toEqual('V (Venue)\n> AG (AP Group)')
+    expect(formattedPath(path as NetworkPath, sliceValue)).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
     const path = [
@@ -117,29 +130,29 @@ describe('formattedPath', () => {
       { type: 'ap', name: 'IP' }
     ]
     const sliceValue = 'Name'
-    expect(formattedPath(path as PathNode[], sliceValue))
+    expect(formattedPath(path as NetworkPath, sliceValue))
       .toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
   })
 })
 
 describe('impactedArea', () => {
-  const path = [{ type: 'zone', name: 'Venue' }] as PathNode[]
+  const path = [{ type: 'zone', name: 'Venue' }] as NetworkPath
   it('return correct value for normal incident', () => {
     const sliceValue = 'Venue'
     expect(impactedArea(path, sliceValue)).toEqual(sliceValue)
   })
   it('return correct value for AP incident', () => {
-    const apPath = [...path, { type: 'ap', name: 'IP' }] as PathNode[]
+    const apPath = [...path, { type: 'ap', name: 'IP' }] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
   it('returns sliceValue when node name same as sliceValue', () => {
-    const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as PathNode[]
+    const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(sameNamePath, sliceValue)).toEqual(sliceValue)
   })
   it('returns sliceValue when empty path', () => {
-    const emptyPath = [] as PathNode[]
+    const emptyPath = [] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })

@@ -13,18 +13,21 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
   useAcceptRejectInvitationMutation,
   useDelegateToMspEcPath
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  VarCustomer
+} from '@acx-ui/msp/utils'
+import {
   EntitlementNetworkDeviceType,
   EntitlementUtil,
-  VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
@@ -79,6 +82,7 @@ export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -91,7 +95,7 @@ export function VarCustomers () {
     const onAcceptInvite = (row: VarCustomer) => {
       return <>
         <Button onClick={() => handleAccept(row)}
-          type='secondary'
+          type='primary'
         >{$t({ defaultMessage: 'Accept' })}</Button>
         <Button onClick={() => handleReject(row)}
           style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Reject' })}</Button>
@@ -146,7 +150,7 @@ export function VarCustomers () {
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
-        render: function (data, row) {
+        render: function (_, row) {
           return onAcceptInvite(row)
         }
       }
@@ -208,9 +212,9 @@ export function VarCustomers () {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(tenantName)}</Link>
         )
       }
     },
@@ -218,6 +222,7 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Account Email' }),
       dataIndex: 'tenantEmail',
       key: 'tenantEmail',
+      searchable: true,
       sorter: true
     },
     {
@@ -226,7 +231,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'apEntitlement.quantity',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.wifiLicenses ? row.wifiLicenses : 0
       }
     },
@@ -236,7 +241,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformApUtilization(row)
       }
     },
@@ -246,7 +251,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'switchEntitlement',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.switchLicenses ? row.switchLicenses : 0
       }
     },
@@ -255,7 +260,7 @@ export function VarCustomers () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformNextExpirationDate(row)
       }
     }
@@ -287,6 +292,10 @@ export function VarCustomers () {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
       defaultPayload: varCustomerPayload,
+      sorter: {
+        sortField: 'tenantName',
+        sortOrder: 'ASC'
+      },
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
       }
@@ -313,6 +322,9 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
+        breadcrumb={isNavbarEnhanced
+          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
+          : undefined}
         extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

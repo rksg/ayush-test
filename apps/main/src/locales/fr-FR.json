@@ -15,7 +15,7 @@
     "defaultMessage": "Connexion Wireless"
   },
   "+20FW7": {
-    "defaultMessage": "non IP"
+    "defaultMessage": "Equipements"
   },
   "+2O1Lz": {
     "defaultMessage": "Le 6 GHz n’est pas pris en charge pour le test de Client virtuel"
@@ -57,7 +57,7 @@
     "defaultMessage": "Détails de la stratégie de détection des AP non autorisés :{policyName}"
   },
   "+GUwuS": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "+LXQUn": {
     "defaultMessage": "Acceptation d’accès RADIUS (RADIUS_ACCEPT_PROXY)"
@@ -122,6 +122,9 @@
   },
   "+cdm35": {
     "defaultMessage": "Échec d’authentification de l’ID invité"
+  },
+  "+frS59": {
+    "defaultMessage": "Gestion des versions"
   },
   "+iQZtX": {
     "defaultMessage": "{successCount} de {totalCount} sessions"
@@ -366,7 +369,7 @@
     "defaultMessage": "Ajouter un modèle"
   },
   "/wkhBU": {
-    "defaultMessage": "Mes cas ouverts"
+    "defaultMessage": "Mes tickets ouverts"
   },
   "/wvHFt": {
     "defaultMessage": "Stratégies et profils"
@@ -415,7 +418,7 @@
     "description": "Type de sécurité WLAN - Aucun"
   },
   "07a9rK": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "08gBns": {
     "defaultMessage": "Proxy mDNS ({count})"
@@ -1239,7 +1242,7 @@
     "defaultMessage": "Liste des points d’accès"
   },
   "48INch": {
-    "defaultMessage": "Personnages"
+    "defaultMessage": "Personas"
   },
   "493J7R": {
     "defaultMessage": "Comparer"
@@ -2476,8 +2479,9 @@
   "9q7E+6": {
     "defaultMessage": "Session CLI - {switchName}"
   },
-  "9qW5S9": {
-    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
+  "jVGVFN": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}demande votre attention",
+    "description": "Translation string - Requires Attention"
   },
   "9rPWO/": {
     "defaultMessage": "Annulation de l’association, car un nombre excessif de trames doit être reçu, mais ne l’est pas en raison de transmissions AP et/ou de mauvaises conditions de canal"
@@ -2724,10 +2728,10 @@
     "defaultMessage": "Fabricant du client"
   },
   "Ar4vtA": {
-    "defaultMessage": "Ajouter un groupe de personnages"
+    "defaultMessage": "Ajouter un groupe de Personas"
   },
   "ArhATs": {
-    "defaultMessage": "Expérience du client"
+    "defaultMessage": "Expérience clients"
   },
   "AszHoG": {
     "defaultMessage": "Capture en cours…"
@@ -3664,7 +3668,7 @@
     "defaultMessage": "<b>Les abonnements MSP ont expiré</b>"
   },
   "FgqJyk": {
-    "defaultMessage": "Rapport câblé"
+    "defaultMessage": "Rapport filaire"
   },
   "FguTAO": {
     "defaultMessage": "Administrateur tiers"
@@ -3829,7 +3833,7 @@
     "defaultMessage": "Nous devons actualiser la page pour activer la région de la carte. Merci de votre compréhension."
   },
   "GQSMoL": {
-    "defaultMessage": "Fonctionnalité de l’AP"
+    "defaultMessage": "Capacité APs"
   },
   "GT/UvO": {
     "defaultMessage": "Temps de latence de l’AP à RUCKUS One"
@@ -4007,7 +4011,7 @@
     "defaultMessage": "Nom du destinataire"
   },
   "HDSu9X": {
-    "defaultMessage": "Adresse IP extérieure"
+    "defaultMessage": "Adresse IP"
   },
   "HDrDGP": {
     "defaultMessage": "SCTP"
@@ -4374,8 +4378,9 @@
   "IqBkBl": {
     "defaultMessage": "DHCP"
   },
-  "IrnXwi": {
-    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "HcncMB": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation not needed"
   },
   "ItEQ44": {
     "defaultMessage": "Renvoyer l’invitation"
@@ -4471,7 +4476,7 @@
     "defaultMessage": "Bande inférieure 5 GHz - Sélection du canal de l’AP en extérieur"
   },
   "JAB4A4": {
-    "defaultMessage": "AP en ligne"
+    "defaultMessage": "APs connectés"
   },
   "JAspuT": {
     "defaultMessage": "Client associé (802.11)"
@@ -5203,8 +5208,9 @@
   "McAp05": {
     "defaultMessage": "L’abonnement va expirer dans {daysText} jours"
   },
-  "McKt/u": {
-    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
+  "OkxXZB": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Opérationnel",
+    "description": "Translation string - Operational"
   },
   "MeWmjM": {
     "defaultMessage": "Stratégie adaptative (à déterminer)"
@@ -5538,7 +5544,7 @@
     "defaultMessage": "L’appareil sera placé sur ce VLAN après s’être authentifié sur le réseau Wi-Fi. Si ce champ est laissé vide, la valeur par défaut du réseau sera utilisée."
   },
   "O0h2x8": {
-    "defaultMessage": "Informations d’identification de la carte d’invité"
+    "defaultMessage": "Comptes Invité"
   },
   "O0k4eg": {
     "defaultMessage": "Trame d’authentification abandonnée par un client bloqué"
@@ -6016,6 +6022,9 @@
   "QExggt": {
     "defaultMessage": "Utilisation du mot de passe configuré"
   },
+  "QF+PNv": {
+    "defaultMessage": "Gestion du compte"
+  },
   "QF20FV": {
     "defaultMessage": "query-end-time"
   },
@@ -6134,7 +6143,7 @@
     "defaultMessage": "Nombre d’IP restantes"
   },
   "Qpk8Ou": {
-    "defaultMessage": "TelnetCpe"
+    "defaultMessage": "TelenetCpe"
   },
   "Qq9Z7z": {
     "defaultMessage": "Utilisation des ressources"
@@ -6860,7 +6869,7 @@
     "defaultMessage": "Taux de réussite de la connexion"
   },
   "UOVi5a": {
-    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en site sûr."
+    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en lieu sûr."
   },
   "UOrao6": {
     "defaultMessage": "Membre de la pilejouter un serveurPoE power denied in {ut}"
@@ -7139,8 +7148,9 @@
     "defaultMessage": "{entityName} avec ce/cette {key, select, name {nom} other {valeur} } existe déjà{ extra }",
     "description": "Validation - Vérification des doublons"
   },
-  "VmBHQi": {
-    "defaultMessage": "IP Address {ipAddress} was {editMode, select, true {updated} other {added}}"
+  "aA90jI": {
+    "defaultMessage": "L’adresse IP {ipAddress} a été {editMode, select, true {updated} other {added}}",
+    "description": "Translation strings - IP Address, was"
   },
   "Vnv9od": {
     "defaultMessage": "Paramètres de connexion de l’utilisateur (par défaut)"
@@ -7867,7 +7877,7 @@
     "defaultMessage": "Sous-interface"
   },
   "ZJqg2J": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "ZJvcHR": {
     "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {événement} other {événements} }</b></space>"
@@ -8341,7 +8351,7 @@
     "defaultMessage": "Copier depuis votre rapport d’installation Wi-Fi4EU"
   },
   "bS/cRP": {
-    "defaultMessage": "Lieux"
+    "defaultMessage": "Sites"
   },
   "bT9NBq": {
     "defaultMessage": "Échec de l’association (station non autorisée\\')"
@@ -8428,7 +8438,7 @@
     "defaultMessage": "Veuillez sélectionner un logo"
   },
   "bnaSLU": {
-    "defaultMessage": "Clients connectés au fil du temps"
+    "defaultMessage": "Connexions Clients"
   },
   "bobOH0": {
     "defaultMessage": "Informations d’identification > ID des clients OAuth 2.0 > Cliquer sur le nom du client > URL de redirection autorisées"
@@ -8487,8 +8497,9 @@
   "c3VJQo": {
     "defaultMessage": "Appareil"
   },
-  "c3gDWz": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
+  "C8efXI": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}en Phase d’installation",
+    "description": "Translation string - In Setup Phase"
   },
   "c4PxNN": {
     "defaultMessage": "Le mot de passe expire après :"
@@ -9095,7 +9106,7 @@
     "defaultMessage": "Abonnement Wi-Fi"
   },
   "ehA2tj": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "ejDjCV": {
     "defaultMessage": "<p>Pour remédier aux problèmes identifiés ci-dessus, suivez les actions recommandées correspondantes :</p> <ol> <li>Assurez-vous que la capacité du PSE (commutateur PoE ou injecteur PoE) correspond bien aux besoins en énergie des modèles d’AP déployés.</li> <li>Vérifiez la longueur et le type de câble pour une bonne utilisation du PoE.</li> </ol>"
@@ -9220,8 +9231,9 @@
   "fDINOd": {
     "defaultMessage": "Activité de l’administrateur"
   },
-  "fEE7ng": {
-    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
+  "ZMT2+a": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Problème transitoire",
+    "description": "Translation string - Transient Issue"
   },
   "fENfxR": {
     "defaultMessage": "OPTION-IPv4_FQDN-MoS"
@@ -10128,7 +10140,7 @@
     "defaultMessage": "[Today,] HH:mm"
   },
   "jh4nUh": {
-    "defaultMessage": "Gestion des personnages"
+    "defaultMessage": "Gestion des Personas"
   },
   "jhYpbe": {
     "defaultMessage": "Police X Window"
@@ -10855,7 +10867,7 @@
     "defaultMessage": "({usedPercentage}%)"
   },
   "n/qhwR": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "n/vWlL": {
     "defaultMessage": "Appliqué sur le site"
@@ -11781,8 +11793,9 @@
   "rITqXY": {
     "defaultMessage": "Délai de réponse de la sonde de diffusion :."
   },
-  "rIgzAj": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
+  "1WSnFV": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Hors ligne",
+    "description": "Translation string - Offline"
   },
   "rIw+Gj": {
     "defaultMessage": "Module 4"
@@ -12293,7 +12306,7 @@
     "defaultMessage": "Aucun profil n’est sélectionné"
   },
   "tWytGP": {
-    "defaultMessage": "Liste des clients câblés"
+    "defaultMessage": "Liste des clients filaires"
   },
   "tXMZ3F": {
     "defaultMessage": "Adresse Netinfo"
@@ -12445,7 +12458,7 @@
     "defaultMessage": "STP BPDU Guard"
   },
   "uJV0wU": {
-    "defaultMessage": "extérieure"
+    "defaultMessage": "Adresse IP"
   },
   "uKatq7": {
     "defaultMessage": "Modifier le réseau"
@@ -13124,8 +13137,9 @@
   "xasuCg": {
     "defaultMessage": "Type d’IP"
   },
-  "xbKzeb": {
-    "defaultMessage": "Block a client for <blockingPeriod></blockingPeriod> seconds after <failThreshold></failThreshold> repeat authentication failures within <checkPeriod></checkPeriod> seconds"
+  "VwJEJV": {
+    "defaultMessage": "Bloquer un client pendant <blockingPeriod></blockingPeriod> secondes après <failThreshold></failThreshold> répétition des échecs d'authentification dans <checkPeriod></checkPeriod> secondes",
+    "description": "Translation string - Block a client for, seconds after, repeat authentication failures within, seconds"
   },
   "xciyj1": {
     "defaultMessage": "Utiliser l’authentification MAC lors de la reconnexion :"
@@ -13271,8 +13285,9 @@
   "yCDkU6": {
     "defaultMessage": "Le temps de connexion est supérieur à {threshold} dans {scope}"
   },
-  "yCeZ/i": {
-    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "y9b5Vt": {
+    "defaultMessage": "Pool VLAN: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation string - VLAN Pool"
   },
   "yDq3qb": {
     "defaultMessage": "Ajouter une sous-interface"

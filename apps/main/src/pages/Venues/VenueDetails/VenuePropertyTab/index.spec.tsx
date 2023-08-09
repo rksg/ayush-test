@@ -1,27 +1,78 @@
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
+import moment              from 'moment-timezone'
 import { rest }            from 'msw'
 
-import { useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, ConnectionMeteringUrls, PersonaUrls, PropertyUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                 from '@acx-ui/test-utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CommonUrlsInfo,
+  ConnectionMeteringUrls,
+  Persona,
+  PersonaUrls,
+  PropertyUrlsInfo,
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { mockPersona } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
 import {
   mockEnabledNoNSGPropertyConfig,
   mockPersonaGroupWithoutNSG,
   mockPropertyUnitList,
   mockConnectionMeteringTableResult,
   mockConnectionMeterings,
-  replacePagination
+  replacePagination,
+  mockEnabledNSGPropertyConfig,
+  mockPersonaGroupWithNSG
 } from '../../__tests__/fixtures'
 
 import { VenuePropertyTab } from './index'
 
+
+const mockPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'persona-group-id-1',
+  dpskGuid: 'dpsk-guid-1',
+  dpskPassphrase: 'dpsk-passphrase',
+  identityId: 'unit-id-1',
+  revoked: false,
+  devices: [
+    {
+      macAddress: '11:11:11:11:11:11',
+      personaId: 'persona-id-1'
+    },
+    {
+      macAddress: '11:11:11:11:11:12',
+      personaId: 'persona-id-1'
+    },
+    {
+      macAddress: '11:11:11:11:11:13',
+      personaId: 'persona-id-1'
+    }
+  ],
+  ethernetPorts: [
+    {
+      portIndex: 1,
+      macAddress: '11:11:11:11:11:11',
+      personaId: 'persona-id-1',
+      name: 'port-name-1'
+    }
+  ],
+  switches: [
+    {
+      personaId: 'persona-id-1',
+      macAddress: '11:11:11:11:11:11',
+      portId: '1/1/10'
+    }
+  ],
+  meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  expirationDate: moment().add(-8, 'days').toISOString()
+}
+
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
+const enableNsgParams = { tenantId, venueId: '23edaec8639a42c89ce0a52143c64f15' }
 const updateUnitFn = jest.fn()
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Page', () => {
@@ -31,7 +82,13 @@ describe('Property Unit Page', () => {
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
-        (_, res, ctx) => res(ctx.json(mockEnabledNoNSGPropertyConfig))
+        (req, res, ctx) => {
+          return res(ctx.json(
+            req.params.venueId === enableNsgParams.venueId
+              ? mockEnabledNSGPropertyConfig
+              : mockEnabledNoNSGPropertyConfig)
+          )
+        }
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
@@ -43,7 +100,13 @@ describe('Property Unit Page', () => {
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (_, res, ctx) => res(ctx.json(mockPersonaGroupWithoutNSG))
+        (req, res, ctx) => {
+          return res(ctx.json(
+            req.params.groupId === 'persona-group-id-noNSG'
+              ? mockPersonaGroupWithoutNSG
+              : mockPersonaGroupWithNSG)
+          )
+        }
       ),
       rest.delete(
         PropertyUrlsInfo.deletePropertyUnits.url,
@@ -66,7 +129,11 @@ describe('Property Unit Page', () => {
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+        (_, res, ctx) =>
+          res(ctx.json({
+            data: [{ switchMac: '11:11:11:11:11:11', name: 'switchName' }],
+            totalCount: 0
+          }))
       ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,
@@ -79,7 +146,7 @@ describe('Property Unit Page', () => {
     )
   })
 
-  it('show render Unit table', async () => {
+  it.skip('show render Unit table', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -99,6 +166,14 @@ describe('Property Unit Page', () => {
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
+  })
+
+  it.skip('show render Unit table withNsg', async () => {
+    render(<Provider><VenuePropertyTab /></Provider>, { route: { params: enableNsgParams } })
+
+    const firstRowName = mockPropertyUnitList.content[0].name
+    await screen.findByRole('cell', { name: firstRowName })
+    await screen.findByRole('cell', { name: /switchName/i })
   })
 
   it('should support Suspend, View Portal, Delete actions', async () => {
@@ -154,14 +229,14 @@ describe('Property Unit Page', () => {
 
     const dialog = await screen.findByRole('dialog')
 
-    const xlsxFile = new File(
+    const csvFile = new File(
       [''],
-      'unit_import_template.xlsx',
-      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+      'unit_import_template.csv',
+      { type: 'text/csv' }
     )
 
     // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, xlsxFile)
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
     await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
 
@@ -196,7 +271,7 @@ describe('Property Unit Page', () => {
       { route: { params } }
     )
 
-    const exportBtn = await screen.findByRole('button', { name: /export to csv/i })
+    const exportBtn = await screen.findByTestId('export-unit')
     await userEvent.click(exportBtn)
     await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })

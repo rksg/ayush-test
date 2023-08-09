@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  migrationResult
+  migrationResult,
+  configurationResult
 } from '../__tests__/fixtures'
 
 import ValidationForm from './ValidationForm'
@@ -26,22 +27,28 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
 }
 
 describe('ValidationForm', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: string, id: string }
   beforeEach(async () => {
     mockServer.use(
       rest.get(
         MigrationUrlsInfo.getMigrationResult.url,
         (req, res, ctx) => res(ctx.json(migrationResult))
+      ), rest.get(
+        MigrationUrlsInfo.getZdConfiguration.url,
+        (_, res, ctx) => res(
+          ctx.json(configurationResult)
+        )
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: 'd819bd5c-c6f6-491d-9650-e0c96b2cf35c'
     }
   })
 
   it('should render table', async () => {
     const {} = render(
-      <ValidationForm />, {
+      <ValidationForm taskId={'d819bd5c-c6f6-491d-9650-e0c96b2cf35c'} />, {
         wrapper: wrapper,
         route: { params, path: '/:tenantId/administration/onpremMigration/add' }
       })

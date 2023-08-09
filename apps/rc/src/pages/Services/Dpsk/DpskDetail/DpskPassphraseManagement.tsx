@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
+import moment                             from 'moment'
 import { RawIntlProvider, useIntl }       from 'react-intl'
 
 import {
@@ -11,9 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
@@ -23,21 +23,25 @@ import {
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
+  EXPIRATION_TIME_FORMAT,
   ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  getPassphraseStatus,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                           from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
+import { getIntl }                             from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
+
 
 
 interface UploadPassphrasesFormFields {
@@ -75,13 +79,14 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
     defaultPayload,
-    search: defaultSearch
+    search: defaultSearch,
+    enableSelectAllPagesData: ['id']
   })
 
   const downloadPassphrases = () => {
@@ -98,8 +103,8 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       defaultSortOrder: 'descend',
       fixed: 'left',
-      render: function (data) {
-        return formatter(DateFormatEnum.DateTimeFormat)(data)
+      render: function (_, { createdDate }) {
+        return moment(createdDate).format(EXPIRATION_TIME_FORMAT)
       }
     },
     {
@@ -107,7 +112,6 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true,
       searchable: true
     },
     {
@@ -115,8 +119,10 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
       sorter: true,
-      render: function (data) {
-        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
+      render: function (_, { numberOfDevices }) {
+        return (numberOfDevices && numberOfDevices !== -1)
+          ? numberOfDevices
+          : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
@@ -130,8 +136,8 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Passphrase' }),
       dataIndex: 'passphrase',
       sorter: false,
-      render: function (data) {
-        return <PassphraseViewer passphrase={data as string}/>
+      render: function (_, { passphrase }) {
+        return <PassphraseViewer passphrase={passphrase}/>
       }
     },
     {
@@ -141,42 +147,50 @@ export default function DpskPassphraseManagement () {
       sorter: true
     },
     {
+      key: 'status',
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'expirationDate',
+      sorter: false,
+      render: function (_, row) {
+        return getPassphraseStatus(row, isCloudpathEnabled)
+      }
+    },
+    {
       key: 'expirationDate',
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expirationDate',
       sorter: true,
-      render: function (data) {
-        if (data) {
+      render: function (_, { expirationDate }) {
+        if (expirationDate) {
           return transformAdvancedDpskExpirationText(intl, {
             expirationType: ExpirationType.SPECIFIED_DATE,
-            expirationDate: data as string,
+            expirationDate: expirationDate,
             displayTime: true
           })
         }
         return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
     },
-    {
-      key: 'revocationReason',
-      title: $t({ defaultMessage: 'Revocation Reason' }),
-      dataIndex: 'revocationReason',
-      show: isCloudpathEnabled,
-      sorter: true
-    },
-    {
-      key: 'email',
-      title: $t({ defaultMessage: 'Contact Email Address' }),
-      dataIndex: 'email',
-      show: isCloudpathEnabled,
-      sorter: true
-    },
-    {
-      key: 'phoneNumber',
-      title: $t({ defaultMessage: 'Contact Phone Number' }),
-      dataIndex: 'phoneNumber',
-      show: isCloudpathEnabled,
-      sorter: true
-    }
+    ...(isCloudpathEnabled
+      ? [{
+        key: 'revocationReason',
+        title: $t({ defaultMessage: 'Revocation Reason' }),
+        dataIndex: 'revocationReason',
+        sorter: true
+      },
+      {
+        key: 'email',
+        title: $t({ defaultMessage: 'Contact Email Address' }),
+        dataIndex: 'email',
+        sorter: true
+      },
+      {
+        key: 'phoneNumber',
+        title: $t({ defaultMessage: 'Contact Phone Number' }),
+        dataIndex: 'phoneNumber',
+        sorter: true
+      }]
+      : [])
   ]
 
   const doDelete = (selectedRows: NewDpskPassphrase[], callback: () => void) => {
@@ -189,11 +203,14 @@ export default function DpskPassphraseManagement () {
     )
   }
 
+  const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
+    return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit Passphrase' }),
-      // eslint-disable-next-line max-len
-      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      visible: canEdit,
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
@@ -261,38 +278,31 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    {
+    ...!hasRoles(RolesEnum.DPSK_ADMIN) ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
-    }
+    }]: []
   ]
 
-  const networkForm = <NetworkForm modalMode={true}
-    modalCallBack={()=>{
-      setNetworkModalVisible(false)
-    }}
-    createType={NetworkTypeEnum.DPSK}
-  />
-
   return (<>
-    <DpskPassphraseDrawer
-      visible={addPassphrasesDrawerVisible}
+    {addPassphrasesDrawerVisible && <DpskPassphraseDrawer
+      visible={true}
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
-    />
+    />}
     { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
       setPassphraseInfo={setManagePassphraseInfo}
-    /> }
-    <ImportFileDrawer type='DPSK'
+    />}
+    {uploadCsvDrawerVisible && <ImportFileDrawer type={ImportFileDrawerType.DPSK}
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}
       maxEntries={5000}
       acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
-      visible={uploadCsvDrawerVisible}
+      visible={true}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
         const formValues = values as UploadPassphrasesFormFields
@@ -319,13 +329,20 @@ export default function DpskPassphraseManagement () {
         label={$t({ defaultMessage: 'User name prefix' })}
         children={<Input />}
       />
-    </ImportFileDrawer>
+    </ImportFileDrawer>}
     <Modal
       title={$t({ defaultMessage: 'Add DPSK Network' })}
       type={ModalType.ModalStepsForm}
       visible={networkModalVisible}
       mask={true}
-      children={networkForm}
+      children={
+        <NetworkForm modalMode={true}
+          modalCallBack={()=>{
+            setNetworkModalVisible(false)
+          }}
+          createType={NetworkTypeEnum.DPSK}
+        />
+      }
       destroyOnClose={true}
     />
     <Loader states={[tableQuery]}>
@@ -334,10 +351,11 @@ export default function DpskPassphraseManagement () {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

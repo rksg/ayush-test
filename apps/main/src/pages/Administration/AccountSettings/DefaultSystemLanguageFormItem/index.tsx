@@ -35,10 +35,7 @@ const DefaultSystemLanguageFormItem = () => {
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
-    return $t({ defaultMessage: '{language} ({localLanguage})' }, {
-      language: currLangDisplay.of(val),
-      localLanguage: languageNames.of(val)
-    })
+    return languageNames.of(val)
   }
 
   const supportedLangs = [DEFAULT_SYS_LANG,
@@ -59,9 +56,14 @@ const DefaultSystemLanguageFormItem = () => {
             showSearch
             optionFilterProp='children'
             disabled={isUpdatingPreference || isLoadingPreference}
+            style={{ textTransform: 'capitalize' }}
           >
             {supportedLangs.map(({ label, value }) =>
-              (<Select.Option value={value} key={value} children={label}/>)
+              (<Select.Option
+                style={{ textTransform: 'capitalize' }}
+                value={value}
+                key={value}
+                children={label}/>)
             )}
           </Select>
 

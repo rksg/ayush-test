@@ -17,11 +17,13 @@ import {
   useIsSplitOn
 }                                from '@acx-ui/feature-toggle'
 import {
+  DownloadOutlined,
   WarningTriangleSolid
 } from '@acx-ui/icons'
 import {
   CsvSize,
-  ImportFileDrawer
+  ImportFileDrawer,
+  ImportFileDrawerType
 }      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
@@ -61,39 +63,39 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
 path:nth-child(1) {
-  fill: ${props => props.expired ? 'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+  fill: ${props => props.expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 path:nth-child(3) {
   stroke: ${props => props.expired ?
-    'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+    'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 `
 
 function ConnectionMeteringLink (props:{
   id: string,
   name: string,
-  expirationEpoch?: number | null }
+  expirationDate?: string | null }
 ) {
   const { $t } = useIntl()
-  const { id, name, expirationEpoch } = props
+  const { id, name, expirationDate } = props
   let expired = false
   let tooltip = ''
   let showWarning = false
-  if (expirationEpoch) {
-    const now = new Date().getTime() / 1000
-    if (expirationEpoch <= now) {
+  if (expirationDate) {
+    const now = moment.now()
+    const expirationTime = moment(expirationDate)
+    if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
-    } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
+    } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
-      const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
-        , { expireDate })
+        , { expireDate: expirationTime.format('YYYY/MM/DD') })
     }
   }
   return (
-    <div style={{ fontSize: '16px' }}>
+    <div>
       <div style={{ float: 'left', marginLeft: '5%' }}>
         <TenantLink to={
           getPolicyDetailsLink({
@@ -104,8 +106,8 @@ function ConnectionMeteringLink (props:{
         </TenantLink>
       </div>
       {showWarning &&
-        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
-          <WarningTriangle expired={expired}/>
+        <div style={{ float: 'left' }} title={tooltip}>
+          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
@@ -115,6 +117,10 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const PropertyUnitStatusOptions = [
+    { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
+    { key: PropertyUnitStatus.DISABLED, value: $t({ defaultMessage: 'Suspended' }) }
+  ]
   const { venueId, tenantId } = useParams()
   const enabled = (status: string) => status === PropertyUnitStatus.ENABLED
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
@@ -172,7 +178,7 @@ export function VenuePropertyTab () {
       params: { venueId },
       payload: {
         ...queryUnitList.payload,
-        pageSize: 100,
+        pageSize: 2147483647,
         page: 1
       }
     }).unwrap().catch((error) => {
@@ -315,10 +321,6 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Import From File' }),
       disabled: !hasAssociation,
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
-    {
-      label: $t({ defaultMessage: 'Export To CSV' }),
-      onClick: downloadUnit
     }
   ]
 
@@ -334,8 +336,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Suspend' }),
       visible: (selectedRows => {
-        const activateCount = selectedRows.filter(row => enabled(row.status)).length
-        return activateCount > 0 && activateCount === selectedRows.length
+        const activeCount = selectedRows.filter(row => enabled(row.status)).length
+        return activeCount > 0 && activeCount === selectedRows.length
       }),
       onClick: (items, clearSelection) => {
         showActionModal({
@@ -393,6 +395,7 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
+        setDrawerState({ isEdit: false, visible: false })
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -420,7 +423,11 @@ export function VenuePropertyTab () {
     {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status'
+      dataIndex: 'status',
+      filterMultiple: false,
+      filterable: PropertyUnitStatusOptions,
+      render: (_, row) => row.status === PropertyUnitStatus.ENABLED
+        ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',
@@ -437,8 +444,11 @@ export function VenuePropertyTab () {
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
-        return (apMap.get(apMac) as APExtended)?.name
-        ?? persona?.ethernetPorts?.[0]?.name
+        const apName = (apMap.get(apMac) as APExtended)?.name
+          ?? persona?.ethernetPorts?.[0]?.name
+        return apName
+          ? `${apName} ${persona?.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')}`
+          : undefined
       }
     },
     {
@@ -447,15 +457,24 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Switch Ports' }),
       dataIndex: 'switchPorts',
       render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const switchMac = persona?.switches?.[0]?.macAddress ?? ''
-        return (switchMap.get(switchMac) as SwitchViewModel)?.name
+        const switchList: string[] = []
+
+        personaMap.get(row.personaId)?.switches?.forEach(s => {
+          const switchMac = s.macAddress
+          const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
+
+          if (switchName) {
+            switchList.push(`${switchName} ${s.portId}`)
+          }
+        })
+
+        return switchList.map(s => <div>{s}</div>)
       }
     },
     {
       show: isConnectionMeteringEnabled,
       key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Connection Metering' }),
+      title: $t({ defaultMessage: 'Data Usage Metering' }),
       dataIndex: 'connectionMetering',
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
@@ -464,7 +483,7 @@ export function VenuePropertyTab () {
         const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
         if (persona && connectionMetering) {
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona.expirationEpoch}/>
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
         }
         return ''
       }
@@ -488,13 +507,17 @@ export function VenuePropertyTab () {
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = queryUnitList.payload
-    const currentSearchString = payload.filters?.name ?? ''
 
-    if (currentSearchString === customSearch.searchString) return
+    const customPayload = {
+      filters: {
+        name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
+        status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
+      }
+    }
 
     queryUnitList.setPayload({
       ...payload,
-      filters: { name: customSearch.searchString !== '' ? customSearch.searchString : undefined }
+      ...customPayload
     })
   }
 
@@ -517,13 +540,17 @@ export function VenuePropertyTab () {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-unit'} />,
+          onClick: downloadUnit
+        }}
       />
-      {venueId &&
+      {venueId && drawerState.visible &&
         <PropertyUnitDrawer
+          visible={true}
           venueId={venueId}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
-          visible={drawerState.visible}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
         />
       }
@@ -531,11 +558,11 @@ export function VenuePropertyTab () {
         title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        type='PropertyUnit'
-        acceptType={['xlsx']}
+        type={ImportFileDrawerType.PropertyUnit}
+        acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
-        templateLink='assets/templates/units_import_template.xlsx'
+        maxEntries={512}
+        templateLink='assets/templates/units_import_template.csv'
         importRequest={importUnits}
         formDataName={'unitImports'}
         onClose={() => setUploadCsvDrawerVisible(false)}

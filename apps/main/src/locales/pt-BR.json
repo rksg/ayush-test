@@ -2476,8 +2476,9 @@
   "9q7E+6": {
     "defaultMessage": "Sessão CLI – {switchName}"
   },
-  "9qW5S9": {
-    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
+  "jVGVFN": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Exige atenção",
+    "description": "Translation string - Requires Attention"
   },
   "9rPWO/": {
     "defaultMessage": "Desassociado porque um número excessivo de estruturas precisa ser reconhecido, mas não o foram devido a transmissões de AP e/ou condições de canal ruins"
@@ -4374,8 +4375,9 @@
   "IqBkBl": {
     "defaultMessage": "DHCP"
   },
-  "IrnXwi": {
-    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "HcncMB": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation not needed"
   },
   "ItEQ44": {
     "defaultMessage": "Reenviar convite"
@@ -5203,8 +5205,9 @@
   "McAp05": {
     "defaultMessage": "A inscrição vai expirar em {daysText} dias"
   },
-  "McKt/u": {
-    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
+  "OkxXZB": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operacional",
+    "description": "Translation string - Operational"
   },
   "MeWmjM": {
     "defaultMessage": "Política adaptativa (TBD)"
@@ -6134,7 +6137,7 @@
     "defaultMessage": "N.º de IPs restantes"
   },
   "Qpk8Ou": {
-    "defaultMessage": "TelnetCpe"
+    "defaultMessage": "TelenetCpe"
   },
   "Qq9Z7z": {
     "defaultMessage": "Utilização de recursos"
@@ -7139,8 +7142,9 @@
     "defaultMessage": "{entityName} com esse {key, select, name {nome} other {valor} } já existe{ extra }",
     "description": "Validação – verificações de duplicação"
   },
-  "VmBHQi": {
-    "defaultMessage": "O endereço IP {ipAddress} foi {editMode, select, true {atualizado} other {adicionado}}"
+  "aA90jI": {
+    "defaultMessage": "O endereço IP {ipAddress} foi {editMode, select, true {updated} other {added}}",
+    "description": "Translation strings - IP Address, was"
   },
   "Vnv9od": {
     "defaultMessage": "Configurações de conexão do usuário (Padrão)"
@@ -8487,8 +8491,9 @@
   "c3VJQo": {
     "defaultMessage": "Dispositivo"
   },
-  "c3gDWz": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
+  "C8efXI": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Em fase de configuração",
+    "description": "Translation string - In Setup Phase"
   },
   "c4PxNN": {
     "defaultMessage": "A senha expira após:"
@@ -9220,8 +9225,9 @@
   "fDINOd": {
     "defaultMessage": "Atividade de administradores"
   },
-  "fEE7ng": {
-    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
+  "ZMT2+a": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Problema transiente",
+    "description": "Translation string - Transient Issue"
   },
   "fENfxR": {
     "defaultMessage": "OPTION-IPv4_FQDN-MoS"
@@ -11781,8 +11787,9 @@
   "rITqXY": {
     "defaultMessage": "Atraso na resposta da sonda de transmissão:"
   },
-  "rIgzAj": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
+  "1WSnFV": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Off-line",
+    "description": "Translation string - Offline"
   },
   "rIw+Gj": {
     "defaultMessage": "Módulo 4"
@@ -13124,8 +13131,9 @@
   "xasuCg": {
     "defaultMessage": "Tipo de IP"
   },
-  "xbKzeb": {
-    "defaultMessage": "Bloquear um cliente por <blockingPeriod></blockingPeriod> segundos após <failThreshold></failThreshold> falhas de autenticação repetidas dentro de <checkPeriod></checkPeriod> segundos"
+  "VwJEJV": {
+    "defaultMessage": "Bloquear um cliente por <blockingPeriod></blockingPeriod> segundos após <failThreshold></failThreshold> falhas de autenticação repetidas dentro de <checkPeriod></checkPeriod> segundos",
+    "description": "Translation string - Block a client for, seconds after, repeat authentication failures within, seconds"
   },
   "xciyj1": {
     "defaultMessage": "Usar autenticação MAC durante a reconexão:"
@@ -13271,8 +13279,9 @@
   "yCDkU6": {
     "defaultMessage": "O tempo para conectar é maior que {threshold} em {scope}"
   },
-  "yCeZ/i": {
-    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "y9b5Vt": {
+    "defaultMessage": "Conjunto de VLAN: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation string - VLAN Pool"
   },
   "yDq3qb": {
     "defaultMessage": "Adicionar subinterface"

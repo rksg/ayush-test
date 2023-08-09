@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -99,7 +99,7 @@ describe('MacRegistrationListForm', () => {
   const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
       rest.get(
@@ -136,6 +136,48 @@ describe('MacRegistrationListForm', () => {
         }
       }
     )
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <MacRegistrationListForm />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId },
+          path: createPath
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MacRegistrationListForm />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId },
+          path: createPath
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
   })
 
   it('should create list successfully', async () => {

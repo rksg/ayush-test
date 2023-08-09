@@ -39,6 +39,7 @@ describe('ServiceCatalog', () => {
     )
 
     expect(await screen.findByText('Network Segmentation')).toBeVisible()
+    expect(await screen.findByText('Network Control')).toBeVisible()
     expect(await screen.findByText('Firewall')).toBeVisible()
   })
 })

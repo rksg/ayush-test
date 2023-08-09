@@ -12,8 +12,8 @@ import {
   TrustedPort,
   TrustedPortTypeEnum
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -94,8 +94,8 @@ export function TrustedPorts () {
     dataIndex: 'trustPorts',
     key: 'trustPorts',
     sorter: { compare: sortProp('trustPorts', defaultSort) },
-    render: (data, row) => {
-      if(data?.toString() === ''){
+    render: (_, row) => {
+      if(row.trustPorts?.toString() === ''){
         return <Button type='link'
           onClick={()=>{
             setSelected(row)
@@ -104,7 +104,7 @@ export function TrustedPorts () {
           {$t({ defaultMessage: 'Please select...' })}
         </Button>
       }else{
-        const taggedPorts = ((data || []) as string[])?.join(', ')
+        const taggedPorts = (row.trustPorts || [])?.join(', ')
         return taggedPorts
       }
     }
@@ -186,7 +186,7 @@ export function TrustedPorts () {
                 setSelected(undefined)
               }
             }])}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'radio',
               onChange: (keys: React.Key[]) => {
                 const selected = ruleList?.find((i: { model: string }) => i.model === keys[0])

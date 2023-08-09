@@ -1,24 +1,21 @@
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tabs } from '@acx-ui/components'
+import { showActionModal, Tabs, Tooltip } from '@acx-ui/components'
 import {
-  useGetDhcpLeasesQuery,
   useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
 import {
-  defaultSort,
   IP_ADDRESS_TYPE,
   isOperationalSwitch,
-  sortProp,
-  SwitchDhcpLease
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
-
+import { SwitchDhcpLeaseTable } from './SwitchDhcpLeaseTable'
+import { SwitchDhcpPoolTable }  from './SwitchDhcpPoolTable'
 
 export function SwitchDhcpTab () {
   const { $t } = useIntl()
@@ -27,11 +24,17 @@ export function SwitchDhcpTab () {
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
 
   const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
+  const { data: switchDetail, isLoading: isDetailLoading }
+    = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 
   const isOperational = switchDetail?.deviceStatus ?
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
+
+  const tooltip = !isOperational
+    // eslint-disable-next-line max-len
+    ? $t({ defaultMessage: 'Switch must be operational before you can apply the DHCP Service state.' })
+    : (!!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -67,10 +70,12 @@ export function SwitchDhcpTab () {
   const operations =
     <Form.Item style={{ marginBottom: 0 }}
       label={$t({ defaultMessage: 'DHCP Service state' })}>
-      <Switch onChange={onDhcpStatusChange}
-        checked={switchData?.dhcpServerEnabled}
-        loading={isLoading}
-        disabled={!isOperational} />
+      <Tooltip title={tooltip}>
+        <Switch onChange={onDhcpStatusChange}
+          checked={switchData?.dhcpServerEnabled}
+          loading={isLoading || isDetailLoading}
+          disabled={!isOperational || !!switchDetail?.cliApplied} />
+      </Tooltip>
     </Form.Item>
 
   return (
@@ -88,48 +93,5 @@ export function SwitchDhcpTab () {
         <SwitchDhcpLeaseTable />
       </Tabs.TabPane>}
     </Tabs>
-  )
-}
-
-
-
-export function SwitchDhcpLeaseTable () {
-  const { $t } = useIntl()
-  const { switchId, tenantId } = useParams()
-
-  const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({ params: { switchId, tenantId } })
-
-  const columns: TableProps<SwitchDhcpLease>['columns'] = [
-    {
-      key: 'clientId',
-      title: $t({ defaultMessage: 'Client ID' }),
-      dataIndex: 'clientId',
-      sorter: { compare: sortProp('clientId', defaultSort) },
-      defaultSortOrder: 'ascend'
-    }, {
-      key: 'clientIp',
-      title: $t({ defaultMessage: 'Client IP' }),
-      dataIndex: 'clientIp',
-      sorter: { compare: sortProp('clientIp', defaultSort) }
-    }, {
-      key: 'leaseExpiration',
-      title: $t({ defaultMessage: 'Lease Expiration' }),
-      dataIndex: 'leaseExpiration',
-      sorter: { compare: sortProp('leaseExpiration', defaultSort) }
-    }, {
-      key: 'leaseType',
-      title: $t({ defaultMessage: 'Lease Type' }),
-      dataIndex: 'leaseType',
-      sorter: { compare: sortProp('leaseType', defaultSort) }
-    }
-  ]
-
-  return (
-    <Loader states={[{ isLoading }]}>
-      <Table
-        columns={columns}
-        dataSource={leaseData}
-        rowKey='clientId' />
-    </Loader>
   )
 }

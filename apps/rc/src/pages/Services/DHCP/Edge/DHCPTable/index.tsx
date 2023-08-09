@@ -1,19 +1,34 @@
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
-import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery, useGetEdgeListQuery }                                                 from '@acx-ui/rc/services'
-import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                               from '@acx-ui/user'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight }                                         from '@acx-ui/rc/components'
+import {
+  useDeleteEdgeDhcpServicesMutation,
+  useGetDhcpStatsQuery,
+  useGetEdgeListQuery,
+  usePatchEdgeDhcpServiceMutation
+} from '@acx-ui/rc/services'
+import {
+  DhcpStats,
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }              from '@acx-ui/user'
 
-import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
 const EdgeDhcpTable = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getDhcpStatsPayload = {
     fields: [
@@ -23,9 +38,10 @@ const EdgeDhcpTable = () => {
       'edgeNum',
       'venueNum',
       'health',
-      'updateAvailable',
-      'serviceVersion',
-      'tags'
+      'targetVersion',
+      'currentVersion',
+      'tags',
+      'edgeAlarmSummary'
     ]
   }
   const tableQuery = useTableQuery({
@@ -55,6 +71,20 @@ const EdgeDhcpTable = () => {
       }
     })
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
+  const [patchDhcp, { isLoading: isPatchDhcpUpdating }] = usePatchEdgeDhcpServiceMutation()
+
+  const isUpdateAvailable = (data: DhcpStats) => {
+    let isReadyToUpdate = false
+    if (data?.currentVersion && data?.targetVersion) {
+      data?.currentVersion.split(',').forEach(currentVersion=>{
+        if (currentVersion.trim() !== data?.targetVersion) {
+          isReadyToUpdate = true
+        }
+      })
+    }
+
+    return isReadyToUpdate
+  }
 
   const columns: TableProps<DhcpStats>['columns'] = [
     {
@@ -65,7 +95,7 @@ const EdgeDhcpTable = () => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       searchable: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -73,7 +103,7 @@ const EdgeDhcpTable = () => {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.serviceName}
           </TenantLink>
         )
       }
@@ -103,39 +133,45 @@ const EdgeDhcpTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
       sorter: true,
-      render (data, row) {
-        return <EdgeDhcpServiceStatusLight data={row.health} />
-      }
+      render: (data, row) =>
+        (row?.edgeNum ?? 0) ?
+          <EdgeServiceStatusLight data={row.edgeAlarmSummary} /> :
+          '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
       align: 'center',
-      key: 'updateAvailable',
-      dataIndex: 'updateAvailable',
+      key: 'targetVersion',
+      dataIndex: 'targetVersion',
       sorter: true,
       render (data, row) {
-        return row.updateAvailable ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })
+        return isUpdateAvailable(row) ?
+          $t({ defaultMessage: 'Yes' }) :
+          $t({ defaultMessage: 'No' })
       }
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
       align: 'center',
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'currentVersion',
+      dataIndex: 'currentVersion',
       sorter: true,
       render (data, row) {
-        return row.tags?.join(',')
+        return row.currentVersion || $t({ defaultMessage: 'NA' })
       }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render (data, row) {
+    //     return row.tags?.join(',')
+    //   }
+    // }
   ]
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
@@ -176,6 +212,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
+      visible: (selectedRows) => isUpdateAvailable(selectedRows[0]),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -186,9 +223,10 @@ const EdgeDhcpTable = () => {
             $t({ defaultMessage: 'Are you sure you want to update this service to the latest version immediately?' }) :
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Are you sure you want to update these services to the latest version immediately?' }),
+          okText: $t({ defaultMessage: 'Update' }),
           onOk: () => {
-            // TODO API not ready
-            clearSelection()
+            patchDhcp({ params: { id: rows[0].id }, payload: { action: 'UPDATE_NOW' } })
+              .then(clearSelection)
           }
         })
       }
@@ -202,9 +240,14 @@ const EdgeDhcpTable = () => {
           $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={
+          isNavbarEnhanced ? [
+            { text: $t({ defaultMessage: 'Network Control' }) },
+            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+          ] : [
+            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+          ]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>
@@ -214,13 +257,13 @@ const EdgeDhcpTable = () => {
       />
       <Loader states={[
         tableQuery,
-        { isLoading: false, isFetching: isDeleteDhcpUpdating }
+        { isLoading: false, isFetching: isDeleteDhcpUpdating || isPatchDhcpUpdating }
       ]}>
         <Table
           settingsId='services-edge-dhcp-table'
           rowKey='id'
           columns={columns}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

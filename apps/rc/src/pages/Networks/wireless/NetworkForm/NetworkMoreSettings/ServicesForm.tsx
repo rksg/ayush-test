@@ -6,16 +6,31 @@ import {
   Form,
   InputNumber,
   Switch,
-  Tooltip
+  Tooltip,
+  Select,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined }                                                           from '@acx-ui/icons'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { Features, useIsTierAllowed, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
+import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  DnsProxyRule,
+  DnsProxyContextType,
+  WifiCallingSettingContextType,
+  WifiCallingSetting,
+  getServiceDetailsLink,
+  ServiceOperation,
+  ServiceType,
+  DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext from '../NetworkFormContext'
+import NetworkFormContext        from '../NetworkFormContext'
+import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }        from './DhcpOption82Form'
 import { DnsProxyModal }           from './DnsProxyModal'
 import * as UI                     from './styledComponents'
 import { WifiCallingSettingModal } from './WifiCallingSettingModal'
@@ -27,8 +42,12 @@ export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
 
+/**
+ * @deprecated
+ */
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -77,6 +96,45 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
     }
     return Promise.resolve()
   }
+
+  const showTunnelProfile = hasVxLanTunnelProfile(data)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const tunnelProfileDefaultPayload = {
+    fields: ['name', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+    payload: tunnelProfileDefaultPayload
+  }, {
+    skip: !isEdgeEnabled || !isEdgeReady,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isLoading
+      }
+    }
+  })
+
+  const tunnelProfileId =
+    (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.tunnelProfileId
+  const {
+    nsgId
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
+    }
+  }, {
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
+    selectFromResult: ({ data }) => {
+      return {
+        nsgId: data?.data[0]?.id
+      }
+    }
+  })
 
   return (
     <>
@@ -209,7 +267,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             <Checkbox
               children={
                 <>
-                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  {$t({ defaultMessage: 'Single Session ID Accounting' })}
                   <Tooltip
                     // eslint-disable-next-line max-len
                     title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
@@ -222,21 +280,78 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
-      <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-        valuePropName='checked'
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
+        <Form.Item
+          name={['wlan','advancedCustomization','enableSyslog']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
+      <UI.Subtitle>
+        {$t({ defaultMessage: 'DHCP' })}
+      </UI.Subtitle>
+      <UI.FieldLabel width='207px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
+
+      {dhcpOption82Flag && <DhcpOption82Form/>}
+
+      { showTunnelProfile &&
+      <Form.Item
+        name={['wlan','advancedCustomization','tunnelProfileId']}
+        label={$t({ defaultMessage: 'Tunnel Profile' })}
         children={
-          <Checkbox disabled={enableAntiSpoofing}
-            children={$t({ defaultMessage: 'Force DHCP' })} />}
-      />
-      <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','enableSyslog']}
-        valuePropName='checked'
-        children={
-          <Checkbox children={
-            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
+          <Select
+            loading={isTunnelLoading}
+            options={tunnelOptions}
+            disabled={true}
+          />
         }
       />
+      }
+
+      { showTunnelProfile &&
+        <Space size={1}>
+          <UI.InfoIcon />
+          <UI.Description>
+            {
+              $t({
+                defaultMessage: `All networks under the same Network Segmentation
+                share the same tunnel profile. Go `
+              })
+            }
+            &nbsp;
+            <Space size={1}></Space>
+            { nsgId &&
+            <TenantLink to={getServiceDetailsLink({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.DETAIL,
+              serviceId: nsgId!
+            })}>
+              { $t({ defaultMessage: 'here' }) }
+            </TenantLink>
+            }
+            &nbsp;
+            {
+              $t({
+                defaultMessage: 'to change'
+              })
+            }
+          </UI.Description>
+        </Space>
+      }
+
     </>
   )
 }

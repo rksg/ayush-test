@@ -32,7 +32,7 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
           08.0.92d
         </span>
         <br />
-        If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to 09.0.10e (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.
+        If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to 09.0.10f (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.
         <br />
         <div
           class="styledComponents__Warning-sc-1yoazt9-6 euQKpb"
@@ -40,7 +40,7 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
            Do not proceed unless the switch has minimum FW version running or is manually upgraded.
         </div>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__LinkButton-sc-1yoazt9-7 ilzxrp"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi styledComponents__LinkButton-sc-1yoazt9-7 ilzxrp"
           type="button"
         >
           <span>
@@ -48,6 +48,11 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
           </span>
         </button>
       </div>
+    </div>
+    <div
+      data-testid="mocked-SwitchRequirementsModal"
+    >
+      Upgrading the switch
     </div>
   </div>
 </DocumentFragment>

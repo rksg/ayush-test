@@ -573,7 +573,7 @@ export const LinkedinOutlined = styled(LinkedIn)`
 ${socialIconStyle}
 `
 export const SMSMobileOutlined = styled(SMSOutlined)`
-
+${socialIconStyle}
 `
 export const GoogleOutlined = styled(GoogleSolidPlus)`
 ${socialIconStyle}

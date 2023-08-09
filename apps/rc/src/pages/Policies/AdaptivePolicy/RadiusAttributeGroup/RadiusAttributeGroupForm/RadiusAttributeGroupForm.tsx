@@ -5,6 +5,7 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { GridCol, GridRow, Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
 import {
   useAddRadiusAttributeGroupMutation,
   useGetRadiusAttributeGroupQuery,
@@ -30,7 +31,9 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   const { editMode = false } = props
   const { policyId } = useParams()
   // eslint-disable-next-line max-len
-  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }))
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   // eslint-disable-next-line max-len
@@ -42,6 +45,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   const [visible, setVisible] = useState(false)
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
   const [editAttributeMode, setEditAttributeMode] = useState(false)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   useEffect(() => {
     if(data) {
@@ -117,6 +121,10 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
     formRef.current?.setFieldValue('attributeAssignments', newAttribute)
   }
 
+  const getAttributeAssignments = () => {
+    return formRef.current?.getFieldValue('attributeAssignments') ?? [] as AttributeAssignment []
+  }
+
   const onAddClick = () => {
     setEditAttributeMode(false)
     setEditAttribute({
@@ -139,12 +147,21 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
         title={editMode
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add RADIUS Attributes Group' })}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+            link: tablePath }
         ]}
       />
       <StepsFormLegacy
@@ -171,7 +188,8 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
               setVisible={setVisible}
               isEdit={editAttributeMode}
               editAttribute={editAttribute}
-              setAttributeAssignments={setAttributeAssignments}/>
+              setAttributeAssignments={setAttributeAssignments}
+              getAttributeAssignments={getAttributeAssignments}/>
           </Loader>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>

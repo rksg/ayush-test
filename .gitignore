@@ -58,3 +58,6 @@ testem.log
 .DS_Store
 Thumbs.db
 .vscode/settings.json
+
+# RA dev env
+!/apps/ra/.env

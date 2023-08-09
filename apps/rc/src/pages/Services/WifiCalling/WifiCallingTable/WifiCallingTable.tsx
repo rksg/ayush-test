@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { defaultNetworkPayload }                                          from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
-  useDeleteWifiCallingServiceMutation,
+  doProfileDelete,
+  useDeleteWifiCallingServicesMutation,
   useGetEnhancedWifiCallingServiceListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -18,10 +20,11 @@ import {
   getServiceRoutePath,
   Network,
   AclOptionType,
-  WifiCallingSetting, QosPriorityEnum
+  WifiCallingSetting,
+  QosPriorityEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
@@ -39,10 +42,11 @@ const defaultPayload = {
 
 export default function WifiCallingTable () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const navigate = useNavigate()
+  const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteWifiCallingServiceMutation()
+  const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const WIFICALLING_LIMIT_NUMBER = 5
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
@@ -62,6 +66,16 @@ export default function WifiCallingTable () {
       }
     }
   })
+
+  const doDelete = (selectedRows: WifiCallingSetting[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Service' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
 
   useEffect(() => {
     if (tableQuery.data) {
@@ -96,22 +110,13 @@ export default function WifiCallingTable () {
   const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Service' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
-          }
-        })
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -136,7 +141,10 @@ export default function WifiCallingTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
@@ -162,7 +170,7 @@ export default function WifiCallingTable () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
         />
       </Loader>
     </>
@@ -181,7 +189,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -189,7 +197,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -210,7 +218,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: (data, row) => row.epdgs?.length
+      render: (_, row) => row.epdgs?.length
     },
     {
       key: 'networkIds',
@@ -220,7 +228,13 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds?.length
+      render: (_, row) => {
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        const networkIds = row.networkIds
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkFilterOptions.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
     }
   ]
 

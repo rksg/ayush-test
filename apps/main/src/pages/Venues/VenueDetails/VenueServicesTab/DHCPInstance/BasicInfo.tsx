@@ -1,19 +1,18 @@
-import React, { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import { Button, Form }           from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
+import { Modal, SummaryCard }         from '@acx-ui/components'
 import {
-  useUpdateVenueDHCPProfileMutation,
   useGetDHCPProfileListQuery,
-  useGetVenueSettingsQuery
+  useGetVenueSettingsQuery,
+  useUpdateVenueDHCPProfileMutation
 } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
-import { hasAccess }          from '@acx-ui/user'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
@@ -33,7 +32,6 @@ export default function BasicInfo () {
   const [visible, setVisible] = useState(locationState?.showConfig ? true : false)
   const { $t } = useIntl()
   const DISPLAY_GATEWAY_MAX_NUM = 2
-  const SPAN_NUM = 3
   const dhcpInfo = useDHCPInfo()
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
@@ -98,77 +96,65 @@ export default function BasicInfo () {
     return payload
   }
   const meshEnable = venue?.mesh?.enabled
+
+  const dhcpData = [
+    {
+      title: $t({ defaultMessage: 'Service Name' }),
+      content: <TenantLink
+        to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
+      </TenantLink>,
+      visible: dhcpInfo.status
+    },
+    {
+      title: $t({ defaultMessage: 'Service Status' }),
+      content: dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' })
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Configuration' }),
+      content: dhcpInfo.configurationType ? $t(dhcpInfo.configurationType) : '',
+      visible: dhcpInfo.status
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Pools' }),
+      content: dhcpInfo.poolsNum,
+      visible: dhcpInfo.status
+    },
+    {
+      title: $t({ defaultMessage: 'Primary DHCP Server' }),
+      content: dhcpInfo.primaryDHCP.name,
+      visible: dhcpInfo.status
+    },
+    {
+      title: $t({ defaultMessage: 'Secondary DHCP Server' }),
+      content: dhcpInfo.secondaryDHCP.name,
+      visible: dhcpInfo.status
+    },
+    {
+      title: $t({ defaultMessage: 'Gateway' }),
+      content: <>
+        {natGateway.map((data, i) => (<span key={i}>{ data.name }<br /></span>))}
+        { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
+      </>,
+      visible: dhcpInfo.status
+    },
+    {
+      custom: <Button style={{ paddingLeft: 0, margin: 'auto' }}
+        onClick={()=>{
+          setVisible(true)
+        }}
+        type='link'
+        disabled={meshEnable}
+        title={meshEnable?$t({ defaultMessage: 'You cannot activate the DHCP service on this'+
+        ' venue because it already enabled mesh setting' }):''}
+        block>
+        {$t({ defaultMessage: 'Manage Local Service' })}
+      </Button>,
+      visible: true
+    }
+  ]
+
   return <>
-    <Card type='solid-bg'>
-      <GridRow justify='space-between'>
-        {dhcpInfo.status && <GridCol col={{ span: SPAN_NUM }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Service Name' })}
-          </Card.Title>
-          <TenantLink
-            to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
-          </TenantLink>
-        </GridCol>}
-
-        <GridCol col={{ span: SPAN_NUM }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Service Status' })}
-          </Card.Title>
-          {dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
-        </GridCol>
-
-        {dhcpInfo.status && <>
-          <GridCol col={{ span: SPAN_NUM }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'DHCP Configuration' })}
-            </Card.Title>
-            {dhcpInfo.configurationType ? $t(dhcpInfo.configurationType) : ''}
-          </GridCol>
-
-          <GridCol col={{ span: SPAN_NUM }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'DHCP Pools' })}
-            </Card.Title>
-            {dhcpInfo.poolsNum}
-          </GridCol>
-
-          <GridCol col={{ span: SPAN_NUM }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'Primary DHCP Server' })}
-            </Card.Title>
-            {dhcpInfo.primaryDHCP.name}
-          </GridCol>
-          <GridCol col={{ span: SPAN_NUM }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'Secondary DHCP Server' })}
-            </Card.Title>
-            {dhcpInfo.secondaryDHCP.name}
-          </GridCol>
-          <GridCol col={{ span: SPAN_NUM }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'Gateway' })}
-            </Card.Title>
-            {natGateway.map((data, i) => (<span key={i}>{ data.name }<br /></span>))}
-            { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
-          </GridCol>
-        </>}
-        <GridCol col={{ span: SPAN_NUM }}>
-          {hasAccess() &&
-            <Button style={{ paddingLeft: 0 }}
-              onClick={()=>{
-                setVisible(true)
-              }}
-              type='link'
-              disabled={meshEnable}
-              title={meshEnable?$t({ defaultMessage: 'You cannot activate the DHCP service on this'+
-                ' venue because it already enabled mesh setting' }):''}
-              block>
-              {$t({ defaultMessage: 'Manage Local Service' })}
-            </Button>
-          }
-        </GridCol>
-      </GridRow>
-    </Card>
+    <SummaryCard data={dhcpData} />
     <Modal
       title={$t({ defaultMessage: 'Manage Local DHCP for Wi-Fi Service' })}
       visible={visible}

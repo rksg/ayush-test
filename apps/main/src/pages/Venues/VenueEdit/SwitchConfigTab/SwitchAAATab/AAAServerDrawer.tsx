@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer, Tooltip }                             from '@acx-ui/components'
+import { Button, Drawer, Tooltip, PasswordInput }              from '@acx-ui/components'
 import { useAddAAAServerMutation, useUpdateAAAServerMutation } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum,
   excludeExclamationRegExp,
@@ -32,6 +32,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
 
   const { visible, setVisible, isEditMode, serverType, editData } = props
   const [resetField, setResetField] = useState(false)
+  const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
   const [ addAAAServer ] = useAddAAAServerMutation()
@@ -41,6 +42,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
+      setIsAdminUser(editData?.name === 'admin' || editData?.username === 'admin')
     }
   }, [editData, visible])
 
@@ -152,7 +154,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
   </Form>
 
@@ -195,7 +197,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
     <Form.Item
       label='Purpose'
@@ -222,7 +224,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { max: 48 },
         { validator: (_, value) => excludeQuoteRegExp(value) },
         { validator: (_, value) => excludeSpaceRegExp(value) },
-        { validator: (_, value) => validateUsername(value) }
+        { validator: (_, value) => !isAdminUser ? validateUsername(value) : Promise.resolve() }
       ]}
       children={<Input disabled={(editData as LocalUser).username === 'admin'}/>}
     />
@@ -249,7 +251,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceExclamationRegExp(value) },
         { validator: (_, value) => validateUserPassword(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
     <Form.Item
       label='Privilege'
@@ -289,7 +291,6 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   return (
     <Drawer
       title={getTitle()}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       children={getServerForm(serverType)}

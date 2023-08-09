@@ -35,7 +35,7 @@ export const ImpactedClientsTable = ({
     ttc: 'topNImpactedClientbyAvgTTC'
   }
   const payload = {
-    path: filters.path,
+    filter: filters.filter,
     start: filters.startDate,
     end: filters.endDate
   }

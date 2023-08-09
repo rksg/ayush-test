@@ -18,6 +18,11 @@ export function SwitchOverviewPanel (props:{
 }) {
   const { filters, switchDetail, currentSwitchDevice, stackMember } = props
   return <><GridRow>
+    <GridCol col={{ span: 24 }}>
+      <SwitchFrontRearView stackMember={stackMember} />
+    </GridCol>
+  </GridRow>
+  <GridRow>
     <GridCol col={{ span: 24 }} style={{ height: '380px' }}>
       { switchDetail && <TopologyFloorPlanWidget
         showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
@@ -28,9 +33,6 @@ export function SwitchOverviewPanel (props:{
     </GridCol>
   </GridRow>
   <GridRow>
-    <GridCol col={{ span: 24 }}>
-      <SwitchFrontRearView stackMember={stackMember} />
-    </GridCol>
     { filters && <SwitchWidgets filters={{ ...filters }}/> }
   </GridRow>
   </>

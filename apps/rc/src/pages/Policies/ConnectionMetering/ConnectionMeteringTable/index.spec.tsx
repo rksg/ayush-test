@@ -1,10 +1,27 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
+import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                              from '@acx-ui/test-utils'
+
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CommonUrlsInfo,
+  ConnectionMetering,
+  ConnectionMeteringUrls,
+  NewTablePageable,
+  NewTableResult,
+  BillingCycleType,
+  PropertyUrlsInfo,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  Persona,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import ConnectionMeteringTable from './index'
 
@@ -33,7 +50,18 @@ const connectionMeterings = [{
   billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
   billingCycleDays: null,
   venueCount: 1,
-  unitCount: 2
+  unitCount: 2,
+  personas: [{
+    name: 'unit-persona1',
+    identityId: 'identityId',
+    primary: true,
+    groupId: 'groupId'
+  }, {
+    name: 'unit-persona2',
+    identityId: 'identityId2',
+    primary: true,
+    groupId: 'groupId'
+  }] as Persona[]
 }, {
   id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
   name: 'profile2',
@@ -74,7 +102,13 @@ const connectionMeterings = [{
   billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
   billingCycleDays: 3,
   venueCount: 1,
-  unitCount: 1
+  unitCount: 1,
+  personas: [{
+    name: 'unit-persona3',
+    identityId: 'identityId3',
+    primary: true,
+    groupId: 'groupId'
+  }] as Persona[]
 }
 ]
 
@@ -92,12 +126,46 @@ const venues = [{
   country: 'US'
 }]
 
+const propertyConfigs: PropertyConfigs[] = [{
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'groupId',
+  venueName: 'venue1'
+}]
+
+const propertyConfigQueryResponse : NewTableResult<PropertyConfigs> = {
+  content: propertyConfigs,
+  pageable: defaultPageable,
+  totalPages: 1,
+  totalElements: 1,
+  sort: defaultPageable.sort
+}
+
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
+
 
 describe('ConnectionMeteringTable', () => {
   const searchConnectionMeteringApi = jest.fn()
   const deleteFn = jest.fn()
+  const params = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
+  // eslint-disable-next-line max-len
+  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })
+
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
@@ -118,15 +186,19 @@ describe('ConnectionMeteringTable', () => {
           deleteFn()
           return res(ctx.json({}))
         }
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyConfigsQuery.url,
+        (req, res, ctx) => {
+          return res(ctx.json(propertyConfigQueryResponse))
+        }
       )
     )
   })
 
   it('should render correctly', async () => {
     render(<Provider><ConnectionMeteringTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+      route: { params, path: tablePath }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -144,74 +216,89 @@ describe('ConnectionMeteringTable', () => {
 
   it('should add connection profile', async () => {
     render(<Provider><ConnectionMeteringTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+      route: { params, path: tablePath }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const addButton = await screen.findByRole('button', { name: 'Add Connection metering profile' })
-    fireEvent.click(addButton)
-  })
+    const addButton = await screen.findByRole('button', { name: 'Add Data Usage Metering Profile' })
 
-  it('should delete selected row', async () => {
-    render(<Provider><ConnectionMeteringTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
-    })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /profile2/i })
-    fireEvent.click(within(row).getByRole('radio'))
-
-    fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
-
-    await screen.findByText('Delete "profile2"?')
-
-    const deleteButton = await screen.findByText('Delete Profile')
-    fireEvent.click(deleteButton)
-
-    await waitFor(() => {
-      expect(deleteFn).toHaveBeenCalled()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(addButton)
     })
   })
 
   it('should show error when tring to delete in used profile', async () => {
     render(<Provider><ConnectionMeteringTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+      route: { params, path: tablePath }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /profile1/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(within(row).getByRole('radio'))
+      fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
+    })
 
-    fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
     await screen.findByText(/You are unable to delete .*/)
 
-    const okButton = screen.getByRole('button', { name: /OK/i })
-    fireEvent.click(okButton)
+    const okButton = await screen.findByRole('button', { name: /OK/i })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(okButton)
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
   })
 
   it('should edit selected row', async () => {
     render(<Provider><ConnectionMeteringTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+      route: { params, path: tablePath }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /profile1/ })
-    fireEvent.click(within(row).getByRole('radio'))
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(within(row).getByRole('radio'))
+    })
 
-    const editButton = screen.getByRole('button', { name: /Edit/i })
-    fireEvent.click(editButton)
+    const editButton = await screen.findByRole('button', { name: /Edit/i })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(editButton)
+    })
   })
 
+  it('should delete selected row', async () => {
+    render(<Provider><ConnectionMeteringTable /></Provider>, {
+      route: { params, path: tablePath }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /profile2/i })
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(within(row).getByRole('radio'))
+      fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
+    })
+
+    await screen.findByText('Delete "profile2"?')
+
+    const deleteButton = await screen.findByText('Delete Profile')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=> {
+      fireEvent.click(deleteButton)
+    })
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
+  })
 })

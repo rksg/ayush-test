@@ -35,7 +35,8 @@ let isModalShown = false
 const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
   'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
-  'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup'
+  'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup',
+  'uploadZdConfig', 'importPersonas'
 ]
 
 export const errorMessage = {
@@ -123,6 +124,7 @@ export const getErrorContent = (action: ErrorAction) => {
       break
     case 504: // no connection [development mode]
     case 0:   // no connection
+    case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
       callback = () => window.location.reload()

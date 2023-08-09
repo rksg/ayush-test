@@ -4,6 +4,8 @@ import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
+import { get }                                                            from '@acx-ui/config'
+import {  useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { Header } from '../Header'
@@ -18,6 +20,8 @@ import { SummaryBoxes }              from './SummaryBoxes'
 
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
+  const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
+  const isMLISA = get('IS_MLISA_SA')
   const { filters: widgetFilters } = props
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
@@ -34,12 +38,15 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters &&
+      {!widgetFilters && !canUseAnltAdv && !isMLISA &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'Network Assurance' }) }
+        ]}
         shouldQuerySwitch={false}
-        withIncidents={false}
-      />
+        withIncidents={false} />
       }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>

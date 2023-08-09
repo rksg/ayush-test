@@ -15,7 +15,9 @@ import {
   TopSwitchModels,
   TrafficByVolume,
   DidYouKnow,
-  TopWiFiNetworks } from '@acx-ui/analytics/components'
+  TopWiFiNetworks,
+  TopEdgesByTraffic,
+  TopEdgesByResources } from '@acx-ui/analytics/components'
 import {
   Button,
   Dropdown,
@@ -26,7 +28,8 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { VenueFilter }      from '@acx-ui/main/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { VenueFilter }                              from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -42,6 +45,9 @@ import * as UI from './styledComponents'
 
 export default function Dashboardv2 () {
   const { $t } = useIntl()
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -52,7 +58,14 @@ export default function Dashboardv2 () {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets />
-    }
+    },
+    ...(isEdgeEnabled && isEdgeReady ? [
+      {
+        label: $t({ defaultMessage: 'SmartEdge' }),
+        value: 'edge',
+        children: <EdgeWidgets />
+      }
+    ] : [])
   ]
 
   /**
@@ -119,13 +132,16 @@ function DashboardPageHeader () {
       }, {
         key: 'add-switch',
         label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      }, {
+        key: 'add-edge',
+        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
       }]
     }]}
   />
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Dashboard' })}
+      title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
       extra={filterByAccess([
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
@@ -191,6 +207,20 @@ function SwitchWidgets () {
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchModels filters={filters}/>
+      </GridCol>
+    </GridRow>
+  )
+}
+
+function EdgeWidgets () {
+  const { filters } = useDashboardFilter()
+  return (
+    <GridRow>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <TopEdgesByTraffic filters={filters} />
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <TopEdgesByResources filters={filters} />
       </GridCol>
     </GridRow>
   )

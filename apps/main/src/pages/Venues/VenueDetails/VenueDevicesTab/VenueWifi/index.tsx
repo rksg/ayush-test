@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { List, Radio } from 'antd'
-import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
+import { List }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Table, TableProps, Loader, Tooltip }                              from '@acx-ui/components'
+import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
 import { LineChartOutline, ListSolid, MeshSolid }                          from '@acx-ui/icons'
 import { ApTable }                                                         from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
@@ -26,7 +26,7 @@ import {
   SignalUpIcon,
   WiredIcon,
   SpanStyle,
-  IconRadioGroup
+  IconThirdTab
 } from './styledComponents'
 
 function venueNameColTpl (
@@ -96,21 +96,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       defaultSortOrder: 'ascend',
       width: 400,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
-          venueNameColTpl(data as string, row.meshRole, row.serialNumber, intl)
-        )
-      }
-    },
-    {
-      key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueName',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return (
-          <TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+          venueNameColTpl(row.name!, row.meshRole, row.serialNumber, intl)
         )
       }
     },
@@ -120,11 +108,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       dataIndex: 'apUpRssi',
       sorter: false,
       width: 160,
-      render: function (data, row) {
+      render: function (_, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
             <div>
-              {data && <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>}
+              {row.apUpRssi && <span style={{ paddingRight: '30px' }}>
+                <SignalDownIcon />{row.apDownRssi}
+              </span>}
               {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
           )
@@ -159,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Connected clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (row.clients && typeof row.clients === 'object') {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
@@ -173,8 +163,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Hop Count' }),
       dataIndex: 'hops',
       align: 'center',
-      render: function (data) {
-        return data || 0
+      render: function (_, { hops }) {
+        return hops || 0
       }
     }
   ]
@@ -200,9 +190,9 @@ function transformData (data: APMesh[]) {
 }
 
 export function VenueWifi () {
+  const { $t } = useIntl()
   const params = useParams()
 
-  const [ showIdx, setShowIdx ] = useState(0)
   const [ enabledMesh, setEnabledMesh ] = useState(false)
 
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
@@ -228,35 +218,35 @@ export function VenueWifi () {
   }, [venueWifiSetting])
 
   return (
-    <>
-      <IconRadioGroup value={showIdx}
-        buttonStyle='solid'
-        size='small'
-        onChange={e => setShowIdx(e.target.value)}>
-        <Radio.Button value={0}><LineChartOutline /></Radio.Button>
-        <Radio.Button value={1}><ListSolid /></Radio.Button>
-        {
-          enabledMesh &&
-          <Radio.Button value={2}><MeshSolid /></Radio.Button>
-        }
-      </IconRadioGroup>
-      { showIdx === 0 &&
-        <div style={{ paddingTop: 20 }}>
-          <EmbeddedReport
-            reportName={ReportType.ACCESS_POINT}
-            rlsClause={`"zoneName" in ('${params?.venueId}')`}
-          />
-        </div>
-      }
-      {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
-        searchable={true}
-        enableActions={true}
-        filterables={{
-          deviceGroupId: apgroupFilterOptions
-        }}
-      />}
-      {showIdx === 2 && <VenueMeshApsTable /> }
-    </>
+    <IconThirdTab>
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
+        <EmbeddedReport
+          reportName={ReportType.ACCESS_POINT}
+          rlsClause={`"zoneName" in ('${params?.venueId}')`}
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane key='list'
+        tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
+          <ListSolid />
+        </Tooltip>}>
+        <ApTable rowSelection={{ type: 'checkbox' }}
+          searchable={true}
+          enableActions={true}
+          filterables={{
+            deviceGroupId: apgroupFilterOptions
+          }}
+        />
+      </Tabs.TabPane>
+      { enabledMesh && <Tabs.TabPane key='mesh'
+        tab={<Tooltip title={$t({ defaultMessage: 'Mesh List' })}>
+          <MeshSolid />
+        </Tooltip>}>
+        <VenueMeshApsTable />
+      </Tabs.TabPane>}
+    </IconThirdTab>
   )
 }
 

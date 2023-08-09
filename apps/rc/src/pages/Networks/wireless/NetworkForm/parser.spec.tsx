@@ -1,6 +1,6 @@
-import { ClientIsolationVenue, NetworkSaveData, NetworkVenue, RadioEnum } from '@acx-ui/rc/utils'
+import { ClientIsolationVenue, NetworkSaveData, NetworkTypeEnum, NetworkVenue, RadioEnum } from '@acx-ui/rc/utils'
 
-import { updateClientIsolationAllowlist } from './parser'
+import { updateClientIsolationAllowlist, tranferSettingsToSave, transferMoreSettingsToSave } from './parser'
 
 describe('NetworkForm parser', () => {
   describe('updateClientIsolationAllowlist', () => {
@@ -15,8 +15,7 @@ describe('NetworkForm parser', () => {
       }
 
       mockedClientIsolationList = [{
-        venueId: '6de6a5239a1441cfb9c7fde93aa613fe',
-        clientIsolationAllowlistId: 'c123'
+        venueId: '6de6a5239a1441cfb9c7fde93aa613fe'
       }]
     })
 
@@ -87,6 +86,19 @@ describe('NetworkForm parser', () => {
         },
         venues: [mockedNetworkVenue]
       })
+    })
+  })
+
+  describe('transfer DPSK settings', () => {
+    it('verify the empty DPSK profile', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.DPSK,
+        dpskServiceProfileId: ''
+      }
+
+      expect(tranferSettingsToSave(incomingData, false)).not.toHaveProperty('dpskServiceProfileId')
+      // eslint-disable-next-line max-len
+      expect(transferMoreSettingsToSave(incomingData, incomingData)).not.toHaveProperty('dpskServiceProfileId')
     })
   })
 })

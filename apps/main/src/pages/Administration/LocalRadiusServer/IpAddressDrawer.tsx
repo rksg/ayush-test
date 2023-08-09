@@ -109,7 +109,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
                 type: 'success',
                 content: $t(
                   // eslint-disable-next-line max-len
-                  { defaultMessage: 'IP Address {ipAddress} was {editMode, select, true {updated} other {added}}' },
+                  { defaultMessage: 'IP Address {ipAddress} was {editMode, select, true {updated} other {added}}',
+                    description: 'Translation strings - IP Address, was' },
                   { ipAddress, editMode }
                 )
               })

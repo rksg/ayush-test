@@ -6,13 +6,16 @@ import {
   Form,
   Input
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Modal }                from '@acx-ui/components'
 import {
-  useUpdateAdminMutation,
   useGetMspEcAdminQuery,
   useUpdateMspEcAdminMutation
+} from '@acx-ui/msp/services'
+import {
+  useUpdateAdminMutation
 } from '@acx-ui/rc/services'
 import {
   Administrator
@@ -110,7 +113,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   const isLoading = isUpdateAdminUpdating
 
   // only msp ec can edit name
-  const isNameEditable = isMspEc && isError === false ? true : false
+  const isNameEditable = (isMspEc && isError === false && !_.isEmpty(mspEcAdmin)) ? true : false
 
   return (
     <Modal
@@ -167,6 +170,15 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
           label={$t({ defaultMessage: 'Email Address' })}
         >
           {editData.email}
+        </Form.Item>
+
+        <Form.Item
+          label={$t({ defaultMessage: 'Authentication Type' })}
+        >
+          {editData.authenticationId
+            ? $t({ defaultMessage: 'SSO with 3rd Party' })
+            : $t({ defaultMessage: 'RUCKUS Identity Management' })
+          }
         </Form.Item>
 
         <RoleSelector disabled={editNameOnly === true} />

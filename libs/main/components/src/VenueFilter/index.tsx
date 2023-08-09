@@ -1,9 +1,9 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Select, Loader }                      from '@acx-ui/components'
-import { useVenuesListQuery }                  from '@acx-ui/rc/services'
-import { useParams }                           from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
+import { Cascader, Loader }   from '@acx-ui/components'
+import { useVenuesListQuery } from '@acx-ui/rc/services'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -15,9 +15,8 @@ const transformResult = (data: Venue[]) => data.map(
 
 export function VenueFilter () {
   const { $t } = useIntl()
-  const { setNodeFilter, filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const value = networkNodes?.map((networkNode: NetworkNodePath) => [networkNode[0].name])
+  const { setNodeFilter, venueIds } = useDashboardFilter()
+  const value = venueIds.map((id: string) => [id])
 
   const queryResults = useVenuesListQuery({
     params: { ...useParams() },
@@ -39,7 +38,7 @@ export function VenueFilter () {
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
-        <Select
+        <Cascader
           entityName={{
             singular: defineMessage({ defaultMessage: 'venue' }),
             plural: defineMessage({ defaultMessage: 'venues' })

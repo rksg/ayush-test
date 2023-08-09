@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy }                        from '@acx-ui/components'
-import { useLazyGetAAAPolicyListQuery }                                               from '@acx-ui/rc/services'
+import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput }         from '@acx-ui/components'
+import { useGetAAAPolicyListQuery }                                                   from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
@@ -22,17 +22,58 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
   const { edit, saveState } = props
   const params = useParams()
-  const [ getAAAPolicyList ] = useLazyGetAAAPolicyListQuery()
+  const { aaaPolicyList, aaaPolicyIpList } = useGetAAAPolicyListQuery({ params }, {
+    refetchOnMountOrArgChange: 30,
+    pollingInterval: 30000,
+    selectFromResult: function ({ data }) {
+      return {
+        aaaPolicyList: data,
+        aaaPolicyIpList: data && data.data.length > 0 ? data.data.map(
+          policy => `${policy.primary!.ip!}:${policy.primary!.port!}`
+        ) : []
+      }
+    }
+  })
   const form = Form.useFormInstance()
   const { useWatch } = Form
   const [enableSecondaryServer, type ] =
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
-    const list = (await getAAAPolicyList({ params }).unwrap()).data
-      .filter(policy => policy.id !== params.policyId)
-      .map(policy => ({ name: policy.name }))
-    return checkObjectNotExists(list, { name: value } ,
-      $t({ defaultMessage: 'AAA Policy' }))
+    const policyList = aaaPolicyList?.data!
+    return checkObjectNotExists(policyList.filter(
+      policy => edit ? policy.id !== saveState.id : true
+    ).map(policy => ({ name: policy.name })), { name: value } ,
+    $t({ defaultMessage: 'AAA Policy' }))
+  }
+  const radiusIpPortValidator = async (isPrimary: boolean) => {
+    const primaryValue =
+      `${form.getFieldValue(['primary', 'ip'])}:${form.getFieldValue(['primary', 'port'])}`
+    const secondaryValue =
+      `${form.getFieldValue(['secondary', 'ip'])}:${form.getFieldValue(['secondary', 'port'])}`
+    const value = isPrimary ? primaryValue : secondaryValue
+    if (!isPrimary && value === primaryValue) {
+      return Promise.reject($t({
+        defaultMessage: 'IP address and Port combinations must be unique'
+      }))
+    }
+
+    let stateValue = ''
+    if (saveState && edit) {
+      stateValue = isPrimary
+        ? `${saveState.primary!.ip}:${saveState.primary!.port}`
+        : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+    }
+
+    if (aaaPolicyIpList
+      .filter(policy => edit ? policy !== stateValue : true)
+      .includes(value)
+    ) {
+      return Promise.reject($t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'IP address and Port combinations must be unique, there is an existing combination in the list.'
+      }))
+    }
+    return Promise.resolve()
   }
   useEffect(() => {
     if (edit && saveState) {
@@ -41,6 +82,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }
     }
   }, [saveState])
+
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
   const validateRadiusPort = async (value: number)=>{
@@ -108,7 +150,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                  { validator: async (_, value) => {
+                    await radiusIpPortValidator(true)
+                    return networkWifiIpRegExp(value)
+                  } }
                 ]}
                 label={$t({ defaultMessage: 'IP Address' })}
                 initialValue={''}
@@ -122,7 +167,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                   { required: true },
                   { type: 'number', min: 1 },
                   { type: 'number', max: 65535 },
-                  { validator: (_, value) => validateRadiusPort(value) }
+                  { validator: async (_, value) => {
+                    await radiusIpPortValidator(true)
+                    return validateRadiusPort(value)
+                  } }
                 ]}
                 initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
@@ -134,9 +182,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               initialValue={''}
               rules={[
                 { required: true },
+                { max: 255 },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             />
           </Fieldset>
           <Form.Item noStyle name='enableSecondaryServer'>
@@ -161,16 +210,9 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => networkWifiIpRegExp(value) },
-                  { validator: (_, value) => {
-                    const primaryIP = form.getFieldValue(['primary', 'ip'])
-                    const primaryPort = form.getFieldValue(['primary', 'port'])
-                    const secPort = form.getFieldValue(['secondary', 'port'])
-                    if(value === primaryIP && primaryPort === secPort){
-                      return Promise.reject(
-                        $t({ defaultMessage: 'IP address and Port combinations must be unique' }))
-                    }
-                    return Promise.resolve()
+                  { validator: async (_, value) => {
+                    await radiusIpPortValidator(false)
+                    return networkWifiIpRegExp(value)
                   } }
                 ]}
                 label={$t({ defaultMessage: 'IP Address' })}
@@ -185,7 +227,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                   { required: true },
                   { type: 'number', min: 1 },
                   { type: 'number', max: 65535 },
-                  { validator: (_, value) => validateRadiusPort(value) }
+                  { validator: async (_, value) => {
+                    await radiusIpPortValidator(false)
+                    return validateRadiusPort(value)
+                  } }
                 ]}
                 initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
@@ -197,9 +242,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               initialValue={''}
               rules={[
                 { required: true },
+                { max: 255 },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             /></Fieldset>}
         </Space>
       </GridCol>

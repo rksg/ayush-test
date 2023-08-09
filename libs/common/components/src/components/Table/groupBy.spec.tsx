@@ -19,11 +19,14 @@ const columnState = {
   'rf-channels': {},
   'tags': {}
 }
+const rowKey = 'id'
 
 describe('Table Groupby', () => {
   describe('useGroupBy', () => {
     it('render hook correctly with valid data', async () => {
-      const { result } = renderHook(() => useGroupBy(groupByColumns, [], undefined, columnState))
+      const { result } = renderHook(() =>
+        useGroupBy(groupByColumns, [], undefined, columnState, rowKey)
+      )
       const {
         isGroupByActive,
         expandable
@@ -33,13 +36,48 @@ describe('Table Groupby', () => {
     })
 
     it('render hook correctly with empty array groupable', () => {
-      const { result } = renderHook(() => useGroupBy([], [], undefined, columnState))
+      const { result } = renderHook(() => useGroupBy([], [], undefined, columnState,rowKey))
       const {
         isGroupByActive,
         expandable
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(expandable).toBeUndefined()
+    })
+    it('onExpand expands and collapses rows correctly', () => {
+      const columns = []
+      const expandedRowKeys = [1, 2, 3]
+      const groupByValue = 'someValue'
+      const columnsState = {}
+      const rowKey = 'id'
+      const { result } = renderHook(() =>
+        useGroupBy(columns, expandedRowKeys, groupByValue, columnsState, rowKey)
+      )
+      const { onExpand } = result.current
+      const record = { id: 1, children: [] }
+      const expanded = true
+
+      onExpand(expanded, record)
+      expect(expandedRowKeys).toEqual([1, 2, 3, 1])
+      onExpand(!expanded, record)
+      expect(expandedRowKeys).toEqual([2, 3, 1])
+
+    })
+    it('onExpand expands and collapses rows correctly when rowkey is function', () => {
+      const columns = []
+      const expandedRowKeys = [1, 2, 3]
+      const groupByValue = 'someValue'
+      const columnsState = {}
+      const rowKey = (record) => record['id']
+      const { result } = renderHook(() =>
+        useGroupBy(columns, expandedRowKeys, groupByValue, columnsState, rowKey)
+      )
+      const { onExpand } = result.current
+      const record = { id: 1, children: [] }
+      const expanded = true
+
+      onExpand(expanded, record)
+      expect(expandedRowKeys).toEqual([1, 2, 3, 1])
     })
   })
 

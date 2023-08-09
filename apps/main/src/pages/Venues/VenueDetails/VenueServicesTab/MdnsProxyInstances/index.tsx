@@ -15,8 +15,8 @@ import {
   ServiceType,
   useTableQuery
 }   from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
@@ -64,9 +64,10 @@ export default function MdnsProxyInstances () {
       key: 'apName',
       sorter: true,
       fixed: 'left',
-      render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+      render: (_, row) => {
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+          {row.apName}
+        </TenantLink>
       }
     },
     {
@@ -74,14 +75,14 @@ export default function MdnsProxyInstances () {
       dataIndex: 'serviceName',
       key: 'serviceName',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return <TenantLink
           to={getServiceDetailsLink({
             type: ServiceType.MDNS_PROXY,
             oper: ServiceOperation.DETAIL,
             serviceId: row.serviceId
           })}>
-          {data}
+          {row.serviceName}
         </TenantLink>
       }
     },
@@ -90,7 +91,7 @@ export default function MdnsProxyInstances () {
       dataIndex: 'rules',
       key: 'rules',
       sorter: false,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.rules ? row.rules.length : 0
       }
     },
@@ -98,7 +99,7 @@ export default function MdnsProxyInstances () {
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'multicasDnsProxyServiceProfileId',
       key: 'multicasDnsProxyServiceProfileId',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Switch
           checked={true}
           onChange={checked => {
@@ -146,7 +147,7 @@ export default function MdnsProxyInstances () {
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
       <AddMdnsProxyInstanceDrawer

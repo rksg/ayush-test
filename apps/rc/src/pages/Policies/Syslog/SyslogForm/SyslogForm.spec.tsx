@@ -5,7 +5,8 @@ import { act, fireEvent } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { rest }           from 'msw'
 
-import { policyApi } from '@acx-ui/rc/services'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { policyApi }    from '@acx-ui/rc/services'
 import {
   ProtocolEnum,
   FacilityEnum,
@@ -163,6 +164,18 @@ describe('SyslogForm', () => {
     act(() => {
       store.dispatch(policyApi.util.resetApiState())
     })
+
+    mockServer.use(rest.get(
+      SyslogUrls.getSyslogPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ), rest.put(
+      SyslogUrls.updateSyslogPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(200)
+      )
+    ))
   })
 
   it('should render SyslogForm successfully', async () => {
@@ -170,11 +183,6 @@ describe('SyslogForm', () => {
       SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
-      )
-    ), rest.get(
-      SyslogUrls.getSyslogPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
       )
     ), rest.post(
       SyslogUrls.addSyslogPolicy.url,
@@ -228,16 +236,59 @@ describe('SyslogForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <SyslogContext.Provider value={{
+        state: initState,
+        dispatch: setSyslogAPConfigure
+      }}>
+        <SyslogForm edit={false}/>
+      </SyslogContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Syslog'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <SyslogContext.Provider value={{
+        state: initState,
+        dispatch: setSyslogAPConfigure
+      }}>
+        <SyslogForm edit={false}/>
+      </SyslogContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Syslog Server'
+    })).toBeVisible()
+  })
+
   it('should render SyslogForm with editMode successfully', async () => {
     mockServer.use(rest.post(
       SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
-      )
-    ), rest.get(
-      SyslogUrls.getSyslogPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
       )
     ), rest.get(
       RogueApUrls.getRoguePolicyList.url,
@@ -268,10 +319,10 @@ describe('SyslogForm', () => {
 
     await userEvent.type(await screen.findByTestId('name'), 'modify name')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('Scope'))
 
-    const finishBtn = await screen.findByRole('button', { name: 'Finish' })
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
 
-    await userEvent.click(finishBtn)
+    await userEvent.click(applyBtn)
   })
 })

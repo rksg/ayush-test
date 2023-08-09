@@ -15,28 +15,40 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
+  CommonResult,
   LocationExtended,
+  ServiceOperation,
+  ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
   getServiceListRoutePath,
+  getServiceRoutePath,
+  getWebAuthLabelValidator,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: boolean } ) {
+export default function NetworkSegAuthForm (
+  { editMode = false, modalMode = false, modalCallBack = ()=>{} }:
+  { editMode?: boolean, modalMode?: boolean, modalCallBack?: (id?: string)=>void }
+) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const path = getServiceRoutePath(
+    { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
@@ -46,8 +58,13 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
 
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  useEffect(() => {
+  const finishHandler = (response?: WebAuthTemplate)=>{
     formRef.current?.resetFields()
+    if (modalMode) modalCallBack(response?.id)
+    else redirectPreviousPage(navigate, previousPath, linkToServices)
+  }
+
+  useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue(data)
     }
@@ -55,13 +72,14 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
 
   const saveData = async (value: WebAuthTemplate) => {
     try {
+      let results = {} as CommonResult
       if (editMode) {
         await updateWebAuthTemplate({ params, payload: value }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
+        results = await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
       }
 
-      redirectPreviousPage(navigate, previousPath, linkToServices)
+      finishHandler(results.response as WebAuthTemplate)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -71,9 +89,15 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     { name: keyof typeof defaultTemplateData, label: string }
   ) => {
     return (
-      <UI.TextAreaWithReset label={label}>
+      <UI.TextAreaWithReset label={label} required={true}>
         <Space size='middle'>
-          <Form.Item name={name} children={<Input.TextArea autoSize />} />
+          <Form.Item name={name}
+            validateTrigger='onBlur'
+            rules={[getWebAuthLabelValidator(), {
+              required: true,
+              message: $t({ defaultMessage: 'Please enter {label}' }, { label })
+            }]}
+            children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
               formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage, {
@@ -88,18 +112,22 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
 
   return (
     <>
-      <PageHeader
+      { !modalMode && <PageHeader
         title={editMode ?
           $t({ defaultMessage: 'Edit Network Segmentation Auth page for Switch' }) :
           $t({ defaultMessage: 'Add Network Segmentation Auth page for Switch' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }), link: path }
+        ] : [
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
-      />
+      />}
       <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
+        onCancel={() => finishHandler()}
         onFinish={saveData}
       >
         <StepsFormLegacy.StepForm
@@ -109,7 +137,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           <StepsFormLegacy.Title>
             {$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
           <Form.Item name='name'
-            label={$t({ defaultMessage: 'Name' })}
+            label={$t({ defaultMessage: 'Service Name' })}
             rules={[{ required: true }]} >
             <Input style={{ width: '360px' }}/>
           </Form.Item>
@@ -125,6 +153,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
               .map(name=>{
                 const item = defaultTemplateData[name]
                 return (<WebAuthFormItem name={name}
+                  key={name}
                   label={$t(item.label)} />)
               })
           }

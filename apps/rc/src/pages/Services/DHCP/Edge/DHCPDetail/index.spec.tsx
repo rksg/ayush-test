@@ -1,10 +1,11 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
 
-import { mockDhcpStatsData } from '../__tests__/fixtures'
+import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
 import EdgeDHCPDetail from '.'
 
@@ -16,6 +17,7 @@ describe('EdgeDhcpDetail', () => {
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: '1'
@@ -25,46 +27,83 @@ describe('EdgeDhcpDetail', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
         (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpUeSummaryStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpUeSummaryStatsData))
       )
     )
   })
 
   it('Should render EdgeDhcpDetail successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <EdgeDHCPDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
-    await screen.findByText('TestDHCP-1')
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
   })
 
-  // it('edge detail page link should be correct', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDHCPDetail />
-  //     </Provider>, {
-  //       route: { params, path: detailPath }
-  //     })
-  //   const edgeDetailLink = await screen.findByRole('link',
-  //     { name: 'Edge-1' }) as HTMLAnchorElement
-  //   expect(edgeDetailLink.href)
-  //     .toContain(`/t/${params.tenantId}/devices/edge/1/details/overview`)
-  // })
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DHCP for SmartEdge'
+    })).toBeVisible()
+  })
 
-  // it('venue detail page link should be correct', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDHCPDetail />
-  //     </Provider>, {
-  //       route: { params, path: detailPath }
-  //     })
-  //   const venueDetailLinks = await screen.findAllByRole('link',
-  //     { name: 'Venue A' }) as HTMLAnchorElement[]
-  //   expect(venueDetailLinks[0].href)
-  //     .toContain(`/t/${params.tenantId}/venues/1/venue-details/overview`)
-  // })
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DHCP for SmartEdge'
+    })).toBeVisible()
+  })
+
+  it('edge detail page link should be correct', async () => {
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+
+    const edgeDetailLink = await screen.findByRole('link',
+      { name: 'Edge-dhcp-1' }) as HTMLAnchorElement
+
+    expect(edgeDetailLink.href)
+      .toContain(`${params.tenantId}/t/devices/edge/1/details/overview`)
+  })
+
+  it('venue detail page link should be correct', async () => {
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    const venueDetailLinks = await screen.findAllByRole('link',
+      { name: 'Edge-venue-1' }) as HTMLAnchorElement[]
+    expect(venueDetailLinks[0].href)
+      .toContain(`/${params.tenantId}/t/venues/1/venue-details/overview`)
+  })
 
   // it('restart service', async () => {
   //   const user = userEvent.setup()

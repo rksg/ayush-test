@@ -23,7 +23,8 @@
     "https://*.ruckus.cloud/",
     "http://*.ruckus.cloud/",
     "http://127.0.0.1/",
-    "http://localhost/"
+    "http://localhost/",
+    "https://staging.mlisa.io/"
   ],
   "background": {
     "scripts": [

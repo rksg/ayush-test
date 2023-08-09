@@ -3,7 +3,7 @@ import {
   isDev, isIntEnv,
   isLocalHost, isQA,
   isScale,
-  isStage, isProdEnv } from './apiService'
+  isStage, isProdEnv, createHttpRequest } from './apiService'
 
 describe('ApiInfo', () => {
   it('Check the envrionment', async () => {
@@ -29,7 +29,20 @@ describe('ApiInfo', () => {
       url: '/venues/aaaServers/query'
     }
 
+    const httpRequest = {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      url: 'http://localhost/venues/aaaServers/query'
+    }
+
     expect(enableNewApi(apiInfo1)).toBe(true)
     expect(enableNewApi(apiInfo2)).toBe(false)
+    expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
+    expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
   })
+
 })

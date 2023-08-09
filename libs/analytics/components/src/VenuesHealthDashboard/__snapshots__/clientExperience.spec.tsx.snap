@@ -54,7 +54,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
                     title="Expand"
                     type="button"
                   >
@@ -86,7 +86,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Connection Success
                   </div>
@@ -96,7 +96,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -127,7 +127,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Time To Connect
                   </div>
@@ -137,7 +137,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -168,7 +168,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Client Throughput
                   </div>
@@ -178,7 +178,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -209,7 +209,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Online APs
                   </div>
@@ -219,7 +219,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -250,7 +250,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     AP Capacity
                   </div>
@@ -260,7 +260,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -360,7 +360,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
                     title="Expand"
                     type="button"
                   >
@@ -392,7 +392,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Connection Success
                   </div>
@@ -402,7 +402,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -433,7 +433,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Time To Connect
                   </div>
@@ -443,7 +443,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -474,7 +474,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Client Throughput
                   </div>
@@ -484,7 +484,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -515,7 +515,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     Online APs
                   </div>
@@ -525,7 +525,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
@@ -556,7 +556,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     AP Capacity
                   </div>
@@ -566,7 +566,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
                       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"

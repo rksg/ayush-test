@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps, PasswordInput } from '@acx-ui/components'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { ClientConfig }              from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -139,7 +139,7 @@ export function RadiusServerForm () {
                   ]}>
                   {
                     !changePassword ?
-                      <Input.Password
+                      <PasswordInput
                         readOnly={true}
                         bordered={false} />
                       :
@@ -184,7 +184,7 @@ export function RadiusServerForm () {
                 // eslint-disable-next-line max-len
                 dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                 showHeader={false}
-                rowSelection={{ type: 'radio' }}
+                rowSelection={hasAccess() && { type: 'radio' }}
                 rowActions={filterByAccess(ipTableRowActions)}
                 type={'form'}
                 actions={filterByAccess([{

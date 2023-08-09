@@ -9,6 +9,7 @@ import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@ac
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
+  apNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
@@ -49,12 +50,12 @@ export function NetworkDetailForm () {
   }
 
   useEffect(() => {
-    if ((editMode) && data?.wlan?.ssid) {
+    if (editMode && data?.wlan?.ssid) {
       if (!differentSSID) {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
     }
-  }, [data, editMode])
+  }, [data?.wlan?.ssid, editMode])
 
   const networkListPayload = {
     searchString: '',
@@ -128,6 +129,13 @@ export function NetworkDetailForm () {
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
 
+  const nameOnChange = (differentSSID: boolean) => {
+    if (!differentSSID) {
+      const name = form.getFieldValue('name')
+      form.setFieldValue(['wlan', 'ssid'], name)
+    }
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -147,11 +155,12 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
+            { validator: (_, value) => apNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input onChange={() => nameOnChange(differentSSID)} />}
           validateTrigger={'onBlur'}
         />
         <Form.Item noStyle name='differentSSID'>
@@ -159,10 +168,7 @@ export function NetworkDetailForm () {
             type='link'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
-              if (!differentSSID) {
-                const name = form.getFieldValue('name')
-                form.setFieldValue(['wlan', 'ssid'], name)
-              }
+              nameOnChange(!differentSSID)
               setDifferentSSID(!differentSSID)
             }}
           >

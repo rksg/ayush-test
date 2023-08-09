@@ -2,14 +2,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
@@ -121,8 +124,10 @@ describe('Administrators table without prime-admin itself', () => {
 
 describe('Administrators Table', () => {
   let params: { tenantId: string }
+  const mockReqAdminsData = jest.fn()
 
   beforeEach(() => {
+    mockReqAdminsData.mockReset()
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
@@ -130,7 +135,10 @@ describe('Administrators Table', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json(fakedAdminLsit))
+        (req, res, ctx) => {
+          mockReqAdminsData()
+          return res(ctx.json(fakedAdminLsit))
+        }
       ),
       rest.delete(
         AdministrationUrlsInfo.deleteAdmin.url,
@@ -171,6 +179,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     await screen.findByRole('row', { name: /dog1551@email.com/i })
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
     expect(rows.length).toBe(3)
@@ -283,6 +294,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     const row = await screen.findByRole('row', { name: /dog1551@email.com/i })
     expect(within(row).getByRole('checkbox')).toBeDisabled()
   })
@@ -349,5 +363,85 @@ describe('Administrators Table', () => {
     const row = await screen.findByRole('row', { name: /invalidRole@email.com/i })
     const tableCells = within(row).getAllByRole('cell')
     expect((tableCells[tableCells.length - 1] as HTMLElement).textContent).toBe('')
+  })
+})
+
+describe('Administrators table with MSP-EC FF enabled', () => {
+  let params: { tenantId: string }
+  const adminAPIFn = jest.fn()
+
+  beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    params = {
+      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
+    }
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => {
+          adminAPIFn()
+          return res(ctx.json([
+            {
+              id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+              email: 'efg.cheng@email.com',
+              role: 'PRIME_ADMIN',
+              delegateToAllECs: true,
+              detailLevel: 'debug'
+            }
+          ]))
+        }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
+      )
+    )
+  })
+
+  it('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.MSPEC_ALLOW_DELETE_ADMIN ? true : false
+    })
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{
+            data: fakeUserProfile,
+            isPrimeAdmin
+          } as UserProfileContextProps}
+        >
+          <AdministratorsTable
+            currentUserMail='dog1551@email.com'
+            isPrimeAdminUser={true}
+            isMspEc={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    await waitFor(async () => {
+      expect(adminAPIFn).toBeCalled()
+    })
+
+    expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
+
+    const rows = await screen.findAllByRole('row')
+    expect(rows.length).toBe(2)
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
   })
 })

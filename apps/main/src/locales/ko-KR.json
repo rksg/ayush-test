@@ -2476,8 +2476,9 @@
   "9q7E+6": {
     "defaultMessage": "CLI 세션 - {switchName}"
   },
-  "9qW5S9": {
-    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
+  "jVGVFN": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}주의 필요",
+    "description": "Translation string - Requires Attention"
   },
   "9rPWO/": {
     "defaultMessage": "과도한 수의 프레임을 확인해야 하지만 AP 전송 및/또는 열악한 채널 상태로 인해 확인되지 않아 연결이 해제되었습니다."
@@ -4374,8 +4375,9 @@
   "IqBkBl": {
     "defaultMessage": "DHCP"
   },
-  "IrnXwi": {
-    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "HcncMB": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation not needed"
   },
   "ItEQ44": {
     "defaultMessage": "초대장 다시 보내기"
@@ -5203,8 +5205,9 @@
   "McAp05": {
     "defaultMessage": "구독이 {daysText}일 후에 만료됩니다."
   },
-  "McKt/u": {
-    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
+  "OkxXZB": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}운영",
+    "description": "Translation string - Operational"
   },
   "MeWmjM": {
     "defaultMessage": "적응 정책(미정)"
@@ -6134,7 +6137,7 @@
     "defaultMessage": "남은 IP 수"
   },
   "Qpk8Ou": {
-    "defaultMessage": "TelnetCpe"
+    "defaultMessage": "TelenetCpe"
   },
   "Qq9Z7z": {
     "defaultMessage": "리소스 사용률"
@@ -7139,8 +7142,9 @@
     "defaultMessage": "해당 {key, select, name {이름} other {값} }을 가진 {entityName}이(가) 이미 존재합니다.{ extra }",
     "description": "유효성 검사 - 중복 확인"
   },
-  "VmBHQi": {
-    "defaultMessage": "IP 주소 {ipAddress}이(가) {editMode, select, true {업데이트되었습니다} other {추가되었습니다}}"
+  "aA90jI": {
+    "defaultMessage": "IP 주소 {ipAddress}이(가) {editMode, select, true {updated} other {added}}",
+    "description": "Translation strings - IP Address, was"
   },
   "Vnv9od": {
     "defaultMessage": "사용자 연결 설정(기본값)"
@@ -8487,8 +8491,9 @@
   "c3VJQo": {
     "defaultMessage": "장치"
   },
-  "c3gDWz": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
+  "C8efXI": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}설정 단계에서",
+    "description": "Translation string - In Setup Phase"
   },
   "c4PxNN": {
     "defaultMessage": "비밀번호 만료 기한:"
@@ -9220,8 +9225,9 @@
   "fDINOd": {
     "defaultMessage": "관리자 활동"
   },
-  "fEE7ng": {
-    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
+  "ZMT2+a": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}일시적인 문제",
+    "description": "Translation string - Transient Issue"
   },
   "fENfxR": {
     "defaultMessage": "OPTION-IPv4_FQDN-MoS"
@@ -11781,8 +11787,9 @@
   "rITqXY": {
     "defaultMessage": "브로드캐스트 프로브 응답 지연:"
   },
-  "rIgzAj": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
+  "1WSnFV": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}오프라인",
+    "description": "Translation string - Offline"
   },
   "rIw+Gj": {
     "defaultMessage": "모듈 4"
@@ -13124,8 +13131,9 @@
   "xasuCg": {
     "defaultMessage": "IP 유형"
   },
-  "xbKzeb": {
-    "defaultMessage": "<checkPeriod></checkPeriod>초 이내에 <failThreshold></failThreshold> 반복 인증 실패 후 <blockingPeriod></blockingPeriod>초 동안 클라이언트 차단"
+  "VwJEJV": {
+    "defaultMessage": "<checkPeriod></checkPeriod>초 이내에 <failThreshold></failThreshold> 반복 인증 실패 후 <blockingPeriod></blockingPeriod>초 동안 클라이언트 차단",
+    "description": "Translation string - Block a client for, seconds after, repeat authentication failures within, seconds"
   },
   "xciyj1": {
     "defaultMessage": "다시 연결하는 동안 MAC 인증 사용"
@@ -13271,8 +13279,9 @@
   "yCDkU6": {
     "defaultMessage": "연결 시간이 {scope}의 {threshold}보다 깁니다."
   },
-  "yCeZ/i": {
-    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  "y9b5Vt": {
+    "defaultMessage": "VLAN 풀: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation string - VLAN Pool"
   },
   "yDq3qb": {
     "defaultMessage": "하위 인터페이스 추가"

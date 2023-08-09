@@ -1,18 +1,10 @@
-import { Space }       from 'antd'
-import styled, { css } from 'styled-components/macro'
+import { Collapse as AntCollapse } from 'antd'
+import styled, { css }             from 'styled-components/macro'
 
-import { InformationSolid as InformationSVG,
+import {
   CheckMarkCircleSolid as CheckMarkSVG
 } from '@acx-ui/icons'
-export const TypeSpace = styled(Space)`
-    gap: 0px !important;
-  .ant-divider-vertical{
-    background-color: var(--acx-neutrals-60);
-  }
-`
-export const VersionName = styled.span`
-  font-weight: 600;
-`
+
 export const FwContainer = styled.div`
   background-color: var(--acx-accents-orange-10);
   color: var(--acx-neutrals-70);
@@ -21,28 +13,16 @@ export const FwContainer = styled.div`
   margin-right: 30px;
   border-radius: 4px;
   width:417px;
-  height:92px;
+  height:80px;
   width: fit-content;
   padding: 13px 55px 12px 16px;
-`
-export const BannerVersion = styled.div`
 `
 export const LatestVersion = styled.div`
   font-weight: 600;
   margin-bottom: 14px;
   line-height: 18px;
 `
-export const InformationIcon = styled(InformationSVG)`
-  margin-left:5px;
-  margin-bottom: -3px;
-  path:nth-child(1){
-    fill: var(--acx-accents-orange-50);
-    stroke: var(--acx-accents-orange-50);
-  }
-  path:nth-child(2){
-    stroke: var(--acx-accents-orange-50);
-  }
-`
+
 export const CheckMarkIcon = styled(CheckMarkSVG)`
   margin-left:5px;
   margin-right:5px;
@@ -55,7 +35,7 @@ export const CurrentDetail = styled.div`
   display:flex;
 `
 const labelStyle = css`
-  width:180px;
+  width: 190px;
   line-height: 18px;
 `
 export const CurrentLabel = styled.div`
@@ -87,4 +67,57 @@ export const DialogContent = styled.div`
 `
 export const TypeContent = styled.div`
   margin-right:5px;
+`
+export const DialogFooter = styled.div`
+  margin-top: 24px;
+  display: grid;
+`
+
+export const DialogFooterButtons = styled.div`
+  grid-area: 1 / 1 / 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`
+export const Collapse = styled(AntCollapse)`
+  grid-area: 1 / 1 / 1 / 1;
+  .ant-collapse-item {
+    flex: 1;
+    > .ant-collapse-content >.ant-collapse-content-box {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin-top: 16px;
+    }
+    > .ant-collapse-header {
+      display: inline-flex;
+      font-size: 12px !important;
+      font-weight: var(--acx-body-font-weight) !important;
+      line-height: 16px;
+      color: var(--acx-accents-blue-50);
+      padding: 7px 0 !important;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      border: 0 !important;
+      .ant-collapse-arrow {
+        position: unset;
+        transform: none;
+        margin-left: 5px;
+      }
+    }
+  }
+`
+export const ImpactedRuleDetailsContainer = styled.div`
+  border: 1px solid var(--acx-neutrals-30);
+  border-radius: 4px;
+  background: var(--acx-neutrals-10);
+  padding: 12px 8px;
+  color: var(--acx-primary-black);
+
+`
+export const ImpactedRuleDetailsItem = styled.div`
+  margin: 2px 0;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 195px 100px;
 `

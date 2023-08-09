@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Empty, Form, Input, Row, RowProps, Select, Space, Typography } from 'antd'
-import TextArea                                                         from 'antd/lib/input/TextArea'
-import _                                                                from 'lodash'
-import { useIntl }                                                      from 'react-intl'
+import { Form, Input, RowProps, Select, Space } from 'antd'
+import TextArea                                 from 'antd/lib/input/TextArea'
+import _                                        from 'lodash'
+import { useIntl }                              from 'react-intl'
 import {
   SortableContainer,
   SortableElement,
@@ -16,61 +16,26 @@ import {
   cssNumber,
   Drawer,
   showActionModal,
-  Table,
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
 import {
+  StatefulACLRulesTable as DefaultStatefulACLRulesTable,
+  useDefaultStatefulACLRulesColumns
+} from '@acx-ui/rc/components'
+import {
   ACLDirection,
-  AddressType,
-  getAccessActionString,
   getACLDirectionOptions,
-  getProtocolTypeString,
-  ProtocolType,
   StatefulAcl,
   StatefulAclRule
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
 
 import { FirewallFormModel }     from '../../..'
 import { StatefulACLRuleDialog } from '../StatefulACLRuleDialog'
 
 import { InboundDefaultRules, OutboundDefaultRules } from './defaultRules'
 import { DragIcon, DragIconWrapper }                 from './styledComponents'
-
-const getRuleSrcDstString = (rowData: StatefulAclRule, isSource: boolean) => {
-  const intl = getIntl()
-  const { $t } = intl
-  const type = rowData[isSource ? 'sourceAddressType' : 'destinationAddressType']
-
-  switch(type) {
-    case AddressType.ANY_IP_ADDRESS:
-      return $t({ defaultMessage: 'Any' })
-
-    case AddressType.IP_ADDRESS:
-      return $t({ defaultMessage: '{ip}' },
-        { ip: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })
-
-    case AddressType.SUBNET_ADDRESS:
-      return <>
-        <Row>
-          <Typography.Text>
-            {$t({ defaultMessage: 'Subnet: {subnet}' },
-              { subnet: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })}
-          </Typography.Text>
-        </Row>
-        <Row>
-          <Typography.Text>
-            {$t({ defaultMessage: 'Mask: {mask}' },
-              { mask: rowData[isSource ? 'sourceAddressMask' : 'destinationAddressMask'] })}
-          </Typography.Text>
-        </Row>
-      </>
-    default:
-      return ''
-  }
-}
 
 // @ts-ignore
 const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
@@ -99,6 +64,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const [editMode, setEditMode] = useState<boolean>(false)
   const [editData, setEditData] = useState<StatefulAclRule>({} as StatefulAclRule)
   const formData = form.getFieldsValue(true)
+  const defaultColumns = useDefaultStatefulACLRulesColumns()
 
   const onChangeDialogVisible = (checked: boolean) => {
     setDialogVisible(checked)
@@ -177,67 +143,12 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
 
   const DragHandle = SortableHandle(() => <DragIcon />)
 
-  const columns: TableProps<StatefulAclRule>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Priority' }),
-      key: 'priority',
-      dataIndex: 'priority',
-      defaultSortOrder: 'ascend'
-    },
-    {
-      title: $t({ defaultMessage: 'Description' }),
-      key: 'description',
-      dataIndex: 'description',
-      width: 150
-    },
-    {
-      title: $t({ defaultMessage: 'Access' }),
-      key: 'accessAction',
-      dataIndex: 'accessAction',
-      render: (_, row) => {
-        return getAccessActionString($t, row.accessAction)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Source' }),
-      key: 'source',
-      dataIndex: 'source',
-      render: (_, row) => {
-        return getRuleSrcDstString(row, true)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Src Port' }),
-      key: 'sourcePort',
-      dataIndex: 'sourcePort'
-    },
-    {
-      title: $t({ defaultMessage: 'Destination' }),
-      key: 'destination',
-      dataIndex: 'destination',
-      render: (_, row) => {
-        return getRuleSrcDstString(row, false)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Dst Port' }),
-      key: 'destinationPort',
-      dataIndex: 'destinationPort'
-    },
-    {
-      title: $t({ defaultMessage: 'Protocol' }),
-      key: 'protocolType',
-      dataIndex: 'protocolType',
-      render: (_, row) => {
-        return getProtocolTypeString($t, row.protocolType)
-         + (row.protocolType === ProtocolType.CUSTOM ? ` (${row.protocolValue})` : '')
-      }
-    },
+  const customColumns: TableProps<StatefulAclRule>['columns'] = [
     {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (data, row) => {
+      render: (_, row) => {
         const isDisabled = isDefaultRule(row)
         return <DragIconWrapper
           disabled={isDisabled}
@@ -248,6 +159,8 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       }
     }
   ]
+
+  const columns: TableProps<StatefulAclRule>['columns'] = defaultColumns.concat(customColumns)
 
   const rowActions: TableProps<StatefulAclRule>['rowActions'] = [
     {
@@ -304,18 +217,18 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
 
   return (
     <>
-      <Table
+      <DefaultStatefulACLRulesTable
         columns={columns}
-        dataSource={data}
-        rowKey='priority'
+        dataSource={data ?? [] as StatefulAclRule[]}
         rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox',
-          renderCell: (checked, record, index, originNode) => {
+          // eslint-disable-next-line max-len
+          renderCell: (_checked, record: StatefulAclRule, _index, originNode) => {
             const isDefault = isDefaultRule(record)
             return isDefault ? '': originNode
           },
-          getCheckboxProps: (record) => ({ disabled: isDefaultRule(record) })
+          getCheckboxProps: (record: StatefulAclRule) => ({ disabled: isDefaultRule(record) })
         }}
         actions={actions}
         components={{
@@ -323,9 +236,6 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
             wrapper: ACLDraggableContainer,
             row: ACLDraggableTableRow
           }
-        }}
-        locale={{
-          emptyText: <Empty description={$t({ defaultMessage: 'No rules created yet' })} />
         }}
       />
 
@@ -409,7 +319,7 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
         >
           <TextArea
             rows={3}
-            maxLength={64}
+            maxLength={255}
             placeholder='Enter a short description, up to 255 characters'
           />
         </Form.Item>

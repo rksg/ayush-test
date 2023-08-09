@@ -5,7 +5,7 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Select, Button, Loader }             from '@acx-ui/components'
+import { Cascader, Button, Loader }           from '@acx-ui/components'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
@@ -111,7 +111,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             <Row style={{ justifyContent: 'end' }} gutter={[12, 6]} wrap={false}>
               {ClientTroubleShootingConfig.selection.map((config) => (
                 <Col flex='185px' key={config.selectionType}>
-                  <Select
+                  <Cascader
                     entityName={config.entityName}
                     multiple
                     defaultValue={

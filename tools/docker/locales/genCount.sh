@@ -1,4 +1,5 @@
-JSON_FILE="apps/main/src/locales/compiled/en-US.json"
+APP=${1:-'main'}
+JSON_FILE="apps/$APP/src/locales/compiled/en-US.json"
 
 awk '{ \
   sub(/[,]*$/,",")

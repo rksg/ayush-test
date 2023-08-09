@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  AccessControlUrls
+  AccessControlUrls, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import {
@@ -13,8 +13,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  deviceDetailResponse,
   devicePolicyListResponse,
-  enhancedDevicePolicyListResponse
+  enhancedDevicePolicyListResponse, networkListResponse
 } from '../__tests__/fixtures'
 
 import DevicePolicyComponent from './DevicePolicyComponent'
@@ -32,18 +33,29 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('AccessControlTable', () => {
+describe('AccessControlTable - Device', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.getEnhancedDevicePolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(
+          ctx.json(networkListResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceDetailResponse)
+        )
       )
     )
   })
 
   it('should render DeviceComponent in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(devicePolicyListResponse)
@@ -72,13 +84,13 @@ describe('AccessControlTable', () => {
   })
 
   it('should delete selected row from DeviceComponent in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(devicePolicyListResponse)
       )
     ), rest.delete(
-      AccessControlUrls.delDevicePolicy.url,
+      AccessControlUrls.delDevicePolicies.url,
       (_, res, ctx) => res(
         ctx.json({ requestId: 'requestId1' })
       )

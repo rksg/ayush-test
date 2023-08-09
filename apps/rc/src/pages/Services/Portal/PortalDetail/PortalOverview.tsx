@@ -1,10 +1,9 @@
 
 import { useEffect, useState } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow }   from '@acx-ui/components'
+import { SummaryCard }              from '@acx-ui/components'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
@@ -44,29 +43,25 @@ export default function PortalOverview (props: { demoValue: Demo }) {
   useEffect(()=>{
     getDemo()
   },[])
-  return (
-    <Card>
-      <GridRow>
-        <GridCol col={{ span: 8 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Language' })}
-          </Card.Title>
-          <Typography.Text>{
-            getLanguage(newDemo.displayLangCode as keyof typeof PortalLanguageEnum)}
-          </Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 12 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'WiFi4EU Snippet' })}
-          </Card.Title>
-          <Typography.Text>{newDemo?.componentDisplay?.wifi4eu?
-            $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title><PortalPreviewModal demoValue={newDemo} portalLang={portalLang}/></Card.Title>
-        </GridCol>
-      </GridRow>
 
-    </Card>
-  )
+  const portalInfo = [
+    {
+      title: $t({ defaultMessage: 'Language' }),
+      content: getLanguage(newDemo.displayLangCode as keyof typeof PortalLanguageEnum),
+      colSpan: 3
+    },
+    {
+      title: $t({ defaultMessage: 'WiFi4EU Snippet' }),
+      content: newDemo?.componentDisplay?.wifi4eu ?
+        $t({ defaultMessage: 'ON' }) :
+        $t({ defaultMessage: 'OFF' }),
+      colSpan: 19
+    },
+    {
+      title: <PortalPreviewModal demoValue={newDemo} portalLang={portalLang}/>,
+      colSpan: 1
+    }
+  ]
+
+  return <SummaryCard data={portalInfo} />
 }

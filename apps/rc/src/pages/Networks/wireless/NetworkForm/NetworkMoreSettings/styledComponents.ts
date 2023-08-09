@@ -1,7 +1,8 @@
 import { Form, Collapse } from 'antd'
 import styled             from 'styled-components/macro'
 
-import { Subtitle } from '@acx-ui/components'
+import { Subtitle }         from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
 
 export const FieldLabel = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
@@ -36,6 +37,10 @@ export const LabelOfInput = styled.span`
     left: 80px;
     word-wrap: normal;
 `
+export const TabLable = styled.div`
+  display: flex;
+  justify-content: center;
+`
 
 export const RateLimitBlock = styled.div`
     display: flex;
@@ -54,6 +59,22 @@ export const RateLimitBlock = styled.div`
 
 const CustomSubtitle = styled(Subtitle).attrs({ level: 4 })`
   margin-block-end: 12px;
+  padding-top: 20px;
+  padding-bottom: 10px;
 `
 
 export { CustomSubtitle as Subtitle }
+
+export const InfoIcon = styled(InformationSolid)`
+path {
+  fill: var(--acx-neutrals-50);
+  stroke: var(--acx-primary-white) !important;
+}
+margin-left: 0px !important;
+display: block;
+`
+
+export const Description = styled.span`
+color: var(--acx-neutrals-50);
+font-size: var(--acx-body-4-font-size);
+`

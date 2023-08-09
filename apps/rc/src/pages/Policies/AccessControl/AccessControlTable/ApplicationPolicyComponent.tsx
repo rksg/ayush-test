@@ -1,23 +1,25 @@
 import { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }     from '@acx-ui/rc/components'
 import {
-  useDelAppPolicyMutation,
-  useGetAccessControlProfileListQuery,
+  doProfileDelete,
+  useDelAppPoliciesMutation,
   useGetEnhancedApplicationProfileListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery, ApplicationPolicy, AclOptionType, Network
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps }  from '../AccessControlForm/AccessControlForm'
-import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
+import { AddModeProps }                         from '../AccessControlForm/AccessControlForm'
+import ApplicationDrawer                        from '../AccessControlForm/ApplicationDrawer'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -25,7 +27,8 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -37,7 +40,7 @@ const ApplicationPolicyComponent = () => {
     { enable: true, visible: false } as AddModeProps
   )
 
-  const [ delAppPolicy ] = useDelAppPolicyMutation()
+  const [ deleteFn ] = useDelAppPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -51,17 +54,6 @@ const ApplicationPolicyComponent = () => {
       }
     }
   })
-
-  const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: params
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        data: data?.map(accessControl => accessControl?.applicationPolicy?.id)
-      }
-    }
-  })
-
 
   const [editMode, setEditMode] = useState({
     id: '', isEdit: false
@@ -104,37 +96,27 @@ const ApplicationPolicyComponent = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Application Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
   }]
 
+  const doDelete = (selectedRows: ApplicationPolicy[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networkIds }], clearSelection) => {
-        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
-            })
-          })
-          clearSelection()
-        } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              delAppPolicy({ params: { ...params, applicationPolicyId: id } }).then(clearSelection)
-            }
-          })
-        }
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
@@ -146,22 +128,24 @@ const ApplicationPolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <ApplicationDrawer
-      onlyAddMode={addModeStatus}
-    />
-    <Table<ApplicationPolicy>
-      settingsId='policies-access-control-application-policy-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-    />
+    <Form>
+      <ApplicationDrawer
+        onlyAddMode={addModeStatus}
+      />
+      <Table<ApplicationPolicy>
+        settingsId='policies-access-control-application-policy-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
+    </Form>
   </Loader>
 }
 
@@ -181,7 +165,7 @@ function useColumns (
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return <ApplicationDrawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
@@ -205,14 +189,13 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds?.length
+      render: (_, row) => row.networkIds?.length
     }
   ]
 

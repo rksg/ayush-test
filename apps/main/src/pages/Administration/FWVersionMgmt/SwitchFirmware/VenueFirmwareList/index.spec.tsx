@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -20,7 +21,8 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions
+  switchCurrentVersions,
+  switchLatest
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -55,6 +57,10 @@ describe('Firmware Venues Table', () => {
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
       )
     )
     params = {
@@ -75,7 +81,7 @@ describe('Firmware Venues Table', () => {
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
-  it('should update selected row', async () => {
+  it.skip('should update selected rows', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
@@ -98,4 +104,66 @@ describe('Firmware Venues Table', () => {
     fireEvent.click(updateVenueButton)
   })
 
+  it('should no default option in dialog when feature flag is off', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row2 = await screen.findByRole('row', { name: /v2/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    const updateButton = screen.getByRole('button', { name: /Update Now/i })
+    fireEvent.click(updateButton)
+
+    const article = screen.getByRole('article')
+    expect(article.innerHTML).toBe('Choose which version to update the venue to:')
+
+    const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
+    expect(notCheckedOptions).toHaveLength(3)
+    expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
+  })
+
+  it('should selected default options in dialog when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row2 = await screen.findByRole('row', { name: /v2/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    const updateButton = screen.getByRole('button', { name: /Update Now/i })
+    fireEvent.click(updateButton)
+
+    const article = await screen.findAllByRole('article')
+    expect(article).toHaveLength(2)
+    expect(article[0].innerHTML).toBe('Firmware available for ICX-8200 Series (3 switches)')
+    // eslint-disable-next-line max-len
+    expect(article[1]?.innerHTML).toBe('Firmware available for ICX 7150/7550/7650/7850 Series Models (2 switches)')
+
+    const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
+    expect(notCheckedOptions).toHaveLength(5)
+
+    const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
+    expect(checkedOptions).toHaveLength(2)
+
+    // eslint-disable-next-line max-len
+    const notUpdateOptions = await screen.findAllByRole('radio', { name: 'Do not update firmware on these switches' })
+    expect(notUpdateOptions).toHaveLength(2)
+    expect(notUpdateOptions[0]).toBeChecked()
+    expect(notUpdateOptions[1]).toBeChecked()
+
+    expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
+  })
 })

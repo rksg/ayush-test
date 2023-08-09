@@ -11,32 +11,40 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import NetworkFormContext from '../NetworkFormContext'
+import { mockAAAPolicyResponse } from '../__tests__/fixtures'
+import NetworkFormContext        from '../NetworkFormContext'
 
 import AAAInstance from '.'
 
 describe('AAA Instance Page', () => {
   beforeEach(async () => {
+    const mockPolicyResponse = { id: '2', name: 'test2' }
     mockServer.use(
       rest.get(
         AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1', type: 'AUTHENTICATION' }]))
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyResponse))
       ),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
         res(ctx.json({}))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+        (_, res, ctx) => res(ctx.json({
+          requestId: 'request-id', ...mockPolicyResponse
+        }))
       ),
       rest.put(
         AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+        (_, res, ctx) => res(ctx.json({
+          requestId: 'request-id', ...mockPolicyResponse
+        }))
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'request-id',
-          response: { id: '2', name: 'test2' } }))
+        (req, res, ctx) => res(ctx.json({
+          requestId: 'request-id',
+          response: mockPolicyResponse
+        }))
       )
     )
   })
@@ -65,8 +73,10 @@ describe('AAA Instance Page', () => {
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
     await userEvent.click(await screen.findByText('Finish'))
-    await new Promise((r)=>{setTimeout(r, 500)})
+
     await changeAAA()
+
+    expect((await screen.findAllByTitle('test1'))[0]).toBeVisible()
   })
 })
 async function changeAAA (){

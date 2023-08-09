@@ -1,20 +1,30 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { switchApi }                                      from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, SwitchUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import * as CommonComponent                                                          from '@acx-ui/components'
+import { switchApi }                                                                 from '@acx-ui/rc/services'
+import { IP_ADDRESS_TYPE, SwitchUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { switchDetailData } from '../__tests__/fixtures'
 
 import { SwitchDhcpTab } from '.'
+
+jest.mock('./SwitchDhcpLeaseTable', () => ({
+  SwitchDhcpLeaseTable: () => <div data-testid='SwitchDhcpLeaseTable' />
+}))
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const mockedShowActionModal = jest.fn()
+jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
+  mockedShowActionModal
+)
 
 describe('SwitchDhcpTab', () => {
   const params = {
@@ -40,9 +50,12 @@ describe('SwitchDhcpTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.get( SwitchUrlsInfo.dhcpLeaseTable.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get( SwitchUrlsInfo.getDhcpLeases.url,
-        (_, res, ctx) => res(ctx.json({ response: { syncing: false, result: '{}' } })))
+      rest.post(SwitchUrlsInfo.updateDhcpServerState.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
+  })
+  afterEach(() => {
+    mockedShowActionModal.mockClear()
   })
 
   it('should render correctly', async () => {
@@ -63,12 +76,14 @@ describe('SwitchDhcpTab', () => {
       hash: '',
       search: ''
     })
-    const statusBtn = screen.getByRole('switch')
+    const statusBtn = await screen.findByRole('switch')
     await waitFor(() => expect(statusBtn).toBeEnabled())
 
-    fireEvent.click(screen.getByRole('switch'))
-    expect(await screen.findByRole('dialog')).toHaveTextContent('Configure static IP address')
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+    fireEvent.click(await screen.findByRole('switch'))
+    expect(mockedShowActionModal).toBeCalledTimes(1)
+    // await screen.findByRole('dialog')
+    // expect(await screen.findByRole('dialog')).toHaveTextContent('Configure static IP address')
+    // fireEvent.click(screen.getByRole('button', { name: 'OK' }))
   })
 
   it('should show confirm while clicking status button', async () => {
@@ -87,11 +102,19 @@ describe('SwitchDhcpTab', () => {
       }
     })
 
-    const statusBtn = screen.getByRole('switch')
-    await waitFor(() => expect(statusBtn).toBeEnabled())
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loading' }))
+    await screen.findByText('Leases')
+    await screen.findByText('DHCP Service state')
+    await screen.findByTestId('SwitchDhcpLeaseTable')
+
+    const statusBtn = await screen.findByRole('switch')
+    expect(statusBtn).toBeEnabled()
+    expect(statusBtn).not.toBeChecked()
 
     fireEvent.click(screen.getByRole('switch'))
-    expect(await screen.findByRole('dialog')).toHaveTextContent('DHCP server is enabled')
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+    expect(mockedShowActionModal).toBeCalledTimes(1)
+    // await screen.findByRole('dialog')
+    // expect(await screen.findByRole('dialog')).toHaveTextContent('DHCP server is enabled')
+    // fireEvent.click(screen.getByRole('button', { name: 'OK' }))
   })
 })

@@ -3,24 +3,27 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
-  WebAuthTemplate,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
   getServiceListRoutePath,
-  useTableQuery
+  useTableQuery,
+  WebAuthTemplateTableData,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegAuthPayload = {
   fields: [
     'id',
     'name',
-    'tags'
+    'tags',
+    'summary'
   ],
   sortField: 'name',
   sortOrder: 'ASC'
@@ -28,6 +31,7 @@ const getNetworkSegAuthPayload = {
 
 export default function NetworkSegAuthTable () {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
@@ -41,15 +45,15 @@ export default function NetworkSegAuthTable () {
   ] = useDeleteWebAuthTemplateMutation()
 
 
-  const columns: TableProps<WebAuthTemplate>['columns'] = [
+  const columns: TableProps<WebAuthTemplateTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Service Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -57,18 +61,24 @@ export default function NetworkSegAuthTable () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
     }, {
       title: $t({ defaultMessage: 'Access Switches' }),
-      key: 'as',
-      dataIndex: 'as'
+      key: 'switchCount',
+      dataIndex: 'switchCount',
+      render: (_, { switchCount }) => {
+        return switchCount || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Venues' }),
-      key: 'venues',
-      dataIndex: 'venues'
+      key: 'venueCount',
+      dataIndex: 'venueCount',
+      render: (_, { venueCount }) => {
+        return venueCount || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
@@ -84,9 +94,9 @@ export default function NetworkSegAuthTable () {
     }
   ]
 
-  const rowActions: TableProps<WebAuthTemplate>['rowActions'] = [
+  const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -99,7 +109,7 @@ export default function NetworkSegAuthTable () {
         }, { state: { from: location } })
       }
     }, {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -140,7 +150,10 @@ export default function NetworkSegAuthTable () {
     <PageHeader
       title={$t({ defaultMessage: 'Network Segmentation Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+      ] : [
         { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
       ]}
       extra={filterByAccess([
@@ -159,7 +172,7 @@ export default function NetworkSegAuthTable () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }} />
+        rowSelection={hasAccess() && { type: 'radio' }} />
     </Loader>
   </>)
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -8,7 +8,7 @@ import { useParams }                     from 'react-router-dom'
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
 import {
   useDeleteDpskPassphraseDevicesMutation,
-  useGetDpskPassphraseDevicesQuery,
+  useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
   useUpdateDpskPassphraseDevicesMutation
 } from '@acx-ui/rc/services'
 import {
@@ -16,7 +16,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  generalMacAddressRegExp
+  MacRegistrationFilterRegExp, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -49,6 +49,35 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     }
   })
 
+  const { data } = useGetDpskQuery({ params: params })
+
+  useEffect(() => {
+    if (data?.networkIds?.length) {
+      tableQuery.setPayload({
+        fields: ['name', 'id'],
+        filters: {
+          id: data.networkIds
+        }
+      })
+    }
+  }, [data])
+
+  const tableQuery = useTableQuery({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      fields: ['name', 'id'],
+      filters: { id: data?.networkIds }
+    }
+  })
+
+  const getNetworkId = (networkName: string) => {
+    if (tableQuery.data && tableQuery.data.data) {
+      const networkIdx = tableQuery.data.data.findIndex(network => network.name === networkName)
+      return networkIdx !== -1 ? tableQuery.data.data[networkIdx].id : ''
+    }
+    return ''
+  }
+
   const [updateDevicesData] = useUpdateDpskPassphraseDevicesMutation()
   const [deleteDevicesData] = useDeleteDpskPassphraseDevicesMutation()
 
@@ -61,7 +90,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnected === ONLINE ? <TenantLink
           to={`/users/wifi/clients/${row.mac}/details/`}>
           {row.mac}
@@ -69,19 +98,23 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       }
     },
     {
-      key: 'lastConnected',
+      key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
-      dataIndex: 'lastConnected',
-      sorter: true
+      dataIndex: 'online',
+      sorter: true,
+      render: (_, row) => {
+        return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
+      }
     },
     {
       key: 'lastConnectedNetwork',
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnectedNetwork ? <TenantLink
-          to={`networks/wireless/${row.lastConnectedNetwork}/network-details/overview`}>
+          // eslint-disable-next-line max-len
+          to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>
           {row.lastConnectedNetwork}
         </TenantLink> : ''
       }
@@ -200,10 +233,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     <Button key='cancel' onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='ok' onClick={onOk} type='secondary'>
+    <Button key='ok' onClick={onOk} type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>
   ]
+
+  const filterWithoutFormat = (mac: string, value: string) => {
+    const regex = /[.\-:]/gi
+    let macStr = mac.replace(regex, '').toLowerCase()
+    let valueStr = value.replace(regex, '').toLowerCase()
+    return macStr === valueStr
+  }
 
   return (
     <>
@@ -221,7 +261,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
             onCancel={onClose}
           />
         }
-        width={'500px'}
+        width={'700px'}
       />
       <Modal
         title={$t({ defaultMessage: 'Add Device' })}
@@ -241,12 +281,12 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
               { required: true },
               { validator: (_, value) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
-                  .filter(mac => mac === value).length) {
+                  .filter(mac => filterWithoutFormat(mac, value)).length) {
                   return Promise.reject($t({
-                    defaultMessage: 'MAC address {macAddress} is already exists'
+                    defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))
                 }
-                return generalMacAddressRegExp(value)
+                return MacRegistrationFilterRegExp(value)
               } }
             ]}
             labelCol={{ span: 24 }}

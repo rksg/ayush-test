@@ -1,11 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  useDelSyslogPolicyMutation,
+  useDelSyslogPoliciesMutation,
   useSyslogPolicyListQuery,
-  useGetVenuesQuery
+  useGetVenuesQuery, doProfileDelete
 } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
@@ -19,10 +20,10 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-
+import { PROFILE_MAX_COUNT }                           from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -45,32 +46,34 @@ export default function SyslogTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDelSyslogPolicyMutation()
+  const [ deleteFn ] = useDelSyslogPoliciesMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
     defaultPayload
   })
 
+  const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -92,14 +95,22 @@ export default function SyslogTable () {
             defaultMessage: 'Syslog Server'
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Syslog Server' })}</Button>
+            <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
+              {$t({ defaultMessage: 'Add Syslog Server' })}
+            </Button>
           </TenantLink>
         ])}
       />
@@ -112,7 +123,7 @@ export default function SyslogTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -151,7 +162,7 @@ function useColumns () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -159,7 +170,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -169,7 +180,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Primary Server' }),
       dataIndex: 'primaryServer',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.primaryServer ?? '--'
       }
     },
@@ -178,7 +189,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Secondary Server' }),
       dataIndex: 'secondaryServer',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.secondaryServer && row.secondaryServer.length > 0 ? row.secondaryServer : '--'
       }
     },
@@ -187,7 +198,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Event Facility' }),
       dataIndex: 'facility',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.facility ? $t(facilityLabelMapping[row.facility as FacilityEnum]) : '--'
       }
     },
@@ -196,7 +207,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Send Logs' }),
       dataIndex: 'flowLevel',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.flowLevel ? $t(flowLevelLabelMapping[row.flowLevel as FlowLevelEnum]) : '--'
       }
     },
@@ -206,7 +217,7 @@ function useColumns () {
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len

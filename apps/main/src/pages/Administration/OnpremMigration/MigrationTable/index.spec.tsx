@@ -16,7 +16,8 @@ import {
 
 
 import {
-  migrations
+  migrations,
+  configurations
 } from '../__tests__/fixtures'
 
 import MigrationTable from '.'
@@ -29,6 +30,10 @@ describe('Migration Table', () => {
       rest.get(
         MigrationUrlsInfo.getZdMigrationList.url,
         (req, res, ctx) => res(ctx.json(migrations))
+      ),
+      rest.post(
+        MigrationUrlsInfo.getZdConfigurationList.url,
+        (req, res, ctx) => res(ctx.json(configurations))
       )
     )
     params = {

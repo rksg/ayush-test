@@ -31,7 +31,7 @@ describe('Funnel Chart', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
-      value: 1024
+      value: 1280
     })
   })
   it('should render ttc FunnelChart', async () => {

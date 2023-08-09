@@ -1,10 +1,10 @@
-import React from 'react'
+import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen, cleanup }        from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { Provider }                            from '@acx-ui/store'
+import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
+import { RolesEnum }                           from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
@@ -40,19 +40,22 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('analytics/Routes', () => () => {
+jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
-jest.mock('reports/Routes', () => () => {
+jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
-jest.mock('rc/Routes', () => () => {
+
+jest.mock('@rc/Routes', () => () => {
   return (
     <>
       <div data-testid='devices' />
       <div data-testid='networks' />
       <div data-testid='services' />
       <div data-testid='policies' />
+      <div data-testid='users' />
+      <div data-testid='timeline' />
     </>
   )
 },{ virtual: true })
@@ -61,7 +64,7 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
     return <div data-testid='venues' />
   }
 }), { virtual: true })
-jest.mock('msp/Routes', () => () => {
+jest.mock('@msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
 jest.mock('@acx-ui/utils', () => ({
@@ -70,6 +73,17 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('AllRoutes', () => {
+  beforeEach(() => {
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
+    //FIXME: Workaround ACX-37479
+    mockServer.use(
+      rest.get('mspCustomers/', (req, res, ctx) => {
+        return res(ctx.json({}))
+      })
+    )
+  })
+
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
@@ -196,6 +210,22 @@ describe('AllRoutes', () => {
       }
     })
     expect(await screen.findByTestId('msp')).toBeVisible()
+  })
+  test('should navigate to users/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/users/some-page'
+      }
+    })
+    await screen.findByTestId('users')
+  })
+  test('should navigate to timeline/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/timeline/some-page'
+      }
+    })
+    await screen.findByTestId('timeline')
   })
 
   test('should not see anayltics & service validation if not admin', async () => {

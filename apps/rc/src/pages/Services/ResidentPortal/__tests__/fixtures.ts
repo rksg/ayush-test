@@ -1,9 +1,9 @@
+import { CreateResidentPortalFormFields } from '@acx-ui/rc/components'
 import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation } from '@acx-ui/rc/utils'
 
-import { CreateResidentPortalFormFields } from '../ResidentPortalForm/formParsing'
 
 export const mockedTenantId = '__Tenant_ID__'
 
@@ -22,6 +22,7 @@ export const mockedCreateFormData: CreateResidentPortalFormFields = {
   textLogin: 'Login Please',
   textAnnouncements: 'Announcing a Mocked Portal',
   textHelp: 'This is a test.',
+  tenantSetDpsk: true,
   colorMain: '',
   colorAccent: '',
   colorSeparator: '',
@@ -35,6 +36,9 @@ export const mockedResidentPortal = {
   name: 'Mock Resident Portal',
   uiConfiguration: {
     type: 'uiConfiguration',
+    access: {
+      tenantSetDpsk: true
+    },
     text: {
       loginText: 'Welcome to your portal.',
       title: 'Network Management Portal',

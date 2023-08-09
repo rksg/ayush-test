@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip } from '@acx-ui/rc/components'
-import { ApplicationInfo }   from '@acx-ui/rc/utils'
-import { filterByAccess }    from '@acx-ui/user'
+import { Table, TableProps }       from '@acx-ui/components'
+import { SimpleListTooltip }       from '@acx-ui/rc/components'
+import { ApplicationInfo }         from '@acx-ui/rc/utils'
+import { filterByAccess }          from '@acx-ui/user'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 
 type APPTableProps = {
@@ -16,6 +17,9 @@ const getRulesInfo = (row: ApplicationInfo)=>{
   const tooltipItems = impactedItems.map(v => v.applicationPolicyName +
     '-' + v.applicationPolicyRuleName)
   return <SimpleListTooltip items={tooltipItems} displayText={impactedItems.length} />
+}
+const pagination = {
+  pageSize: TABLE_DEFAULT_PAGE_SIZE
 }
 export const NewAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
@@ -33,11 +37,11 @@ export const NewAPPTable=(props: APPTableProps)=>{
     }
   ]
   return (<Table<ApplicationInfo>
-    type='form'
     columns={newColumn}
     dataSource={props.data}
     rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
+    pagination={pagination}
   />)
 }
 export const UpdateAPPTable=(props: APPTableProps)=>{
@@ -65,18 +69,18 @@ export const UpdateAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedRules',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
   ]
 
   return (<Table<ApplicationInfo>
-    type='form'
     columns={updateColumn}
     dataSource={props.data}
     rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
+    pagination={pagination}
   />)
 }
 export const MergedAPPTable=(props: APPTableProps)=>{
@@ -103,18 +107,18 @@ export const MergedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
   ]
 
   return (<Table<ApplicationInfo>
-    type='form'
     columns={mergedColumn}
     dataSource={props.data}
     rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
+    pagination={pagination}
   />)
 }
 export const RemovedAPPTable=(props: APPTableProps)=>{
@@ -136,17 +140,17 @@ export const RemovedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
   ]
   return (<Table<ApplicationInfo>
-    type='form'
     columns={removedColumn}
     dataSource={props.data}
     rowKey='applicationId'
     actions={filterByAccess(props.actions)}
+    pagination={pagination}
   />)
 }
 export const ChangedAPPTable=(props: APPTableProps)=>{
@@ -163,21 +167,26 @@ export const ChangedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'toApplicationName',
       sorter: false
     }, {
+      title: $t({ defaultMessage: 'Application Category' }),
+      key: 'categoryName',
+      dataIndex: 'categoryName',
+      sorter: false
+    }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
       key: 'impactedItems',
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
   ]
   return (<Table<ApplicationInfo>
-    type='form'
     columns={changedColumn}
     dataSource={props.data}
     rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
+    pagination={pagination}
   />)
 }

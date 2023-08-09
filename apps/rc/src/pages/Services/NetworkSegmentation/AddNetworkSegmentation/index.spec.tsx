@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   render,
   screen
@@ -71,4 +72,33 @@ describe('AddNetworkSegmentation', () => {
     await screen.findByTestId('SummaryForm')
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<AddNetworkSegmentation />, {
+      wrapper: Provider,
+      route: { params, path: createNsgPath }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+    await screen.findByTestId('GeneralSettingsForm')
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<AddNetworkSegmentation />, {
+      wrapper: Provider,
+      route: { params, path: createNsgPath }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Network Segmentation'
+    })).toBeVisible()
+    await screen.findByTestId('GeneralSettingsForm')
+  })
 })

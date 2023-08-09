@@ -30,7 +30,7 @@ export const mockedPortalList = {
     },
     {
       serviceName: 'My Portal 1',
-      id: '78f92fbf80334e8b83cddd3210db4921',
+      id: '78f92fbf80334e8b83cddd3210db4922',
       networkIds: ['1', '2', '3'],
       content: {
         displayLangCode: 'en'
@@ -38,7 +38,7 @@ export const mockedPortalList = {
     },
     {
       serviceName: 'Hotel ABC',
-      id: '78f92fbf80334e8b83cddd3210db4922',
+      id: '78f92fbf80334e8b83cddd3210db4923',
       networkIds: ['1', '2', '3', '4'],
       content: {
         displayLangCode: 'en'

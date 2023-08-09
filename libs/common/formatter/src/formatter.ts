@@ -9,6 +9,8 @@ import {
 import { getUserProfile }         from '@acx-ui/user'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
+import { channelSelection } from './channelSelection'
+
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 const hertz = [' Hz', ' daHz', ' hHz', ' kHz', ' MHz', ' GHz', ' THz']
@@ -107,9 +109,14 @@ function durationFormat (milliseconds: number, format: 'short' | 'long', { $t }:
 }
 
 function numberFormat (base: number, units: string[], value: number) {
+  const baseExpo = Number(base.toExponential().split('e')[1])
+  // threshold that we need to trigger division.
+  // baseExpo >= 1
+  const dividerThreshold = Math.pow(10, baseExpo - 1)
+
   for (let a = 1; a <= units.length; a++) {
     const lowest = value / Math.pow(base, a - 1)
-    if (Math.abs(lowest) < base) {
+    if (Math.abs(lowest) < Math.round(base / dividerThreshold) * dividerThreshold) {
       return shorten(lowest) + units[a - 1]
     }
   }
@@ -182,6 +189,60 @@ function hertzFormat (number:number) {
   }
 }
 
+const handleAutoWidth = (text: string) => {
+  if (text === 'Auto') {
+    return text
+  } else {
+    return `${text} MHz`
+  }
+}
+
+const json2keymap = (
+  keyFields: string[],
+  field: keyof(typeof channelSelection)[0],
+  filter: string[]
+) =>
+  (mappings: typeof channelSelection) => mappings
+    .flatMap(items => items)
+    .filter(item => !filter.includes(item[field] as string))
+    .reduce((map, item) => map.set(
+      keyFields.map(keyField => item[keyField as keyof typeof item]).join('-'),
+      item[field]
+    ), new Map())
+
+type CrrmTextType = { txPowerAPCount: number }
+  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: boolean }>
+
+const crrmText = (value: CrrmTextType) => {
+  const { $t } = getIntl()
+  const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
+  const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
+  const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
+  if (Array.isArray(value)) {
+    return value.map(config => {
+      const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
+      const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
+      const radio = formats.radioFormat(config.radio)
+      const autoCellSizing = config.autoCellSizing ? 'Auto Cell Sizing on' : 'static AP Power'
+      return $t({
+        defaultMessage: '{channelMode} and {channelWidth} for {radio} with {autoCellSizing}' },
+      { channelMode, channelWidth, radio, autoCellSizing } )
+    }).join(', ')
+  } else {
+    const { txPowerAPCount } = value
+    // eslint-disable-next-line max-len
+    return $t({ defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection with {txPowerAPCountText}' }, {
+      txPowerAPCountText: txPowerAPCount
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: `static AP transmit power and lower AP transmit power in {txPowerAPCount} {txPowerAPCount, plural,
+            one {AP}
+            other {APs}
+          }` }, { txPowerAPCount })
+        : $t({ defaultMessage: 'no change in AP transmit power' })
+    })
+  }
+}
+
 export const formats = {
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
@@ -200,7 +261,9 @@ export const formats = {
   numberWithCommas: (number: number) =>
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
   fpsFormat: (value: number) => `${value} fps`,
-  percent: (value: number) => `${value} %`
+  percent: (value: number) => `${value} %`,
+  crrmFormat: (value: CrrmTextType) => crrmText(value),
+  noFormat: (value: unknown) => `${value}`
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({
@@ -228,9 +291,8 @@ export const intlFormats = {
   scaleFormatRound
 } as const
 
-export function formatter (
-  name: keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
-) {
+export type FormatterType = keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
+export function formatter (name: FormatterType) {
   return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
     if (value === null || value === noDataDisplay) {
@@ -265,4 +327,3 @@ function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
 function isFormat (name: string): name is keyof typeof formats {
   return name in formats
 }
-

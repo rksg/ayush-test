@@ -10,8 +10,7 @@ import { checkObjectNotExists, DpskSaveData, PersonaGroup }                     
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import DpskForm                                  from '../../../Services/Dpsk/DpskForm/DpskForm'
-import { DpskPoolLink, MacRegistrationPoolLink } from '../LinkHelper'
+import DpskForm from '../../../Services/Dpsk/DpskForm/DpskForm'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -87,30 +86,28 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Pool'} required>
+            <Form.Item label={'DPSK Service'} required>
               <Form.Item
                 name='dpskPoolId'
                 children={
-                  !defaultValue?.dpskPoolId
-                    ? <Select
-                      disabled={!!defaultValue?.dpskPoolId}
-                      placeholder={$t({ defaultMessage: 'Select...' })}
-                      options={
-                        dpskPoolList?.data?.data
-                          .filter(pool => !pool.identityId)
-                          .map(pool => ({ value: pool.id, label: pool.name }))
-                      }
-                    />
-                    : <DpskPoolLink
-                      name={dpskPoolList?.data?.data
-                        ?.find(p => p.id === defaultValue?.dpskPoolId)?.name}
-                      dpskPoolId={defaultValue?.dpskPoolId}
-                    />
+                  <Select
+                    disabled={!!defaultValue?.dpskPoolId}
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    showSearch
+                    filterOption={(input, option) =>
+                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                    options={
+                      dpskPoolList?.data?.data
+                        .filter(pool => !pool.identityId || pool.id === defaultValue?.dpskPoolId)
+                        .map(pool => ({ value: pool.id, label: pool.name }))
+                    }
+                  />
                 }
                 rules={
                   [{
                     required: true,
-                    message: $t({ defaultMessage: 'Please select a DPSK pool' })
+                    message: $t({ defaultMessage: 'Please select a DPSK Service' })
                   }]
                 }
               />
@@ -132,21 +129,19 @@ export function PersonaGroupForm (props: {
               valuePropName='value'
               label={$t({ defaultMessage: 'MAC Registration List' })}
               children={
-                !defaultValue?.macRegistrationPoolId
-                  ? <Select
-                    allowClear
-                    disabled={!!defaultValue?.macRegistrationPoolId}
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={
-                      macRegistrationPoolList?.data
-                        ?.map(pool => ({ value: pool.id, label: pool.name }))
-                    }
-                  />
-                  : <MacRegistrationPoolLink
-                    name={macRegistrationPoolList?.data
-                      ?.find(mac => mac.id === defaultValue.macRegistrationPoolId)?.name}
-                    macRegistrationPoolId={defaultValue?.macRegistrationPoolId}
-                  />
+                <Select
+                  allowClear
+                  disabled={!!defaultValue?.macRegistrationPoolId}
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={
+                    macRegistrationPoolList?.data
+                      ?.map(pool => ({ value: pool.id, label: pool.name }))
+                  }
+                />
               }
             />
           </Col>

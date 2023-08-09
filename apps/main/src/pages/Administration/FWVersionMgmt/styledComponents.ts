@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
@@ -14,21 +15,8 @@ export const ScheduleTooltipText = styled.span`
   font-size: 12px;
 `
 
-export const ScheduleText = styled.span`
-  cursor: pointer;
-`
-
-export const BannerVersion = styled.div`
-  font-family: "OpenSans-Regular", "Open Sans", sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #333333;
-  text-align: left;
-  line-height: 20px;
-`
-
-export const BannerVersionName = styled.span`
-  font-weight: 600;
+export const WithTooltip = styled.span`
+  cursor: default;
 `
 
 export const BannerType = styled.div`
@@ -116,4 +104,42 @@ export const TabWithHint = styled.span`
       fill: var(--acx-accents-orange-50);
     }
   }
+`
+
+export const BannerVersionOld = styled.div`
+  font-family: "OpenSans-Regular", "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  text-align: left;
+  line-height: 20px;
+`
+
+export const BannerVersion = styled.div`
+  background-color: var(--acx-accents-orange-10);
+  width: fit-content;
+  padding: 7px 15px 15px 15px;
+`
+
+export const BannerVersionName = styled.span`
+  font-weight: 600;
+  color: var(--acx-neutrals-70);
+`
+
+export const LatestVersion = styled.div`
+  font-weight: 600;
+  margin-bottom: 14px;
+  line-height: 18px;
+`
+export const TypeSpace = styled(Space)`
+    gap: 0px !important;
+  .ant-divider-vertical{
+    background-color: var(--acx-neutrals-60);
+  }
+`
+export const FwContainer = styled.div`
+  color: var(--acx-neutrals-70);
+  font-size: 12px;
+  line-height: 20px;
+  margin-right: 30px;
 `

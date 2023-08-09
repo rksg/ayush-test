@@ -4,9 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                           from '@acx-ui/components'
+import { StepsForm }  from '@acx-ui/components'
 import {
-  CommonUrlsInfo, TunnelProfileUrls, NetworkSegmentationUrls
+  CommonUrlsInfo,
+  NetworkSegmentationUrls,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -14,14 +16,15 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockVenueNetworkData,
   mockNetworkGroup,
-  mockNsgStatsList
+  mockNsgStatsList,
+  mockVenueNetworkData
 } from '../../__tests__/fixtures'
 
 
@@ -59,7 +62,10 @@ const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
 describe('NetworkSegmentation - GeneralSettingsForm', () => {
   let params: { tenantId: string, serviceId: string }
+  const mockedGetNetworkDeepList = jest.fn()
+
   beforeEach(() => {
+    mockedGetNetworkDeepList.mockReset()
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -76,11 +82,15 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.status(200))
+        (req, res, ctx) => {
+          mockedGetNetworkDeepList()
+          return res(ctx.status(200))
+        }
       ),
       rest.post(
         TunnelProfileUrls.createTunnelProfile.url,
         (req, res, ctx) => res(ctx.status(202))
+
       ),
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -96,7 +106,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
   it('Step3 - Wireless network success', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('venueId', 'testVenueId')
+      form.setFieldValue('venueId', 'testVenueId1')
       return form
     })
     const user = userEvent.setup()
@@ -109,6 +119,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
+
+    // wait for api all responded because `GetNetworkDeepList` will trigger multiple requests
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
     await user.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile' }),
       await screen.findByRole('option', { name: 'Default' })
@@ -118,15 +133,14 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const usedNetowrkIds = mockNsgStatsList.data.flatMap(item => item.networkIds)
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
-
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
-  it('Step3 - Wireless network will be block by mandatory validation', async () => {
+  it('Step3 - Wireless network will be not block by empty list', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('venueId', 'testVenueId')
+      form.setFieldValue('venueId', 'testVenueId1')
       return form
     })
     const user = userEvent.setup()
@@ -139,9 +153,13 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
+
+    // wait for api all responded because `GetNetworkDeepList` will trigger multiple requests
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
     await screen.findByRole('checkbox', { name: 'Network 1' })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-    await screen.findByText('Please select at least 1 network')
   })
 
   it('Add tunnel profile', async () => {

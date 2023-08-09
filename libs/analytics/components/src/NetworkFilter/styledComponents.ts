@@ -34,24 +34,11 @@ export const SeverityContainer = styled.div`
   display: flex;
   flex-direction: row;
   line-height: 8px;
-  justify-content: right
-
-`
-export const LabelContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  column-gap: 15px;
-  align-items: center;
-  justify-content: space-between;
-`
-export const Label = styled.div`
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  justify-content: left
+  justify-content: right;
 `
 export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => props)`
+  &:first-child { margin-left: 15px; }
+  margin-left: -4px;
   background-color: ${(props) => {
     const color =
       incidentSeverities[props.severity as IncidentSeverities]?.color ?? ''
@@ -60,14 +47,6 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  margin-left: -4px;
   border: 1px solid var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
-`
-export const SearchLabel = styled.div.attrs((props: { $isDeep: boolean }) => props)`
-  ${props => props.$isDeep ? 'width: 100%;' : 'width: 150px;' }
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  justify-content: left
 `

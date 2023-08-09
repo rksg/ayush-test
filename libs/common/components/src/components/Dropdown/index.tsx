@@ -27,3 +27,6 @@ export function Dropdown ({ overlay, children, ...props }: DropdownProps) {
     {...props}
   >{children && children!(selectedKeys ? selectedKeys.join(', ') : null)}</UI.Dropdown>
 }
+
+Dropdown.OverlayContainer = UI.OverlayContainer
+Dropdown.OverlayTitle = UI.OverlayTitle

@@ -29,6 +29,7 @@ export interface RevertDialogProps {
 
 export function RevertDialog (props: RevertDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions } = props
   // eslint-disable-next-line max-len
@@ -96,15 +97,15 @@ export function RevertDialog (props: RevertDialogProps) {
             value={selectedVersion}>
             <Space direction={'vertical'}>
               { availableVersions?.map(v =>
-                <Radio value={v.name} key={v.name}>{getVersionLabel(v)}</Radio>)}
+                <Radio value={v.name} key={v.name}>{getVersionLabel(intl, v)}</Radio>)}
             </Space>
           </Radio.Group>
           <UI.Section>
             <UI.Ul>
               { // eslint-disable-next-line max-len
-                <UI.Li>This action will cause network interruption and impact service delivery.</UI.Li>}
+                <UI.Li>{$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
               { // eslint-disable-next-line max-len
-                <UI.Li>Some features may no longer be availabe with previous versions of device firmware.</UI.Li>}
+                <UI.Li>{$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
             </UI.Ul>
           </UI.Section>
         </Form.Item>
