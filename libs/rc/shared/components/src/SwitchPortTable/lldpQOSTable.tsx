@@ -46,13 +46,13 @@ export function LldpQOSTable (props : {
     width: 150,
     dataIndex: 'applicationType',
     defaultSortOrder: 'ascend',
-    render: (data) => applicationTypeMap[data as keyof typeof applicationTypeMap]
+    render: (_, { applicationType }) => applicationTypeMap[applicationType]
   }, {
     key: 'qosVlanType',
     title: $t({ defaultMessage: 'QoS VLAN Type' }),
     width: 125,
     dataIndex: 'qosVlanType',
-    render: (data) => qosVlanTypeMap[data as keyof typeof qosVlanTypeMap]
+    render: (_, { qosVlanType }) => qosVlanTypeMap[qosVlanType]
   }, {
     key: 'vlanId',
     title: $t({ defaultMessage: 'VLAN ID' }),
