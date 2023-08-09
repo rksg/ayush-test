@@ -36,7 +36,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   APExtended,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  ChannelBandwidth6GEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -390,10 +391,13 @@ export function RadioSettings () {
     const outdoorTitle5 = $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
     if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
 
+    const channelBandwidth6 = radioParams6G?.channelBandwidth
     const channel6 = radioParams6G?.allowedChannels
     const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
     if (!validateChannels(channel6, title6)) return false
-    if (!validate320MHzIsolatedGroup(channel6, title6)) return false
+    if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
+      if (!validate320MHzIsolatedGroup(channel6, title6)) return false
+    }
 
     const { radioParamsLower5G, radioParamsUpper5G,
       inheritParamsLower5G, inheritParamsUpper5G } = radioParamsDual5G || {}
