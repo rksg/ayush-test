@@ -180,15 +180,14 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (status: unknown, row : APExtended) => {
         /* eslint-disable max-len */
-        // TODO add Feature flag and pending for PLM
-        if (true || (ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
+        if ((ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
           row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
 
           const afcInfo = row.apStatusData?.afcInfo
 
           let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
-          if (true||afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
             warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
           }
           if (afcInfo?.afcStatus === AFCStatus.REJECTED || afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
