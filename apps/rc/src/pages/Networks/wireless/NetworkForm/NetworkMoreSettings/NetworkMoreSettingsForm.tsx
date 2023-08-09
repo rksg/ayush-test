@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useContext, useState, useEffect } from 'react'
 
 import {
@@ -32,7 +33,11 @@ export function NetworkMoreSettingsForm (props: {
           ...data.wlan,
           advancedCustomization: {
             ...data?.wlan?.advancedCustomization,
-            vlanPool: get(data, 'wlan.advancedCustomization.vlanPool')
+            vlanPool: get(data, 'wlan.advancedCustomization.vlanPool'),
+            enableMulticastRateLimiting: get(data, 'wlan.advancedCustomization.enableMulticastUplinkRateLimiting') ||
+            get(data, 'wlan.advancedCustomization.enableMulticastDownlinkRateLimiting') ||
+            get(data, 'wlan.advancedCustomization.enableMulticastUplinkRateLimiting6G') ||
+            get(data, 'wlan.advancedCustomization.enableMulticastDownlinkRateLimiting6G')
           }
         },
         enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&
