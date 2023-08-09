@@ -24,11 +24,14 @@ export function DataStudio () {
   }, [authenticate])
 
   return (
-    <div data-testid='data-studio'>
+    <div data-testid='data-studio'
+      style={{
+        height: 'calc(100vh - 65px)'
+      }}>
       {url && (<iframe
         title='data-studio'
         src={`${getHostName(window.location.origin)}${url}`}
-        style={{ width: '100%', height: '85vh', border: 'none' }}
+        style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
       />
       )}
     </div>

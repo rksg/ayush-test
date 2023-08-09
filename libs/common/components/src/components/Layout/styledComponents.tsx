@@ -365,6 +365,11 @@ export const Content = styled.div`
   }
 `
 
+export const IframeContent = styled.div`
+  ${Content}
+  margin: 0;
+`
+
 export const ResponsiveContent = styled.div`
   min-width: 100%;
   min-height: 100vh;
