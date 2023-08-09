@@ -584,3 +584,26 @@ export const ActionsContainer = styled(Space)`
   background-color: var(--acx-primary-white);
   z-index: 3;
 `
+
+export const disableStickyHeaders = css`
+  .ant-pro-table {
+    .ant-table {
+      .ant-table-sticky-holder {
+        &[style] {
+          position: relative;
+          top: unset !important;
+        }
+      }
+    }
+    &-list-toolbar,
+    &-alert {
+      position: relative;
+      top: unset;
+    }
+  }
+  ${Header},
+  ${ActionsContainer} {
+    position: relative;
+    top: unset;
+  }
+`
