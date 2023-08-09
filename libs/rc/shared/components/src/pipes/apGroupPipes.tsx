@@ -15,8 +15,7 @@ import {
   vlanContents,
   RadioEnum,
   RadioTypeEnum,
-  VLAN_PREFIX,
-  WlanSecurityEnum
+  VLAN_PREFIX
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
