@@ -86,7 +86,9 @@ export enum Features {
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
   WIFI_AMB_TOGGLE = 'wifi-amb-toggle',
-  WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle'
+  WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
+  WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
+  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
