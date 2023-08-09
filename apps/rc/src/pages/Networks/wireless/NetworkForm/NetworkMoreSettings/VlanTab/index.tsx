@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
@@ -36,10 +36,13 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
 
-  if (isPortalDefaultVLANId) {
-    delete data?.wlan?.vlanId
-    form.setFieldValue(['wlan', 'vlanId'], 3000)
-  }
+  useEffect(() => {
+    if (isPortalDefaultVLANId) {
+      delete data?.wlan?.vlanId
+      form.setFieldValue(['wlan', 'vlanId'], 3000)
+    }
+  }, [isPortalDefaultVLANId, form])
+
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK
