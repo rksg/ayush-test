@@ -31,7 +31,7 @@ export function OnDemandCliTab () {
     title: $t({ defaultMessage: 'Switches' }),
     dataIndex: 'switchCount',
     sorter: true,
-    render: function (data, row) {
+    render: function (_, row) {
       let switchArray: string[] = []
       row.venueSwitches?.forEach(venue => {
         venue.switches?.forEach(switchName => {

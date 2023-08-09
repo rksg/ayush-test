@@ -212,7 +212,7 @@ describe('SwitchTable', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await within(row1).findByRole('button', { expanded: true })).toBeVisible()
-    expect(await within(tbody).findByText('stack-member')).toBeVisible()
+    expect(await within(tbody).findByText('stack-member (Member)')).toBeVisible()
   })
 
   it('should render correctly when feature flag is on', async () => {

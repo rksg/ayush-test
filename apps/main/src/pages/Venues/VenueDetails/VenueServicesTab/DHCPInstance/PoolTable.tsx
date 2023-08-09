@@ -79,7 +79,7 @@ export default function VenuePoolTable (){
       key: 'startIpAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
       dataIndex: 'startIpAddress',
-      render: function (_data, row) {
+      render: function (_, row) {
         return $t({ defaultMessage: '{start} - {end}' },
           { start: row.startIpAddress, end: row.endIpAddress })
       }
@@ -93,7 +93,7 @@ export default function VenuePoolTable (){
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTimeHours',
-      render: (data, rowData)=>{
+      render: (_, rowData)=>{
         const MINUTE = 1000 * 60
         const HOUR = MINUTE * 60
         return formatter('longDurationFormat')
@@ -104,7 +104,7 @@ export default function VenuePoolTable (){
       key: 'primaryDnsIp',
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
-      render: (data, rowData)=> {
+      render: (_, rowData)=> {
         if(rowData.primaryDnsIp && rowData.secondaryDnsIp){
           // eslint-disable-next-line max-len
           return <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />
@@ -117,14 +117,14 @@ export default function VenuePoolTable (){
       key: 'PoolSize',
       title: $t({ defaultMessage: 'Pool Size' }),
       dataIndex: 'startIpAddress',
-      render: (_data, rowData)=>
+      render: (_, rowData)=>
         IpUtilsService.countIpRangeSize(rowData.startIpAddress, rowData.endIpAddress)
     },
     {
       key: 'usedIpCount',
       title: $t({ defaultMessage: 'Utilization' }),
       dataIndex: 'usedIpCount',
-      render: (data, rowData)=> {
+      render: (__, rowData)=> {
         if(_.isUndefined(rowData.usedIpCount) || _.isUndefined(rowData.totalIpCount)){
           return ''
         }
@@ -135,14 +135,14 @@ export default function VenuePoolTable (){
       key: 'id',
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
-      render: (id, row) => {
+      render: (__, row) => {
         if (!hasAccess()) {
           return row.active ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
         }
 
         let hasOtherActive = true
         if(row.active===true){
-          hasOtherActive = _.some(tableData, o => o.active && o.id !== id)
+          hasOtherActive = _.some(tableData, o => o.active && o.id !== row.id)
         }
         if(!hasOtherActive){
           return <Tooltip placement='topLeft'
@@ -166,7 +166,7 @@ export default function VenuePoolTable (){
               content: checked ? activeMsg : deactivateMsg,
               okText: $t({ defaultMessage: 'Confirm' }),
               onOk () {
-                setActivePool(id as string, checked)
+                setActivePool(row.id, checked)
               }
             })
 
