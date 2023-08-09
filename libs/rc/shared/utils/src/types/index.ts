@@ -486,3 +486,11 @@ export interface SwitchClient {
   dhcpClientModelName?: string
   dhcpClientHostName?: string
 }
+
+export interface QosMapSetOptions {
+  enabled: boolean
+  priority: number
+  // dscpLow: number
+  // dscpHigh: number
+  // dscpExceptionValues: number[]
+}

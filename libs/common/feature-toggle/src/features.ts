@@ -74,6 +74,7 @@ export enum Features {
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
+  WIFI_EDA_QOS_MAP_SET_TOGGLE = 'wifi-eda-qos-map-set-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
