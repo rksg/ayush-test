@@ -63,7 +63,7 @@ export function CliStepNotice () {
       Fix implicit submission issue
       https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
       */}
-      <Form.Item name='fake' hidden children={<Input />} />
+      <Form.Item hidden children={<Input />} />
 
       {!editMode && <Form.Item
         name='agree'
