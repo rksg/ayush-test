@@ -85,13 +85,13 @@ export function LowPowerBannerAndModal (props: {
     return <></>
   }
 
-  // if(!lowPowerAPs && parent === 'venue') {
-  //   return <></>
-  // }
+  if(!lowPowerAPs && parent === 'venue') {
+    return <></>
+  }
 
-  //   if(lowPowerAPs.lowPowerAPCount === 0 && && parent === 'venue') {
-  //     return <></>
-  //   }
+  if(lowPowerAPs?.lowPowerAPCount === 0 && parent === 'venue') {
+    return <></>
+  }
 
   return (
     <>
@@ -99,10 +99,12 @@ export function LowPowerBannerAndModal (props: {
         modelVisibility={displayLowPowerModeModal}
         modalOff={() => {setDisplayLowPowerModeModal(false)}}
       />
-      <Row style={{
-        marginTop: '10px',
-        marginBottom: '10px'
-      }}>
+      <Row
+        data-testid='low-power-banner'
+        style={{
+          marginTop: '10px',
+          marginBottom: '10px'
+        }}>
         <Col span={bannerSettings.bannerColSpan}
           style={bannerSettings.colStyle}>
           {bannerSettings.warningMessage}
@@ -110,6 +112,7 @@ export function LowPowerBannerAndModal (props: {
         <Col span={2}
           style={bannerSettings.colStyle}>
           <Button type='link'
+            data-testid='how-to-fix-this-button'
             onClick={() => {
               setDisplayLowPowerModeModal(true)
             }}>
@@ -136,9 +139,11 @@ function LowerPowerInstructionModal (props: {
     <Modal
       visible={modelVisibility}
       closable={false}
+      data-testid='instruction-modal'
       footer={[
         <Button key='ok'
           type='primary'
+          data-testid='ok-got-it-button'
           onClick={() => {
             modalOff()
           }}>

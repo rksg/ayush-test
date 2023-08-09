@@ -130,8 +130,7 @@ function ApPageHeader () {
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
       footer={<>
-        {/* TODO: Remove the condition */}
-        {(true || ApStatusData.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
+        {(ApStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
           <LowPowerBannerAndModal parent='ap' />}
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
