@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
@@ -346,8 +347,8 @@ export function RadioSettings () {
 
       const content = dual5GName?
         $t(
-          { defaultMessage: 'Please select at least two channels under the {dual5GName} block' },
-          { dual5GName }
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
+          { dual5GName, br: <br /> }
         ):
         $t({ defaultMessage: 'Please select at least two channels' })
 
