@@ -6,7 +6,6 @@ import * as CommonComponent from '@acx-ui/components'
 import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }         from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -76,7 +75,10 @@ describe('Edge Detail Page Header', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('More Actions'))
+    await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
+    await waitFor(() => {
+      expect((screen.getAllByRole('menuitem')).length).toBe(3)
+    })
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
@@ -87,11 +89,13 @@ describe('Edge Detail Page Header', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Configure'))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
-      hash: '',
-      search: ''
+    await userEvent.click(screen.getByText('Configure'))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
+        hash: '',
+        search: ''
+      })
     })
   })
 

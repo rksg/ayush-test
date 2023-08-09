@@ -39,6 +39,10 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
 const utils = require('@acx-ui/utils')
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils')
@@ -47,6 +51,9 @@ jest.mock('@acx-ui/utils', () => ({
 describe('Auth Server Form Item', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    services.useGetAdminListQuery = jest.fn().mockImplementation(() => {
+      return { data: [] }
+    })
     utils.loadImageWithJWT = jest.fn().mockImplementation(() =>
       Promise.resolve('fileUrl')
     )
