@@ -1,11 +1,15 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import moment    from 'moment'
+import { rest }  from 'msw'
 
-import { Provider }                           from '@acx-ui/store'
-import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { AssignMspLicense } from '.'
+
 
 const assignmentSummary =
   [
@@ -22,6 +26,16 @@ const assignmentSummary =
       deviceType: 'MSP_SWITCH',
       quantity: 13,
       remainingDevices: 92,
+      trial: false
+    }
+  ]
+const devicesAssignmentSummary =
+  [
+    {
+      courtesyMspEntitlementsUsed: false,
+      deviceType: 'MSP_APSW',
+      quantity: 93,
+      remainingDevices: 12,
       trial: false
     }
   ]
@@ -60,12 +74,85 @@ const assignmentHistory =
       trialAssignment: false
     }
   ]
+const wifiAndSwitchAssignmentHistory =
+  [
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceType: 'MSP_WIFI',
+      id: 130468,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_SWITCH',
+      id: 130469,
+      mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_WIFI',
+      id: 130470,
+      mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    }
+  ]
+const deviceAssignmentHistory =
+  [
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_APSW',
+      id: 130469,
+      mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    }
+  ]
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
 const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -80,13 +167,29 @@ describe('AssignMspLicense', () => {
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: assignmentHistory }
     })
+    jest.spyOn(services, 'useAddMspAssignmentMutation')
+    jest.spyOn(services, 'useUpdateMspAssignmentMutation')
+    mockServer.use(
+      rest.post(
+        MspUrlsInfo.addMspAssignment.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 123 }))
+      ),
+      rest.patch(
+        MspUrlsInfo.updateMspAssignment.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 456 }))
+      )
+    )
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710',
       mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
       action: 'edit'
     }
-  })
+  },
+  afterEach(() => {
+    jest.clearAllMocks()
+  }))
   it('should render correctly for add mode', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     params.action = 'add'
     render(
       <Provider>
@@ -102,6 +205,10 @@ describe('AssignMspLicense', () => {
 
   })
   it('should render correctly for edit mode', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: wifiAndSwitchAssignmentHistory }
+    })
     render(
       <Provider>
         <AssignMspLicense />
@@ -115,7 +222,29 @@ describe('AssignMspLicense', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 
   })
+  it('should render correctly for device agnostic flag on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: wifiAndSwitchAssignmentHistory }
+    })
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Assign Subscription')).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByText('Assigned Device Subscriptions')).toBeVisible()
+    expect(screen.queryByText('Assigned Wi-Fi Subscription')).toBeNull()
+    expect(screen.queryByText('Assigned Switch Subscription')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
+
+  })
   it('should validate wifi input correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -130,6 +259,7 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should validate switch input correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -145,6 +275,7 @@ describe('AssignMspLicense', () => {
     })
   })
   it('expiration date dropdown should set five years date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -170,8 +301,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(expirationDate)).toBeDisabled()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('expiration date dropdown should set 3 years date and custom date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -212,8 +353,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(customExpirationDate)).toBeVisible()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('expiration date dropdown should set one year date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -238,8 +389,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(expirationDate)).toBeVisible()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('expiration date dropdown should set 90 days date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -264,8 +425,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(expirationDate)).toBeVisible()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('expiration date dropdown should set 60 days date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -290,8 +461,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(expirationDate)).toBeVisible()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('expiration date dropdown should set 30 days date correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -316,8 +497,18 @@ describe('AssignMspLicense', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(expirationDate)).toBeVisible()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
   })
   it('datepicker should work correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -338,6 +529,7 @@ describe('AssignMspLicense', () => {
     expect(await screen.findByDisplayValue(date.format('MM/DD/YYYY'))).toBeVisible()
   })
   it('cancel button should navigate correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AssignMspLicense />
@@ -352,6 +544,152 @@ describe('AssignMspLicense', () => {
         hash: '',
         search: ''
       })
+    })
+  })
+  it('should save correctly for add', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    params.action = 'add'
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const wifiInput = screen.getAllByRole('spinbutton')[0]
+    fireEvent.change(wifiInput, { target: { value: '1' } })
+    const switchInput = screen.getAllByRole('spinbutton')[1]
+    fireEvent.change(switchInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 123 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useAddMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save correctly for edit', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: wifiAndSwitchAssignmentHistory }
+    })
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const wifiInput = screen.getAllByRole('spinbutton')[0]
+    fireEvent.change(wifiInput, { target: { value: '1' } })
+    const switchInput = screen.getAllByRole('spinbutton')[1]
+    fireEvent.change(switchInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 456 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useUpdateMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save correctly for add assigned device', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesAssignmentSummary }
+    })
+    params.action = 'add'
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const deviceInput = screen.getByRole('spinbutton')
+    fireEvent.change(deviceInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 123 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useAddMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save correctly for edit assigned device', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesAssignmentSummary }
+    })
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: deviceAssignmentHistory }
+    })
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const deviceInput = screen.getByRole('spinbutton')
+    fireEvent.change(deviceInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 456 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useUpdateMspAssignmentMutation).toHaveLastReturnedWith(value)
     })
   })
 })
