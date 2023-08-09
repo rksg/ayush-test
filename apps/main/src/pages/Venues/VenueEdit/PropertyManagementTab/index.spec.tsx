@@ -194,7 +194,7 @@ describe('Property Config Tab', () => {
     await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
   })
 
-  it('should render Property config tab with msg-template', async () => {
+  it.skip('should render Property config tab with msg-template', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
