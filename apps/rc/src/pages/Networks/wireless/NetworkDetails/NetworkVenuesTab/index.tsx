@@ -322,14 +322,14 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count'],
       align: 'center',
-      render: function (data) { return data ? data : 0 }
+      render: function (_, { networks }) { return networks?.count ? networks?.count : 0 }
     },
     {
       key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.aggregatedApStatus) { return 0 }
         return Object
           .values(row.aggregatedApStatus)
@@ -341,7 +341,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
@@ -354,7 +354,7 @@ export function NetworkVenuesTab () {
           title={title}
           placement='bottom'>
           <Switch
-            checked={Boolean(data)}
+            checked={Boolean(row.activated?.isActivated)}
             disabled={disabled}
             onClick={(checked, event) => {
               activateNetwork(checked, row)
@@ -368,7 +368,7 @@ export function NetworkVenuesTab () {
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
@@ -377,7 +377,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: 80,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
@@ -386,7 +386,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: 140,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
@@ -394,7 +394,7 @@ export function NetworkVenuesTab () {
       key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), systemNetwork)
       }
     }

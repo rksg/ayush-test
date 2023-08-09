@@ -49,8 +49,6 @@ function ApEditTabs () {
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
 
-  setIsOnlyOneTab(!currentAP?.model)
-
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
@@ -110,6 +108,12 @@ function ApEditTabs () {
       unblockRef.current?.()
     }
   }, [editContextData])
+
+  useEffect(() => {
+    if (currentAP) {
+      setIsOnlyOneTab(!currentAP?.model)
+    }
+  }, [currentAP])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)

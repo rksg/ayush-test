@@ -113,7 +113,7 @@ export default function AdaptivePolicySetTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={
@@ -122,7 +122,7 @@ export default function AdaptivePolicySetTable () {
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!
                 })}
-            >{data}</TenantLink>
+            >{row.name}</TenantLink>
           )
         }
       },

@@ -157,7 +157,6 @@ export function IncidentTable ({ filters, systemNetwork }: {
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     {
@@ -219,7 +218,7 @@ export function IncidentTable ({ filters, systemNetwork }: {
   ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
         settingsId='incident-table'
         type='tall'
