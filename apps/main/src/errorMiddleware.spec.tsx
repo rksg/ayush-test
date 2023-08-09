@@ -58,6 +58,12 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 403 }
     } as unknown as ErrorAction).title).toBe('Session Expired')
   })
+  it('should handle 404', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 404 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Validation Error')
+  })
   it('should handle 408', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 408 } } },
@@ -138,6 +144,15 @@ describe('getErrorContent', () => {
       meta: { baseQueryMeta: { response: { status: 400 } } },
       payload: {}
     } as unknown as ErrorAction)).toThrow('some error')
+  })
+  it('should show API error message', () => {
+    const req = new Request('/foo/bar')
+    req.headers.set('Build-In-Error-Modal', 'showApiError')
+
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 422 }, request: req } },
+      payload: { data: '[Validation Error]' }
+    } as unknown as ErrorAction).content).toBe('[Validation Error]')
   })
 })
 

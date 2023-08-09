@@ -60,11 +60,11 @@ export const showApiError = {
 }
 
 export const isIgnoreErrorModal = (request?: Request) => {
-  return request && request.headers.get('Build-In-Error-Modal') === 'ignore'
+  return request ? request.headers.get('Build-In-Error-Modal') === 'ignore' : false
 }
 
 export const isShowApiError = (request?: Request) => {
-  return request && request.headers.get('Build-In-Error-Modal') === 'showApiError'
+  return request ? request.headers.get('Build-In-Error-Modal') === 'showApiError' : false
 }
 
 export const createHttpRequest = (
@@ -128,7 +128,7 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if (apiInfo.newApi) {
     return !hasOldUrl || isDev() || isQA() || isScale() ||
-      isLocalHost() || isIntEnv() || isStage() || isProdEnv()
+      isIntEnv() || isStage() || isProdEnv() || isLocalHost()
   } else {
     return false
   }
