@@ -31,8 +31,7 @@ export default function RegionButton () {
   useEffect(()=>{
     if(userProfile && mspEcProfileData){
       const isMspEc = mspUtils.isMspEc(mspEcProfileData)
-      if((userProfile.support || userProfile.dogfood || userProfile.var)
-      && userProfile.tenantId === userProfile.varTenantId
+      if(userProfile.tenantId === userProfile.varTenantId
       && !isMspEc && userProfile.allowedRegions.length > 1){
         setRegionEnable(true)
       }
