@@ -274,6 +274,7 @@ export interface SwitchRow {
   members?: number
   clients?: number
   incidents?: number
+  clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
 }
@@ -407,6 +408,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   adminStatus?: string;
   portSpeed?: string;
   poeType: string;
+  poeUsage: string;
   poeEnabled: boolean;
   poeTotal: number;
   poeUsed: number;

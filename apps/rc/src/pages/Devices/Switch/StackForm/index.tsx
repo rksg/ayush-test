@@ -451,7 +451,7 @@ export function StackForm () {
       key: 'sort',
       width: 60,
       show: editMode,
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
         )
@@ -460,7 +460,7 @@ export function StackForm () {
     {
       dataIndex: 'key',
       key: 'key',
-      render: (id, record, index) => {
+      render: (_, __, index) => {
         return index + 1
       },
       showSorterTooltip: false
@@ -470,7 +470,7 @@ export function StackForm () {
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: function (data, row, index) {
+      render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
           validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
@@ -507,8 +507,8 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
       key: 'model',
-      render: function (data: React.ReactNode) {
-        return <div>{data ? data : '--'}</div>
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        return <div>{row.model ? row.model : '--'}</div>
       }
     }] : []),
     {
@@ -516,7 +516,7 @@ export function StackForm () {
       dataIndex: 'active',
       key: 'active',
       show: !editMode,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <Form.Item name={'active'}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
@@ -529,7 +529,7 @@ export function StackForm () {
     {
       key: 'action',
       dataIndex: 'action',
-      render: (data, row, index) => (
+      render: (_, row, index) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'

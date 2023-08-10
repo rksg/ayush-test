@@ -54,7 +54,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -80,7 +80,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -103,7 +103,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -127,7 +127,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -208,7 +208,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -234,7 +234,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -257,7 +257,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
@@ -281,7 +281,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="Grid__Container-sc-5irhjd-1 dRhDDA"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
