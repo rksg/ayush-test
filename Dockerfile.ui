@@ -43,9 +43,6 @@ FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
-# We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
-RUN node ./node_modules/.bin/nx run ra:tsc
 ###############################################################
 FROM node:14.21.1-alpine as build-locales
 WORKDIR /app

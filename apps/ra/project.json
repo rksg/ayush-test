@@ -63,14 +63,6 @@
         }
       }
     },
-    "tsc": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          "npx tsc --noEmit -p apps/ra/tsconfig.app.json"
-        ]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
