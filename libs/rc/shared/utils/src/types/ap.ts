@@ -19,6 +19,7 @@ export interface IpSettings {
 
 export interface APSystem extends IpSettings {
   uptime?: number
+  secureBootEnabled?: boolean
 }
 
 export interface APNetworkSettings extends IpSettings {
@@ -95,7 +96,8 @@ export interface APExtended extends AP {
   },
   name?: string,
   switchSerialNumber?: string,
-  switchId?: string
+  switchId?: string,
+  switchName?: string
 }
 
 export interface CelluarInfo {

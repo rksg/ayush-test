@@ -71,8 +71,8 @@ export function ExternalAntennaSection () {
         if (data.enable50G === false && data.gain50G === undefined) {
           data.gain50G = modelCapabilities?.externalAntenna?.gain50G || null
         }
-        data.supportDisable = modelCapabilities.externalAntenna?.supportDisable
-        data.coupled = modelCapabilities.externalAntenna?.coupled || undefined
+        data.supportDisable = modelCapabilities?.externalAntenna?.supportDisable
+        data.coupled = modelCapabilities?.externalAntenna?.coupled || undefined
       })
       setHandledApExternalAntennas(apExternalAntennas)
       let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
