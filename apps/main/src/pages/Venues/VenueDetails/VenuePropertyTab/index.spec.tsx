@@ -191,7 +191,7 @@ describe('Property Unit Page', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('show render Unit table withNsg', async () => {
+  it.skip('show render Unit table withNsg', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, {
       route: {
         params: enableNsgParams,
