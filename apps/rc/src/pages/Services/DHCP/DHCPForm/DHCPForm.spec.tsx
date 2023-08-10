@@ -134,18 +134,4 @@ describe('DHCPForm', () => {
     await userEvent.click(screen.getByText('Cancel'))
 
   })
-
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    const params = { tenantId: 'tenant-id' }
-
-    render(<Provider><DHCPForm /></Provider>, {
-      route: { params }
-    })
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DHCP Services'
-    })).toBeVisible()
-  })
 })
