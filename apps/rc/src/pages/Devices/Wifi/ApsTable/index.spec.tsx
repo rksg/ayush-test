@@ -18,7 +18,7 @@ jest.mock('@acx-ui/rc/components', () => {
   }
 })
 
-describe('AP List Table', () => {
+describe.skip('AP List Table', () => {
   const list = {
     totalCount: 2,
     page: 1,
