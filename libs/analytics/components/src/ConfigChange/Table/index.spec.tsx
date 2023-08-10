@@ -104,16 +104,14 @@ describe('Table', () => {
 
     expect(handleClick).toHaveBeenCalledTimes(1)
     expect(handleClick).toHaveBeenCalledWith({
-      value: {
-        children: undefined,
-        id: 0,
-        key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-        name: '94:B3:4F:3D:21:80',
-        newValues: ['480'],
-        oldValues: [],
-        timestamp: '1685427082900',
-        type: 'ap'
-      }
+      children: undefined,
+      id: 0,
+      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+      name: '94:B3:4F:3D:21:80',
+      newValues: ['480'],
+      oldValues: [],
+      timestamp: '1685427082900',
+      type: 'ap'
     })
   })
 
