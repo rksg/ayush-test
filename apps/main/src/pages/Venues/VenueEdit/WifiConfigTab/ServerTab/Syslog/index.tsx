@@ -74,7 +74,7 @@ export function Syslog () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: !isEqual(newData, venueSyslogOrinData)
     })
 
@@ -92,7 +92,7 @@ export function Syslog () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: !isEqual(newData, venueSyslogOrinData)
     })
 

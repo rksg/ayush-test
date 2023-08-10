@@ -202,7 +202,13 @@ describe('AAAServers', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => res(ctx.json(emptyList)))
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: AAAServerTypeEnum }
+        switch (body.serverType) {
+          case 'LOCAL': return res(ctx.json(localUserList))
+          default: return res(ctx.json(emptyList))
+        }
+      })
     )
     render(<Provider><AAAServers /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -213,5 +219,7 @@ describe('AAAServers', () => {
     })
 
     expect(await screen.findByRole('columnheader', { name: 'Use In' })).toBeVisible()
+    expect(await screen.findByText('2 out of 3 switches')).toBeVisible()
+    expect(await screen.findByText('0 out of 3 switches')).toBeVisible()
   })
 })
