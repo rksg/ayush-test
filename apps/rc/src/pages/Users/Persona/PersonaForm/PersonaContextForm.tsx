@@ -62,6 +62,7 @@ export function PersonaContextForm (props: {
         name='email'
         label={$t({ defaultMessage: 'Email' })}
         rules={[
+          { max: 255 },
           { validator: (_, value) => emailRegExp(value) }]}
         children={<Input />}
       />
