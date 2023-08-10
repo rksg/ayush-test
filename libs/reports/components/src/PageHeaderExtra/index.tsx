@@ -1,9 +1,10 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { NetworkFilter } from '@acx-ui/analytics/components'
-import { RangePicker }   from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { NetworkFilter }              from '@acx-ui/analytics/components'
+import { RangePicker }                from '@acx-ui/components'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter }              from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping, bandDisabledReports } from '../mapping/reportsMapping'
 
@@ -20,7 +21,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
 
   const component = [
     <RangePicker
-      key='range-picker'
+      key={getShowWithoutRbacCheckKey('range-picker')}
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
@@ -29,7 +30,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   ]
   showFilter && component.unshift(
     <NetworkFilter
-      key='reports-network-filter'
+      key={getShowWithoutRbacCheckKey('reports-network-filter')}
       shouldQuerySwitch={shouldQuerySwitch}
       showRadioBand={showRadioBand}
       multiple={true}

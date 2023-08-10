@@ -9,15 +9,16 @@ import {
   ZdConfigurationType,
   MigrationResultType
 } from '@acx-ui/rc/utils'
-import { baseMigrationApi }  from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseMigrationApi }                    from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const migrationApi = baseMigrationApi.injectEndpoints({
   endpoints: (build) => ({
     uploadZdConfig: build.mutation<TaskContextType, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MigrationUrlsInfo.uploadZdConfig, params, {
+          ...ignoreErrorModal,
           'Content-Type': undefined,
           'Accept': '*/*'
         })
