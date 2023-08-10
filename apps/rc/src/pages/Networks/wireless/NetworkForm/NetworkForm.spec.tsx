@@ -232,7 +232,6 @@ describe('NetworkForm', () => {
 
     await userEvent.click(screen.getByText('Finish'))
   })
-
   it.skip('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
