@@ -33,9 +33,9 @@ import {
   EdgesTopResources,
   EdgePasswordDetail
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }       from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeApi }                         from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export type EdgesExportPayload = {
   filters: Filter
@@ -46,7 +46,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge)
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, undefined, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -140,7 +142,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params)
+        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req
         }

@@ -7,7 +7,7 @@ import { Loader, Table, TableProps, showActionModal, showToast }                
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }                 from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                          from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasAccess }                                                                                              from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -188,14 +188,14 @@ export function SwitchConfigBackupTable () {
   }
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
-    key: 'ViewConfig',
+    key: getShowWithoutRbacCheckKey('ViewConfig'),
     label: $t({ defaultMessage: 'View' }),
     disabled: () => !enabledRowButton.find(item => item === 'View'),
     onClick: (rows, clearSelection) => {
       showViewModal(rows, clearSelection)
     }
   }, {
-    key: 'CompareConfig',
+    key: getShowWithoutRbacCheckKey('CompareConfig'),
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: (rows) => {
@@ -208,7 +208,7 @@ export function SwitchConfigBackupTable () {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
-    key: 'DownloadConfig',
+    key: getShowWithoutRbacCheckKey('DownloadConfig'),
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
