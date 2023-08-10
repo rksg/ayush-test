@@ -11,6 +11,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeFirewallMutation,
   useGetEdgeFirewallViewDataListQuery,
@@ -178,9 +179,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      align: 'center'
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeIds?.length ?? 0)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),

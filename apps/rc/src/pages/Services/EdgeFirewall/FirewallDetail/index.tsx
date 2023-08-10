@@ -2,6 +2,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { EdgeServiceStatusLight }                        from '@acx-ui/rc/components'
 import { useGetEdgeFirewallViewDataListQuery }           from '@acx-ui/rc/services'
 import {
   ACLDirection,
@@ -42,7 +43,10 @@ const FirewallDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => (<></>)
+      content: () => ((edgeFirewallData.edgeIds?.length ?? 0)
+        ? <EdgeServiceStatusLight data={edgeFirewallData.edgeAlarmSummary} />
+        : $t({ defaultMessage: '--' })
+      )
     },
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
@@ -117,7 +121,10 @@ const FirewallDetail = () => {
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
-            <EdgeTable edgeIds={edgeFirewallData.edgeIds || []} />
+            <EdgeTable
+              edgeIds={edgeFirewallData.edgeIds || []}
+              edgeAlarmSummary={edgeFirewallData.edgeAlarmSummary || []}
+            />
           </Card>
         </Space>
       </Loader>

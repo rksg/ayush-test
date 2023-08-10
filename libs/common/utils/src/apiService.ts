@@ -52,6 +52,21 @@ export const isProdEnv = () => {
   return window.location.hostname.includes('ruckus.cloud')
 }
 
+export const ignoreErrorModal = {
+  'Build-In-Error-Modal': 'ignore'
+}
+export const showApiError = {
+  'Build-In-Error-Modal': 'showApiError'
+}
+
+export const isIgnoreErrorModal = (request?: Request) => {
+  return request ? request.headers.get('Build-In-Error-Modal') === 'ignore' : false
+}
+
+export const isShowApiError = (request?: Request) => {
+  return request ? request.headers.get('Build-In-Error-Modal') === 'showApiError' : false
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
@@ -113,7 +128,7 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if (apiInfo.newApi) {
     return !hasOldUrl || isDev() || isQA() || isScale() ||
-      isLocalHost() || isIntEnv() || isStage() || isProdEnv()
+      isIntEnv() || isStage() || isProdEnv() || isLocalHost()
   } else {
     return false
   }
