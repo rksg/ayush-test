@@ -183,10 +183,10 @@ export function MspEcDropdownList () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (_, row) {
         const to = `/${row.id}/t`
         return (
-          (row.status === 'Active') ? <Link to={to}>{data}</Link> : data
+          (row.status === 'Active') ? <Link to={to}>{row.name}</Link> : row.name
         )
       }
     },
@@ -219,10 +219,10 @@ export function MspEcDropdownList () {
           }
         }
       },
-      render: function (data, row) {
+      render: function (_, row) {
         const to = `/${row.tenantId}/t`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{row.tenantName}</Link>
         )
       }
     },
@@ -421,9 +421,7 @@ export function MspEcDropdownList () {
     <>
       <UI.CompanyNameDropdown onClick={()=>setVisible(true)}>
         <LayoutUI.CompanyName>{customerName}</LayoutUI.CompanyName>
-        <LayoutUI.Icon
-          children={<CaretDownSolid />}
-        />
+        <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
       </UI.CompanyNameDropdown>
       <Drawer
         width={colWidth}

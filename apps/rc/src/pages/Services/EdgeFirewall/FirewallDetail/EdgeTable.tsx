@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { useGetEdgeListQuery }       from '@acx-ui/rc/services'
-import { EdgeStatus, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps }                   from '@acx-ui/components'
+import { EdgeServiceStatusLight }                      from '@acx-ui/rc/components'
+import { useGetEdgeListQuery }                         from '@acx-ui/rc/services'
+import { EdgeAlarmSummary, EdgeStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                  from '@acx-ui/react-router-dom'
 
 interface EdgeTableProps {
   edgeIds: string[]
+  edgeAlarmSummary: EdgeAlarmSummary[]
 }
 
 export const EdgeTable = (props: EdgeTableProps) => {
@@ -52,10 +54,10 @@ export const EdgeTable = (props: EdgeTableProps) => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -65,16 +67,23 @@ export const EdgeTable = (props: EdgeTableProps) => {
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-          {data}
+          {row.venueName}
         </TenantLink>
       )
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
       key: 'health',
-      dataIndex: 'health'
+      dataIndex: 'health',
+      render: (data, row) => {
+        if(!props.edgeAlarmSummary) return '--'
+        const targetAlarmSummary = props.edgeAlarmSummary?.find(
+          item => item.edgeId.toLocaleLowerCase() === row.serialNumber?.toLocaleLowerCase()
+        )
+        return <EdgeServiceStatusLight data={targetAlarmSummary ? [targetAlarmSummary] : []} />
+      }
     }
   ]
 

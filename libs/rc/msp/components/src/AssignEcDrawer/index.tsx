@@ -112,7 +112,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.wifiLicenses ? row.wifiLicenses : 0
       }
     },
@@ -121,7 +121,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       dataIndex: 'switchLicenses',
       key: 'switchLicenses',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.switchLicenses ? row.switchLicenses : 0
       }
     }
@@ -148,6 +148,9 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
         { skip: isSkip })
     const queryResults = useTableQuery({
       useQuery: useMspCustomerListQuery,
+      pagination: {
+        pageSize: 10000
+      },
       defaultPayload
     })
 
@@ -175,6 +178,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
         <Table
           columns={columns}
           dataSource={dataSource}
+          type='form'
           rowKey='id'
           rowSelection={{
             type: 'checkbox',
@@ -233,7 +237,6 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage Customers Assigned' })}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       children={content}

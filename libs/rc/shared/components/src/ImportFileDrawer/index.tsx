@@ -19,6 +19,18 @@ import { GuestErrorRes }       from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
+export enum ImportFileDrawerType {
+  AP,
+  Switch,
+  GuestPass,
+  DPSK,
+  Persona,
+  CLI,
+  PropertyUnit,
+  EdgeDHCP,
+  EdgeSubInterface
+}
+
 type ImportErrorRes = {
   errors: {
     code: number
@@ -41,7 +53,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   readAsText?: boolean,
   formDataName?: string,
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit' | 'EdgeDHCP'
+  type: ImportFileDrawerType
   extraDescription?: string[]
 }
 
@@ -74,9 +86,11 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   const bytesFormatter = formatter('bytesFormat')
 
   useEffect(()=>{
-    form.resetFields()
-    setFormData(undefined)
-    setFileDescription('')
+    if (props.visible) {
+      form.resetFields()
+      setFormData(undefined)
+      setFileDescription('')
+    }
   }, [form, props.visible])
 
   useEffect(()=>{
@@ -177,7 +191,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
         disabled={!formData}
         loading={isLoading}
         onClick={() => okHandler()}
-        type={'secondary'}
+        type='primary'
       >
         {$t({ defaultMessage: 'Import' })}
       </Button>

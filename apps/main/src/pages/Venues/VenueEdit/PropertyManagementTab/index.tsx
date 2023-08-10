@@ -1,9 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { FetchBaseQueryError }                                                         from '@reduxjs/toolkit/dist/query/react'
 import { Col, Form, Row, Select, Switch, Modal as AntModal, Input, Typography, Space } from 'antd'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupDrawer } from 'apps/rc/src/pages/Users/Persona/PersonaGroupDrawer'
 import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
@@ -22,9 +20,9 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import { InformationSolid }                                         from '@acx-ui/icons'
-import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                           from '@acx-ui/icons'
+import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector, PersonaGroupLink } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -95,6 +93,10 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const propertyNotFound = useMemo(() =>
+    (propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404,
+  [propertyConfigsQuery.error]
+  )
   const [residentPortalModalVisible, setResidentPortalModalVisible] = useState(false)
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
@@ -224,12 +226,24 @@ export function PropertyManagementTab () {
     return payload
   }
 
+  const navigateToVenueOverview = () => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+    })
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const {
       unitConfig,
       residentPortalType,
       ...formValues
     } = info.values
+
+    setEditContextData({
+      ...editContextData,
+      isDirty: false
+    })
 
     try {
       if (isPropertyEnable) {
@@ -251,16 +265,15 @@ export function PropertyManagementTab () {
           }
         }).unwrap()
       } else {
+        // if property not found, we could not send PUT request to modify the property entity.
+        if (propertyNotFound) return
         await patchPropertyConfigs({
           params: { venueId },
           payload: { status: PropertyConfigStatus.DISABLED }
         }).unwrap()
       }
 
-      setEditContextData({
-        ...editContextData,
-        isDirty: false
-      })
+      navigateToVenueOverview()
     } catch (e) {
       console.log(e) // eslint-disable-line no-console
     }
@@ -334,10 +347,7 @@ export function PropertyManagementTab () {
         formRef={formRef}
         onFormFinish={onFormFinish}
         onFormChange={handleFormChange}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })}
+        onCancel={navigateToVenueOverview}
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsFormLegacy.StepForm

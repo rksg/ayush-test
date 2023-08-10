@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useEffect } from 'react'
+
 import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { useIntl }                                            from 'react-intl'
@@ -76,6 +78,13 @@ export function RadioSettingsForm (props:{
     useWatch<string>(['radioParams6G', 'channelBandwidth'])
   ]
 
+  useEffect(() => {
+    form.setFieldValue(enableMulticastRateLimitingFieldName,
+      form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+  }, [] )
+
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
     return `${value}%`
@@ -87,6 +96,13 @@ export function RadioSettingsForm (props:{
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
+
+  const handleBSSMinRateOnChange = (value: unknown) => {
+    if (value) {
+      form.setFieldValue(downloadLimitFieldName, getDownloadMaxValue())
+    }
+    onChangedByCustom('bssMinRate')
+  }
 
   return (
     <>
@@ -190,7 +206,7 @@ export function RadioSettingsForm (props:{
             showArrow={!isUseVenueSettings}
             className={isUseVenueSettings? 'readOnly' : undefined}
             options={bssMinRate6GOptions}
-            onChange={() => onChangedByCustom('bssMinRate')}
+            onChange={handleBSSMinRateOnChange}
           />
         </Form.Item>
         <Form.Item
@@ -221,9 +237,9 @@ export function RadioSettingsForm (props:{
                   onChange={function (checked: boolean) {
                     if (!checked) {
                       form.setFieldValue(
-                        downloadLimitFieldName, 0)
+                        enableDownloadLimitFieldName, false)
                       form.setFieldValue(
-                        uploadLimitFieldName, 0)
+                        enableUploadLimitFieldName, false)
                     }
                   }} />
               ) : <span>ON</span>}
@@ -281,7 +297,7 @@ export function RadioSettingsForm (props:{
                   <Checkbox data-testid='enableDownloadLimit'
                     disabled={disabled || isUseVenueSettings}
                     onChange={function (e: CheckboxChangeEvent) {
-                      const value = e.target.checked ? 20 : 0
+                      const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
                       form.setFieldValue(
                         downloadLimitFieldName, value)
                     }}

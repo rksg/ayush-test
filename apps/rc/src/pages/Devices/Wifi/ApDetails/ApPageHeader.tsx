@@ -1,5 +1,4 @@
 import {
-  Dropdown,
   Menu,
   MenuProps,
   Space
@@ -7,12 +6,11 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { ArrowExpand }                     from '@acx-ui/icons'
-import { APStatus }                        from '@acx-ui/rc/components'
-import { useApActions }                    from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { APStatus }                                                      from '@acx-ui/rc/components'
+import { useApActions }                                                  from '@acx-ui/rc/components'
+import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
@@ -97,38 +95,39 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
       ] : [{ text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }]}
-      extra={filterByAccess([
+      extra={[
         enableTimeFilter()
           ? <RangePicker
-            key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
           : <></>,
-        <Dropdown overlay={menu}>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>,
-        <Button
-          type='primary'
-          onClick={() => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
-            }, {
-              state: {
-                from: location
-              }
-            })
-          }}
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/edit/general`
+              }, {
+                state: {
+                  from: location
+                }
+              })
+            }}
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

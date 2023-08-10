@@ -54,7 +54,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
                     title="Expand"
                     type="button"
                   >
@@ -87,7 +87,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA sc-iqcoie iugpin"
                   >
                     <div>
                       <div
@@ -118,7 +118,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA sc-iqcoie iugpin"
                   >
                     <div>
                       <div
@@ -149,7 +149,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA sc-iqcoie iugpin"
                   >
                     <div>
                       <div
@@ -180,7 +180,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
+                    class="Grid__Container-sc-5irhjd-1 dRhDDA sc-iqcoie iugpin"
                   >
                     <div>
                       <div

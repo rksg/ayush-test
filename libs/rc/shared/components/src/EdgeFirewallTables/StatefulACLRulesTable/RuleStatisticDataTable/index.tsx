@@ -36,7 +36,7 @@ export const RuleStatisticDataTable = ({ dataSource }:
       key: 'packets',
       dataIndex: 'packets',
       sorter: { compare: sortProp('packets', defaultSort) },
-      render: (data, row) => transformDisplayText(
+      render: (_, row) => transformDisplayText(
         (row as FirewallACLRuleStatisticModel).packets?.toString())
     },
     {
@@ -56,7 +56,7 @@ export const RuleStatisticDataTable = ({ dataSource }:
       key: 'bytes',
       dataIndex: 'bytes',
       sorter: { compare: sortProp('bytes', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         const val = (row as FirewallACLRuleStatisticModel).bytes
         return transformDisplayText(val
           ? formatter('bytesFormat')(Number(val))

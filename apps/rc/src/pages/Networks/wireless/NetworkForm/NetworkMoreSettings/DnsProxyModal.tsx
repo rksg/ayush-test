@@ -24,7 +24,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { DnsProxyContext } from './ServicesForm'
+import { DnsProxyContext } from './NetworkControlTab'
+
 
 interface DnsProxyListData {
   cloneList: DnsProxyRule[] | [],
@@ -60,7 +61,7 @@ function useColumns () {
     title: $t({ defaultMessage: 'IP Addresses' }),
     dataIndex: 'ipList',
     key: 'ipList',
-    render: (data) => (data as string[])?.join('; ')
+    render: (_, { ipList }) => ipList?.join('; ')
   }]
   return columns
 }

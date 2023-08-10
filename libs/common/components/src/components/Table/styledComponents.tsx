@@ -2,7 +2,8 @@ import {
   Button,
   Divider as AntDivider,
   Input,
-  Select
+  Select,
+  Space
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
@@ -48,11 +49,11 @@ export const FilterSelect = styled(Select)`
 export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
-  &.ant-btn-icon-only {
+  color: var(--acx-accents-blue-50);
+  padding: 0;
+  &&&&.ant-btn-icon-only {
     width: 16px;
     height: 16px;
-    padding: 0;
-    background-color: var(--acx-accents-blue-10);
   }
 `
 
@@ -128,11 +129,12 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
   }
 `
 
-const actionsHeight = '36px'
+const actionsHeight = '22px'
+const rowActionsHeight = '36px'
+const toolbarHeight = '45px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered',
-  $rowSelectionActive: boolean
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
 }
 
 export const ResizableHover = styled.div``
@@ -141,14 +143,7 @@ export const ResizableHandle = styled.div``
 /* eslint-disable max-len */
 const tallStyle = css<StyledTable>`
   .ant-pro-table {
-    ${props => props.$rowSelectionActive && css`
-      .ant-table-wrapper {
-        padding-top: ${actionsHeight};
-      }
-    `}
-
     .ant-table {
-
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
         &:not(.ant-table-selection-column):not(.ant-table-cell-fix-right) {
@@ -189,31 +184,74 @@ const tallStyle = css<StyledTable>`
           display: none;
         }
       }
+
+      &-tbody > tr > td {
+        &.ant-table-cell-ellipsis {
+          &:has(a) { color: var(--acx-accents-blue-50); }
+          &:has(a:hover, a:active) { color: var(--acx-accents-blue-60); }
+          a span.ant-typography {
+            color: inherit;
+            text-decoration: inherit;
+          }
+          .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+            width: 100%;
+            max-width: fit-content;
+            span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+          .ant-badge-status .ant-badge-status-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+
+    .ant-pro-card-body {
+      display: flex;
+      flex-direction: column;
     }
 
     &-list-toolbar {
-      &-container { padding: 0; }
-      &-right {
-        // setting to 0 due to empty toolbar still take up space
-        // need to revisit this if we intend to use toolbar for other usage
-        height: 0;
+      order: 2;
+      height: ${toolbarHeight};
+      pointer-events: none; // prevent from blocking table header
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions)) +
+        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
+      );
+      z-index: 4;
+      overflow: visible;
+      &-container {
+        padding: 0;
+        position: relative;
+        height: 100%;
       }
-      &-setting-items .ant-space-item:last-child {
-        position: absolute;
-        right: 0;
-        z-index: 3;
-        top: ${props => props.$rowSelectionActive ? `calc(11px + ${actionsHeight})` : '11px' };
+      &-setting-item {
+        pointer-events: all; // enable setting button to be clickable
+        svg {
+          margin-top: 3px;
+        }
       }
     }
 
     &-alert {
+      order: 1;
       margin: 0px;
-      position: absolute;
-      left: 0;
-      right: 0;
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions))
+      );
+      z-index: 4;
+      overflow: visible;
 
       .ant-alert {
-        height: ${actionsHeight};
+        height: ${rowActionsHeight};
         background-color: var(--acx-accents-blue-10);
         border: var(--acx-accents-blue-10);
         padding: 10px 16px;
@@ -223,6 +261,19 @@ const tallStyle = css<StyledTable>`
           line-height: var(--acx-body-4-line-height);
         }
       }
+    }
+
+    .ant-table-wrapper {
+      order: 3;
+      margin-top: -${toolbarHeight};
+    }
+
+    .ant-pagination {
+      position: relative;
+      z-index: 4;
+      background-color: var(--acx-primary-white);
+      padding: 16px 0;
+      margin: unset;
     }
   }
 `
@@ -347,9 +398,16 @@ const styles = {
 }
 
 export const Header = styled.div`
-  height: ${actionsHeight};
+  height: ${rowActionsHeight};
   display: flex;
   justify-content: space-between;
+  position: sticky;
+  top: calc(
+    var(--sticky-offset) +
+    (${actionsHeight} * var(--sticky-has-actions))
+  );
+  z-index: 3;
+  background-color: var(--acx-primary-white);
 `
 
 export const HeaderComps = styled.div`
@@ -369,30 +427,22 @@ export const Wrapper = styled.div<StyledTable>`
 
     .ant-table {
       .parent-row-data {
-        background-color: var(--acx-neutrals-20) !important;
-
-        .ant-table-cell-row-hover {
-          background-color: var(--acx-neutrals-20) !important;
-        }
-
-        .ant-table-cell-fix-right {
-          background-color: var(--acx-neutrals-20) !important;
-        }
-        .ant-table-cell-fix-left{
-          background-color: var(--acx-neutrals-20) !important;
-        }
+        &,
+        .ant-table-cell-row-hover,
+        .ant-table-cell-fix-right,
+        .ant-table-cell-fix-left,
         .ant-table-column-sort {
           background-color: var(--acx-neutrals-20) !important;
+          overflow: visible !important;
         }
-        .ant-table-cell-with-append{
-          .ant-table-row-expand-icon-expanded{
+        .ant-table-cell-with-append {
+          .ant-table-row-expand-icon-expanded {
             display: none;
           }
         }
-
       }
-      .ant-table-cell-with-append{
-        .indent-level-2{
+      .ant-table-cell-with-append {
+        .indent-level-2 {
           padding-left: 10px !important;
         }
       }
@@ -525,4 +575,15 @@ export const GroupCell = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  color: var(--acx-primary-black);
+`
+
+export const ActionsContainer = styled(Space)`
+  display: flex;
+  justify-content: flex-end;
+  padding: 3px 0;
+  position: sticky;
+  top: var(--sticky-offset);
+  background-color: var(--acx-primary-white);
+  z-index: 3;
 `

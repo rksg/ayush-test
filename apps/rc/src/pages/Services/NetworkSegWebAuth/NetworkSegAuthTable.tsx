@@ -53,7 +53,7 @@ export default function NetworkSegAuthTable () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -61,7 +61,7 @@ export default function NetworkSegAuthTable () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -69,15 +69,15 @@ export default function NetworkSegAuthTable () {
       title: $t({ defaultMessage: 'Access Switches' }),
       key: 'switchCount',
       dataIndex: 'switchCount',
-      render: (data) => {
-        return data || 0
+      render: (_, { switchCount }) => {
+        return switchCount || 0
       }
     }, {
       title: $t({ defaultMessage: 'Venues' }),
       key: 'venueCount',
       dataIndex: 'venueCount',
-      render: (data) => {
-        return data || 0
+      render: (_, { venueCount }) => {
+        return venueCount || 0
       }
     }, {
       title: $t({ defaultMessage: 'Update Available' }),

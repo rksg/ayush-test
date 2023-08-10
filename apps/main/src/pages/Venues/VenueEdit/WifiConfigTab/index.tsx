@@ -8,11 +8,11 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
-import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
-import { NetworkingTab }       from './NetworkingTab'
-import { RadioTab }            from './RadioTab/RadioTab'
-import { SecurityTab }         from './SecurityTab'
-import { ServerTab }           from './ServerTab'
+import { AdvancedTab }   from './AdvancedTab'
+import { NetworkingTab } from './NetworkingTab'
+import { RadioTab }      from './RadioTab/RadioTab'
+import { SecurityTab }   from './SecurityTab'
+import { ServerTab }     from './ServerTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()
@@ -44,8 +44,8 @@ export function WifiConfigTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       networking: $t({ defaultMessage: 'Networking' }),
       security: $t({ defaultMessage: 'Security' }),
-      servers: $t({ defaultMessage: 'Network Controls' }),
-      settings: $t({ defaultMessage: 'Advanced Settings' })
+      servers: $t({ defaultMessage: 'Network Control' }),
+      settings: $t({ defaultMessage: 'Advanced' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -77,7 +77,7 @@ export function WifiConfigTab () {
         <ServerTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>
-        <AdvancedSettingForm />
+        <AdvancedTab />
       </Tabs.TabPane>
     </Tabs>
   )

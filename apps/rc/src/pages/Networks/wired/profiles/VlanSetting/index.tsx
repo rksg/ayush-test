@@ -71,19 +71,19 @@ export function VlanSetting () {
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
     sorter: { compare: sortProp('spanningTreeProtocol', defaultSort) },
-    render: (data) => {
-      return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+    render: (_, { spanningTreeProtocol }) => {
+      return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
   }, {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (data, row) => {
+    render: (_, row) => {
       return <Tooltip
         title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
       >
-        {data
-          ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
+        {row.switchFamilyModels
+          ? row.switchFamilyModels?.reduce((result:number, row: SwitchModel) => {
             const taggedPortsCount = row.taggedPorts ?
               row.taggedPorts?.toString().split(',').length : 0
             const untaggedPortsCount = row.untaggedPorts ?
@@ -121,13 +121,14 @@ export function VlanSetting () {
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
       vlanTable
 
-    const sfm = data.switchFamilyModels?.map(item => {
+    const sfm = data.switchFamilyModels?.map((item, index) => {
       return {
         ...item,
         untaggedPorts: Array.isArray(item.untaggedPorts) ?
           item.untaggedPorts?.join(',') : item.untaggedPorts,
         taggedPorts: Array.isArray(item.taggedPorts) ?
-          item.taggedPorts?.join(',') : item.taggedPorts
+          item.taggedPorts?.join(',') : item.taggedPorts,
+        key: index
       }
     })
 
@@ -198,10 +199,9 @@ export function VlanSetting () {
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
-            rowKey='vlanId'
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
-            dataSource={vlanTable}
+            dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
             rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows,

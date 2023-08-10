@@ -8,7 +8,8 @@ import {
   Form,
   Switch,
   Slider,
-  FormItemProps
+  FormItemProps,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -26,6 +27,8 @@ export function MulticastForm () {
   const enableMulticastRateLimitingFieldName = ['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']
   const enableMulticastUpLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']
   const enableMulticastDownLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']
+  const enableMulticastUpLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']
+  const enableMulticastDownLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']
   const enableMulticastFilterFieldName = ['wlan', 'advancedCustomization', 'multicastFilterEnabled']
   const [
     enableMulticastRateLimiting,
@@ -36,6 +39,8 @@ export function MulticastForm () {
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
     useWatch<boolean>(enableMulticastDownLimitFieldName),
+    useWatch<boolean>(enableMulticastUpLimit6GFieldName),
+    useWatch<boolean>(enableMulticastDownLimit6GFieldName),
     useWatch<boolean>(enableMulticastFilterFieldName)
   ]
 
@@ -66,6 +71,8 @@ export function MulticastForm () {
     if (checked) {
       if (enableMulticastRateLimiting) {
         form.setFieldValue(enableMulticastRateLimitingFieldName, false)
+        form.setFieldValue(enableMulticastUpLimitFieldName, false)
+        form.setFieldValue(enableMulticastDownLimitFieldName, false)
       }
     }
   }
@@ -82,36 +89,36 @@ export function MulticastForm () {
     <>
       {multicastFilterFlag &&
           <UI.FieldLabel width='250px'>
-            <div style={{ display: 'grid', gridTemplateColumns: '85px 100px auto' }}>
+            <Space>
               {$t({ defaultMessage: 'Multicast Filter' })}
               <Tooltip.Question
               // eslint-disable-next-line max-len
                 title={multicastFilterTooltipContent}
                 placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />
-              <Form.Item
-                name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={false}
-                children={<Switch
-                  data-testid='multicast-filter-enabled'
-                  onChange={handleMulticastFilterOnChange}
-                />}
-              />
-            </div>
+            </Space>
+            <Form.Item
+              name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch
+                data-testid='multicast-filter-enabled'
+                onChange={handleMulticastFilterOnChange}
+              />}
+            />
           </UI.FieldLabel>
       }
 
       { multicastRateLimitFlag &&
         <>
-          <UI.FieldLabel width='175px'>
+          <UI.FieldLabel width='250px'>
             {$t({ defaultMessage: 'Multicast Rate Limiting' })}
             <Form.Item
               name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={enableMulticastUpLimit || enableMulticastDownLimit}
             >
               <Switch onChange={handleMulticastRateLimitingOnChange} />
             </Form.Item>
@@ -130,16 +137,11 @@ export function MulticastForm () {
                   name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
                   valuePropName='checked'
                   initialValue={false}
-                  style={{ lineHeight: '50px' }}>
-                  <Checkbox data-testid='enableMulticastUpLimit'
-                    children={<>
-                      {$t({ defaultMessage: 'Upload Limit' })}
-                      <Tooltip.Question
-                        title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
-                        placement='bottom' />
-                    </>} />
-
-                </UI.FormItemNoLabel>
+                  style={{ lineHeight: '50px' }}
+                  children={
+                    <Checkbox data-testid='enableMulticastUpLimit'
+                      children={$t({ defaultMessage: 'Upload Limit' })} />}
+                />
                 {
                   enableMulticastUpLimit ?
                     <UI.FormItemNoLabel
@@ -170,7 +172,15 @@ export function MulticastForm () {
                   style={{ lineHeight: '50px' }}
                   children={
                     <Checkbox data-testid='enableMulticastDownLimit'
-                      children={$t({ defaultMessage: 'Download Limit' })} />}
+                      children={<>
+                        {$t({ defaultMessage: 'Download Limit' })}
+                        <Tooltip.Question
+                          title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
+                          placement='bottom'
+                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+                        />
+                      </>}
+                    />}
                 />
                 {
                   enableMulticastDownLimit ?

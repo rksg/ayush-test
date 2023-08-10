@@ -1,5 +1,4 @@
 import {
-  Dropdown,
   Menu,
   MenuProps,
   Space
@@ -7,9 +6,8 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                     from '@acx-ui/icons'
-import { EdgeStatusLight, useEdgeActions } from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery
 } from '@acx-ui/rc/services'
@@ -104,32 +102,33 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
-      extra={filterByAccess([
+      extra={[
         <RangePicker
-          key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )

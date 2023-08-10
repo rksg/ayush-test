@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { fireEvent, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { CsvSize, ImportFileDrawer } from '.'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '.'
 
 const importRequest = jest.fn()
 const props = {
@@ -21,7 +21,7 @@ describe('Import CSV Drawer', () => {
   })
 
   it('should render correctly', async () => {
-    render(<ImportFileDrawer type='AP'
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
       {...props}
     />)
 
@@ -50,7 +50,7 @@ describe('Import CSV Drawer', () => {
         description: 'Serial number is invalid. In row: 1'
       }]
     }
-    render(<ImportFileDrawer type='AP'
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
       {...props}
       importError={{
         status: 422,
@@ -65,7 +65,7 @@ describe('Import CSV Drawer', () => {
   })
 
   it('upload file with error', async () => {
-    render(<ImportFileDrawer type='AP'
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
       {...props}
     />)
     const dialog = await screen.findByRole('dialog')
@@ -78,7 +78,7 @@ describe('Import CSV Drawer', () => {
   })
 
   it('upload file with readAsText', async () => {
-    render(<ImportFileDrawer type='AP'
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
       readAsText={true}
       {...props}
     />)
@@ -91,7 +91,7 @@ describe('Import CSV Drawer', () => {
   })
 
   it('should render extra descriptions', async () => {
-    render(<ImportFileDrawer type='AP'
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
       extraDescription={['extra description']}
       {...props}
     />)

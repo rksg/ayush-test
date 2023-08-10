@@ -22,9 +22,12 @@ export function dateSort (a: unknown, b: unknown): SortResult {
   return Math.sign(moment(String(a)).diff(moment(String(b)))) as SortResult
 }
 
-export function arraySizeSort (a: string[], b: string[]): SortResult {
-  if (a.length < b.length) return -1
-  if (a.length > b.length) return 1
+export function arraySizeSort (a?: string[], b?: string[]): SortResult {
+  // handle null case
+  const valueA = a ? a.length : -1
+  const valueB = b ? b.length : -1
+  if (valueA < valueB) return -1
+  if (valueA > valueB) return 1
   return 0
 }
 

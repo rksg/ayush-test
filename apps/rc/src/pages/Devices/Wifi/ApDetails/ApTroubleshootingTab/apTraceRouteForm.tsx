@@ -65,7 +65,7 @@ export function ApTraceRouteForm () {
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={!isValid || isTraceRouteAp}
             onClick={handlePingAp}>

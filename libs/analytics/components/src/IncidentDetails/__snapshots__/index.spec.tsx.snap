@@ -6,7 +6,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -94,7 +94,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                   type="button"
                 >
                   <svg
@@ -142,7 +142,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
             class="styledComponents__FixedAutoSizer-sc-sbdzeb-0 dpGfEK"
@@ -506,7 +506,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
             class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
@@ -582,7 +582,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
@@ -599,7 +599,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
@@ -623,7 +623,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
           style="min-height: 228px;"
         >
           <div
@@ -636,7 +636,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
           style="min-height: 250px;"
         >
           <div

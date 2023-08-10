@@ -1,18 +1,17 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import _                          from 'lodash'
+import moment                     from 'moment-timezone'
+import { useIntl }                from 'react-intl'
 
-import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
-import { ArrowExpand }                                      from '@acx-ui/icons'
-import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
-import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }                         from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }                           from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -199,36 +198,37 @@ function SwitchPageHeader () {
           { text: $t({ defaultMessage: 'Switches' }) },
           { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
         ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
-        extra={filterByAccess([
+        extra={[
           !checkTimeFilterDisabled() && <RangePicker
-            key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu}>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <ArrowExpand />
-              </Space>
-            </Button>
-          </Dropdown>,
-          <Button
-            type='primary'
-            onClick={() =>
-              navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
-              }, {
-                state: {
-                  from: location
-                }
-              })
-            }
-          >{$t({ defaultMessage: 'Configure' })}</Button>
-        ])}
+          ...filterByAccess([
+            <Dropdown overlay={menu}>{() =>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>
+            }</Dropdown>,
+            <Button
+              type='primary'
+              onClick={() =>
+                navigate({
+                  ...basePath,
+                  pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
+                }, {
+                  state: {
+                    from: location
+                  }
+                })
+              }
+            >{$t({ defaultMessage: 'Configure' })}</Button>
+          ])
+        ]}
         footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
       />
       <SwitchCliSession

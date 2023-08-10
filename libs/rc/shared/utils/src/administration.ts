@@ -1,7 +1,8 @@
 import { defineMessage } from 'react-intl'
 
-import { RolesEnum } from '@acx-ui/types'
-import { getIntl }   from '@acx-ui/utils'
+import { RolesEnum }   from '@acx-ui/types'
+import { UserProfile } from '@acx-ui/user'
+import { getIntl }     from '@acx-ui/utils'
 
 import { EntitlementUtil } from './entitlement'
 import {
@@ -39,4 +40,13 @@ export const getEntitlementDeviceTypes = (): EntitlementDeviceTypes => {
       label: EntitlementUtil.getDeviceTypeText(getIntl().$t, key as EntitlementDeviceType),
       value: key as EntitlementDeviceType
     }))
+}
+
+export const hasAdministratorTab = (
+  profile: UserProfile | undefined,
+  tenantId: string | undefined): boolean => {
+  const isSupport = Boolean(
+    profile?.dogfood && !!profile?.varTenantId && profile?.varTenantId === tenantId)
+
+  return !profile?.delegatedDogfood && !isSupport
 }

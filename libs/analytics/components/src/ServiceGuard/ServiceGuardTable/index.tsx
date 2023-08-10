@@ -22,11 +22,7 @@ import {
   useCloneServiceGuardTestMutation,
   ServiceGuardTableRow
 } from '../services'
-import {
-  ClientType,
-  ServiceGuardSpec,
-  TestType
-} from '../types'
+import { ServiceGuardSpec } from '../types'
 import {
   statsFromSummary,
   formatApsUnderTest,
@@ -171,8 +167,8 @@ export function ServiceGuardTable () {
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
       fixed: 'left',
-      render: (value, row, _, highlightFn) => {
-        const highlightedValue = highlightFn(String(value))
+      render: (_, row, __, highlightFn) => {
+        const highlightedValue = highlightFn(row.name)
         return row.latestTest
           ? <TenantLink
             to={`/analytics/serviceValidation/${row.id}/tests/${row.latestTest?.id}`}
@@ -187,20 +183,19 @@ export function ServiceGuardTable () {
       title: $t(defineMessage({ defaultMessage: 'Client Type' })),
       dataIndex: 'clientType',
       sorter: { compare: sortProp('clientType', defaultSort) },
-      render: (value) => $t(contents.clientTypes[value as ClientType])
+      render: (_, { clientType }) => $t(contents.clientTypes[clientType])
     },
     {
       key: 'type',
       title: $t(defineMessage({ defaultMessage: 'Test Type' })),
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
-      render: (value, row) => formatTestType(value as TestType, row.schedule)
+      render: (_, row) => formatTestType(row.type, row.schedule)
     },
     {
       key: 'apsCount',
       title: $t(defineMessage({ defaultMessage: 'APs' })),
       dataIndex: 'apsCount',
-      render: (value) => value,
       sorter: { compare: sortProp('apsCount', defaultSort) },
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'

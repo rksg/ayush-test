@@ -295,6 +295,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
     newApi: true
   },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateBssColoring: {
+    method: 'put',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
   getVenueLanPorts: {
     method: 'get',
     url: '/venues/:venueId/lanPortSettings',

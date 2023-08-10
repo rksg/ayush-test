@@ -90,7 +90,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnected === ONLINE ? <TenantLink
           to={`/users/wifi/clients/${row.mac}/details/`}>
           {row.mac}
@@ -102,7 +102,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
       }
     },
@@ -111,7 +111,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnectedNetwork ? <TenantLink
           // eslint-disable-next-line max-len
           to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>
@@ -233,10 +233,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     <Button key='cancel' onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='ok' onClick={onOk} type='secondary'>
+    <Button key='ok' onClick={onOk} type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>
   ]
+
+  const filterWithoutFormat = (mac: string, value: string) => {
+    const regex = /[.\-:]/gi
+    let macStr = mac.replace(regex, '').toLowerCase()
+    let valueStr = value.replace(regex, '').toLowerCase()
+    return macStr === valueStr
+  }
 
   return (
     <>
@@ -274,7 +281,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
               { required: true },
               { validator: (_, value) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
-                  .filter(mac => mac === value).length) {
+                  .filter(mac => filterWithoutFormat(mac, value)).length) {
                   return Promise.reject($t({
                     defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))

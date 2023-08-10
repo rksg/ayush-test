@@ -37,12 +37,13 @@ const defaultPayload = {
 }
 
 export function PersonaDevicesTable (props: {
+  disableAddButton?: boolean
   persona?: Persona,
   dpskPoolId?: string
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { persona, dpskPoolId } = props
+  const { persona, dpskPoolId, disableAddButton = false } = props
   const [modelVisible, setModelVisible] = useState(false)
   const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
@@ -151,7 +152,7 @@ export function PersonaDevicesTable (props: {
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected).toISOString(),
+        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
@@ -189,10 +190,10 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'os',
       align: 'center',
       title: $t({ defaultMessage: 'OS' }),
-      render: (data) => {
+      render: (_, { os }) => {
         return <OSIconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={os}>
+            { getOsTypeIcon(os as string) }
           </Tooltip>
         </OSIconContainer>
       },
@@ -209,7 +210,7 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
-      render: data => data && <SuccessSolid/>,
+      render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
     {
@@ -217,16 +218,16 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'hasMacRegistered',
       title: $t({ defaultMessage: 'MAC Registration' }),
       align: 'center',
-      render: data => data && <SuccessSolid/>,
+      render: (_, { hasMacRegistered }) => hasMacRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasMacRegistered', defaultSort) }
     },
     {
       key: 'lastSeenAt',
       dataIndex: 'lastSeenAt',
       title: $t({ defaultMessage: 'Last Seen Time' }),
-      render: (data) => {
-        return data
-          ? moment(data as string).format('YYYY/MM/DD HH:mm A')
+      render: (_, { lastSeenAt }) => {
+        return lastSeenAt
+          ? moment(lastSeenAt!).format('YYYY/MM/DD HH:mm A')
           : noDataDisplay
       },
       sorter: { compare: sortProp('lastSeenAt', dateSort) }
@@ -261,7 +262,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: disableAddButton
     }
   ]
 
@@ -274,7 +276,7 @@ export function PersonaDevicesTable (props: {
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
     }).unwrap()
-      .then()
+      .then(() => handleModalCancel())
       .catch(error => {
         console.log(error) // eslint-disable-line no-console
       })

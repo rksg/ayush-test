@@ -13,8 +13,7 @@ import {
   EdgeFirewallSetting,
   EdgeStatus,
   getACLDirectionOptions } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { DDoSRulesTable as DDoSRulesConfigTable }               from '../DDoSRulesTable'
 import { StatefulACLRulesTable as StatefulACLRulesConfigTable } from '../StatefulACLRulesTable'
@@ -53,15 +52,12 @@ export const GroupedStatsTables =
         key='ddos'
       >
         <UI.ActionsContainer>
-          {filterByAccess([
-            <RangePicker
-              key='date-filter'
-              selectedRange={filterPeriod}
-              selectionType={range}
-              onDateApply={setDateFilter as CallableFunction}
-              showTimePicker
-            />])
-          }
+          <RangePicker
+            selectedRange={filterPeriod}
+            selectionType={range}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+          />
         </UI.ActionsContainer>
         {isEdgeReady
           ? <DDoSRulesTable
@@ -94,15 +90,12 @@ export const GroupedStatsTables =
               (<Select.Option value={value} key={value} children={label} />)
             )}
           </Select>
-          {filterByAccess([
-            <RangePicker
-              key='date-filter'
-              selectedRange={filterPeriod}
-              selectionType={range}
-              onDateApply={setDateFilter as CallableFunction}
-              showTimePicker
-            />])
-          }
+          <RangePicker
+            selectedRange={filterPeriod}
+            selectionType={range}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+          />
         </UI.ActionsContainer>
         {isEdgeReady
           ? <StatefulACLRulesTable

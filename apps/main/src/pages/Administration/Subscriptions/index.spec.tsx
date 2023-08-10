@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
@@ -18,6 +18,10 @@ jest.mock('@acx-ui/components', () => ({
 }))
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
+}))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
 describe('Subscriptions', () => {
@@ -68,6 +72,8 @@ describe('Subscriptions', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     render(
       <Provider>
         <Subscriptions />
@@ -147,7 +153,7 @@ describe('Subscriptions', () => {
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
     const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
-    expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('')
+    expect((cells[0] as HTMLTableCellElement).textContent).toBe('')
   })
 
   it('should correctly handle device sub type', async () => {

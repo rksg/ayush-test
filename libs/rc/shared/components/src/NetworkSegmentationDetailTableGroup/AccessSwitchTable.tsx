@@ -59,29 +59,31 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: 'distributionSwitchId',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => (row.distributionSwitchName)
+      render: (_, row) => (row.distributionSwitchName)
     }, {
       key: 'uplinkInfo',
       title: $t({ defaultMessage: 'Uplink Port' }),
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
-      render: (data, row) => {
-        return row.uplinkInfo?.uplinkId ? `${row.uplinkInfo.uplinkType} ${data}` : EditBtn(row)
+      render: (_, row) => {
+        return row.uplinkInfo?.uplinkId
+          ? `${row.uplinkInfo.uplinkType} ${row.uplinkInfo.uplinkId}`
+          : EditBtn(row)
       }
     }, {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN ID' }),
       dataIndex: 'vlanId',
       sorter: true,
-      render: (data, row) => {
-        return row.vlanId ? data : EditBtn(row)
+      render: (_, row) => {
+        return row.vlanId ? row.vlanId : EditBtn(row)
       }
     }, {
       key: 'templateId',
       title: $t({ defaultMessage: 'Net Seg Auth Page' }),
       dataIndex: 'templateId',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         let displayText = ''
         if (row.webAuthPageType === 'USER_DEFINED') {
           displayText = $t({ defaultMessage: 'custom' })

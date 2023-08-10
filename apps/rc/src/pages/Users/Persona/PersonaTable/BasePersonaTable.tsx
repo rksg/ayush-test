@@ -7,7 +7,15 @@ import { useParams } from 'react-router-dom'
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
+import {
+  CsvSize,
+  ImportFileDrawer,
+  PersonaGroupSelect,
+  PersonaDetailsLink,
+  PersonaGroupLink,
+  PropertyUnitLink,
+  ImportFileDrawerType
+} from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
@@ -28,10 +36,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PersonasContext }                                        from '..'
-import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
-import { PersonaDrawer }                                          from '../PersonaDrawer'
-import { PersonaBlockedIcon }                                     from '../styledComponents'
+import { PersonasContext }    from '..'
+import { PersonaDrawer }      from '../PersonaDrawer'
+import { PersonaBlockedIcon } from '../styledComponents'
 
 function useColumns (
   props: PersonaTableColProps,
@@ -161,7 +168,7 @@ function useColumns (
     {
       key: 'vni',
       dataIndex: 'vni',
-      title: $t({ defaultMessage: 'VNI' }),
+      title: $t({ defaultMessage: 'Segment No.' }),
       sorter: true,
       ...props.vni
     }
@@ -325,7 +332,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length === 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -437,10 +444,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
         title={$t({ defaultMessage: 'Import from file' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        type='Persona'
+        type={ImportFileDrawerType.Persona}
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={512}
+        maxEntries={1000}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

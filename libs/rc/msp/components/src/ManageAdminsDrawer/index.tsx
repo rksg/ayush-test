@@ -148,7 +148,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
           }
         }
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.role === RolesEnum.DPSK_ADMIN ||
               (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email))
           ? <span>{$t(roleDisplayText[row.role])}</span>
@@ -221,7 +221,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage MSP Administrators' })}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       footer={footer}
