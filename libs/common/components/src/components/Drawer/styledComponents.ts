@@ -1,33 +1,14 @@
 import { Drawer as AntDrawer } from 'antd'
 import styled                  from 'styled-components'
 
-import { Header, ActionsContainer } from '../Table/styledComponents'
+import { disableStickyHeaders } from '../Table/styledComponents'
 
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
 
-    .ant-pro-table {
-      .ant-table {
-        .ant-table-sticky-holder {
-          &[style] {
-            position: relative;
-            top: unset !important;
-          }
-        }
-      }
-      &-list-toolbar,
-      &-alert {
-        position: relative;
-        top: unset;
-      }
-    }
-    ${Header},
-    ${ActionsContainer} {
-      position: relative;
-      top: unset;
-    }
+    ${disableStickyHeaders}
   }
 `
 

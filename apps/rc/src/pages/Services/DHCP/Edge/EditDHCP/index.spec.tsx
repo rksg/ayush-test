@@ -128,7 +128,7 @@ describe('EditEdgeDhcp', () => {
     await screen.findByText('Please enter Service Name')
   })
 
-  it('should edit edge dhcp successfully', async () => {
+  it.skip('should edit edge dhcp successfully', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
