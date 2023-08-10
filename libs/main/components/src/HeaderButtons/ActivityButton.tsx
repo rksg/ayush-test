@@ -14,6 +14,7 @@ import { useTenantLink, useNavigate }                                           
 import { DateRange, DateRangeFilter, getDateRangeFilter }                                   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import _ from 'lodash'
 
 type Payload = typeof defaultPayload
 
@@ -64,7 +65,7 @@ export default function ActivityButton () {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        ...tableQuery.payload.filters as Payload['filters'],
+        ..._.omit(tableQuery.payload.filters as Payload['filters'], ['status']),
         ...(status === 'all' ? {} : { status: [status] })
       }
     })
