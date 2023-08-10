@@ -22,9 +22,9 @@ import {
   WifiUrlsInfo,
   RequestFormData, enableNewApi
 } from '@acx-ui/rc/utils'
-import { baseClientApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseClientApi }                       from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { latestTimeFilter } from './utils'
 
@@ -157,7 +157,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
+        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req
         }
