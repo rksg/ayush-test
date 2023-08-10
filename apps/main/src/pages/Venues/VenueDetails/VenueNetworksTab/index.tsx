@@ -183,7 +183,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return row.deepNetwork?.isOweMaster === false
+    return supportOweTransition && row.deepNetwork?.isOweMaster === false
   }
 
   // TODO: Waiting for API support
@@ -249,7 +249,7 @@ export function VenueNetworksTab () {
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
         if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')) ||
-        (supportOweTransition && isSystemCreatedNetwork(row))){
+        (isSystemCreatedNetwork(row))){
           disabled = true
         }else{
           title = ''
@@ -272,7 +272,7 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       render: function (_, row) {
         return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
-          supportOweTransition && isSystemCreatedNetwork(row))
+          isSystemCreatedNetwork(row))
       }
     },
     {
@@ -282,7 +282,7 @@ export function VenueNetworksTab () {
       width: 80,
       render: function (_, row) {
         return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
-          supportOweTransition && isSystemCreatedNetwork(row))
+          isSystemCreatedNetwork(row))
       }
     },
     {
@@ -292,7 +292,7 @@ export function VenueNetworksTab () {
       width: 140,
       render: function (_, row) {
         return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e),
-          supportOweTransition && isSystemCreatedNetwork(row))
+          isSystemCreatedNetwork(row))
       }
     },
     {
@@ -301,7 +301,7 @@ export function VenueNetworksTab () {
       dataIndex: 'scheduling',
       render: function (_, row) {
         return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e),
-          supportOweTransition && isSystemCreatedNetwork(row))
+          isSystemCreatedNetwork(row))
       }
     }
   ]
