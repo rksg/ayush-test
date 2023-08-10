@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 
+import { IFrame }                  from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { useAuthenticateMutation } from '@acx-ui/reports/services'
 
@@ -28,7 +29,7 @@ export function DataStudio () {
       style={{
         height: 'calc(100vh - 65px)'
       }}>
-      {url && (<iframe
+      {url && (<IFrame
         title='data-studio'
         src={`${getHostName(window.location.origin)}${url}`}
         style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
