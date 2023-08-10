@@ -101,9 +101,11 @@ export function NetworkVenuesTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [systemNetwork, setSystemNetwork] = useState(false)
 
   const params = useParams()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
 
@@ -147,10 +149,13 @@ export function NetworkVenuesTab () {
           // work around of read-only records from RTKQ
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
+        if (supportOweTransition) {
+          setSystemNetwork(networkQuery.data?.isOweMaster === false)
+        }
       })
       setTableData(data)
     }
-  }, [tableQuery.data, networkQuery.data])
+  }, [tableQuery.data, networkQuery.data, supportOweTransition])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
 
@@ -339,7 +344,7 @@ export function NetworkVenuesTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if(networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled) || systemNetwork){
           disabled = true
         }else{
           title = ''
@@ -363,7 +368,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
     {
@@ -372,7 +377,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
     {
@@ -381,7 +386,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
     {
@@ -389,7 +394,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), systemNetwork)
       }
     }
   ]
@@ -490,7 +495,7 @@ export function NetworkVenuesTab () {
         settingsId='network-venues-table'
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && {
+        rowSelection={hasAccess() && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}
