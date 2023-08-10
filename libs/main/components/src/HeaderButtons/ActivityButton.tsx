@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
@@ -14,7 +15,6 @@ import { useTenantLink, useNavigate }                                           
 import { DateRange, DateRangeFilter, getDateRangeFilter }                                   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import _ from 'lodash'
 
 type Payload = typeof defaultPayload
 
