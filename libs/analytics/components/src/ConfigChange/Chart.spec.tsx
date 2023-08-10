@@ -28,11 +28,11 @@ describe('Chart', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-    <Chart
-      selected={null}
-      onClick={handleClick}
-    />
-  </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      <Chart
+        selected={null}
+        onClick={handleClick}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
   it('should render page correctly with selected data', async () => {
@@ -48,11 +48,11 @@ describe('Chart', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-    <Chart
-      selected={selected}
-      onClick={handleClick}
-    />
-  </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      <Chart
+        selected={selected}
+        onClick={handleClick}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
 })
