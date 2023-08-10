@@ -9,6 +9,7 @@ import { mockedTunnelProfileViewData } from '../../../../../Policies/TunnelProfi
 import NetworkFormContext              from '../../NetworkFormContext'
 
 import { VlanTab } from '.'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const mockWlanData = {
@@ -66,6 +67,58 @@ describe('Network More settings - Vlan Tab', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider value={{ data: data }} >
+          <Form>
+            <VlanTab wlanData={mockWlanData} />
+          </Form>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    const vlanIdInput = await screen.findByRole('spinbutton', { name: 'VLAN ID' })
+    expect(vlanIdInput).toBeEnabled()
+
+    const dynamicVlanView = screen.getByText(/Dynamic VLAN/i)
+    expect(within(dynamicVlanView).getByRole('switch')).toBeVisible()
+  })
+
+  it('should visible Dynamic VLAN on OPEN WLAN with Mac Authentication', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const network = {
+      type: NetworkTypeEnum.OPEN,
+      wlan: {
+        macAddressAuthentication: true
+      }
+    } as NetworkSaveData
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{ data: network }} >
+          <Form>
+            <VlanTab wlanData={mockWlanData} />
+          </Form>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    const vlanIdInput = await screen.findByRole('spinbutton', { name: 'VLAN ID' })
+    expect(vlanIdInput).toBeEnabled()
+
+    const dynamicVlanView = screen.getByText(/Dynamic VLAN/i)
+    expect(within(dynamicVlanView).getByRole('switch')).toBeVisible()
+  })
+
+  it('should visible Dynamic VLAN on CaptivePortal WLAN with Mac Auth Bypass', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const network = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      wlan: {
+        bypassCPUsingMacAddressAuthentication: true
+      }
+    } as NetworkSaveData
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{ data: network }} >
           <Form>
             <VlanTab wlanData={mockWlanData} />
           </Form>

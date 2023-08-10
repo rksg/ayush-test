@@ -233,32 +233,6 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
-  it('should test open network with Dynamic VLAN successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    render(<Provider><NetworkForm /></Provider>, {
-      route: { params }
-    })
-
-    const insertInput = screen.getByLabelText(/Network Name/)
-    fireEvent.change(insertInput, { target: { value: 'open network test' } })
-    fireEvent.blur(insertInput)
-
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating, { timeout: 7000 })
-
-    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    const useMacAuthentication = screen.getByRole('switch')
-    await userEvent.click(useMacAuthentication)
-
-    await userEvent.click(screen.getByRole('button', { name: 'Show more settings' }))
-
-    expect(screen.getByText(/Dynamic VLAN/i)).toBeVisible()
-  })
-
   it.skip('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
