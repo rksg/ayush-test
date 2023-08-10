@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import moment    from 'moment-timezone'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import moment      from 'moment-timezone'
 
 import { render, screen } from '@acx-ui/test-utils'
 import { DateRange }      from '@acx-ui/utils'
@@ -22,20 +23,20 @@ describe('KPIFilterProvider', () => {
     expect(await screen.findByTestId('kpi')).toBeVisible()
 
     userEvent.click(await screen.findByTestId('add'))
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey1')
+    await waitFor(async () =>
+      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey1'))
 
     userEvent.click(await screen.findByTestId('apply'))
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3')
+    await waitFor(async () =>
+      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3'))
 
     userEvent.click(await screen.findByTestId('add'))
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3, kpikey1')
+    await waitFor(async () =>
+      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3, kpikey1'))
 
     userEvent.click(await screen.findByTestId('add'))
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3')
+    await waitFor(async () =>
+      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3'))
   })
 })
 
