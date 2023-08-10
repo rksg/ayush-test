@@ -61,12 +61,12 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
 
 const WarningTriangle = styled(WarningTriangleSolid)
-  .attrs((props: { expired: boolean }) => props)`
+  .attrs((props: { $expired: boolean }) => props)`
 path:nth-child(1) {
-  fill: ${props => props.expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
+  fill: ${props => props.$expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 path:nth-child(3) {
-  stroke: ${props => props.expired ?
+  stroke: ${props => props.$expired ?
     'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 `
@@ -107,7 +107,7 @@ function ConnectionMeteringLink (props:{
       </div>
       {showWarning &&
         <div style={{ float: 'left' }} title={tooltip}>
-          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
+          <WarningTriangle $expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
