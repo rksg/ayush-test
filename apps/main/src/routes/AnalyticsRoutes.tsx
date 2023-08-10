@@ -9,7 +9,6 @@ import {
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   RecommendationDetails,
-  ServiceGuard,
   ServiceGuardDetails,
   ServiceGuardForm,
   ServiceGuardSpecGuard,
