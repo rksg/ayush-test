@@ -187,8 +187,6 @@ const tallStyle = css<StyledTable>`
 
       &-tbody > tr > td {
         &.ant-table-cell-ellipsis {
-          &:has(a) { color: var(--acx-accents-blue-50); }
-          &:has(a:hover, a:active) { color: var(--acx-accents-blue-60); }
           a span.ant-typography {
             color: inherit;
             text-decoration: inherit;
@@ -436,7 +434,7 @@ export const Wrapper = styled.div<StyledTable>`
           overflow: visible !important;
         }
         .ant-table-cell-with-append {
-          .ant-table-row-expand-icon-expanded {
+          .ant-table-row-expand-icon {
             display: none;
           }
         }
@@ -575,7 +573,6 @@ export const GroupCell = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  color: var(--acx-primary-black);
 `
 
 export const ActionsContainer = styled(Space)`
@@ -586,4 +583,27 @@ export const ActionsContainer = styled(Space)`
   top: var(--sticky-offset);
   background-color: var(--acx-primary-white);
   z-index: 3;
+`
+
+export const disableStickyHeaders = css`
+  .ant-pro-table {
+    .ant-table {
+      .ant-table-sticky-holder {
+        &[style] {
+          position: relative;
+          top: unset !important;
+        }
+      }
+    }
+    &-list-toolbar,
+    &-alert {
+      position: relative;
+      top: unset;
+    }
+  }
+  ${Header},
+  ${ActionsContainer} {
+    position: relative;
+    top: unset;
+  }
 `
