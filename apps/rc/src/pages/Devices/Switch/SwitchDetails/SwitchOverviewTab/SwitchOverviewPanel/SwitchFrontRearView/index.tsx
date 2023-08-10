@@ -78,7 +78,7 @@ export function SwitchFrontRearView (props:{
           model: switchDetail.model,
           serialNumber: switchDetail.serialNumber,
           switchMac: switchDetail.switchMac,
-          unitId: 1,
+          unitId: switchDetail.unitId || 1,
           unitStatus: '',
           uptime: switchDetail.uptime,
           venueName: switchDetail.venueName
