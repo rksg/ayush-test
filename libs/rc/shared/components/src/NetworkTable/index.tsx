@@ -188,11 +188,12 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = () => {
+const rowSelection = (supportOweTransition: boolean) => {
   return {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+        || (supportOweTransition && record?.isOweMaster === false)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
@@ -224,6 +225,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
@@ -341,7 +343,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
-          ...rowSelection() } : undefined}
+          ...rowSelection(supportOweTransition) } : undefined}
         actions={[{
           key: 'addGuestNetwork',
           label: expandOnBoaroardingNetworks

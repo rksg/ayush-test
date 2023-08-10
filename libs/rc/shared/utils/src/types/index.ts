@@ -75,6 +75,7 @@ export interface Network {
   dsaeOnboardNetwork?: Network
   securityProtocol?: string
   isOnBoarded?: boolean
+  isOweMaster?: boolean
 }
 
 export interface NetworkDetail {
@@ -94,6 +95,7 @@ export interface NetworkDetail {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
   }
+  isOweMaster?: boolean
 }
 
 export interface Venue {
