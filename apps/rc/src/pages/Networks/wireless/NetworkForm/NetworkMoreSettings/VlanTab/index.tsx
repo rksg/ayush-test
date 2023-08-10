@@ -36,7 +36,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const { wlanData } = props
 
-  const supportMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_EDA_DYNAMIC_VLAN_TOGGLE)
+  const supportMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_DYNAMIC_VLAN_TOGGLE)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
