@@ -74,7 +74,6 @@ function useColumns (
       dataIndex: 'name',
       sorter: true,
       searchable: true,
-      ellipsis: true,
       render: (_, row) =>
         <PersonaGroupLink
           name={row.name}
@@ -85,8 +84,7 @@ function useColumns (
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      ellipsis: true,
-      sorter: true
+      sorter: true,
       searchable: true
     },
     {

@@ -418,7 +418,6 @@ export function VenuePropertyTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
-      ellipsis: true,
       searchable: true
     },
     {
@@ -492,8 +491,7 @@ export function VenuePropertyTab () {
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
-      dataIndex: ['resident', 'name'],
-      ellipsis: true
+      dataIndex: ['resident', 'name']
     },
     {
       key: 'residentEmail',
