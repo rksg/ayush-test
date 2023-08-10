@@ -1,6 +1,7 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
 import { BasicServiceSetPriorityEnum, CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, OpenWlanAdvancedCustomization, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                              from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                                                                    from '@acx-ui/test-utils'
@@ -9,7 +10,6 @@ import { mockedTunnelProfileViewData } from '../../../../../Policies/TunnelProfi
 import NetworkFormContext              from '../../NetworkFormContext'
 
 import { VlanTab } from '.'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const mockWlanData = {
