@@ -490,7 +490,7 @@ export interface SwitchClient {
 export interface QosMapSetOptions {
   enabled: boolean
   priority: number
-  // dscpLow: number
-  // dscpHigh: number
-  // dscpExceptionValues: number[]
+  dscpLow: number
+  dscpHigh: number
+  dscpExceptionValues: number[]
 }
