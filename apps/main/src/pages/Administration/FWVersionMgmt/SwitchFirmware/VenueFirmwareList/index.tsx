@@ -246,7 +246,7 @@ export const VenueFirmwareTable = (
       // eslint-disable-next-line max-len
       removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
     })
-    return filterVersions?.length > 1
+    return filterVersions?.length > 0
   }
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
