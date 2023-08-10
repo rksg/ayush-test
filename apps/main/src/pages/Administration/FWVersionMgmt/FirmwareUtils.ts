@@ -243,7 +243,7 @@ export const parseSwitchVersion = (version: string) => {
 
 export const convertSwitchVersionFormat = (version: string) => {
   // eslint-disable-next-line max-len
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:(?<build>_[a-z]*\d+))?$/
+  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:(?<build>(_[a-z]*\d+)*))?$/
   const versionGroup = version?.match(switchVersionReg)?.groups
   const newVersionGroup: string[] = []
 
