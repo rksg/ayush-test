@@ -59,6 +59,12 @@ export function CliStepNotice () {
         />
       </Space>
 
+      {/*
+      Fix implicit submission issue
+      https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
+      */}
+      <Form.Item hidden children={<Input />} />
+
       {!editMode && <Form.Item
         name='agree'
         label={<Space style={{ color: cssStr('--acx-primary-black') }}>{

@@ -1,3 +1,4 @@
+import { EdgeAlarmSummary } from '../..'
 import {
   AccessAction,
   ACLDirection,
@@ -63,6 +64,7 @@ export interface EdgeFirewallViewData {
     }[]
   edgeIds?: string[]
   serviceVersions?: Record<string, string>;
+  edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
 export interface EdgeFirewallDDoSStatsViewData {

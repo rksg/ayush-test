@@ -79,6 +79,7 @@ export const OptionDrawer = (props: OptionDrawerProps) => {
               options={dhcpOptionDropdownOptions}
               onChange={onOptionChange}
             />
+
           }
         />
         <Form.Item
