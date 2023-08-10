@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { Menu, MenuProps, Space } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
