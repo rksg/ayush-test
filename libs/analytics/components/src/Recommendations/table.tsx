@@ -39,7 +39,7 @@ export interface RecommendationRow extends Recommendation {
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
   const { activeTab } = useParams()
-  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
+  return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }

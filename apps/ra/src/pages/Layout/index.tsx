@@ -8,10 +8,11 @@ import {
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   // HelpButton,
-  HeaderContext,
-  Logo
+  HeaderContext
 } from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
+
+import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
 import { useMenuConfig } from './menuConfig'
 // import SearchBar         from './SearchBar'
