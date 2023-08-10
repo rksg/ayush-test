@@ -33,11 +33,11 @@ import {
   FILTER,
   SEARCH
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { DateRange, getIntl  }                               from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                     from '@acx-ui/types'
+import { RolesEnum }                                          from '@acx-ui/types'
+import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
+import { DateRange, getIntl  }                                from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { GuestDateFilter }                   from '../../index'
@@ -385,36 +385,24 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
-          key: 'addGuest',
+        actions={filterByAccess([{
+          key: 'POST:/guestUsers',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
-          key: 'addGuestNetwork',
+          key: 'POST:/networks',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
           disabled: !isServicesEnabled
         },
         {
-          key: 'importFromFile',
+          key: 'POST:/networks/{networkId}/guestUsers',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }].filter(((item)=> {
-          switch(item.key) {
-            case 'addGuest':
-              return hasRoles([RolesEnum.ADMINISTRATOR,
-                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
-            case 'addGuestNetwork':
-              return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
-            case 'importFromFile':
-              return hasRoles([RolesEnum.ADMINISTRATOR,
-                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
-            default:
-              return false
-          }
-        }))}
+        }])
+        }
       />
 
       <Drawer
