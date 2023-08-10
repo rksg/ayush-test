@@ -102,32 +102,33 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
-      extra={filterByAccess([
+      extra={[
         <RangePicker
-          key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>{()=>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )
