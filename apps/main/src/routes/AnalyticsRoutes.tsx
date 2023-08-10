@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
-
 import {
   AIAnalytics,
   AIAnalyticsTabEnum,
@@ -10,6 +8,8 @@ import {
   IncidentListPage,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
+  RecommendationDetails,
+  ServiceGuard,
   ServiceGuardDetails,
   ServiceGuardForm,
   ServiceGuardSpecGuard,
@@ -24,11 +24,10 @@ import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
-  const { $t } = useIntl()
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
-
+  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!hasAccess()) return <React.Fragment />
 
@@ -42,8 +41,6 @@ export default function AnalyticsRoutes () {
           : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)}
       />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
-      <Route path='analytics/recommendations'
-        element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
       <Route path='analytics/health'
         element={(!canUseAnltAdv
           ? <HealthPage/>
@@ -52,8 +49,13 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/health/tab/:categoryTab'
         element={(!canUseAnltAdv
           ? <HealthPage/>
-          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)}
-      />
+          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
+        } />
+      {canUseAnltAdv && recommendationsEnabled &&
+      <Route path='analytics/recommendations/'>
+        <Route path=':activeTab' element={<AIAnalytics />} />
+        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+      </Route>}
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
           element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}

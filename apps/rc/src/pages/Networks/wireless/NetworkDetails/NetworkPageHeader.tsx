@@ -33,39 +33,39 @@ function NetworkPageHeader ({
         { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
         { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
       ]}
-      extra={filterByAccess([
+      extra={[
         ...(setSelectedVenues && selectedVenues)
           ? [
             <ActiveVenueFilter
               selectedVenues={selectedVenues}
               setSelectedVenues={setSelectedVenues}
-              key='hierarchy-filter'
             />
           ]
           : [],
         enableTimeFilter()
           ? <RangePicker
-            key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
           : <></>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/${networkId}/edit`
-            }, {
-              state: {
-                from: location
-              }
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Button
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/${networkId}/edit`
+              }, {
+                state: {
+                  from: location
+                }
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<NetworkTabs />}
     />
   )

@@ -93,38 +93,39 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
       ]}
-      extra={filterByAccess([
+      extra={[
         enableTimeFilter()
           ? <RangePicker
-            key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
           : <></>,
-        <Dropdown overlay={menu}>{()=>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>,
-        <Button
-          type='primary'
-          onClick={() => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit/general`
-            }, {
-              state: {
-                from: location
-              }
-            })
-          }}
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/edit/general`
+              }, {
+                state: {
+                  from: location
+                }
+              })
+            }}
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

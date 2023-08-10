@@ -49,6 +49,7 @@ export function useMenuConfig () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
+  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -70,6 +71,13 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
+            ...(isAnltAdvTier && recommendationsEnabled ? [{
+              uri: '/analytics/recommendations/crrm',
+              label: $t({ defaultMessage: 'AI-Driven RRM' })
+            }, {
+              uri: '/analytics/recommendations/aiOps',
+              label: $t({ defaultMessage: 'AI Operations' })
+            }] : []),
             ...(isAnltAdvTier && showConfigChange ? [{
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })

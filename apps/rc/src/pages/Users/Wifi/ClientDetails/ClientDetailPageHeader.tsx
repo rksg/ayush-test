@@ -111,17 +111,19 @@ function ClientDetailPageHeader () {
         { text: $t({ defaultMessage: 'Wireless' }), link: '' },
         { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ]}
-      extra={filterByAccess([
-        <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu}>{()=>
-          <Button type='primary'>
-            <Space>
-              {$t({ defaultMessage: 'Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>
-      ])}
+      extra={[
+        <DatePicker />,
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button type='primary'>
+              <Space>
+                {$t({ defaultMessage: 'Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>
+        ])
+      ]}
       footer={<ClientDetailTabs />}
     />
   )

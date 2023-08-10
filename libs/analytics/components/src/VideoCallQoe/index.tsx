@@ -3,8 +3,9 @@ import { createContext, useEffect, useState } from 'react'
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Tooltip }    from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { Tooltip }                    from '@acx-ui/components'
+import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
@@ -41,7 +42,7 @@ export function useVideoCallQoe () {
       :
       <Tooltip
         placement='left'
-        key='disableCallButton'
+        key={getShowWithoutRbacCheckKey('disableCallButton')}
         trigger='hover'
         title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
       >
