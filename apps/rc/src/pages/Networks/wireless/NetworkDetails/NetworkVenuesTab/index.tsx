@@ -103,7 +103,6 @@ export function NetworkVenuesTab () {
   })
   const [systemNetwork, setSystemNetwork] = useState(false)
 
-
   const params = useParams()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
