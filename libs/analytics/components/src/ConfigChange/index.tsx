@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 
 import { GridRow, GridCol, Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
+import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
 import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
@@ -22,12 +23,12 @@ export function useConfigChange () {
 
   const headerExtra = [
     <NetworkFilter
-      key='network-filter'
+      key={getShowWithoutRbacCheckKey('network-filter')}
       shouldQuerySwitch={true}
       withIncidents={false}
     />,
     <Dropdown
-      key='date-dropdown'
+      key={getShowWithoutRbacCheckKey('date-dropdown')}
       overlay={<Menu
         onClick={handleMenuClick}
         items={[DateRange.last7Days, DateRange.last30Days
