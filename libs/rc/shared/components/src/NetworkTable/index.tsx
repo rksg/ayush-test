@@ -22,7 +22,7 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isWpaDsae3Toggle: boolean) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -137,7 +137,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      render: (data, row) => row?.securityProtocol || noDataDisplay
+      render: (data, row) => row?.securityProtocol || noDataDisplay,
+      show: isWpaDsae3Toggle
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
@@ -223,6 +224,7 @@ interface NetworkTableProps {
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
@@ -330,7 +332,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     ]}>
       <Table
         settingsId='network-table'
-        columns={getCols(intl)}
+        columns={getCols(intl, isWpaDsae3Toggle)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -345,11 +347,12 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         rowSelection={selectable ? { type: 'radio',
           ...rowSelection(supportOweTransition) } : undefined}
         actions={[{
-          key: 'addGuestNetwork',
+          key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks
             ? $t({ defaultMessage: 'Hide Onboard Networks' })
             : $t({ defaultMessage: 'Show Onboard Networks' }),
-          onClick: () => toggleOnboardNetworks()
+          onClick: () => toggleOnboardNetworks(),
+          disabled: !isWpaDsae3Toggle
         }]}
       />
     </Loader>
