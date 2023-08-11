@@ -145,6 +145,10 @@ export class OpenWlanAdvancedCustomization {
 
   enableAdditionalRegulatoryDomains?: boolean
 
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
   constructor () {
     this.clientIsolation = true
 
@@ -252,5 +256,9 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastDownlinkRateLimiting6G = false
 
     this.enableAdditionalRegulatoryDomains = true
+
+    this.qosMirroringEnabled = true
+
+    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
   }
 }

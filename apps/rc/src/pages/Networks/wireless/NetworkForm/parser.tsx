@@ -377,6 +377,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     }
   }
 
+  if (!get(data, 'wlan.advancedCustomization.qosMirroringEnabled')) {
+    advancedCustomization.qosMirroringScope = undefined
+  }
+
   if (saveData.dpskServiceProfileId === '') {
     delete saveData.dpskServiceProfileId
   }

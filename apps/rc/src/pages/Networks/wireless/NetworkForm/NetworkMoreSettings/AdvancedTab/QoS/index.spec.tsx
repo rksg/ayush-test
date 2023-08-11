@@ -1,25 +1,34 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider }                           from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { NetworkSaveData, OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { render, screen, fireEvent, waitFor }             from '@acx-ui/test-utils'
 
-import QoS, { findTargetMirroringScopeOption, MirroringScopeOption } from '.'
+
+import QoS, { QoSMirroringScope } from '.'
 
 
 describe('QoS', () => {
-  it('should render Qos correctly', function () {
+  it('should render QoS correctly when add Network', function () {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      wlan: {
+        advancedCustomization: {
+        } as OpenWlanAdvancedCustomization
+      }
+    } as NetworkSaveData
+
+    render(
       <Provider>
         <Form>
-          <QoS />
+          <QoS wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } }
     )
-
-    expect(asFragment).toMatchSnapshot()
 
     expect(screen.getByText('QoS')).toBeInTheDocument()
     expect(screen.getByTestId('QuestionMarkCircleOutlined')).toBeInTheDocument()
@@ -34,12 +43,94 @@ describe('QoS', () => {
     expect(selectElement).toBeInTheDocument()
   })
 
+  it('should render QoS correctly when edit Network with qosMirroringEnabled is false',
+    function () {
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const mockWlanData = {
+        name: 'test',
+        type: 'open',
+        wlan: {
+          advancedCustomization: {
+            qosMirroringEnabled: false
+          } as OpenWlanAdvancedCustomization
+        }
+      } as NetworkSaveData
+
+      render(
+        <Provider>
+          <Form>
+            <QoS wlanData={mockWlanData} />
+          </Form>
+        </Provider>,
+        { route: { params } }
+      )
+
+      expect(screen.getByText('QoS')).toBeInTheDocument()
+      expect(screen.getByTestId('QuestionMarkCircleOutlined')).toBeInTheDocument()
+
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeInTheDocument()
+      expect(switchElement).toBeEnabled()
+      expect(switchElement).not.toBeChecked()
+
+      expect(screen.queryByText('QoS Mirroring Scope')).not.toBeInTheDocument()
+    })
+
+  it('should render QoS correctly when edit Network with qosMirroringEnabled is true',
+    function () {
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const mockWlanData = {
+        name: 'test',
+        type: 'open',
+        wlan: {
+          advancedCustomization: {
+            qosMirroringEnabled: true,
+            qosMirroringScope: QoSMirroringScope.ALL_CLIENTS
+          } as OpenWlanAdvancedCustomization
+        }
+      } as NetworkSaveData
+
+      render(
+        <Provider>
+          <Form>
+            <QoS wlanData={mockWlanData} />
+          </Form>
+        </Provider>,
+        { route: { params } }
+      )
+
+      expect(screen.getByText('QoS')).toBeInTheDocument()
+      expect(screen.getByTestId('QuestionMarkCircleOutlined')).toBeInTheDocument()
+
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeInTheDocument()
+      expect(switchElement).toBeEnabled()
+      expect(switchElement).toBeChecked()
+
+      expect(screen.getByText('QoS Mirroring Scope')).toBeInTheDocument()
+      const selectElement = screen.getByRole('combobox')
+      expect(selectElement).toBeInTheDocument()
+      // eslint-disable-next-line max-len
+      expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
+    })
+
   it('should toggle switch button correctly', function () {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      wlan: {
+        advancedCustomization: {
+          qosMirroringEnabled: true,
+          qosMirroringScope: QoSMirroringScope.ALL_CLIENTS
+        } as OpenWlanAdvancedCustomization
+      }
+    } as NetworkSaveData
+
     render(
       <Provider>
         <Form>
-          <QoS />
+          <QoS wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } }
@@ -50,24 +141,37 @@ describe('QoS', () => {
     expect(switchElement).toBeEnabled()
     expect(switchElement).toBeChecked()
 
-    const selectElement = screen.getByRole('combobox')
-    expect(selectElement).toBeInTheDocument()
-    // eslint-disable-next-line max-len
-    expect(screen.getByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).toBeInTheDocument()
-    // eslint-disable-next-line max-len
-    expect(screen.queryByText('Mirroring for all clients connected to this Wi-Fi network.')).not.toBeInTheDocument()
-
     fireEvent.click(switchElement)
     expect(switchElement).not.toBeChecked()
-    expect(selectElement).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+
+    fireEvent.click(switchElement)
+    expect(switchElement).toBeChecked()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).not.toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
   })
 
   it('should select correctly', async function () {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      wlan: {
+        advancedCustomization: {
+          qosMirroringEnabled: true,
+          qosMirroringScope: QoSMirroringScope.ALL_CLIENTS
+        } as OpenWlanAdvancedCustomization
+      }
+    } as NetworkSaveData
+
     render(
       <Provider>
         <Form>
-          <QoS />
+          <QoS wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } }
@@ -81,47 +185,24 @@ describe('QoS', () => {
     const selectElement = screen.getByRole('combobox')
     expect(selectElement).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.getByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).toBeInTheDocument()
+    expect(screen.queryByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).not.toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.queryByText('Mirroring for all clients connected to this Wi-Fi network.')).not.toBeInTheDocument()
+    expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
 
     // eslint-disable-next-line max-len
-    await screen.findByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')
+    await screen.findByText('Mirroring for all clients connected to this Wi-Fi network.')
     const selectors = await screen.findByRole('combobox')
     await userEvent.click(selectors)
-    await screen.findByText('All clients')
-    fireEvent.click(screen.getByText('All clients'))
+    await screen.findByText('MSCS requests only')
+    fireEvent.click(screen.getByText('MSCS requests only'))
 
     await waitFor(async () => {
       // eslint-disable-next-line max-len
-      expect(screen.queryByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).not.toBeInTheDocument()
+      expect(screen.getByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).toBeInTheDocument()
     })
     await waitFor(async () => {
       // eslint-disable-next-line max-len
-      expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
+      expect(screen.queryByText('Mirroring for all clients connected to this Wi-Fi network.')).not.toBeInTheDocument()
     })
-  })
-})
-
-describe('findTargetMirroringScopeOption', () => {
-  it('should work correctly', function () {
-    const mirroringScopeOptions: MirroringScopeOption[] = [
-      {
-        label: 'mockLabel',
-        value: 'MSCS_REQUESTS_ONLY',
-        key: 'MSCS_REQUESTS_ONLY',
-        message: 'mockMessage'
-      },
-      {
-        label: 'mockLabel',
-        value: 'ALL_CLIENTS',
-        key: 'ALL_CLIENTS',
-        message: 'mockMessage'
-      }
-    ]
-    const expected = mirroringScopeOptions[0]
-    const valueOption =
-            findTargetMirroringScopeOption(expected.value, mirroringScopeOptions)
-    expect(valueOption).toBe(expected)
   })
 })

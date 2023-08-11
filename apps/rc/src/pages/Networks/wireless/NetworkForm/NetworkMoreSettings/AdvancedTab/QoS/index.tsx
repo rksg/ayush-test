@@ -1,33 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Select, Space, Switch } from 'antd'
+import { useWatch }                    from 'antd/lib/form/Form'
 import { useIntl }                     from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }         from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
-export interface MirroringScopeOption {
-    label: string
-    value: string
-    key: string
-    message: string
+
+export enum QoSMirroringScope {
+  MSCS_REQUESTS_ONLY = 'MSCS_REQUESTS_ONLY',
+  ALL_CLIENTS = 'ALL_CLIENTS'
 }
 
-// eslint-disable-next-line max-len
-export const findTargetMirroringScopeOption =
-        // eslint-disable-next-line max-len
-        (targetValue: string, mirroringScopeOptions: MirroringScopeOption[]): MirroringScopeOption =>
-          mirroringScopeOptions.find(option =>
-            option.value === targetValue) || mirroringScopeOptions[0]
-
-
-function QoS () {
+function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
 
-  const mirroringScopeOptions: MirroringScopeOption[] = [
+  const qoSMirroringScopeOptions: {
+    type: QoSMirroringScope
+    label: string
+    value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+    key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+    message: string
+  }[] = [
     {
+      type: QoSMirroringScope.MSCS_REQUESTS_ONLY,
       label: $t({ defaultMessage: 'MSCS requests only' }),
       value: 'MSCS_REQUESTS_ONLY',
       key: 'MSCS_REQUESTS_ONLY',
@@ -35,6 +36,7 @@ function QoS () {
                     (Multimedia and Streaming Control Server) requests` })
     },
     {
+      type: QoSMirroringScope.ALL_CLIENTS,
       label: $t({ defaultMessage: 'All clients' }),
       value: 'ALL_CLIENTS',
       key: 'ALL_CLIENTS',
@@ -42,21 +44,35 @@ function QoS () {
     }
   ]
 
-  const [enabledQosMirroring, setEnabledQosMirroring] = useState(true)
-  const [mirroringScopeOption, setMirroringScopeOption] = useState(mirroringScopeOptions[0])
+  const [
+    qosMirroringEnabled,
+    qosMirroringScope
+  ] = [
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'qosMirroringEnabled']),
+    useWatch<string>(['wlan', 'advancedCustomization', 'qosMirroringScope'])
+  ]
 
   useEffect(() => {
-    // eslint-disable-next-line max-len
-    form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringEnabled'], enabledQosMirroring)
-    // eslint-disable-next-line max-len
-    form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringScope'], mirroringScopeOption.value)
-  }, [mirroringScopeOption, form, enabledQosMirroring])
+    const loadData = () => {
+      const defaultQosMirroringEnabled = true
+      const defaultQosMirroringScope = QoSMirroringScope.MSCS_REQUESTS_ONLY
+      const dataQosMirroringEnabled: boolean | undefined =
+              wlanData?.wlan?.advancedCustomization?.qosMirroringEnabled
+      const dataQosMirroringScope: string | undefined =
+              wlanData?.wlan?.advancedCustomization?.qosMirroringScope
+      const valueOfQosMirroringEnabled = typeof dataQosMirroringEnabled === 'undefined' ?
+        defaultQosMirroringEnabled : dataQosMirroringEnabled
+      form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringEnabled'],
+        valueOfQosMirroringEnabled)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringScope'],
+        // eslint-disable-next-line max-len
+        (typeof dataQosMirroringScope === 'undefined' || !dataQosMirroringScope) && valueOfQosMirroringEnabled ?
+          defaultQosMirroringScope : dataQosMirroringScope)
+    }
 
-  const onEnabledQosMirroringChange = (checked: boolean) => setEnabledQosMirroring(checked)
-  const onMirroringScopeOptionChange = (value: string) => {
-    const selection = findTargetMirroringScopeOption(value, mirroringScopeOptions)
-    setMirroringScopeOption(selection)
-  }
+    loadData()
+  }, [])
+
 
   return (
     <>
@@ -75,30 +91,35 @@ function QoS () {
           />
         </Space>
         <Form.Item
+          name={['wlan', 'advancedCustomization', 'qosMirroringEnabled']}
           style={{ marginBottom: '10px', width: '300px' }}
           valuePropName='checked'
-          children={
-            <Switch
-              onChange={onEnabledQosMirroringChange}
-              defaultChecked={enabledQosMirroring}
-            />
-          }
+          children={<Switch />}
         />
-        { enabledQosMirroring &&
+      </UI.FieldLabel>
+      { qosMirroringEnabled &&
                   <Form.Item
                     label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
-                    extra={mirroringScopeOption.message}
-                  >
-                    <Select
-                      style={{ width: '280px', height: '30px', fontSize: '11px' }}
-                      defaultValue={mirroringScopeOption.value}
-                      value={mirroringScopeOption.value}
-                      options={mirroringScopeOptions}
-                      onChange={onMirroringScopeOptionChange}
-                    />
-                  </Form.Item>
-        }
-      </UI.FieldLabel>
+                    extra={
+                      <div style={{ width: '250px' }}>
+                        { qoSMirroringScopeOptions.find(option =>
+                          option.value === qosMirroringScope)?.message }
+                      </div>
+                    }
+                    name={['wlan', 'advancedCustomization', 'qosMirroringScope']}
+                    children={
+                      <Select
+                        style={{ width: '280px', height: '30px', fontSize: '11px' }}
+                        options={qoSMirroringScopeOptions}
+                      />
+                    }
+                  />
+      }
+      {isSupportQosMap &&
+                <>
+                  <UI.Subtitle>{$t({ defaultMessage: 'QoS Map' })}</UI.Subtitle>
+                  <div> implementing... </div>
+                </>}
     </>
   )
 }

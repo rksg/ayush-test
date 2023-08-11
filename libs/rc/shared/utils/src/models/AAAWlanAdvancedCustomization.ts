@@ -154,6 +154,10 @@ export class AAAWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -265,5 +269,9 @@ export class AAAWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.qosMirroringEnabled = true
+
+    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
   }
 }
