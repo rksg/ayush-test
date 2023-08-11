@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
 import { Badge }                  from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -427,7 +428,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
-    } else {
+    } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
