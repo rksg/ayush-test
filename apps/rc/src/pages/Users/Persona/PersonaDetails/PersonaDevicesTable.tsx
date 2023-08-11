@@ -148,7 +148,6 @@ export function PersonaDevicesTable (props: {
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
     return dpskDevices
-      .filter(d => d.online)
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
