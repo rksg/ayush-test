@@ -68,7 +68,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra || [])}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

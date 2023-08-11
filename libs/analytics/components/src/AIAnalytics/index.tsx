@@ -87,9 +87,7 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={get('IS_MLISA_SA')
-        ? tabs.find(({ key }) => key === tab)?.headerExtra
-        : filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra || [])}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>
