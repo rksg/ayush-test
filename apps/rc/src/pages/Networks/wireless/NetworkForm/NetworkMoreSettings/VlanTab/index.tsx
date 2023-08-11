@@ -23,14 +23,10 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
 
   const [
     enableDhcp,
-    enableVlanPooling,
-    macAuthentication,
-    bypassCpMacAuth
+    enableVlanPooling
   ] = [
     useWatch<boolean>('enableDhcp'),
-    useWatch<boolean>('enableVlanPooling'),
-    useWatch<boolean>(['wlan', 'macAddressAuthentication']),
-    useWatch<boolean>(['wlan','bypassCPUsingMacAddressAuthentication'])
+    useWatch<boolean>('enableVlanPooling')
   ]
 
   const form = Form.useFormInstance()
@@ -89,8 +85,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
       </div>
       }
 
-      {!enableVlanPooling && (showDynamicWlan ||
-      (supportMacAuthDynamicVlan && (macAuthentication || bypassCpMacAuth))) &&
+      {!enableVlanPooling && showDynamicWlan &&
         <UI.FieldLabel width={labelWidth}>
           {$t({ defaultMessage: 'Dynamic VLAN' })}
           <Form.Item
