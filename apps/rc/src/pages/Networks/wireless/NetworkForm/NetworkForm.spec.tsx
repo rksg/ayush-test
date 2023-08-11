@@ -144,7 +144,7 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   })
 
   it('should render breadcrumb correctly when feature flag is off', async () => {
@@ -230,7 +230,7 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   })
   it.skip('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -263,7 +263,7 @@ describe('NetworkForm', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByTitle('create Portal test'))
     await userEvent.click(screen.getByText('Next'))
 
@@ -271,7 +271,7 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   }, 20000)
 
   it.skip('should create captive portal without redirect url successfully', async () => {
@@ -304,7 +304,7 @@ describe('NetworkForm', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test2')
     await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByTitle('create Portal test2'))
     await userEvent.click(screen.getByText('Next'))
 
@@ -312,6 +312,6 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   }, 20000)
 })
