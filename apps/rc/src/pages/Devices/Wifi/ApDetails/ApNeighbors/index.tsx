@@ -6,7 +6,8 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useApContext }           from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
-import ApRfNeighbors from './ApRfNeighbors'
+import ApLldpNeighbors from './ApLldpNeighbors'
+import ApRfNeighbors   from './ApRfNeighbors'
 
 
 type ApNeighborTypes = 'lldp' | 'rf'
@@ -19,7 +20,7 @@ const tabs : {
   {
     key: 'lldp',
     title: defineMessage({ defaultMessage: 'LLDP Neighbors' }),
-    component: <div>LLDP Neighbors</div>
+    component: <ApLldpNeighbors />
   },
   {
     key: 'rf',

@@ -68,7 +68,6 @@ export function useApNeighbors (initRequestId: string, handler: () => void) {
   const onSocketTimeout = () => {
     showError($t({ defaultMessage: 'The AP is not reachable' }))
     setDetectionStatus(DetectionStatus.TIMEOUT)
-    // handler() // TODO: should remove, just for display the table
   }
 
   return {

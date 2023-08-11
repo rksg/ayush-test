@@ -507,7 +507,41 @@ export interface ApRfNeighbor {
   snr6G: string | null
 }
 
+export interface ApLldpNeighbor {
+  neighborManaged: boolean,
+  lldpInterface: string | null,
+  lldpVia: string | null,
+  lldpRID: string | null,
+  lldpTime: string,
+  lldpChassisID: string | null,
+  lldpSysName: string | null,
+  lldpSysDesc: string | null,
+  lldpMgmtIP: string | null,
+  lldpCapability: string | null,
+  lldpPortID: string | null,
+  lldpPortDesc: string | null,
+  lldpMFS: string | null,
+  lldpPMDAutoNeg: string | null,
+  lldpAdv: string | null,
+  lldpMAUOperType: string | null,
+  lldpMDIPower: string | null,
+  lldpDeviceType: string | null,
+  lldpPowerPairs: string | null,
+  lldpClass: string | null,
+  lldpPowerType: string | null,
+  lldpPowerSource: string | null,
+  lldpPowerPriority: string | null,
+  lldpPDReqPowerVal: string | null,
+  lldpPSEAllocPowerVal: string | null,
+  lldpUPOE: string | null
+}
+
 export interface ApRfNeighborsResponse {
   detectedTime: string,
   neighbors: ApRfNeighbor[]
+}
+
+export interface ApLldpNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApLldpNeighbor[]
 }

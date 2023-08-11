@@ -1,3 +1,12 @@
+export const mockedSocket = {
+  on: jest.fn(),
+  off: jest.fn(),
+  disconnect: jest.fn(),
+  disconnected: false
+}
+
+export const tabPath = '/:tenantId/t/devices/wifi/:apId/details/neighbors/:activeSubTab'
+
 export const mockedAp = {
   totalCount: 1,
   page: 1,
@@ -40,6 +49,68 @@ export const mockedApRfNeighbors = {
       snr24G: '15 dB',
       snr5G: '37 dB',
       snr6G: null
+    }
+  ]
+}
+
+export const mockedApLldpNeighbors = {
+  detectedTime: '2022-12-16T06:22:23.337+0000',
+  neighbors: [
+    {
+      neighborManaged: false,
+      lldpInterface: 'eth0',
+      lldpVia: 'LLDP',
+      lldpRID: '5',
+      lldpTime: '7 days, 21:03:20',
+      lldpChassisID: 'mac d8:38:fc:36:8b:c0',
+      lldpSysName: 'hank-hao-r610',
+      lldpSysDesc: 'Ruckus R610 Multimedia Hotzone Wireless AP/SW Version: 6.2.1.103.2578',
+      lldpMgmtIP: '10.206.78.111',
+      lldpCapability: 'Bridge, on;Router, off;WLAN AP, on',
+      lldpPortID: 'mac d8:38:fc:36:8b:c0',
+      lldpPortDesc: 'eth0',
+      lldpMFS: null,
+      lldpPMDAutoNeg: 'supported: yes, enabled: yes',
+      lldpAdv: '10Base-T, HD: yes, FD: yes;100Base-TX, HD: yes, FD: yes;10Base-T, HD: no, FD: yes',
+      lldpMAUOperType: '100BaseTXFD - 2 pair category 5 UTP, full duplex mode',
+      lldpMDIPower: null,
+      lldpDeviceType: null,
+      lldpPowerPairs: null,
+      lldpClass: null,
+      lldpPowerType: null,
+      lldpPowerSource: null,
+      lldpPowerPriority: null,
+      lldpPDReqPowerVal: null,
+      lldpPSEAllocPowerVal: null,
+      lldpUPOE: '0'
+    },
+    {
+      neighborManaged: false,
+      lldpInterface: 'eth1',
+      lldpVia: 'LLDP',
+      lldpRID: '7',
+      lldpTime: '3 days, 21:03:20',
+      lldpChassisID: 'mac d8:38:fc:36:8b:cc',
+      lldpSysName: 'Jacky-r610',
+      lldpSysDesc: 'Ruckus R610 Multimedia Hotzone Wireless AP/SW Version: 6.2.1.103.2578',
+      lldpMgmtIP: '10.206.78.222',
+      lldpCapability: 'Bridge, on;Router, off;WLAN AP, on',
+      lldpPortID: 'mac d8:38:fc:36:8b:cc',
+      lldpPortDesc: 'eth1',
+      lldpMFS: null,
+      lldpPMDAutoNeg: 'supported: yes, enabled: yes',
+      lldpAdv: '10Base-T, HD: no, FD: yes;100Base-TX, HD: yes, FD: yes;1000Base-T, HD: no, FD: yes',
+      lldpMAUOperType: '100BaseTXFD - 2 pair category 5 UTP, full duplex mode',
+      lldpMDIPower: null,
+      lldpDeviceType: null,
+      lldpPowerPairs: null,
+      lldpClass: null,
+      lldpPowerType: null,
+      lldpPowerSource: null,
+      lldpPowerPriority: null,
+      lldpPDReqPowerVal: null,
+      lldpPSEAllocPowerVal: null,
+      lldpUPOE: '0'
     }
   ]
 }

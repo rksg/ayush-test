@@ -1,14 +1,15 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { ToastProps }                                       from '@acx-ui/components'
 import { CatchErrorResponse, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                         from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor }         from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, within }      from '@acx-ui/test-utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
-import { mockedAp, mockedApRfNeighbors, mockedSocket, tabPath } from './__tests__/fixtures'
-import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer }   from './ApRfNeighbors'
+import { mockedAp, mockedApLldpNeighbors, mockedSocket, tabPath } from './__tests__/fixtures'
+import ApLldpNeighbors                                            from './ApLldpNeighbors'
 
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -28,21 +29,12 @@ jest.mock('@acx-ui/components', () => ({
 const wrapper = (props: { children: JSX.Element }) => <Provider>
   <ApContextProvider {...props} />
 </Provider>
-describe('ApRfNeighbors', () => {
+describe('ApLldpNeighbors', () => {
   const params = {
     tenantId: 'fe8d6c89c852473ea343c9a0fa66829b',
     apId: mockedAp.data[0].serialNumber,
-    activeSubTab: 'rf'
+    activeSubTab: 'lldp'
   }
-
-  beforeEach(() => {
-    jest.useFakeTimers()
-    jest.clearAllMocks()
-  })
-
-  afterEach(() => {
-    jest.useRealTimers()
-  })
 
   beforeEach(() => {
     mockServer.use(
@@ -51,8 +43,8 @@ describe('ApRfNeighbors', () => {
         (_, res, ctx) => res(ctx.json({ ...mockedAp }))
       ),
       rest.get(
-        WifiUrlsInfo.getApRfNeighbors.url,
-        (_, res, ctx) => res(ctx.json({ ...mockedApRfNeighbors }))
+        WifiUrlsInfo.getApLldpNeighbors.url,
+        (_, res, ctx) => res(ctx.json({ ...mockedApLldpNeighbors }))
       ),
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
@@ -60,53 +52,35 @@ describe('ApRfNeighbors', () => {
       )
     )
   })
-  it('should be sorted for Channel and SNR', () => {
-    expect(compareChannelAndSnr('6 (20MHz)', '11 (30MHz)')).toBe(-1)
-    expect(compareChannelAndSnr('15 dB', '37 (30MHz)')).toBe(-1)
-  })
 
-  it('should render empty column', () => {
-    expect(emtpyRenderer()).toBe('N/A')
-    expect(emtpyRenderer(<div>Test</div>)).toStrictEqual(<div>Test</div>)
-  })
-
-  it('should render RF Neighbors view', async () => {
+  it('should render LLDP Neighbors view', async () => {
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
       setTimeout(handler, 0) // Simulate receving the message from websocket
       return mockedSocket
     })
 
-    render(<ApRfNeighbors />, {
+    render(<ApLldpNeighbors />, {
       wrapper,
       route: { params, path: tabPath }
     })
 
     await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
 
-    const targetApName = new RegExp(mockedApRfNeighbors.neighbors[0].deviceName)
-    expect(await screen.findByRole('row', { name: targetApName })).toBeVisible()
+    const targetNeighbor = mockedApLldpNeighbors.neighbors[0]
+    const targetInterface = new RegExp(targetNeighbor.lldpInterface)
+    const targetRow = await screen.findByRole('row', { name: targetInterface })
+    expect(targetRow).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(within(targetRow).getByRole('button', { name: targetNeighbor.lldpInterface }))
+
+    const detailsDrawer = await screen.findByRole('dialog')
+    expect(detailsDrawer).toBeVisible()
+
+    await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Close' }))
+    await waitFor(() => expect(detailsDrawer).not.toBeVisible())
 
     mockedInitPokeSocketFn.mockRestore()
-  })
-
-  it('should show error when timeout', async () => {
-    render(<ApRfNeighbors />, {
-      wrapper,
-      route: { params, path: tabPath }
-    })
-
-    await waitFor(() => {
-      expect(mockedInitPokeSocketFn).toHaveBeenCalled()
-    })
-
-    await act(() => {
-      jest.runAllTimers() // Simulate websocket timeout
-    })
-
-    expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-      content: 'The AP is not reachable',
-      type: 'error'
-    }))
   })
 
   it('should handle error correctly', async () => {
@@ -130,7 +104,7 @@ describe('ApRfNeighbors', () => {
       )
     )
 
-    render(<ApRfNeighbors />, {
+    render(<ApLldpNeighbors />, {
       wrapper,
       route: { params, path: tabPath }
     })

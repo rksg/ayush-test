@@ -525,6 +525,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/rfNeighbors',
     newApi: true
   },
+  getApLldpNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/lldpNeighbors',
+    newApi: true
+  },
   detectApNeighbors: {
     method: 'PATCH',
     url: '/venues/aps/:serialNumber/neighbors',
