@@ -75,7 +75,7 @@ export function ClientsTable (props: {
       fixed: 'left',
       render: (_, row) => {
         return <TenantLink to={`users/switch/clients/${row.id}`}>{
-          row?.dhcpClientHostName || row?.clientName || '--'
+          row?.dhcpClientHostName || row?.clientName || row?.clientMac || '--'
         }</TenantLink>
       }
     }, {
