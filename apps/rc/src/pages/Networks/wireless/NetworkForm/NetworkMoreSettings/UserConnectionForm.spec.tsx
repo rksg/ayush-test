@@ -38,11 +38,11 @@ describe('UserConnectionForm', () => {
     const spins = await screen.findAllByRole('spinbutton')
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.click((await screen.findAllByTitle('Days'))[0])
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click((await screen.findAllByTitle('Days'))[0])
     await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
     await userEvent.type(spins[0], '440')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
   })
 
   it('should render user connection minutes form successfully', async () => {
@@ -64,7 +64,7 @@ describe('UserConnectionForm', () => {
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.type(spins[0], '4')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
   })
   it('should render user connection days form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -87,12 +87,12 @@ describe('UserConnectionForm', () => {
     await userEvent.type(spins[0], '4')
     await userEvent.click((await screen.findAllByTitle('Minutes'))[2])
     await userEvent.click((await screen.findAllByTitle('Hours'))[2])
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.click((await screen.findAllByTitle('Days'))[0])
     const buttons = await screen.findAllByRole('button')
     await userEvent.click(buttons[0])
     await userEvent.type(spins[1], '4')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
   })
 })

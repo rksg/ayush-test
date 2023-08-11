@@ -60,6 +60,7 @@ export function loadMessages (locales: readonly string[]): LangKey {
 
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  script.setAttribute('nonce', 'pendo-inline-script')
   script.defer = true
   // @ts-ignore
   const key = get('PENDO_API_KEY')
