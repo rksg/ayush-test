@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -19,17 +21,26 @@ function NetworkPageHeader ({
   selectedVenues?: string[]
 }) {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const network = useGetNetwork()
+  const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const [ disableConfigure, setDisableConfigure ] = useState(false)
+
+  useEffect(() => {
+    if ((supportOweTransition && !isLoading)) {
+      setDisableConfigure(networkData?.isOweMaster === false)
+    }
+  }, [networkData, isLoading, supportOweTransition])
+
   return (
     <PageHeader
-      title={network.data?.name || ''}
+      title={networkData?.name || ''}
       breadcrumb={isNavbarEnhanced ? [
         { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
         { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
@@ -55,6 +66,7 @@ function NetworkPageHeader ({
         ...filterByAccess([
           <Button
             type='primary'
+            hidden={disableConfigure}
             onClick={() =>
               navigate({
                 ...basePath,
