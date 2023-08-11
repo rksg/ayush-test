@@ -200,7 +200,7 @@ const ActivityTable = ({
       enableApiFilter={true}
       columnState={columnState}
     />
-    {current && visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
