@@ -62,12 +62,8 @@ function Layout () {
   }, [isGuestManager, isDPSKAdmin, params['*']])
 
   useEffect(() => {
-    if (data && userProfile) {
-      if (userProfile?.support || userProfile?.dogfood) {
-        setTenantType('SUPPORT')
-      } else {
-        setTenantType(data.tenantType)
-      }
+    if (data) {
+      setTenantType(data.tenantType)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
       setHasLicense(true)
@@ -77,7 +73,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, userProfile)}
       content={
         <>
           <CloudMessageBanner />

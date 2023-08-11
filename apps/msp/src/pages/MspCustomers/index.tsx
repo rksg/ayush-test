@@ -158,8 +158,8 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
-  if (tenantDetailsData.data?.tenantType === AccountType.VAR ||
-      tenantDetailsData.data?.tenantType === AccountType.REC) {
+  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+      userProfile?.support === false) {
     navigate(linkVarPath, { replace: true })
   }
 
