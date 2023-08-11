@@ -115,6 +115,7 @@ const AAAInstance = (props:{
       </div>
       <Form.Item
         name={props.type}
+        children={<></>}
         hidden
       />
     </>

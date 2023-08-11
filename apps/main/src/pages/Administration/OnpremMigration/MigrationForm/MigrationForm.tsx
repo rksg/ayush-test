@@ -45,6 +45,7 @@ const MigrationForm = () => {
   const errorMsg = ''
   const [isMigrate, setIsMigrate] = useState(false)
   const [isMigrating, setIsMigrating] = useState(false)
+  const [step, setStep] = useState(0)
 
   const [ validateZdAps, validateZdApsResp ] = useUploadZdConfigMutation()
   // eslint-disable-next-line max-len
@@ -73,6 +74,7 @@ const MigrationForm = () => {
 
   const nextButtonLabel = (file: File, errorMsg: string) => {
     if (file.size === 0 || errorMsg.length > 0) return undefined
+    if (step === 1) return $t({ defaultMessage: 'Next' })
     return isMigrate ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Validate' })
   }
 
@@ -107,6 +109,7 @@ const MigrationForm = () => {
           cancel: isMigrating ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
         }}
         onCurrentChange={(current) => {
+          setStep(current)
           if (current === 0) {
             setIsMigrate(false)
           }
@@ -117,7 +120,6 @@ const MigrationForm = () => {
           name='backupFile'
           title={$t({ defaultMessage: 'Backup File Selection' })}
           onFinish={async () => {
-            setIsMigrate(true)
             const file = state.file as File
             const formData = new FormData()
             formData.append('backupFile', file, file.name)
@@ -141,6 +143,10 @@ const MigrationForm = () => {
         <StepsFormLegacy.StepForm<MigrationContextType>
           name='validationResult'
           title={$t({ defaultMessage: 'Validation Result' })}
+          onFinish={async () => {
+            setIsMigrate(true)
+            return true
+          }}
         >
           {validateZdApsResult.taskId
             ? <ValidationForm taskId={validateZdApsResult.taskId} />

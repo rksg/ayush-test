@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { IFrame } from '@acx-ui/components'
+
 import { UIResizableBox, UIDraggable, UIModal } from './styledComponents'
 
 import type { DraggableData, DraggableEvent } from 'react-draggable'
@@ -118,7 +120,7 @@ export function SwitchCliSession (props: {
                 padding: '8px 25px'
               }}>{bannerMsg}</div>
               <div>
-                <iframe
+                <IFrame
                   height={height-50}
                   width={width}
                   style={{ border: '0px' }}

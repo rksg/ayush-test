@@ -150,7 +150,7 @@ export function MacRegistrationsTab () {
       key: 'status',
       dataIndex: 'revoked',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (row.revoked) {
           return $t({ defaultMessage: 'Revoked' })
         }
@@ -178,7 +178,7 @@ export function MacRegistrationsTab () {
       key: 'registrationDate',
       dataIndex: 'createdDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return toDateTimeString(row.createdDate)
       }
     },
@@ -187,7 +187,7 @@ export function MacRegistrationsTab () {
       key: 'expirationDate',
       dataIndex: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
           $t({ defaultMessage: 'Never Expire' })
       }

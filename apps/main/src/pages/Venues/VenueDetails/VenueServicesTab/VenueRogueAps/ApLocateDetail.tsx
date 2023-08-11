@@ -36,7 +36,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   const { data: currentAP }
     = useApViewModelQuery({
       payload: apViewModelPayload
-    })
+    }, { skip: !row.closestAp.apSerialNumber })
   const { data: apDetails }
     = useApDetailsQuery({
       params: {
@@ -115,11 +115,11 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
         </Descriptions>
         <Divider />
         <Card>
-          <ApFloorplan
+          { apDetails?.venueId ? <ApFloorplan
             activeDevice={currentApDevice}
             venueId={apDetails?.venueId as string}
             apPosition={apDetails?.position as NetworkDevicePosition}
-          />
+          /> : null }
           {/* eslint-disable-next-line max-len */}
           <Alert message={$t({ defaultMessage: 'Note: Rogue AP placement is intended as an approximation, many factors can affect the output of this visualization.' })} type='warning' showIcon />
         </Card>

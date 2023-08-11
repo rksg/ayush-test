@@ -87,7 +87,7 @@ export interface NetworkSaveData {
   redirectUrl?: string;
   guestPortal?: GuestPortal;
   portalServiceProfileId?: string;
-  authRadiusId?: string;
+  authRadiusId?: string | null;
   accountingRadiusId?: string;
   enableDhcp?: boolean;
   wlan?: {
@@ -116,6 +116,7 @@ export interface NetworkSaveData {
   authRadius?: Radius;
   accountingRadius?: Radius;
   dpskServiceProfileId?: string;
+  isOweMaster?: boolean;
 }
 export interface ExternalProviders{
   providers: Providers[]

@@ -126,7 +126,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       key: 'priority',
       dataIndex: 'priority',
       align: 'center',
-      render: (_, row, index) => {
+      render: (_, __, index) => {
         return index + 1
       }
     },
@@ -134,7 +134,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={
@@ -142,7 +142,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
                 oper: PolicyOperation.DETAIL,
                 policyId: row.id!,
                 templateId: templateIdMap.get(row.policyType) ?? ''
-              })}>{data}</TenantLink>
+              })}>{row.name}</TenantLink>
         )
       }
     },
@@ -151,7 +151,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       key: 'accessConditions',
       dataIndex: 'accessConditions',
       align: 'center',
-      render: (data, row) => {
+      render: (_, row) => {
         return conditionCountMap.get(row.id) ?? 0
       }
     },
@@ -160,7 +160,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       key: 'policySetMembership',
       dataIndex: 'policySetMembership',
       align: 'center',
-      render: (data, row) => {
+      render: (_, row) => {
         const policySets = [] as string []
         policySetPoliciesMap.forEach((value, key) => {
           if(value.find((item: string) => item === row.id)){
@@ -175,7 +175,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (data, row) => {
+      render: (_, row) => {
         return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
           <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>

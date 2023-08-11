@@ -99,7 +99,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       await screen.findByRole('option', { name: 'Mock Venue 1' })
     )
     expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('Step1 - General setting will be block by mandatory validation', async () => {
@@ -113,7 +113,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Service Name')
     await screen.findByText('Please select a Venue')
   })
