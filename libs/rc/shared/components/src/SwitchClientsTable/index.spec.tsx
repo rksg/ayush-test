@@ -6,7 +6,6 @@ import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -168,7 +167,7 @@ describe('SwitchClientsTable', () => {
     await screen.findByText('34:20:E3:2C:B5:B0')
 
     const searchInput = await screen.findByRole('textbox')
-    fireEvent.change(searchInput, { target: { value: '34:' } })
+    await userEvent.type(searchInput, '34:')
 
     await waitForElementToBeRemoved(() =>
       screen.queryByRole('img', { name: 'loader' })
