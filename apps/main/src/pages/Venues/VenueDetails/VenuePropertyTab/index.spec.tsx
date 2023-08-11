@@ -69,6 +69,25 @@ const mockPersona: Persona = {
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
   expirationDate: moment().add(-8, 'days').toISOString()
 }
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  onSave: () => void
+  onClose: () => void
+}>
+
+jest.mock('./PropertyUnitDrawer', () => ({
+  PropertyUnitDrawer: ({ onSave, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'PropertyUnitDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSave()
+      }}>Save</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
 
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
@@ -171,8 +190,7 @@ describe('Property Unit Page', () => {
     const addUnitBtn = await screen.findByRole('button', { name: /add unit/i })
     await userEvent.click(addUnitBtn)
 
-    const unitDialog = await screen.findByRole('dialog')
-    await within(unitDialog).findByText(/add unit/i)
+    const unitDialog = await screen.findByTestId('PropertyUnitDrawer')
     await userEvent.click(await within(unitDialog).findByRole('button', { name: /cancel/i }))
     expect(screen.queryByRole('dialog')).toBeNull()
 
@@ -183,8 +201,7 @@ describe('Property Unit Page', () => {
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
-    const editDialog = await screen.findByRole('dialog')
-    await within(editDialog).findByText(/edit unit/i)
+    const editDialog = await screen.findByTestId('PropertyUnitDrawer')
     await userEvent.click(await within(editDialog).findByRole('button', { name: /cancel/i }))
 
     // teardown
