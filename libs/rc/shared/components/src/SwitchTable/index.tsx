@@ -324,7 +324,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true
     }, {
       key: 'clientCount',
-      title: $t({ defaultMessage: 'Clients' }),
+      title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clientCount',
       align: 'center',
       sorter: true,
