@@ -4,7 +4,6 @@ import { PageHeader, Tabs }                      from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                        from '@acx-ui/user'
 
 import { useConfigChange }          from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
