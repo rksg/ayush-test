@@ -209,6 +209,7 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
+      align: 'center',
       render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
