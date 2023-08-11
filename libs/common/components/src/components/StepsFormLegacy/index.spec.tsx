@@ -37,7 +37,7 @@ describe('StepsFormLegacy', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
 
@@ -179,7 +179,7 @@ describe('StepsFormLegacy', () => {
 
     expect(screen.getAllByRole('button').length).toEqual(2)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
 })

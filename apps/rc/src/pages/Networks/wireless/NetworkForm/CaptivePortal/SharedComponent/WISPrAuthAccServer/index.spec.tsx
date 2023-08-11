@@ -69,7 +69,7 @@ describe('WISPRAuthACCServer Unit tests', () => {
       '8.8.8.7')
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
-    // await userEvent.click(await screen.findByText('Finish'))
+    // await userEvent.click(await screen.findByText('Add'))
     // FIXME: Do not use "setTimeout"
     // await new Promise((r)=>{setTimeout(r, 500)})
     // await changeAAA()
