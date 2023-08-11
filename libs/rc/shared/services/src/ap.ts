@@ -48,9 +48,9 @@ import {
   ApRfNeighborsResponse,
   ApLldpNeighborsResponse
 } from '@acx-ui/rc/utils'
-import { baseApApi }                  from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseApApi }                                    from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export type ApsExportPayload = {
   filters: Filter
@@ -149,7 +149,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -254,7 +256,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateAp, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload

@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
 import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
@@ -31,6 +32,7 @@ const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
 const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeSubInterfaceCSVEnabled = useIsSplitOn(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
   const { mac } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -63,7 +65,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: '#',
       key: '',
       dataIndex: 'index',
-      render: (dom, entity, index) => {
+      render: (_, __, index) => {
         const pagination = tableQuery.pagination
         return ++index + (pagination.page - 1) * pagination.pageSize
       }
@@ -132,10 +134,10 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       label: $t({ defaultMessage: 'Add Sub-interface' }),
       onClick: () => openDrawer()
     },
-    {
+    ...(isEdgeSubInterfaceCSVEnabled ? [{
       label: $t({ defaultMessage: 'Import from file' }),
       onClick: () => setImportModalvisible(true)
-    }
+    }]:[])
   ]
 
   const openDrawer = (data?: EdgeSubInterface) => {
@@ -190,17 +192,18 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               }}
               rowKey='id'
             />
-            <ImportFileDrawer
-              type={ImportFileDrawerType.EdgeSubInterface}
-              title={$t({ defaultMessage: 'Import from file' })}
-              maxSize={CsvSize['5MB']}
-              acceptType={['csv']}
-              templateLink={importTemplateLink}
-              visible={importModalvisible}
-              isLoading={uploadCSVResult.isLoading}
-              importRequest={importSubInterfaces}
-              onClose={() => setImportModalvisible(false)}
-            />
+            { isEdgeSubInterfaceCSVEnabled &&
+              <ImportFileDrawer
+                type={ImportFileDrawerType.EdgeSubInterface}
+                title={$t({ defaultMessage: 'Import from file' })}
+                maxSize={CsvSize['5MB']}
+                acceptType={['csv']}
+                templateLink={importTemplateLink}
+                visible={importModalvisible}
+                isLoading={uploadCSVResult.isLoading}
+                importRequest={importSubInterfaces}
+                onClose={() => setImportModalvisible(false)}
+              />}
           </Loader>
         </Col>
       </Row>

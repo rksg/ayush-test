@@ -57,7 +57,7 @@ describe('Portal Instance Page', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('test2'))[0])
   })

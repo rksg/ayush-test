@@ -1,4 +1,4 @@
-import { ACLDirection, AccessAction, ProtocolType, AddressType } from '@acx-ui/rc/utils'
+import { ACLDirection, AccessAction, ProtocolType, AddressType, DdosAttackType } from '@acx-ui/rc/utils'
 
 export const mockFirewall = {
   id: 'mock-id',
@@ -95,6 +95,50 @@ export const mockFirewall = {
           destinationAddress: null,
           destinationAddressMask: null,
           destinationPort: ''
+        }
+      ]
+    }
+  ]
+}
+
+export const mockedFirewallDataList = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'mock-id',
+      firewallName: 'mocked-firewall',
+      ddosEnabled: true,
+      ddosRateLimitingRules: {
+        [DdosAttackType.ALL]: 220,
+        [DdosAttackType.ICMP]: 200
+      },
+      statefulAclEnabled: true,
+      statefulAcls: [
+        {
+          aclName: 'ACL1',
+          aclDirection: ACLDirection.INBOUND,
+          aclRuleNum: 2
+        },
+        {
+          aclName: 'ACL2',
+          aclDirection: ACLDirection.OUTBOUND,
+          aclRuleNum: 2
+        }
+      ],
+      edgeIds: ['0000000001', '0000000002', '0000000003'],
+      serviceVersions: {
+        '0000000001': '1.0.0.100',
+        '0000000002': '1.0.0.100',
+        '0000000003': '1.0.0.210'
+      },
+      edgeAlarmSummary: [
+        {
+          edgeId: '0000000003',
+          severitySummary: {
+            critical: 1
+          },
+          totalCount: 1
         }
       ]
     }

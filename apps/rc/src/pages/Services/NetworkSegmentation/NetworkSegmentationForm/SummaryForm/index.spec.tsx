@@ -94,6 +94,6 @@ describe('SummaryForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
   })
 })

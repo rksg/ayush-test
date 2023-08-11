@@ -1566,6 +1566,17 @@ export const mockLoadBalabcing = {
   stickyClientNbrApPercentageThreshold: 20
 }
 
+export const mockVenueClientAdmissionControl = {
+  enable24G: true,
+  enable50G: false,
+  minClientCount24G: 10,
+  minClientCount50G: 20,
+  maxRadioLoad24G: 75,
+  maxRadioLoad50G: 75,
+  minClientThroughput24G: 0,
+  minClientThroughput50G: 0
+}
+
 export const radiusList = {
   data: [
     {
@@ -1610,7 +1621,17 @@ export const localUserList = {
       purpose: 'DEFAULT',
       level: 'READ_WRITE',
       serverType: 'LOCAL',
-      authPort: 0
+      authPort: 0,
+      switchCountInVenue: 3,
+      syncedPasswordSwitchCount: 2
+    },
+    {
+      id: 'db611edec14e4536845e456fcd132fdb',
+      level: 'READ_WRITE',
+      password: 'Test123',
+      serverType: 'LOCAL',
+      switchCountInVenue: 3,
+      username: 'test'
     },
     {
       id: '6c4aea92d32e4875a5b736db83875eb6',

@@ -145,7 +145,7 @@ export function SecurityTab () {
         setTriggerDoSProtection(false)
       }
 
-      if(triggerRogueAPDetection){
+      if(triggerRogueAPDetection && data?.roguePolicyId){
         const rogueApPayload = {
           enabled: data?.rogueApEnabled,
           reportThreshold: data?.reportThreshold,

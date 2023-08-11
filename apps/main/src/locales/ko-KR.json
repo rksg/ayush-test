@@ -39,7 +39,7 @@
     "defaultMessage": "이 규칙 이름이 존재합니다."
   },
   "+8w3Xf": {
-    "defaultMessage": "네트워크가 활성화되면 여기에서 귀중한 통찰력을 얻을 수 있습니다."
+    "defaultMessage": "네트워크가 활성화되면 여기에서 가치 있는 인사이트를 얻을 수 있습니다."
   },
   "+BsC2h": {
     "defaultMessage": "SNMP 에이전트"
@@ -51,7 +51,7 @@
     "defaultMessage": "{serverType} 서버는 다음에 대해 우선순위가 지정됩니다.<br></br> {disabledList}. <br></br> {count, plural, one {이} other {이러한}} {serverType} {count, plural, one {서버} other {서버}}를 삭제하려면 다른 방법을 정의해야 합니다."
   },
   "+DU2Ww": {
-    "defaultMessage": "<p>RADIUS 시간 초과는 RADIUS 서버 상태를 직접 조사하여 해결할 가능성이 가장 높으며 일반적으로 로드 또는 서비스 가용성 메트릭 및 로그에 중점을 둡니다.</p> <ol> <li>RADIUS 서버가 안정적이고 (AP 또는 RUCKUS One의 핑으로) 연결 가능합니까?</li> <li>RADIUS 서버의 부하가 높습니까?</li> <li>RADIUS 하드웨어 인프라(CPU, 메모리, IO)에 과부하가 걸리거나 서비스 중단이 발생합니까?</li> <li>RADIUS 로그에 비정상적인 실패 메시지 또는 이유가 표시됩니까?</li> <li>무선 링크에 혼잡 증상(높은 에어타임 사용률 또는 간섭)이 있습니까?</li> </ol>"
+    "defaultMessage": "<p>RADIUS 시간 초과는 RADIUS 서버 상태를 직접 조사하여 해결할 가능성이 가장 높으며 일반적으로 로드 또는 서비스 가용성 메트릭 및 로그에 중점을 둡니다.</p> <ol> <li>RADIUS 서버가 안정적이고 (AP 또는 RUCKUS One으로의 핑으로) 연결 가능합니까?</li> <li>RADIUS 서버의 부하가 높습니까?</li> <li>RADIUS 하드웨어 인프라(CPU, 메모리, IO)에 과부하가 걸리거나 서비스 중단이 발생합니까?</li> <li>RADIUS 로그에 비정상적인 실패 메시지 또는 이유가 표시됩니까?</li> <li>무선 링크에 혼잡 증상(높은 에어타임 사용률 또는 간섭)이 있습니까?</li> </ol>"
   },
   "+GDdPu": {
     "defaultMessage": "비인증 AP 탐지 정책 세부정보: {policyName}"
@@ -118,7 +118,7 @@
     "defaultMessage": "메시 STA가 지원되는 최대 피어 STA 수에 도달했습니다."
   },
   "+cCc3S": {
-    "defaultMessage": "계정 포트"
+    "defaultMessage": "Accounting 포트"
   },
   "+cdm35": {
     "defaultMessage": "게스트 ID 인증 실패"
@@ -224,7 +224,7 @@
     "defaultMessage": "지금 되돌리기"
   },
   "/804MB": {
-    "defaultMessage": "반송파 이름"
+    "defaultMessage": "캐리어 이름"
   },
   "/8hgbZ": {
     "defaultMessage": "다른 국가의 대역 표시"
@@ -233,13 +233,13 @@
     "defaultMessage": "태그가 없는 포트"
   },
   "/BPwUm": {
-    "defaultMessage": "2. '케이스 열기' 링크 동작"
+    "defaultMessage": "2. '케이스 오픈' 링크 동작"
   },
   "/CwYfS": {
     "defaultMessage": "실패한 테스트 단계가 둘 이상인 경우 AP가 실패로 표시됩니다."
   },
   "/D5Zd6": {
-    "defaultMessage": "계정 서버"
+    "defaultMessage": "Accounting 서버"
   },
   "/DdTFM": {
     "defaultMessage": "{deviceCount} {deviceText}에 대한 구독이 {daysText}일 후에 만료됩니다."
@@ -281,7 +281,7 @@
     "defaultMessage": "중복된 테스트 이름이 존재합니다."
   },
   "/TDfu/": {
-    "defaultMessage": "<p>다음은 지원되지 않습니다.</p> <ul> <li>WPA3, EAP-TLS 및 EAP-SIM이 포함된 802.1X</li> <li>WEP 암호화</li> <li>WPA3/WPA2 혼합 모드 및 WPA3 암호화(스테이션 AP에 R760과 같이 3개의 라디오가 있는 경우 제외)</li> <li>종속 포털</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
+    "defaultMessage": "<p>다음은 지원되지 않습니다.</p> <ul> <li>WPA3, EAP-TLS 및 EAP-SIM이 포함된 802.1X</li> <li>WEP 암호화</li> <li>WPA3/WPA2 혼합 모드 및 WPA3 암호화(스테이션 AP에 R760과 같이 3개의 라디오가 있는 경우 제외)</li> <li>캡티브 포털</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
   },
   "/V0Dqn": {
     "defaultMessage": "최선의 노력"
@@ -309,7 +309,7 @@
     "defaultMessage": "사진"
   },
   "/bEP9l": {
-    "defaultMessage": "계정"
+    "defaultMessage": "Accounting"
   },
   "/bSX6m": {
     "defaultMessage": "허용되는 도메인"
@@ -366,7 +366,7 @@
     "defaultMessage": "모델 추가"
   },
   "/wkhBU": {
-    "defaultMessage": "내 열린 케이스"
+    "defaultMessage": "현재 오픈된 케이스"
   },
   "/wvHFt": {
     "defaultMessage": "정책 및 프로필"
@@ -501,7 +501,7 @@
     "defaultMessage": "2월"
   },
   "0Tgxlg": {
-    "defaultMessage": "RUCKUS One의 경우 스위치를 09.0.10e 릴리스로 유지해야 합니다. Ruckus 지원 부서에서 지시하지 않는 한 최신 ICX 펌웨어로 수동 업그레이드를 수행해서는 안 됩니다. 새 클라우드 버전을 사용할 수 있게 되면 스위치 펌웨어에 필요한 모든 변경 사항이 RUCKUS One에서 자동으로 처리됩니다."
+    "defaultMessage": "RUCKUS One의 경우 스위치를 09.0.10e 릴리스로 유지해야 합니다. Ruckus 지원 부서에서 지원하지 않는 한 최신 ICX 펌웨어로 수동 업그레이드를 수행해서는 안 됩니다. 새 클라우드 버전을 사용할 수 있게 되면 스위치 펌웨어에 필요한 모든 변경 사항이 RUCKUS One에서 자동으로 처리됩니다."
   },
   "0V1V61": {
     "defaultMessage": "알림"
@@ -774,7 +774,7 @@
     "defaultMessage": "802.11 재연결 요청"
   },
   "1oIptw": {
-    "defaultMessage": "송신 STA가 IBSS 또는 ESS를 떠나는 중이기 때무에 (또는 떠났기 때문에) 인증 해제됨"
+    "defaultMessage": "송신 STA가 IBSS 또는 ESS를 떠나는 중이기 때문에 (또는 떠났기 때문에) 인증 해제됨"
   },
   "1oawH2": {
     "defaultMessage": "셀룰러 옵션"
@@ -880,10 +880,10 @@
     "defaultMessage": "WiFi4EU 스니펫:"
   },
   "2O2sfp": {
-    "defaultMessage": "핀란드어"
+    "defaultMessage": "종료"
   },
   "2Oddqm": {
-    "defaultMessage": "데이터 평면"
+    "defaultMessage": "data plane"
   },
   "2OstnU": {
     "defaultMessage": "사용 가능한 새로운 Switch 펌웨어 버전이 있습니다."
@@ -970,7 +970,7 @@
     "defaultMessage": "mDNS 프록시 서비스를 적용할 장소 및 AP를 선택하십시오."
   },
   "2rRZtB": {
-    "defaultMessage": "가상 클라이언트와 터널 WLAN에 매핑된 데이터 평면이 동일한 서브넷에 있고 지원되지 않으므로 속도 테스트를 건너뛰었습니다."
+    "defaultMessage": "가상 클라이언트와 터널 WLAN에 매핑된 data plane이 동일한 서브넷에 있고 지원되지 않으므로 속도 테스트를 수행하지 않습니다."
   },
   "2sH94b": {
     "defaultMessage": "DHCP 상태"
@@ -1003,7 +1003,7 @@
     "defaultMessage": "클라이언트 추가"
   },
   "307CiC": {
-    "defaultMessage": "Cloudpath 종속 포털"
+    "defaultMessage": "Cloudpath 캡티브 포털"
   },
   "32hdkB": {
     "defaultMessage": "스위치가 작동해야 후면을 볼 수 있습니다."
@@ -1054,7 +1054,7 @@
     "defaultMessage": "지난 주에 {value0} 사용자 트래픽이 AP의 15%를 거쳤습니다."
   },
   "3HBQtF": {
-    "defaultMessage": "재시도로 인해 스테이션이 퇴출되었습니다."
+    "defaultMessage": "설정된 재시도 횟수 제한으로 인해 스테이션이 퇴출되었습니다."
   },
   "3HCg1n": {
     "defaultMessage": "구성 업데이트 실패"
@@ -1084,8 +1084,8 @@
     "defaultMessage": "기본 IP TTL"
   },
   "3LyeET": {
-    "defaultMessage": "타사 종속 포털(WISPr)",
-    "description": "게스트 네트워크 유형 - 타사 종속 포털(WISPr)"
+    "defaultMessage": "타사 캡티브 포털(WISPr)",
+    "description": "게스트 네트워크 유형 - 타사 캡티브 포털(WISPr)"
   },
   "3MLzVn": {
     "defaultMessage": "초대장 보내기"
@@ -1200,7 +1200,7 @@
     "defaultMessage": "장소 “{venueName}”에서 mDNS 프록시 서비스를 적용할 AP를 선택하십시오."
   },
   "41LPii": {
-    "defaultMessage": "계정 RADIUS 서버"
+    "defaultMessage": "Accounting RADIUS 서버"
   },
   "41QEq5": {
     "defaultMessage": "유닛 추가"
@@ -1212,7 +1212,7 @@
     "defaultMessage": "(태그가 없는 VLAN으로 설정)"
   },
   "43C/hj": {
-    "defaultMessage": "MAC 인증은 회사 네트워크에 대한 추가 보안 수준을 제공합니다. 클라이언트 MAC 주소는 인증 및 계정 관리를 위해 구성된 RADIUS 서버로 전달됩니다. 이 옵션을 변경하려면 네트워크를 다시 만들어야 합니다(편집 옵션 없음)."
+    "defaultMessage": "MAC 인증은 회사 네트워크에 대한 추가 보안 수준을 제공합니다. 클라이언트 MAC 주소는 인증 및 Accounting 관리를 위해 구성된 RADIUS 서버로 전달됩니다. 이 옵션을 변경하려면 네트워크를 다시 만들어야 합니다(편집 옵션 없음)."
   },
   "43x47C": {
     "defaultMessage": "고객 관리자 이름"
@@ -1329,7 +1329,7 @@
     "defaultMessage": "사용 보고서 생성"
   },
   "4dk4rO": {
-    "defaultMessage": "계정 서비스"
+    "defaultMessage": "Accounting 서비스"
   },
   "4eRUgj": {
     "defaultMessage": "알림"
@@ -1341,7 +1341,7 @@
     "defaultMessage": "게스트 삭제"
   },
   "4fOqW7": {
-    "defaultMessage": "입력한 값 중 하나가 다른 네트워크의 기존 계정 서버 구성과 충돌합니다."
+    "defaultMessage": "입력한 값 중 하나가 다른 네트워크의 기존 accounting 서버 구성과 충돌합니다."
   },
   "4iAV3u": {
     "defaultMessage": "Apple 모바일 장치"
@@ -1530,7 +1530,7 @@
     "defaultMessage": "ARP 요청 속도 제한은 15~100 사이여야 합니다."
   },
   "5gTKDx": {
-    "defaultMessage": "입력한 IP 주소가 다른 네트워크의 기존 인증 및 계정 서버 구성과 충돌합니다. IP 주소를 변경하십시오."
+    "defaultMessage": "입력한 IP 주소가 다른 네트워크의 기존 인증 및 accounting 서버 구성과 충돌합니다. IP 주소를 변경하십시오."
   },
   "5gbEyz": {
     "defaultMessage": "액세스 권한 취소"
@@ -1548,7 +1548,7 @@
     "defaultMessage": "{milliseconds}{milliseconds, plural, one {밀리초} other {밀리초}}"
   },
   "5lQx5r": {
-    "defaultMessage": "일정 잡기"
+    "defaultMessage": "일정 설정"
   },
   "5oXwZ2": {
     "defaultMessage": "AP-RUCKUS One 연결 해제"
@@ -1593,7 +1593,7 @@
     "defaultMessage": "SIM 0"
   },
   "5wroMh": {
-    "defaultMessage": "출처 VLAN과 대상 VLAN은 달라야 합니다."
+    "defaultMessage": "From VLAN과 To VLAN은 달라야 합니다."
   },
   "5x88Fj": {
     "defaultMessage": "다이렉트 멀티캐스트가 활성화되면 AP는 멀티캐스트 트래픽을 검사하고 클라이언트 IGMP/MLD 구독을 모니터링하여 패킷 처리를 결정합니다. AP의 무선 클라이언트가 멀티캐스트 데이터를 구독한 경우, AP가 패킷을 유니캐스트로 변환합니다. 클라이언트가 구독하지 않은 경우 AP가 패킷을 삭제합니다. 잘 알려진 일부 트래픽 유형(Bonjour, uPnP 등)은 이 로직을 모두 우회하며 멀티캐스트에서 유니캐스트로의 변환은 WLAN 고급 설정의 ‘다이렉트 임계값’에 의해 결정됩니다."
@@ -1623,7 +1623,7 @@
     "defaultMessage": "인증 앱에서 생성한 인증 코드를 입력하십시오."
   },
   "65eM4S": {
-    "defaultMessage": "회계 없음"
+    "defaultMessage": "Accounting 없음"
   },
   "660RCB": {
     "defaultMessage": "VLAN 선택..."
@@ -2081,7 +2081,7 @@
     "defaultMessage": "802.11 인증"
   },
   "8AN/pf": {
-    "defaultMessage": "집행 계정"
+    "defaultMessage": "Executive Accounting"
   },
   "8Aco2j": {
     "defaultMessage": "{name}<br></br><space><b>{formattedValue}</b></space>",
@@ -2306,7 +2306,7 @@
   },
   "93fAZT": {
     "defaultMessage": "0~255 사이의 유효한 숫자를 입력하십시오.",
-    "description": "유효성 검사 - 정적 경로 관리 거리 전환"
+    "description": "유효성 검사 - 정적 경로 admin distance 전환"
   },
   "94TYGd": {
     "defaultMessage": "클라이언트 격리:"
@@ -2408,7 +2408,7 @@
     "defaultMessage": "가져오기"
   },
   "9YPplU": {
-    "defaultMessage": "거리 스위치({num})"
+    "defaultMessage": "Dist. Switch({num})"
   },
   "9a9+ww": {
     "defaultMessage": "제목"
@@ -2601,8 +2601,8 @@
     "defaultMessage": "주문형"
   },
   "AN1aoL": {
-    "defaultMessage": "사용자는 AAA 서버에서 인증된 타사 종속 포털을 통해 연결합니다.",
-    "description": "타사 종속 포털(WISPr)에 대한 설명"
+    "defaultMessage": "사용자는 AAA 서버에서 인증된 타사 캡티브 포털을 통해 연결합니다.",
+    "description": "타사 캡티브 포털(WISPr)에 대한 설명"
   },
   "AQNV9V": {
     "defaultMessage": "최종 사용자 연결을 위한 웹 인증 게스트 포털 생성"
@@ -2803,7 +2803,7 @@
     "defaultMessage": "DHCP 요청 속도 제한"
   },
   "BC6Ixx": {
-    "defaultMessage": "Mac 자격 증명 기간"
+    "defaultMessage": "MAC 자격 증명 기간"
   },
   "BCabYi": {
     "defaultMessage": "AP 선택..."
@@ -2912,7 +2912,7 @@
     "defaultMessage": "SIP UA 도메인"
   },
   "BbmtDr": {
-    "defaultMessage": "단일 세션 ID 계정"
+    "defaultMessage": "단일 세션 ID Accounting"
   },
   "Bc20la": {
     "defaultMessage": "일"
@@ -2976,7 +2976,7 @@
     "defaultMessage": "~을(를) 확인하십시오."
   },
   "ByZ1z+": {
-    "defaultMessage": "설치사"
+    "defaultMessage": "인스톨러"
   },
   "BzQPM+": {
     "defaultMessage": "대상"
@@ -3007,7 +3007,7 @@
     "defaultMessage": "{ leaseDays, plural, =0 {} one {{leaseDays}일} other {{leaseDays}일}} { leaseHrs, plural, =0 {} one {{leaseHrs}시간} other {{leaseHrs}시간}} { leaseMins, plural, =0 {} one {{leaseMins}분} other {{leaseMins}분}}"
   },
   "C5Rw0o": {
-    "defaultMessage": "802.1X 네트워크에서 컨트롤러를 프록시로 사용합니다. 프록시 AAA 서버는 AP가 인증/계정 메시지를 컨트롤러에 보내고 컨트롤러가 이 메시지를 외부 AAA 서버로 전달할 때 사용됩니다."
+    "defaultMessage": "802.1X 네트워크에서 컨트롤러를 프록시로 사용합니다. 프록시 AAA 서버는 AP가 인증/Accounting 메시지를 컨트롤러에 보내고 컨트롤러가 이 메시지를 외부 AAA 서버로 전달할 때 사용됩니다."
   },
   "C5VhoH": {
     "defaultMessage": "보조 SIM"
@@ -3031,7 +3031,7 @@
     "defaultMessage": "IE가 유효하지 않음"
   },
   "CHeh2t": {
-    "defaultMessage": "Wifi 클라이언트가 802.11 인증, 연결, L2 인증을 완료하고 DHCP에서 IP 주소를 수신하면 연결이 성공한 것으로 간주됩니다. 이러한 단계 중 하나라도 실패하면 실패한 연결로 간주됩니다. WISPr 및 종속 포털 인증과 같은 L3 인증의 경우 Wifi 클라이언트는 L3 인증 전에 IP 주소를 받기 때문에 L3 인증이 완료되기 전에 클라이언트 연결이 성공한 것으로 간주됩니다.{br}{br}왼쪽의 시계열 그래프는 시간에 따른 성공적인 연결의 백분율을 표시하고 오른쪽의 막대 차트는 선택한 시간 범위의 지난 7일 동안의 일별 백분율을 캡처합니다. 시간 범위를 확대/축소하면 시계열 그래프와 관련된 숫자가 변경되는 반면, 막대 차트는 페이지 상단에서 선택한 시간 범위를 기준으로 고정된 상태로 유지됩니다."
+    "defaultMessage": "Wifi 클라이언트가 802.11 인증, 연결, L2 인증을 완료하고 DHCP에서 IP 주소를 수신하면 연결이 성공한 것으로 간주됩니다. 이러한 단계 중 하나라도 실패하면 실패한 연결로 간주됩니다. WISPr 및 캡티브 포털 인증과 같은 L3 인증의 경우 Wifi 클라이언트는 L3 인증 전에 IP 주소를 받기 때문에 L3 인증이 완료되기 전에 클라이언트 연결이 성공한 것으로 간주됩니다.{br}{br}왼쪽의 시계열 그래프는 시간에 따른 성공적인 연결의 백분율을 표시하고 오른쪽의 막대 차트는 선택한 시간 범위의 지난 7일 동안의 일별 백분율을 캡처합니다. 시간 범위를 확대/축소하면 시계열 그래프와 관련된 숫자가 변경되는 반면, 막대 차트는 페이지 상단에서 선택한 시간 범위를 기준으로 고정된 상태로 유지됩니다."
   },
   "CHs6+w": {
     "defaultMessage": "RADIUS 액세스 요청"
@@ -3520,7 +3520,7 @@
     "defaultMessage": "비인증 AP 탐지"
   },
   "Ez/ZY3": {
-    "defaultMessage": "연결 시간(TTC)은 Wifi 클라이언트가 IP 연결을 설정하기 위해 필요한 모든 단계, 즉 802.11 인증, 연결, L2 인증 및 DHCP에서 IP 주소 수신을 성공적으로 통과하는 데 걸리는 총 시간을 측정합니다. WISPr 및 종속 포털 인증과 같은 L3 인증의 경우, Wifi 클라이언트는 L3 인증 전에 IP 주소를 받기 때문에 연결 시간에는 L3 인증에 걸리는 시간이 포함되지 않습니다.{br}{br}왼쪽의 시계열 그래프는 시간 경과에 따라 구성된 TTC SLA를 충족하는 성공적인 연결의 백분율을 표시합니다. 오른쪽 막대 차트는 TTC 분포를 표시합니다. 시간 범위를 확대/축소하면 시계열 그래프와 관련된 숫자가 변경되는 반면, 막대 차트는 페이지 상단에서 선택한 시간 범위를 기준으로 고정된 상태로 유지됩니다."
+    "defaultMessage": "연결 시간(TTC)은 Wifi 클라이언트가 IP 연결을 설정하기 위해 필요한 모든 단계, 즉 802.11 인증, 연결, L2 인증 및 DHCP에서 IP 주소 수신을 성공적으로 통과하는 데 걸리는 총 시간을 측정합니다. WISPr 및 캡티브 포털 인증과 같은 L3 인증의 경우, Wifi 클라이언트는 L3 인증 전에 IP 주소를 받기 때문에 연결 시간에는 L3 인증에 걸리는 시간이 포함되지 않습니다.{br}{br}왼쪽의 시계열 그래프는 시간 경과에 따라 구성된 TTC SLA를 충족하는 성공적인 연결의 백분율을 표시합니다. 오른쪽 막대 차트는 TTC 분포를 표시합니다. 시간 범위를 확대/축소하면 시계열 그래프와 관련된 숫자가 변경되는 반면, 막대 차트는 페이지 상단에서 선택한 시간 범위를 기준으로 고정된 상태로 유지됩니다."
   },
   "EzTaEJ": {
     "defaultMessage": "임시 클라이언트 관리에 의해 삭제된 인증 프레임"
@@ -3809,7 +3809,7 @@
     "defaultMessage": "장소 선택..."
   },
   "GKHnhz": {
-    "defaultMessage": "종속 포털"
+    "defaultMessage": "캡티브 포털"
   },
   "GKhzqE": {
     "defaultMessage": "{count, plural, one {이} other {} } {formattedEntityName}을(를) 삭제하시겠습니까?"
@@ -3866,8 +3866,8 @@
     "defaultMessage": "RADIUS 서버를 사용할 수 없음"
   },
   "GYphdA": {
-    "defaultMessage": "종속 포털 열기",
-    "description": "WLAN 보안 유형 - 종속 포털 열기"
+    "defaultMessage": "캡티브 포털 열기",
+    "description": "WLAN 보안 유형 - 캡티브 포털 열기"
   },
   "GZJpDf": {
     "defaultMessage": "Analytics"
@@ -4030,7 +4030,7 @@
     "defaultMessage": "LED 깜박임"
   },
   "HJCpBo": {
-    "defaultMessage": "인증되지 않은 사용자가 이러한 대상에 액세스할 수 있습니다(예: 종속 포털로 리디렉션하지 않음).<br></br><br></br> 각 대상은 새 줄에 입력해야 합니다. 대상에 대해 허용되는 형식:<br></br><br></br> - IP 주소(예: 10.11.12.13)<br></br> - IP 주소 범위(예: 10.11.12.13-10.11.12.15)<br></br> - CIDR(예: 10.11.12.13/28)<br></br> - IP 주소 및 마스크(예: 10.11.12.13 255.255.255.0)<br></br> - 웹사이트 FQDN(예: www.ruckus.com)<br></br> - 와일드카드가 있는 웹사이트 FQDN(예: *.amazon.com; *.com)"
+    "defaultMessage": "인증되지 않은 사용자가 이러한 대상에 액세스할 수 있습니다(예: 캡티브 포털로 리디렉션하지 않음).<br></br><br></br> 각 대상은 새 줄에 입력해야 합니다. 대상에 대해 허용되는 형식:<br></br><br></br> - IP 주소(예: 10.11.12.13)<br></br> - IP 주소 범위(예: 10.11.12.13-10.11.12.15)<br></br> - CIDR(예: 10.11.12.13/28)<br></br> - IP 주소 및 마스크(예: 10.11.12.13 255.255.255.0)<br></br> - 웹사이트 FQDN(예: www.ruckus.com)<br></br> - 와일드카드가 있는 웹사이트 FQDN(예: *.amazon.com; *.com)"
   },
   "HJikvH": {
     "defaultMessage": "게스트 DPSK 암호문"
@@ -4114,7 +4114,7 @@
     "defaultMessage": "WiFi4EU UUID"
   },
   "HgKVJq": {
-    "defaultMessage": "거리 스위치"
+    "defaultMessage": "Dist. Switches"
   },
   "Hgj+nK": {
     "defaultMessage": "커뮤니티 이름이 이미 존재합니다."
@@ -4261,7 +4261,7 @@
     "defaultMessage": "<p>사용자가 RADIUS 단계에서 성공적으로 연결하지 못하고 있습니다. 이 연결 실패 문제는 여러 실패 유형과 원인으로 구성되어 있어 정확한 원인을 파악하기 어렵습니다.</p>"
   },
   "IN9Bzr": {
-    "defaultMessage": "열악한 경험을 가진 상위 장소"
+    "defaultMessage": "열악한 결과를 보여주는 상위 장소"
   },
   "INCiY7": {
     "defaultMessage": "SNMP 에이전트 편집"
@@ -4331,7 +4331,7 @@
     "defaultMessage": "{type, select, aaa {AAA 설정} dpsk {DPSK 설정} other {설정} guest {포털 유형} }"
   },
   "Ij6myE": {
-    "defaultMessage": "사용자가 종속 포털을 통해 네트워크에 액세스하는 방법을 선택하십시오."
+    "defaultMessage": "사용자가 캡티브 포털을 통해 네트워크에 액세스하는 방법을 선택하십시오."
   },
   "Ij89oU": {
     "defaultMessage": "2.4GHz 활성화:"
@@ -4566,7 +4566,7 @@
     "defaultMessage": "마지막 업데이트"
   },
   "JbVcXb": {
-    "defaultMessage": "거리 스위치"
+    "defaultMessage": "Dist. Switches"
   },
   "Jbk2QV": {
     "defaultMessage": "관리자"
@@ -4684,7 +4684,7 @@
     "defaultMessage": "{threshold}Mbps"
   },
   "KCJwlm": {
-    "defaultMessage": "S연결된 클라이언트에서 선택"
+    "defaultMessage": "연결된 클라이언트에서 선택"
   },
   "KCYja0": {
     "defaultMessage": "2개 이상의 채널을 선택하십시오.",
@@ -4769,7 +4769,7 @@
     "defaultMessage": "연결"
   },
   "KbQo2j": {
-    "defaultMessage": "우회 종속 네트워크 어시스턴트 사용:"
+    "defaultMessage": "우회 캡티브 네트워크 어시스턴트 사용:"
   },
   "Kc4vf/": {
     "defaultMessage": "사용 가능한 새로운 AP 펌웨어 버전이 있습니다."
@@ -5327,7 +5327,7 @@
     "defaultMessage": "드롭"
   },
   "NDOmaP": {
-    "defaultMessage": "MacOs"
+    "defaultMessage": "MacOS"
   },
   "NDytdz": {
     "defaultMessage": "RADIUS 속성 그룹"
@@ -5424,7 +5424,7 @@
     "defaultMessage": "관리 프레임 보호:"
   },
   "NUiTLD": {
-    "defaultMessage": "소비자 암호"
+    "defaultMessage": "고객 암호"
   },
   "NUxIws": {
     "defaultMessage": "기존 구성이 삭제되고 AP 펌웨어가 클라우드 전용 펌웨어로 유지됩니다. AP가 클라우드에 다시 연결할 준비가 됩니다."
@@ -5784,13 +5784,13 @@
     "description": "게스트 네트워크 유형 - 클릭스루"
   },
   "P0c/ms": {
-    "defaultMessage": "입력한 값 중 하나가 다른 네트워크의 기존 인증 및 계정 서버 구성과 충돌합니다."
+    "defaultMessage": "입력한 값 중 하나가 다른 네트워크의 기존 인증 및 Accounting 서버 구성과 충돌합니다."
   },
   "P0vpSy": {
     "defaultMessage": "포트 유형"
   },
   "P2PgnZ": {
-    "defaultMessage": "계정 포트"
+    "defaultMessage": "Accounting 포트"
   },
   "P4UW09": {
     "defaultMessage": "가장 영향을 받는 WLAN: {ssid}"
@@ -5916,7 +5916,7 @@
     "defaultMessage": "보고서"
   },
   "PqMTDA": {
-    "defaultMessage": "LTE 은행 잠금"
+    "defaultMessage": "LTE Bank 잠금"
   },
   "PqOJKs": {
     "defaultMessage": "과거 클라이언트"
@@ -6346,7 +6346,7 @@
     "defaultMessage": "AP당"
   },
   "RuLqsh": {
-    "defaultMessage": "광학"
+    "defaultMessage": "옵틱"
   },
   "RuqWIF": {
     "defaultMessage": "라이선스가 만료되었습니다."
@@ -6932,7 +6932,7 @@
     "defaultMessage": "최신 버전: {version}"
   },
   "Ui4lDR": {
-    "defaultMessage": "<p>DHCP 서버 문제 또는 네트워크 구현 문제를 격리하여 DHCP 시간 초과를 해결합니다.</p> <ol> <li>DHCP 서버가 온라인 상태이고 범위가 구성되고 사용 가능한 주소가 있습니까?</li> <li>최소한의 대기 시간으로 클라이언트가 DHCP 서버를 사용하고 연결할 수 있습니까?</li> <li>장애가 발생하는 AP와 해당 스위치 포트가 VLAN으로 올바르게 구성되어 있습니까?</li> <li>DHCP 도우미 IP 주소가 서브넷 게이트웨이에 올바르게 구성되어 있습니까?</li> </ol>"
+    "defaultMessage": "<p>DHCP 서버 문제 또는 네트워크 구현 문제를 격리하여 DHCP 시간 초과를 해결합니다.</p> <ol> <li>DHCP 서버가 온라인 상태이고 범위가 구성되고 사용 가능한 주소가 있습니까?</li> <li>최소한의 대기 시간으로 클라이언트가 DHCP 서버를 사용하고 연결할 수 있습니까?</li> <li>장애가 발생하는 AP와 해당 스위치 포트가 VLAN으로 올바르게 구성되어 있습니까?</li> <li>DHCP helper IP 주소가 서브넷 게이트웨이에 올바르게 구성되어 있습니까?</li> </ol>"
   },
   "UjTL+F": {
     "defaultMessage": "모든 유형"
@@ -7228,7 +7228,7 @@
     "defaultMessage": "<span><b>{formattedValue}</b></span>"
   },
   "W4Niio": {
-    "defaultMessage": "종속 포털 URL:"
+    "defaultMessage": "캡티브 포털 URL:"
   },
   "W79cxx": {
     "defaultMessage": "정적 경로"
@@ -7307,7 +7307,7 @@
     "defaultMessage": "클라이언트 조인"
   },
   "WP823k": {
-    "defaultMessage": "AP는 클라이언트 로밍을 위해 하나의 계정 세션을 유지합니다."
+    "defaultMessage": "AP는 클라이언트 로밍을 위해 하나의 accounting 세션을 유지합니다."
   },
   "WQBb94": {
     "defaultMessage": "애플리케이션 규칙 추가"
@@ -7681,7 +7681,7 @@
     "defaultMessage": "스위치:"
   },
   "YLraaM": {
-    "defaultMessage": "인증 또는 계정을 활성화하려면 하나 이상의 RADIUS 또는 TACACS+ 서버 설정이 있어야 합니다."
+    "defaultMessage": "인증 또는 Accounting을 활성화하려면 하나 이상의 RADIUS 또는 TACACS+ 서버 설정이 있어야 합니다."
   },
   "YMD6en": {
     "defaultMessage": "다른 ePDG 추가"
@@ -7768,7 +7768,7 @@
     "defaultMessage": "삭제할 수 없는 기본 VLAN의 멤버입니다."
   },
   "YqxKme": {
-    "defaultMessage": "<p>대부분의 경우 클라이언트는 802.11r(FT) 로밍이 실패하면 즉시 ‘느린 로밍’으로 돌아갑니다.</p> <p>802.11r 로밍을 활성화하려면 AP가 IP(유선) 인프라를 통해 주변 RF와 통신할 수 있는지 확인하십시오.</p>"
+    "defaultMessage": "<p>대부분의 경우 클라이언트는 802.11r(FT) 로밍이 실패하면 즉시 ‘일반 로밍’으로 돌아갑니다.</p> <p>802.11r 로밍을 활성화하려면 AP가 IP(유선) 인프라를 통해 주변 RF와 통신할 수 있는지 확인하십시오.</p>"
   },
   "Yresoo": {
     "defaultMessage": "사건(24시간)"
@@ -7880,7 +7880,7 @@
     "defaultMessage": "SSID"
   },
   "ZLQ2ad": {
-    "defaultMessage": "연결 프로세스가 완료되었습니다."
+    "defaultMessage": "연결 프로세스가 종료되었습니다."
   },
   "ZLT+VR": {
     "defaultMessage": "날짜를 입력하십시오."
@@ -8683,7 +8683,7 @@
     "defaultMessage": "분류 규칙"
   },
   "cp8inc": {
-    "defaultMessage": "네트워크 열기"
+    "defaultMessage": "오픈 네트워크"
   },
   "cpCJUk": {
     "defaultMessage": "등록된 사용자"
@@ -8955,7 +8955,7 @@
     "defaultMessage": "SNMPv3 에이전트"
   },
   "e2LsxU": {
-    "defaultMessage": "종속 포털 - {captiveNetworkType}"
+    "defaultMessage": "캡티브 포털 - {captiveNetworkType}"
   },
   "e2vejo": {
     "defaultMessage": "{action} 후 CLI 템플릿 적용"
@@ -9154,7 +9154,7 @@
     "defaultMessage": "다음 옵션 조합을 사용할 수 있습니다: 명령 입력, 다른 파일에서 구성 복사/붙여넣기, 오른쪽 창의 예시 사용."
   },
   "eulFde": {
-    "defaultMessage": "업데이트 프로세스가 완료되면 알림을 받게 됩니다."
+    "defaultMessage": "업데이트 프로세스가 종료되면 알림을 받게 됩니다."
   },
   "eun6MH": {
     "defaultMessage": "SMS 토큰"
@@ -9163,7 +9163,7 @@
     "defaultMessage": "비인증 AP 숨기기"
   },
   "ewSyP9": {
-    "defaultMessage": "둥지 카메라"
+    "defaultMessage": "Nest카메라"
   },
   "exhVJF": {
     "defaultMessage": "ACL 유형"
@@ -9348,7 +9348,7 @@
     "defaultMessage": "802.3at 스위치/인젝터"
   },
   "fl4mzV": {
-    "defaultMessage": "관리 거리"
+    "defaultMessage": "Admin Distance"
   },
   "fm/xyQ": {
     "defaultMessage": "인증 실패"
@@ -10861,7 +10861,7 @@
     "defaultMessage": "({usedPercentage}%)"
   },
   "n/qhwR": {
-    "defaultMessage": "CTS 남용"
+    "defaultMessage": "CTS Abuse"
   },
   "n/vWlL": {
     "defaultMessage": "장소에서 적용됨"
@@ -11000,8 +11000,8 @@
     "defaultMessage": "대상 실패에 대한 시스템 복구"
   },
   "naPxCD": {
-    "defaultMessage": "종속 포털",
-    "description": "게스트 네트워크 유형 - 종속 포털"
+    "defaultMessage": "캡티브 포털",
+    "description": "게스트 네트워크 유형 - 캡티브 포털"
   },
   "nbW6nC": {
     "defaultMessage": "CLI 프로필 추가"
@@ -11202,7 +11202,7 @@
     "defaultMessage": "그룹 키 핸드셰이크 시간 초과"
   },
   "oTAW/k": {
-    "defaultMessage": "<p>낮은 RSSI에 대한 광범위한 잠재적 이유를 고려할 때, 권장 사항은 다음 가능성 중 일부를 포함하여 실제 근본 원인을 기반으로 합니다.</p> <ol> <li>일반 또는 국지적 언더 커버리지(모든 클라이언트의 RSSI가 낮음)의 경우 필요에 따라 AP를 추가합니다.</li> <li>차선책 AP 배치의 경우(AP는 충분하지만 국지적 커버리지 문제), RF 설계 모범 사례를 기반으로 AP를 재배치하거나 보완할 AP를 추가하는 것이 좋습니다.</li> <li>고정 클라이언트의 경우 SmartRoam과 같은 기능을 활용하여 선제적 로밍 안내로 클라이언트를 지원하는 것을 고려하십시오. (먼저 클라이언트가 802.11v를 지원하는지 또는 고정 클라이언트 문제가 애플리케이션 성능에 영향을 미치는지 다시 확인하십시오.)</li> <li>낮은 송신 전력이 클라이언트의 하위 집합에만 영향을 미치는 경우, 절전과 관련된 고유한 구성 설정 또는 잠재적으로 클라이언트 측 송신 문제를 해결하는 펌웨어 업그레이드를 확인하십시오.</li> </ol>"
+    "defaultMessage": "<p>낮은 RSSI에 대한 광범위한 잠재적 이유를 고려할 때, 권장 사항은 다음 가능성 중 일부를 포함하여 실제 근본 원인을 기반으로 합니다.</p> <ol> <li>일반 또는 국지적 언더 커버리지(모든 클라이언트의 RSSI가 낮음)의 경우 필요에 따라 AP를 추가합니다.</li> <li>차선책 AP 배치의 경우(AP는 충분하지만 국지적 커버리지 문제), RF 설계 실제 사례를 기반으로 AP를 재배치하거나 보완할 AP를 추가하는 것이 좋습니다.</li> <li>고정 클라이언트의 경우 SmartRoam과 같은 기능을 활용하여 선제적 로밍 안내로 클라이언트를 지원하는 것을 고려하십시오. (먼저 클라이언트가 802.11v를 지원하는지 또는 고정 클라이언트 문제가 애플리케이션 성능에 영향을 미치는지 다시 확인하십시오.)</li> <li>낮은 송신 전력이 클라이언트의 하위 집합에만 영향을 미치는 경우, 절전과 관련된 고유한 구성 설정 또는 잠재적으로 클라이언트 측 송신 문제를 해결하는 펌웨어 업그레이드를 확인하십시오.</li> </ol>"
   },
   "oTMne7": {
     "defaultMessage": "다중 모드에서 DHCP 서버 및 게이트웨이에 대해 풀당 10개의 IP 주소를 예약해야 합니다."
@@ -11625,7 +11625,7 @@
     "defaultMessage": "다음 액세스 스위치에서 구성 설정:"
   },
   "qPiMUC": {
-    "defaultMessage": "공항 관리"
+    "defaultMessage": "Airport 관리"
   },
   "qPjj7z": {
     "defaultMessage": "MSP 라이선스 감지됨"
@@ -11750,7 +11750,7 @@
     "defaultMessage": "EAP 실패"
   },
   "r2CU5S": {
-    "defaultMessage": "<p>DHCP 서버의 응답 대기 시간 초과로 인해 DHCP 교환이 실패합니다. 이는 일반적으로 다음과 같은 이유로 인해 발생합니다.</p> <ol> <li>DHCP 서버가 오프라인 상태입니다.</li> <li>LAN에서 DHCP 서버에 연결할 수 없거나(네트워크 경로 문제) 네트워크 대기 시간이 깁니다.</li> <li>VLAN/DVLAN 인프라가 SSID, AP 또는 스위치 포트에서 제대로 구성되지 않았습니다.</li> <li>DHCP 서버가 과부하 상태여서 응답할 수 없습니다.</li> <li>DHCP 도우미 IP 주소가 서브넷에 구성되어 있지 않습니다.</li> </ol>"
+    "defaultMessage": "<p>DHCP 서버의 응답 대기 시간 초과로 인해 DHCP 교환이 실패합니다. 이는 일반적으로 다음과 같은 이유로 인해 발생합니다.</p> <ol> <li>DHCP 서버가 오프라인 상태입니다.</li> <li>LAN에서 DHCP 서버에 연결할 수 없거나(네트워크 경로 문제) 네트워크 대기 시간이 깁니다.</li> <li>VLAN/DVLAN 인프라가 SSID, AP 또는 스위치 포트에서 제대로 구성되지 않았습니다.</li> <li>DHCP 서버가 과부하 상태여서 응답할 수 없습니다.</li> <li>DHCP helper IP 주소가 서브넷에 구성되어 있지 않습니다.</li> </ol>"
   },
   "r35SVT": {
     "defaultMessage": "네트워크를 찾을 수 없음"
@@ -11795,7 +11795,7 @@
     "defaultMessage": "모듈 4"
   },
   "rJPrzU": {
-    "defaultMessage": "종속 포털"
+    "defaultMessage": "캡티브 포털"
   },
   "rM4JPF": {
     "defaultMessage": "유선 연결 설정에 하나 이상의 차단 규칙이 포함되어야 합니다."
@@ -11804,7 +11804,7 @@
     "defaultMessage": "바쁜 AP로 인한 연결 해제"
   },
   "rO0Gus": {
-    "defaultMessage": "명령 계정"
+    "defaultMessage": "명령 Accounting"
   },
   "rOmc9x": {
     "defaultMessage": "AP가 현재 연결된 모든 STA를 처리할 수 없기 때문에 연결 해제됨"
@@ -11856,7 +11856,7 @@
     "defaultMessage": "DHCP 메시지 유형"
   },
   "reKx6/": {
-    "defaultMessage": "종속 포털 URL"
+    "defaultMessage": "캡티브 포털 URL"
   },
   "remZm9": {
     "defaultMessage": "할당된 세그먼트(0)"
@@ -12144,7 +12144,7 @@
     "defaultMessage": "DPSK 설정"
   },
   "swJCKh": {
-    "defaultMessage": "<p>DHCP 실패의 많은 경우에 각 클라이언트 장치가 다르게 동작하여 다양한 고유한 실패 증상이 발생합니다. 문제가 많은 사용자에게 영향을 미치거나 오래 지속되는 경우 종단 간 DHCP 설정을 확인하는 것이 도움이 될 수 있습니다.</p> <ol> <li>DHCP 서버 IP 범위가 사용 가능한 주소로 구성되고 활성화되었는지 확인하십시오.</li> <li>네트워크 인프라가 (AP에 대해) 적절한 VLAN, IP 도우미 또는 DHCP 프록시로 구성되어 있는지 확인하십시오.</li> <li>DHCP 서버의 가용성과 클라이언트 장치의 IP 도달 가능성을 확인하십시오.</li> <li>문제를 일으킬 수 있는 DHCP 인프라의 최근 변경 사항을 확인하십시오.</li> </ol>"
+    "defaultMessage": "<p>DHCP 실패의 많은 경우에 각 클라이언트 장치가 다르게 동작하여 다양한 고유한 실패 증상이 발생합니다. 문제가 많은 사용자에게 영향을 미치거나 오래 지속되는 경우 종단 간 DHCP 설정을 확인하는 것이 도움이 될 수 있습니다.</p> <ol> <li>DHCP 서버 IP 범위가 사용 가능한 주소로 구성되고 활성화되었는지 확인하십시오.</li> <li>네트워크 인프라가 (AP에 대해) 적절한 VLAN, IP helper 또는 DHCP 프록시로 구성되어 있는지 확인하십시오.</li> <li>DHCP 서버의 가용성과 클라이언트 장치의 IP 도달 가능성을 확인하십시오.</li> <li>문제를 일으킬 수 있는 DHCP 인프라의 최근 변경 사항을 확인하십시오.</li> </ol>"
   },
   "sy+pv5": {
     "defaultMessage": "이메일"
@@ -12156,7 +12156,7 @@
     "defaultMessage": "WWW 서버"
   },
   "t/1JpV": {
-    "defaultMessage": "종속 포털 웹 페이지를 정의합니다."
+    "defaultMessage": "캡티브 포털 웹 페이지를 정의합니다."
   },
   "t/5Nxo": {
     "defaultMessage": "{count}자"
@@ -12464,7 +12464,7 @@
     "defaultMessage": "OTP 인증"
   },
   "uOV2Iv": {
-    "defaultMessage": "<p>다음은 지원되지 않습니다.</p> <ul> <li>EAP-TLS 및 EAP-SIM이 포함된 802.1X</li> <li>WEP/WPA3 보안 프로토콜로 인증</li> <li>종속 포털</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
+    "defaultMessage": "<p>다음은 지원되지 않습니다.</p> <ul> <li>EAP-TLS 및 EAP-SIM이 포함된 802.1X</li> <li>WEP/WPA3 보안 프로토콜로 인증</li> <li>캡티브 포털</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
   },
   "uPDgth": {
     "defaultMessage": "호스트 이름"
@@ -12582,7 +12582,7 @@
     "defaultMessage": "구성 세부정보"
   },
   "uzH6wz": {
-    "defaultMessage": "인증 RADIUS 포트는 {authForbiddenPort}일 수 없으며 계정 RADIUS 포트는 {acctForbiddenPort}일 수 없습니다."
+    "defaultMessage": "인증 RADIUS 포트는 {authForbiddenPort}일 수 없으며 Accounting RADIUS 포트는 {acctForbiddenPort}일 수 없습니다."
   },
   "v1cDgD": {
     "defaultMessage": "부팅 파일 크기"
@@ -12850,7 +12850,7 @@
     "defaultMessage": "{clients, plural, one {클라이언트} other {클라이언트}}"
   },
   "wHrrdo": {
-    "defaultMessage": "타사 종속 포털(WISPr)"
+    "defaultMessage": "타사 캡티브 포털(WISPr)"
   },
   "wJLtSR": {
     "defaultMessage": "확인 오류를 다시 보내십시오. 다시 시도하십시오."
@@ -12961,7 +12961,7 @@
     "defaultMessage": "트래픽별 상위 포트"
   },
   "wsSxJK": {
-    "defaultMessage": "열기",
+    "defaultMessage": "오픈",
     "description": "WLAN 보안 유형 - 개방형"
   },
   "wsxS31": {
@@ -12983,8 +12983,8 @@
     "defaultMessage": "1 (802.3af 4.0W)"
   },
   "wyVIOU": {
-    "defaultMessage": "사용자가 Cloudpath로 향상된 종속 포털 경험을 통해 연결합니다.",
-    "description": "Cloudpath 종속 포털에 대한 설명"
+    "defaultMessage": "사용자가 Cloudpath로 향상된 캡티브 포털 경험을 통해 연결합니다.",
+    "description": "Cloudpath 캡티브 포털에 대한 설명"
   },
   "x+Pkzz": {
     "defaultMessage": "소스 클라이언트:"
@@ -13053,7 +13053,7 @@
     "defaultMessage": "숫자 설정(1-{max})"
   },
   "xEwrc4": {
-    "defaultMessage": "우회 종속 네트워크 도우미 사용"
+    "defaultMessage": "우회 캡티브 네트워크 도우미 사용"
   },
   "xFA1TY": {
     "defaultMessage": "아래"
@@ -13320,7 +13320,7 @@
     "defaultMessage": "SME가 최대 피어 메시 STA 수에 도달 이외의 이유로 메시 피어링 인스턴스를 취소합니다."
   },
   "yK/eML": {
-    "defaultMessage": "입력한 IP 주소가 다른 네트워크의 기존 계정 서버 구성과 충돌합니다. IP 주소를 변경하십시오."
+    "defaultMessage": "입력한 IP 주소가 다른 네트워크의 기존 Accounting 서버 구성과 충돌합니다. IP 주소를 변경하십시오."
   },
   "yKV+K5": {
     "defaultMessage": "다른 SNMPv2 에이전트 추가"
@@ -13401,7 +13401,7 @@
     "defaultMessage": "최대 이미지 크기: 20MB"
   },
   "yf+Y9m": {
-    "defaultMessage": "인증되지 않은 사용자가 이러한 대상에 액세스할 수 있습니다(예: 종속 포털로 리디렉션하지 않음)."
+    "defaultMessage": "인증되지 않은 사용자가 이러한 대상에 액세스할 수 있습니다(예: 캡티브 포털로 리디렉션하지 않음)."
   },
   "yfb8F1": {
     "defaultMessage": "일"
@@ -13429,8 +13429,8 @@
     "description": "유효성 검사 - 유효하지 않은 VLAN ID 확인"
   },
   "ymr68V": {
-    "defaultMessage": "사용자는 다양한 방법으로 종속 포털을 통해 인증됩니다.",
-    "description": "종속 포털에 대한 설명"
+    "defaultMessage": "사용자는 다양한 방법으로 캡티브 포털을 통해 인증됩니다.",
+    "description": "켑티브 포털에 대한 설명"
   },
   "ynZEl+": {
     "defaultMessage": "액세스 기간"
@@ -13672,7 +13672,7 @@
     "defaultMessage": "DPSK 암호문 세부정보"
   },
   "zwBiuE": {
-    "defaultMessage": "둥지 온도조절기"
+    "defaultMessage": "Nest 온도조절기"
   },
   "zxvhnE": {
     "defaultMessage": "일별"
