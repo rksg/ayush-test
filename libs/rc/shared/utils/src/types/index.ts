@@ -71,6 +71,7 @@ export interface Network {
   vlanPool?: { name: string }
   activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
+  isOweMaster?: boolean
 }
 
 export interface NetworkDetail {
@@ -90,6 +91,7 @@ export interface NetworkDetail {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
   }
+  isOweMaster?: boolean
 }
 
 export interface Venue {
