@@ -25,10 +25,10 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   const [resetField, setResetField] = useState(false)
 
   useEffect(() => {
-    if (editAttribute && visible) {
-      form.setFieldsValue(editAttribute)
+    if (visible) {
+      form.setFieldValue('vendorName', 'Common Attributes' )
     }
-  }, [editAttribute, visible])
+  }, [visible])
 
   const onClose = () => {
     setVisible(false)

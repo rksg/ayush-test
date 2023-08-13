@@ -81,11 +81,9 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
         if (result.data && result.data.data.length !== 0) {
           form.setFieldValue('vendorName', result.data.data[0].vendorName)
           form.setFieldValue('attributeName', editAttribute.attributeName )
+          form.setFieldValue('attributeValue', editAttribute.attributeValue )
         }
       })
-    } else{
-      form.setFieldValue('vendorName', commonAttributeKey)
-      form.setFieldValue('attributeName', undefined)
     }
   }, [editAttribute])
 
