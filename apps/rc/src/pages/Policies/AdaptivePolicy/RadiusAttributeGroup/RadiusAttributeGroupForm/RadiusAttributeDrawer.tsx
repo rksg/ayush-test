@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -23,12 +23,6 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   const { visible, setVisible, isEdit, editAttribute, setAttributeAssignments, getAttributeAssignments } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
-
-  useEffect(() => {
-    if (visible) {
-      form.setFieldValue('vendorName', 'Common Attributes' )
-    }
-  }, [visible])
 
   const onClose = () => {
     setVisible(false)
