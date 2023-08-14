@@ -306,6 +306,12 @@ describe('useDataZoom', () => {
       type: 'dataZoom'
     })
   })
+  it('should return resetZoomCallback when eChartsRef empty', () => {
+    const eChartsRef = {} as RefObject<ReactECharts>
+    const setBoundary = jest.fn()
+    const { result } = renderHook(() => useDataZoom(eChartsRef, [0, 1000], setBoundary))
+    act(()=>result.current.resetZoomCallback())
+  })
   it('should handle echartInstance.isDisposed', () => {
     const testParams = {
       type: 'datazoom',
