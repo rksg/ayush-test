@@ -23,5 +23,4 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('ChannelFly and 80 MHz for 2.4 GHz with static AP Power'))
       .toBeVisible()
   })
-
 })

@@ -386,7 +386,7 @@ export const mockedRecommendationCRRM = {
   }
 } as unknown as RecommendationDetails
 
-export const mockedRecommendationCRRMnew = {
+export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
   code: 'c-crrm-channel5g-auto',
   status: 'new',

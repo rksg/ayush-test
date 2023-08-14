@@ -19,8 +19,7 @@ export const RecommendationDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const activeTab = get(params, 'activeTab', 'aiOps') as keyof typeof linkMap
-  const link = `recommendations/${activeTab}`
+  const link = 'recommendations/aiOps'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },
@@ -32,13 +31,13 @@ export const RecommendationDetails = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
-        { text: $t(linkMap[activeTab]), link }
+        { text: $t(linkMap['aiOps']), link }
       ]}
       extra={[<MuteRecommendation {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(linkMap[activeTab])
+        type: $t(linkMap['aiOps'])
       }} />]}
     />}
     <GridRow>

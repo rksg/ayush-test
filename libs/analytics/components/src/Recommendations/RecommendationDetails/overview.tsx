@@ -68,7 +68,8 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     : details.kpi_number_of_interfering_links?.projected || 0
   const crrmText = $t({
     defaultMessage:
-      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}'
+      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
+    description: 'Translation string - interfering can be optimised to'
   }, { before, after })
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
