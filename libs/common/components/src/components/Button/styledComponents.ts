@@ -1,7 +1,7 @@
-import { Button as AntButton } from 'antd'
-import styled, { css }         from 'styled-components/macro'
+import { Button as AntButton, ButtonProps } from 'antd'
+import styled, { css }                      from 'styled-components/macro'
 
-export const Button = styled(AntButton)<{ href?: string }>`
+export const Button = styled(AntButton)<ButtonProps>`
   display: inline-flex;
   vertical-align: bottom;
   align-items: center;
