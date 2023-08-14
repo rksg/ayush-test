@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
@@ -64,7 +65,7 @@ export default function ActivityButton () {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        ...tableQuery.payload.filters as Payload['filters'],
+        ..._.omit(tableQuery.payload.filters as Payload['filters'], ['status']),
         ...(status === 'all' ? {} : { status: [status] })
       }
     })

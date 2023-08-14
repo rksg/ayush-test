@@ -67,7 +67,7 @@ describe( 'NetworkSegAuthForm', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[3])
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[4])
 
-    fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(mockedUsedNavigate).toBeCalled())
   })

@@ -45,7 +45,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
       serialNumber: targetDevice?.activeSerial || '',
       model: model || '',
       stackMembership: _.get(targetDevice, 'unitStatus'),
-      stackId: _.get(targetDevice, 'unitId'),
+      stackId: targetDevice?.unitId ? String(targetDevice.unitId) : '1',
       fwVersion: switchDetail.firmware || ''
     })
   }

@@ -140,8 +140,8 @@ export function ApForm () {
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
-      apModels: triApModels.slice(0, -1).join(','),
-      lastApModel: triApModels[triApModels.length - 1],
+      apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
+      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
       fwManagementLink: (<TenantLink
         to={'/administration/fwVersionMgmt'}>{
@@ -220,7 +220,9 @@ export function ApForm () {
   useEffect(() => {
     if (selectedVenue.hasOwnProperty('id')) {
       const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
-      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+      setVenueFwVersion(venueInfo && venueInfo.hasOwnProperty('versions')
+        ? venueInfo.versions[0].version
+        : '-')
     }
   }, [selectedVenue, venueVersionList])
 
