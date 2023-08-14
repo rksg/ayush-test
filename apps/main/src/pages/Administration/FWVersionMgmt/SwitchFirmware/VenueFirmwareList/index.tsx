@@ -32,7 +32,8 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  FirmwareCategory
+  FirmwareCategory,
+  switchSchedule
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -148,8 +149,7 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [currentScheduleVersion, setCurrentScheduleVersion] = useState('')
-  const [currentScheduleVersionAboveTen, setCurrentScheduleVersionAboveTen] = useState('')
+  const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
 
@@ -321,11 +321,9 @@ export const VenueFirmwareTable = (
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       let nonIcx8200Count = 0, icx8200Count = 0
-      let currentScheduleVersion = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-        (selectedRows[0].nextSchedule?.version ? selectedRows[0].nextSchedule.version.name : '') : ''
-      // eslint-disable-next-line max-len
-      let currentScheduleVersionAboveTen = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-        (selectedRows[0].nextSchedule?.versionAboveTen ? selectedRows[0].nextSchedule.versionAboveTen.name : '') : ''
+
+      let currentSchedule = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ?
+        (selectedRows[0].nextSchedule ? selectedRows[0].nextSchedule : undefined) : undefined
 
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
@@ -342,8 +340,7 @@ export const VenueFirmwareTable = (
       setChangeUpgradeVersions(filterVersions)
       setNonIcx8200Count(nonIcx8200Count)
       setIcx8200Count(icx8200Count)
-      setCurrentScheduleVersion(currentScheduleVersion)
-      setCurrentScheduleVersionAboveTen(currentScheduleVersionAboveTen)
+      setCurrentSchedule(currentSchedule)
       setChangeScheduleModelVisible(true)
     }
   },
@@ -414,8 +411,7 @@ export const VenueFirmwareTable = (
         availableVersions={filterVersions(changeUpgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
-        currentScheduleVersion={currentScheduleVersion}
-        currentScheduleVersionAboveTen={currentScheduleVersionAboveTen}
+        currentSchedule={currentSchedule}
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
