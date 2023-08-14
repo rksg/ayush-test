@@ -31,6 +31,7 @@ function Layout () {
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [hasLicense, setHasLicense] = useState(false)
+  const [isDogfood, setDogfood] = useState(false)
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -62,8 +63,13 @@ function Layout () {
   }, [isGuestManager, isDPSKAdmin, params['*']])
 
   useEffect(() => {
-    if (data) {
-      setTenantType(data.tenantType)
+    if (data && userProfile) {
+      if (userProfile?.support || userProfile?.dogfood) {
+        setTenantType('SUPPORT')
+      } else {
+        setTenantType(data.tenantType)
+      }
+      setDogfood(userProfile?.dogfood && !userProfile?.support)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
       setHasLicense(true)
@@ -73,7 +79,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, userProfile)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
       content={
         <>
           <CloudMessageBanner />
