@@ -322,8 +322,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       let nonIcx8200Count = 0, icx8200Count = 0
 
-      let currentSchedule = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ?
-        (selectedRows[0].nextSchedule ? selectedRows[0].nextSchedule : undefined) : undefined
+      let currentSchedule = enableSwitchTwoVersionUpgrade && selectedRows.length === 1
+        ? (selectedRows[0].nextSchedule || undefined)
+        : undefined
 
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
