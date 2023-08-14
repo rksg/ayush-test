@@ -133,7 +133,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       if (startAndEndTime.length === 2) {
         const startTime = startAndEndTime[0].split(':')
         const endTime = startTime[0] === '22' ? '00' : +startTime[0]+2
-        const scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
+        let scheduleStartTime = ''
+        if (endTime < 10) {
+          scheduleStartTime = startTime[0] + ':00-0' + endTime + ':00'
+        } else {
+          scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
+        }
+
         setCurrentScheduleTime(scheduleStartTime)
         setSelectedTime(scheduleStartTime)
       }
