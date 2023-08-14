@@ -137,8 +137,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isWpaDsae3Toggle: boolean) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      render: (data, row) => row?.securityProtocol || noDataDisplay,
-      show: isWpaDsae3Toggle
+      render: (data, row) => row?.securityProtocol || noDataDisplay
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
