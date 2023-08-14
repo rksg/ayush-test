@@ -73,4 +73,8 @@ styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
   .ant-table-content {
     overflow: unset !important;
   }
+
+  .ant-table-cell-ellipsis {
+    overflow: unset !important;
+  }
 `
