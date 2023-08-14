@@ -94,7 +94,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 bkfsAJ ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                   type="button"
                 >
                   <svg

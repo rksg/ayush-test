@@ -17,7 +17,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           Access Control
         </h4>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
           type="button"
         >
           <span>
@@ -25,7 +25,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           </span>
         </button>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
           type="button"
         >
           <span>

@@ -17,7 +17,7 @@ exports[`VlanInput should render correctly 1`] = `
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         type="button"
       >
         <span

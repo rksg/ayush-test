@@ -294,7 +294,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                 </div>
               </div>
               <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
                 style="margin-bottom: 16px;"
                 type="button"
               >
@@ -307,7 +307,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
         </div>
         <div>
           <button
-            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
             type="button"
           >
             <span>

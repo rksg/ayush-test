@@ -1,7 +1,7 @@
-import { Button as AntButton, ButtonProps } from 'antd'
-import styled, { css }                      from 'styled-components/macro'
+import { Button as AntButton } from 'antd'
+import styled                  from 'styled-components/macro'
 
-export const Button = styled(AntButton)<ButtonProps>`
+export const Button = styled(AntButton)`
   display: inline-flex;
   vertical-align: bottom;
   align-items: center;
@@ -19,20 +19,6 @@ export const Button = styled(AntButton)<ButtonProps>`
     }
   }
 
-  ${props => props.href? css`
-    &.ant-btn-default{
-      padding-top: 4px !important;
-    }
-    &.ant-btn-disabled {
-      color: var(--acx-neutrals-40) !important;
-      background-color: var(--acx-primary-white) !important;
-      border-color: var(--acx-neutrals-40) !important;
-      svg { path {
-        stroke: var(--acx-neutrals-40);
-      } }
-    }
-  `: ''}
-
   &.ant-btn-primary {
     svg { path {
       stroke: var(--acx-primary-white) !important;
@@ -40,7 +26,7 @@ export const Button = styled(AntButton)<ButtonProps>`
     } }
   }
 
-  &[disabled] {
+  &[disabled], &.ant-btn-disabled {
     svg { path { stroke: var(--acx-primary-white); } }
 
     &.ant-btn-default,
