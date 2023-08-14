@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, memo, useContext } from 'react'
+import { Dispatch, SetStateAction, memo, useContext, useEffect } from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -18,7 +18,11 @@ function BasicChart (props: {
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }){
   const { kpiFilter } = useContext(KPIFilterContext)
-  const { timeRanges: [startDate, endDate], setKpiTimeRanges } = useContext(ConfigChangeContext)
+  const {
+    timeRanges: [startDate, endDate],
+    setKpiTimeRanges,
+    dateRange
+  } = useContext(ConfigChangeContext)
   const { filters: { filter } } = useAnalyticsFilter()
   const {
     selected, onClick, chartZoom,
@@ -32,6 +36,12 @@ function BasicChart (props: {
     ...queryResults,
     data: filterKPIData(queryResults.data ?? [], kpiFilter)
   }) })
+
+  useEffect(() => {
+    setChartZoom?.({
+      start: startDate.valueOf(), end: endDate.valueOf()
+    })
+  }, [dateRange])
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>

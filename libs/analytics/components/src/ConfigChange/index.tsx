@@ -30,12 +30,6 @@ export function useConfigChange () {
   })
   const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last7Days)
 
-  // useEffect(() => {
-  //   setChartZoom({
-  //     start: timeRanges![0].valueOf(), end: timeRanges![1].valueOf()
-  //   })
-  // }, [timeRanges![0].valueOf()])
-
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     setPagination({
       current: 1,
