@@ -129,19 +129,23 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       setSelectedDate(dateAndTime[0])
       setSelectedDateMoment(moment(dateAndTime[0]))
 
-      const startAndEndTime = dateAndTime[1].split('-')
-      if (startAndEndTime.length === 2) {
-        const startTime = startAndEndTime[0].split(':')
-        const endTime = startTime[0] === '22' ? '00' : +startTime[0]+2
-        let scheduleStartTime = ''
-        if (endTime < 10) {
-          scheduleStartTime = startTime[0] + ':00-0' + endTime + ':00'
-        } else {
-          scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
-        }
+      const timeZoneKeyWords = ['-', '+', 'Z']
+      for (let value of timeZoneKeyWords) {
+        let startAndEndTime = dateAndTime[1].split(value)
+        if (startAndEndTime.length === 2) {
+          const startTime = startAndEndTime[0].split(':')
+          const endTime = startTime[0] === '22' ? '00' : +startTime[0] + 2
+          let scheduleStartTime: string
+          if (endTime !== '00' && endTime < 10) {
+            scheduleStartTime = startTime[0] + ':00-0' + endTime + ':00'
+          } else {
+            scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
+          }
 
-        setCurrentScheduleTime(scheduleStartTime)
-        setSelectedTime(scheduleStartTime)
+          setCurrentScheduleTime(scheduleStartTime)
+          setSelectedTime(scheduleStartTime)
+          break
+        }
       }
     }
   }
