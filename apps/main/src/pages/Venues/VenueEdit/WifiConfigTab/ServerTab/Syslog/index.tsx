@@ -169,7 +169,7 @@ export function Syslog () {
               })}
               style={{ marginLeft: '20px' }}
             >
-              {$t({ defaultMessage: 'Add Server Profile:' })}
+              {$t({ defaultMessage: 'Add Server Profile' })}
             </TenantLink>
           </Form.Item>
           {defaultSyslogValue &&
