@@ -44,7 +44,7 @@ export {
 export { ImportFileDrawer, CsvSize, ImportFileDrawerType } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortPoeSettings } from './LanPortPoeSettings'
-export { LanPortSettings } from './LanPortSettings'
+export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
