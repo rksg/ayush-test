@@ -377,6 +377,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     }
   }
 
+  // clean multiLinkOperationOptions when multiLinkOperationEnabled is false
+  if (!get(data, 'wlan.advancedCustomization.multiLinkOperationEnabled')) {
+    advancedCustomization.multiLinkOperationOptions = undefined
+  }
+
   if (saveData.dpskServiceProfileId === '') {
     delete saveData.dpskServiceProfileId
   }

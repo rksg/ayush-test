@@ -1,154 +1,307 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
-import { CheckboxChangeEvent }           from 'antd/lib/checkbox'
-import { CheckboxChangeEventTarget }     from 'antd/lib/checkbox/Checkbox'
+import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
+import { get }                           from 'lodash'
 import { useIntl }                       from 'react-intl'
 
-import { Tooltip }                from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
-import { NetworkSaveData }        from '@acx-ui/rc/utils'
+import { Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { InformationSolid }                  from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { useGetNetwork } from '../../../../NetworkDetails/services'
-import * as UI           from '../../../NetworkMoreSettings/styledComponents'
 
-export interface Option {
-  index: number;
-  label: string;
-  value: string;
-  name: string;
-  checked: boolean;
-  disabled?: boolean;
+import * as UI from '../../../NetworkMoreSettings/styledComponents'
+
+
+interface MultiLinkOperationOptions {
+  enable24G: boolean
+  enable50G: boolean
+  enable6G: boolean
 }
 
-export const LABEL_OF_6GHZ = '6 GHz'
-
-export const is6GHz = (searchOption: Option) => searchOption.label === LABEL_OF_6GHZ
-
-export const isSelectTwoRadioBands = (options: Option[]) =>
-  options.filter((option) => option.checked).length >= 2
-
-export const isDisabledOptionOf6GHz = (network: NetworkSaveData | null | undefined) => {
-  const isWPA3Security = (network?.wlan && network?.wlan.wlanSecurity === 'WPA3') || false
-  const isOWESecurity = (network?.wlan && network?.wlan.wlanSecurity === 'OWE') || false
-
-  return !isWPA3Security && !isOWESecurity
+interface Option {
+  index: number
+  name: string
+  value: boolean
+  label: string
+  disabled: boolean
 }
 
-export const getNewStateOfOptionsOnChange = (
-  target: CheckboxChangeEventTarget,
-  options: Option[],
-  isDisabledOptionOf6GHz: boolean
-) => {
-  const optionsOfUnChanged: Option[] = options.filter(option => option.name !== target.name)
-  const optionOfChanged: Option | undefined =
-          options.find(option => option.name === target.name)
-  if (optionOfChanged) {
-    const optionOfNewState: Option = { ...optionOfChanged, checked: target.checked }
-    const newOptions: Option[] = [...optionsOfUnChanged, optionOfNewState]
+const LABEL_OF_6GHZ = '6 GHz'
 
-    return handleDisabledOfOptions(newOptions, isDisabledOptionOf6GHz)
+export const getInitMloOptions = (mloOption: {
+  enable24G?: boolean
+  enable50G?: boolean
+  enable6G?: boolean
+} | undefined) : MultiLinkOperationOptions => {
+  if (mloOption &&
+          Object.values(mloOption).filter(value =>
+            typeof value === 'undefined').length === 0) {
+    return {
+      enable24G: typeof mloOption.enable24G === 'undefined' ? true : mloOption.enable24G,
+      enable50G: typeof mloOption.enable50G === 'undefined' ? true : mloOption.enable50G,
+      enable6G: typeof mloOption.enable6G === 'undefined' ? false : mloOption.enable6G
+    }
   }
 
-  return options
+  return getDefaultMloOptions()
+}
+export const sortOptions = (options: Option[]) => options.sort((a, b) => a.index - b.index)
+
+export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkOperationOptions => {
+  return {
+    enable24G: options.find(option => option.name === 'enable24G')?.value || false,
+    enable50G: options.find(option => option.name === 'enable50G')?.value || false,
+    enable6G: options.find(option => option.name === 'enable6G')?.value || false
+  }
 }
 
-const handleDisabledOfOptions = (newOptions: Option[], isDisabledOptionOf6GHz: boolean) => {
-  const MUST_SELECTED_LIMIT = 2
-  const unCheckedOptions = newOptions.filter(option => !option.checked)
-  const isMaxSelectLimited = unCheckedOptions.length < MUST_SELECTED_LIMIT
-  const newStateOfOptions = isMaxSelectLimited ?
-    getOptionsOfDisableUnCheck(newOptions) :
-    getOptionsOfEnableAll(newOptions, isDisabledOptionOf6GHz)
+export const is6GHz = (option: Option) => option.label === LABEL_OF_6GHZ
 
-  return newStateOfOptions.sort((a, b) => a.index - b.index)
+export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
+  if (!wlanSecurity)
+    return false
+
+  const isWPA3Security = wlanSecurity === WlanSecurityEnum.WPA3
+  const isOWESecurity = wlanSecurity === WlanSecurityEnum.OWE
+
+  return isWPA3Security || isOWESecurity
 }
 
-const getOptionsOfDisableUnCheck = (options: Option[]) => {
-  const checkedOptions: Option[] = options.filter(option => option.checked)
-  const unCheckedOptions: Option[] = options.filter(option => !option.checked)
-  const newStateOfUnCheckedOptions: Option[] = unCheckedOptions.map(option => {
-    return { ...option, disabled: true }}
-  )
+export const inverseTargetValue =
+        (target: Option, options: Option[]): Option[] => options.map(option =>
+          option.name === target.name ? { ...option, value: !target.value } : option)
+
+
+export const disabledOption = (option: Option) => ({ ...option, disabled: true, value: false })
+
+export const disabledUnCheckOption = (options: Option[]) => {
+  const checkedOptions: Option[] = options.filter(option => option.value)
+  const unCheckedOptions: Option[] = options.filter(option => !option.value)
+  const newStateOfUnCheckedOptions: Option[] =
+          unCheckedOptions.map(option => disabledOption(option))
 
   return [...checkedOptions, ...newStateOfUnCheckedOptions]
 }
 
-const getOptionsOfEnableAll = (options: Option[], isDisabledOptionOf6GHz: boolean) => {
-  const newOptions = options.map(option => {
-    const is6GHzAndShouldBeDisabled =
-            option.label === LABEL_OF_6GHZ && isDisabledOptionOf6GHz
-
-    return { ...option, disabled: is6GHzAndShouldBeDisabled }
-  })
+export const enableAll = (options: Option[]) => {
+  const newOptions = options.map(option =>
+    ({ ...option, disabled: false })
+  )
 
   return [...newOptions]
 }
 
+export const handleDisabledOfOptions = (options: Option[]) => {
+  const MAX_SELECTED_LIMIT = 2
+  const numberOfSelected = options.filter(option => option.value).length
 
-function WiFi7 () {
+  return (numberOfSelected === MAX_SELECTED_LIMIT) ?
+    disabledUnCheckOption(options) : enableAll(options)
+}
+
+export const getDefaultMloOptions = (): MultiLinkOperationOptions => ({
+  enable24G: true,
+  enable50G: true,
+  enable6G: false
+})
+
+export const getInitialOptions = (mloOptions: MultiLinkOperationOptions): Option[] => {
+  const initOptions = [
+    {
+      index: 0,
+      name: 'enable24G',
+      value: mloOptions.enable24G,
+      label: '2.4 GHz',
+      disabled: false
+    },
+    {
+      index: 1,
+      name: 'enable50G',
+      value: mloOptions.enable50G,
+      label: '5 GHz',
+      disabled: false
+    },
+    {
+      index: 2,
+      name: 'enable6G',
+      value: mloOptions.enable6G,
+      label: LABEL_OF_6GHZ,
+      disabled: false
+    }
+  ]
+  const updatedOptions = handleDisabledOfOptions(initOptions)
+
+  return sortOptions(updatedOptions)
+}
+
+const { useWatch } = Form
+
+const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const network: NetworkSaveData | null | undefined = useGetNetwork().data
 
-  const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
-  const defaultValueOfEnableWiFi = true
-  const defaultValueOfEnableMlo = false
+  const dataMloOptions =
+          wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
+  const mloOptions = getInitMloOptions(dataMloOptions)
+  const initOptions = getInitialOptions(mloOptions)
+  const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const [enableWiFi, setEnableWiFi] = useState(defaultValueOfEnableWiFi)
-  const [enableMlo, setEnableMlo] = useState(defaultValueOfEnableMlo)
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData?.wlan?.wlanSecurity)
 
   useEffect(() => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], enableWiFi)
-    form.setFieldValue(['wlan', 'advancedCustomization', 'wifi7Enabled'], enableWiFi)
-    form.setFieldValue(
-      ['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
-      enableWiFi ? enableMlo : false)
-  }, [enableWiFi, enableMlo])
-
-  const [options, setOptions] =
-          useState<Option[]>([{
-            index: 0,
-            label: '2.4 GHz',
-            value: '2.4',
-            name: 'enable24G',
-            checked: true,
-            disabled: false
-          },
-          {
-            index: 1,
-            label: '5 GHz',
-            value: '5',
-            name: 'enable50G',
-            checked: true,
-            disabled: false
-          },
-          {
-            index: 2,
-            label: LABEL_OF_6GHZ,
-            value: '6',
-            name: 'enable6G',
-            checked: false,
-            disabled: true
-          }])
-
-  const onEnableWiFiChange = (check: boolean) => {
-    setEnableWiFi(check)
-    setEnableMlo(check ? enableMlo : false)
-  }
-
-  const onEnableMloChange = (check: boolean) => {
-    setEnableMlo(check)
-  }
-
-  const onOptionChange = (event: CheckboxChangeEvent) => {
-    if (event.target) {
-      const newOptions =
-              getNewStateOfOptionsOnChange(event.target, options, isDisabledOptionOf6GHz(network))
-      setOptions(newOptions)
+    const updateMloOptions = () => {
+      const mloOptions = covertToMultiLinkOperationOptions(options)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], mloOptions)
     }
+
+    updateMloOptions()
+  }, [options])
+
+  useEffect(() => {
+    const resetCheckboxGroup = () => {
+      const initOptions = [
+        {
+          index: 0,
+          name: 'enable24G',
+          value: true,
+          label: '2.4 GHz',
+          disabled: false
+        },
+        {
+          index: 1,
+          name: 'enable50G',
+          value: true,
+          label: '5 GHz',
+          disabled: false
+        },
+        {
+          index: 2,
+          name: 'enable6G',
+          value: false,
+          label: LABEL_OF_6GHZ,
+          disabled: false
+        }
+      ]
+      const updatedOptions = disabledUnCheckOption(initOptions)
+      const sortedUpdatedOptions = sortOptions(updatedOptions)
+      setOptions(sortedUpdatedOptions)
+      const mloOptions = covertToMultiLinkOperationOptions(sortedUpdatedOptions)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], mloOptions)
+    }
+
+    if (!isEnabled6GHz) {
+      resetCheckboxGroup()
+    }
+  }, [isEnabled6GHz])
+
+  const handleChange = (event: CheckboxChangeEvent) => {
+    const targetOption = options.find(option => event.target.name === option.name)
+    const updatedOptions = targetOption ?
+      inverseTargetValue(targetOption, options) : options
+    const finalOptions = handleDisabledOfOptions(updatedOptions)
+    setOptions(finalOptions)
   }
+
+  return (
+    <Form.Item
+      label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
+      name={['wlan', 'advancedCustomization', 'multiLinkOperationOptions']}
+      valuePropName='checked'
+      style={{ marginBottom: '15px', width: '300px' }}
+      rules={[
+        { validator: (_, value) => {
+          const itemValues = Object.values<boolean>(value)
+          const MUST_SELECTED = 2
+          const numberOfSelected = itemValues.filter(itemValue => itemValue).length
+          if (numberOfSelected < MUST_SELECTED) {
+            return Promise.reject($t({ defaultMessage: 'At least 2 bands are selected' }))
+          }
+
+          return Promise.resolve()}
+        }
+      ]}
+      validateFirst
+      children={sortOptions(options).map(option => {
+        if (is6GHz(option) && !isEnabled6GHz) {
+          return (
+            <Tooltip
+              title={$t({
+                // eslint-disable-next-line max-len
+                defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption'
+              })}
+              placement='rightBottom'
+              style={{
+                height: 10,
+                display: 'flex'
+              }}
+              children={
+                <Checkbox
+                  key={option.index + 'disabled'}
+                  name={option.name}
+                  checked={option.value}
+                  disabled={true}
+                  onChange={handleChange}
+                  children={option.label}
+                />
+              }
+            />
+          )
+        }
+        else {
+          return (
+            <Checkbox
+              key={option.index}
+              name={option.name}
+              checked={option.value}
+              disabled={option.disabled}
+              onChange={handleChange}
+              children={option.label}
+            />
+          )
+        }
+      })}
+    />
+  )
+}
+export const getInitMloEnabled = (wlanData: NetworkSaveData | null, initWifi7Enabled: boolean) => {
+  const dataMloEnabled =
+          get(wlanData, ['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
+
+  return typeof dataMloEnabled === 'undefined' ? false : initWifi7Enabled && dataMloEnabled
+}
+
+function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
+  const { $t } = useIntl()
+  const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const form = Form.useFormInstance()
+
+  const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
+  const initMloEnabled = getInitMloEnabled(wlanData, initWifi7Enabled)
+
+  const [
+    wifi7Enabled,
+    mloEnabled
+  ] = [
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifi7Enabled']),
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
+  ]
+
+  useEffect(() => {
+    const setWifi6 = () =>
+      form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], wifi7Enabled)
+
+    const disableMlo = () => {
+      if (!wifi7Enabled) {
+        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      }
+    }
+
+    setWifi6()
+    // disable the mlo when wifi7 is disabled
+    disableMlo()
+  }, [wifi7Enabled])
 
 
   return (
@@ -176,15 +329,11 @@ function WiFi7 () {
             name={['wlan', 'advancedCustomization', 'wifi7Enabled']}
             style={{ marginBottom: '10px', width: '300px' }}
             valuePropName='checked'
-            children={
-              <Switch
-                onChange={onEnableWiFiChange}
-                defaultChecked={enableWiFi}
-              />
-            }
+            initialValue={initWifi7Enabled}
+            children={<Switch />}
           />
         </UI.FieldLabel>
-        {!enableWiFi && (
+        {!wifi7Enabled && (
           <div
             data-testid='Description'
             style={{ marginBottom: '10px', width: '220px', fontSize: '11px' }}
@@ -199,96 +348,29 @@ function WiFi7 () {
         )}
       </div>
       { wifi7MloFlag &&
-              <div>
-                <UI.FieldLabel width='250px'>
-                  <Space>
-                    {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
-                    <Tooltip.Question
-                      title={$t({ defaultMessage: `This feature allows a Wi-Fi 7 device to
+              <UI.FieldLabel width='250px'>
+                <Space>
+                  {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
+                  <Tooltip.Question
+                    title={$t({ defaultMessage: `This feature allows a Wi-Fi 7 device to
             utilize multiple radio channels concurrently,
             for better throughput and increased network efficiency.
             Most relevant in high-density environments.
             The radios for MLO need to be active on APs` })}
-                      placement='right'
-                      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-                    />
-                  </Space>
-                  <Form.Item
-                    name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}
-                    valuePropName='checked'
-                    style={{ marginBottom: '15px', width: '300px' }}
-                    children={
-                      <Switch
-                        onChange={onEnableMloChange}
-                        defaultChecked={enableMlo}
-                        disabled={!enableWiFi}
-                      />
-                    }
+                    placement='right'
+                    iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                   />
-                </UI.FieldLabel>
-                { enableMlo &&
-                        <Form.Item
-                          {...!isSelectTwoRadioBands(options) ? {
-                            validateStatus: 'error',
-                            help: $t({ defaultMessage: 'At least 2 bands are selected' })
-                          } : undefined}
-                          label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
-                          name={[
-                            'wlan',
-                            'advancedCustomization',
-                            'multiLinkOperationOptions'
-                          ]}
-                          initialValue={[options[0], options[1]]}
-                          valuePropName='checked'
-                          style={{ marginBottom: '15px', width: '300px' }}
-                          children={options.map((option) => {
-                            if (is6GHz(option) && isDisabledOptionOf6GHz(network)) {
-                              return (
-                                <Tooltip
-                                  title={$t({ defaultMessage:
-                                  // eslint-disable-next-line max-len
-                                              '6GHz only works when this network is using WPA3 or OWE encryption' })
-                                  }
-                                  placement='topRight'
-                                  style={{
-                                    height: 10,
-                                    marginLeft: -5,
-                                    marginBottom: -3,
-                                    display: 'flex'
-                                  }}
-                                >
-                                  <Checkbox
-                                    key={option.index}
-                                    name={option.name}
-                                    defaultChecked={option.checked}
-                                    checked={option.checked}
-                                    disabled={option.disabled}
-                                    onChange={onOptionChange}
-                                  >
-                                    {option.label}
-                                  </Checkbox>
-                                </Tooltip>
-                              )
-                            }
-                            else {
-                              return (
-                                <Checkbox
-                                  key={option.index}
-                                  name={option.name}
-                                  defaultChecked={option.checked}
-                                  checked={option.checked}
-                                  disabled={option.disabled}
-                                  onChange={onOptionChange}
-                                >
-                                  {option.label}
-                                </Checkbox>
-                              )
-                            }
-                          })}
-                        />
-                }
-              </div>
+                </Space>
+                <Form.Item
+                  name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}
+                  valuePropName='checked'
+                  style={{ marginBottom: '15px', width: '300px' }}
+                  initialValue={initMloEnabled}
+                  children={<Switch />}
+                />
+              </UI.FieldLabel>
       }
+      { mloEnabled && <CheckboxGroup wlanData={wlanData} /> }
     </>
   )
 }

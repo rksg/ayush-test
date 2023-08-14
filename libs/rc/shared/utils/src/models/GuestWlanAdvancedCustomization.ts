@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -149,6 +150,14 @@ export class GuestWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  wifi6Enabled?: boolean
+
+  wifi7Enabled?: boolean
+
+  multiLinkOperationEnabled?: boolean
+
+  multiLinkOperationOptions?: MultiLinkOperationOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -260,5 +269,11 @@ export class GuestWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.wifi6Enabled = true
+
+    this.wifi7Enabled = true
+
+    this.multiLinkOperationEnabled = false
   }
 }
