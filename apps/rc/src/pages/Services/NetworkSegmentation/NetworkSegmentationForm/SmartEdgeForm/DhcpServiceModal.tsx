@@ -39,7 +39,7 @@ export const DhcpServiceModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)}>
+      <Button type='link' onClick={()=>setVisible(true)} data-testid='addDhcpServiceButton'>
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal
