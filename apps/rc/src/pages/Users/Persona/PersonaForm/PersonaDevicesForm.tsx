@@ -35,6 +35,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
 
   const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     triggerOnChange([ ...value ?? [], ...data ])
+    setModelVisible(false)
   }
 
   const columns = [
