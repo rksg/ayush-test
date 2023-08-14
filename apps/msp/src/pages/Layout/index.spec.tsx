@@ -222,8 +222,10 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
+    expect(screen.getByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
   })
   it('should navigate correctly if guest manager', async () => {
     user.hasRoles = jest.fn().mockImplementation(() => {
