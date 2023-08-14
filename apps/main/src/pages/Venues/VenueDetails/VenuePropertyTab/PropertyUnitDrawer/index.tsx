@@ -157,7 +157,9 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEd
     }
   }, [profileId])
 
-
+  useEffect(()=> {
+    setProfileMap(new Map(data.map((p) => [p.id, p])))
+  }, [data])
 
 
   return (

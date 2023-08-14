@@ -161,14 +161,14 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText(/Read this before you start/)).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).not.toBeCalledTimes(1)
       expect(await screen.findByText(/Please type “AGREE”/)).toBeVisible()
 
       await userEvent.type(
         await screen.findByLabelText(/Please type “AGREE” here to continue/), 'agree'
       )
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(1)
     })
   })
@@ -195,7 +195,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'range')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -227,7 +227,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'address')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -259,7 +259,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'string')
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         ...formValue,
         variables: [{
@@ -332,7 +332,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await userEvent.click(addExampleBtns[1])
       await screen.findByText(/ip arp inspection vlan/)
 
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(0)
     })
 
@@ -357,7 +357,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       })
       const row1 = await screen.findByRole('row', { name: /7150stack/i })
       await userEvent.click(await within(row1).findByRole('checkbox'))
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         applySwitch: {
           a98653366d2240b9ae370e48fab3a9a1: [{
@@ -388,7 +388,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText('Template Name')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledTimes(1)
     })
 
@@ -429,7 +429,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       )
 
       expect(await screen.findByText('Template Name')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith(values)
     })
   })
