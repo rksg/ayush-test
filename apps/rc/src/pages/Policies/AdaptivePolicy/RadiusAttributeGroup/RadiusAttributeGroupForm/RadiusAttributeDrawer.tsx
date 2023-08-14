@@ -39,7 +39,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       await form.validateFields()
       const data = form.getFieldsValue()
       setAttributeAssignments(data)
-      onClose()
+      resetFields()
     } catch (e) {
       console.log(e) // eslint-disable-line no-console
     }

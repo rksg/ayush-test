@@ -11,7 +11,9 @@ export const adaptivePolicyList = {
       name: 'test1',
       description: 'for test',
       policyType: 'RADIUS',
-      onMatchResponse: 'test'
+      onMatchResponse: 'test',
+      conditionsCount: 0,
+      policySetCount: 0
     }
   ]
 }
