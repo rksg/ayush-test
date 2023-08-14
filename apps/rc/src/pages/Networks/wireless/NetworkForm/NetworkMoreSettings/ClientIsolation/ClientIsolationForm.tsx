@@ -69,7 +69,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
         </Select>
       </Form.Item>
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
+        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP' })}
         <Form.Item
           name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
           style={{ marginBottom: '10px' }}
@@ -78,7 +78,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
           children={<Switch />} />
       </UI.FieldLabel>
       {isPoliciesEnabled ? <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
+        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
           style={{ marginBottom: '10px' }}
