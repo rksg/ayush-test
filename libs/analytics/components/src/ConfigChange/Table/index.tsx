@@ -28,9 +28,9 @@ export function Table (props: {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
-  const { filters: { filter } } = useAnalyticsFilter()
+  const { path } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
-    ...getFilterPayload({ filter }),
+    path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({

@@ -17,7 +17,7 @@ interface KpiChangesParams {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
-      ConfigChange[], { path: PathNode[], filter: NodesFilter, start: string, end: string }
+      ConfigChange[], { path: PathNode[], start: string, end: string }
     >({
       query: (variables) => ({
         variables,

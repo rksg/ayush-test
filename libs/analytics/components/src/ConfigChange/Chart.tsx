@@ -13,9 +13,9 @@ import { filterKPIData }                         from './Table/util'
 function BasicChart (){
   const { kpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate], setKpiTimeRanges } = useContext(ConfigChangeContext)
-  const { filters: { filter } } = useAnalyticsFilter()
+  const { path } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
-    ...getFilterPayload({ filter }),
+    path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
