@@ -83,7 +83,7 @@ describe('VLANPoolForm', () => {
       'aatest1')
     await userEvent.type(await screen.findByLabelText('VLANs'),
       '5')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
 
     expect(addVlanPool).toBeCalledTimes(1)
   })
@@ -136,7 +136,7 @@ describe('VLANPoolForm', () => {
     await userEvent.type(screen.getByLabelText('Policy Name'),'test2')
 
     await userEvent.type(await screen.findByLabelText('VLANs'), '6')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
 
     await waitFor(async () => expect(editVlanPool).toBeCalledTimes(1))
   })

@@ -60,7 +60,7 @@ describe('VideoCallQoeForm', () => {
 
     // Navigate to Step 2
     mockGraphqlMutation(r1VideoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
-    await click(await screen.findByText(/add/i))
+    await click(await screen.findByRole('button', { name: 'Create' }))
     expect(await screen.findByRole('heading', { name: /test call details/i })).toBeVisible()
 
     expect((await screen.findAllByRole('link')).at(1))

@@ -137,7 +137,7 @@ describe('Add edge firewall service', () => {
 
     expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Add' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         serviceName: 'Test 1',

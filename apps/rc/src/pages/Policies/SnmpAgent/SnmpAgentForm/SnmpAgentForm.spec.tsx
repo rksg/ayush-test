@@ -248,7 +248,7 @@ describe('SnmpAgentForm', () => {
     expect(header).toBeInTheDocument()
 
     // Policy name can't empty
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Profile Name')
 
     // Policy name can't be duplicate
@@ -256,7 +256,7 @@ describe('SnmpAgentForm', () => {
     await userEvent.type(inputElem, 'www')
     expect(inputElem).toHaveAttribute('value', 'www')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText(/already exists/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
@@ -283,7 +283,7 @@ describe('SnmpAgentForm', () => {
     expect(inputElem).toHaveAttribute('value', 'SNMP-test')
 
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText(/At least one SNMPv2 agent or SNMPv3 agent/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))

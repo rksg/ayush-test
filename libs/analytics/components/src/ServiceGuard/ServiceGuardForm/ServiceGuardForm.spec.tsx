@@ -147,7 +147,7 @@ describe('ServiceGuardForm', () => {
       data: { createServiceGuardSpec: expected }
     })
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Create' }))
 
     expect(await screen.findByText('Service Validation test created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()

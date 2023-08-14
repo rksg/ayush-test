@@ -34,7 +34,7 @@ export function VideoCallQoeForm () {
       }}
       onCancel={navigateToList}
       buttonLabel={{
-        submit: link ? '': $t({ defaultMessage: 'Add' }),
+        submit: link ? '': $t({ defaultMessage: 'Create' }),
         cancel: link ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
       }}
     >

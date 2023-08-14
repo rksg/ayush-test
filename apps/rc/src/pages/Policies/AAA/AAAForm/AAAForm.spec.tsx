@@ -142,7 +142,7 @@ describe('AAAForm', () => {
       name: /ip address/i
     }))[1],
     'test1234')
-    await screen.findByText('Finish')
+    await screen.findByText('Add')
     // FIXME:
     // await userEvent.click(await screen.findByText('Finish'))
   })
@@ -200,7 +200,7 @@ async function editAAA (){
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')
   await fillInProfileName('test1')
-  await userEvent.click(await screen.findByText('Finish'))
+  await userEvent.click(await screen.findByText('Add'))
   await userEvent.type(port2, '1812')
   await fillInProfileName('test2 update')
   // FIXME: Do not use "setTimeout"

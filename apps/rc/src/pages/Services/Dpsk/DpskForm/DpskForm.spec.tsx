@@ -145,7 +145,7 @@ describe('DpskForm', () => {
     await userEvent.click(expirationTypeElem)
     await userEvent.click(screen.getByText('Days'))
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -230,7 +230,7 @@ describe('DpskForm', () => {
     )
 
     await screen.findByDisplayValue(mockedEditFormData.name)
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     // TODO
     // const errorMsgElem = await screen.findByText('Server Error')

@@ -74,6 +74,9 @@ export function ServiceGuardForm () {
       initialValues={specToDto(spec.data) ?? initialValues}
       onFinish={async (values) => { await submit(values).unwrap() }}
       onCancel={navigateToList}
+      buttonLabel={({
+        submit: $t({ defaultMessage: 'Create' })
+      })}
     >
       <StepsForm.StepForm
         title={$t(contents.steps.settings)}

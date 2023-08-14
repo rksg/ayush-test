@@ -129,7 +129,7 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -179,7 +179,7 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     // TODO
     // await screen.findByText('Server Error')
