@@ -1,20 +1,3 @@
-export const mockedLatestFirmwareList = [
-  {
-    name: '7.0.0.103.325',
-    category: 'RECOMMENDED',
-    id: '7.0.0.103.325',
-    createdDate: '2023-06-13T17:59:23.891+00:00',
-    updatedDate: '2023-06-13T17:59:23.891+00:00'
-  },
-  {
-    name: '6.2.2.103.82',
-    category: 'BETA',
-    id: '6.2.2.103.82',
-    createdDate: '2023-06-15T04:26:16.344+00:00',
-    updatedDate: '2023-06-15T04:26:16.344+00:00'
-  }
-]
-
 export const mockedAvailableABFList = [
   {
     id: '7.0.0.103.325',

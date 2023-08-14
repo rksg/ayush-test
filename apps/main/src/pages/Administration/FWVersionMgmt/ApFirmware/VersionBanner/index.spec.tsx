@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedLatestFirmwareList, mockedAvailableABFList } from './__tests__/fixtures'
+import { mockedAvailableABFList } from './__tests__/fixtures'
 
 import VersionBanner from '.'
 describe('VersionBanner', () => {
@@ -22,10 +22,6 @@ describe('VersionBanner', () => {
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => {
           const searchParams = req.url.searchParams
-          if (searchParams.get('status') === 'latest') {
-            return res(ctx.json([...mockedLatestFirmwareList]))
-          }
-
           if (searchParams.get('status') === 'release' && searchParams.get('abf') === 'all') {
             return res(ctx.json([ ...mockedAvailableABFList ]))
           }
