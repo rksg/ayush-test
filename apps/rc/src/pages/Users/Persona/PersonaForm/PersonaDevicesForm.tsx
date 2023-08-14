@@ -15,13 +15,14 @@ export interface PersonaDeviceItem extends PersonaDevice {
 
 interface PersonaDevicesFormProps {
   groupId?: string,
+  canAddDevices?: boolean,
   value?: PersonaDeviceItem[],
   onChange?: (value: Partial<PersonaDeviceItem>[]) => void
 }
 
 export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
   const { $t } = useIntl()
-  const { value, onChange } = props
+  const { canAddDevices, value, onChange } = props
   const [modelVisible, setModelVisible] = useState(false)
 
   const triggerOnChange = (changeValue: Partial<PersonaDeviceItem>[]) => {
@@ -54,6 +55,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
   const actions: TableProps<PersonaDeviceItem>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
+      disabled: !canAddDevices,
       onClick: () => {
         setModelVisible(true)
       }
