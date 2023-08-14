@@ -9,16 +9,18 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { showActionModal }        from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { showActionModal }              from '@acx-ui/components'
+import { get }                          from '@acx-ui/config'
+import { useGetPreferencesQuery }       from '@acx-ui/rc/services'
+import { BrowserRouter, useParams }     from '@acx-ui/react-router-dom'
+import { Provider }                     from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
   UserUrlsInfo,
-  useGetUserProfileQuery
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+  UserProfile as UserProfileInterface
 } from '@acx-ui/user'
 import {
   getTenantId,
@@ -63,6 +65,10 @@ const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
   window.location.hostname === 'stage.ruckus.cloud' )
 
 function BrowserDialog ( broswerLang: LangKey) {
+  // const result = useGetUserProfileQuery({})
+  // const { data: userProfile } = result
+  const [ updateUserProfile ] = useUpdateUserProfileMutation()
+  const { tenantId } = useParams()
   const [isOpen, setIsOpen] = useState(true)
   const [isActionConfirmed, setIsActionConfirmed] = useState('false')
   const bLang = broswerLang.slice(0, 2)
@@ -89,7 +95,7 @@ function BrowserDialog ( broswerLang: LangKey) {
           closeAfterAction: true,
           handler () {
             setIsActionConfirmed('false')
-            setIsOpen(false)
+            // setIsOpen(false)
           }
         }, {
           text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
@@ -98,6 +104,21 @@ function BrowserDialog ( broswerLang: LangKey) {
           closeAfterAction: true,
           handler () {
             setIsActionConfirmed('true')
+            // console.log(`broswerLang in dialogbox: ${broswerLang}`)
+            const data = {
+              preferredLanguage: broswerLang
+            }
+            const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
+              // console.log(userProfile, data)
+              const req = {
+                dateFormat: 'mm/dd/yyyy',
+                detailLevel: 'it',
+                preferredLanguage: data?.preferredLanguage
+              }
+              // console.log(req)
+              await updateUserProfile({ payload: req, params: { tenantId } })
+            }
+            handleUpdateSettings(data)
             setIsOpen(false)
           }
         }]
@@ -117,10 +138,10 @@ export function loadMessages (locales: readonly string[]): LangKey {
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
   // return supportedLocales[locale as keyof typeof supportedLocales]
   let browLang = supportedLocales[locale as keyof typeof supportedLocales]
-  const bLang = localStorage.getItem('browserLang')
+  const lsBLang = localStorage.getItem('browserLang')
   const isBrowserDialog = localStorage.getItem('isBrowserDialog')
-  let browserLang = bLang?? browLang
-  // console.log(`bLang: ${bLang} ${browserLang}`)
+  let browserLang = lsBLang?? browLang
+  // console.log(`lsBLang: ${lsBLang} ${browserLang}`)
 
   if (Boolean(!isBrowserDialog) && browserLang !== DEFAULT_SYS_LANG) {
     const isConfirm = BrowserDialog(browserLang as LangKey)
@@ -194,6 +215,7 @@ export async function pendoInitalization (): Promise<void> {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   let browserLang = loadMessages(navigator.languages) as LangKey// browser detection
+  console.log(`browserLang: ${browserLang}`)
   const result = useGetUserProfileQuery({})
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
@@ -202,10 +224,10 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 
   // this condition userPreflang !== DEFAULT_SYS_LANG is needed when FF is off
   // need to be cleaned up once FF acx-ui-i18n-phase2-toggle is globally enabled
-  const lang = userPreflang !== DEFAULT_SYS_LANG? userPreflang : defaultLang
+  // const lang = userPreflang !== DEFAULT_SYS_LANG? userPreflang : defaultLang
 
-  // const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang
-  //   : userPreflang? userPreflang : defaultLang
+  const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang
+    : userPreflang? userPreflang : defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
