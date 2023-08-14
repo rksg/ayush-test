@@ -25,7 +25,7 @@ export function EdgeTraceRouteForm () {
       const traceRouteEdgeResult =
         await traceRouteEdge({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (traceRouteEdgeResult) {
-        form.setFieldValue('traceRoute', _.get(traceRouteEdgeResult, 'response.response'))
+        form.setFieldValue('traceRoute', _.get(traceRouteEdgeResult, 'response'))
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

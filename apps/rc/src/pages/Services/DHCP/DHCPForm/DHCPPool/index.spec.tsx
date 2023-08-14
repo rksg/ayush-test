@@ -16,7 +16,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
   return <Form>{children}</Form>
 }
 
-describe.skip('Create DHCP: Pool detail', () => {
+describe('Create DHCP: Pool detail', () => {
   beforeEach(() => {
     store.dispatch(networkApi.util.resetApiState())
   })
@@ -24,18 +24,17 @@ describe.skip('Create DHCP: Pool detail', () => {
   it('Table action bar add pool', async () => {
     const params = { tenantId: 'tenant-id' }
 
-    render(<DHCPPoolTable dhcpMode={DHCPConfigTypeEnum.SIMPLE} isDefaultService={false} />, {
-      wrapper,
-      route: { params }
-    })
+    render(<DHCPPoolTable dhcpMode={DHCPConfigTypeEnum.SIMPLE} isDefaultService={false} />
+      , {
+        wrapper,
+        route: { params }
+      })
     const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
     await userEvent.click(addButton)
     await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
 
     const button = screen.getAllByRole('switch')
     await userEvent.click(button[0])
-    //FIXME: Do not use "setTimeout"
-    // await new Promise((r)=>{setTimeout(r, 1000)})
     await userEvent.click(button[0])
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Address' }), '10.20.30.0')
@@ -46,8 +45,6 @@ describe.skip('Create DHCP: Pool detail', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'End Host Address' }), '10.20.30.2')
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-
-
 
     await userEvent.click(addButton)
     await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
@@ -66,5 +63,5 @@ describe.skip('Create DHCP: Pool detail', () => {
 
     userEvent.click(screen.getByText('pool1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-  }, 20000)
+  })
 })

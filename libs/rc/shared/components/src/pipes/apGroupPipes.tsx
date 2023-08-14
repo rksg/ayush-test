@@ -80,10 +80,11 @@ const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveD
 export const transformVLAN = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  callback?: React.MouseEventHandler<HTMLElement>
+  callback?: React.MouseEventHandler<HTMLElement>,
+  readOnly?: boolean
 ): JSX.Element => {
   const { $t } = getIntl()
-  const button = (text: string) => <Button type='link' onClick={callback}>{text}</Button>
+  const button = (text: string) => <Button type='link' onClick={callback} disabled={readOnly}>{text}</Button>
 
   if (!currentVenue) return <></>
 
@@ -120,7 +121,8 @@ export const transformVLAN = (
 export const transformAps = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  callback?: React.MouseEventHandler<HTMLElement>
+  callback?: React.MouseEventHandler<HTMLElement>,
+  readOnly?: boolean
 ) => {
   const { $t } = getIntl()
   let result = ''
@@ -136,7 +138,7 @@ export const transformAps = (
       other {{count} AP Groups}
     }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
   }
-  return <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback}>{result}</Button></Tooltip>
+  return <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
 }
 
 const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
@@ -155,7 +157,8 @@ const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[
 export const transformRadios = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  callback?: React.MouseEventHandler<HTMLElement>
+  callback?: React.MouseEventHandler<HTMLElement>,
+  readOnly?: boolean
 ) => {
   const { $t } = getIntl()
   let result = ''
@@ -171,10 +174,15 @@ export const transformRadios = (
       result = $t({ defaultMessage: 'Per AP Group' })
     }
   }
-  return <Tooltip title={(network && apGroupTooltip('radio', currentVenue, network)) || result}><Button type='link' onClick={callback}>{result}</Button></Tooltip>
+  return <Tooltip title={(network && apGroupTooltip('radio', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
 }
 
-export const transformScheduling = (currentVenue?: NetworkVenue, currentTimeIdx?: ISlotIndex, callback?: React.MouseEventHandler<HTMLElement>) => {
+export const transformScheduling = (
+  currentVenue?: NetworkVenue,
+  currentTimeIdx?: ISlotIndex,
+  callback?: React.MouseEventHandler<HTMLElement>,
+  readOnly?: boolean
+) => {
   const { $t } = getIntl()
   let result = ''
   if (!currentVenue) return <></>
@@ -215,7 +223,7 @@ export const transformScheduling = (currentVenue?: NetworkVenue, currentTimeIdx?
   }
   return (
     <Tooltip title={tooltip}>
-      <Button type='link' onClick={callback}>{result} <ClockCircleOutlined /></Button>
+      <Button type='link' onClick={callback} disabled={readOnly}>{result} <ClockCircleOutlined /></Button>
     </Tooltip>
   )
 }

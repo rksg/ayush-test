@@ -156,9 +156,9 @@ export function MdnsFencingServiceTable () {
     dataIndex: 'service',
     key: 'service',
     width: 150,
-    render: function (data, row) {
-      if (data !== BridgeServiceEnum.OTHER) {
-        return $t(mdnsProxyRuleTypeLabelMapping[data as BridgeServiceEnum])
+    render: function (_, row) {
+      if (row.service !== BridgeServiceEnum.OTHER) {
+        return $t(mdnsProxyRuleTypeLabelMapping[row.service as BridgeServiceEnum])
       } else {
         return `Other_${row.customServiceName}`
       }
@@ -168,24 +168,24 @@ export function MdnsFencingServiceTable () {
     dataIndex: 'wirelessEnabled',
     key: 'wirelessEnabled',
     align: 'center',
-    render: function (data, row) {
-      return getWirelessRuleTooltip(data as boolean, row.wirelessRule)
+    render: function (_, row) {
+      return getWirelessRuleTooltip(row.wirelessEnabled, row.wirelessRule)
     }
   }, {
     title: $t({ defaultMessage: 'Wired Connection' }),
     dataIndex: 'wiredEnabled',
     key: 'wiredEnabled',
     align: 'center',
-    render: function (data, row) {
-      return getWiredRulesTooltip(data as boolean, row.wiredRules)
+    render: function (_, row) {
+      return getWiredRulesTooltip(row.wiredEnabled, row.wiredRules)
     }
   }, {
     title: $t({ defaultMessage: 'Custom Mapping' }),
     dataIndex: 'customMappingEnabled',
     key: 'customMappingEnabled',
     align: 'center',
-    render: function (data, row) {
-      return getCustomMappingTooltip(data as boolean, row.customStrings)
+    render: function (_, row) {
+      return getCustomMappingTooltip(row.customMappingEnabled, row.customStrings)
     }
   }]
 

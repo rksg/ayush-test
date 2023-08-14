@@ -233,7 +233,7 @@ describe('SyslogForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {

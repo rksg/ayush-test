@@ -43,7 +43,7 @@ export const RuleStatisticDataTable = ({ dataSource }:
         </Table.SubTitle>,
         align: 'center',
         sorter: { compare: sortProp('deniedPackets', defaultSort) },
-        render: (data, row) => transformDisplayText(
+        render: (_, row) => transformDisplayText(
           (row as DDoSRuleStatisticModel).deniedPackets?.toString())
       },{
         key: 'passedPackets',
@@ -53,7 +53,7 @@ export const RuleStatisticDataTable = ({ dataSource }:
         </Table.SubTitle>,
         align: 'center',
         sorter: { compare: sortProp('passedPackets', defaultSort) },
-        render: (data, row) => transformDisplayText(
+        render: (_, row) => transformDisplayText(
           (row as DDoSRuleStatisticModel).passedPackets?.toString())
       }]
     }

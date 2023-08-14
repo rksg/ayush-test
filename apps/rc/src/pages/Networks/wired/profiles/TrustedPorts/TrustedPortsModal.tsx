@@ -63,7 +63,7 @@ export function TrustedPortsModal (props: {
           return false
         }}
         buttonLabel={{ submit: editRecord ?
-          $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
+          $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm
           title={$t({ defaultMessage: 'Select Model' })}

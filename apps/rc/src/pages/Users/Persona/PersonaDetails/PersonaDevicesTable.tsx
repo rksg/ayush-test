@@ -148,7 +148,6 @@ export function PersonaDevicesTable (props: {
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
     return dpskDevices
-      .filter(d => d.online)
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
@@ -190,10 +189,10 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'os',
       align: 'center',
       title: $t({ defaultMessage: 'OS' }),
-      render: (data) => {
+      render: (_, { os }) => {
         return <OSIconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={os}>
+            { getOsTypeIcon(os as string) }
           </Tooltip>
         </OSIconContainer>
       },
@@ -210,7 +209,8 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
-      render: data => data && <SuccessSolid/>,
+      align: 'center',
+      render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
     {
@@ -218,16 +218,16 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'hasMacRegistered',
       title: $t({ defaultMessage: 'MAC Registration' }),
       align: 'center',
-      render: data => data && <SuccessSolid/>,
+      render: (_, { hasMacRegistered }) => hasMacRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasMacRegistered', defaultSort) }
     },
     {
       key: 'lastSeenAt',
       dataIndex: 'lastSeenAt',
       title: $t({ defaultMessage: 'Last Seen Time' }),
-      render: (data) => {
-        return data
-          ? moment(data as string).format('YYYY/MM/DD HH:mm A')
+      render: (_, { lastSeenAt }) => {
+        return lastSeenAt
+          ? moment(lastSeenAt!).format('YYYY/MM/DD HH:mm A')
           : noDataDisplay
       },
       sorter: { compare: sortProp('lastSeenAt', dateSort) }

@@ -35,7 +35,7 @@ export function ProfilesTab () {
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venueCount',
     sorter: true,
-    render: function (data, row) {
+    render: function (_, row) {
       if (row.venues) {
         return <Tooltip
           title={row.venues.join('\n')}>
