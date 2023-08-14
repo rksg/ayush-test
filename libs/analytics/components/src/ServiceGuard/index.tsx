@@ -14,11 +14,6 @@ interface CountContextType {
 }
 export const CountContext = createContext({} as CountContextType)
 
-export const ServiceGuard = () => {
-  const { component } = useServiceGuard()
-  return component
-}
-
 export function useServiceGuard () {
   const { $t } = useIntl()
   const queryResults = useAllServiceGuardSpecsQuery()

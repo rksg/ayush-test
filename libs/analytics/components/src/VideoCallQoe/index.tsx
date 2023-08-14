@@ -16,11 +16,6 @@ interface CountContextType {
 }
 export const CountContext = createContext({} as CountContextType)
 
-export const VideoCallQoe = () => {
-  const { component } = useVideoCallQoe()
-  return component
-}
-
 export function useVideoCallQoe () {
   const { $t } = useIntl()
   const queryResults = useVideoCallQoeTestsQuery(null)
