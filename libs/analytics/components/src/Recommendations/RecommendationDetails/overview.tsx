@@ -69,7 +69,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const crrmText = $t({
     defaultMessage:
       '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
-    description: 'Translation string - interfering can be optimised to'
+    description: 'Translation string - interferin, link, links, can be optimised to'
   }, { before, after })
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
