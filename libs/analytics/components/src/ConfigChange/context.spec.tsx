@@ -24,19 +24,19 @@ describe('KPIFilterProvider', () => {
 
     userEvent.click(await screen.findByTestId('add'))
     await waitFor(async () =>
-      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey1'))
+      expect(await screen.findByTestId('kpi')).toHaveTextContent(/^kpikey1$/))
 
     userEvent.click(await screen.findByTestId('apply'))
     await waitFor(async () =>
-      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3'))
+      expect(await screen.findByTestId('kpi')).toHaveTextContent(/^kpikey2, kpikey3$/))
 
     userEvent.click(await screen.findByTestId('add'))
     await waitFor(async () =>
-      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3, kpikey1'))
+      expect(await screen.findByTestId('kpi')).toHaveTextContent(/^kpikey2, kpikey3, kpikey1$/))
 
     userEvent.click(await screen.findByTestId('add'))
     await waitFor(async () =>
-      expect(await screen.findByTestId('kpi')).toHaveTextContent('kpikey2, kpikey3'))
+      expect(await screen.findByTestId('kpi')).toHaveTextContent(/^kpikey2, kpikey3$/))
   })
 })
 
