@@ -69,14 +69,15 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean) {
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
-    ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
-      uri: '/portalSetting',
-      label: $t({ defaultMessage: 'Settings' }),
-      tenantType: 'v' as TenantType,
-      inactiveIcon: ConfigurationOutlined,
-      disabled: !hasLicense,
-      activeIcon: ConfigurationSolid
-    }])
+    ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
+      ? [{ label: '' }]
+      : [{
+        uri: '/portalSetting',
+        label: $t({ defaultMessage: 'Settings' }),
+        tenantType: 'v' as TenantType,
+        inactiveIcon: ConfigurationOutlined,
+        activeIcon: ConfigurationSolid
+      }])
   ]
   return config
 }

@@ -21,7 +21,7 @@ export const RecommendationDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const activeTab = get(params, 'activeTab', 'crrm') as keyof typeof linkMap
-  const link = `recommendations/${activeTab}`
+  const link = `analytics/recommendations/${activeTab}`
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },

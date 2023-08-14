@@ -58,19 +58,19 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
     fireEvent.change(domainsInput, { target: { value: 'www.123.com,222.com' } })
     fireEvent.blur(domainsInput)
     await userEvent.click(await screen.findByRole('checkbox', { name: /email addresses of users/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Facebook/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Google/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Twitter/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
   })
   it('should create Self sign in network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
@@ -89,6 +89,6 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
       { name: /Twitter/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
   })
 })

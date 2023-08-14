@@ -1,6 +1,6 @@
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Col, Form, Input, Row, Space, Typography } from 'antd'
+import { useIntl }                                  from 'react-intl'
 
 import { Drawer }                                                                from '@acx-ui/components'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
@@ -14,6 +14,7 @@ interface PoolDrawerProps {
   onAddOrEdit: (item: EdgeDhcpPool) => void
   data?: EdgeDhcpPool
   allPool?: EdgeDhcpPool[]
+  isRelayOn: boolean
 }
 
 const initPoolData: Partial<EdgeDhcpPool> = {
@@ -39,7 +40,7 @@ async function nameValidator (
 
 export const PoolDrawer = (props: PoolDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, onAddOrEdit, data, allPool } = props
+  const { visible, setVisible, onAddOrEdit, data, allPool, isRelayOn } = props
 
   const { form, onSubmit, onSave, onClose } = useDrawerControl({
     visible,
@@ -55,7 +56,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
         $t({ defaultMessage: 'Add' }) })
   }
 
-
   const drawerContent = <Form
     form={form}
     layout='vertical'
@@ -63,7 +63,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
     initialValues={initPoolData}
   >
     <Row>
-      <Col span={12}>
+      <Col span={16}>
         <Form.Item
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
@@ -89,39 +89,50 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           children={<Input />}
         />
         <Form.Item
-          name='poolStartIp'
-          label={$t({ defaultMessage: 'Start IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
-          ]}
-          children={<Input />}
-        />
-        <Form.Item
-          name='poolEndIp'
-          label={$t({ defaultMessage: 'End IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) },
-            {
-              validator: (_, value) => IpInSubnetPool(
-                value,
-                form.getFieldValue('poolStartIp'),
-                form.getFieldValue('subnetMask')
-              )
-            }
-          ]}
-          children={<Input />}
-        />
+          label={$t({ defaultMessage: 'Pool Range' })}
+          required
+        >
+          <Space>
+            <Form.Item
+              name='poolStartIp'
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) }
+              ]}
+              noStyle
+              children={<Input />}
+            />
+            <Typography>-</Typography>
+            <Form.Item
+              name='poolEndIp'
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) },
+                {
+                  validator: (_, value) => IpInSubnetPool(
+                    value,
+                    form.getFieldValue('poolStartIp'),
+                    form.getFieldValue('subnetMask')
+                  )
+                }
+              ]}
+              noStyle
+              children={<Input />}
+            />
+          </Space>
+        </Form.Item>
         <Form.Item
           name='gatewayIp'
           label={$t({ defaultMessage: 'Gateway' })}
           rules={[
-            { required: true },
+            { required: !isRelayOn },
             { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
+          initialValue=''
+          hidden={isRelayOn}
           children={<Input />}
         />
+
       </Col>
     </Row>
   </Form>

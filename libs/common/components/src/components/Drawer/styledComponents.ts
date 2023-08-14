@@ -14,10 +14,14 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
     }` : ''}
 `
 
+import { disableStickyHeaders } from '../Table/styledComponents'
+
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
+
+    ${disableStickyHeaders}
   }
 `
 

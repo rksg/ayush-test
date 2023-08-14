@@ -61,11 +61,12 @@ import {
   RequestFormData,
   VenueRadiusOptions,
   ApMeshTopologyData,
-  FloorPlanMeshAP
+  FloorPlanMeshAP,
+  VenueClientAdmissionControl
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }      from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseVenueApi }                        from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -977,7 +978,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(
           PropertyUrlsInfo.getPropertyConfigs,
           params,
-          { Accept: 'application/hal+json' }
+          { ...ignoreErrorModal, Accept: 'application/hal+json' }
         )
         return {
           ...req
@@ -1101,6 +1102,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           })
         })
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     downloadPropertyUnits: build.query<Blob, RequestPayload>({
@@ -1172,6 +1174,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
+    }),
+    getVenueClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
+    }),
+    updateVenueClientAdmissionControl: build.mutation<VenueClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueClientAdmissionControl, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
     })
   })
 })
@@ -1258,6 +1279,7 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetVenueBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
   useUpdateVenueBssColoringMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
@@ -1279,5 +1301,7 @@ export const {
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueRadiusOptionsQuery,
-  useUpdateVenueRadiusOptionsMutation
+  useUpdateVenueRadiusOptionsMutation,
+  useGetVenueClientAdmissionControlQuery,
+  useUpdateVenueClientAdmissionControlMutation
 } = venueApi

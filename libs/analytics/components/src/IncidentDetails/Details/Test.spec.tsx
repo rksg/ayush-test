@@ -42,6 +42,7 @@ jest.mock('../IncidentDetails/TimeSeries')
 jest.mock('../ChannelConfig', () => ({
   ChannelConfig: () => <div data-testid='channelConfig' />
 }))
+jest.mock('../Charts/ChannelDistributionHeatmap')
 jest.mock('../Charts/RssDistributionChart', () => ({
   RssDistributionChart: () => <div data-testid='rssDistributionChart' />
 }))
@@ -54,7 +55,6 @@ jest.mock('../Charts/PoePdTable', () => ({
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
-
 describe('Test', () => {
   fixtures.mockTimeSeries()
   fixtures.mockNetworkImpact()

@@ -7,7 +7,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
   >
     <div>
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 ekutnJ dsazGm"
         style="width: 250px;"
         type="button"
       >
@@ -16,7 +16,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 ekutnJ dsazGm"
         style="width: 506px;"
         type="button"
       >
@@ -26,7 +26,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
       </button>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButtonDFS-sc-tbspz7-8 eGGUhQ kmLxbt"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButtonDFS-sc-tbspz7-8 ekutnJ jHFkHc"
       style="width: 506px; left: 128px;"
       type="button"
     >
@@ -57,7 +57,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-tbspz7-3 howlOE group-4"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-tbspz7-3 fWTSQR group-4"
                     id="apRadioParams50G_allowedChannels"
                   >
                     <label

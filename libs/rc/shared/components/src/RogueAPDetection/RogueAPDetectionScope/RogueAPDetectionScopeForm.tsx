@@ -35,8 +35,10 @@ export const RogueAPDetectionScopeForm = () => {
           label={$t({ defaultMessage:
               'Select the venues where the rogue AP detection policy will be applied:' })}
         >
-          <VenueSelectInfo />
-          <RogueVenueTable />
+          <>
+            <VenueSelectInfo />
+            <RogueVenueTable />
+          </>
         </Form.Item>
 
       </Col>

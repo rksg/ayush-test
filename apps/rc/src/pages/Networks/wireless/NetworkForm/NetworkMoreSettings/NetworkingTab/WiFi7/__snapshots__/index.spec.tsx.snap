@@ -56,7 +56,7 @@ exports[`WiFi7 should not render MLO field item render when useIsSplitOn return 
                   <button
                     aria-checked="true"
                     class="ant-switch ant-switch-checked"
-                    id="wlan_advancedCustomization_enableWifi7"
+                    id="wlan_advancedCustomization_wifi7Enabled"
                     role="switch"
                     type="button"
                   >

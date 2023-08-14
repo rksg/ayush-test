@@ -81,7 +81,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
     const providerNameInput = await screen.findByLabelText(/Provider Name/)
     fireEvent.change(providerNameInput, { target: { value: 'namep1' } })
     fireEvent.blur(providerNameInput)
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('switch'))
 
     const insertInput = await screen.findByLabelText(/Captive Portal URL/)

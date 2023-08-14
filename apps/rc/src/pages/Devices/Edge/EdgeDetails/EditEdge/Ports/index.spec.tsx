@@ -4,7 +4,8 @@ import { rest }  from 'msw'
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
-  mockServer, render,
+  mockServer,
+  render,
   screen
 } from '@acx-ui/test-utils'
 
@@ -128,11 +129,12 @@ describe('EditEdge ports', () => {
       })
 
     for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
-      await user.click(await screen.findByRole('radio', { name: 'Port ' + (i + 1) }))
-      const expectedIp = mockEdgePortStatus[i]?.ip ?? 'N/A'
+      await user.click(await screen.findByRole('tab', { name: 'Port ' + (i + 1) }))
+      const expectedIp = mockEdgePortStatus[i]?.ip || 'N/A'
       await screen.findByText(
         'IP Address: ' + expectedIp + ' | ' +
-        'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+          'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+
     }
   })
 

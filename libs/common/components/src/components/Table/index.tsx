@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useEffect, useRef } from 'react'
+import React, { useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, Space }                                                from 'antd'
@@ -6,13 +6,13 @@ import escapeStringRegexp                                             from 'esca
 import _                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
-import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined }        from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
+import { useLayoutContext }                    from '../Layout'
 import { Tooltip }                             from '../Tooltip'
 
 import {
@@ -22,11 +22,11 @@ import {
   renderSearch,
   MIN_SEARCH_LENGTH
 } from './filters'
-import { useGroupBy, GroupSelect }      from './groupBy'
-import { IconButton }                   from './IconButton'
-import { ResizableColumn }              from './ResizableColumn'
-import * as UI                          from './styledComponents'
-import { settingsKey, useColumnsState } from './useColumnsState'
+import { useGroupBy, GroupSelect }                                            from './groupBy'
+import { IconButton }                                                         from './IconButton'
+import { ResizableColumn }                                                    from './ResizableColumn'
+import * as UI                                                                from './styledComponents'
+import { defaultColumnWidth, settingsKey, settingsKeyWidth, useColumnsState } from './useColumnsState'
 
 import type {
   TableColumn,
@@ -72,6 +72,7 @@ export interface TableProps <RecordType>
     onResetState?: CallableFunction
     enableApiFilter?: boolean
     floatRightFilters?: boolean
+    alwaysShowFilters? : boolean
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -131,7 +132,8 @@ function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   onDisplayRowChange, ...props
 }: TableProps<RecordType>) {
-  const { dataSource, filterableWidth, searchableWidth } = props
+  const { dataSource, filterableWidth, searchableWidth, style } = props
+  const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
@@ -139,7 +141,17 @@ function Table <RecordType extends Record<string, any>> ({
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
-  const [colWidth, setColWidth] = useState<Record<string, number>>({})
+  const [colWidth, setColWidth] = useState<Record<string, number>>(
+    props.columns.reduce(function colWidthReducer (acc, col) {
+      if (_.has(col, 'children')) return _.get(col, 'children').reduce(colWidthReducer, acc)
+      const num = Number.isFinite(col.width)
+        ? Number(col.width)
+        : defaultColumnWidth * (Number(col.width === Infinity) * 2 + 1)
+      acc[col.key] = num
+      return acc
+    }, {} as Record<string, number>)
+  )
+  useDebugValue(colWidth)
   const getRowKey = (data: RecordType) => {
     return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
   }
@@ -191,7 +203,7 @@ function Table <RecordType extends Record<string, any>> ({
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
-      width: 32,
+      width: settingsKeyWidth,
       children: []
     }
 
@@ -202,13 +214,18 @@ function Table <RecordType extends Record<string, any>> ({
     return cols.map(column => ({
       ...column,
       tooltip: null,
-      title: column.tooltip ? <UI.TitleWithTooltip>
-        {column.title as React.ReactNode}
-        <UI.InformationTooltip title={column.tooltip as string} />
-      </UI.TitleWithTooltip> : column.title,
+      title: column.tooltip
+        ? <UI.TitleWithTooltip>
+          {column.title as React.ReactNode}
+          <UI.InformationTooltip title={column.tooltip as string} />
+        </UI.TitleWithTooltip>
+        : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      children: 'children' in column ? column.children : undefined
+      ellipsis: type === 'tall' && column.key !== settingsKey,
+      children: 'children' in column
+        ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
+        : undefined
     }))
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -232,7 +249,6 @@ function Table <RecordType extends Record<string, any>> ({
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
-            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
@@ -308,8 +324,19 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasHeader = (!hasRowSelected || props.tableAlertRender === false) &&
-    (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
+  const hasRowActionsOffset = [
+    props.rowSelection?.type && props.tableAlertRender !== false,
+    filterables.length,
+    searchables.length,
+    groupable.length,
+    iconButton
+  ].some(Boolean)
+  const shouldRenderHeader = props.alwaysShowFilters
+    || !hasRowSelected || props.tableAlertRender === false
+  const hasHeaderItems = shouldRenderHeader && (
+    Boolean(filterables.length) || Boolean(searchables.length) ||
+    Boolean(groupable.length) || Boolean(iconButton)
+  )
   const selectAllRowSelection = {
     columnWidth: '45px',
     selections: [
@@ -363,8 +390,6 @@ function Table <RecordType extends Record<string, any>> ({
     }
   }
 
-  const hasEllipsisColumn = columns.some(column => column.ellipsis)
-
   const components = _.merge({},
     props.components || {},
     type === 'tall' ? { header: { cell: ResizableColumn } } : {}
@@ -390,7 +415,6 @@ function Table <RecordType extends Record<string, any>> ({
           : colWidth[col.key as keyof typeof colWidth] || col.width,
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
-          hasEllipsisColumn,
           width: colWidth[column.key],
           definedWidth: col.width
         })
@@ -399,6 +423,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
+    show: columnsState.value[col.key]?.show,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
         const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
@@ -427,18 +452,70 @@ function Table <RecordType extends Record<string, any>> ({
       children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
-  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
-    style={style}
+
+  const headerItems = hasHeaderItems ? <>
+    <div>
+      <Space size={12}>
+        {Boolean(searchables.length) &&
+          renderSearch<RecordType>(
+            intl, searchables, searchValue, setSearchValue, searchWidth
+          )}
+        {filterables.map((column, i) =>
+          renderFilter<RecordType>(
+            column, i, dataSource, filterValues,
+            setFilterValues, !!enableApiFilter, filterWidth)
+        )}
+        {Boolean(groupable.length) && <GroupSelect<RecordType>
+          $t={$t}
+          groupable={groupable}
+          setValue={setGroupByValue}
+          value={groupByValue}
+          style={{ width: filterWidth }}
+        />}
+      </Space>
+    </div>
+    <UI.HeaderComps>
+      {(
+        Boolean(activeFilters.length) ||
+        (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
+        isGroupByActive)
+        && <Button
+          style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+          onClick={() => {
+            setFilterValues({} as Filter)
+            setSearchValue('')
+            setGroupByValue(undefined)
+          }}>
+          {$t({ defaultMessage: 'Clear Filters' })}
+        </Button>}
+      { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
+    </UI.HeaderComps>
+  </> : null
+
+  let offsetHeader = layout.pageHeaderY
+  if (props.actions?.length) offsetHeader += 22
+  if (hasRowActionsOffset) offsetHeader += 36
+  const sticky = type === 'tall' &&
+    // disable in test env as it will result in 2 tables rendered
+    // this is to prevent confusing/inconvenience for implementor
+    // to find out themselves when they are using Table and
+    // expect single table to be rendered
+    process.env.NODE_ENV !== 'test'
+    ? { offsetHeader } : undefined
+
+  return <UI.Wrapper
+    style={{
+      ...(style ?? {}),
+      '--sticky-offset': `${layout.pageHeaderY}px`,
+      '--sticky-has-actions': props.actions?.length ? '1' : '0',
+      '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
+    } as React.CSSProperties}
     $type={type}
-    $rowSelectionActive={
-      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
-    }
   >
     <UI.TableSettingsGlobalOverride />
-    {props.actions && <Space
+    {props.actions && <UI.ActionsContainer
       size={0}
-      split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
+      split={<UI.Divider type='vertical' />}>
       {props.actions?.map((action, index) => {
         const props: ButtonProps & { key: React.Key } = {
           key: action.key ?? `action-${index}`,
@@ -458,47 +535,11 @@ function Table <RecordType extends Record<string, any>> ({
           </Dropdown>
           : content
       })}
-    </Space>}
-    {hasHeader && (
-      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
-        <div>
-          <Space size={12}>
-            {Boolean(searchables.length) &&
-              renderSearch<RecordType>(
-                intl, searchables, searchValue, setSearchValue, searchWidth
-              )}
-            {filterables.map((column, i) =>
-              renderFilter<RecordType>(
-                column, i, dataSource, filterValues,
-                setFilterValues, !!enableApiFilter, filterWidth)
-            )}
-            {Boolean(groupable.length) && <GroupSelect<RecordType>
-              $t={$t}
-              groupable={groupable}
-              setValue={setGroupByValue}
-              value={groupByValue}
-              style={{ width: filterWidth }}
-            />}
-          </Space>
-        </div>
-        <UI.HeaderComps>
-          {(
-            Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
-            isGroupByActive)
-            && <Button
-              style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
-              onClick={() => {
-                setFilterValues({} as Filter)
-                setSearchValue('')
-                setGroupByValue(undefined)
-              }}>
-              {$t({ defaultMessage: 'Clear Filters' })}
-            </Button>}
-          { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
-        </UI.HeaderComps>
-      </UI.Header>
-    )}
+    </UI.ActionsContainer>}
+    {hasRowActionsOffset && shouldRenderHeader && <UI.Header
+      style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
+      children={headerItems}
+    />}
     <ProTable<RecordType>
       {...props}
       dataSource={enableApiFilter
@@ -514,12 +555,12 @@ function Table <RecordType extends Record<string, any>> ({
       options={{ setting, reload: false, density: false }}
       columnsState={{
         ...columnsState,
-        onChange: (state: TableColumnState) => {
-          columnsState.onChange(state)
-          setColWidth({})
-        }
+        onChange: (state: TableColumnState) => columnsState.onChange(state)
       }}
-      scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
+      sticky={sticky}
+      scroll={{
+        x: type !== 'tall' ? '100%' : finalColumns.reduce(scrollXReducer, settingsKeyWidth)
+      }}
       rowSelection={rowSelection}
       pagination={pagination}
       columnEmptyText={false}
@@ -598,14 +639,36 @@ function Table <RecordType extends Record<string, any>> ({
       ))}
     />
   </UI.Wrapper>
-  if (hasEllipsisColumn) {
-    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
-  } else {
-    return WrappedTable({})
-  }
 }
 
 Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
 
 export { Table }
+
+type ScrollXReducerColumn = {
+  key: string
+  width: number
+  show: boolean
+}
+
+/**
+ * Compute scrollX of the table
+ *
+ * @param {number} scrollX - aggregated scrollX
+ * @param {ScrollXReducerColumn & { children?: ScrollXReducerColumn[] }} col - the column being evaluated
+ * @return {number} scrollX of the table
+ */
+function scrollXReducer (
+  scrollX: number,
+  col: ScrollXReducerColumn & { children?: ScrollXReducerColumn[] }
+): number {
+  // `col.show` is true by default
+  if (col.show === false) return scrollX
+  if (col.children) return col.children.reduce(scrollXReducer, scrollX)
+  const width = Number.isFinite(col.width)
+    ? col.width
+    // multiply col with Infinity by 2
+    : defaultColumnWidth * (Number(col.width === Infinity))
+  return scrollX + width
+}

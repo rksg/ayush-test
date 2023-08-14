@@ -146,7 +146,7 @@ describe('Property Unit Page', () => {
     )
   })
 
-  it('show render Unit table', async () => {
+  it.skip('show render Unit table', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

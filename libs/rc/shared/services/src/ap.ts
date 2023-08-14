@@ -23,6 +23,7 @@ import {
   WifiApSetting,
   ApLanPort,
   ApLedSettings,
+  ApBssColoringSettings,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
@@ -45,9 +46,9 @@ import {
   APMeshSettings,
   MeshUplinkAp
 } from '@acx-ui/rc/utils'
-import { baseApApi }                  from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseApApi }                                    from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export type ApsExportPayload = {
   filters: Filter
@@ -146,7 +147,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -251,7 +254,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateAp, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -563,6 +568,26 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApBssColoring, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
+    updateApBssColoring: build.mutation<ApBssColoringSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApBssColoring, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
     getApCustomization: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCustomization, params)
@@ -800,6 +825,8 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApBssColoringQuery,
+  useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
   useGetApCustomizationQuery,
