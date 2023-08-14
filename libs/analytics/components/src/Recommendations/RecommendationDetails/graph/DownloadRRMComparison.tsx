@@ -37,6 +37,7 @@ export function DownloadRRMComparison (props: { title?: string }) {
 
   return <span><Loader states={[recommendation, queryResult]} fallback={<Spinner size='default' />}>
     <Button
+      size='small'
       disabled={!!recommendation.data?.monitoring}
       icon={<DownloadOutlined/>}
       download={filename}
