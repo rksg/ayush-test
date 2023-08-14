@@ -366,8 +366,9 @@ export interface PropertyUnitDrawerProps {
   isEdit: boolean,
   visible: boolean,
   onClose: () => void,
-  venueId: string
+  venueId: string,
   unitId?: string,
+  countryCode?: string
 }
 
 interface QosSetting {
@@ -377,7 +378,7 @@ interface QosSetting {
 
 export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { $t } = useIntl()
-  const { isEdit, visible, onClose, venueId, unitId } = props
+  const { isEdit, visible, onClose, venueId, unitId, countryCode } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [rawFormValues, setRawFormValues]
     = useState<PropertyUnitFormFields>({} as PropertyUnitFormFields)
@@ -435,7 +436,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { personaId, guestPersonaId } = result.data
-            combinePersonaInfo(personaId, guestPersonaId, result.data)
+            form.setFieldsValue(result.data)
+            combinePersonaInfo(personaId, guestPersonaId)
           }
         })
         .catch(() => {
@@ -444,7 +446,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }, [visible, unitId, personaGroupId])
 
-  const combinePersonaInfo = (personaId?: string, guestPersonaId?: string, data?: PropertyUnit) => {
+  const combinePersonaInfo = (personaId?: string, guestPersonaId?: string) => {
     let personaPromise, guestPromise
 
     if (personaId) {
@@ -457,7 +459,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     Promise.all([personaPromise, guestPromise])
       .then(([personaResult, guestResult]) => {
-        form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           const {
             vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
@@ -796,6 +797,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 name={['resident', 'phoneNumber']}
                 callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
                 onTop={false}
+                defaultCountryCode={countryCode}
               />}
               validateFirst
             />
