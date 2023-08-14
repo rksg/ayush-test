@@ -2,8 +2,8 @@ import { memo, useContext } from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
-import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
+import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
+import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
 
 
 import { ConfigChangeContext, KPIFilterContext } from './context'

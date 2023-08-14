@@ -1,9 +1,9 @@
 import { gql }  from 'graphql-request'
 import { omit } from 'lodash'
 
-import type { ConfigChange }     from '@acx-ui/components'
-import { dataApi }               from '@acx-ui/store'
-import { PathNode, NodesFilter } from '@acx-ui/utils'
+import type { ConfigChange } from '@acx-ui/components'
+import { dataApi }           from '@acx-ui/store'
+import { PathNode }          from '@acx-ui/utils'
 
 interface KpiChangesParams {
   kpis: string[],
