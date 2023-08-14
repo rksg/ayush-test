@@ -45,42 +45,9 @@ export const api = dataApi.injectEndpoints({
       }),
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
-        [...response.network.hierarchyNode.configChanges
+        response.network.hierarchyNode.configChanges
           .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
-          .map((value, id)=>({ ...value, id })),
-        {
-          key: 'initialState.ccmZone.version',
-          name: 'Mesh-2_v70',
-          newValues: ['7.0.0.0.479'],
-          oldValues: ['7.0.0.0.446'],
-          timestamp: '1691388744380',
-          type: 'zone'
-        },
-        {
-          key: 'initialState.CcmApSpecifics.radio5g.radio.channel',
-          name: 'Mesh-2_v70',
-          newValues: ['7.0.0.0.479'],
-          oldValues: ['7.0.0.0.446'],
-          timestamp: '1691398744380',
-          type: 'ap'
-        },
-        {
-          key: 'initialState.CcmApSpecifics.radio5g.radio.channel',
-          name: 'Mesh-2_v70',
-          newValues: ['7.0.0.0.479'],
-          oldValues: ['7.0.0.0.446'],
-          timestamp: '1691378744380',
-          type: 'apGroup'
-        },
-        {
-          key: 'initialState.ccmZone.version',
-          name: 'Mesh-2_v70',
-          newValues: ['7.0.0.0.479'],
-          oldValues: ['7.0.0.0.446'],
-          timestamp: '1691368744380',
-          type: 'zone'
-        }
-        ]
+          .map((value, id)=>({ ...value, id }))
     }),
     configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },
