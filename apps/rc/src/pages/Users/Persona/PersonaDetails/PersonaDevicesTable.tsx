@@ -148,7 +148,6 @@ export function PersonaDevicesTable (props: {
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
     return dpskDevices
-      .filter(d => d.online)
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
@@ -210,6 +209,7 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
+      align: 'center',
       render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },

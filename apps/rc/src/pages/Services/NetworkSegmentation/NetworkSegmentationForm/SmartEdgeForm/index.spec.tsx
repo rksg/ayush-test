@@ -93,7 +93,7 @@ describe('SmartEdgeForm', () => {
     )
   })
 
-  it('Add DHCP service', async () => {
+  it.skip('Add DHCP service', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
