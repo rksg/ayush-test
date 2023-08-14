@@ -70,7 +70,7 @@ styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
     background-color: var(--acx-primary-white);
   }
 
-  .ant-table-cell-ellipsis.actions-column {
+  .ant-table-content, .ant-table-cell-ellipsis.actions-column {
     overflow: unset !important;
   }
 `
