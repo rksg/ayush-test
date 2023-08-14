@@ -4,7 +4,7 @@ import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps }   from '@acx-ui/components'
+import { Loader, NoData, showActionModal, Table, TableProps, Tabs }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
@@ -24,7 +24,6 @@ interface SubInterfaceTableProps {
   index: number
   ip: string
   mac: string
-  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
@@ -212,39 +211,27 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-
   const { data } = props
   const { $t } = useIntl()
-  const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
-  const [isFetching, setIsFetching] = useState(false)
-
-  useEffect(() => {
-    setTabDetails(data.map((item, index) => {
-      return {
-        label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-        value: 'port_' + (index + 1),
-        children: <SubInterfaceTable
-          index={index}
-          ip={item.statusIp}
-          mac={item.mac}
-          setIsFetching={setIsFetching} />
-      }
-    }))
-  }, [data, $t])
 
   return (
     data.length > 0 ?
-      <Loader states={[{
-        isLoading: false,
-        isFetching: isFetching
-      }]}>
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          defaultValue={'port_1'}
-          size='large'
-          align='left'
-        />
-      </Loader>
+      <Tabs defaultActiveKey='port_1' type='third'>
+        {
+          data.map((item, index) =>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Port {index}' }, { index: index + 1 })}
+              key={'port_' + (index + 1)}
+              children={
+                <SubInterfaceTable
+                  index={index}
+                  ip={item.statusIp}
+                  mac={item.mac}
+                />
+              } />
+          )
+        }
+      </Tabs>
       : <NoData />
   )
 }
