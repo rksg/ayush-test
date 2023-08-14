@@ -143,7 +143,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
 
   const RadioSelect = (props: SelectProps) => {
-    const isWPA3 = wlan?.wlanSecurity === WlanSecurityEnum.WPA3
+    const isWPA3 = wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE].includes(wlan?.wlanSecurity)
     const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
     if (!triBandRadioFeatureFlag || !isWPA3) {
       _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
