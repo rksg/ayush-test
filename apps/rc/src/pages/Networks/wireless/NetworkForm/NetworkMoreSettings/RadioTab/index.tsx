@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
@@ -34,7 +35,7 @@ function getDLMax (value : String) : number {
   switch (value) {
     case BssMinRateEnum.VALUE_1: return 1
     case BssMinRateEnum.VALUE_2: return 1
-    case BssMinRateEnum.VALUE_5_5: return 3
+    case BssMinRateEnum.VALUE_5_5: return 2
     case BssMinRateEnum.VALUE_12: return 6
     case BssMinRateEnum.VALUE_24: return 12
     default: return 6
@@ -55,7 +56,7 @@ export function RadioTab () {
     useWatch<string>('bssMinimumPhyRate')
   ]
 
-  const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinimumPhyRate))
+  const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
@@ -68,8 +69,12 @@ export function RadioTab () {
         managementFrameMinimumPhyRate: value
       })
     }
+    if (value === BssMinRateEnum.VALUE_1) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting'], false)
+    }
     form.setFieldValue(['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting'],
       getDownloadMaxValue())
+
   }
 
   const onOfdmChange = function (checked: boolean) {
