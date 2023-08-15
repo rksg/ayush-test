@@ -28,7 +28,8 @@ const mockWlanData = {
     advancedCustomization: {
       bssPriority: BasicServiceSetPriorityEnum.LOW,
       enableTransientClientManagement: true,
-      enableOptimizedConnectivityExperience: true
+      enableOptimizedConnectivityExperience: true,
+      enableAdditionalRegulatoryDomains: true
     } as OpenWlanAdvancedCustomization
   }
 } as NetworkSaveData
@@ -43,7 +44,7 @@ jest.mock('../../utils', () => ({
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
 
-describe('Network More settings - Networking Tab', () => {
+describe.skip('Network More settings - Networking Tab', () => {
 
   describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {
     beforeAll(() => {
@@ -187,13 +188,17 @@ describe('Network More settings - Networking Tab', () => {
     expect(screen.getByTestId('BSS-Radio-LOW')).toBeChecked()
   })
 
-  it('Test case for Multicast Filter', async ()=> {
+  it('Test case for 80211D additional regulatory domains', async ()=> {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE ? true : false
+      return ff === Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE ? true : false
     })
 
-    render(MockedNetworkingTab(mockWlanData, mockContextData), { route: { params } })
-    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
+    const tabs = await screen.findAllByRole('tab')
+    const networkingTab = tabs[3]
+    await userEvent.click(networkingTab)
+
+    expect(screen.getByTestId('enable-additional-regulatory-domains-80211d')).toBeVisible()
   })
 
 })

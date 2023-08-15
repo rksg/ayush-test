@@ -317,5 +317,6 @@ export { ReactComponent as APMeshRoleEthernet } from './icons/APMeshRoleEthernet
 export { ReactComponent as APMeshRoleMesh } from './icons/APMeshRoleMesh.svg'
 export { ReactComponent as APMeshRoleRoot } from './icons/APMeshRoleRoot.svg'
 export { ReactComponent as Blocked } from './icons/Blocked.svg'
+export { ReactComponent as Reload } from './icons/Reload.svg'
 
 export * from './styledComponents'

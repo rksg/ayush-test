@@ -53,8 +53,13 @@ export interface RadioContext {
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
 
+  isBandBalancingEnabled?: boolean,
+  isLoadBalancingEnabled?: boolean,
   isLoadBalancingDataChanged?: boolean,
   updateLoadBalancing?: (() => void)
+
+  isClientAdmissionControlDataChanged?: boolean,
+  updateClientAdmissionControl?: (() => void)
 }
 
 export const VenueEditContext = createContext({} as {
@@ -157,7 +162,7 @@ function processWifiTab (
   switch(editContextData?.unsavedTabKey){
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
-      editAdvancedContextData?.updateCssColoring?.()
+      editAdvancedContextData?.updateBssColoring?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)

@@ -9,6 +9,7 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
 import { useParams }                                                                           from '@acx-ui/react-router-dom'
@@ -19,6 +20,8 @@ import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayTex
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
+  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -49,7 +52,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
             readOnly
@@ -84,7 +87,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
             readOnly
@@ -98,8 +101,8 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Purpose' }),
       key: 'purpose',
       dataIndex: 'purpose',
-      render: function (data) {
-        return <FormattedMessage {...purposeDisplayText[data as AAA_Purpose_Type]}/>
+      render: function (_, { purpose }) {
+        return <FormattedMessage {...purposeDisplayText[purpose as AAA_Purpose_Type]}/>
       }
     }
   ]
@@ -115,9 +118,10 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Password' }),
       key: 'password',
       dataIndex: 'password',
-      render: function (data, row) {
+      render: function (_, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
+            style={{ paddingLeft: 0 }}
             readOnly
             bordered={false}
             value={row.password}
@@ -125,13 +129,26 @@ function useColumns (type: AAAServerTypeEnum) {
         </div>
       }
     },
+    ...( enableSwitchAdminPassword ? [{
+      title: $t({ defaultMessage: 'Use In' }),
+      key: 'syncedPasswordSwitchCount',
+      dataIndex: 'syncedPasswordSwitchCount',
+      render: function (data: React.ReactNode, row: LocalUser) {
+        return row?.switchCountInVenue
+          ? $t({ defaultMessage: '{syncedCount} out of {totalCount} switches' }, {
+            syncedCount: row?.syncedPasswordSwitchCount || 0,
+            totalCount: row.switchCountInVenue
+          })
+          : '--'
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Privilege' }),
       key: 'level',
       dataIndex: 'level',
       sorter: true,
-      render: function (data) {
-        return <FormattedMessage {...levelDisplayText[data as AAA_Level_Type]}/>
+      render: function (_, { level }) {
+        return <FormattedMessage {...levelDisplayText[level as AAA_Level_Type]}/>
       }
     }
   ]

@@ -69,12 +69,14 @@ export function SettingForm (props: DHCPFormProps) {
     data
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
+
   return (<>
     <Row gutter={20}>
       <Col span={10}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='id'
+          children={<></>}
           hidden
         />
         <Form.Item

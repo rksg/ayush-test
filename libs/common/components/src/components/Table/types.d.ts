@@ -33,7 +33,12 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * @default true
    */
   show?: boolean
-  // overwrite type of width to number for column resize
+  /**
+   * Width for the column, default to 120
+   *
+   * If `width: Infinity` the resulting width will be 360
+   * @default 120
+   */
   width?: number
   /**
    * Set the column to be searchable

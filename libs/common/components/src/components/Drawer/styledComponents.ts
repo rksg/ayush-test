@@ -1,10 +1,14 @@
 import { Drawer as AntDrawer } from 'antd'
 import styled                  from 'styled-components'
 
+import { disableStickyHeaders } from '../Table/styledComponents'
+
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
+
+    ${disableStickyHeaders}
   }
 `
 

@@ -80,16 +80,16 @@ export const mockedDpskPassphraseList = {
     }
   ],
   page: 1,
-  totalCount: 3,
+  totalCount: 4,
   totalPages: 1
 }
 
 export const mockedDpskPassphraseListWithPersona = {
   data: [
     {
-      id: '__PASSPHRASE_ID_1__',
+      id: '__PASSPHRASE_ID_99__',
       passphrase: 'abced12345',
-      username: 'DPSK_USER_1',
+      username: 'DPSK_USER_1_With_Persona',
       vlanId: 1,
       mac: null,
       numberOfDevices: 3,

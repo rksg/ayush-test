@@ -101,7 +101,10 @@ export const WifiNetworkMessages = {
     defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
   }),
   ENABLE_OWE_TOOLTIP: defineMessage({
-    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
+    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network.'
+  }),
+  ENABLE_OWE_TRANSITION_TOOLTIP: defineMessage({
+    defaultMessage: 'For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode.'
   }),
   NETWORK_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'By default, will be used as the network SSID as well. Length is limited to 2-32 characters (depending on the language you use)'

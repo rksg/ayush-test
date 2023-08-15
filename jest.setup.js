@@ -1,9 +1,6 @@
 require('whatwg-fetch')
 require('@testing-library/jest-dom')
 
-const { registerTsProject } = require('nx/src/utils/register')
-const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
-
 const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
@@ -44,6 +41,15 @@ var localStorageMock = (function() {
     }
   }
 })()
+
+const cleanStylesFromDOM = function() {
+  const head = document.getElementsByTagName('head')[0];
+  const styles = head.getElementsByTagName('style');
+
+  for (let i = 0; i < styles.length; i++) {
+    head.removeChild(styles[i]);
+  }
+}
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
@@ -106,9 +112,11 @@ afterEach(() => {
   Loader['instance']?.reset()
   mockInstances.clearAll()
 })
-afterAll(() => mockServer.close())
 
-cleanupRegisteredPaths()
+afterAll(() => {
+  mockServer.close()
+  cleanStylesFromDOM()
+})
 
 // from: https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(window, 'matchMedia', {

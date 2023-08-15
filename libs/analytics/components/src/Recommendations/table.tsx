@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
@@ -16,6 +16,7 @@ import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
+import { RecommendationActions }  from './RecommendationActions'
 import {
   useRecommendationListQuery,
   Recommendation,
@@ -38,10 +39,17 @@ export interface RecommendationRow extends Recommendation {
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
   const { activeTab } = useParams()
-  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
+  return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
+
+const disableMuteStatus: Array<RecommendationRow['statusEnum']> = [
+  'applyscheduled',
+  'applyscheduleinprogress',
+  'revertscheduled',
+  'revertscheduleinprogress'
+]
 
 export function RecommendationTable ({ filters, showCrrm }:
   { filters: IncidentFilter, showCrrm?: boolean }) {
@@ -58,7 +66,8 @@ export function RecommendationTable ({ filters, showCrrm }:
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
-    isMuted: boolean
+    isMuted: boolean,
+    statusEnum: RecommendationRow['statusEnum']
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
@@ -77,9 +86,16 @@ export function RecommendationTable ({ filters, showCrrm }:
         const { id, isMuted } = selectedRecommendation
         await muteRecommendation({ id, mute: !isMuted }).unwrap()
         setSelectedRowData([])
-      }
+      },
+      disabled: selectedRecommendation
+        && selectedRecommendation.statusEnum
+        && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
+
+  useEffect(() => {
+    setSelectedRowData([])
+  }, [queryResults.data])
 
   const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
     {
@@ -115,7 +131,6 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'summary',
       render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
       sorter: { compare: sortProp('summary', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     ...(showCrrm ? [] : [{
@@ -147,11 +162,19 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'status',
       render: (_, value ) => {
         return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
+          <UI.UnderlinedSpan $statusEnum={value.statusEnum}>{value.status}</UI.UnderlinedSpan>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
       filterable: true
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Actions' })),
+      key: 'id',
+      dataIndex: 'id',
+      width: 80,
+      align: 'left',
+      render: (_, value) => <RecommendationActions recommendation={value} />
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
@@ -159,7 +182,7 @@ export function RecommendationTable ({ filters, showCrrm }:
   return (
     <Loader states={[queryResults]}>
       <UI.RecommendationTableWrapper
-        settingsId='incident-table'
+        settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
@@ -170,7 +193,8 @@ export function RecommendationTable ({ filters, showCrrm }:
           onChange: (_, [row]) => {
             row && setSelectedRowData([{
               id: row.id,
-              isMuted: row.isMuted
+              isMuted: row.isMuted,
+              statusEnum: row.statusEnum
             }])
           }
         }}

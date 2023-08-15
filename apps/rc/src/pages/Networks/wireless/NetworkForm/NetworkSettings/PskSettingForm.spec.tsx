@@ -48,7 +48,7 @@ async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
-  const finish = await screen.findByText('Finish')
+  const finish = await screen.findByText('Add')
   await userEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }

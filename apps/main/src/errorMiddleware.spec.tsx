@@ -32,11 +32,11 @@ describe('getErrorContent', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 400 } } },
       payload: {}
-    } as unknown as ErrorAction).title).toBe('Server Error')
+    } as unknown as ErrorAction).title).toBe('Bad Request')
     expect(getErrorContent({
       meta: {},
       payload: { originalStatus: 400, data: { error: 'API-KEY not present' } }
-    } as unknown as ErrorAction).title).toBe('Server Error')
+    } as unknown as ErrorAction).title).toBe('Bad Request')
   })
   it('should handle 401', () => {
     expect(getErrorContent({
@@ -57,6 +57,12 @@ describe('getErrorContent', () => {
       meta: {},
       payload: { originalStatus: 403 }
     } as unknown as ErrorAction).title).toBe('Session Expired')
+  })
+  it('should handle 404', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 404 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Validation Error')
   })
   it('should handle 408', () => {
     expect(getErrorContent({
@@ -139,6 +145,15 @@ describe('getErrorContent', () => {
       payload: {}
     } as unknown as ErrorAction)).toThrow('some error')
   })
+  it('should show API error message', () => {
+    const req = new Request('/foo/bar')
+    req.headers.set('Build-In-Error-Modal', 'showApiError')
+
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 422 }, request: req } },
+      payload: { data: '[Validation Error]' }
+    } as unknown as ErrorAction).content).toBe('[Validation Error]')
+  })
 })
 
 describe('showErrorModal', () => {
@@ -155,13 +170,13 @@ describe('showErrorModal', () => {
       meta: { baseQueryMeta: { response: { status: 400 } } },
       payload: {}
     } as unknown as ErrorAction), callback: firstCallBack }) })
-    await screen.findByText('Server Error')
+    await screen.findByText('Bad Request')
 
     act(() => { showErrorModal({ ...getErrorContent({
       meta: { baseQueryMeta: { response: { status: 401 } } },
       payload: {}
     } as unknown as ErrorAction), callback: secondCallBack }) })
-    await screen.findByText('Server Error') // only show one of it
+    await screen.findByText('Bad Request') // only show one of it
 
     await userEvent.click(await screen.findByText('OK'))
     expect(firstCallBack).toBeCalled()

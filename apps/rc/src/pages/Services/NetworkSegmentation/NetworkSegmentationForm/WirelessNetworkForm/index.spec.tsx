@@ -134,7 +134,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Step3 - Wireless network will be not block by empty list', async () => {
@@ -159,7 +160,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       expect(mockedGetNetworkDeepList).toBeCalled()
     })
     await screen.findByRole('checkbox', { name: 'Network 1' })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Add tunnel profile', async () => {
@@ -173,7 +175,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[0])
     const tunnelDialog = await screen.findByRole('dialog')
     const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Policy Name' })
     await user.type(policyNameField, 'TestTunnel')
@@ -192,7 +195,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[0])
     const tunnelDialog = await screen.findByRole('dialog')
     await user.click(within(tunnelDialog).getByRole('button', { name: 'Cancel' }))
   })
