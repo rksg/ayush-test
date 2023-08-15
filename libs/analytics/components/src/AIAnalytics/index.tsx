@@ -4,7 +4,6 @@ import { PageHeader, Tabs }                      from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                        from '@acx-ui/user'
 
 import { useConfigChange }          from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
@@ -87,9 +86,7 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={get('IS_MLISA_SA')
-        ? tabs.find(({ key }) => key === tab)?.headerExtra
-        : filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra || [])}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

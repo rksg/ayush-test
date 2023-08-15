@@ -114,7 +114,7 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   }, 30000)
 
   it('should render breadcrumb correctly when feature flag is off', async () => {
@@ -223,7 +223,7 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     // TODO
     // await screen.findByText('Server Error')

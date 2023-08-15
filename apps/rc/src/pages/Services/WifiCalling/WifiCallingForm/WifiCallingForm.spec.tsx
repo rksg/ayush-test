@@ -217,7 +217,7 @@ describe('WifiCallingForm', () => {
 
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(mockedAddService).toBeCalledTimes(1)
   })
