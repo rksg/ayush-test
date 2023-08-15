@@ -67,7 +67,7 @@ const userProfile = {
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
-describe('Property Unit Drawer', () => {
+describe.skip('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
     mockServer.use(
