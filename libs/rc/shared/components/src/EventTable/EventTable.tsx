@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react'
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { DownloadOutlined }                  from '@acx-ui/icons'
-import { Event, TableQuery }                 from '@acx-ui/rc/utils'
-import { RequestPayload }                    from '@acx-ui/types'
+import { Loader, Table, TableProps, Button }        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { DownloadOutlined }                         from '@acx-ui/icons'
+import { Event, TableQuery }                        from '@acx-ui/rc/utils'
+import { RequestPayload }                           from '@acx-ui/types'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -54,12 +54,14 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const excludeProduct = [
-    ...(!isEdgeEnabled ? ['EDGE'] : [])
+    ...(!isEdgeEnabled ? ['EDGE'] : []),
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
   ]
 
   const columns: TableProps<Event>['columns'] = [
