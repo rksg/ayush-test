@@ -270,6 +270,7 @@ export const Buttons = styled(Space)`
 
 export const ApplyMsgWrapper = styled.div`
   padding: 0 12px;
+  white-space: normal;
 `
 
 export const HiddenDateInput = styled.div`
@@ -311,6 +312,7 @@ export const FooterWrapper = styled.div`
   line-height: 20px;
   font-size: 9.5px;
   margin-top: 5px;
+  width: 280px;
 
   button {
     float: right;
