@@ -40,9 +40,11 @@ describe('ActivityTable', () => {
     )
     await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
     await userEvent.click(screen.getByRole('button', { name: /2022/ }))
-    screen.getByText('Activity Details')
+    expect(screen.getByRole('dialog')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Activity Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {
@@ -54,12 +56,14 @@ describe('ActivityTable', () => {
     )
     await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
     await userEvent.click(screen.getAllByRole('button', { name: /2022/ })[0])
-    screen.getByText('Activity Details')
+    expect(screen.getByRole('dialog')).toBeVisible()
 
     const newTableQuery = {
       ...tableQuery, data: { data: [] }
     } as unknown as TableQuery<Activity, RequestPayload<unknown>, unknown>
     rerender(<Provider><ActivityTable tableQuery={newTableQuery} /></Provider>)
-    expect(screen.queryByText('Activity Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 })
