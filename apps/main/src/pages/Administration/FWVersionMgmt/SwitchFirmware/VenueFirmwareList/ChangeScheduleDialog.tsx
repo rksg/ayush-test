@@ -79,12 +79,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
   useEffect(() => {
     const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
-    const hasSelectedVersions = !_.isEmpty(selectedVersion) || !_.isEmpty(selectedAboveTenVersion)
     // eslint-disable-next-line max-len
     setDisableSave((!selectionChanged && !selectionAboveTenChanged && !scheduleDateChanged && !scheduleTimeChanged && !preDownloadChanged) ||
-      !hasSelectedDateAndTime || !hasSelectedVersions)
+      !hasSelectedDateAndTime)
   }, [selectionChanged, selectionAboveTenChanged, selectedDate, selectedTime, scheduleDateChanged,
-    scheduleTimeChanged, preDownloadChanged, selectedVersion, selectedAboveTenVersion ])
+    scheduleTimeChanged, preDownloadChanged ])
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {

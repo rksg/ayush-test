@@ -27,7 +27,7 @@ export function PersonaForm (props: {
       form.setFieldsValue(defaultValue)
 
       if (!defaultValue.groupId) return
-      setSelectedGroupId(defaultValue?.groupId)
+      onGroupChange(defaultValue?.groupId)
     }
   }, [defaultValue])
 
