@@ -160,10 +160,14 @@ describe('Firmware Venues Table', () => {
     fireEvent.click(changeButton)
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(5)
+    // eslint-disable-next-line max-len
+    const versionNotCheckedOptions = notCheckedOptions.filter(o => !(o as HTMLInputElement).value.includes('-'))
+    expect(versionNotCheckedOptions).toHaveLength(5)
 
     const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
-    expect(checkedOptions).toHaveLength(2)
+    // eslint-disable-next-line max-len
+    const versionCheckedOptions = checkedOptions.filter(o => !(o as HTMLInputElement).value.includes('-'))
+    expect(versionCheckedOptions).toHaveLength(2)
     // eslint-disable-next-line max-len
     expect(screen.getByRole('radio', { name: '9.0.10f_b401 (Release - Recommended)' })).toBeChecked()
 

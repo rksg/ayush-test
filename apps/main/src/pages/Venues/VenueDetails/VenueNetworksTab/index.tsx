@@ -103,6 +103,7 @@ export function VenueNetworksTab () {
     defaultPayload
   })
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -153,8 +154,8 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && row.deepNetwork.wlan &&
-              row.deepNetwork.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
+          if (triBandRadioFeatureFlag && row.deepNetwork.wlan?.wlanSecurity &&
+               [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(row.deepNetwork.wlan.wlanSecurity)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
@@ -179,6 +180,10 @@ export function VenueNetworksTab () {
     }
     const deepNetworkVenues = row.deepNetwork?.venues || []
     return deepNetworkVenues.find(v => v.venueId === params.venueId)
+  }
+
+  const isSystemCreatedNetwork = (row: Network) => {
+    return supportOweTransition && row.deepNetwork?.isOweMaster === false
   }
 
   // TODO: Waiting for API support
@@ -243,7 +248,7 @@ export function VenueNetworksTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
-        if(_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')){
+        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')) || isSystemCreatedNetwork(row)){
           disabled = true
         }else{
           title = ''
@@ -265,7 +270,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
       }
     },
     {
@@ -274,7 +279,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
       }
     },
     {
@@ -283,7 +288,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
       }
     },
     {
@@ -291,7 +296,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), isSystemCreatedNetwork(row))
       }
     }
   ]

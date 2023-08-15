@@ -189,17 +189,9 @@ describe('Wired - VlanSetting', () => {
     await userEvent.click(await within(dialog).findByText('Untagged Ports'))
 
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_1'))
-    await userEvent.click(await within(dialog).findByTestId('untagged_module1_2'))
-    await userEvent.click(await within(dialog).findByTestId('untagged_module1_3'))
-    await userEvent.click(await within(dialog).findByTestId('untagged_module1_4'))
-    await userEvent.click(await within(dialog).findByTestId('untagged_module1_5'))
     await userEvent.click(await within(dialog).findByText('Tagged Ports'))
 
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_6'))
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_7'))
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_8'))
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_9'))
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_10'))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })

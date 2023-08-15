@@ -258,7 +258,11 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         onFinish={handleSubmit}
       >
         <Form.Item name='id' initialValue='' noStyle children={<Input type='hidden' />} />
-        <Form.Item name='aclRules' initialValue={[defaultStandardRuleList]} noStyle/>
+        <Form.Item name='aclRules'
+          initialValue={[defaultStandardRuleList]}
+          noStyle
+          children={<></>}
+        />
         <Form.Item
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
