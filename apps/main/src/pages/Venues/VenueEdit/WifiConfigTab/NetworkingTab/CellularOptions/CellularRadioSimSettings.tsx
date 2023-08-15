@@ -79,6 +79,10 @@ export function CellularRadioSimSettings (props: {
         name={['editData', props.formControlName, 'apn']}
         label={$t({ defaultMessage: 'APN:' })}
         initialValue={1}
+        rules={[
+          { pattern: /^([!-?A-~]([!-?A-~]){0,62}[!-?A-~]|[!-?A-~]?)$/,
+            message: $t({ defaultMessage: 'APN is invalid' }) }
+        ]}
         children={<Input style={{ width: '150px' }}></Input>}
       />
 
