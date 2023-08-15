@@ -481,6 +481,13 @@ export default function NetworkForm (props:{
         )
       }
     }
+
+    const advancedCustomization = data?.wlan?.advancedCustomization
+    if(advancedCustomization?.clientIsolation === false) {
+      advancedCustomization.clientIsolationOptions = { autoVrrp: false }
+
+      saveContextRef.current = { ...saveState, ...data }
+    }
   }
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
