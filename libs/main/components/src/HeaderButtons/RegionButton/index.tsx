@@ -32,7 +32,7 @@ export default function RegionButton () {
     if(userProfile && mspEcProfileData){
       const isMspEc = mspUtils.isMspEc(mspEcProfileData)
       if(userProfile.tenantId === userProfile.varTenantId
-      && !isMspEc && userProfile.allowedRegions.length > 1){
+      && !isMspEc && userProfile.allowedRegions?.length > 1){
         setRegionEnable(true)
       }
     }
