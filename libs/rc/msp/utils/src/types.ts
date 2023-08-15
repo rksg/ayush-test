@@ -57,6 +57,7 @@ export interface MspEc {
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   edgeLicenses?: string;
   assignedMspEcList: string[];
   creationDate: number;

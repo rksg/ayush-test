@@ -366,7 +366,7 @@ export function MspCustomers () {
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return transformApEntitlement(row)
+          return row.apswLicenses || 0
         }
       },
       {

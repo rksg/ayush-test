@@ -112,7 +112,8 @@ export function AssignMspLicense () {
           serviceExpirationDate:
             wifi.length > 0 ? moment(wifi[0].dateExpires) : moment().add(30,'days'),
           wifiLicenses: wLic,
-          switchLicenses: sLic
+          switchLicenses: sLic,
+          apswLicenses: apswLic
         })
       } else {
         checkAvailableLicense(licenseSummary)
