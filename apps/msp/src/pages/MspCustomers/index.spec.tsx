@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
@@ -176,6 +177,7 @@ describe('MspCustomers', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   afterEach(() => {
     jest.clearAllMocks()
