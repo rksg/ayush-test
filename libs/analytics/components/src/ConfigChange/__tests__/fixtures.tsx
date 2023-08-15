@@ -1,5 +1,13 @@
 export const configChanges = [
   {
+    timestamp: '1685427082100',
+    type: 'zone',
+    name: 'Config_change_WLAN2',
+    key: 'initialState.ccmZone.management_identifiers.map_entries.venueName',
+    oldValues: ['Config_change_WLAN'],
+    newValues: ['Config_change_WLAN2']
+  },
+  {
     timestamp: '1685427082200',
     type: 'ap',
     name: '94:B3:4F:3D:21:80',
