@@ -62,7 +62,8 @@ import {
   VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP,
-  VenueClientAdmissionControl
+  VenueClientAdmissionControl,
+  RogueApLocation
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -700,6 +701,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getRogueApLocation: build.query<RogueApLocation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRogueApLocation, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
@@ -1243,6 +1252,7 @@ export const {
   useBulkDeleteAAAServerMutation,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
+  useGetRogueApLocationQuery,
   useGetVenueRogueApQuery,
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,

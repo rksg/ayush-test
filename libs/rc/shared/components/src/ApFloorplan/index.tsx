@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Switch } from 'antd'
@@ -7,25 +6,44 @@ import { HTML5Backend }     from 'react-dnd-html5-backend'
 import { useIntl }          from 'react-intl'
 import { Link, useParams }  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { useApListQuery, useGetFloorPlanQuery }                                                  from '@acx-ui/rc/services'
-import { ApPosition, FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                                                      from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { useApListQuery, useGetFloorPlanQuery, useGetRogueApLocationQuery } from '@acx-ui/rc/services'
+import {
+  ApPosition,
+  DetectingNode,
+  FloorplanContext,
+  getImageFitPercentage,
+  NetworkDevice,
+  NetworkDeviceType
+} from '@acx-ui/rc/utils'
+import { useTenantLink }    from '@acx-ui/react-router-dom'
+import { loadImageWithJWT } from '@acx-ui/utils'
 
 import { NetworkDeviceMarker }           from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
+import { RogueApLocationMarker }         from '../FloorPlan/NetworkDevices/RogueApLocationMarker'
 import { ApMeshConnections }             from '../FloorPlan/NetworkDevices/useApMeshDevice'
 import { ApMeshTopologyContextProvider } from '../FloorPlan/PlainView/ApMeshTopologyContext'
 
 
 export function ApFloorplan (props: {
-    activeDevice: NetworkDevice,
-    venueId: string,
-    apPosition: ApPosition,
-    allDevices?: NetworkDevice[]
+  activeDevice: NetworkDevice,
+  venueId: string,
+  apPosition: ApPosition,
+  allDevices?: NetworkDevice[],
+  detectingNodes?: NetworkDevice[],
+  rogueApMac?: string,
+  rogueCategory?: string,
+  numLocatingAps?: number
 }) {
 
-  const { activeDevice, venueId, apPosition, allDevices = [] } = props
+  const {
+    activeDevice,
+    venueId,
+    apPosition,
+    rogueApMac = '',
+    rogueCategory = '',
+    numLocatingAps = 0
+  } = props
 
   const params = useParams()
   const imageRef = useRef<HTMLImageElement>(null)
@@ -39,51 +57,76 @@ export function ApFloorplan (props: {
   // eslint-disable-next-line max-len
   const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
-  const { data: extendedApList } = useApListQuery({ params, payload: {
-    filters: {
-      floorplanId: [apPosition?.floorplanId]
+  const { data: extendedApList } = useApListQuery({
+    params, payload: {
+      filters: {
+        floorplanId: [apPosition?.floorplanId]
+      }
     }
-  } })
+  })
+
+  const { data: rogueApDevices } = useGetRogueApLocationQuery({ params: {
+    ...params,
+    rogueMac: rogueApMac,
+    numLocatingAps: numLocatingAps.toString()
+  } }, { skip: !rogueApMac })
 
   useEffect(() => {
     if (extendedApList) {
-      const _apDeviceList: NetworkDevice[] = []
-      extendedApList?.data.map(apDevice => {
-        let rogueCategory = {}
-        if (allDevices.some(device => device.id === apDevice.serialNumber)) {
-          rogueCategory = {
-            rogueCategory: allDevices
-              .filter(device => device.id === apDevice.serialNumber)[0].rogueCategory
+      const detectingNodes = rogueApDevices?.detectingNodes
+        .reduce((a, device) => {
+          if (!a.hasOwnProperty(device.serialNumber)) {
+            a[device.serialNumber] = device
           }
-        }
-        const _apDevice: NetworkDevice = {
-          id: apDevice.serialNumber,
-          name: apDevice.name,
-          serialNumber: apDevice.serialNumber,
-          networkDeviceType: NetworkDeviceType.ap,
-          deviceStatus: apDevice.deviceStatus,
-          position: {
-            floorplanId: apPosition?.floorplanId,
-            xPercent: apDevice?.xPercent || 0,
-            yPercent: apDevice?.yPercent || 0
-          },
-          // highlighting only current AP device
-          // other AP devices will be blured with low opacity
-          isActive: apDevice.serialNumber === activeDevice?.serialNumber,
-          ...rogueCategory
-        } as NetworkDevice
+          return a
+        }, {} as { [key: string]: DetectingNode })
+      const _apDeviceList: NetworkDevice[] = []
+      extendedApList?.data
+        .filter(apDevice => {
+          if (rogueApMac && detectingNodes) {
+            return Object.keys(detectingNodes).includes(apDevice.serialNumber)
+          }
+          return true
+        })
+        .map(apDevice => {
+          let rogueApLocationInfo = {}
+          if (rogueApMac && detectingNodes) {
+            rogueApLocationInfo = {
+              snr: detectingNodes[apDevice.serialNumber].snr,
+              macAddress: detectingNodes[apDevice.serialNumber].apMac
+            }
+          }
+          const _apDevice: NetworkDevice = {
+            id: apDevice.serialNumber,
+            name: apDevice.name,
+            serialNumber: apDevice.serialNumber,
+            networkDeviceType: rogueApMac ? NetworkDeviceType.rogue_ap : NetworkDeviceType.ap,
+            deviceStatus: apDevice.deviceStatus,
+            position: {
+              floorplanId: apPosition?.floorplanId,
+              xPercent: apDevice?.xPercent || 0,
+              yPercent: apDevice?.yPercent || 0
+            },
+            rogueCategory: apDevice?.rogueCategory,
+            rogueCategoryType: rogueCategory,
+            isActive: rogueApMac ? true : apDevice.serialNumber === activeDevice?.serialNumber,
+            ...rogueApLocationInfo
+          } as NetworkDevice
 
-        _apDeviceList.push(_apDevice)
-      })
+          _apDeviceList.push(_apDevice)
+        })
 
       setApList(_apDeviceList)
-
     }
-  }, [extendedApList, allDevices])
+  }, [extendedApList, rogueApDevices])
 
   const { data: floorplan } =
-   useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
-     floorPlanId: apPosition?.floorplanId } })
+    useGetFloorPlanQuery({
+      params: {
+        tenantId: params.tenantId, venueId,
+        floorPlanId: apPosition?.floorplanId
+      }
+    })
 
   useEffect(() => {
     if (floorplan?.imageId) {
@@ -140,7 +183,7 @@ export function ApFloorplan (props: {
       <Col>
         {isApMeshTopologyFFOn &&
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
+            <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled}/>
             {$t({ defaultMessage: 'Show Mesh Topology' })}
           </div>
         }
@@ -153,35 +196,42 @@ export function ApFloorplan (props: {
         margin: '0 auto',
         width: `calc(${100 * containerWidth}%)`
       }}>
-      { imageLoaded && <DndProvider backend={HTML5Backend}>
-        { apList && apPosition?.floorplanId && <ApMeshTopologyContextProvider
+      {imageLoaded && <DndProvider backend={HTML5Backend}>
+        {apList && apPosition?.floorplanId && <ApMeshTopologyContextProvider
           isApMeshTopologyEnabled={isApMeshTopologyEnabled}
           floorplanId={apPosition.floorplanId}
           venueId={venueId}
           children={<>{
-            apList.map( (device: NetworkDevice) =>
+            apList.map((device: NetworkDevice) =>
               <NetworkDeviceMarker
                 key={device?.serialNumber}
                 galleryMode={false}
                 contextAlbum={false}
                 showRogueAp={true}
+                perRogueApModel={!!rogueApMac}
                 context={FloorplanContext['ap']}
                 device={device}
-                forbidDrag={true}/>)
+                forbidDrag={true}/>
+            )
           }
-          <ApMeshConnections />
+          <RogueApLocationMarker
+            rogueApDevices={rogueApDevices}
+          />
+          <ApMeshConnections/>
           </>}
         />}
-      </DndProvider> }
+      </DndProvider>}
       <img
         data-testid='floorPlanImage'
         onLoad={onImageLoad}
-        style={{ maxHeight: '100%',
+        style={{
+          maxHeight: '100%',
           width: '100%',
-          border: 'none' }}
+          border: 'none'
+        }}
         ref={imageRef}
         alt={floorplan?.name}
-        src={imageUrl} />
+        src={imageUrl}/>
     </div>
   </div>
 }

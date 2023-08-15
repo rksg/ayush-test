@@ -4,13 +4,15 @@ import { Badge, Divider, Tooltip } from 'antd'
 import { useIntl }                 from 'react-intl'
 import { useParams }               from 'react-router-dom'
 
-import { Alert, Button, Card, Descriptions, Modal }                      from '@acx-ui/components'
-import { VenueMarkerGrey, VenueMarkerRed }                               from '@acx-ui/icons'
-import { ApFloorplan }                                                   from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery, useGetAllDevicesQuery } from '@acx-ui/rc/services'
+import { Alert, Button, Card, Descriptions, Modal } from '@acx-ui/components'
+import { VenueMarkerGrey, VenueMarkerRed }          from '@acx-ui/icons'
+import { ApFloorplan }                              from '@acx-ui/rc/components'
+import {
+  useApDetailsQuery,
+  useApViewModelQuery
+} from '@acx-ui/rc/services'
 import {
   NetworkDevice,
-  NetworkDevicePayload,
   NetworkDevicePosition,
   NetworkDeviceType,
   RogueDeviceCategory,
@@ -49,16 +51,6 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
         venueName: currentAP?.venueName
       }
     }, { skip: !currentAP })
-
-  const networkDevicePayload: NetworkDevicePayload = {
-    // eslint-disable-next-line max-len
-    fields: ['id', 'name', 'switchName', 'deviceStatus', 'serialNumber', 'rogueCategory', 'floorplanId', 'xPercent', 'yPercent'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
-
-  const getNetworkDevices = useGetAllDevicesQuery({ params, payload: networkDevicePayload })
 
   useEffect(() => {
     if(currentAP) {
@@ -130,7 +122,9 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
             activeDevice={currentApDevice}
             venueId={apDetails?.venueId as string}
             apPosition={apDetails?.position as NetworkDevicePosition}
-            allDevices={getNetworkDevices?.data?.data[0].ap as NetworkDevice[]}
+            rogueApMac={row.rogueMac}
+            rogueCategory={row.category}
+            numLocatingAps={row.numberOfDetectingAps}
           /> : null }
           {/* eslint-disable-next-line max-len */}
           <Alert message={$t({ defaultMessage: 'Note: Rogue AP placement is intended as an approximation, many factors can affect the output of this visualization.' })} type='warning' showIcon />

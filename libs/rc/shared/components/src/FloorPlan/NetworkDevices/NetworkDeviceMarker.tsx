@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 
 import { Badge, Tooltip } from 'antd'
 import { isEmpty }        from 'lodash'
@@ -6,7 +6,7 @@ import { useDrag }        from 'react-dnd'
 
 import { deviceCategoryColors } from '@acx-ui/components'
 import {
-  DeviceOutlined,
+  DeviceOutlined, SignalBad, SignalExcellent, SignalGood, SignalPoor,
   SignalUp
 } from '@acx-ui/icons'
 import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
@@ -18,7 +18,22 @@ import * as UI                                                                  
 import { useApMeshDevice }                                                          from './useApMeshDevice'
 import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
 
+const renderSignal = (snr: number) => {
+  if (snr <= 10) return <SignalBad fill={'white'} stroke={'white'} width={12} height={12} />
 
+  const value = Math.floor(snr / 10)
+  if (value >= 4) {
+    return <SignalExcellent fill={'white'} stroke={'white'} width={12} height={12} />
+  }
+  if (value >= 3) {
+    return <SignalGood fill={'white'} stroke={'white'} width={12} height={12} />
+  }
+  if (value >= 2) {
+    return <SignalPoor fill={'white'} stroke={'white'} width={12} height={12} />
+  }
+
+  return <SignalBad fill={'white'} stroke={'white'} width={12} height={12} />
+}
 
 
 export function NetworkDeviceMarker ({
@@ -27,13 +42,15 @@ export function NetworkDeviceMarker ({
   context,
   device,
   forbidDrag = false,
-  showRogueAp = false
+  showRogueAp = false,
+  perRogueApModel = false
 }:{ galleryMode: boolean,
     contextAlbum: boolean,
     context: FloorplanContext,
     device: NetworkDevice,
     forbidDrag?: boolean,
-    showRogueAp?: boolean
+    showRogueAp?: boolean,
+    perRogueApModel?: boolean
 }) {
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
@@ -75,6 +92,9 @@ export function NetworkDeviceMarker ({
    calculateApColor(device?.deviceStatus, showRogueAp, context, device)
 
   const getDeviceTooltip = () => {
+    if (perRogueApModel) {
+      return <RogueApLocationTooltip rogueApLocationInfo={device} />
+    }
     if (showRogueAp && device?.rogueCategory) {
       return <RogueApTooltip rogueApInfo={allVenueRogueApAttr}/>
     }
@@ -122,7 +142,7 @@ export function NetworkDeviceMarker ({
           } </div>
         {isApMeshEnabled && getApMeshRoleIcon()}
         {
-          allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber &&
+          allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber && !perRogueApModel &&
           <UI.RogueApCountBadge
             data-testid='rogueApBadge'
             className={`mark-number-rogue
@@ -207,5 +227,21 @@ export function RogueApTooltip ({ rogueApInfo }:{
           }
         </div>
     }
+  </div>
+}
+
+export function RogueApLocationTooltip ({ rogueApLocationInfo }:{
+  rogueApLocationInfo: NetworkDevice
+}){
+  const { $t } = getIntl()
+
+  return <div style={{ fontSize: '11px' }}>
+    <div>{$t({ defaultMessage: 'Detecting AP:' })} {rogueApLocationInfo.name}<br /></div>
+    <div>{$t({ defaultMessage: 'MAC Address:' })} {rogueApLocationInfo.macAddress}<br /></div>
+    {/* eslint-disable-next-line max-len */}
+    <div style={{ display: 'flex', justifyItems: 'center' }}>
+      {/* eslint-disable-next-line max-len */}
+      {$t({ defaultMessage: 'SNR:' })} {rogueApLocationInfo.snr} dB {renderSignal(rogueApLocationInfo.snr ?? 0)}
+    </div>
   </div>
 }

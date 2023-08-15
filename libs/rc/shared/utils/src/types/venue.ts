@@ -142,6 +142,28 @@ export interface NetworkDevice {
   meshRole?: APMeshRole;
 }
 
+export interface RogueApLocation {
+  category: string,
+  classificationPolicyName: string,
+  classificationRuleName: string,
+  detectingNodes: DetectingNode[],
+  floorPlanId: string,
+  rogueMac: string,
+  ssid: string,
+  xPercent?: number,
+  yPercent?: number
+}
+
+export interface DetectingNode {
+  apMac: string,
+  floorPlanId: string,
+  name: string,
+  serialNumber: string,
+  snr: number,
+  xPercent: number,
+  yPercent: number
+}
+
 export interface RogueApInfo {
 	deviceColor: string;
     rogueSnrClass?: string;
