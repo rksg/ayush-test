@@ -88,7 +88,7 @@ describe('ApLldpNeighbors', () => {
       data: {
         errors: [
           {
-            code: 'WIFI-99999',
+            code: 'WIFI-56789',
             message: 'error occurs'
           }
         ],

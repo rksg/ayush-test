@@ -51,7 +51,8 @@ export function useApNeighbors (initRequestId: string, handler: () => void) {
 
   const handleError = (error: CatchErrorResponse) => {
     const code = error?.data?.errors?.[0]?.code
-    const message: MessageDescriptor = code
+    const isDefinedCode = code && errorTypeMapping[code]
+    const message: MessageDescriptor = isDefinedCode
       ? ApErrorHandlingMessages[errorTypeMapping[code]]
       : ApErrorHandlingMessages.ERROR_OCCURRED
 

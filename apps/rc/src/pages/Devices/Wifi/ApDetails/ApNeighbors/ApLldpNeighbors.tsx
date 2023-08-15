@@ -69,10 +69,14 @@ export default function ApLldpNeighbors () {
     return isLoadingApLldpNeighbors || detectionStatus === DetectionStatus.FETCHING
   }
 
+  const getRowKey = (record: ApLldpNeighbor): string => {
+    return record.lldpTime + (record.lldpPortID ?? '') + (record.lldpChassisID ?? '')
+  }
+
   return <Loader states={[{ isLoading: isTableLoading() }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
-      rowKey='lldpPortID'
+      rowKey={getRowKey}
       columns={useColumns(setDetailsDrawerVisible, setSelectedApLldpNeighbor)}
       dataSource={tableData?.neighbors ?? []}
       actions={filterByAccess(tableActions)}
