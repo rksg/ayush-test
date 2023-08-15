@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import { useContext, useState, useEffect, Key, SetStateAction } from 'react'
+import { useContext, useState, useEffect, Key } from 'react'
 
 import { FormInstance, Row, Form, Switch, Space, Input } from 'antd'
 import { useIntl }                                       from 'react-intl'
@@ -247,18 +247,23 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
   const { $t } = useIntl()
   const [enabled, setEnabled] = useState(false)
   const [dscpLowValue, setDscpLowValue] = useState(0)
+  const [dscpHighValue, setDscpHighValue] = useState(0)
   const [disableInput, setDisableInput] = useState(false)
   const { form, qosMapRule, setQosMapRule, qosMapRulesList } = props
 
   useEffect(() => {
     if(qosMapRule){
       form.setFieldsValue(qosMapRule)
+
       setEnabled(qosMapRule?.enabled || false)
-      setDscpLowValue(qosMapRule?.dscpLow)
       if (qosMapRule?.enabled === false){
         setDisableInput(true)
+        setDscpLowValue(255)
+        setDscpHighValue(255)
       } else {
         setDisableInput(false)
+        setDscpLowValue(qosMapRule?.dscpLow)
+        setDscpHighValue(qosMapRule?.dscpHigh)
       }
     }
   }, [form, qosMapRule])
@@ -268,13 +273,18 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     if (e === false){
       setDisableInput(true)
       setDscpLowValue(255)
+      setDscpHighValue(255)
     } else {
       setDisableInput(false)
     }
   }
 
-  const handleInputNumberChange = (value: number) => {
-    setDscpLowValue(value)
+  const handleDscpLowInput = (value: string) => {
+    setDscpLowValue(Number(value))
+  }
+
+  const handleDscpHighInput = (value: string) => {
+    setDscpHighValue(Number(value))
   }
 
   return (
@@ -285,6 +295,16 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
         onFinish={(data: QosMapSetOptions) => {
           if (data?.dscpExceptionValues === undefined){
             data.dscpExceptionValues = []
+          }
+          if (dscpLowValue === 255){
+            data.dscpLow = 255
+          } else {
+            data.dscpLow = dscpLowValue
+          }
+          if (dscpHighValue === 255){
+            data.dscpHigh = 255
+          } else {
+            data.dscpHigh = dscpHighValue
           }
           setQosMapRule({
             ...data
@@ -318,15 +338,31 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
         <UI.FieldLabel width='200px'>
           <Row>
             <Form.Item
-              name={'dscpLow'}
-              children={<Input style={{ width: '65px' }} value={dscpLowValue} disabled={disableInput} />}
+              children={
+                <Input
+                  style={{ width: '65px' }}
+                  value={dscpLowValue}
+                  onChange={
+                    (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpLowInput(e.target.value)
+                  }
+                  disabled={disableInput}
+                />
+              }
             />
             <label style={{ marginTop: '7px', marginLeft: '15px', marginRight: '15px' }}>
               {'-'}
             </label>
             <Form.Item
-              name={'dscpHigh'}
-              children={<Input style={{ width: '65px' }} disabled={disableInput} />}
+              children={
+                <Input
+                  style={{ width: '65px' }}
+                  value={dscpHighValue}
+                  onChange={
+                    (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpHighInput(e.target.value)
+                  }
+                  disabled={disableInput}
+                />
+              }
             />
           </Row>
         </UI.FieldLabel>
@@ -354,4 +390,3 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     </div>
   )
 }
-
