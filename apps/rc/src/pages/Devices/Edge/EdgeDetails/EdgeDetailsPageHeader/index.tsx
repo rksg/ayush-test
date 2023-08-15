@@ -58,6 +58,28 @@ export const EdgeDetailsPageHeader = () => {
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
 
+  const menuConfig = [
+    {
+      label: $t({ defaultMessage: 'Reboot' }),
+      key: 'reboot',
+      showUpStatus: [EdgeStatusEnum.OPERATIONAL]
+    },
+    {
+      label: $t({ defaultMessage: 'Reset and Recover' }),
+      key: 'factoryReset',
+      showUpStatus: [
+        EdgeStatusEnum.OPERATIONAL,
+        EdgeStatusEnum.APPLYING_CONFIGURATION,
+        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
+      ]
+    },
+    {
+      label: $t({ defaultMessage: 'Delete SmartEdge' }),
+      key: 'delete',
+      showUpStatus: [...Object.values(EdgeStatusEnum)]
+    }
+  ]
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!currentEdge) return
@@ -82,16 +104,7 @@ export const EdgeDetailsPageHeader = () => {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[{
-        label: $t({ defaultMessage: 'Reboot' }),
-        key: 'reboot'
-      }, {
-        label: $t({ defaultMessage: 'Reset and Recover' }),
-        key: 'factoryReset'
-      }, {
-        label: $t({ defaultMessage: 'Delete SmartEdge' }),
-        key: 'delete'
-      }].filter(item => currentEdgeOperational || item.key === 'delete')}
+      items={menuConfig.filter(item => item.showUpStatus.includes(status))}
     />
   )
 
