@@ -646,13 +646,14 @@ export function RadioSettings () {
                 }
                 tab={<RadioLable style={{ width: '60px' }}>
                   {$t({ defaultMessage: '6 GHz' })}
-                  <Tooltip
-                    placement='topRight'
-                    title={$t({ defaultMessage: '6 GHz only supports R770 and R560.' })}
-                  >
-                    <QuestionMarkCircleOutlined
-                      style={{ height: '16px' }} />
-                  </Tooltip>
+                  {isDual5gMode &&
+                    <Tooltip
+                      placement='topRight'
+                      title={$t({ defaultMessage: '6 GHz only supports R770 and R560.' })}
+                    >
+                      <QuestionMarkCircleOutlined
+                        style={{ height: '16px' }} />
+                    </Tooltip>}
                 </RadioLable>}/>
             }
             { isTriBandRadio && isDual5gMode && <>
