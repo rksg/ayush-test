@@ -180,6 +180,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           dataSource={dataSource}
           type='form'
           rowKey='id'
+          alwaysShowFilters={true}
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
