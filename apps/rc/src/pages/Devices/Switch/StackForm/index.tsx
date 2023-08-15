@@ -58,7 +58,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
-  VenueMessages
+  VenueMessages,
+  SwitchRow
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -118,7 +119,7 @@ export function StackForm () {
   const [isIcx7650, setIsIcx7650] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
-  const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchViewModel[])
+  const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(3)
@@ -255,7 +256,7 @@ export function StackForm () {
           disabled: false
         })) ?? []
 
-        setStandaloneSwitches(switchList as SwitchViewModel[])
+        setStandaloneSwitches(switchList as SwitchRow[])
         setTableData(switchTableData as SwitchTable[])
         setRowKey(stackSwitches?.length ?? 0)
         formRef?.current?.setFieldValue('venueId', venueId)
@@ -267,6 +268,12 @@ export function StackForm () {
       getStandaloneSwitches()
     }
   }, [venuesList, switchData, switchDetail])
+
+  useEffect(() => {
+    if (tableData) {
+      formRef?.current?.validateFields()
+    }
+  }, [tableData])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -453,7 +460,12 @@ export function StackForm () {
       show: editMode,
       render: (_, row) => {
         return (
-          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
+          <div data-testid={`${row.key}_Icon`}
+            style={{
+              textAlign: 'center',
+              verticalAlign: 'middle',
+              paddingTop: '10px'
+            }}><DragHandle /></div>
         )
       }
     },
@@ -473,7 +485,7 @@ export function StackForm () {
       render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
-          validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
+          validateTrigger={['onKeyUp', 'onFocus', 'onBlur', 'onInputKeyDown']}
           rules={[
             {
               required: activeRow === row.key ? true : false,
@@ -486,7 +498,7 @@ export function StackForm () {
         >{ isStackSwitches
             ? <Select
               options={standaloneSwitches?.map(s => ({
-                label: s.serialNumber, value: s.serialNumber
+                label: s.serialNumber, value: s.serialNumber, name: s.name
               }))}
               onChange={value => {
                 setTableData(tableData.map(d =>
@@ -503,6 +515,16 @@ export function StackForm () {
           }</Form.Item>)
       }
     },
+    ...(isStackSwitches ? [{
+      title: $t({ defaultMessage: 'Switch Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        const selected = standaloneSwitches.find(s => s.serialNumber === row.id)
+        const content = selected?.name || selected?.serialNumber || '--'
+        return <div>{content}</div>
+      }
+    }] : []),
     ...(!isStackSwitches ? [{
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
@@ -676,7 +698,8 @@ export function StackForm () {
             ]}
           >
             <Row gutter={20}>
-              <Col span={8}>
+              <Col span={12}>
+
                 <Tabs onChange={onTabChange}
                   activeKey={currentTab}
                   type='line'
@@ -689,92 +712,96 @@ export function StackForm () {
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                   {readOnly &&
                     <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                  <Form.Item
-                    name='venueId'
-                    label={$t({ defaultMessage: 'Venue' })}
-                    rules={[
-                      {
-                        required: true,
-                        message: $t({ defaultMessage: 'This field is required' })
-                      }
-                    ]}
-                    initialValue={null}
-                  >
-                    <Select
-                      options={venueOption}
-                      onChange={async (value) => await handleVenueChange(value)}
-                      disabled={readOnly || editMode || isStackSwitches}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name='name'
-                    label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
-                    rules={[{ max: 255 }]}
-                  >
-                    <Input disabled={readOnly} />
-                  </Form.Item>
-                  {!isStackSwitches && <Form.Item
-                    name='description'
-                    label={$t({ defaultMessage: 'Description' })}
-                    rules={[{ max: 64 }]}
-                    initialValue={''}
-                  ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
-                  {!editMode && !isStackSwitches && <Form.Item
-                    name='initialVlanId'
-                    label={
-                      <>
-                        {$t({ defaultMessage: 'DHCP Client' })}
-                        <Tooltip.Question
-                          title={$t({
-                            defaultMessage:
-                              // eslint-disable-next-line max-len
-                              'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
-                          })}
-                          placement='bottom'
-                        />
-                      </>
-                    }
-                    initialValue={null}
-                  >
-                    <Select
-                      disabled={readOnly || apGroupOption?.length === 0}
-                      options={[
-                        {
-                          label: $t({ defaultMessage: 'Select VLAN...' }),
-                          value: null
-                        },
-                        ...apGroupOption
-                      ]}
-                    />
-                  </Form.Item>
-                  }
-                  { isIcx7650 &&
-                  <Form.Item>
-                    <Space style={{ fontSize: '12px', marginRight: '8px' }}>{
-                      $t({ defaultMessage: 'Stack with 40G ports on module 3 ' })
-                    }</Space>
+                  <Col span={14} style={{ padding: '0' }}>
                     <Form.Item
-                      noStyle
-                      name='rearModuleOption'
-                      valuePropName='checked'
+                      name='venueId'
+                      label={$t({ defaultMessage: 'Venue' })}
+                      rules={[
+                        {
+                          required: true,
+                          message: $t({ defaultMessage: 'This field is required' })
+                        }
+                      ]}
+                      initialValue={null}
                     >
-                      <AntSwitch disabled={editMode} />
+                      <Select
+                        options={venueOption}
+                        onChange={async (value) => await handleVenueChange(value)}
+                        disabled={readOnly || editMode || isStackSwitches}
+                      />
                     </Form.Item>
-                  </Form.Item>
-                  }
+                    <Form.Item
+                      name='name'
+                      label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
+                      rules={[{ max: 255 }]}
+                    >
+                      <Input disabled={readOnly} />
+                    </Form.Item>
+                    {!isStackSwitches && <Form.Item
+                      name='description'
+                      label={$t({ defaultMessage: 'Description' })}
+                      rules={[{ max: 64 }]}
+                      initialValue={''}
+                    ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
+                    {!editMode && !isStackSwitches && <Form.Item
+                      name='initialVlanId'
+                      label={
+                        <>
+                          {$t({ defaultMessage: 'DHCP Client' })}
+                          <Tooltip.Question
+                            title={$t({
+                              defaultMessage:
+                                // eslint-disable-next-line max-len
+                                'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
+                            })}
+                            placement='bottom'
+                          />
+                        </>
+                      }
+                      initialValue={null}
+                    >
+                      <Select
+                        disabled={readOnly || apGroupOption?.length === 0}
+                        options={[
+                          {
+                            label: $t({ defaultMessage: 'Select VLAN...' }),
+                            value: null
+                          },
+                          ...apGroupOption
+                        ]}
+                      />
+                    </Form.Item>
+                    }
+                    {isIcx7650 &&
+                      <Form.Item>
+                        <Space style={{ fontSize: '12px', marginRight: '8px' }}>{
+                          $t({ defaultMessage: 'Stack with 40G ports on module 3 ' })
+                        }</Space>
+                        <Form.Item
+                          noStyle
+                          name='rearModuleOption'
+                          valuePropName='checked'
+                        >
+                          <AntSwitch disabled={editMode} />
+                        </Form.Item>
+                      </Form.Item>
+                    }
+                  </Col>
                   <StepFormTitle>
                     {$t({ defaultMessage: 'Stack Member' })}
                     <RequiredDotSpan> *</RequiredDotSpan>
                   </StepFormTitle>
-                  {!editMode && <TypographyText type='secondary'>
-                    {
-                      $t({
-                        defaultMessage:
-                          // eslint-disable-next-line max-len
-                          'Stack members will be ordered according to the order in which they were entered here. You can always modify this later.'
-                      })
-                    }
-                  </TypographyText>
+                  {!editMode &&
+                    <div style={{ marginBottom: '5px' }}>
+                      <TypographyText type='secondary'>
+                        {
+                          $t({
+                            defaultMessage:
+                              // eslint-disable-next-line max-len
+                              'Stack members will be ordered according to the order in which they were entered here. You can always modify this later.'
+                          })
+                        }
+                      </TypographyText></div>
                   }
                   <TableContainer data-testid='dropContainer'>
                     <Table
