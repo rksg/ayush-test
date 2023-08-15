@@ -17,16 +17,6 @@ export const versionLatest = [
   }
 ]
 
-export const versionRelease = [
-  {
-    releaseDate: '2023-01-31T02:20:38.415+0000',
-    category: 'RECOMMENDED',
-    onboardDate: '2022-12-16T06:22:23.337+0000',
-    name: '6.2.1.103.1580',
-    id: '6.2.1.103.1580'
-  }
-]
-
 export const preference = {
   days: [
     'Sunday',
