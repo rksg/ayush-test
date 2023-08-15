@@ -357,6 +357,14 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
   }
 
+  if (!get(data, 'wlan.advancedCustomization.qosMapSetEnabled')) {
+    advancedCustomization.qosMapSetEnabled = false
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.qosMapSetOptions')) {
+    advancedCustomization.qosMapSetOptions = {}
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,

@@ -145,6 +145,10 @@ export class PskWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: {}
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -254,5 +258,9 @@ export class PskWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = {}
   }
 }

@@ -149,6 +149,10 @@ export class GuestWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: {}
+
   constructor () {
     this.clientIsolation = true
 
@@ -260,5 +264,9 @@ export class GuestWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = {}
   }
 }

@@ -1,15 +1,18 @@
+/* eslint-disable no-console */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import { useState, useEffect, Key } from 'react'
+import { useContext, useState, useEffect, Key, SetStateAction } from 'react'
 
-import {  FormInstance, Button,
-  Col,
-  Row, Form, Switch, Space, Input } from 'antd'
-import { useIntl } from 'react-intl'
+import { FormInstance, Row, Form, Switch, Space, Input } from 'antd'
+import { useIntl }                                       from 'react-intl'
 
-import { Drawer, Table, TableProps }             from '@acx-ui/components'
-import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
-import { SwitchModelPortData, QosMapSetOptions } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }             from '@acx-ui/user'
+import { Drawer, Table, TableProps } from '@acx-ui/components'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { QosMapSetOptions,  sortProp,
+  defaultSort }          from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
 
@@ -33,42 +36,31 @@ export function QosMapSetFrom () {
     { enabled: true, priority: 6, dscpLow: 48, dscpHigh: 55, dscpExceptionValues: [46] },
     { enabled: true, priority: 7, dscpLow: 56, dscpHigh: 63, dscpExceptionValues: [] }
   ]
-  const [ qosMapSetOptionsDefault, setQosMapSetOptionsDefault] = useState(initialQosMapSetData)
   const [ selectedRows, setSelectedRows] = useState<Key[]>([])
   const [ drawerFormRule, setDrawerFormRule ] = useState<QosMapSetOptions>()
   const [ qosMapRuleDrawerVisible, setQosMapRuleDrawerVisible ] = useState(false)
   const [ qosMapSetOptionTable, setQosMapSetOptionTable ] = useState<QosMapSetOptions[]>([])
 
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+
   useEffect(() => {
-    setQosMapSetOptionTable(initialQosMapSetData)
-  }, [])
+    if (enableQosMapSet === false) {
+      setQosMapRuleDrawerVisible(false)
+    }
 
-  const handleSetVlan = (data: QosMapSetOptions) => {
-    // const filterData = drawerFormRule?.vlanId ? vlanTable.filter(
-    //   (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
-    //   vlanTable
+    if (data) {
+      if (data.wlan?.advancedCustomization?.qosMapSetOptions) {
+        setQosMapSetOptionTable(initialQosMapSetData)
+      }
+    }
+  }, [enableQosMapSet, data])
 
-    // const sfm = data.switchFamilyModels?.map((item, index) => {
-    //   return {
-    //     ...item,
-    //     untaggedPorts: Array.isArray(item.untaggedPorts) ?
-    //       item.untaggedPorts?.join(',') : item.untaggedPorts,
-    //     taggedPorts: Array.isArray(item.taggedPorts) ?
-    //       item.taggedPorts?.join(',') : item.taggedPorts,
-    //     key: index
-    //   }
-    // })
-
-    // data.switchFamilyModels = sfm
-    // setVlanTable([...filterData, data])
-    // if(_.isEmpty(defaultVlan)){
-    //   form.setFieldValue('vlans', [...filterData, data])
-    // }else{
-    //   form.setFieldValue('vlans', [...filterData, data, defaultVlan])
-    // }
-    // setDrawerEditMode(false)
-    // setDrawerFormRule(undefined)
-    // setSelectedRows([])
+  const handleSetQosMapSetOptionTable = (data: QosMapSetOptions) => {
+    const filterData = qosMapSetOptionTable.filter(
+      (item: { priority: number }) => item.priority.toString() !== drawerFormRule?.priority.toString())
+    setQosMapSetOptionTable([...filterData, data])
+    setDrawerFormRule(undefined)
+    setSelectedRows([])
     return true
   }
 
@@ -81,7 +73,6 @@ export function QosMapSetFrom () {
       }
     }
   ]
-
 
   return (
     qosMapSetFlag ?
@@ -108,7 +99,7 @@ export function QosMapSetFrom () {
           <Table
             columns={columns}
             type={'tall'}
-            dataSource={qosMapSetOptionsDefault.map((item, index) => ({ ...item, key: index }))}
+            dataSource={qosMapSetOptionTable.map((item, index) => ({ ...item, key: index }))}
             rowActions={filterByAccess(rowActions)}
             rowSelection={hasAccess() && {
               type: 'radio',
@@ -124,9 +115,14 @@ export function QosMapSetFrom () {
             visible={qosMapRuleDrawerVisible}
             setVisible={setQosMapRuleDrawerVisible}
             qosMapRule={(drawerFormRule)}
-            setQosMapRule={handleSetVlan}
+            setQosMapRule={handleSetQosMapSetOptionTable}
             qosMapRulesList={qosMapSetOptionTable.filter(item=>item.priority !== drawerFormRule?.priority)}
           />
+          {/* <Form.Item
+            name='vlans'
+            hidden={true}
+            children={<Input />}
+          /> */}
         </UI.FieldLabel>
 
         }
@@ -143,6 +139,8 @@ function useColumns () {
       key: 'priority',
       dataIndex: 'priority',
       align: 'center',
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('priority', defaultSort) },
       render: function (data, row) {
         return `${row.priority}`
       }
@@ -184,7 +182,7 @@ function useColumns () {
 }
 
 
-export interface QosMapRuleSettingDrawerProps {
+interface QosMapRuleSettingDrawerProps {
   qosMapRule?: QosMapSetOptions
   setQosMapRule: (r: QosMapSetOptions) => void
   visible: boolean
@@ -192,21 +190,19 @@ export interface QosMapRuleSettingDrawerProps {
   qosMapRulesList: QosMapSetOptions[]
 }
 
-export function QosMapRuleSettingDrawer (props: QosMapRuleSettingDrawerProps) {
+function QosMapRuleSettingDrawer (props: QosMapRuleSettingDrawerProps) {
   const { $t } = useIntl()
   const { qosMapRule, setQosMapRule, visible, setVisible, qosMapRulesList } = props
   const [form] = Form.useForm<QosMapSetOptions>()
+  const currentPriority = qosMapRule?.priority || 0
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const p = qosMapRule?.priority || 0
-
-
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Edit QoS Map: Priority {p}' }, { p })}
+      title={$t({ defaultMessage: 'Edit QoS Map: Priority {currentPriority}' }, { currentPriority })}
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
@@ -250,23 +246,51 @@ interface QosMapRuleSettingFormProps {
 function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
   const { $t } = useIntl()
   const [enabled, setEnabled] = useState(false)
+  const [dscpLowValue, setDscpLowValue] = useState(0)
+  const [disableInput, setDisableInput] = useState(false)
   const { form, qosMapRule, setQosMapRule, qosMapRulesList } = props
 
   useEffect(() => {
-  }, [])
+    if(qosMapRule){
+      form.setFieldsValue(qosMapRule)
+      setEnabled(qosMapRule?.enabled || false)
+      setDscpLowValue(qosMapRule?.dscpLow)
+      if (qosMapRule?.enabled === false){
+        setDisableInput(true)
+      } else {
+        setDisableInput(false)
+      }
+    }
+  }, [form, qosMapRule])
+
+  const handleSwitchChange = (e: boolean | ((prevState: boolean) => boolean)) => {
+    setEnabled(e)
+    if (e === false){
+      setDisableInput(true)
+      setDscpLowValue(255)
+    } else {
+      setDisableInput(false)
+    }
+  }
+
+  const handleInputNumberChange = (value: number) => {
+    setDscpLowValue(value)
+  }
 
   return (
     <div data-testid='addQosMapRuleDrawer'>
       <Form
         layout='vertical'
         form={form}
-        // onFinish={(data: QosMapSetOptions) => {
-        //   setVlan({
-        //     ...data,
-        //     switchFamilyModels: ruleList as unknown as SwitchModel[] || []
-        //   })
-        //   form.resetFields()
-        // }}
+        onFinish={(data: QosMapSetOptions) => {
+          if (data?.dscpExceptionValues === undefined){
+            data.dscpExceptionValues = []
+          }
+          setQosMapRule({
+            ...data
+          })
+          form.resetFields()
+        }}
       >
         <UI.FieldLabel width='250px'>
           <Space>
@@ -277,9 +301,14 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={setEnabled} data-testid='enabled' />}
+            children={<Switch onChange={handleSwitchChange} data-testid='enabled' />}
           />
         </UI.FieldLabel>
+        <Form.Item
+          name='priority'
+          hidden={true}
+          children={<Input />}
+        />
         <UI.FieldLabel width='200px'>
           <label style={{ color: 'var(--acx-neutrals-70)' }}>
             { $t({ defaultMessage: 'DSCP Range' }) }
@@ -289,13 +318,15 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
         <UI.FieldLabel width='200px'>
           <Row>
             <Form.Item
-              children={<Input style={{ width: '65px' }} />}
+              name={'dscpLow'}
+              children={<Input style={{ width: '65px' }} value={dscpLowValue} disabled={disableInput} />}
             />
             <label style={{ marginTop: '7px', marginLeft: '15px', marginRight: '15px' }}>
               {'-'}
             </label>
             <Form.Item
-              children={<Input style={{ width: '65px' }} />}
+              name={'dscpHigh'}
+              children={<Input style={{ width: '65px' }} disabled={disableInput} />}
             />
           </Row>
         </UI.FieldLabel>
@@ -313,7 +344,7 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
             />
           </UI.FieldLabel>
           <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
-            <label style={{ color: 'var(--acx-neutrals-60)' }}>
+            <label style={{ color: 'var(--acx-neutrals-50)' }}>
               { $t({ defaultMessage: 'Use comma to separate multiple DSCP values' }) }
             </label>
           </UI.FieldLabel>

@@ -154,6 +154,10 @@ export class AAAWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: {}
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -265,5 +269,9 @@ export class AAAWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = {}
   }
 }

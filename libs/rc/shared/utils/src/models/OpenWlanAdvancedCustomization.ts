@@ -143,6 +143,10 @@ export class OpenWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: {}
+
   constructor () {
     this.clientIsolation = true
 
@@ -248,5 +252,9 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = {}
   }
 }
