@@ -130,11 +130,16 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         validateTrigger={'onBlur'}>
         <Input disabled={isEdit}/>
       </Form.Item>
-      <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
+      <Form.Item
+        name='username'
+        rules={[{ max: 255 }]}
+        label={intl.$t({ defaultMessage: 'Username' })}
+      >
         <Input/>
       </Form.Item>
       <Form.Item name='email'
         rules={[
+          { max: 255 },
           { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
         ]}
         label={intl.$t({ defaultMessage: 'E-mail' })}>
