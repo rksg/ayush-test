@@ -74,7 +74,7 @@ export function Syslog () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: !isEqual(newData, venueSyslogOrinData)
     })
 
@@ -92,7 +92,7 @@ export function Syslog () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: !isEqual(newData, venueSyslogOrinData)
     })
 
@@ -169,7 +169,7 @@ export function Syslog () {
               })}
               style={{ marginLeft: '20px' }}
             >
-              {$t({ defaultMessage: 'Add Server Profile:' })}
+              {$t({ defaultMessage: 'Add Server Profile' })}
             </TenantLink>
           </Form.Item>
           {defaultSyslogValue &&

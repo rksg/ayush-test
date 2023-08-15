@@ -394,7 +394,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await updateSyslogServer()
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Network Controls', buttonAction.DISCARD_CHANGES)
+        await showUnsavedChangesModal('Network Control', buttonAction.DISCARD_CHANGES)
       })
       it('should open unsaved changes modal and handle changes saved', async () => {
         render(<Provider><VenueEdit /></Provider>, {
@@ -405,7 +405,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await updateSyslogServer()
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Network Controls', buttonAction.SAVE_CHANGES)
+        await showUnsavedChangesModal('Network Control', buttonAction.SAVE_CHANGES)
       })
     })
   })

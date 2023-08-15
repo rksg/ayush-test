@@ -72,6 +72,7 @@ export interface TableProps <RecordType>
     onResetState?: CallableFunction
     enableApiFilter?: boolean
     floatRightFilters?: boolean
+    alwaysShowFilters? : boolean
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -330,7 +331,8 @@ function Table <RecordType extends Record<string, any>> ({
     groupable.length,
     iconButton
   ].some(Boolean)
-  const shouldRenderHeader = !hasRowSelected || props.tableAlertRender === false
+  const shouldRenderHeader = props.alwaysShowFilters
+    || !hasRowSelected || props.tableAlertRender === false
   const hasHeaderItems = shouldRenderHeader && (
     Boolean(filterables.length) || Boolean(searchables.length) ||
     Boolean(groupable.length) || Boolean(iconButton)

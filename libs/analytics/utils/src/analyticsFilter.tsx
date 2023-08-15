@@ -40,6 +40,7 @@ export function useAnalyticsFilter () {
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
+      path,
       setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
   }, [dateFilter, pathname, read, write])

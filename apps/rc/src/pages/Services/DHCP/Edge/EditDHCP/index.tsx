@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { Form }                   from 'antd'
-import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -10,13 +9,21 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  EdgeDhcpSettingForm, EdgeDhcpSettingFormData
+  EdgeDhcpSettingForm
 } from '@acx-ui/rc/components'
-import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation }                               from '@acx-ui/rc/services'
-import { LeaseTimeType, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                              from '@acx-ui/react-router-dom'
+import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import {
+  LeaseTimeType,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType,
+  EdgeDhcpSettingFormData,
+  convertEdgeDHCPFormDataToApiPayload
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 
 const EditDhcp = () => {
@@ -48,29 +55,13 @@ const EditDhcp = () => {
         edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
       )
     }
+
   }, [edgeDhcpData])
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = { ...edgeDhcpData, ...(_.cloneDeep(data)) }
       const pathVar = { id: params.serviceId }
-      if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
-        payload.leaseTime = -1 // -1 means infinite
-      }
-      delete payload.enableSecondaryDNSServer
-      delete payload.leaseTimeType
-
-      // should not create service with id
-      payload.dhcpPools.forEach(item => {
-        if (item.id.startsWith('_NEW_')) item.id = ''
-      })
-      payload.dhcpOptions?.forEach(item => {
-        if (item.id.startsWith('_NEW_')) item.id = ''
-      })
-      payload.hosts?.forEach(item => {
-        if (item.id.startsWith('_NEW_')) item.id = ''
-      })
-
+      const payload = convertEdgeDHCPFormDataToApiPayload({ ...edgeDhcpData, ...data })
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {

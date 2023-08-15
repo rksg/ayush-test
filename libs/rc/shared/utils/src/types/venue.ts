@@ -681,7 +681,9 @@ export interface LocalUser {
   username: string,
   password: string,
   authPort: number,
-  purpose: string
+  purpose: string,
+	switchCountInVenue?: number,
+	syncedPasswordSwitchCount?: number
 }
 
 export interface VenueDirectedMulticast {

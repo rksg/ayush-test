@@ -15,15 +15,17 @@ import {
   WebAuthTemplate,
   WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
-import { baseNsgApi }        from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseNsgApi }                          from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
     createNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.createNetworkSegmentationGroup)
+        const req = createHttpRequest(NetworkSegmentationUrls.createNetworkSegmentationGroup, undefined, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -54,7 +56,10 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           NetworkSegmentationUrls.updateNetworkSegmentationGroup,
-          params
+          params,
+          {
+            ...ignoreErrorModal
+          }
         )
         return {
           ...req,

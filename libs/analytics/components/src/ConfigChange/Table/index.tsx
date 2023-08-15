@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter, getFilterPayload, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -28,9 +28,9 @@ export function Table (props: {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
-  const { filters: { filter } } = useAnalyticsFilter()
+  const { path } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
-    ...getFilterPayload({ filter }),
+    path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
