@@ -388,7 +388,7 @@ export const validationMessages = {
     description: 'Validation - tags'
   }),
   servicePolicyNameInvalid: defineMessage({
-    defaultMessage: 'Name is invalid',
+    defaultMessage: 'Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.',
     description: 'Validation - name for service and policy'
   }),
   specialCharacterNameInvalid: defineMessage({
