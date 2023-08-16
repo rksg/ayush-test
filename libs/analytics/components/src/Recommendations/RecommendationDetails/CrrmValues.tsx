@@ -60,7 +60,7 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       <div style={{ paddingTop: 50 }}>Crrm Graph</div>
     </GridCol>
     <GridCol col={{ span: 8 }}>
-      <CrrmTitle>{$t({ defaultMessage: 'Why is the recommendation?' })}</CrrmTitle>
+      <CrrmTitle>{$t({ defaultMessage: 'Why this recommendation?' })}</CrrmTitle>
       {recommendationText.reasonText}
       <Title>{$t({ defaultMessage: 'Potential trade-off' })}</Title>
       {recommendationText.tradeoffText}
