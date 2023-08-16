@@ -29,7 +29,7 @@ export default function DpskDetails () {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
     params: { tenantId, serviceId },
-    payload: { filters: {}, page: 1, pageSize: 20000 }
+    payload: { filters: {}, page: 1, pageSize: 75000 }
   }, {
     selectFromResult: ({ data }) => {
       return {
