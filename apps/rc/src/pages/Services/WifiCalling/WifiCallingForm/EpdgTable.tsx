@@ -30,7 +30,9 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const [tableData, setTableData] = useState(state.ePDG as EPDG[])
 

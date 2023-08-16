@@ -1,8 +1,12 @@
 
-import { EPDG, QosPriorityEnum } from '@acx-ui/rc/utils'
-import { Provider }              from '@acx-ui/store'
-import { render, screen }        from '@acx-ui/test-utils'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
+import { CommonUrlsInfo, EPDG, QosPriorityEnum } from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen }            from '@acx-ui/test-utils'
+
+import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingScopeForm from './WifiCallingScopeForm'
@@ -29,23 +33,30 @@ const initState = {
   epdgs
 }
 
-const wrapper = ({ children }: { children: React.ReactElement }) => {
-  return <Provider>
-    {children}
-  </Provider>
-}
 const setWifiCallingScope = jest.fn()
 
-describe.skip('WifiCallingScopeForm', () => {
+describe('WifiCallingScopeForm', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      )
+    )
+  })
+
   it('should render wifiCallingScopeForm successfully', async () => {
     render(<WifiCallingFormContext.Provider value={{
       state: initState,
       dispatch: setWifiCallingScope
     }}>
-      <WifiCallingScopeForm edit={true}/>
+      <Provider>
+        <Form>
+          <WifiCallingScopeForm edit={true}/>
+        </Form>
+      </Provider>
     </WifiCallingFormContext.Provider>,
     {
-      wrapper ,
       route: {
         params: { tenantId: 'tenantId1' }
       }

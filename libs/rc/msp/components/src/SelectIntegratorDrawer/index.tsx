@@ -147,6 +147,9 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload
   })
 
@@ -168,6 +171,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
+          type='form'
           rowKey='id'
           rowSelection={{
             type: 'radio',

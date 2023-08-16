@@ -1,14 +1,42 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities, AIDrivenRRM, AIOperations }          from '@acx-ui/analytics/components'
-import { GridRow, GridCol, Card, PageHeader, RangePicker } from '@acx-ui/components'
-import { useDashboardFilter, useDateFilter }               from '@acx-ui/utils'
+import { DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
+import { Card, PageHeader, RangePicker }          from '@acx-ui/components'
+import { useDashboardFilter, useDateFilter }      from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
+
+export const useMonitorHeight = (minHeight: number): [number, React.RefObject<HTMLDivElement>] => {
+  const [height, setHeight] = useState(minHeight)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const updateScreenWidth = useCallback(() => {
+    const box = ref.current?.getBoundingClientRect()
+
+    const bottomSpace = 20
+    const nextHeight = window.innerHeight - Number(box?.top) - bottomSpace
+    setHeight(nextHeight < minHeight ? minHeight : nextHeight)
+  }, [minHeight])
+
+  useEffect(() => {
+    updateScreenWidth()
+
+    window.addEventListener('resize', updateScreenWidth)
+    return () => window.removeEventListener('resize', updateScreenWidth)
+  })
+
+  return [height, ref]
+}
 
 export default function Dashboard () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters } = useDashboardFilter()
+
+  const [height, elementRef] = useMonitorHeight(536)
 
   return <>
     <PageHeader
@@ -23,45 +51,31 @@ export default function Dashboard () {
         />
       ]}
     />
-    <GridRow>
-      <GridCol col={{ span: 6 }} style={{ height: 556 }}>
-        <Card
-          title={$t({ defaultMessage: 'Network Filter' })}
-        />
-      </GridCol>
-      <GridCol col={{ span: 6 }}>
-        <GridRow>
-          <GridCol col={{ span: 24 }} style={{ height: 110 }}>
-            <Card title={$t({ defaultMessage: 'Stats' })} />
-          </GridCol>
-          <GridCol col={{ span: 24 }} style={{ height: 200 }}>
-            <Card title={$t({ defaultMessage: 'Network History' })} />
-          </GridCol>
-          <GridCol col={{ span: 24 }} style={{ height: 206 }}>
-            <Card title={$t({ defaultMessage: 'SLA' })} />
-          </GridCol>
-        </GridRow>
-      </GridCol>
-      <GridCol col={{ span: 6 }}>
-        <GridRow>
-          <GridCol col={{ span: 24 }} style={{ height: 226 }}>
-            <IncidentsCountBySeverities filters={filters} />
-          </GridCol>
-          <GridCol col={{ span: 24 }} style={{ height: 310 }}>
-            <AIDrivenRRM filters={filters} />
-          </GridCol>
-        </GridRow>
-      </GridCol>
-      <GridCol col={{ span: 6 }}>
-        <GridRow>
-          <GridCol col={{ span: 24 }} style={{ height: 226 }}>
-            <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
-          </GridCol>
-          <GridCol col={{ span: 24 }} style={{ height: 310 }}>
-            <AIOperations filters={filters} />
-          </GridCol>
-        </GridRow>
-      </GridCol>
-    </GridRow>
+    <UI.Grid ref={elementRef} style={{ height }}>
+      <div style={{ gridArea: 'a1' }}>
+        <Card title={$t({ defaultMessage: 'Network Filter' })} />
+      </div>
+      <div style={{ gridArea: 'b1' }}>
+        <Card title={$t({ defaultMessage: 'Stats' })} />
+      </div>
+      <div style={{ gridArea: 'b2' }}>
+        <Card title={$t({ defaultMessage: 'Network History' })} />
+      </div>
+      <div style={{ gridArea: 'b3' }}>
+        <Card title={$t({ defaultMessage: 'SLA' })} />
+      </div>
+      <div style={{ gridArea: 'c1' }}>
+        <IncidentsCountBySeverities filters={filters} />
+      </div>
+      <div style={{ gridArea: 'c2' }}>
+        <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
+      </div>
+      <div style={{ gridArea: 'd1' }}>
+        <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
+      </div>
+      <div style={{ gridArea: 'd2' }}>
+        <Card title={$t({ defaultMessage: 'AI Operations' })} />
+      </div>
+    </UI.Grid>
   </>
 }
