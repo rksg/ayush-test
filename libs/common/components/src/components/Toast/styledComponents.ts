@@ -7,7 +7,7 @@ export const Toast = styled.div`
   font-weight: var(--acx-body-font-weight);
   max-width: 450px;
   label{
-    word-break: break-all;
+    word-break: break-word;
   }
 `
 
