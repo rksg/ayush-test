@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -151,7 +152,7 @@ export class GuestWlanAdvancedCustomization {
 
   qosMapSetEnabled?: boolean
 
-  qosMapSetOptions?: {}
+  qosMapSetOptions?: QosMapSetOptions
 
   constructor () {
     this.clientIsolation = true
@@ -267,6 +268,6 @@ export class GuestWlanAdvancedCustomization {
 
     this.qosMapSetEnabled = false
 
-    this.qosMapSetOptions = {}
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }

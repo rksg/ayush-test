@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useContext, useState, useEffect, Key } from 'react'
@@ -41,7 +40,7 @@ export function QosMapSetFrom () {
   const [ qosMapRuleDrawerVisible, setQosMapRuleDrawerVisible ] = useState(false)
   const [ qosMapSetOptionTable, setQosMapSetOptionTable ] = useState<QosMapSetOptions[]>([])
 
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { data } = useContext(NetworkFormContext)
 
   useEffect(() => {
     if (enableQosMapSet === false) {
@@ -49,8 +48,26 @@ export function QosMapSetFrom () {
     }
 
     if (data) {
-      if (data.wlan?.advancedCustomization?.qosMapSetOptions) {
+      const qosMapSetData = data.wlan?.advancedCustomization?.qosMapSetOptions
+      if (!qosMapSetData?.hasOwnProperty('rules')) {
         setQosMapSetOptionTable(initialQosMapSetData)
+      } else {
+        let ruleData = qosMapSetData.rules
+        if (ruleData) {
+          ruleData = ruleData.map(data => {
+            const newData: QosMapSetOptions = {
+              priority: data.priority || 0,
+              enabled: data.enabled || false,
+              dscpLow: data.dscpLow || 0,
+              dscpHigh: data.dscpHigh || 0,
+              dscpExceptionValues: data.dscpExceptionValues || []
+            }
+            return newData
+          })
+          setQosMapSetOptionTable(ruleData as QosMapSetOptions[])
+        } else {
+          setQosMapSetOptionTable(initialQosMapSetData)
+        }
       }
     }
   }, [enableQosMapSet, data])
@@ -118,11 +135,6 @@ export function QosMapSetFrom () {
             setQosMapRule={handleSetQosMapSetOptionTable}
             qosMapRulesList={qosMapSetOptionTable.filter(item=>item.priority !== drawerFormRule?.priority)}
           />
-          {/* <Form.Item
-            name='vlans'
-            hidden={true}
-            children={<Input />}
-          /> */}
         </UI.FieldLabel>
 
         }

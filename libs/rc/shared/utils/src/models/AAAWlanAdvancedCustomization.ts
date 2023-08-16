@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -156,7 +157,7 @@ export class AAAWlanAdvancedCustomization {
 
   qosMapSetEnabled?: boolean
 
-  qosMapSetOptions?: {}
+  qosMapSetOptions?: QosMapSetOptions
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
@@ -272,6 +273,6 @@ export class AAAWlanAdvancedCustomization {
 
     this.qosMapSetEnabled = false
 
-    this.qosMapSetOptions = {}
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }

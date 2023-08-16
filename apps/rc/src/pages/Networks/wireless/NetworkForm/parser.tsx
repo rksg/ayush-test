@@ -362,7 +362,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   if (!get(data, 'wlan.advancedCustomization.qosMapSetOptions')) {
-    advancedCustomization.qosMapSetOptions = {}
+    advancedCustomization.qosMapSetOptions = { rules: [] }
   }
 
   let saveData:NetworkSaveData = {
