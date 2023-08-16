@@ -75,8 +75,7 @@ export default function DHCPTable () {
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
         return selectedRows.some((row)=>{
-          return (row.venueIds && row.venueIds.length>0) ||
-            row.name === DEFAULT_GUEST_DHCP_NAME
+          return (row.venueIds && row.venueIds.length>0)
         })
       },
       onClick: ([{ id }]) => {
