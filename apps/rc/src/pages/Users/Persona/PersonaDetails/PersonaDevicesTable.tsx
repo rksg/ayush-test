@@ -285,7 +285,7 @@ export function PersonaDevicesTable (props: {
 
   const handleAddDevicesError = (error: PersonaErrorResponse) => {
     if (error.status && error.status === 400) {
-      const subErrors = error.data.subErrors && error.data.subErrors.at(0)
+      const subError = error.data.subErrors && error.data.subErrors.at(0)?.message
 
       showToast({
         type: 'error',
@@ -293,7 +293,7 @@ export function PersonaDevicesTable (props: {
         extraContent: (error.data.message
             ?? error.data.debugMessage
             ?? $t({ defaultMessage: 'An error occurred' })
-        ) + (subErrors ? ' - ' + (subErrors.message ?? '') : '')
+        ) + (subError ? (' - ' + subError) : '')
       })
     } else {
       showActionModal({
