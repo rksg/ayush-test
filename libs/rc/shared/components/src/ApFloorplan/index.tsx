@@ -29,8 +29,6 @@ export function ApFloorplan (props: {
   activeDevice: NetworkDevice,
   venueId: string,
   apPosition: ApPosition,
-  allDevices?: NetworkDevice[],
-  detectingNodes?: NetworkDevice[],
   rogueApMac?: string,
   rogueCategory?: string,
   numLocatingAps?: number
@@ -72,52 +70,52 @@ export function ApFloorplan (props: {
   } }, { skip: !rogueApMac })
 
   useEffect(() => {
-    if (extendedApList) {
-      const detectingNodes = rogueApDevices?.detectingNodes
-        .reduce((a, device) => {
-          if (!a.hasOwnProperty(device.serialNumber)) {
-            a[device.serialNumber] = device
-          }
-          return a
-        }, {} as { [key: string]: DetectingNode })
-      const _apDeviceList: NetworkDevice[] = []
-      extendedApList?.data
-        .filter(apDevice => {
-          if (rogueApMac && detectingNodes) {
-            return Object.keys(detectingNodes).includes(apDevice.serialNumber)
-          }
-          return true
-        })
-        .map(apDevice => {
-          let rogueApLocationInfo = {}
-          if (rogueApMac && detectingNodes) {
-            rogueApLocationInfo = {
-              snr: detectingNodes[apDevice.serialNumber].snr,
-              macAddress: detectingNodes[apDevice.serialNumber].apMac
-            }
-          }
-          const _apDevice: NetworkDevice = {
-            id: apDevice.serialNumber,
-            name: apDevice.name,
-            serialNumber: apDevice.serialNumber,
-            networkDeviceType: rogueApMac ? NetworkDeviceType.rogue_ap : NetworkDeviceType.ap,
-            deviceStatus: apDevice.deviceStatus,
-            position: {
-              floorplanId: apPosition?.floorplanId,
-              xPercent: apDevice?.xPercent || 0,
-              yPercent: apDevice?.yPercent || 0
-            },
-            rogueCategory: apDevice?.rogueCategory,
-            rogueCategoryType: rogueCategory,
-            isActive: rogueApMac ? true : apDevice.serialNumber === activeDevice?.serialNumber,
-            ...rogueApLocationInfo
-          } as NetworkDevice
+    if (!extendedApList) return
 
-          _apDeviceList.push(_apDevice)
-        })
+    const detectingNodes = rogueApDevices?.detectingNodes
+      .reduce((a, device) => {
+        if (!a.hasOwnProperty(device.serialNumber)) {
+          a[device.serialNumber] = device
+        }
+        return a
+      }, {} as { [key: string]: DetectingNode })
+    const _apDeviceList: NetworkDevice[] = []
+    extendedApList?.data
+      .filter(apDevice => {
+        if (rogueApMac && detectingNodes) {
+          return Object.keys(detectingNodes).includes(apDevice.serialNumber)
+        }
+        return true
+      })
+      .map(apDevice => {
+        let rogueApLocationInfo = {}
+        if (rogueApMac && detectingNodes) {
+          rogueApLocationInfo = {
+            snr: detectingNodes[apDevice.serialNumber].snr,
+            macAddress: detectingNodes[apDevice.serialNumber].apMac
+          }
+        }
+        const _apDevice: NetworkDevice = {
+          id: apDevice.serialNumber,
+          name: apDevice.name,
+          serialNumber: apDevice.serialNumber,
+          networkDeviceType: rogueApMac ? NetworkDeviceType.rogue_ap : NetworkDeviceType.ap,
+          deviceStatus: apDevice.deviceStatus,
+          position: {
+            floorplanId: apPosition?.floorplanId,
+            xPercent: apDevice?.xPercent || 0,
+            yPercent: apDevice?.yPercent || 0
+          },
+          rogueCategory: apDevice?.rogueCategory,
+          rogueCategoryType: rogueCategory,
+          isActive: rogueApMac ? true : apDevice.serialNumber === activeDevice?.serialNumber,
+          ...rogueApLocationInfo
+        } as NetworkDevice
 
-      setApList(_apDeviceList)
-    }
+        _apDeviceList.push(_apDevice)
+      })
+
+    setApList(_apDeviceList)
   }, [extendedApList, rogueApDevices])
 
   const { data: floorplan } =

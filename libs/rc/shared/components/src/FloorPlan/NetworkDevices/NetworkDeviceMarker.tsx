@@ -18,7 +18,7 @@ import * as UI                                                                  
 import { useApMeshDevice }                                                          from './useApMeshDevice'
 import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
 
-const renderSignal = (snr: number) => {
+const renderRogueApSignal = (snr: number) => {
   const IconHeight = 16
   if (snr <= 10) return <SignalBad stroke={'white'} height={IconHeight} />
 
@@ -242,7 +242,7 @@ export function RogueApLocationTooltip ({ rogueApLocationInfo }:{
     <div style={{ display: 'flex', justifyItems: 'center', alignItems: 'center' }}>
       {$t({ defaultMessage: 'SNR:' })} {rogueApLocationInfo.snr} dB
       <div style={{ display: 'flex', filter: 'invert(1)' }}>
-        {renderSignal(rogueApLocationInfo.snr ?? 0)}
+        {renderRogueApSignal(rogueApLocationInfo.snr ?? 0)}
       </div>
     </div>
   </div>
