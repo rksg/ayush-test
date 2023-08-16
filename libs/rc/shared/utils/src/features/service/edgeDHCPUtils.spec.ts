@@ -1,3 +1,4 @@
+import { LeaseTimeUnit }           from '../../models/EdgeDhcpEnum'
 import { EdgeDhcpSettingFormData } from '../../types/services/edgeDhcpService'
 
 import { convertEdgeDHCPFormDataToApiPayload } from './edgeDHCPUtils'
@@ -68,6 +69,7 @@ const mockedRelayOnFormData = {
   leaseTimeType: 'Infinite',
   leaseTimeUnit: 'HOURS',
   enableSecondaryDNSServer: false,
+  forNSG: true,
   dhcpPools: [{
     id: '1',
     poolName: 'PoolTest1',
@@ -102,6 +104,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     const result = convertEdgeDHCPFormDataToApiPayload(mockedRelayOnFormData)
     expect(result.enableSecondaryDNSServer).toBe(undefined)
     expect(result.leaseTimeType).toBe(undefined)
+    expect(result.forNSG).toBe(undefined)
     expect(result).toEqual({
       id: '2',
       serviceName: 'testRelayOn',
@@ -152,8 +155,8 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       expect(pool.id.startsWith('_NEW_')).toBeFalsy()
     })
 
-    expect(result.dhcpPools[0].id).toBe(result.dhcpPools[0].id)
-    expect(result.dhcpPools[1].id).toBe('')
+    expect(result.dhcpPools![0].id).toBe(result.dhcpPools![0].id)
+    expect(result.dhcpPools![1].id).toBe('')
 
     expect(result.dhcpOptions![0].id).toBe(result.dhcpOptions![0].id)
     expect(result.dhcpOptions![1].id).toBe('')
@@ -173,7 +176,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       secondaryDnsIp: '2.2.2.2',
       edgeIds: [],
       leaseTime: 30,
-      leaseTimeUnit: 'HOURS',
+      leaseTimeUnit: LeaseTimeUnit.HOURS,
       enableSecondaryDNSServer: false,
       dhcpPools: [{
         id: '1',
@@ -188,5 +191,61 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     })
     expect(result.dhcpOptions).toEqual([])
     expect(result.hosts).toBe(undefined)
+  })
+
+  it('should have pools when relay is ON and use for NSG', () => {
+    const result = convertEdgeDHCPFormDataToApiPayload({
+      id: '2',
+      serviceName: 'testUseForNSG',
+      dhcpRelay: true,
+      externalDhcpServerFqdnIp: '1.1.1.1',
+      domainName: '',
+      primaryDnsIp: '1.1.1.1',
+      secondaryDnsIp: '2.2.2.2',
+      edgeIds: [],
+      leaseTime: 30,
+      leaseTimeUnit: LeaseTimeUnit.HOURS,
+      enableSecondaryDNSServer: false,
+      forNSG: true,
+      dhcpPools: [{
+        id: '1',
+        poolName: 'PoolTest1',
+        subnetMask: '255.255.255.0',
+        poolStartIp: '1.1.1.1',
+        poolEndIp: '1.1.1.10',
+        gatewayIp: '1.1.1.127',
+        activated: true
+      }],
+      dhcpOptions: []
+    })
+    expect(result.dhcpPools?.length).toEqual(1)
+  })
+
+  it('should clear pools when relay is ON and NOT for NSG', () => {
+    const result = convertEdgeDHCPFormDataToApiPayload({
+      id: '3',
+      serviceName: 'testNotForNSG',
+      dhcpRelay: true,
+      externalDhcpServerFqdnIp: '1.1.1.1',
+      domainName: '',
+      primaryDnsIp: '1.1.1.1',
+      secondaryDnsIp: '2.2.2.2',
+      edgeIds: [],
+      leaseTime: 30,
+      leaseTimeUnit: LeaseTimeUnit.HOURS,
+      enableSecondaryDNSServer: false,
+      forNSG: false,
+      dhcpPools: [{
+        id: '1',
+        poolName: 'PoolTest1',
+        subnetMask: '255.255.255.0',
+        poolStartIp: '1.1.1.1',
+        poolEndIp: '1.1.1.10',
+        gatewayIp: '1.1.1.127',
+        activated: true
+      }],
+      dhcpOptions: []
+    })
+    expect(result.dhcpPools?.length).toEqual(0)
   })
 })

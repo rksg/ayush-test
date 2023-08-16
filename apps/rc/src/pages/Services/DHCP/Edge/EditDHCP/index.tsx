@@ -54,6 +54,10 @@ const EditDhcp = () => {
         'leaseTimeType',
         edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
       )
+      form.setFieldValue(
+        'forNSG',
+        (edgeDhcpData.dhcpPools?.length ?? -1) > 0
+      )
     }
 
   }, [edgeDhcpData])
