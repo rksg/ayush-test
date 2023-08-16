@@ -345,14 +345,13 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
           ...rowSelection(supportOweTransition) } : undefined}
-        actions={[{
+        actions={isWpaDsae3Toggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks
             ? $t({ defaultMessage: 'Hide Onboard Networks' })
             : $t({ defaultMessage: 'Show Onboard Networks' }),
-          onClick: () => toggleOnboardNetworks(),
-          disabled: !isWpaDsae3Toggle
-        }]}
+          onClick: () => toggleOnboardNetworks()
+        }]: []}
       />
     </Loader>
   )
