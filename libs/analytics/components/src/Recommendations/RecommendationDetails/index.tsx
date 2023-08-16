@@ -10,10 +10,7 @@ import { Overview }                      from './overview'
 import { useRecommendationDetailsQuery } from './services'
 import { Values }                        from './values'
 
-export const linkMap = {
-  aiOps: defineMessage({ defaultMessage: 'AI Operations' }),
-  crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' })
-}
+const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
 
 export const RecommendationDetails = () => {
   const { $t } = useIntl()
@@ -31,13 +28,13 @@ export const RecommendationDetails = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
-        { text: $t(linkMap['aiOps']), link }
+        { text: $t(aiOps), link }
       ]}
       extra={[<MuteRecommendation {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(linkMap['aiOps'])
+        type: $t(aiOps)
       }} />]}
     />}
     <GridRow>

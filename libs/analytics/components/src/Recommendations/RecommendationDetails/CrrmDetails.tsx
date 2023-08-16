@@ -1,5 +1,5 @@
-import { get }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { get }                    from 'lodash'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { impactedArea, nodeTypes }              from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
@@ -11,7 +11,7 @@ import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
 import { useRecommendationDetailsQuery } from './services'
 
-import { linkMap } from '.'
+const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
 export const CrrmDetails = () => {
   const { $t } = useIntl()
@@ -32,13 +32,13 @@ export const CrrmDetails = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
-        { text: $t(linkMap['crrm']), link }
+        { text: $t(crrm), link }
       ]}
       extra={[<MuteRecommendation {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(linkMap['crrm'])
+        type: $t(crrm)
       }} />]}
     />}
     <GridRow>
