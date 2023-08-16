@@ -1,4 +1,3 @@
-
 import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -13,7 +12,9 @@ export function RogueApLocationMarker ({ rogueApDevices }: {
 
   if (!rogueApDevices?.hasOwnProperty('xPercent')) return null
   return <div>
-    <Tooltip title={$t({ defaultMessage: 'Rogue AP' })} >
+    <Tooltip title={
+      <span style={{ fontSize: '11px' }}>{$t({ defaultMessage: 'Rogue AP' })}</span>
+    } >
       <UI.RogueApLocation
         className={`rogue-snr mark-location-rogue ${rogueApDevices?.category.toLowerCase()}`}
         style={

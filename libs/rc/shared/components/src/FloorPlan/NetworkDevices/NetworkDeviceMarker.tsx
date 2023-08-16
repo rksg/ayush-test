@@ -19,20 +19,21 @@ import { useApMeshDevice }                                                      
 import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
 
 const renderSignal = (snr: number) => {
-  if (snr <= 10) return <SignalBad fill={'white'} stroke={'white'} width={12} height={12} />
+  const IconHeight = 16
+  if (snr <= 10) return <SignalBad stroke={'white'} height={IconHeight} />
 
   const value = Math.floor(snr / 10)
   if (value >= 4) {
-    return <SignalExcellent fill={'white'} stroke={'white'} width={12} height={12} />
+    return <SignalExcellent stroke={'white'} height={IconHeight} />
   }
   if (value >= 3) {
-    return <SignalGood fill={'white'} stroke={'white'} width={12} height={12} />
+    return <SignalGood stroke={'white'} height={IconHeight} />
   }
   if (value >= 2) {
-    return <SignalPoor fill={'white'} stroke={'white'} width={12} height={12} />
+    return <SignalPoor stroke={'white'} height={IconHeight} />
   }
 
-  return <SignalBad fill={'white'} stroke={'white'} width={12} height={12} />
+  return <SignalBad stroke={'white'} height={IconHeight} />
 }
 
 
@@ -116,7 +117,7 @@ export function NetworkDeviceMarker ({
     }>
     </UI.RogueApContainer> }
     <Tooltip
-      title={getDeviceTooltip()}>
+      title={getDeviceTooltip()} >
       <UI.DeviceContainer
         ref={drag}
         className={className}
@@ -238,10 +239,11 @@ export function RogueApLocationTooltip ({ rogueApLocationInfo }:{
   return <div style={{ fontSize: '11px' }}>
     <div>{$t({ defaultMessage: 'Detecting AP:' })} {rogueApLocationInfo.name}<br /></div>
     <div>{$t({ defaultMessage: 'MAC Address:' })} {rogueApLocationInfo.macAddress}<br /></div>
-    {/* eslint-disable-next-line max-len */}
-    <div style={{ display: 'flex', justifyItems: 'center' }}>
-      {/* eslint-disable-next-line max-len */}
-      {$t({ defaultMessage: 'SNR:' })} {rogueApLocationInfo.snr} dB {renderSignal(rogueApLocationInfo.snr ?? 0)}
+    <div style={{ display: 'flex', justifyItems: 'center', alignItems: 'center' }}>
+      {$t({ defaultMessage: 'SNR:' })} {rogueApLocationInfo.snr} dB
+      <div style={{ display: 'flex', filter: 'invert(1)' }}>
+        {renderSignal(rogueApLocationInfo.snr ?? 0)}
+      </div>
     </div>
   </div>
 }
