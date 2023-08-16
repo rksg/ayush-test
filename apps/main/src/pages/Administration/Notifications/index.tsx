@@ -4,6 +4,7 @@ import { Row, Col, Badge, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
@@ -23,8 +24,9 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import RecipientDialog from './RecipientDialog'
-import * as UI         from './styledComponents'
+import { PreferenceDrawer } from './PreferenceDrawer'
+import RecipientDialog      from './RecipientDialog'
+import * as UI              from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -39,6 +41,7 @@ export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
+  // const [showPreference, setShowPreference] = useState(false)
   const [editMode, setEditMode] = useState(false)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
@@ -176,6 +179,11 @@ export const NotificationsTable = () => {
         />
       </Loader>
 
+      {/* {showPreference && <PreferenceDrawer
+        visible={showPreference}
+        setVisible={setShowPreference}
+      />} */}
+
       <RecipientDialog
         visible={showDialog}
         setVisible={setShowDialog}
@@ -187,9 +195,15 @@ export const NotificationsTable = () => {
   )
 }
 
-
 const Notifications = () => {
   const { $t } = useIntl()
+  const [showPreference, setShowPreference] = useState(false)
+
+  const handleClickPreference = () => {
+    // setEditMode(false)
+    // setEditData({} as NotificationRecipientUIModel)
+    setShowPreference(true)
+  }
 
   return <UI.Wrapper>
     <Row>
@@ -199,10 +213,22 @@ const Notifications = () => {
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
           }
+          <Button style={{ marginLeft: 13 }}
+            type='link'
+            size='small'
+            onClick={() => { handleClickPreference() }}>
+            {$t({ defaultMessage: 'Preference' })}
+          </Button>
         </Typography>
+
       </Col>
     </Row>
     <UI.Spacer />
+    {showPreference && <PreferenceDrawer
+      visible={showPreference}
+      setVisible={setShowPreference}
+    />}
+
     <NotificationsTable />
   </UI.Wrapper>
 }
