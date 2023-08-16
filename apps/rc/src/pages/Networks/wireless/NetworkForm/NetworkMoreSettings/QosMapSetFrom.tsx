@@ -5,11 +5,10 @@ import { useContext, useState, useEffect, Key } from 'react'
 import { FormInstance, Row, Form, Switch, Space, Input } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { Drawer, Table, TableProps } from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { QosMapSetOptions,  sortProp,
-  defaultSort }          from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { Drawer, Table, TableProps }               from '@acx-ui/components'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { QosMapSetOptions, sortProp, defaultSort } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -104,7 +103,7 @@ export function QosMapSetFrom () {
             {$t({ defaultMessage: 'QoS Map Set' })}
           </Space>
           <Form.Item
-            name={['wlan', 'advancedCustomization', 'qosMapSetEnabled']}
+            name={enableQosMapSetFieldName}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -137,8 +136,11 @@ export function QosMapSetFrom () {
             setQosMapRule={handleSetQosMapSetOptionTable}
             qosMapRulesList={qosMapSetOptionTable.filter(item=>item.priority !== drawerFormRule?.priority)}
           />
+          <Form.Item
+            name={qosMapSetRulesFieldName}
+            hidden={true}
+          />
         </UI.FieldLabel>
-
         }
       </>:null
   )
