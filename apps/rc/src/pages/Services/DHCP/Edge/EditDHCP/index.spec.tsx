@@ -97,9 +97,9 @@ describe('EditEdgeDhcp', () => {
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
     await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
-    const forNSG = await screen.findByRole('switch', { name: 'Use for Network Segmentation' })
+    const usedForNSG = await screen.findByRole('switch', { name: 'Use for Network Segmentation' })
     const poolsRow = screen.queryAllByRole('row')
-    expect(forNSG).not.toBeChecked()
+    expect(usedForNSG).not.toBeChecked()
     expect(poolsRow.length).toBe(0)
     expect(screen.queryAllByRole('alert').length).toBe(0)
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))

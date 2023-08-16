@@ -9,15 +9,15 @@ export const convertEdgeDHCPFormDataToApiPayload = (formData: EdgeDhcpSettingFor
   // should remove UI used fields
   delete payload.enableSecondaryDNSServer
   delete payload.leaseTimeType
-  delete payload.forNSG
+  delete payload.usedForNSG
 
   if(formData.leaseTimeType === LeaseTimeType.INFINITE) {
     payload.leaseTime = -1 // -1 means infinite
   }
 
-  // pools is not configurable when forNSG is OFF && relay is ON
-  // so that it should be empty when forNSG is OFF && relay is ON
-  if(!formData.forNSG && formData.dhcpRelay) {
+  // pools is not configurable when usedForNSG is OFF && relay is ON
+  // so that it should be empty when usedForNSG is OFF && relay is ON
+  if(!formData.usedForNSG && formData.dhcpRelay) {
     payload.dhcpPools = []
   }
 

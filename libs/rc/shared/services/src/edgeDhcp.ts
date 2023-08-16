@@ -46,9 +46,9 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
+      }
       // If get data before the viewmodel has been written, it will get the wrong data.
-      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+      // invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
     deleteEdgeDhcpServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

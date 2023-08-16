@@ -123,7 +123,7 @@ describe('EdgeDhcpSettingForm', () => {
       leaseTime: 24,
       leaseTimeType: 'Limited',
       leaseTimeUnit: 'HOURS',
-      forNSG: true,
+      usedForNSG: true,
       dhcpPools: [
         {
           id: '1',
@@ -180,7 +180,7 @@ describe('EdgeDhcpSettingForm', () => {
       leaseTime: 25,
       leaseTimeType: 'Infinite',
       leaseTimeUnit: 'HOURS',
-      forNSG: true,
+      usedForNSG: true,
       dhcpPools: [
         {
           id: '1',

@@ -60,7 +60,7 @@ export const mockEdgeDhcpDataRelayOn = {
   leaseTime: -1,
   leaseTimeType: 'Infinite',  // UI used
   leaseTimeUnit: 'HOURS',
-  forNSG: true,
+  usedForNSG: true,
   dhcpPools: [{
     id: '1',
     poolName: 'PoolTest1',
@@ -85,7 +85,7 @@ export const mockEdgeDhcpDataRelayOff = {
   leaseTime: 25,
   leaseTimeType: 'Limited',  // UI used
   leaseTimeUnit: 'HOURS',
-  forNSG: true,
+  usedForNSG: true,
   dhcpPools: [{
     id: '1',
     poolName: 'RelayOffPoolTest1',

@@ -69,7 +69,7 @@ const mockedRelayOnFormData = {
   leaseTimeType: 'Infinite',
   leaseTimeUnit: 'HOURS',
   enableSecondaryDNSServer: false,
-  forNSG: true,
+  usedForNSG: true,
   dhcpPools: [{
     id: '1',
     poolName: 'PoolTest1',
@@ -104,7 +104,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
     const result = convertEdgeDHCPFormDataToApiPayload(mockedRelayOnFormData)
     expect(result.enableSecondaryDNSServer).toBe(undefined)
     expect(result.leaseTimeType).toBe(undefined)
-    expect(result.forNSG).toBe(undefined)
+    expect(result.usedForNSG).toBe(undefined)
     expect(result).toEqual({
       id: '2',
       serviceName: 'testRelayOn',
@@ -206,7 +206,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       leaseTime: 30,
       leaseTimeUnit: LeaseTimeUnit.HOURS,
       enableSecondaryDNSServer: false,
-      forNSG: true,
+      usedForNSG: true,
       dhcpPools: [{
         id: '1',
         poolName: 'PoolTest1',
@@ -234,7 +234,7 @@ describe('Edge DHCP utils - convertEdgeDHCPFormDataToApiPayload', () => {
       leaseTime: 30,
       leaseTimeUnit: LeaseTimeUnit.HOURS,
       enableSecondaryDNSServer: false,
-      forNSG: false,
+      usedForNSG: false,
       dhcpPools: [{
         id: '1',
         poolName: 'PoolTest1',
