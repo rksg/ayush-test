@@ -60,6 +60,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   useEffect(() => {
     if (appTokenData && appTokenData.length > 0) {
       setAppToken(true)
+    } else {
+      setAppToken(false)
     }
   }, [appTokenData])
 
@@ -283,7 +285,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col style={{ width: '1200px' }}>
         <Form.Item
-          style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '-10px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}
