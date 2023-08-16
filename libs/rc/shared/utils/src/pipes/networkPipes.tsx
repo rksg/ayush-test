@@ -224,11 +224,18 @@ export const NetworkType: React.FC<{
   const { $t } = useIntl()
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
+  const oweDisplay = wlan?.wlanSecurity === WlanSecurityEnum.OWE ?
+    ' - ' + $t(wlanSecurity[wlan?.wlanSecurity!]) : ''
 
   switch (networkType) {
     case NetworkTypeEnum.OPEN:
+      const networkDisplay = networkTypes[NetworkTypeEnum.OPEN]
       return <FormattedMessage
-        {...networkTypes[NetworkTypeEnum.OPEN]}
+        defaultMessage={'{networkType}{oweSecurity}'}
+        values={{
+          networkType: $t(networkDisplay),
+          oweSecurity: oweDisplay
+        }}
       />
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
@@ -245,11 +252,12 @@ export const NetworkType: React.FC<{
         : <FormattedMessage {...message} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return <FormattedMessage
-        defaultMessage={'Captive Portal - {captiveNetworkType}'}
+        defaultMessage={'Captive Portal - {captiveNetworkType}{oweSecurity}'}
         values={{
           captiveNetworkType: $t(captiveNetworkTypes[
             captiveType || GuestNetworkTypeEnum.Cloudpath
-          ])
+          ]),
+          oweSecurity: oweDisplay
         }}
       />
   }
