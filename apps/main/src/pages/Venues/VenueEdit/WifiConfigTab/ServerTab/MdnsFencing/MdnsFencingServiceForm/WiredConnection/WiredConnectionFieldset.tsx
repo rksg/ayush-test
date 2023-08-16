@@ -5,9 +5,9 @@ import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
 
-import { Button, Modal, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }               from '@acx-ui/icons'
-import { MdnsFencingWiredRule, trailingNorLeadingSpaces, whitespaceOnlyRegExp }             from '@acx-ui/rc/utils'
+import { Button, Modal, Table, TableProps }               from '@acx-ui/components'
+import { DeleteOutlinedIcon }                             from '@acx-ui/icons'
+import { MdnsFencingWiredRule, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext }            from '../../MdnsFencingServiceTable'
 import { FencingRangeRadioGroup, FieldsetItem } from '../../utils'
