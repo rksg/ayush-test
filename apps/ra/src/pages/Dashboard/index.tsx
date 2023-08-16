@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
-import { Card, PageHeader, RangePicker }          from '@acx-ui/components'
-import { useDashboardFilter, useDateFilter }      from '@acx-ui/utils'
+import { AIDrivenRRM, AIOperations, DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
+import { Card, PageHeader, RangePicker }                                     from '@acx-ui/components'
+import { useDashboardFilter, useDateFilter }                                 from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -68,13 +68,13 @@ export default function Dashboard () {
         <IncidentsCountBySeverities filters={filters} />
       </div>
       <div style={{ gridArea: 'c2' }}>
-        <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
+        <AIDrivenRRM filters={filters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
       </div>
       <div style={{ gridArea: 'd2' }}>
-        <Card title={$t({ defaultMessage: 'AI Operations' })} />
+        <AIOperations filters={filters} />
       </div>
     </UI.Grid>
   </>
