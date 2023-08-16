@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
-import { Card, PageHeader, RangePicker }          from '@acx-ui/components'
-import { useDashboardFilter, useDateFilter }      from '@acx-ui/utils'
+import { DidYouKnow, IncidentsCountBySeverities }   from '@acx-ui/analytics/components'
+import { Card, PageHeader, RangePicker, cssNumber } from '@acx-ui/components'
+import { useDashboardFilter, useDateFilter }        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -13,19 +13,19 @@ export const useMonitorHeight = (minHeight: number): [number, React.RefObject<HT
   const [height, setHeight] = useState(minHeight)
   const ref = useRef<HTMLDivElement>(null)
 
-  const updateScreenWidth = useCallback(() => {
+  const updateHeight = useCallback(() => {
     const box = ref.current?.getBoundingClientRect()
 
-    const bottomSpace = 20
+    const bottomSpace = cssNumber('--acx-content-vertical-space')
     const nextHeight = window.innerHeight - Number(box?.top) - bottomSpace
     setHeight(nextHeight < minHeight ? minHeight : nextHeight)
   }, [minHeight])
 
   useEffect(() => {
-    updateScreenWidth()
+    updateHeight()
 
-    window.addEventListener('resize', updateScreenWidth)
-    return () => window.removeEventListener('resize', updateScreenWidth)
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
   })
 
   return [height, ref]
