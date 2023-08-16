@@ -22,9 +22,10 @@ export function QosMapSetFrom () {
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
 
   const enableQosMapSetFieldName = ['wlan', 'advancedCustomization', 'qosMapSetEnabled']
+  const qosMapSetRulesFieldName = ['wlan', 'advancedCustomization', 'qosMapSetOptions', 'rules']
   const [ enableQosMapSet ] = [ useWatch<boolean>(enableQosMapSetFieldName) ]
   const columns = useColumns()
-
+  const form = Form.useFormInstance()
   const initialQosMapSetData = [
     { enabled: true, priority: 0, dscpLow: 0, dscpHigh: 7, dscpExceptionValues: [] },
     { enabled: true, priority: 1, dscpLow: 8, dscpHigh: 15, dscpExceptionValues: [] },
@@ -76,6 +77,7 @@ export function QosMapSetFrom () {
     const filterData = qosMapSetOptionTable.filter(
       (item: { priority: number }) => item.priority.toString() !== drawerFormRule?.priority.toString())
     setQosMapSetOptionTable([...filterData, data])
+    form.setFieldValue(qosMapSetRulesFieldName, [...filterData, data])
     setDrawerFormRule(undefined)
     setSelectedRows([])
     return true
