@@ -4,11 +4,9 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { StepsForm }                  from '@acx-ui/components'
-import { useGetRoguePolicyListQuery } from '@acx-ui/rc/services'
-import {
-  RogueAPDetectionActionTypes
-} from '@acx-ui/rc/utils'
+import { StepsForm }                                            from '@acx-ui/components'
+import { useGetRoguePolicyListQuery }                           from '@acx-ui/rc/services'
+import { RogueAPDetectionActionTypes, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -99,7 +97,8 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
                   )
                 }
                 return Promise.resolve()
-              } }
+              } },
+              { validator: (_, value) => servicePolicyNameRegExp(value) }
             ]}
             validateFirst
             hasFeedback

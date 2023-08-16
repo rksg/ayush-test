@@ -6,7 +6,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { useVlanPoolListQuery }                       from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMembers
+  checkVlanPoolMembers, servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -50,7 +50,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: nameValidator }
+            { validator: nameValidator },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
