@@ -42,7 +42,10 @@ describe('VersionBanner', () => {
     )
 
     expect(await screen.findByText('7.0.0.103.325')).toBeVisible()
+    expect(await screen.findByText('07/27/2023')).toBeVisible()
     expect(await screen.findByText('6.2.2.103.82')).toBeVisible()
+    expect(await screen.findByText('06/16/2023')).toBeVisible()
     expect(await screen.findByText('6.2.0.103.518')).toBeVisible()
+    expect(await screen.findByText('07/21/2023')).toBeVisible()
   })
 })
