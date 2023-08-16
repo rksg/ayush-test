@@ -225,11 +225,10 @@ export const NetworkType: React.FC<{
 
   switch (networkType) {
     case NetworkTypeEnum.OPEN:
-      const networkDisplay = networkTypes[NetworkTypeEnum.OPEN]
       return <FormattedMessage
         defaultMessage={'{networkType}{oweSecurity}'}
         values={{
-          networkType: $t(networkDisplay),
+          networkType: $t(networkTypes[NetworkTypeEnum.OPEN]),
           oweSecurity: oweDisplay
         }}
       />
