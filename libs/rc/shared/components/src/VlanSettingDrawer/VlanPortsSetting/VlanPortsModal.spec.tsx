@@ -151,7 +151,7 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByTestId('tagged_module1_1'))
     await userEvent.click(await screen.findByTestId('tagged_module2_1'))
     await userEvent.click(await screen.findByTestId('tagged_module3_1'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
 
@@ -202,7 +202,7 @@ describe('VlanPortsModal', () => {
     }, 100)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should add ICX7150-24 model with drag and select tagged ports correctly', async () => {
@@ -252,7 +252,7 @@ describe('VlanPortsModal', () => {
       fireEvent.mouseUp(dst3[0])
     }, 100)
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should add ICX7550-24 model correctly', async () => {
@@ -295,7 +295,7 @@ describe('VlanPortsModal', () => {
       fireEvent.mouseUp(dst2[0])
     }, 100)
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should add ICX7650-48F model correctly', async () => {
@@ -320,7 +320,7 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should add ICX7850-48F model correctly', async () => {
@@ -359,7 +359,7 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByTestId('tagged_module1_47'))
     await userEvent.click(await screen.findByTestId('tagged_module2_5'))
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should disable port correctly', async () => {

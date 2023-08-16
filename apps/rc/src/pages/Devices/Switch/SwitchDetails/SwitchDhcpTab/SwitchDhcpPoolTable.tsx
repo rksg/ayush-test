@@ -80,7 +80,7 @@ export function SwitchDhcpPoolTable () {
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseDays',
       sorter: false,
-      render: (data, row) => {
+      render: (_, row) => {
         return $t({ defaultMessage: `
           { leaseDays, plural, =0 {} one {{leaseDays} day} other {{leaseDays} days}}
           { leaseHrs, plural, =0 {} one {{leaseHrs} hr} other {{leaseHrs} hrs}}

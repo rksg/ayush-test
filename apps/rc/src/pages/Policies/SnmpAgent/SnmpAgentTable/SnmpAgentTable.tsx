@@ -141,8 +141,9 @@ export default function SnmpAgentTable () {
           link: getPolicyListRoutePath(true)
         }]}
         extra={((list?.totalCount as number) < 64) && filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink
+            to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
+          >
             <Button type='primary'>
               {$t({ defaultMessage: 'Add SNMP Agent' })}
             </Button>
@@ -200,7 +201,7 @@ function useColumns (
       searchable: searchable,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -208,7 +209,7 @@ function useColumns (
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -219,7 +220,7 @@ function useColumns (
       dataIndex: 'v2Agents',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.v2Agents)
       }
     },
@@ -229,7 +230,7 @@ function useColumns (
       dataIndex: 'v3Agents',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.v3Agents)
       }
     },
@@ -241,7 +242,7 @@ function useColumns (
       sorter: true,
       filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.venues)
       }
     },
@@ -251,7 +252,7 @@ function useColumns (
       dataIndex: 'aps',
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderToListTooltip(intl, row.aps)
       }
     }/*,

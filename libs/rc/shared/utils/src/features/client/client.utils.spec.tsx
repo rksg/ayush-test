@@ -60,6 +60,7 @@ describe('Test getDeviceTypeIcon function', () => {
       { getDeviceTypeIcon('printer') }
       { getDeviceTypeIcon('iot') }
       { getDeviceTypeIcon('wds') }
+      { getDeviceTypeIcon('bridge') }
       { getDeviceTypeIcon('iot device') }
       { getDeviceTypeIcon('home av equipment') }
       { getDeviceTypeIcon('wds device') }

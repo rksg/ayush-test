@@ -2,8 +2,9 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
-  DistributionSwitch,
-  Persona,
+  defaultSort,
+  AccessSwitch,
+  Persona, sortProp,
   TableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -12,7 +13,7 @@ export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,
     { keyword: string, groupId: string },
     unknown>
-  switchInfo?: DistributionSwitch[]
+  switchInfo?: AccessSwitch[]
 }
 
 export const AssignedSegmentsTable = (props: PersonaTableProps) => {
@@ -30,13 +31,15 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Segment No.' }),
       key: 'vni',
       dataIndex: 'vni',
+      sorter: { compare: sortProp('vni', defaultSort) },
       fixed: 'left' as const
     },
     {
       title: $t({ defaultMessage: 'Persona' }),
       key: 'name',
       dataIndex: 'name',
-      render: (data, row) => {
+      sorter: { compare: sortProp('name', defaultSort) },
+      render: (_, row) => {
         return <TenantLink
           to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
         >
@@ -53,7 +56,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'AP' }),
       key: 'ethernetPorts[0].name',
       dataIndex: 'ethernetPorts[0].name',
-      render: (data, row) => {
+      render: (_, row) => {
         return row?.ethernetPorts?.[0]?.name
       }
     },
@@ -61,7 +64,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Switch' }),
       key: 'switches',
       dataIndex: 'switches',
-      render: (data, row) => {
+      render: (_, row) => {
         const switchItem = row?.switches
           ?.find(item => Object.keys(switchNameMapping).includes(item.macAddress))
         return switchNameMapping[switchItem?.macAddress as keyof typeof switchNameMapping]
@@ -72,7 +75,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Assigned Port' }),
       key: 'ethernetPorts[0].portIndex',
       dataIndex: 'ethernetPorts[0].portIndex',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
       }
     }

@@ -6,10 +6,11 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 cvqgNU"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
+        class="styledComponents__Header-sc-1abm7iv-10 lKtIj"
       >
         <div>
           <div
@@ -187,13 +188,15 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 692px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
                               class="ant-table-selection-col"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 160px;"
                             />
@@ -228,7 +231,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -295,7 +298,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                               </th>
                               <th
                                 aria-sort="descending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -362,7 +365,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -429,7 +432,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -496,7 +499,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -563,7 +566,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -758,7 +761,8 @@ exports[`VideoCallQoe Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cvwnRC"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 cvqgNU"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
         class="ant-pro-table"
@@ -815,7 +819,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 lWDEj"
+                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 kyfJsf"
                                   data-id="table-clear-btn"
                                   title="Clear selection"
                                   type="button"
@@ -874,13 +878,15 @@ exports[`VideoCallQoe Table should render table 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 692px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
                             <col
                               class="ant-table-selection-col"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 160px;"
                             />
@@ -915,7 +921,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -982,7 +988,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                               </th>
                               <th
                                 aria-sort="descending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -1049,7 +1055,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -1116,7 +1122,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -1183,7 +1189,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -1250,7 +1256,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -1435,30 +1441,34 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </label>
                               </td>
                               <td
-                                class="ant-table-cell ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
+                                title="Test call"
                               >
                                 Test call
                               </td>
                               <td
-                                class="ant-table-cell ant-table-column-sort ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
+                                title="04/12/2023 09:56:58"
                               >
                                 04/12/2023 09:56:58
                               </td>
                               <td
-                                class="ant-table-cell ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
+                                title="-"
                               >
                                 -
                               </td>
                               <td
-                                class="ant-table-cell ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
+                                title="-"
                               >
                                 -
                               </td>
                               <td
-                                class="ant-table-cell ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
                               >
                                 <span
@@ -1468,8 +1478,9 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </span>
                               </td>
                               <td
-                                class="ant-table-cell ant-table-cell-row-hover"
+                                class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
+                                title="-"
                               >
                                 -
                               </td>
@@ -1503,7 +1514,8 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </label>
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="Asraf - Test1"
                               >
                                 <a
                                   href="/tenant-id/t/analytics/videoCallQoe/57"
@@ -1512,31 +1524,35 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </a>
                               </td>
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="04/11/2023 04:39:28"
                               >
                                 04/11/2023 04:39:28
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="04/11/2023 04:40:20"
                               >
                                 04/11/2023 04:40:20
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="2"
                               >
                                 2
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="Ended"
                               >
                                 Ended
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
                               >
                                 <span
@@ -1576,7 +1592,8 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </label>
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="ACX_test"
                               >
                                 <a
                                   href="/tenant-id/t/analytics/videoCallQoe/13"
@@ -1585,31 +1602,35 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 </a>
                               </td>
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="04/06/2023 09:55:41"
                               >
                                 04/06/2023 09:55:41
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="04/06/2023 09:56:21"
                               >
                                 04/06/2023 09:56:21
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="2"
                               >
                                 2
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
+                                title="Ended"
                               >
                                 Ended
                               </td>
                               <td
-                                class="ant-table-cell"
+                                class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
                               >
                                 <span

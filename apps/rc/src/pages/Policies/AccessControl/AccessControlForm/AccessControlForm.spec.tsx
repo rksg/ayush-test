@@ -159,7 +159,7 @@ describe('AccessControlForm Component', () => {
     await userEvent.click((await screen.findAllByRole('switch'))[1])
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
     await userEvent.click((await screen.findAllByRole('switch'))[0])
@@ -167,7 +167,7 @@ describe('AccessControlForm Component', () => {
     await userEvent.click((await screen.findAllByRole('switch'))[1])
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
     await screen.findByRole('option', { name: 'layer2policy1' })
@@ -178,7 +178,7 @@ describe('AccessControlForm Component', () => {
     )
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
   })
@@ -213,7 +213,7 @@ describe('AccessControlForm Component', () => {
     }), 'acl-test-modify')
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
   })
 })

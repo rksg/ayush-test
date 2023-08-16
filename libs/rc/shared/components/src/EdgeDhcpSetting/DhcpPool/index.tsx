@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
+import { Form }         from 'antd'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
 
@@ -25,7 +27,9 @@ export default function DhcpPoolTable ({
   onChange
 }: DhcpPoolTableProps) {
   const { $t } = useIntl()
+  const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
+  const form = Form.useFormInstance()
   const {
     openDrawer,
     onDelete,
@@ -36,6 +40,8 @@ export default function DhcpPoolTable ({
   } = useTableControl<EdgeDhcpPool>({ value, onChange })
 
   const validateCSVData = async (data: EdgeDhcpPool[]): Promise<void> => {
+    const isRelayOn = form.getFieldValue('dhcpRelay')
+
     // find duplicate pool name
     const count = data.concat(value).reduce((result, item) => ({ ...result,
       [item.poolName]: (result[item.poolName] || 0) + 1
@@ -51,10 +57,25 @@ export default function DhcpPoolTable ({
       }))
     }
 
-
     // validation on other fields
     for(let i = 0; i < data.length; i++) {
       const item = data[i]
+
+      // requirement check
+      if (!item.poolName || !item.subnetMask
+        || !item.poolStartIp || !item.poolEndIp
+        || (!isRelayOn && !item.gatewayIp)) {
+        return Promise.reject($t({
+          defaultMessage: 'some required field(s) are empty.'
+        }))
+      }
+
+      // dependency between relay and gateway
+      if (isRelayOn && item.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway should be empty when relay is enabled.'
+        }, { data: item.poolName }))
+      }
 
       try {
         await subnetMaskIpRegExp(item.subnetMask)
@@ -102,52 +123,66 @@ export default function DhcpPoolTable ({
 
   return (
     <>
-      <PoolTable
-        data={value}
-        openDrawer={openDrawer}
-        openImportModal={setImportModalvisible}
-        onDelete={onDelete}
-      />
-      <PoolDrawer
-        visible={visible}
-        setVisible={setVisible}
-        onAddOrEdit={onAddOrEdit}
-        data={currentEditData}
-        allPool={value}
-      />
-      <ImportFileDrawer
-        type={ImportFileDrawerType.EdgeDHCP}
-        title={$t({ defaultMessage: 'Import from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={MAX_IMPORT_ENTRIES}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importModalvisible}
-        readAsText={true}
-        importRequest={(formData, values, content) => {
-          const dataArray = content!.split('\n').filter(row => {
-            const trimmed = row.trim()
-            return trimmed
-                  && !trimmed.startsWith('#')
-                  && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
-          })
+      <Form.Item
+        noStyle
+        dependencies={['dhcpRelay']}
+      >
+        {({ getFieldValue }) => {
+          const isRelayOn = getFieldValue('dhcpRelay')
 
-          if (dataArray.length > MAX_IMPORT_ENTRIES) {
-            showActionModal({
-              type: 'error',
-              title: $t({ defaultMessage: 'Invalid Validation' }),
-              content: $t({ defaultMessage: 'Exceed maximum entries.' })
-            })
-            return
-          }
-
-          appendDHCPPools(
-            dataArray,
-            () => setImportModalvisible(false)
-          )
+          return <>
+            <PoolTable
+              data={value}
+              openDrawer={openDrawer}
+              openImportModal={setImportModalvisible}
+              onDelete={onDelete}
+              isRelayOn={isRelayOn}
+            />
+            <PoolDrawer
+              visible={visible}
+              setVisible={setVisible}
+              onAddOrEdit={onAddOrEdit}
+              data={currentEditData}
+              allPool={value}
+              isRelayOn={isRelayOn}
+            />
+          </>
         }}
-        onClose={() => setImportModalvisible(false)}
-      />
+      </Form.Item>
+      {isDHCPCSVEnabled &&
+        <ImportFileDrawer
+          type={ImportFileDrawerType.EdgeDHCP}
+          title={$t({ defaultMessage: 'Import from file' })}
+          maxSize={CsvSize['5MB']}
+          maxEntries={MAX_IMPORT_ENTRIES}
+          acceptType={['csv']}
+          templateLink={importTemplateLink}
+          visible={importModalvisible}
+          readAsText={true}
+          importRequest={(formData, values, content) => {
+            const dataArray = content!.split('\n').filter(row => {
+              const trimmed = row.trim()
+              return trimmed
+                    && !trimmed.startsWith('#')
+                    && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
+            })
+
+            if (dataArray.length > MAX_IMPORT_ENTRIES) {
+              showActionModal({
+                type: 'error',
+                title: $t({ defaultMessage: 'Invalid Validation' }),
+                content: $t({ defaultMessage: 'Exceed maximum entries.' })
+              })
+              return
+            }
+
+            appendDHCPPools(
+              dataArray,
+              () => setImportModalvisible(false)
+            )
+          }}
+          onClose={() => setImportModalvisible(false)}
+        />}
     </>
   )
 }

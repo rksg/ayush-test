@@ -69,6 +69,7 @@ export function PersonaGroupForm (props: {
               rules={
                 [
                   { required: true },
+                  { max: 255 },
                   { validator: (_, value) => nameValidator(value) }
                 ]
               }
@@ -77,7 +78,10 @@ export function PersonaGroupForm (props: {
             <Form.Item
               name='description'
               label={$t({ defaultMessage: 'Description' })}
-              children={<TextArea rows={3} maxLength={64} />}
+              children={<TextArea rows={3} />}
+              rules={[
+                { max: 255 }
+              ]}
             />
           </Col>
         </Row>
@@ -86,7 +90,7 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Pool'} required>
+            <Form.Item label={'DPSK Service'} required>
               <Form.Item
                 name='dpskPoolId'
                 children={
@@ -107,7 +111,7 @@ export function PersonaGroupForm (props: {
                 rules={
                   [{
                     required: true,
-                    message: $t({ defaultMessage: 'Please select a DPSK pool' })
+                    message: $t({ defaultMessage: 'Please select a DPSK Service' })
                   }]
                 }
               />

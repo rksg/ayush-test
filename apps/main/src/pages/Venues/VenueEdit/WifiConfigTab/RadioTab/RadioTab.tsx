@@ -2,13 +2,15 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
+import { ClientAdmissionControl } from './ClientAdmissionControl'
 import { ExternalAntennaSection } from './ExternalAntennaSection'
 import { LoadBalancing }          from './LoadBalancing'
 import { RadioSettings }          from './RadioSettings'
@@ -28,11 +30,14 @@ export function RadioTab () {
   const basePath = useTenantLink('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
+  const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
+  const clientAdmissionControlTitle = $t({ defaultMessage: 'Client Admission Control' })
+
   const anchorItems = [{
     title: wifiSettingLink,
     content: (
@@ -55,6 +60,25 @@ export function RadioTab () {
       </>
     )
   }] : []),
+  ...(supoortClientAdmissionControl? [{
+    title: clientAdmissionControlTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-admission-control'>
+          { clientAdmissionControlTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+              'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ height: '18px', marginBottom: -3 }}
+            />
+          </Tooltip>
+        </StepsFormLegacy.SectionTitle>
+        <ClientAdmissionControl />
+      </>
+    )
+  }]: []),
   {
     title: externalTitle,
     content: (
@@ -69,7 +93,12 @@ export function RadioTab () {
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      const { apModels, radioData, isLoadBalancingDataChanged } = editRadioContextData || {}
+      const {
+        apModels,
+        radioData,
+        isLoadBalancingDataChanged,
+        isClientAdmissionControlDataChanged
+      } = editRadioContextData || {}
 
       if (apModels) {
         const extPayload = getExternalAntennaPayload(apModels)
@@ -81,18 +110,30 @@ export function RadioTab () {
       if (isLoadBalancingDataChanged) {
         await editRadioContextData.updateLoadBalancing?.()
       }
+      if (isClientAdmissionControlDataChanged) {
+        await editRadioContextData.updateClientAdmissionControl?.()
+      }
 
-      if (apModels || radioData || isLoadBalancingDataChanged) {
+      if (
+        apModels ||
+        radioData ||
+        isLoadBalancingDataChanged ||
+        isClientAdmissionControlDataChanged) {
         setEditContextData({
           ...editContextData,
           unsavedTabKey: 'radio',
           isDirty: false
         })
 
-        setEditRadioContextData({
+        const newRadioContextData = {
           ...editRadioContextData,
-          isLoadBalancingDataChanged: false
-        })
+          isLoadBalancingDataChanged: false,
+          isClientAdmissionControlDataChanged: false
+        }
+        delete newRadioContextData.apModels
+        delete newRadioContextData.radioData
+
+        setEditRadioContextData(newRadioContextData)
       }
 
       if (redirect) {

@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
+import { Badge }                  from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Table,
@@ -11,8 +12,10 @@ import {
   Loader,
   deviceStatusColors,
   ColumnType,
+  PasswordInput,
   showToast
 } from '@acx-ui/components'
+import { showActionModal, Tooltip } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn
@@ -39,7 +42,8 @@ import {
   FILTER,
   SEARCH,
   GROUPBY,
-  getSwitchModel
+  getSwitchModel,
+  getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
@@ -85,13 +89,20 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`
 }
 
+const PasswordTooltip = {
+  SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
+  SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+}
+
 export const defaultSwitchPayload = {
   searchString: '',
   searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware'
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
+    'syncedAdminPassword', 'adminPassword'
   ]
 }
 
@@ -135,7 +146,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -145,6 +156,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -172,6 +184,36 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
   const [stackTooltip, setStackTooltip] = useState('')
 
+  const getPasswordTooltip = (row: SwitchRow) => {
+    if (!(row?.configReady && row?.syncedSwitchConfig)) {
+      return $t(PasswordTooltip.SYNCING)
+    } else if (!row?.syncedAdminPassword) {
+      return $t(PasswordTooltip.CUSTOM)
+    }
+    return $t(PasswordTooltip.SYNCED)
+  }
+
+  const handleClickMatchPassword = (rows: SwitchRow[], clearSelection: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Match Admin Password to Venue' }),
+      content: $t({ defaultMessage: 'The switch admin password will be set same as the venue setting. Are you sure you want to proceed?' }),
+      okText: $t({ defaultMessage: 'Match Password' }),
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk: () => {
+        const switchIdList = rows.map(row => row.id)
+        const callback = () => {
+          clearSelection?.()
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'Start admin password sync' })
+          })
+        }
+        switchAction.doSyncAdminPassword(switchIdList, callback)
+      }
+    })
+  }
+
   const columns = React.useMemo(() => {
     return [{
       key: 'name',
@@ -185,7 +227,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterValueNullable: false,
       filterable: filterableKeys ? switchFilterOptions : false,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.isFirstLevel ?
           <TenantLink
             to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
@@ -193,10 +235,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           >
             {getSwitchName(row)}
           </TenantLink> :
-          <div>
-            {getSwitchName(row)}
-            <span style={{ marginLeft: '4px' }}>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-          </div>
+          `${getSwitchName(row)} (${getStackMemberStatus(row.unitStatus || '', true)})`
       }
     }, {
       key: 'deviceStatus',
@@ -207,7 +246,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (data, row) => <SwitchStatus row={row}/>
+      render: (_, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -216,10 +255,26 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       searchable: searchable,
       groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
-      render: (data, row) => {
-        return data || getSwitchModel(row.serialNumber)
+      render: (_, row) => {
+        return row.model || getSwitchModel(row.serialNumber)
       }
-    }, {
+    },
+    ...(enableSwitchAdminPassword ? [{
+      key: 'syncedAdminPassword',
+      title: $t({ defaultMessage: 'Admin Password' }),
+      dataIndex: 'syncedAdminPassword',
+      disabled: true,
+      show: false,
+      render: (data:boolean, row:SwitchRow) => {
+        const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
+        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+          <Tooltip title={getPasswordTooltip(row)}>{
+            getAdminPassword(row, PasswordInput)
+          }</Tooltip>
+        </div>
+      }
+    }] : []),
+    {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'activeSerial',
@@ -232,7 +287,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'switchMac',
       sorter: true,
       searchable: searchable,
-      render: (data) => typeof data === 'string' && data.toUpperCase()
+      render: (_, { switchMac }) => typeof switchMac === 'string' && switchMac.toUpperCase()
     }, {
       key: 'ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -257,8 +312,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data: React.ReactNode, row: SwitchRow) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_: React.ReactNode, row: SwitchRow) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       )
     }]), {
       key: 'uptime',
@@ -267,14 +324,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true
     }, {
       key: 'clientCount',
-      title: $t({ defaultMessage: 'Clients' }),
+      title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clientCount',
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
-          {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
+          {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
     }
@@ -333,7 +390,18 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     onClick: (selectedRows) => {
       navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
-  }, {
+  },
+  ...(enableSwitchAdminPassword ? [{
+    label: $t({ defaultMessage: 'Match Admin Password to Venue' }),
+    disabled: (rows: SwitchRow[]) => {
+      return rows.filter((row:SwitchRow) => {
+        const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
+        return !row?.syncedAdminPassword && isConfigSynced
+      }).length === 0
+    },
+    onClick: handleClickMatchPassword
+  }] : []),
+  {
     label: $t({ defaultMessage: 'Retry firmware update' }),
     visible: (rows) => {
       const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
@@ -360,7 +428,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
-    } else {
+    } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)

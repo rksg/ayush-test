@@ -76,7 +76,8 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
   </TenantLink>
 }
 
-export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
+export function IncidentTable ({ filters, systemNetwork }: {
+   filters: IncidentFilter, systemNetwork?: boolean }) {
   const intl = useIntl()
   const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
@@ -156,7 +157,6 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     {
@@ -218,14 +218,14 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
         settingsId='incident-table'
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
-        rowSelection={{
+        rowSelection={!systemNetwork && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

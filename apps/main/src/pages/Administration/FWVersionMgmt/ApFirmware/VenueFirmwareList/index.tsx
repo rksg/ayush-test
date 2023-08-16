@@ -77,7 +77,7 @@ function useColumns (
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       searchable: searchable,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.name
       }
     },
@@ -88,7 +88,7 @@ function useColumns (
       sorter: { compare: sortCurrentApFirmware },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         return getApVersion(row) ?? '--'
       }
     },
@@ -97,7 +97,7 @@ function useColumns (
       key: 'eolApFirmwares',
       dataIndex: 'eolApFirmwares',
       sorter: false,
-      render: function (data, row) {
+      render: function (_, row) {
         const firmwareText = getDisplayEolFirmwareText(row)
 
         return firmwareText
@@ -114,7 +114,7 @@ function useColumns (
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.versions) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
@@ -127,7 +127,7 @@ function useColumns (
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
       }
@@ -138,7 +138,7 @@ function useColumns (
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         const schedules = getApSchedules(row)
 
         return schedules.length === 0

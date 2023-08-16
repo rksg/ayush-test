@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
-import { useIntl }                                        from 'react-intl'
+import { useIntl, defineMessage }                         from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
@@ -10,26 +10,10 @@ import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, Net
 
 import NetworkFormContext                     from '../../NetworkFormContext'
 import { hasAccountingRadius, hasAuthRadius } from '../../utils'
+import { MulticastForm }                      from '../MulticastForm'
 import * as UI                                from '../styledComponents'
 
-
-const multicastFilterTooltipContent = (
-  <div>
-    <p>Drop all multicast or broadcast traffic from associated wireless clients,
-      except for the following which is always allowed:</p>
-    <ul style={{ paddingLeft: '40px' }}>
-      <li>ARP request</li>
-      <li>DHCPv4 request</li>
-      <li>DHCPv6 request</li>
-      <li>IPv6 NS</li>
-      <li>IPv6 NA</li>
-      <li>IPv6 RS</li>
-      <li>IGMP</li>
-      <li>MLD</li>
-      <li>All unicast packets</li>
-    </ul>
-  </div>
-)
+import WiFi7 from './WiFi7'
 
 const { useWatch } = Form
 
@@ -44,15 +28,17 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     `Agile Multiband prioritizes roaming performance in indoor environments,
      supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
-  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
+  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
-  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
+  const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
+  const enable80211D = useIsSplitOn(Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -86,9 +72,14 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
     data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
+  const additionalRegulatoryDomains80211dInfoMessage = defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: '802.11d enables global compliance with additional regulatory domains. Enable this option if required in your locality.'
+  })
+
   return (
     <>
-      {AmbAndDtimFlag &&
+      {ambFlag &&
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
@@ -117,6 +108,27 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           children={<Switch />}
         />
       </UI.FieldLabel>
+
+      {enable80211D &&
+      <UI.FieldLabel width={labelWidth}>
+        <Space>
+          {$t({ defaultMessage: 'Enable 802.11d' })}
+          <Tooltip.Question
+            title={$t(additionalRegulatoryDomains80211dInfoMessage)}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan','advancedCustomization','enableAdditionalRegulatoryDomains']}
+          style={{ marginBottom: '15px' }}
+          valuePropName='checked'
+          data-testid='enable-additional-regulatory-domains-80211d'
+          initialValue={true}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+      }
 
       {isFastBssVisible &&
         <UI.FieldLabel width={labelWidth}>
@@ -188,7 +200,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           converting group addressed data traffic to unicast` })}
         children={<InputNumber style={{ width: '150px' }} />}
       />
-
 
       <UI.FieldLabel width={labelWidth}>
         { $t({ defaultMessage: 'Airtime Decongestion:' }) }
@@ -369,7 +380,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         </UI.FieldLabel>
       }
 
-      {AmbAndDtimFlag &&
+      {dtimFlag &&
         <Form.Item
           name={['wlan','advancedCustomization','dtimInterval']}
           label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
@@ -386,13 +397,17 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       }
 
-      {(gtkRekeyFlag || multicastFilterFlag) &&
-        <UI.Subtitle>{$t({ defaultMessage: 'Multicast' })}</UI.Subtitle>
-      }
-
       {gtkRekeyFlag &&
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'GTK Rekey' })}
+        <Space>
+          {$t({ defaultMessage: 'GTK Rekey' })}
+          <Tooltip.Question
+          // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'The periodic generation of a new group key for securing multicast/broadcast traffic' })}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
         <Form.Item
           name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
           style={{ marginBottom: '10px' }}
@@ -402,27 +417,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
       </UI.FieldLabel>
       }
 
-      {multicastFilterFlag &&
-      <UI.FieldLabel width={labelWidth}>
-        <Space align='start'>
-          {$t({ defaultMessage: 'Multicast Filter' })}
-          <div style={{ paddingTop: '4px' }}>
-            <Tooltip.Question
-              title={multicastFilterTooltipContent}
-              placement='right'
-            />
-          </div>
-        </Space>
-
-        <Form.Item
-          name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch data-testid='multicast-filter-enabled' />}
-        />
-      </UI.FieldLabel>
-      }
+      <MulticastForm/>
 
       {enableBSSPriority &&
       <>
@@ -455,6 +450,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           }
         />
       </>}
+
+      { wifi6AndWifi7Flag && <WiFi7 /> }
 
       {showRadiusOptions &&
       <>
