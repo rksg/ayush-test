@@ -59,9 +59,13 @@ export const EventTable = ({
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
-  const excludeProduct = [
+  const excludeEventType = [
     ...(!isEdgeEnabled ? ['EDGE'] : []),
     ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+  ]
+
+  const excludeProduct = [
+    ...(!isEdgeEnabled ? ['EDGE'] : [])
   ]
 
   const columns: TableProps<Event>['columns'] = [
@@ -97,7 +101,7 @@ export const EventTable = ({
       dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
-      filterable: filtersFrom(omit(eventTypeMap, excludeProduct), filterables, 'entity_type')
+      filterable: filtersFrom(omit(eventTypeMap, excludeEventType), filterables, 'entity_type')
     },
     {
       key: 'product',
