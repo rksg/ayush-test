@@ -169,7 +169,7 @@ export function ApLed () {
         <Row gutter={0} style={{ height: '40px' }}>
           <Col span={8}>
             <FieldLabel width='180px' >
-              {$t({ defaultMessage: 'Access Point LEDs' })}
+              {$t({ defaultMessage: 'Access Point LED' })}
               <Form.Item
                 name='ledEnabled'
                 valuePropName='checked'
