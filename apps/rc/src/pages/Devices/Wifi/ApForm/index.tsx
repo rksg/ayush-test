@@ -136,7 +136,7 @@ export function ApForm () {
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
       apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
-      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1]: 'R760',
+      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
       fwManagementLink: (<TenantLink
         to={'/administration/fwVersionMgmt'}>{

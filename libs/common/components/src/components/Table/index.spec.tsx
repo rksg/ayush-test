@@ -764,6 +764,18 @@ describe('Table component', () => {
       expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
     })
 
+
+    it('Enabled the flag: alwaysShowFilters', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        alwaysShowFilters={true}
+        rowSelection={{ defaultSelectedRowKeys: ['1'] }}
+      />)
+      expect(await screen.findByPlaceholderText(
+        'Search Name, Given Name, Surname, Description, Address')).toBeVisible()
+    })
+
     it('filtering inputs & searching', async () => {
       render(<Table
         columns={filteredColumns}
