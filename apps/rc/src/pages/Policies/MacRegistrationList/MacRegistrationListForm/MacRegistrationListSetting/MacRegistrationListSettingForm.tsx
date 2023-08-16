@@ -56,8 +56,8 @@ export function MacRegistrationListSettingForm () {
             label={$t({ defaultMessage: 'Name' })}
             rules={[
               { required: true },
-              { validator: (_, value) => nameValidator(value) },
-              { max: 255 }
+              { max: 255 },
+              { validator: (_, value) => nameValidator(value) }
             ]}
             validateFirst
             hasFeedback

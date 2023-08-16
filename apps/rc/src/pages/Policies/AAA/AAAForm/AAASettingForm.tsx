@@ -3,10 +3,11 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput }         from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }                                                   from '@acx-ui/rc/services'
+import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput } from '@acx-ui/components'
+import { useGetAAAPolicyListQuery }                                           from '@acx-ui/rc/services'
 import {
-  AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
+  AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
+  networkWifiIpRegExp, networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -107,7 +108,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (rule, value) => nameValidator(value) }
+            { validator: (rule, value) => nameValidator(value) },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
@@ -200,10 +201,10 @@ const ActivityTable = ({
       enableApiFilter={true}
       columnState={columnState}
     />
-    {current && visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
-      onClose={()=>setVisible(false)}
+      onClose={() => setVisible(false)}
       data={getDrawerData(current)}
       width={464}
       activity={current}

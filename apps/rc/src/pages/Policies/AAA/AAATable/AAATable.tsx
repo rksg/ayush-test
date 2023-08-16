@@ -187,10 +187,11 @@ function useColumns () {
       sorter: true
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
+      filterKey: 'networkIds',
       filterable: networkNameMap,
       sorter: true,
       render: (_, row) =>{
