@@ -270,10 +270,10 @@ export function StackForm () {
   }, [venuesList, switchData, switchDetail])
 
   useEffect(() => {
-    if (tableData) {
+    if (tableData || activeRow) {
       formRef?.current?.validateFields()
     }
-  }, [tableData])
+  }, [tableData, activeRow])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -498,7 +498,7 @@ export function StackForm () {
         >{ isStackSwitches
             ? <Select
               options={standaloneSwitches?.map(s => ({
-                label: s.serialNumber, value: s.serialNumber, name: s.name
+                label: s.serialNumber, value: s.serialNumber
               }))}
               onChange={value => {
                 setTableData(tableData.map(d =>
@@ -518,11 +518,17 @@ export function StackForm () {
     ...(isStackSwitches ? [{
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'name',
+      width: 180,
       key: 'name',
       render: function (_: React.ReactNode, row: SwitchTable) {
         const selected = standaloneSwitches.find(s => s.serialNumber === row.id)
         const content = selected?.name || selected?.serialNumber || '--'
-        return <div>{content}</div>
+        return <div style={{
+          width: '180px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>{content}</div>
       }
     }] : []),
     ...(!isStackSwitches ? [{
