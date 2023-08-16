@@ -23,10 +23,10 @@ function useColumns () {
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
-            to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
+            to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
@@ -35,8 +35,8 @@ function useColumns () {
       key: 'nwSubType',
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => <NetworkType
-        networkType={data as NetworkTypeEnum}
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
     },
@@ -45,8 +45,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
-      render: function (count) {
-        return count
+      render: function (_, { venues }) {
+        return venues?.count
       }
     }
   ]

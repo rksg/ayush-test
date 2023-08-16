@@ -54,7 +54,7 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
       key: 'ipMode',
       dataIndex: 'ipMode',
       sorter: true,
-      render: (ipMode) => {
+      render: (_, { ipMode }) => {
         return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
           : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
       }

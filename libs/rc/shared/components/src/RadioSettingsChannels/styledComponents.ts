@@ -128,7 +128,6 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     align-items: baseline;
     justify-content: space-around;
   }
-}
 `
 export const CheckboxGroupFor320Mhz = styled(CheckboxGroup)`
   .ant-checkbox-wrapper {
@@ -145,11 +144,11 @@ export const CheckboxGroupFor320Mhz = styled(CheckboxGroup)`
       border-bottom-color: var(--acx-semantics-red-60)
     }
   }
-
 `
 
 const BarButton = styled(Button)`
-  height: 16px;
+  min-height: 16px !important;
+  height: fit-content;
   border-radius: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
@@ -158,16 +157,18 @@ const BarButton = styled(Button)`
 `
 
 export const BarButton5G = styled(BarButton)`
-  border: 1px solid var(--acx-accents-orange-25);
-  background: var(--acx-accents-orange-25);
-  &[disabled] {
-    border: 1px solid var(--acx-accents-orange-25) !important;
-    background: var(--acx-accents-orange-25) !important;
-    color: var(--acx-primary-black) !important;
-  }
-  &:hover, &:focus, &:active {
-    border-color: var(--acx-accents-orange-30);
+  &.ant-btn.ant-btn-default {
+    border: 1px solid var(--acx-accents-orange-25);
     background: var(--acx-accents-orange-25);
+    &[disabled] {
+      border: 1px solid var(--acx-accents-orange-25);
+      background: var(--acx-accents-orange-25);
+      color: var(--acx-primary-black);
+    }
+    &:hover, &:focus, &:active {
+      border-color: var(--acx-accents-orange-30);
+      background: var(--acx-accents-orange-25);
+    }
   }
 `
 
@@ -176,16 +177,19 @@ export const BarButton6G = styled(BarButton5G)`
 `
 
 export const BarButtonDFS = styled(BarButton)`
-  border: 1px solid var(--acx-accents-orange-10);
-  background: var(--acx-accents-orange-10);
-  &[disabled] {
-    border: 1px solid var(--acx-accents-orange-10) !important;
-    background: var(--acx-accents-orange-10) !important;
-    color: var(--acx-primary-black) !important;
-  }
-  &:hover, &:focus, &:active {
-    border-color: var(--acx-accents-orange-20);
+  &.ant-btn.ant-btn-default {
+    border: 1px solid var(--acx-accents-orange-10);
     background: var(--acx-accents-orange-10);
+
+    &[disabled] {
+      border: 1px solid var(--acx-accents-orange-10);
+      background: var(--acx-accents-orange-10);
+      color: var(--acx-primary-black);
+    }
+    &:hover, &:focus, &:active {
+      border-color: var(--acx-accents-orange-20);
+      background: var(--acx-accents-orange-10);
+    }
   }
 `
 

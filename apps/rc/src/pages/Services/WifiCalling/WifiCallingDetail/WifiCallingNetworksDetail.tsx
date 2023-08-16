@@ -37,7 +37,7 @@ const WifiCallingNetworksDetail = () => {
       dataIndex: 'nwSubType',
       key: 'nwSubType',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
     },
