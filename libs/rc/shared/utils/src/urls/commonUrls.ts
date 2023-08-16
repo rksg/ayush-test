@@ -365,6 +365,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
     newApi: true
   },
+  getRogueApLocation: {
+    method: 'get',
+    url: '/venues/:venueId/rogueLocations?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/location?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
+    newApi: true
+  },
   getOldVenueRogueAp: {
     method: 'post',
     url: '/venues/:venueId/rogueAps/query',

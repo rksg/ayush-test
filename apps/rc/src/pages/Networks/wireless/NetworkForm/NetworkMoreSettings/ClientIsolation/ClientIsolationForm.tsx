@@ -22,6 +22,7 @@ enum IsolatePacketsTypeEnum {
 
 export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
+  const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
@@ -35,6 +36,13 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
   const enableVxLan = hasVxLanTunnelProfile(data)
 
+  const onClientIsolationEnabledChanged = (checked: boolean) => {
+    if(!checked){
+      form.setFieldValue(
+        ['wlan','advancedCustomization','clientIsolationOptions', 'packetsType'], undefined)
+    }
+  }
+
   return (<>
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Isolation' })}
@@ -44,7 +52,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
-        children={<Switch disabled={enableVxLan}/>}
+        children={<Switch disabled={enableVxLan} onChange={onClientIsolationEnabledChanged}/>}
       />
     </UI.FieldLabel>
 
