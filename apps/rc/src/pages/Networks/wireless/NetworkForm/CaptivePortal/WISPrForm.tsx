@@ -8,9 +8,10 @@ import {
   Input,
   InputRef
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import _                       from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
@@ -38,7 +39,8 @@ import {
   WlanSecurityEnum,
   AuthRadiusEnum,
   WisprSecurityEnum,
-  WisprSecurityOptionsDescription
+  WisprSecurityOptionsDescription,
+  ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -133,11 +135,13 @@ export function WISPrForm () {
     }
     setRegionOption(regions)
   }
+
   useEffect(()=>{
     if(mspEcProfileData){
       setIsMspEc(mspUtils.isMspEc(mspEcProfileData))
     }
   },[mspEcProfileData])
+
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
@@ -177,26 +181,6 @@ export function WISPrForm () {
         const regions = _.find(externalProviders,{ name: pName })?.regions
         setRegionOption(regions)
       }
-      const { wlanSecurity } = data.wlan || {}
-      if (!enableOweEncryption) {
-        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
-                          wlanSecurity !== WlanSecurityEnum.OWE
-        form.setFieldValue('enablePreShared', enablePsk)
-        setEnablePreShared(enablePsk)
-        form.setFieldValue('pskProtocol', wlanSecurity)
-        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
-      } else if (wlanSecurity === WlanSecurityEnum.None) {
-        form.setFieldValue('networkSecurity', 'NONE')
-      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
-        form.setFieldValue('networkSecurity', 'OWE')
-        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
-      } else {
-        form.setFieldValue('networkSecurity', 'PSK')
-        form.setFieldValue('enablePreShared', true)
-        setEnablePreShared(true)
-        form.setFieldValue('pskProtocol', wlanSecurity)
-        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
-      }
       if(!pName?.trim() || pName==='Custom Provider'){
         form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
         setIsOtherProvider(true)
@@ -211,7 +195,30 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData.data,data,isMspEc])
+  },[providerData.data, data, isMspEc])
+
+  useEffect(()=>{
+    const { wlanSecurity } = data?.wlan || {}
+    if (wlanSecurity) {
+      if (!enableOweEncryption) {
+        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
+                          wlanSecurity !== WlanSecurityEnum.OWE
+        form.setFieldValue('enablePreShared', enablePsk)
+        setEnablePreShared(enablePsk)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+      } else if (wlanSecurity === WlanSecurityEnum.None) {
+        form.setFieldValue('networkSecurity', 'NONE')
+      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
+        form.setFieldValue('networkSecurity', 'OWE')
+      } else {
+        form.setFieldValue('networkSecurity', 'PSK')
+        form.setFieldValue('enablePreShared', true)
+        setEnablePreShared(true)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+      }
+    }
+  }, [data?.wlan?.wlanSecurity])
+
   useEffect(()=>{
     if(!data?.guestPortal?.wisprPage?.integrationKey){
       form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
@@ -296,6 +303,9 @@ export function WISPrForm () {
         ? data?.wlan?.wepHexKey
         : null
     }
+    if (value === WlanSecurityEnum.OWE) {
+      protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+    }
 
     setData && setData({
       ...data,
@@ -308,6 +318,11 @@ export function WISPrForm () {
       }
     })
   }
+
+  const onPskChange = async (e: CheckboxChangeEvent) => {
+    setEnablePreShared(e.target.checked)
+  }
+
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
   return (
@@ -420,7 +435,7 @@ export function WISPrForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox>
+              <Checkbox onChange={onPskChange}>
                 {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
               </Checkbox>
             }
