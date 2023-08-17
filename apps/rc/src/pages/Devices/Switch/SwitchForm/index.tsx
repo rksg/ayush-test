@@ -41,9 +41,7 @@ import {
   redirectPreviousPage,
   LocationExtended,
   SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
-  VenueMessages,
-  validateBlockedSwitch,
-  showBlockedSwitchErrorDialog
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -56,7 +54,8 @@ import { store } from '@acx-ui/store'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
-import * as UI from './styledComponents'
+import {  getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from './blockListRelatedTsb.util'
+import * as UI                                                   from './styledComponents'
 
 const { Option } = Select
 
@@ -91,7 +90,6 @@ export function SwitchForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -113,7 +111,10 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
     searchString: '',
@@ -209,11 +210,11 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-
-    const blockedSwitchList = (validateBlockedSwitch(values.id)) || []
-    if (blockedSwitchList.length > 0) {
-      showBlockedSwitchErrorDialog(blockedSwitchList)
-      return
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(values.id)?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
     }
 
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
