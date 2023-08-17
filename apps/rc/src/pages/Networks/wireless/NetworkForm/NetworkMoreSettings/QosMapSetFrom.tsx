@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { useContext, useState, useEffect, Key } from 'react'
 
@@ -357,7 +358,7 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     return Promise.resolve()
   }
 
-  const validateExceptionDscpInputRange = (_:RuleObject, value: string) => {
+  const validateExceptionDscpInputRange = (_:RuleObject, value: any) => {
     const uniqueNumbers = new Set()
     const dscpExceptionValuesArray = qosMapRulesList.flatMap(item => item.dscpExceptionValues)
     dscpExceptionValuesArray.forEach(exceptionValues => {uniqueNumbers.add(exceptionValues)})
@@ -365,7 +366,14 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     if (value.length < 1){
       return Promise.resolve()
     }
-    const numbers = value.split(',').map(Number)
+    let numbers = null
+    if (value instanceof String){
+      numbers = value.split(',').map(Number)
+    } else if (value instanceof Array){
+      numbers = value
+    } else {
+      numbers = []
+    }
     for (const number of numbers) {
       if (isNaN(number) || number < 0 || number > 63) {
         return Promise.reject($t(validationMessages.exceptionDscpRangeValue))
