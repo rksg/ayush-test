@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedLatestFirmwareList, mockedAvailableABFList } from './__tests__/fixtures'
+import { mockedAvailableABFList } from './__tests__/fixtures'
 
 import VersionBanner from '.'
 describe('VersionBanner', () => {
@@ -22,10 +22,6 @@ describe('VersionBanner', () => {
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => {
           const searchParams = req.url.searchParams
-          if (searchParams.get('status') === 'latest') {
-            return res(ctx.json([...mockedLatestFirmwareList]))
-          }
-
           if (searchParams.get('status') === 'release' && searchParams.get('abf') === 'all') {
             return res(ctx.json([ ...mockedAvailableABFList ]))
           }
@@ -46,7 +42,10 @@ describe('VersionBanner', () => {
     )
 
     expect(await screen.findByText('7.0.0.103.325')).toBeVisible()
+    expect(await screen.findByText('07/27/2023')).toBeVisible()
     expect(await screen.findByText('6.2.2.103.82')).toBeVisible()
+    expect(await screen.findByText('06/16/2023')).toBeVisible()
     expect(await screen.findByText('6.2.0.103.518')).toBeVisible()
+    expect(await screen.findByText('07/21/2023')).toBeVisible()
   })
 })
