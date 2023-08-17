@@ -58,11 +58,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const appTokenData = tenantAuthenticationData?.filter(n =>
     n.authenticationType !== TenantAuthenticationType.saml)
   useEffect(() => {
-    if (appTokenData && appTokenData.length > 0) {
-      setAppToken(true)
-    } else {
-      setAppToken(false)
-    }
+    const hasTokenData = (Array.isArray(appTokenData) && appTokenData.length > 0)
+    setAppToken(hasTokenData)
   }, [appTokenData])
 
   const AddAppLink = () => {
