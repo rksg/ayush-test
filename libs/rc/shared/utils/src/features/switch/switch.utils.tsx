@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showActionModal }        from '@acx-ui/components'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'

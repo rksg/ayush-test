@@ -67,6 +67,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
@@ -77,7 +78,6 @@ import {
   StepFormTitle,
   TypographyText
 } from './styledComponents'
-import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from '../SwitchForm/blockListRelatedTsb.util'
 
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
