@@ -117,7 +117,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       enableApiFilter={true}
       iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
-    {visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
