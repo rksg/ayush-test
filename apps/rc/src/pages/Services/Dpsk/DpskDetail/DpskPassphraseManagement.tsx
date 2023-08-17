@@ -208,7 +208,7 @@ export default function DpskPassphraseManagement () {
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
-    if (!isCloudpathEnabled && selectedRows.length !== 1) return false
+    if (!isCloudpathEnabled || selectedRows.length !== 1) return false
 
     const row = selectedRows[0]
     if (row && row.hasOwnProperty('numberOfDevices')) return row.numberOfDevices! > 1
