@@ -72,13 +72,14 @@ describe('AAA Instance Page', () => {
       '8.8.8.7')
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
-    await userEvent.click(await screen.findByText('Finish'))
-    // FIXME: Do not use setTimeout here
-    // await new Promise((r)=>{setTimeout(r, 500)})
-    // await changeAAA()
+    await userEvent.click(await screen.findByText('Add'))
+
+    await changeAAA()
+
+    expect((await screen.findAllByTitle('test1'))[0]).toBeVisible()
   })
 })
-// async function changeAAA (){
-//   await userEvent.click((await screen.findAllByRole('combobox'))[0])
-//   await userEvent.click((await screen.findAllByTitle('test1'))[0])
-// }
+async function changeAAA (){
+  await userEvent.click((await screen.findAllByRole('combobox'))[0])
+  await userEvent.click((await screen.findAllByTitle('test1'))[0])
+}

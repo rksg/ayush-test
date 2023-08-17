@@ -54,13 +54,13 @@ export const EdgeServices = () => {
       dataIndex: 'serviceName',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <Button
             type='link'
             onClick={() => showServiceDetailsDrawer(row)}
           >
-            {data}
+            {row.serviceName}
           </Button>
         )
       }

@@ -17,6 +17,7 @@ import {
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
 import {
+  CheckMark,
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
@@ -62,7 +63,8 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'
+    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
+    'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -136,6 +138,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
+  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -165,12 +168,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       sorter: true,
       fixed: 'left',
       searchable: searchable,
-      render: (data, row : APExtended, _, highlightFn) => (
+      render: (_, row : APExtended, __, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
+          {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
+      width: 200,
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
@@ -267,17 +271,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data: React.ReactNode, row : APExtended) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_: React.ReactNode, row : APExtended) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       )
     }]), {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      render: (data, row : APExtended) => {
+      render: (_, row : APExtended) => {
+        const { switchId, switchSerialNumber, switchName } = row
         return (
-          // eslint-disable-next-line max-len
-          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/devices/switch/${switchId}/${switchSerialNumber}/details/overview`}>
+            {switchName}
+          </TenantLink>
         )
       }
     }, {
@@ -285,13 +293,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
-      render: (data) => transformMeshRole(data as APMeshRole)
+      render: (_, { meshRole }) => transformMeshRole(meshRole as APMeshRole)
     }, {
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row : APExtended) => {
+      render: (_, row: APExtended) => {
         return releaseTag ?
           <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
             {transformDisplayNumber(row.clients)}
@@ -316,11 +324,11 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         const key = channel as keyof ApExtraParams
         acc.push({
           key: channel,
+          width: 80,
           dataIndex: channel,
           title: <Table.SubTitle children={channelTitleMap[key]} />,
           align: 'center',
-          ellipsis: true,
-          render: (data, row) =>
+          render: (_, row) =>
             transformDisplayText(row[key] as string)
         })
         return acc
@@ -350,7 +358,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'poePort',
       show: false,
       sorter: false,
-      render: (data, row : APExtended) => {
+      render: (_, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
         }
@@ -364,7 +372,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </span>
         )
       }
-    }]
+    },
+    ...(secureBootFlag ? [
+      {
+        key: 'secureBoot',
+        title: $t({ defaultMessage: 'Secure Boot' }),
+        dataIndex: 'secureBootEnabled',
+        show: false,
+        sorter: false,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const secureBootEnabled = row.apStatusData?.APSystem?.secureBootEnabled || false
+
+          return (secureBootEnabled ? <CheckMark /> : null)
+        }
+      }] : [])
+    ]
 
     return columns
   }, [$t, tableQuery.data?.extra])
@@ -506,7 +528,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/wifi/add`
-            })
+            }, { state: { venueId: params.venueId } })
           }
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),

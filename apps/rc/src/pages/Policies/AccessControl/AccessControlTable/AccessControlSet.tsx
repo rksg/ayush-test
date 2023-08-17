@@ -168,7 +168,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -176,7 +176,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -186,7 +186,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'Layer 2' }),
       dataIndex: 'l2AclPolicyName',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.l2AclPolicyId
           ? <Form form={form}><Layer2Drawer
             isOnlyViewMode={true}
@@ -200,7 +200,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'Layer 3' }),
       dataIndex: 'l3AclPolicyName',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.l3AclPolicyId
           ? <Form form={form}><Layer3Drawer
             isOnlyViewMode={true}
@@ -214,7 +214,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'Device & OS' }),
       dataIndex: 'devicePolicyName',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.devicePolicyId
           ? <Form form={form}><DeviceOSDrawer
             isOnlyViewMode={true}
@@ -228,7 +228,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'Applications' }),
       dataIndex: 'applicationPolicyName',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.applicationPolicyId
           ? <Form form={form}><ApplicationDrawer
             isOnlyViewMode={true}
@@ -245,7 +245,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'Client Rate Limit' }),
       dataIndex: 'clientRateLimit',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return <ClientRateLimitComponent
           clientRateUpLinkLimit={row.clientRateUpLinkLimit}
           clientRateDownLinkLimit={row.clientRateDownLinkLimit}
@@ -260,7 +260,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds.length
+      render: (_, row) => row.networkIds.length
     }
   ]
 

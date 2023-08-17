@@ -52,24 +52,24 @@ export function VideoCallQoeTable () {
       dataIndex: 'name',
       key: 'name',
       searchable: true,
-      render: (value: unknown, row: unknown) => {
+      render: (_, row) => {
         const status = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
         return [MeetingType.ENDED].includes(status)
           ? <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
-            {value as string}
+            {row.name}
           </TenantLink>
           : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)
             ? <Button
               type='link'
               onClick={()=>{
                 setVisible(true)
-                setTestDetails({ name: value as string, link: (row as Meeting).joinUrl })
+                setTestDetails({ name: row.name, link: (row as Meeting).joinUrl })
               }
               }>
-              {value as string}
+              {row.name}
             </Button>
-            : value as string
+            : row.name
       },
       sorter: { compare: sortProp('name', defaultSort) }
     },
@@ -78,8 +78,8 @@ export function VideoCallQoeTable () {
       dataIndex: 'createdTime',
       key: 'createdTime',
       defaultSortOrder: 'descend' as SortOrder,
-      render: (value: unknown) =>
-        formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string),
+      render: (_, { createdTime }) =>
+        formatter(DateFormatEnum.DateTimeFormatWithSeconds)(createdTime),
       sorter: { compare: sortProp('createdTime', dateSort) },
       align: 'center',
       width: 160
@@ -88,8 +88,8 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'Start Time' }),
       dataIndex: 'startTime',
       key: 'startTime',
-      render: (value: unknown) => {
-        return value ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string) : '-'
+      render: (_, { startTime }) => {
+        return startTime ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(startTime) : '-'
       },
       sorter: { compare: sortProp('startTime', dateSort) },
       align: 'center',
@@ -99,8 +99,8 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'Participants' }),
       dataIndex: 'participantCount',
       key: 'participantCount',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
+      render: (_, { participantCount }) => {
+        return participantCount ? participantCount : '-'
       },
       sorter: { compare: sortProp('participantCount', defaultSort) },
       align: 'center',
@@ -110,9 +110,9 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      render: (value: unknown, row: unknown) => {
-        const meetingStatus = $t(statusMapping[value as keyof typeof statusMapping])
-        const formattedStatus = startCase(toLower(value as string))
+      render: (_, row) => {
+        const meetingStatus = $t(statusMapping[row.status as keyof typeof statusMapping])
+        const formattedStatus = startCase(toLower(row.status))
         return (formattedStatus !== MeetingType.INVALID ? meetingStatus :
           (<Tooltip placement='top'
             title={$t(messageMapping[
@@ -133,8 +133,7 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'QoE' }),
       dataIndex: 'mos',
       key: 'mos',
-      render: (value: unknown) => {
-        const mos = value as number
+      render: (_, { mos }) => {
         const isValidMos = mos ? true : false
         return isValidMos ? (mos >= 4 ? <TrendPill
           value={$t({ defaultMessage: 'Good' })}

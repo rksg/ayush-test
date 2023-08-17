@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { createContext, useContext, useCallback, useEffect, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
@@ -117,7 +117,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
-    const isActive = activePatterns.some(pattern => activeUri.match(pattern))
+    const isActive = activePatterns?.some(pattern => activeUri.match(pattern))
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
@@ -134,7 +134,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
           data-label={item.label}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
-        popupClassName: item.children.some(child => get(child, 'type') === 'group')
+        popupClassName: item.children?.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',
         children: item.children.map(child => getMenuItem(child, key))
       })
@@ -153,6 +153,16 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
+type LayoutContextType = {
+  pageHeaderY: number
+  setPageHeaderY: (y: number) => void
+}
+const LayoutContext = createContext({
+  pageHeaderY: 0,
+  setPageHeaderY: () => {}
+} as LayoutContextType)
+export const useLayoutContext = () => useContext(LayoutContext)
+
 export function Layout ({
   logo,
   menuConfig,
@@ -163,6 +173,7 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const [pageHeaderY, setPageHeaderY] = useState(0)
   const screenXL = parseInt(modifyVars['@screen-xl'], 10)
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
@@ -213,10 +224,12 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
-        <UI.ResponsiveContent>
-          <Content setShowScreen={onSubOptimalDisplay} />
-        </UI.ResponsiveContent>}
+      <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
+        {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+          <UI.ResponsiveContent>
+            <Content setShowScreen={onSubOptimalDisplay} />
+          </UI.ResponsiveContent>}
+      </LayoutContext.Provider>
     </ProLayout>
   </UI.Wrapper>
 }

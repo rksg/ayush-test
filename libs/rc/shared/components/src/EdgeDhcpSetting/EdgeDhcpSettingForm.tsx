@@ -1,9 +1,28 @@
-import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Space, Switch } from 'antd'
-import { useIntl }                                                                            from 'react-intl'
-import styled                                                                                 from 'styled-components'
+import { useEffect } from 'react'
 
-import { Alert, StepsFormLegacy, Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Select,
+  Space,
+  Switch
+} from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components'
+
+import {
+  StepsForm,
+  Subtitle,
+  useStepFormContext
+} from '@acx-ui/components'
+import {
+  EdgeDhcpPool,
   EdgeDhcpSetting,
   LeaseTimeType,
   LeaseTimeUnit,
@@ -25,11 +44,6 @@ interface EdgeDhcpSettingFormProps {
   className?: string
 }
 
-export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
-  enableSecondaryDNSServer?: boolean
-  leaseTimeType?: LeaseTimeType
-}
-
 export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeDhcpSetting>()
@@ -38,12 +52,14 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
     dhcpRelay,
     enableSecondaryDNSServer,
     leaseTimeType,
-    leaseTime
+    leaseTime,
+    usedForNSG
   ] = [
     useWatch<boolean>('dhcpRelay'),
     useWatch<boolean>('enableSecondaryDNSServer'),
     useWatch('leaseTimeType'),
-    form.getFieldValue('leaseTime')
+    form.getFieldValue('leaseTime'),
+    useWatch('usedForNSG')
   ]
   const initDhcpData: Partial<EdgeDhcpSetting> = {
     leaseTime: 24,
@@ -55,6 +71,43 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       form.setFieldValue('leaseTime', initDhcpData.leaseTime)
     }
   }
+
+  const relayGatewayValidator = (pools: EdgeDhcpPool[], isRelayOn: boolean) => {
+    for(let i = 0; i < pools.length; i++) {
+      const pool = pools[i]
+
+      if (isRelayOn && pool.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway should be empty when relay is enabled'
+        }, { data: pool.poolName }))
+      } else if (!isRelayOn && !pool.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway is required'
+        }, { data: pool.poolName }))
+      }
+    }
+
+    return Promise.resolve()
+  }
+
+  useEffect(() => {
+    // do nothing when data is not ready.
+    if (dhcpRelay === undefined) return
+    const pools = form.getFieldValue('dhcpPools')
+
+    // clear gateway field when relay is enabled
+    if (dhcpRelay && pools) {
+      const clonedPools = _.cloneDeep(pools)
+      clonedPools.forEach((pool:EdgeDhcpPool) => {
+        pool.gatewayIp = pool.gatewayIp ? '' : pool.gatewayIp
+      })
+
+      form.setFieldValue('dhcpPools', clonedPools)
+      setTimeout(() => {
+        form.validateFields(['dhcpPools'])
+      }, 250)
+    }
+  }, [dhcpRelay])
 
   return (
     <div className={props.className}>
@@ -71,15 +124,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
             }]}
             children={<Input />}
           />
-          <StepsFormLegacy.FieldLabel width='100px'>
-            {$t({ defaultMessage: 'DHCP Relay:' })}
+          <StepsForm.FieldLabel width='90%'>
+            {$t({ defaultMessage: 'DHCP Relay' })}
             <Form.Item
               name='dhcpRelay'
               valuePropName='checked'
               initialValue={false}
               children={<Switch />}
             />
-          </StepsFormLegacy.FieldLabel>
+          </StepsForm.FieldLabel>
 
           {dhcpRelay &&
             <>
@@ -91,12 +144,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                 }]}
                 children={<Input />}
               />
-              <Alert message={
-                $t({ defaultMessage: `If this DHCP service is going to be used for
-                Network Segmentation service, please make sure you set the DHCP pool for it.` })
-              }
-              type='info'
-              showIcon />
+              <StepsForm.FieldLabel width='90%'>
+                {$t({ defaultMessage: 'Use for Network Segmentation' })}
+                <Form.Item
+                  name='usedForNSG'
+                  valuePropName='checked'
+                  initialValue={false}
+                  children={<Switch />}
+                />
+              </StepsForm.FieldLabel>
             </>
           }
           {
@@ -153,9 +209,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                           name='leaseTimeUnit'
                           initialValue={initDhcpData.leaseTimeUnit}>
                           <Select >
-                            <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
-                            <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                            <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                            <Option value={LeaseTimeUnit.DAYS}>
+                              {$t({ defaultMessage: 'Days' })}
+                            </Option>
+                            <Option value={LeaseTimeUnit.HOURS}>
+                              {$t({ defaultMessage: 'Hours' })}
+                            </Option>
+                            <Option value={LeaseTimeUnit.MINUTES}>
+                              {$t({ defaultMessage: 'Minutes' })}
+                            </Option>
                           </Select>
                         </Form.Item>
                       </Space>
@@ -172,22 +234,30 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       </Row>
 
       <SpaceWrapper direction='vertical' size='middle' fullWidth>
-        <Row gutter={20}>
-          <Col span={24}>
-            <Subtitle level={3}>
-              { $t({ defaultMessage: 'Set DHCP Pools' }) }
-            </Subtitle>
-          </Col>
-          <Col span={15}>
-            <Form.Item
-              name='dhcpPools'
-              rules={[
-                { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
-              ]}
-              children={<DHCPPoolTable />}
-            />
-          </Col>
-        </Row>
+        { (!dhcpRelay || (dhcpRelay && usedForNSG)) &&
+          <Row gutter={20}>
+            <Col span={24}>
+              <Subtitle level={3}>
+                { $t({ defaultMessage: 'Set DHCP Pools' }) }
+              </Subtitle>
+            </Col>
+            <Col span={15}>
+              <Form.Item
+                name='dhcpPools'
+                validateFirst
+                dependencies={['dhcpRelay']}
+                rules={[
+                  {
+                    required: true,
+                    message: $t({ defaultMessage: 'Please create DHCP pools' })
+                  },
+                  { validator: (_, value) => relayGatewayValidator(value, dhcpRelay) }
+                ]}
+                children={<DHCPPoolTable />}
+              />
+            </Col>
+          </Row>
+        }
 
         {
           !dhcpRelay &&

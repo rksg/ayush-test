@@ -43,7 +43,8 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
     defaultFormValues: props.initialValues,
     buttonLabel: props.buttonLabel,
     onFinish: props.onFinish,
-    onCancel: props.onCancel
+    onCancel: props.onCancel,
+    onFinishFailed: props.onFinishFailed
   })
 
   const context = {

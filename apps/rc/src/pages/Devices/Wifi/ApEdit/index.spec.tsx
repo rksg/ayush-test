@@ -1,12 +1,11 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
-import { rest }       from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -21,7 +20,6 @@ import {
 import {
   venuelist,
   venueCaps,
-  aplist,
   apGrouplist,
   apDetailsList,
   apLanPorts,
@@ -30,120 +28,65 @@ import {
   venueData,
   venueLanPorts,
   venueSetting,
+  venueVersionList,
   deviceAps
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from './'
 
-async function showInvalidChangesModal (tabKey, discard) {
-  const dialog = await screen.findByRole('dialog')
+const buttonAction = {
+  DISCARD_CHANGES: 'Discard Changes',
+  SAVE_CHANGES: 'Save Changes',
+  CANCEL: 'Cancel'
+}
+
+async function showInvalidChangesModal (tabKey: string, action: string) {
+  dialog = await screen.findByRole('dialog')
   await screen.findByText('You Have Invalid Changes')
   await screen.findByText(`Do you want to discard your changes in "${tabKey}"?`)
   fireEvent.click(
-    within(dialog).getAllByRole('button', { name: discard ? 'Discard Changes' : 'Cancel' })[0]
+    within(dialog).getAllByRole('button', { name: action })[0]
   )
+
+  await waitFor(async () => {
+    expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+  })
+  expect(dialog).not.toBeVisible()
+  dialog = null
 }
 
-async function showUnsavedChangesModal (tabKey, discard) {
-  await screen.findByRole('dialog')
+async function showUnsavedChangesModal (tabKey: string, action: string) {
+  dialog = await screen.findByRole('dialog')
   await screen.findByText('You Have Unsaved Changes')
   await screen.findByText
   (`Do you want to save your changes in "${tabKey}", or discard all changes?`)
   fireEvent.click(
-    await screen.findByRole('button', { name: discard ? 'Discard Changes' : 'Save Changes' })
+    within(dialog).getAllByRole('button', { name: action })[0]
   )
+
+  await waitFor(async () => {
+    expect(screen.queryAllByRole('dialog')).toHaveLength(0)
+  })
+  expect(dialog).not.toBeVisible()
+  dialog = null
 }
 
-const venue = [
-  {
-    id: '0842f2133565438d85e1e46103889744',
-    name: 'Peter-Venue',
-    apCount: 1,
-    apModels: [
-      'R750'
-    ],
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ]
-  },
-  {
-    id: '8ee8acc996734a5dbe43777b72469857',
-    name: 'Ben-Venue-US',
-    apCount: 1,
-    apModels: [
-      'R610'
-    ],
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ],
-    eolApFirmwares: [
-      {
-        name: 'eol-ap-2021-05',
-        currentEolVersion: '6.1.0.10.413',
-        latestEolVersion: '6.1.0.10.453',
-        apCount: 1,
-        apModels: ['T300']
-      }
-    ],
-    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
-  },
-  {
-    id: '02b81f0e31e34921be5cf47e6dce1f3f',
-    name: 'My-Venue',
-    apCount: 0,
-    versions: [
-      {
-        version: '6.2.1.103.1580',
-        type: 'AP_FIRMWARE_UPGRADE',
-        category: 'RECOMMENDED'
-      }
-    ],
-    eolApFirmwares: [
-      {
-        name: 'eol-ap-2021-05',
-        currentEolVersion: '6.1.0.10.433',
-        latestEolVersion: '6.1.0.10.453',
-        apCount: 1,
-        apModels: ['R300', 'R500', 'R550']
-      },
-      {
-        name: 'eol-ap-2022-12',
-        currentEolVersion: '6.2.0.103.533',
-        latestEolVersion: '6.2.0.103.533',
-        apCount: 1,
-        apModels: ['R500']
-      }
-    ]
-  }
-]
+let dialog = null
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
-
-xdescribe('ApEdit', () => {
+describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
-      rest.post(CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(aplist))),
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
@@ -158,13 +101,19 @@ xdescribe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(deviceAps))),
       rest.put(WifiUrlsInfo.updateAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({
+          global: { mapRegion: 'US',defaultLanguage: 'en-US' },
+          edgeBeta: { 'enabled': 'true','Start Date': '2023-06-08 UTC' }
+        }))
+      ),
       rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(venue)))
+        (req, res, ctx) => res(ctx.json(venueVersionList))
+      )
     )
   })
-  afterEach(() => Modal.destroyAll())
 
-  it('should render correct', async () => {
+  describe('Ap Edit - General', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
@@ -173,37 +122,94 @@ xdescribe('ApEdit', () => {
       activeTab: 'general'
     }
 
+    it('should render correctly', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
+        }
+      })
 
-    render(<Provider><ApEdit /></Provider>, {
-      route: { params },
-      path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
+      await screen.findByRole('heading', { name: 'test ap', level: 1 })
+      await waitFor(async () => {
+        expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      expect(await screen.findAllByRole('tab')).toHaveLength(5)
+      await screen.findByText(/37.411275, -122.019191 \(As venue\)/)
     })
 
-    await screen.findByText('test ap')
-    await waitFor(async () => {
-      expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+    it('Should render correctly when ap has not connected to the cloud', async () => {
+      mockServer.use(
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json({
+            ...deviceAps,
+            data: [{
+              ...(_.omit(deviceAps?.data?.[0], ['model']))
+            }]
+          })))
+      )
+      render(<Provider><ApEdit /></Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
+        }
+      })
+
+      await screen.findByRole('heading', { name: 'test ap', level: 1 })
+      await waitFor(async () => {
+        expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      expect(await screen.findAllByRole('tab')).toHaveLength(1)
     })
 
-    const tabs = await screen.findAllByRole('tab')
-    expect(tabs.length).toBe(1)
+    it('should open unsaved changes modal', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
+        }
+      })
 
-  })
+      jest.restoreAllMocks()
+      await screen.findByRole('heading', { name: 'test ap', level: 1 })
+      await waitFor(async () => {
+        expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
 
-  xdescribe('Ap Edit - General', () => {
-    const params = {
-      tenantId: 'tenant-id',
-      venueId: 'venue-id',
-      serialNumber: 'serial-number',
-      action: 'edit',
-      activeTab: 'general'
-    }
-    jest.mock('react', () => ({
-      ...jest.requireActual('react'),
-      useRef: jest.fn(() => ({
-        current: jest.fn(() => null)
-      }))
-    }))
+      fireEvent.change(await screen.findByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
+      fireEvent.change(
+        await screen.findByLabelText('Description'), { target: { value: 'description' } }
+      )
+      await userEvent.click(await screen.findByText('Back to device details'))
+      await showUnsavedChangesModal('General', buttonAction.CANCEL)
+    })
 
+    it('should open invalid changes modal', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
+        }
+      })
+
+      await screen.findByRole('heading', { name: 'test ap', level: 1 })
+      await waitFor(async () => {
+        expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      fireEvent.change(await screen.findByLabelText(/AP Name/), { target: { value: 'aaaa' } })
+      expect(await screen.findByText(/This field is invalid/)).toBeVisible()
+      expect(await screen.findAllByRole('img', { name: 'check-circle' })).toHaveLength(1)
+
+      await userEvent.click(await screen.findByText('Back to device details'))
+      await showInvalidChangesModal('General', buttonAction.CANCEL)
+      // await userEvent.click(await screen.findByText('Back to device details'))
+      // await showInvalidChangesModal('General', buttonAction.DISCARD_CHANGES)
+    })
+
+    // TODO: should test in apForm
     it.skip('should handle data updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
@@ -234,7 +240,7 @@ xdescribe('ApEdit', () => {
       await fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
-    it('should handle invalid changes', async () => {
+    it.skip('should handle invalid changes', async () => {
       mockServer.use(
         rest.get(WifiUrlsInfo.getWifiCapabilities.url,
           (_, res, ctx) => res(ctx.json({}))),
@@ -265,7 +271,7 @@ xdescribe('ApEdit', () => {
       await screen.findByText('Cannot move AP to another venue in different country')
     })
 
-    it('should disable venue select when editing mesh AP', async () => {
+    it.skip('should disable venue select when editing mesh AP', async () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json(dhcpAp[1]))),
@@ -288,7 +294,7 @@ xdescribe('ApEdit', () => {
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
     })
 
-    it('should handle error occurred', async () => {
+    it.skip('should handle error occurred', async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
@@ -308,46 +314,6 @@ xdescribe('ApEdit', () => {
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Error occurred while updating AP')
-    })
-
-    it('should open unsaved changes modal', async () => {
-      render(<Provider><ApEdit /></Provider>, {
-        route: { params },
-        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
-      })
-
-      await screen.findByText('test ap')
-      await waitFor(async () => {
-        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
-      })
-
-      fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
-      fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'description' } })
-      await userEvent.click(await screen.findByText('Back to device details'))
-      await showUnsavedChangesModal('General', false)
-    })
-
-    it('should open invalid changes modal', async () => {
-      render(<Provider><ApEdit /></Provider>, {
-        route: { params },
-        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
-      })
-
-      await screen.findByText('test ap')
-      await waitFor(async () => {
-        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
-      })
-
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(() => {
-        fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'aaaa' } })
-        fireEvent.blur(screen.getByLabelText(/AP Name/))
-      })
-
-      await userEvent.click(await screen.findByText('Back to device details'))
-      await showInvalidChangesModal('General', false)
-      await userEvent.click(await screen.findByText('Back to device details'))
-      await showInvalidChangesModal('General', true)
     })
   })
 

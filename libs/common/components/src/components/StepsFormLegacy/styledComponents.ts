@@ -10,12 +10,16 @@ export {
   ActionsContainer
 } from '../StepsForm/styledComponents'
 
-const stepCompletedStyle = css`
+const stepCompletedStyle = css<{ editMode?: boolean }>`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
       top: 1px;
       left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
+      ${props => !props.editMode ? css`
+        background-color: var(--acx-steps-form-steps-step-color);
+      ` : css`
+        background-color: transparent;
+      `}
     }
   }
 `
