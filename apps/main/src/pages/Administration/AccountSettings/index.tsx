@@ -52,7 +52,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const authenticationData =
-    useGetTenantAuthenticationsQuery({ params }, { skip: !isIdmDecoupling || !isPrimeAdminUser })
+    useGetTenantAuthenticationsQuery({ params },
+      { skip: !isIdmDecoupling || !isPrimeAdminUser || isDogfood })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
