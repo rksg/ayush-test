@@ -6,7 +6,7 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery
@@ -62,12 +62,17 @@ export const EdgeDetailsPageHeader = () => {
     {
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
-      showUpStatus: [EdgeStatusEnum.OPERATIONAL]
+      showupstatus: [
+        EdgeStatusEnum.OPERATIONAL,
+        EdgeStatusEnum.APPLYING_CONFIGURATION,
+        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
+      ]
     },
     {
       label: $t({ defaultMessage: 'Reset and Recover' }),
       key: 'factoryReset',
-      showUpStatus: [
+      showupstatus: [
         EdgeStatusEnum.OPERATIONAL,
         EdgeStatusEnum.APPLYING_CONFIGURATION,
         EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
@@ -77,7 +82,7 @@ export const EdgeDetailsPageHeader = () => {
     {
       label: $t({ defaultMessage: 'Delete SmartEdge' }),
       key: 'delete',
-      showUpStatus: [...Object.values(EdgeStatusEnum)]
+      showupstatus: [...Object.values(EdgeStatusEnum)]
     }
   ]
 
@@ -100,11 +105,10 @@ export const EdgeDetailsPageHeader = () => {
         return
     }
   }
-
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={menuConfig.filter(item => item.showUpStatus.includes(status))}
+      items={menuConfig.filter(item => item.showupstatus.includes(status))}
     />
   )
 
