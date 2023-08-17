@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter }             from '@acx-ui/analytics/utils'
-import { incidentSeverities }         from '@acx-ui/analytics/utils'
-import { Card, Loader, NoActiveData } from '@acx-ui/components'
-import { intlFormats }                from '@acx-ui/formatter'
-import { useNavigateToPath }          from '@acx-ui/react-router-dom'
+import { IncidentFilter }                        from '@acx-ui/analytics/utils'
+import { incidentSeverities }                    from '@acx-ui/analytics/utils'
+import { Card, Loader, NoActiveData, ColorPill } from '@acx-ui/components'
+import { intlFormats }                           from '@acx-ui/formatter'
+import { useNavigateToPath }                     from '@acx-ui/react-router-dom'
 
 import { useIncidentsCountBySeveritiesQuery } from './services'
 import * as UI                                from './styledComponents'
@@ -25,8 +25,9 @@ export function IncidentsCountBySeverities ({ filters }: IncidentsCountBySeverit
 
   const title = {
     title: $t({ defaultMessage: 'Incidents' }),
-    icon: <UI.TitleBadge
-      children={$t(countFormat, { value: response.data?.total ?? 0 })}
+    icon: <ColorPill
+      color='var(--acx-accents-orange-50)'
+      value={$t(countFormat, { value: response.data?.total ?? 0 })}
     />
   }
 
