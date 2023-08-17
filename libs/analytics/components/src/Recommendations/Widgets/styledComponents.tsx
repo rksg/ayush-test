@@ -7,8 +7,13 @@ const colors = [
   '--acx-semantics-red-60'
 ]
 
+const optimizedColors = [
+  '--acx-semantics-green-60',
+  '--acx-semantics-red-60'
+]
+
 export const Wrapper = styled.div`
-  display: grid;
+  height: auto;
 `
 
 export const TitleBadge = styled.span`
@@ -22,7 +27,7 @@ export const TitleBadge = styled.span`
 `
 
 export const Detail = styled.div`
-  padding-bottom: 13px;
+  padding-bottom: 11px;
   padding-top: 5px;
   border-bottom: 1px solid var(--acx-neutrals-20);
 `
@@ -44,8 +49,18 @@ export const PriorityIcon = styled.span.attrs((props: { value: number }) => prop
   background-color: var(${props => colors[props.value]});
 `
 
+export const OptimizedIcon = styled.span.attrs((props: { value: number }) => props)`
+  display: flex;
+  margin-right: 5px;
+  margin-top: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(${props => optimizedColors[props.value]});
+`
+
 export const Subtitle = styled.div`
-  padding-left: 17px;
+  padding-left: 15px;
   font-size: var(--acx-body-6-font-size);
   color: var(--acx-neutrals-50);
   line-height: 1.1;
