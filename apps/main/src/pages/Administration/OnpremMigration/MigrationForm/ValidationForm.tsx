@@ -95,7 +95,7 @@ const ValidationForm = (props: ValidationFormProps) => {
       title: $t({ defaultMessage: 'Status' }),
       key: 'state',
       dataIndex: 'state',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.state ?? '--'
       }
     },

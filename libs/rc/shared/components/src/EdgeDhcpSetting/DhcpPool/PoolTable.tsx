@@ -4,6 +4,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { defaultSort, EdgeDhcpPool, sortProp } from '@acx-ui/rc/utils'
 import { filterByAccess }                      from '@acx-ui/user'
 
@@ -12,10 +13,11 @@ export function PoolTable (props:{
   openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
   openImportModal: (visible: boolean) => void
+  isRelayOn: boolean
 }) {
-
   const { $t } = useIntl()
-  const { data, openDrawer, onDelete, openImportModal } = props
+  const { data, openDrawer, onDelete, openImportModal, isRelayOn } = props
+  const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
@@ -39,6 +41,7 @@ export function PoolTable (props:{
       key: 'poolName',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'poolName',
+      width: 200,
       sorter: { compare: sortProp('poolName', defaultSort) }
     },
     {
@@ -49,15 +52,11 @@ export function PoolTable (props:{
     },
     {
       key: 'poolStartIp',
-      title: $t({ defaultMessage: 'Pool Start IP' }),
+      title: $t({ defaultMessage: 'Pool Range' }),
       dataIndex: 'poolStartIp',
-      sorter: { compare: sortProp('poolStartIp', defaultSort) }
-    },
-    {
-      key: 'poolEndIp',
-      title: $t({ defaultMessage: 'Pool End IP' }),
-      dataIndex: 'poolEndIp',
-      sorter: { compare: sortProp('poolEndIp', defaultSort) }
+      render: (_, row) => {
+        return `${row.poolStartIp} - ${row.poolEndIp}`
+      }
     },
     {
       key: 'gatewayIp',
@@ -70,15 +69,17 @@ export function PoolTable (props:{
   const actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
     onClick: () => openDrawer()
-  },{
+  }, ...(isDHCPCSVEnabled ? [{
     label: $t({ defaultMessage: 'Import from file' }),
     onClick: () => openImportModal(true)
-  }]
+  }]:[])]
 
   return (
     <Table
       rowKey='id'
-      columns={columns}
+      columns={columns.filter(col=>
+        (col.key !== 'gatewayIp' && isRelayOn) || !isRelayOn)
+      }
       dataSource={data}
       rowActions={filterByAccess(rowActions)}
       actions={filterByAccess(actions)}

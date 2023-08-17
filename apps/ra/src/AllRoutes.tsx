@@ -1,3 +1,5 @@
+import React from 'react'
+
 import {
   RecommendationDetails,
   NetworkAssurance,
@@ -14,6 +16,7 @@ import Incidents       from './pages/Incidents'
 import Layout          from './pages/Layout'
 import Recommendations from './pages/Recommendations'
 
+const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
     <Route path='/' element={<Navigate replace to={MLISA_BASE_PATH} />} />
@@ -28,6 +31,8 @@ function AllRoutes () {
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
+      <Route path='reports/*' element={<ReportsRoutes />} />
+      <Route path='dataStudio/*' element={<ReportsRoutes />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
       <Route path='videoCallQoe/*' >
         <Route index element={<VideoCallQoe/>} />
@@ -35,8 +40,6 @@ function AllRoutes () {
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
-      <Route path='dataStudio' element={<div>Data Studio</div>} />
-      <Route path='reports' element={<div>Reports</div>} />
       <Route path='admin/*' element={<div>Admin</div>} />
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />

@@ -8,7 +8,7 @@ import {
   Input,
   InputRef
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
@@ -39,7 +39,8 @@ import {
   WlanSecurityEnum,
   AuthRadiusEnum,
   WisprSecurityEnum,
-  WisprSecurityOptionsDescription
+  WisprSecurityOptionsDescription,
+  ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -134,11 +135,13 @@ export function WISPrForm () {
     }
     setRegionOption(regions)
   }
+
   useEffect(()=>{
     if(mspEcProfileData){
       setIsMspEc(mspUtils.isMspEc(mspEcProfileData))
     }
   },[mspEcProfileData])
+
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
@@ -178,18 +181,6 @@ export function WISPrForm () {
         const regions = _.find(externalProviders,{ name: pName })?.regions
         setRegionOption(regions)
       }
-      const { wlanSecurity } = data.wlan || {}
-      if (wlanSecurity === WlanSecurityEnum.None) {
-        form.setFieldValue('networkSecurity', 'NONE')
-      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
-        form.setFieldValue('networkSecurity', 'OWE')
-        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
-      } else {
-        form.setFieldValue('networkSecurity', 'PSK')
-        setEnablePreShared(true)
-        form.setFieldValue('pskProtocol', wlanSecurity)
-        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
-      }
       if(!pName?.trim() || pName==='Custom Provider'){
         form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
         setIsOtherProvider(true)
@@ -204,7 +195,30 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData.data,data,isMspEc])
+  },[providerData.data, data, isMspEc])
+
+  useEffect(()=>{
+    const { wlanSecurity } = data?.wlan || {}
+    if (wlanSecurity) {
+      if (!enableOweEncryption) {
+        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
+                          wlanSecurity !== WlanSecurityEnum.OWE
+        form.setFieldValue('enablePreShared', enablePsk)
+        setEnablePreShared(enablePsk)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+      } else if (wlanSecurity === WlanSecurityEnum.None) {
+        form.setFieldValue('networkSecurity', 'NONE')
+      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
+        form.setFieldValue('networkSecurity', 'OWE')
+      } else {
+        form.setFieldValue('networkSecurity', 'PSK')
+        form.setFieldValue('enablePreShared', true)
+        setEnablePreShared(true)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+      }
+    }
+  }, [data?.wlan?.wlanSecurity])
+
   useEffect(()=>{
     if(!data?.guestPortal?.wisprPage?.integrationKey){
       form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
@@ -269,9 +283,46 @@ export function WISPrForm () {
     <Select.Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }
     </Select.Option>
   ))
-  const onEnabledPskChange = (e: CheckboxChangeEvent) => {
+  const onProtocolChange = (value: WlanSecurityEnum) => {
+    const protocol = {} as { [key: string]: string | undefined | null }
+    if (data?.wlan?.passphrase) {
+      protocol.passphrase =
+      [WlanSecurityEnum.WPAPersonal,
+        WlanSecurityEnum.WPA2Personal,
+        WlanSecurityEnum.WPA23Mixed].includes(value)
+        ? data?.wlan?.passphrase
+        : null
+    }
+    if (data?.wlan?.saePassphrase) {
+      protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(value)
+        ? data?.wlan?.saePassphrase
+        : null
+    }
+    if (data?.wlan?.wepHexKey) {
+      protocol.wepHexKey = value === WlanSecurityEnum.WEP
+        ? data?.wlan?.wepHexKey
+        : null
+    }
+    if (value === WlanSecurityEnum.OWE) {
+      protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+    }
+
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: value,
+          ...protocol
+        }
+      }
+    })
+  }
+
+  const onPskChange = async (e: CheckboxChangeEvent) => {
     setEnablePreShared(e.target.checked)
   }
+
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
   return (
@@ -384,7 +435,7 @@ export function WISPrForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox onChange={onEnabledPskChange}>
+              <Checkbox onChange={onPskChange}>
                 {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
               </Checkbox>
             }
@@ -403,26 +454,26 @@ export function WISPrForm () {
               placeholder={$t({ defaultMessage: 'Select...' })}
               defaultValue={'NONE'}
               options={networkSecurityOptions}
-              onChange={(selected) => {
-                let mutableData = _.cloneDeep(data) ?? {}
+              onChange={(selected: string) => {
+                let security = data?.wlan?.wlanSecurity
                 switch(WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
                   case WisprSecurityEnum.PSK:
                     setEnablePreShared(true)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.WPA2Personal)
+                    security = WlanSecurityEnum.WPA2Personal
                     break
                   case WisprSecurityEnum.OWE:
                     setEnablePreShared(false)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.OWE)
+                    security = WlanSecurityEnum.OWE
                     break
                   case WisprSecurityEnum.NONE:
                     // disable secure network
                     setEnablePreShared(false)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.None)
+                    security = WlanSecurityEnum.None
                     break
                   default:
                     return
                 }
-                setData && setData(mutableData)
+                onProtocolChange(security)
               }}
             />}
         />}
@@ -486,12 +537,7 @@ export function WISPrForm () {
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={securityDescription()}
         >
-          <Select
-            onChange={(selected) => {
-              let mutableData = _.cloneDeep(data) ?? {}
-              _.set(mutableData, 'wlan.wlanSecurity', selected)
-              setData && setData(mutableData)
-            }}>
+          <Select onChange={onProtocolChange}>
             {securityOptions}
           </Select>
         </Form.Item>}

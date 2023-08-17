@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
 
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
@@ -68,7 +67,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

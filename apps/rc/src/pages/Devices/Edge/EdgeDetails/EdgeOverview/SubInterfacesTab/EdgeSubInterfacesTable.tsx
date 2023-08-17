@@ -10,7 +10,7 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
 
   const defaultPayload = {
     fields: [
-      'sortIdx', 'mac', 'name', 'type', 'status', 'ip', 'subnet', 'vlan', 'serialNumber'
+      'sortIdx', 'mac', 'name', 'type', 'status', 'ip', 'subnet', 'vlan', 'serialNumber', 'ipMode'
     ],
     filters: { serialNumber: [serialNumber], mac: [portMac] },
     sortField: 'sortIdx',
@@ -47,6 +47,16 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
       render: (_, row) => {
         // remove the subnet mask in ip if exists
         return row.ip.replace(/\/\d*/, '')
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Type' }),
+      key: 'ipMode',
+      dataIndex: 'ipMode',
+      sorter: true,
+      render: (_, { ipMode }) => {
+        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
+          : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
       }
     },
     {

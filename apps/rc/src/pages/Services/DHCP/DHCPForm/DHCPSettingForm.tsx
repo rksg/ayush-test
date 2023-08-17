@@ -2,14 +2,14 @@ import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsFormLegacy }                from '@acx-ui/components'
-import { useLazyGetDHCPProfileListQuery } from '@acx-ui/rc/services'
-import { useGetDHCPProfileQuery }         from '@acx-ui/rc/services'
-import { DHCPPool }                       from '@acx-ui/rc/utils'
-import { DHCPConfigTypeEnum }             from '@acx-ui/rc/utils'
-import { checkObjectNotExists }           from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
-import { getIntl }                        from '@acx-ui/utils'
+import { StepsFormLegacy }                   from '@acx-ui/components'
+import { useLazyGetDHCPProfileListQuery }    from '@acx-ui/rc/services'
+import { useGetDHCPProfileQuery }            from '@acx-ui/rc/services'
+import { DHCPPool, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { DHCPConfigTypeEnum }                from '@acx-ui/rc/utils'
+import { checkObjectNotExists }              from '@acx-ui/rc/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { getIntl }                           from '@acx-ui/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
@@ -69,12 +69,14 @@ export function SettingForm (props: DHCPFormProps) {
     data
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
+
   return (<>
     <Row gutter={20}>
       <Col span={10}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='id'
+          children={<></>}
           hidden
         />
         <Form.Item
@@ -85,7 +87,8 @@ export function SettingForm (props: DHCPFormProps) {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback

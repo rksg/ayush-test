@@ -443,7 +443,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         type={ImportFileDrawerType.Persona}
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={512}
+        maxEntries={1000}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

@@ -339,7 +339,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       dataIndex: 'ruleType',
       key: 'ruleType',
       sorter: { compare: sortProp('ruleType', defaultSort) },
-      render: (data, row) => {
+      render: (__, row) => {
         return _.startCase(row.ruleType)
       }
     },
@@ -354,7 +354,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       dataIndex: 'accessControl',
       key: 'accessControl',
       sorter: { compare: sortProp('accessControl', defaultSort) },
-      render: (data, row) => {
+      render: (__, row) => {
         return _.startCase(row.accessControl)
       }
     },
@@ -362,7 +362,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       title: $t({ defaultMessage: 'Details' }),
       dataIndex: 'details',
       key: 'details',
-      render: (data, row) => {
+      render: (_, row) => {
         return <GenDetailsContent editRow={row} />
       }
     }

@@ -26,7 +26,8 @@ export const fakeUserProfile = {
   varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
   adminId: '4159559db15c4027903d9c3d4bdb8a7e',
   support: false,
-  dogfood: false
+  dogfood: false,
+  preferredLanguage: 'en-US'
 } as UserProfile
 
 export const fakeTenantDelegation = [

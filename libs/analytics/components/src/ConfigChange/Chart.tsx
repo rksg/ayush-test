@@ -1,24 +1,27 @@
-import { memo } from 'react'
+import { memo, useContext } from 'react'
 
-import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
-import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
+import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
+import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
 
-import { useConfigChangeQuery } from './services'
 
-function BasicChart (props: {
-  timeRanges: moment.Moment[],
-  onBrushPositionsChange: (params: number[][]) => void
-}){
-  const [startDate, endDate] = props.timeRanges
-  const { filters: { filter } } = useAnalyticsFilter()
+import { ConfigChangeContext, KPIFilterContext } from './context'
+import { useConfigChangeQuery }                  from './services'
+import { filterKPIData }                         from './Table/util'
+
+function BasicChart (){
+  const { kpiFilter } = useContext(KPIFilterContext)
+  const { timeRanges: [startDate, endDate], setKpiTimeRanges } = useContext(ConfigChangeContext)
+  const { path } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
-    ...getFilterPayload({ filter }),
+    path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
-  })
+  }, { selectFromResult: queryResults => ({
+    ...queryResults,
+    data: filterKPIData(queryResults.data ?? [], kpiFilter)
+  }) })
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>
@@ -28,7 +31,7 @@ function BasicChart (props: {
             style={{ width }}
             data={queryResults.data ?? []}
             chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
-            onBrushPositionsChange={props.onBrushPositionsChange}
+            onBrushPositionsChange={setKpiTimeRanges}
             // TODO: need to handle sync betweem chart and table
             // onDotClick={(params) => console.log(params)}
           />}

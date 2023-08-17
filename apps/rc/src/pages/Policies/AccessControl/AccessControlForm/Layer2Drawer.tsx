@@ -200,7 +200,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       key: 'macAddress',
       searchable: true,
       sorter: { compare: sortProp('macAddress', defaultSort) },
-      render: (data, row: { macAddress: string }) => {
+      render: (_, row: { macAddress: string }) => {
         return row.macAddress
       }
     },
@@ -208,7 +208,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       dataIndex: 'macAddress',
       key: 'macAddress',
       align: 'right',
-      render: (data, row: { macAddress: string }) => {
+      render: (_, row: { macAddress: string }) => {
         return <div>
           { !isViewMode() && <DeleteSolid
             data-testid={row.macAddress}

@@ -183,6 +183,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         dhcpId={dhcpId}
         pools={poolMap && poolMap[dhcpId]}
         data={poolId}
+        isRelayOn={dhcpRelay}
       />
       <Row gutter={20}>
         <Col span={8}>

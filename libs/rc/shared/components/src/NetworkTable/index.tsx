@@ -29,14 +29,14 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       fixed: 'left',
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return data
+          return row.name
         }else{
           return (
             <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
-              {data}
-              {data !== row.ssid &&
+              {row.name}
+              {row.name !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
               }
             </TenantLink>
@@ -55,8 +55,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => <NetworkType
-        networkType={data as NetworkTypeEnum}
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
     },
@@ -67,14 +67,14 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (count, row) {
+      render: function (_, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return count
+          return row.venues?.count
         }else{
           return (
             <TenantLink
               to={`/networks/wireless/${row.id}/network-details/venues`}
-              children={count ? count : 0}
+              children={row.venues?.count ? row.venues?.count : 0}
             />
           )
         }
@@ -87,12 +87,14 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return data
+          return row.aps
         }else{
           return (
-            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+              {row.aps}
+            </TenantLink>
           )
         }
       }
@@ -117,7 +119,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformVLAN(row)
       }
     }
@@ -168,10 +170,11 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = () => {
+const rowSelection = (supportOweTransition: boolean) => {
   const params = {
     getCheckboxProps: (record: Network) => ({
-      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1 ||
+      (supportOweTransition && record?.isOweMaster === false)
     })
   }
   return params
@@ -196,6 +199,7 @@ interface NetworkTableProps {
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
@@ -281,7 +285,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={selectable ? { type: 'radio', ...rowSelection() } : undefined}
+        rowSelection={selectable ?
+          { type: 'radio', ...rowSelection(supportOweTransition) } : undefined}
       />
     </Loader>
   )
