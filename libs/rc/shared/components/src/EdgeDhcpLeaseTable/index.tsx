@@ -37,10 +37,10 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     {
       skip: !!!props.edgeId,
       selectFromResult: ({ data }) => ({
-        dhcpPoolOptions: data?.dhcpPools.map(pool => ({
+        dhcpPoolOptions: data?.dhcpPools?.map(pool => ({
           key: pool.poolName,
           value: pool.poolName
-        }))
+        })) ?? []
       })
     }
   )
