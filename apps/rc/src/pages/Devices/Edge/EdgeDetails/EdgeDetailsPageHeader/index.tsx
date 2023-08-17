@@ -84,7 +84,7 @@ export const EdgeDetailsPageHeader = () => {
       key: 'delete',
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
-  ]
+  ] as { label: string, key: string, showupstatus?: EdgeStatusEnum[] } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!currentEdge) return
@@ -108,7 +108,14 @@ export const EdgeDetailsPageHeader = () => {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={menuConfig.filter(item => item.showupstatus.includes(status))}
+      items={
+        menuConfig.filter(item =>
+          item.showupstatus?.includes(status)
+        ).map(item => {
+          delete item.showupstatus
+          return item
+        })
+      }
     />
   )
 
