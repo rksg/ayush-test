@@ -194,11 +194,11 @@ export const getTableColumns = ({
       key: key,
       align: 'center',
       width: 100,
-      render: function (text: string, row: TestResultByAP, index : number) {
+      render: function (_, row: TestResultByAP, index : number) {
         const { speedTest, speedTestServer } = row
         const error = row?.error || row.speedTestFailure
         const toolTipText = speedTest === 'n/a' ? null : `speedtest.net: ${speedTestServer}`
-        text =
+        const text =
           speedTest === 'success'
             ? formatter('networkSpeedFormat')(row[key])
             : $t(badgeTextMap[speedTest as keyof typeof badgeTextMap])
@@ -223,13 +223,13 @@ export const getTableColumns = ({
       key: 'apName',
       width: 150,
       fixed: 'left',
-      render: function (text, row) {
+      render: function (_, row) {
         const { apMac } = row
         return (
           <TenantLink
             to={`devices/wifi/${apMac}/details/overview`}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
-          >{text}</TenantLink>
+          >{row.apName}</TenantLink>
         )
       }
     },
@@ -240,10 +240,10 @@ export const getTableColumns = ({
       dataIndex: 'apMac',
       key: 'apMac',
       width: 150,
-      render: function (text, _, index) {
+      render: function (_, row, index) {
         return (
           <span id={`apMac-${index}`}>
-            {text}
+            {row.apMac}
           </span>
         )
       }
@@ -303,7 +303,7 @@ export const getTableColumns = ({
       key: 'ping',
       align: 'center',
       width: 100,
-      render: function (text: unknown, row,index : number ) {
+      render: function (_, row, index: number ) {
         const { ping, avgPingTime, pingTotal, pingReceive, error } = row
 
         const toolTipText =
@@ -316,7 +316,7 @@ export const getTableColumns = ({
               { pingTotal, pingReceive }
             )
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
-        text = avgPingTime
+        const text = avgPingTime
           ? formatter('durationFormat')(avgPingTime)
           : $t(badgeTextMap[ping as TrendType])
 
@@ -324,7 +324,7 @@ export const getTableColumns = ({
           <TableCell
             tooltipContent={wrappedContent}
             type={ping as TrendType}
-            displayText={text as string}
+            displayText={text}
             id={`ping-${index}`}
           />
         )

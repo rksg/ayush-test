@@ -144,6 +144,8 @@ export class OpenWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  enableAdditionalRegulatoryDomains?: boolean
+
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
@@ -253,6 +255,8 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.enableAdditionalRegulatoryDomains = true
 
     this.qosMapSetEnabled = false
 

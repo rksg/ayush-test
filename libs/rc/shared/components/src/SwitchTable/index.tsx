@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
 import { Badge }                  from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -226,7 +227,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterValueNullable: false,
       filterable: filterableKeys ? switchFilterOptions : false,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.isFirstLevel ?
           <TenantLink
             to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
@@ -234,10 +235,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           >
             {getSwitchName(row)}
           </TenantLink> :
-          <div>
-            {getSwitchName(row)}
-            <span style={{ marginLeft: '4px' }}>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-          </div>
+          `${getSwitchName(row)} (${getStackMemberStatus(row.unitStatus || '', true)})`
       }
     }, {
       key: 'deviceStatus',
@@ -248,7 +246,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (data, row) => <SwitchStatus row={row}/>
+      render: (_, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -257,8 +255,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       searchable: searchable,
       groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
-      render: (data, row) => {
-        return data || getSwitchModel(row.serialNumber)
+      render: (_, row) => {
+        return row.model || getSwitchModel(row.serialNumber)
       }
     },
     ...(enableSwitchAdminPassword ? [{
@@ -268,9 +266,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       disabled: true,
       show: false,
       render: (data:boolean, row:SwitchRow) => {
-        return <Tooltip title={getPasswordTooltip(row)}>{
-          getAdminPassword(row, PasswordInput)
-        }</Tooltip>
+        const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
+        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+          <Tooltip title={getPasswordTooltip(row)}>{
+            getAdminPassword(row, PasswordInput)
+          }</Tooltip>
+        </div>
       }
     }] : []),
     {
@@ -286,7 +287,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'switchMac',
       sorter: true,
       searchable: searchable,
-      render: (data) => typeof data === 'string' && data.toUpperCase()
+      render: (_, { switchMac }) => typeof switchMac === 'string' && switchMac.toUpperCase()
     }, {
       key: 'ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -311,8 +312,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data: React.ReactNode, row: SwitchRow) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_: React.ReactNode, row: SwitchRow) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       )
     }]), {
       key: 'uptime',
@@ -321,14 +324,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true
     }, {
       key: 'clientCount',
-      title: $t({ defaultMessage: 'Clients' }),
+      title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clientCount',
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
-          {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
+          {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
     }
@@ -425,7 +428,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
-    } else {
+    } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)

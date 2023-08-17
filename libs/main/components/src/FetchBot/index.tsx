@@ -130,6 +130,7 @@ export function FetchBot (props:FetchBotProps) {
 
   useEffect(() => {
     const script = document.createElement('script')
+    script.setAttribute('nonce', 'fetchbot-inline-script')
 
     script.src = get('FETCHBOT_JS_URL')
     script.async = true

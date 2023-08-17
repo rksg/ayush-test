@@ -529,5 +529,20 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/aps/neighbors/query',
     newApi: true
+  },
+  getApRfNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/rfNeighbors',
+    newApi: true
+  },
+  getApLldpNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/lldpNeighbors',
+    newApi: true
+  },
+  detectApNeighbors: {
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber/neighbors',
+    newApi: true
   }
 }

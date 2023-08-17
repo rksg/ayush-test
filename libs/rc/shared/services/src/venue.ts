@@ -62,11 +62,12 @@ import {
   VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP,
-  VenueClientAdmissionControl
+  VenueClientAdmissionControl,
+  RogueApLocation
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }      from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseVenueApi }                        from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -700,6 +701,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getRogueApLocation: build.query<RogueApLocation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRogueApLocation, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
@@ -978,7 +987,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(
           PropertyUrlsInfo.getPropertyConfigs,
           params,
-          { Accept: 'application/hal+json' }
+          { ...ignoreErrorModal, Accept: 'application/hal+json' }
         )
         return {
           ...req
@@ -1243,6 +1252,7 @@ export const {
   useBulkDeleteAAAServerMutation,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
+  useGetRogueApLocationQuery,
   useGetVenueRogueApQuery,
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,

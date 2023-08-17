@@ -23,7 +23,7 @@ function useColumns () {
       key: 'attributeValue',
       dataIndex: 'attributeValue',
       sorter: { compare: sortProp('attributeValue', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         // eslint-disable-next-line max-len
         return `${$t(AttributeOperationLabelMapping[row.operator as OperatorType])} '${row.attributeValue}'`
       }
@@ -92,7 +92,8 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
         label={$t({ defaultMessage: 'Group Name' })}
         rules={[
           { required: true },
-          { validator: (_, value) => nameValidator(value) }
+          { validator: (_, value) => nameValidator(value) },
+          { max: 255 }
         ]}
         validateFirst
         hasFeedback

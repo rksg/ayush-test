@@ -140,7 +140,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       disable: true,
       filterKey: 'deviceStatusSeverity',
       filterable: seriesMappingAP().map(item => ({ key: item.key, value: item.name })),
-      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
+      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     },
     {
       title: $t({ defaultMessage: 'Model' }),
@@ -154,15 +154,15 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       dataIndex: 'clients',
       key: 'clients',
       sorter: true,
-      render: function (data) {
-        return data ? data : 0
+      render: function (_, { clients }) {
+        return clients ? clients : 0
       }
     },
     {
       title: $t({ defaultMessage: 'Apply' }),
       dataIndex: 'activated',
       key: 'activated',
-      render: function (data, row: AP) {
+      render: function (_, row: AP) {
         const isActivated = activatedAps.some((a: SimpleApRecord) => {
           return a.serialNumber === row.serialNumber
         })

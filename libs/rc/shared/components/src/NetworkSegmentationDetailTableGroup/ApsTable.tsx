@@ -54,7 +54,7 @@ export const ApsTable = (props: ApTableProps) => {
       key: 'ports',
       dataIndex: 'apStatusData.lanPortStatus',
       sorter: { compare: sortProp('apStatusData.lanPortStatus', arraySizeSort) },
-      render: (node, row) => {
+      render: (_, row) => {
         return row?.apStatusData?.lanPortStatus?.length
       }
     },
@@ -63,7 +63,7 @@ export const ApsTable = (props: ApTableProps) => {
       key: 'vxlanMtu',
       dataIndex: 'apStatusData.vxlanStatus.vxlanMtu',
       sorter: { compare: sortProp('apStatusData.vxlanStatus.vxlanMtu', defaultSort) },
-      render: (node, row) => {
+      render: (_, row) => {
         return row?.apStatusData?.vxlanStatus?.vxlanMtu
       }
     }

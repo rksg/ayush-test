@@ -82,13 +82,13 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
     defaultMessage: 'OWE',
     description: 'Opportunistic Wireless Encryption - OWE'
   }),
+  [WlanSecurityEnum.OWETransition]: defineMessage({
+    defaultMessage: 'OWETransition',
+    description: 'WLAN security type - OWETransition'
+  }),
   [WlanSecurityEnum.None]: defineMessage({
     defaultMessage: 'None',
     description: 'WLAN security type - None'
-  }),
-  [WlanSecurityEnum.OWE]: defineMessage({
-    defaultMessage: 'OWE',
-    description: 'WLAN security type - OWE'
   })
 }
 

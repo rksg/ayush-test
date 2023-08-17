@@ -34,7 +34,6 @@ export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
     case DeviceTypeEnum.Smartphone:
       // eslint-disable-next-line max-len
       return [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows]
-      break
     case DeviceTypeEnum.Tablet:
       // eslint-disable-next-line max-len
       return [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows]

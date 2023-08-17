@@ -4,7 +4,8 @@ import { rest }  from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                           from '@acx-ui/msp/utils'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
@@ -19,13 +20,28 @@ import {
   externalProviders,
   wisprDataWPA2,
   wisprDataForAllAccept,
-  wisprDataForOnlyAuth
+  wisprDataForOnlyAuth,
+  mockAAAPolicyResponse
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { WISPrForm } from './WISPrForm'
 
-describe.skip('CaptiveNetworkForm-WISPr', () => {
+const mspEcProfileData = {
+  msp_label: '',
+  name: '',
+  service_effective_date: '',
+  service_expiration_date: '',
+  is_active: false
+}
+
+jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
+  ...jest.requireActual('../NetworkMoreSettings/NetworkMoreSettingsForm'),
+  __esModule: true,
+  NetworkMoreSettingsForm: () => <div data-testid='NetworkMoreSettingsFormTest'></div>
+}))
+
+describe('CaptiveNetworkForm-WISPr', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'WISPr network test'
     const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
@@ -55,6 +71,13 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
         res(ctx.json([]))
       ),
+      rest.get(MspUrlsInfo.getMspEcProfile.url, (_req, res, ctx) =>
+        res(ctx.json(mspEcProfileData))
+      ),
+      rest.get(
+        AaaUrls.getAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyResponse))
+      ),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
     )
@@ -62,7 +85,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it.skip('should test WISPr network successfully', async () => {
+  it('should test WISPr network successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkFormContext.Provider
       value={{
@@ -81,7 +104,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
     const providerNameInput = await screen.findByLabelText(/Provider Name/)
     fireEvent.change(providerNameInput, { target: { value: 'namep1' } })
     fireEvent.blur(providerNameInput)
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('switch'))
 
     const insertInput = await screen.findByLabelText(/Captive Portal URL/)
@@ -135,6 +158,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
       </Provider>,
       { route: { params } }
     )
+
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
     await screen.findByText('Authentication Server')
@@ -170,6 +194,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
     expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
     expect(await screen.findByTestId('radius_server_selection')).toHaveClass('ant-select-disabled')
   })
+
   it('WISPr always accept test case when only Auth is selected', async ()=>{
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
@@ -196,6 +221,7 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByTestId('radius_server_selection')).not.toHaveClass('ant-select-disabled')
   })
+
   it('WISPr always accept test case when feature toggle is off', async ()=>{
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(

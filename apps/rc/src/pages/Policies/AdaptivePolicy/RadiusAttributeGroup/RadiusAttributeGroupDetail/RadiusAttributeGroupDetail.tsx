@@ -74,9 +74,9 @@ export default function RadiusAttributeGroupDetail () {
   }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
-    return attributes?.map((attribute) => {
+    return attributes?.map((attribute, idx) => {
       return (
-        <Col span={6} key={attribute.attributeName}>
+        <Col span={6} key={'attribute_' + idx}>
           <Form.Item
             label={attribute.attributeName}>
             <Paragraph>{attribute.attributeValue}</Paragraph>
@@ -94,14 +94,14 @@ export default function RadiusAttributeGroupDetail () {
         title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={getAdaptivePolicyDetailLink({
                 oper: PolicyOperation.DETAIL,
                 policyId: row.id!,
                 templateId: templateList.get(row.policyType) ?? ''
-              })}>{data}</TenantLink>
+              })}>{row.name}</TenantLink>
           )
         }
       },

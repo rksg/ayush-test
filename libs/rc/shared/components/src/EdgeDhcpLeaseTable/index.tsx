@@ -37,10 +37,10 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     {
       skip: !!!props.edgeId,
       selectFromResult: ({ data }) => ({
-        dhcpPoolOptions: data?.dhcpPools.map(pool => ({
+        dhcpPoolOptions: data?.dhcpPools?.map(pool => ({
           key: pool.poolName,
           value: pool.poolName
-        }))
+        })) ?? []
       })
     }
   )
@@ -104,8 +104,8 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       key: 'hostStatus',
       dataIndex: 'hostStatus',
       filterable: statusOptions,
-      render: (data) => {
-        return data === EdgeDhcpHostStatus.ONLINE ?
+      render: (_, { hostStatus }) => {
+        return hostStatus === EdgeDhcpHostStatus.ONLINE ?
           $t({ defaultMessage: 'Online' }) :
           $t({ defaultMessage: 'Offline' })
       }
@@ -114,7 +114,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       title: $t({ defaultMessage: 'Lease expires in...' }),
       key: 'hostRemainingTime',
       dataIndex: 'hostRemainingTime',
-      render: (data) => genExpireTimeString(data as number)
+      render: (_, { hostRemainingTime }) => genExpireTimeString(hostRemainingTime)
     }
   ]
 

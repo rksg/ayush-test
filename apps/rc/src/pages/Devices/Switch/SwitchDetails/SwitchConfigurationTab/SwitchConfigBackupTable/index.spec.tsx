@@ -212,7 +212,7 @@ describe('SwitchConfigBackupTable', () => {
     expect(screen.getByText('Compare Configurations')).toBeVisible()
     const configSelect = await screen.findAllByRole('combobox', { name: /Configuration Name/i })
     await userEvent.click(configSelect[0])
-    await userEvent.click((await screen.findByTitle(/SCHEDULED_1/i)))
+    await userEvent.click((await screen.findByRole('option', { name: 'SCHEDULED_1' })))
     const compareDialog = await screen.findByRole('dialog')
     await userEvent.click(await within(compareDialog).findByTestId('CloseSymbol'))
     await waitFor(async () => expect(compareDialog).not.toBeVisible())

@@ -113,7 +113,7 @@ export function MdnsFencing () {
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
-        tabTitle: $t({ defaultMessage: 'Network Controls' }),
+        tabTitle: $t({ defaultMessage: 'Network Control' }),
         isDirty: false,
         hasError: false
       })
@@ -145,7 +145,7 @@ export function MdnsFencing () {
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: false,
       hasError: false
     })
@@ -159,7 +159,7 @@ export function MdnsFencing () {
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Network Controls' }),
+      tabTitle: $t({ defaultMessage: 'Network Control' }),
       isDirty: true
     })
 
