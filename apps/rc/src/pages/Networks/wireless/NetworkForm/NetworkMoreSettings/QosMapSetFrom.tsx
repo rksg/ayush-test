@@ -116,7 +116,7 @@ export function QosMapSetFrom () {
           />
         </UI.FieldLabel>
         {enableQosMapSet &&
-        <UI.FieldLabel width='500px'>
+        <UI.FieldLabel width='600px'>
           <Table
             columns={columns}
             type={'tall'}
