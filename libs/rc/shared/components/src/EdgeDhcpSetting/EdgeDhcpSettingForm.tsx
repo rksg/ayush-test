@@ -17,8 +17,7 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
 import {
-  Alert,
-  StepsFormLegacy,
+  StepsForm,
   Subtitle,
   useStepFormContext
 } from '@acx-ui/components'
@@ -53,12 +52,14 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
     dhcpRelay,
     enableSecondaryDNSServer,
     leaseTimeType,
-    leaseTime
+    leaseTime,
+    usedForNSG
   ] = [
     useWatch<boolean>('dhcpRelay'),
     useWatch<boolean>('enableSecondaryDNSServer'),
     useWatch('leaseTimeType'),
-    form.getFieldValue('leaseTime')
+    form.getFieldValue('leaseTime'),
+    useWatch('usedForNSG')
   ]
   const initDhcpData: Partial<EdgeDhcpSetting> = {
     leaseTime: 24,
@@ -102,7 +103,9 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       })
 
       form.setFieldValue('dhcpPools', clonedPools)
-      form.validateFields(['dhcpPools'])
+      setTimeout(() => {
+        form.validateFields(['dhcpPools'])
+      }, 250)
     }
   }, [dhcpRelay])
 
@@ -121,15 +124,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
             }]}
             children={<Input />}
           />
-          <StepsFormLegacy.FieldLabel width='100px'>
-            {$t({ defaultMessage: 'DHCP Relay:' })}
+          <StepsForm.FieldLabel width='90%'>
+            {$t({ defaultMessage: 'DHCP Relay' })}
             <Form.Item
               name='dhcpRelay'
               valuePropName='checked'
               initialValue={false}
               children={<Switch />}
             />
-          </StepsFormLegacy.FieldLabel>
+          </StepsForm.FieldLabel>
 
           {dhcpRelay &&
             <>
@@ -141,12 +144,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                 }]}
                 children={<Input />}
               />
-              <Alert message={
-                $t({ defaultMessage: `If this DHCP service is going to be used for
-                Network Segmentation service, please make sure you set the DHCP pool for it.` })
-              }
-              type='info'
-              showIcon />
+              <StepsForm.FieldLabel width='90%'>
+                {$t({ defaultMessage: 'Use for Network Segmentation' })}
+                <Form.Item
+                  name='usedForNSG'
+                  valuePropName='checked'
+                  initialValue={false}
+                  children={<Switch />}
+                />
+              </StepsForm.FieldLabel>
             </>
           }
           {
@@ -228,28 +234,30 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       </Row>
 
       <SpaceWrapper direction='vertical' size='middle' fullWidth>
-        <Row gutter={20}>
-          <Col span={24}>
-            <Subtitle level={3}>
-              { $t({ defaultMessage: 'Set DHCP Pools' }) }
-            </Subtitle>
-          </Col>
-          <Col span={15}>
-            <Form.Item
-              name='dhcpPools'
-              validateFirst
-              dependencies={['dhcpRelay']}
-              rules={[
-                {
-                  required: true,
-                  message: $t({ defaultMessage: 'Please create DHCP pools' })
-                },
-                { validator: (_, value) => relayGatewayValidator(value, dhcpRelay) }
-              ]}
-              children={<DHCPPoolTable />}
-            />
-          </Col>
-        </Row>
+        { (!dhcpRelay || (dhcpRelay && usedForNSG)) &&
+          <Row gutter={20}>
+            <Col span={24}>
+              <Subtitle level={3}>
+                { $t({ defaultMessage: 'Set DHCP Pools' }) }
+              </Subtitle>
+            </Col>
+            <Col span={15}>
+              <Form.Item
+                name='dhcpPools'
+                validateFirst
+                dependencies={['dhcpRelay']}
+                rules={[
+                  {
+                    required: true,
+                    message: $t({ defaultMessage: 'Please create DHCP pools' })
+                  },
+                  { validator: (_, value) => relayGatewayValidator(value, dhcpRelay) }
+                ]}
+                children={<DHCPPoolTable />}
+              />
+            </Col>
+          </Row>
+        }
 
         {
           !dhcpRelay &&

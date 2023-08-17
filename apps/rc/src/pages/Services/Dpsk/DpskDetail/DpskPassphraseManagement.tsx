@@ -207,6 +207,15 @@ export default function DpskPassphraseManagement () {
     return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
   }
 
+  const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
+    if (!isCloudpathEnabled || selectedRows.length !== 1) return false
+
+    const row = selectedRows[0]
+    if (row && row.hasOwnProperty('numberOfDevices')) return row.numberOfDevices! > 1
+
+    return false
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit Passphrase' }),
@@ -219,7 +228,7 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Manage Devices' }),
       // eslint-disable-next-line max-len
-      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      visible: (selectedRows: NewDpskPassphrase[]) => allowManageDevices(selectedRows),
       onClick: ([selectedRow]) => {
         setManagePassphraseInfo(selectedRow)
         setManageDevicesVisible(true)

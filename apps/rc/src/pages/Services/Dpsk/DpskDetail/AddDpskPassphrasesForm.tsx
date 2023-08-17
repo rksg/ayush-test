@@ -21,6 +21,7 @@ import {
   emailRegExp,
   ExpirationDateEntity,
   ExpirationMode,
+  MacRegistrationFilterRegExp,
   NewDpskPassphrase,
   phoneRegExp,
   unlimitedNumberOfDeviceLabel,
@@ -252,6 +253,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
               />
             </>
           }
+          rules={[
+            { validator: (_, value) => MacRegistrationFilterRegExp(value) }
+          ]}
           name='mac'
           children={<Input />}
         />
