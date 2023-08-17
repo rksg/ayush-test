@@ -248,7 +248,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params)
+        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
