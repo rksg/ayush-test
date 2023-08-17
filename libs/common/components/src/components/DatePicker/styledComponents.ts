@@ -279,22 +279,16 @@ export const HiddenDateInput = styled.div`
 
   ${datePickerStyle}
 
-  .datepicker input {
+  .ant-picker-borderless > .ant-picker-input > input {
     height: 0px;
     width: 0px;
     padding: 0px;
-    width: 0px;
     position: absolute;
   }
 
   .datepicker {
     border: 0px;
     padding: 0px;
-    
-    .ant-picker-input {
-      height: 24px;
-      width: 24px;
-    }
 
     .ant-picker-panel {
       .ant-picker-footer {
@@ -333,18 +327,6 @@ export const FooterWrapper = styled.div`
       .ant-picker-ranges {
         display: none;
       }
-    }
-  }
-
-  ${TimePickerWrapper} {
-    input {
-      display: block;
-      height: auto;
-      width: 30px;
-    }
-    .ant-picker-input {
-      justify-content: flex-end;
-      height: 15px;
     }
   }
 `
