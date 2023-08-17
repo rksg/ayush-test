@@ -10,9 +10,7 @@ export interface AdaptivePolicy {
   name: string,
   description: string,
   policyType: string,
-  onMatchResponse: string,
-  conditionsCount: number,
-  policySetCount: number
+  onMatchResponse: string
 }
 
 export interface PrioritizedPolicy {

@@ -178,6 +178,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
               rules={[
                 { required: true,
                   message: $t({ defaultMessage: 'Please enter Condition Value' }) },
+                { max: 255 },
                 { validator: (_, value) => attributeValueValidator(value) }]}
               children={<Input/>}/>
           </FieldSpace>
