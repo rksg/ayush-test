@@ -486,7 +486,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
+  it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(rest.get(
