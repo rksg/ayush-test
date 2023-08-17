@@ -50,7 +50,7 @@ export function IncidentsCountBySeverities ({ filters }: IncidentsCountBySeverit
           noData
             ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Wrapper
-              style={{ width, height: height - 20 * 2, marginBlock: 20 }}
+              style={{ width, height: height - 15 * 2, marginBlock: 15 }}
               children={items}
             />
         )}
