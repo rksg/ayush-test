@@ -5,7 +5,7 @@ import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Modal, showActionModal, Table, TableProps } from '@acx-ui/components'
-
+import { trailingNorLeadingSpaces }                  from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext }        from '../../MdnsFencingServiceTable'
 import { FieldsetItem, ProtocolRadioGroup } from '../../utils'
@@ -59,8 +59,8 @@ const CustomMappingModal = (props: CustomMappingModalPorps) => {
     layout='vertical'
     initialValues={initCustomMappingFormData}
     onFieldsChange={() => {
-      const { customString } = form.getFieldsValue()
-      setDisableAddBtn(!customString)
+      const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
+      setDisableAddBtn(hasErrors)
     }}
   >
     <Form.Item name='rowId' noStyle>
@@ -74,7 +74,8 @@ const CustomMappingModal = (props: CustomMappingModalPorps) => {
       rules={[
         { min: 2 },
         { max: 65 },
-        { required: true }
+        { required: true },
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     />
     <ProtocolRadioGroup
