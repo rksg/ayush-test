@@ -107,7 +107,18 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
   const addPool = async (data: EdgeDhcpPool) => {
     const pathParams = { id: props.dhcpId }
     const payload = { dhcpPools: [...(pools || []), data] }
-    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+
+    // should not create service with UI used id
+    payload.dhcpPools.forEach(item => {
+      if (item.id.startsWith('_NEW_')) item.id = ''
+    })
+
+    await patchEdgeDhcpService({ params: pathParams, payload })
+      .unwrap()
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.log(err)
+      })
   }
 
   return (

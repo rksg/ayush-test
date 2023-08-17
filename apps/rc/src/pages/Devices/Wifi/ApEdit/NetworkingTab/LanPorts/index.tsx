@@ -1,8 +1,8 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { isArray }                              from 'lodash'
-import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext' //'antd/lib/form/context'
+import { isObject }                             from 'lodash'
+import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -12,7 +12,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
@@ -85,25 +85,35 @@ export function LanPorts () {
         const venue = (await getVenue({
           params: { tenantId, venueId } }, true).unwrap())
 
-        const venueLanPorts = (await getVenueLanPorts({
+        const venueLanPortsData = (await getVenueLanPorts({
           params: { tenantId, venueId }
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
 
         const venueSettings = (await getVenueSettings({
           params: { tenantId, venueId } }, true).unwrap())
 
-        //const lanPorts = (apLanPorts?.useVenueSettings
-        //  ? venueLanPorts : apLanPorts) as WifiApSetting
-        const lanPorts = { ...apLanPorts } as WifiApSetting
+        const apLanPortsCap = apCaps.lanPorts
+        const apPoeOutFormData = ConvertPoeOutToFormData(apLanPorts, apLanPortsCap)
+        const lanPorts = {
+          ...apLanPorts,
+          ...(apPoeOutFormData && { poeOut: apPoeOutFormData })
+        }
+
+        const venuePoeOutFormData = ConvertPoeOutToFormData(venueLanPortsData, apLanPortsCap)
+        const venueLanPorts = {
+          ...venueLanPortsData,
+          ...(venuePoeOutFormData && { poeOut: venuePoeOutFormData })
+        }
+
         setVenue(venue)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts)
+        setSelectedModel(lanPorts )
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
-        setSelectedPortCaps(apCaps.lanPorts?.[activeTabIndex] as LanPort)
-        setUseVenueSettings(apLanPorts.useVenueSettings ?? true)
+        setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
+        setUseVenueSettings(lanPorts.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
-        setInitData(apLanPorts)
+        setInitData(lanPorts)
         setFormInitializing(false)
       }
       setData()
@@ -153,8 +163,9 @@ export function LanPorts () {
         const payload: WifiApSetting = {
           ...initData,
           lanPorts: lan,
-          //...(poeMode && { poeMode: poeMode }),
-          ...(poeOut && isArray(poeOut) && { poeOut: poeOut.some(item => item === true) }),
+          //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
+          ...(poeOut && isObject(poeOut) &&
+              { poeOut: Object.values(poeOut).some(item => item === true) }),
           useVenueSettings: false
         }
 
@@ -240,6 +251,7 @@ export function LanPorts () {
           <Row gutter={24}>
             <Col span={8}>
               <LanPortPoeSettings
+                context='ap'
                 selectedModel={selectedModel}
                 selectedModelCaps={selectedModelCaps}
                 useVenueSettings={useVenueSettings}
