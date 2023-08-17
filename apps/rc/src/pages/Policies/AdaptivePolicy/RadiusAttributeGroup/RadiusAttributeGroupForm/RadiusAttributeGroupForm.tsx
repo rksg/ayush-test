@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AttributeAssignment, getPolicyListRoutePath,
-  getPolicyRoutePath, OperatorType,
+  getPolicyRoutePath,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -126,19 +126,14 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   }
 
   const onAddClick = () => {
-    setEditAttributeMode(false)
-    setEditAttribute({
-      attributeName: '' ,
-      operator: OperatorType.ADD,
-      attributeValue: ''
-    } as AttributeAssignment)
     setVisible(true)
+    setEditAttributeMode(false)
   }
 
   const onEditClick = (attribute: AttributeAssignment) => {
-    setEditAttribute(attribute)
-    setEditAttributeMode(true)
     setVisible(true)
+    setEditAttributeMode(true)
+    setEditAttribute(attribute)
   }
 
   return (
