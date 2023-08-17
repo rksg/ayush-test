@@ -20,7 +20,7 @@ export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
   const params = useParams()
-  const [newDemo, setNewDemo]=useState({} as Demo)
+  const [newDemo, setNewDemo]=useState({ displayLangCode: 'en' } as Demo)
   const getDemo = async ()=>{
     const newDemoValue = { ...initialPortalData.content,
       ...demoValue, poweredImg: demoValue?.poweredImg?
