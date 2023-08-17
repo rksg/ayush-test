@@ -49,8 +49,8 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK ||
     (supportMacAuthDynamicVlan &&
-      ((data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-         data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
+      ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+        data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
       (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
 
   const enableVxLan = hasVxLanTunnelProfile(wlanData)
