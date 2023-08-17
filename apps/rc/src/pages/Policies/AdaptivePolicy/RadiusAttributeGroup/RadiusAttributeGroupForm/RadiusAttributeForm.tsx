@@ -79,15 +79,15 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
 
       radiusAttributeListQuery({ payload }).then(result => {
         if (result.data && result.data.data.length !== 0) {
-          form.setFieldValue('vendorName', result.data.data[0].vendorName)
-          form.setFieldValue('attributeName', editAttribute.attributeName )
+          form.setFieldsValue({ ...editAttribute,
+            vendorName: result.data.data[0].vendorName })
         }
       })
-    } else{
+    } else {
+      form.resetFields()
       form.setFieldValue('vendorName', commonAttributeKey)
-      form.setFieldValue('attributeName', undefined)
     }
-  }, [editAttribute])
+  }, [isEdit, editAttribute])
 
   const getAttributeDataType = (attributeName: string) => {
     const findAttribute = attributesList.find(attribute => attribute.name === attributeName)
@@ -178,6 +178,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
               rules={[
                 { required: true,
                   message: $t({ defaultMessage: 'Please enter Condition Value' }) },
+                { max: 255 },
                 { validator: (_, value) => attributeValueValidator(value) }]}
               children={<Input/>}/>
           </FieldSpace>
