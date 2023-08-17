@@ -212,7 +212,6 @@ export function WISPrForm () {
         form.setFieldValue('networkSecurity', 'OWE')
       } else {
         form.setFieldValue('networkSecurity', 'PSK')
-        form.setFieldValue('enablePreShared', true)
         setEnablePreShared(true)
         form.setFieldValue('pskProtocol', wlanSecurity)
       }
