@@ -27,7 +27,8 @@ import {
   ApRadioCustomization,
   ApRadioParamsDual5G,
   VenueExtended,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  ChannelBandwidth6GEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -428,10 +429,13 @@ export function RadioSettings () {
     }
 
     if (hasRadio6G) {
-      const { allowedChannels: channel6, method: method6 } = apRadioParams6G || {}
+      const { allowedChannels: channel6, method: method6, channelBandwidth } = apRadioParams6G || {}
       title = $t({ defaultMessage: '6 GHz - Channel selection' })
       if (!validateChannels(channel6, method6, title)) return false
-      if (!validate320MHzIsolatedGroup(channel6, method6, title)) return false
+      // Validate the isolated group only when bandwidth is 320Mhz
+      if (channelBandwidth === ChannelBandwidth6GEnum._320MHz){
+        if (!validate320MHzIsolatedGroup(channel6, method6, title)) return false
+      }
     }
 
     if (hasRadioDual5G) {
