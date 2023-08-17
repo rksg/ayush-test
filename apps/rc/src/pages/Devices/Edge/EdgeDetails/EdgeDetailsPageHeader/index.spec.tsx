@@ -2,7 +2,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import * as CommonComponent             from '@acx-ui/components'
 import { EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -17,7 +16,6 @@ import { mockEdgeList, mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import { EdgeDetailsPageHeader } from '.'
 
-const mockedShowActionModal = jest.fn()
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
