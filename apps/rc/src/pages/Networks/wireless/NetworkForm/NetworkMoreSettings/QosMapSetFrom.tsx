@@ -1,14 +1,16 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useContext, useState, useEffect, Key } from 'react'
 
 import { FormInstance, Row, Form, Switch, Space, Input } from 'antd'
+import { RuleObject }                                    from 'antd/lib/form'
 import { useIntl }                                       from 'react-intl'
+
 
 import { Drawer, Table, TableProps }               from '@acx-ui/components'
 import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
 import { QosMapSetOptions, sortProp, defaultSort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { validationMessages }                      from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -262,9 +264,11 @@ interface QosMapRuleSettingFormProps {
 function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
   const { $t } = useIntl()
   const [enabled, setEnabled] = useState(false)
-  const [dscpLowValue, setDscpLowValue] = useState(0)
-  const [dscpHighValue, setDscpHighValue] = useState(0)
   const [disableInput, setDisableInput] = useState(false)
+  const [priority, setPriority] = useState(0)
+  const [dscpLow, setDscpLow] = useState(0)
+  const [dscpHigh, setDscpHigh] = useState(0)
+  const [exceptionDscp, setExceptionDscp] = useState<number[]>([])
   const { form, qosMapRule, setQosMapRule, qosMapRulesList } = props
 
   useEffect(() => {
@@ -272,14 +276,18 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
       form.setFieldsValue(qosMapRule)
 
       setEnabled(qosMapRule?.enabled || false)
+      setPriority(qosMapRule?.priority)
+      setExceptionDscp(qosMapRule?.dscpExceptionValues)
       if (qosMapRule?.enabled === false){
         setDisableInput(true)
-        setDscpLowValue(255)
-        setDscpHighValue(255)
+        setDscpLow(255)
+        setDscpHigh(255)
+        form.setFieldValue('dscpLow', 255)
+        form.setFieldValue('dscpHigh', 255)
       } else {
         setDisableInput(false)
-        setDscpLowValue(qosMapRule?.dscpLow)
-        setDscpHighValue(qosMapRule?.dscpHigh)
+        setDscpLow(qosMapRule?.dscpLow)
+        setDscpHigh(qosMapRule?.dscpHigh)
       }
     }
   }, [form, qosMapRule])
@@ -288,19 +296,160 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     setEnabled(e)
     if (e === false){
       setDisableInput(true)
-      setDscpLowValue(255)
-      setDscpHighValue(255)
+      form.setFieldValue('dscpLow', 255)
+      form.setFieldValue('dscpHigh', 255)
+      setDscpLow(255)
+      setDscpHigh(255)
     } else {
       setDisableInput(false)
     }
   }
 
   const handleDscpLowInput = (value: string) => {
-    setDscpLowValue(Number(value))
+    setDscpLow(Number(value))
   }
 
   const handleDscpHighInput = (value: string) => {
-    setDscpHighValue(Number(value))
+    setDscpHigh(Number(value))
+  }
+
+  const handleExceptionDscpInput = (value: string) => {
+    setExceptionDscp(value.split(',').map(Number))
+  }
+
+  const validateDscpInputRange = (_:RuleObject, value: string) => {
+    const numericRegex = /^[0-9]+$/
+    const parsedValue = parseInt(value, 10)
+    if (isNaN(parsedValue)) {
+      return Promise.reject($t(validationMessages.dscpRangeValue))
+    } else if ( parsedValue === 0 && value.length > 1){
+      return Promise.reject($t(validationMessages.dscpRangeValue))
+    } else if ( !numericRegex.test(value) ){
+      return Promise.reject($t(validationMessages.dscpRangeValue))
+    } else if ((parsedValue >= 0 && parsedValue <= 63) || parsedValue === 255) {
+      return Promise.resolve()
+    } else {
+      return Promise.reject($t(validationMessages.dscpRangeValue))
+    }
+  }
+
+  const validateDscpLowAlreadyMapped = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    for (const number of exceptionDscp){
+      if (parsedValue <= number && number <= dscpHigh){
+        return Promise.reject($t(validationMessages.dscpAndExceptionDscpAlreadyMapped))
+      }
+    }
+    form.resetFields(['dscpExceptionValues'])
+    form.setFieldValue(['dscpExceptionValues'], exceptionDscp)
+    return Promise.resolve()
+  }
+
+  const validateDscpHighAlreadyMapped = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    for (const number of exceptionDscp){
+      if (dscpLow <= number && number <= parsedValue){
+        return Promise.reject($t(validationMessages.dscpAndExceptionDscpAlreadyMapped))
+      }
+    }
+    form.resetFields(['dscpExceptionValues'])
+    form.setFieldValue(['dscpExceptionValues'], exceptionDscp)
+    return Promise.resolve()
+  }
+
+  const validateExceptionDscpInputRange = (_:RuleObject, value: string) => {
+    const uniqueNumbers = new Set()
+    const dscpExceptionValuesArray = qosMapRulesList.flatMap(item => item.dscpExceptionValues)
+    dscpExceptionValuesArray.forEach(exceptionValues => {uniqueNumbers.add(exceptionValues)})
+
+    if (value.length < 1){
+      return Promise.resolve()
+    }
+    const numbers = value.split(',').map(Number)
+    for (const number of numbers) {
+      if (isNaN(number) || number < 0 || number > 63) {
+        return Promise.reject($t(validationMessages.exceptionDscpRangeValue))
+      }
+      if (uniqueNumbers.has(number)) {
+        return Promise.reject($t(validationMessages.exceptionDscpValueExists))
+      }
+      if (dscpLow <= number && number <= dscpHigh){
+        return Promise.reject($t(validationMessages.dscpAndExceptionDscpAlreadyMapped))
+      }
+      uniqueNumbers.add(number)
+    }
+    return Promise.resolve()
+  }
+
+  const validateDscpLow = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    if (parsedValue > dscpHigh){
+      return Promise.reject($t(validationMessages.dscpHighValue))
+    }
+    form.resetFields(['dscpHigh'])
+    form.setFieldValue(['dscpHigh'], dscpHigh)
+    return Promise.resolve()
+  }
+
+  const validateDscpHigh = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    if (parsedValue < dscpLow){
+      return Promise.reject($t(validationMessages.dscpHighValue))
+    }
+    form.resetFields(['dscpLow'])
+    form.setFieldValue(['dscpLow'], dscpLow)
+    return Promise.resolve()
+  }
+
+  const validateDscpLowOverlap = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    const filterData = qosMapRulesList.filter(
+      (item: { priority: number }) => item.priority.toString() !== priority.toString())
+      .filter((item: { dscpLow: number }) => item.dscpLow.toString() !== '255')
+    filterData.sort((a, b) => a.priority - b.priority)
+
+    for (let i = 0; i < filterData.length; i++) {
+      if (
+        (parsedValue >= filterData[i].dscpLow && parsedValue <= filterData[i].dscpHigh) ||
+        (dscpHigh >= filterData[i].dscpLow && dscpHigh <= filterData[i].dscpHigh) ||
+        (parsedValue <= filterData[i].dscpLow && dscpHigh >= filterData[i].dscpHigh)
+      ) {
+        return Promise.reject(`${$t(validationMessages.dscpRangeOverlap)}  ${filterData[i].priority}`)
+      }
+    }
+    return Promise.resolve()
+  }
+
+  const validateDscpHighOverlap = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    const filterData = qosMapRulesList.filter(
+      (item: { priority: number }) => item.priority.toString() !== priority.toString())
+      .filter((item: { dscpHigh: number }) => item.dscpHigh.toString() !== '255')
+    filterData.sort((a, b) => a.priority - b.priority)
+
+    for (let i = 0; i < filterData.length; i++) {
+      if (
+        (dscpLow >= filterData[i].dscpLow && dscpLow <= filterData[i].dscpHigh) ||
+        (parsedValue >= filterData[i].dscpLow && parsedValue <= filterData[i].dscpHigh) ||
+        (dscpLow <= filterData[i].dscpLow && parsedValue >= filterData[i].dscpHigh)
+      ) {
+        return Promise.reject(`${$t(validationMessages.dscpRangeOverlap)}  ${filterData[i].priority}`)
+      }
+    }
+    return Promise.resolve()
+  }
+
+  const validateDscp255 = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    if (parsedValue === 255 && (dscpLow !== 255 || dscpHigh !== 255)){
+      return Promise.reject($t(validationMessages.dscp255Value))
+    }else if(parsedValue !== 255 && (dscpLow === 255 || dscpHigh === 255)){
+      return Promise.reject($t(validationMessages.dscp255Value))
+    }else if(parsedValue === 255 && (dscpLow === 255 || dscpHigh === 255)){
+      return Promise.resolve()
+    }else{
+      return Promise.resolve()
+    }
   }
 
   return (
@@ -309,18 +458,11 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
         layout='vertical'
         form={form}
         onFinish={(data: QosMapSetOptions) => {
-          if (data?.dscpExceptionValues === undefined){
+          const dscpExceptionValuesString = data.dscpExceptionValues.toString()
+          if (data?.dscpExceptionValues === undefined || data?.dscpExceptionValues.length < 1){
             data.dscpExceptionValues = []
-          }
-          if (dscpLowValue === 255){
-            data.dscpLow = 255
           } else {
-            data.dscpLow = dscpLowValue
-          }
-          if (dscpHighValue === 255){
-            data.dscpHigh = 255
-          } else {
-            data.dscpHigh = dscpHighValue
+            data.dscpExceptionValues = dscpExceptionValuesString.split(',').map((str) => parseFloat(str))
           }
           setQosMapRule({
             ...data
@@ -345,54 +487,79 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
           hidden={true}
           children={<Input />}
         />
-        <UI.FieldLabel width='200px'>
-          <label style={{ color: 'var(--acx-neutrals-70)' }}>
-            { $t({ defaultMessage: 'DSCP Range' }) }
-            <span style={{ color: 'red' }}> *</span>
-          </label>
-        </UI.FieldLabel>
-        <UI.FieldLabel width='200px'>
-          <Row>
-            <Form.Item
-              children={
-                <Input
-                  style={{ width: '65px' }}
-                  value={dscpLowValue}
-                  onChange={
-                    (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpLowInput(e.target.value)
-                  }
-                  disabled={disableInput}
-                />
-              }
-            />
-            <label style={{ marginTop: '7px', marginLeft: '15px', marginRight: '15px' }}>
-              {'-'}
-            </label>
-            <Form.Item
-              children={
-                <Input
-                  style={{ width: '65px' }}
-                  value={dscpHighValue}
-                  onChange={
-                    (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpHighInput(e.target.value)
-                  }
-                  disabled={disableInput}
-                />
-              }
-            />
-          </Row>
-        </UI.FieldLabel>
+        <Form.Item
+          label={$t({ defaultMessage: 'DSCP Range' })}
+          required={true}
+          children={
+            <Row>
+              <Form.Item
+                name={'dscpLow'}
+                validateTrigger={['onChange', 'onBlur']}
+                rules={[
+                  { validator: validateDscpInputRange },
+                  { validator: validateDscpLow },
+                  { validator: validateDscp255 },
+                  { validator: validateDscpLowOverlap },
+                  { validator: validateDscpLowAlreadyMapped }
+                ]}
+                children={
+                  <Input
+                    style={{ width: '65px' }}
+                    disabled={disableInput}
+                    onChange={
+                      (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpLowInput(e.target.value)
+                    }
+                  />
+                }
+              />
+              <label style={{ marginTop: '7px', marginLeft: '15px', marginRight: '15px' }}>
+                {'-'}
+              </label>
+              <Form.Item
+                name={'dscpHigh'}
+                validateTrigger={['onChange', 'onBlur']}
+                rules={[
+                  { validator: validateDscpInputRange },
+                  { validator: validateDscpHigh },
+                  { validator: validateDscp255 },
+                  { validator: validateDscpHighOverlap },
+                  { validator: validateDscpHighAlreadyMapped }
+                ]}
+                children={
+                  <Input
+                    style={{ width: '65px' }}
+                    disabled={disableInput}
+                    onChange={
+                      (e: React.ChangeEvent<HTMLInputElement>): void => handleDscpHighInput(e.target.value)
+                    }
+                  />
+                }
+              />
+            </Row>
+          }
+        />
         {enabled &&
         <>
           <UI.FieldLabel width='130px'>
-            <label style={{ color: 'var(--acx-neutrals-70)' }}>
+            <label style={{ color: 'var(--acx-neutrals-60)' }}>
               { $t({ defaultMessage: 'Exception DSCP Values' }) }
             </label>
           </UI.FieldLabel>
-          <UI.FieldLabel width='130px'>
+          <UI.FieldLabel width='300px'>
             <Form.Item
               name={'dscpExceptionValues'}
-              children={<Input style={{ width: '300px' }} />}
+              validateTrigger={['onChange', 'onBlur']}
+              rules={[
+                { validator: validateExceptionDscpInputRange }
+              ]}
+              children={
+                <Input
+                  style={{ width: '300px' }}
+                  onChange={
+                    (e: React.ChangeEvent<HTMLInputElement>): void => handleExceptionDscpInput(e.target.value)
+                  }
+                />
+              }
             />
           </UI.FieldLabel>
           <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
