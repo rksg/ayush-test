@@ -43,7 +43,7 @@ import {
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType }                                                            from '@acx-ui/utils'
+import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 
@@ -136,7 +136,7 @@ export function MspCustomers () {
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
 
   const onBoard = mspLabel?.msp_label
-  const ecFilters = isPrimeAdmin
+  const ecFilters = isPrimeAdmin || isDelegationMode()
     ? { tenantType: [AccountType.MSP_EC] }
     : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
@@ -642,7 +642,7 @@ export function MspCustomers () {
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
-              hidden={userProfile?.support || !onBoard}
+              hidden={(userProfile?.support && !isDelegationMode()) || !onBoard}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>
           ]
@@ -651,8 +651,8 @@ export function MspCustomers () {
           </TenantLink>
           ]}
       />
-      {userProfile?.support && <SupportEcTable />}
-      {!userProfile?.support && !isIntegrator && <MspEcTable />}
+      {userProfile?.support && !isDelegationMode() && <SupportEcTable />}
+      {(isDelegationMode() || (!userProfile?.support && !isIntegrator)) && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
       {modalVisible && <ResendInviteModal
         visible={modalVisible}

@@ -21,6 +21,7 @@ import {
   useGetTenantDetailQuery
 } from '@acx-ui/msp/services'
 import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
+import { isDelegationMode }                                             from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
@@ -64,7 +65,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile?.support || userProfile?.dogfood) {
+      if (!isDelegationMode() && (userProfile?.support || userProfile?.dogfood)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)

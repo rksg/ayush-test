@@ -28,6 +28,7 @@ import {
 import {
   EntitlementNetworkDeviceType,
   EntitlementUtil,
+  isDelegationMode,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
@@ -266,8 +267,8 @@ export function VarCustomers () {
     }
   ]
 
-  const delegationType =
-    userProfile?.support ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
+  const delegationType = userProfile?.support && !isDelegationMode()
+    ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',
     fields: [
@@ -332,7 +333,7 @@ export function VarCustomers () {
         }
       />
 
-      {!userProfile?.support && isAdmin && <InvitationList />}
+      {(!userProfile?.support || isDelegationMode()) && isAdmin && <InvitationList />}
       <VarCustomerTable />
     </>
   )
