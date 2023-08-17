@@ -76,9 +76,7 @@ describe('Edge Detail Page Header', () => {
       })
 
     await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
-    await waitFor(() => {
-      expect((screen.getAllByRole('menuitem')).length).toBe(3)
-    })
+    expect((await screen.findAllByRole('menuitem')).length).toBe(3)
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
@@ -178,9 +176,12 @@ describe('Edge Detail Page Header', () => {
     })
   })
 
-  it('should do nothing if serialNumber in URL is "undefined"', async () => {
-    let invalidParams: { tenantId: string, serialNumber: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: 'undefined' }
+  it('should do nothing if edge not found', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockEdgeList, data: [] }))
+      ))
 
     jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
       mockedShowActionModal
@@ -190,7 +191,7 @@ describe('Edge Detail Page Header', () => {
       <Provider>
         <EdgeDetailsPageHeader />
       </Provider>, {
-        route: { params: invalidParams }
+        route: { params }
       })
 
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
