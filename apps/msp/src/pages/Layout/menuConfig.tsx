@@ -18,7 +18,7 @@ import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -34,11 +34,11 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean) {
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
-        {
+        ...(isVar || isDogfood ? [] : [{
           uri: '/dashboard/mspCustomers',
           tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP Customers' })
-        },
+        }]),
         ...((isNonVarMSP || isIntegrator) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,
