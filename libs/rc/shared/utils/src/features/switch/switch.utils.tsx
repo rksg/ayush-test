@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showActionModal }        from '@acx-ui/components'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
@@ -372,6 +374,37 @@ export const sortPortFunction = (portIdA: { id: string },portIdB: { id: string }
   const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
   return valueA - valueB
 }
+
+export const validateBlockedSwitch = (switchList: string[] | string) => {
+  const list = Array.isArray(switchList) ? switchList : [switchList]
+
+  return list
+}
+
+export const showBlockedSwitchErrorDialog = (switchList: string[] | string) => {
+  const blockedSwitchList = Array.isArray(switchList) ? switchList.join(', ') : switchList
+  const { $t } = getIntl()
+
+  const link = 'https://support.ruckuswireless.com/technical_support_bulletins_downloads/635?type=pdf'
+
+  showActionModal({
+    type: 'error',
+    title: $t({ defaultMessage: 'Switch could not be added' }),
+    width: 500,
+    content: <>
+      {/* eslint-disable max-len */}
+      {$t({ defaultMessage: 'This serial number matches with an active TSB related to PoE power on RUCKUS support portal from the following link:' })}
+      <br />
+      <a target='_blank'
+        href={link}
+        rel='noreferrer'> {link} </a>
+      <br /><br />
+      {$t({ defaultMessage: 'This switch ({blockedSwitchList}) can be added once FI 09.0.10h firmware becomes available by 9/30/2023. We recommend that you continue using the switch on FI 08.0.95 k firmware until that time.' }, { blockedSwitchList })}
+      {/* eslint-enable max-len */}
+    </>
+  })
+}
+
 
 export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
   return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)

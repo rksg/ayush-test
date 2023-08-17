@@ -41,7 +41,9 @@ import {
   redirectPreviousPage,
   LocationExtended,
   SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
-  VenueMessages
+  VenueMessages,
+  validateBlockedSwitch,
+  showBlockedSwitchErrorDialog
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -207,6 +209,13 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
+
+    const blockedSwitchList = (validateBlockedSwitch(values.id)) || []
+    if (blockedSwitchList.length > 0) {
+      showBlockedSwitchErrorDialog(blockedSwitchList)
+      return
+    }
+
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
         if (isOnlyFirmware) { values.specifiedType = FIRMWARE.AUTO }
