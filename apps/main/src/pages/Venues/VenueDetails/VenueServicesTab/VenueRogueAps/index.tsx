@@ -41,7 +41,7 @@ const defaultPayload = {
   page: 1
 }
 
-const renderSignal = (snr: number) => {
+export const renderSignal = (snr: number) => {
   if (snr <= 10) return <SignalBad height={21} />
 
   const value = Math.floor(snr / 10)

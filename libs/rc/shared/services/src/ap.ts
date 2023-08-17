@@ -44,7 +44,9 @@ import {
   SEARCH,
   SORTER,
   APMeshSettings,
-  MeshUplinkAp
+  MeshUplinkAp,
+  ApRfNeighborsResponse,
+  ApLldpNeighborsResponse
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -774,6 +776,29 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
       }
+    }),
+    getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
+        }
+      }
+    }),
+    getApLldpNeighbors: build.query<ApLldpNeighborsResponse, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params)
+        }
+      }
+    }),
+    detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -846,7 +871,10 @@ export const {
   useUpdateApMeshSettingsMutation,
   useGetMeshUplinkApsQuery,
   useLazyGetMeshUplinkApsQuery,
-  useDownloadApsCSVMutation
+  useDownloadApsCSVMutation,
+  useLazyGetApRfNeighborsQuery,
+  useLazyGetApLldpNeighborsQuery,
+  useDetectApNeighborsMutation
 } = apApi
 
 
