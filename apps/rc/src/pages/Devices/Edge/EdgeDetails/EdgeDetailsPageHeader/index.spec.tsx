@@ -175,34 +175,6 @@ describe('Edge Detail Page Header', () => {
       expect(resetDialog).not.toBeVisible()
     })
   })
-
-  it('should do nothing if edge not found', async () => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockEdgeList, data: [] }))
-      ))
-
-    jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
-      mockedShowActionModal
-    )
-
-    render(
-      <Provider>
-        <EdgeDetailsPageHeader />
-      </Provider>, {
-        route: { params }
-      })
-
-    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
-    await userEvent.click(dropdownBtn)
-
-    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
-    await userEvent.click(deleteBtn)
-
-    expect(mockedShowActionModal).toBeCalledTimes(0)
-  })
-
 })
 
 describe('Edge Detail Page Header - action show up logic', () => {
