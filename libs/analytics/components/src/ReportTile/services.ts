@@ -8,51 +8,58 @@ import { NodeType, PathNode } from '@acx-ui/utils'
 type TileMapType = {
   text: MessageDescriptor
   url: string,
-  format?: ReturnType<typeof formatter>,
+  format: ReturnType<typeof formatter>,
 }
 
 const tileMap: Record<string, TileMapType> = {
   apCount: {
     text: defineMessage({ defaultMessage: 'AP Count' }),
-    url: '/report/apInventory'
+    url: '/reports/aps',
+    format: formatter('countFormat')
   },
   clientCount: {
     text: defineMessage({ defaultMessage: 'Unique Clients' }),
-    url: '/report/clients'
+    url: '/reports/clients',
+    format: formatter('countFormat')
   },
   totalTraffic: {
     text: defineMessage({ defaultMessage: 'Traffic' }),
-    url: '/report/network',
+    url: '/reports/wireless',
     format: formatter('bytesFormat')
   },
   totalApplicationCount: {
     text: defineMessage({ defaultMessage: 'Applications' }),
-    url: '/report/applications'
+    url: '/reports/applications',
+    format: formatter('countFormat')
   },
   totalActiveWlanCount: {
     text: defineMessage({ defaultMessage: 'Active WLANs' }),
-    url: '/report/wlans'
+    url: '/reports/wlans',
+    format: formatter('countFormat')
   },
   switchCount: {
     text: defineMessage({ defaultMessage: 'Switch Count' }),
-    url: '/report/switchInventory'
+    url: '/reports/switches',
+    format: formatter('countFormat')
   },
   portCount: {
     text: defineMessage({ defaultMessage: 'Port Count' }),
-    url: '/report/switchInventory'
+    url: '/reports/switches',
+    format: formatter('countFormat')
   },
   connectedWiredDevices: {
     text: defineMessage({ defaultMessage: 'Connected Wired Devices' }),
-    url: '/report/wiredNetwork'
+    url: '/reports/wired',
+    format: formatter('countFormat')
   },
   poeUtilization: {
     text: defineMessage({ defaultMessage: 'POE Utilization' }),
-    url: '/report/wiredNetwork',
+    url: '/reports/wired',
     format: formatter('percentFormat')
   },
   switchTotalTraffic: {
     text: defineMessage({ defaultMessage: 'Wired Traffic' }),
-    url: '/report/wiredNetwork',
+    url: '/reports/wired',
     format: formatter('bytesFormat')
   }
 }

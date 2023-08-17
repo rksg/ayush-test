@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Statistic } from 'antd'
+import { useIntl }   from 'react-intl'
 
 import { useAnalyticsFilter }           from '@acx-ui/analytics/utils'
 import {  Loader }                      from '@acx-ui/components'
+import { TenantLink }                   from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
 
-import { useNetworkSummaryInfoQuery }                        from './services'
-import { ReportTileWrapper, Tile, TileContent, TileWrapper } from './styledComponents'
+import { useNetworkSummaryInfoQuery } from './services'
+import { ReportTileWrapper, Tile }    from './styledComponents'
 
 export const ReportTile = () => {
   const { $t } = useIntl()
@@ -35,7 +37,7 @@ export const ReportTile = () => {
   return <Loader states={[queryResults]}>{
     queryResults.data
       ? <ReportTileWrapper>
-        <TileWrapper>{
+        <div>{
           queryResults.data?.map(({ key }, index) => {
             return <Tile
               key={key}
@@ -46,13 +48,14 @@ export const ReportTile = () => {
               }}
             />
           })
-        }</TileWrapper>
-        <TileContent // TODO: add link to report
-          title={$t(currentTile.text)}
-          value={currentTile.value
-            ? (currentTile.format?.(currentTile.value) || currentTile.value)
-            : noDataDisplay
-          }/>
+        }</div>
+        <TenantLink to={currentTile.url}>
+          <Statistic
+            title={$t(currentTile.text)}
+            value={currentTile.value
+              ? (currentTile.format?.(currentTile.value) || currentTile.value)
+              : noDataDisplay}/>
+        </TenantLink>
       </ReportTileWrapper>
       : null
   }
