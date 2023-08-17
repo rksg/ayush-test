@@ -279,25 +279,23 @@ export const HiddenDateInput = styled.div`
 
   ${datePickerStyle}
 
-  .ant-picker-borderless > .ant-picker-input > input {
-    height: 0px;
-    width: 0px;
-    padding: 0px;
-    position: absolute;
-  }
-
-  .datepicker {
+  .ant-picker-borderless {
+    > .ant-picker-input > input {
+      height: 0px;
+      width: 0px;
+      padding: 0px;
+      position: absolute;
+    }
     border: 0px;
     padding: 0px;
-
-    .ant-picker-panel {
-      .ant-picker-footer {
-        display: block;
-        border-top: 0px;
-      }
-      .ant-picker-footer-extra {
-        padding: 0px;
-      }
+  }
+  .ant-picker-panel {
+    .ant-picker-footer {
+      display: block;
+      border-top: 0px;
+    }
+    .ant-picker-footer-extra {
+      padding: 0px;
     }
   }
 `
