@@ -10,7 +10,8 @@ export interface SimpleListTooltipProps {
   title?: string
   maximum?: number
   textForMore?: string
-  isValueUnique?: boolean
+  isValueUnique?: boolean,
+  totalCountOfItems?: number
 }
 
 export function SimpleListTooltip (props: SimpleListTooltipProps) {
@@ -20,13 +21,14 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
     displayText,
     title,
     maximum = 10,
-    isValueUnique = true
+    isValueUnique = true,
+    totalCountOfItems
   } = props
 
-  const needDisplayMore = items.length > maximum
+  const needDisplayMore = (totalCountOfItems ?? items.length) > maximum
   const textForMore = $t(
     { defaultMessage: 'And {rest} More...' },
-    { rest: needDisplayMore ? items.length - maximum : '' }
+    { rest: needDisplayMore ? (totalCountOfItems ?? items.length) - maximum : '' }
   )
   const displayedItems = items.slice(0, needDisplayMore ? maximum : items.length)
   const displayedComp = <SimpleListUl>

@@ -17,7 +17,30 @@ export const groupList = {
           dataType: 'INTEGER',
           operator: 'DOES_NOT_EXIST'
         }
-      ]
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 2
+    },
+    {
+      name: 'group2',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4c9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 0
     }
   ],
   pageable: {

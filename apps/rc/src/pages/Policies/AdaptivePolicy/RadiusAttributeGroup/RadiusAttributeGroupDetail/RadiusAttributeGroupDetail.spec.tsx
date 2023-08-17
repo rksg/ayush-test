@@ -61,7 +61,7 @@ describe('RadiusAttributeGroupDetail', () => {
     await screen.findByText(mockGroup.attributeAssignments[1].attributeName)
     await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)
     await screen.findByText('Instance (' + policyList.content.length + ')')
-    await screen.findByRole('row', { name: new RegExp('ap2') })
+    await screen.findByRole('row', { name: 'ap2 2' })
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {

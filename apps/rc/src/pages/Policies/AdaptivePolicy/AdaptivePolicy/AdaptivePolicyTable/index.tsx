@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useAdaptivePolicyListByQueryQuery,
-  useAdaptivePolicySetListQuery,
   useDeleteAdaptivePolicyMutation,
-  useLazyGetConditionsInPolicyQuery,
-  useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -28,10 +24,6 @@ export default function AdaptivePolicyTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const [conditionCountMap, setConditionCountMap] = useState(new Map())
-  const [templateIdMap, setTemplateIdMap] = useState(new Map())
-  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
-
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicyListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
@@ -39,55 +31,22 @@ export default function AdaptivePolicyTable () {
   })
 
   // eslint-disable-next-line max-len
-  const { data: templateList, isLoading: templateIsLoading } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  // eslint-disable-next-line max-len
-  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
+    { payload: { page: '1', pageSize: '2147483647' } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const templateIds = new Map(data?.data.map((template) =>
+          [template.ruleType.toString(), template.id]))
+        return {
+          templateIdMap: templateIds,
+          templateIsLoading: isLoading
+        }
+      }
+    })
 
   const [
     deletePolicy,
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicyMutation()
-
-  const [getConditionsPolicy]
-    = useLazyGetConditionsInPolicyQuery()
-
-  useEffect(() => {
-    if (tableQuery.isLoading || templateIsLoading)
-      return
-
-    const templateIds = new Map()
-    templateList?.data.forEach( template => {
-      templateIds.set(template.ruleType, template.id)
-    })
-    setTemplateIdMap(templateIds)
-
-    tableQuery.data?.data.forEach(policy => {
-      const { id, policyType } = policy
-      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
-        .then(result => {
-          if (result.data) {
-            setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
-          }
-        })
-    })
-  }, [tableQuery.data, templateList?.data])
-
-  useEffect(() => {
-    if(adaptivePolicySetList) {
-      adaptivePolicySetList.data.forEach(policySet => {
-        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-          .then(result => {
-            if (result.data) {
-              const policies : string []= result.data.data.map(p => p.policyId)
-              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-            }
-          })
-      })
-    }
-  }, [adaptivePolicySetList])
 
   function useColumns () {
     const { $t } = useIntl()
@@ -115,29 +74,24 @@ export default function AdaptivePolicyTable () {
       {
         title: $t({ defaultMessage: 'Policy Type' }),
         key: 'policyType',
-        dataIndex: 'policyType'
+        dataIndex: 'policyType',
+        sorter: true
       },
       {
         title: $t({ defaultMessage: 'Access Conditions' }),
-        key: 'accessConditions',
-        dataIndex: 'accessConditions',
+        key: 'conditionsCount',
+        dataIndex: 'conditionsCount',
         align: 'center',
-        render: (_, row) => {
-          return conditionCountMap.get(row.id) ?? '0'
-        }
+        sorter: true
       },
       {
         title: $t({ defaultMessage: 'Policy Set Membership' }),
         key: 'policySetCount',
         dataIndex: 'policySetCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
-          const policySets = [] as string []
-          policySetPoliciesMap.forEach((value, key) => {
-            if(value.find((item: string) => item === row.id)){
-              policySets.push(key)
-            }
-          })
+          const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
             <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }
@@ -154,50 +108,39 @@ export default function AdaptivePolicyTable () {
         pathname: `${tenantBasePath.pathname}/` + getAdaptivePolicyDetailLink({
           oper: PolicyOperation.EDIT,
           policyId: selectedRows[0].id!,
-          templateId: templateIdMap.get(selectedRows[0].policyType)
+          templateId: templateIdMap.get(selectedRows[0].policyType) ?? ''
         })
       })
     }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ([{ name, id, policyType }], clearSelection) => {
-      if (checkDelete(id)) {
-        showActionModal({
-          type: 'error',
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' })
-        })
-      } else {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'policy' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
-                })
-                clearSelection()
-              }).catch((error) => {
-                console.log(error) // eslint-disable-line no-console
+    onClick: ([selectedRow], clearSelection) => {
+      const name = selectedRow.name
+      doProfileDelete(
+        [selectedRow],
+        $t({ defaultMessage: 'Policy' }),
+        name,
+        [
+          { fieldName: 'policySetNames', fieldText: $t({ defaultMessage: 'Adaptive Policy Sets' }) }
+        ],
+        async () => {
+          deletePolicy({ params: { policyId: selectedRow.id,
+            templateId: templateIdMap.get(selectedRow.policyType) } })
+            .unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
               })
-          }
-        })
-      }
+              clearSelection()
+            }).catch((error) => {
+              console.log(error) // eslint-disable-line no-console
+            })
+        }
+      )
     }
   }]
-
-  const checkDelete = (policyId: string) => {
-    // eslint-disable-next-line max-len
-    return Array.from(policySetPoliciesMap.values()).filter(item => item.find((p:string) => p === policyId)).length !== 0
-  }
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }

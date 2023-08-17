@@ -6,17 +6,20 @@ export const policySetList = {
     {
       id: 'e4fc0210-a491-460c-bd74-549a9334325a',
       name: 'ps12',
-      description: 'ps12'
+      description: 'ps12',
+      mappedPolicyCount: 2
     },
     {
       id: 'a76cac94-3180-4f5f-9c3b-50319cb24ef8',
       name: 'ps2',
-      description: 'ps2'
+      description: 'ps2',
+      mappedPolicyCount: 0
     },
     {
       id: '2f617cdd-a8b7-47e7-ba1e-fd41caf3dac8',
       name: 'ps4',
-      description: 'ps4'
+      description: 'ps4',
+      mappedPolicyCount: 0
     }
   ]
 }

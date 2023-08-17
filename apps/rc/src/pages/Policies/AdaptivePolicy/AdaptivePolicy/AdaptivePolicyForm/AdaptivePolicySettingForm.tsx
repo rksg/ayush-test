@@ -70,7 +70,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       }).then(result => radiusAttributeGroup = {
         id: result.data?.id,
         name: result.data?.name ?? '',
-        attributeAssignments: result.data?.attributeAssignments ?? []
+        attributeAssignments: result.data?.attributeAssignments ?? [],
+        attributeCount: result.data?.attributeCount ?? 0,
+        externalAssignmentsCount: result.data?.externalAssignmentsCount ?? 0,
+        externalServiceAssignments: result.data?.externalServiceAssignments ?? []
       } ).finally(() => setSelectRadiusAttributeGroup(radiusAttributeGroup))
     } else {
       setSelectRadiusAttributeGroup({} as RadiusAttributeGroup)

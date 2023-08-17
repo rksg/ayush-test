@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react'
-
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
@@ -9,9 +7,7 @@ import { Features, useIsSplitOn }                              from '@acx-ui/fea
 import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
-  useAdaptivePolicySetListQuery,
   useGetRadiusAttributeGroupQuery,
-  useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -29,7 +25,7 @@ export default function RadiusAttributeGroupDetail () {
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
-  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
+  // const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
@@ -43,11 +39,6 @@ export default function RadiusAttributeGroupDetail () {
   })
 
   // eslint-disable-next-line max-len
-  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
-
-  // eslint-disable-next-line max-len
   const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
     selectFromResult ({ data }) {
       const templateIds = new Map()
@@ -59,19 +50,6 @@ export default function RadiusAttributeGroupDetail () {
       }
     }
   })
-
-  useEffect(() => {
-    if(!adaptivePolicySetList) return
-    adaptivePolicySetList.data.forEach(policySet => {
-      getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-        .then(result => {
-          if (result.data) {
-            const policies : string []= result.data.data.map(p => p.policyId)
-            setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-          }
-        })
-    })
-  }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
     return attributes?.map((attribute) => {
@@ -94,6 +72,7 @@ export default function RadiusAttributeGroupDetail () {
         title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
+        defaultSortOrder: 'ascend',
         render: function (_, row) {
           return (
             <TenantLink
@@ -107,16 +86,12 @@ export default function RadiusAttributeGroupDetail () {
       },
       {
         title: $t({ defaultMessage: 'Adaptive Policy Set Membership' }),
-        key: 'policySetMemberShip',
-        dataIndex: 'policySetMemberShip',
+        key: 'policySetCount',
+        dataIndex: 'policySetCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
-          const policySets = [] as string []
-          policySetPoliciesMap.forEach((value, key) => {
-            if(value.find((item: string) => item === row.id)){
-              policySets.push(key)
-            }
-          })
+          const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
             <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }

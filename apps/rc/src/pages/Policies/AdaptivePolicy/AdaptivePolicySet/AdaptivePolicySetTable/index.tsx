@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,
+  doProfileDelete,
+  useAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
-  useLazyGetPrioritizedPoliciesQuery, useMacRegListsQuery
+  useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet, FILTER,
@@ -24,11 +23,6 @@ export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-
-  const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
-  const [assignedMacPools, setAssignedMacPools] = useState(new Map())
-  const [assignedDpsks, setAssignedDpsks] = useState(new Map())
-
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
@@ -37,71 +31,34 @@ export default function AdaptivePolicySetTable () {
     defaultPayload: {}
   })
 
-  // eslint-disable-next-line max-len
-  const { data: policyList } = useAdaptivePolicyListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
   const [
     deletePolicy,
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
-
-  const { data: macRegList, isLoading: getMacListLoading } = useMacRegListsQuery({
-    payload: { pageSize: 10000 }
-  }, { skip: !isCloudpathEnabled })
-
-  const { data: dpskList, isLoading: getDpsksLoading } = useGetDpskListQuery({
-    payload: { pageSize: 10000 }
-  }, { skip: !isCloudpathEnabled })
-
-  useEffect(() => {
-    if(getMacListLoading)
-      return
-    if(macRegList) {
-      const poolsMap = new Map()
-      macRegList.data.forEach(item => {
-        const setId = item.policySetId
-        if(poolsMap.has(setId)) {
-          poolsMap.set(setId, [ ...poolsMap.get(setId), item.name])
-        }else {
-          poolsMap.set(setId, [item.name])
+  const { macRegList, getMacListLoading } = useMacRegListsQuery(
+    { payload: { pageSize: 10000 } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const macRegList = new Map(data?.data.map((mac) =>
+          [mac.id, mac.name]))
+        return {
+          macRegList,
+          getMacListLoading: isLoading
         }
-      })
-      setAssignedMacPools(poolsMap)
-    }
-  }, [macRegList])
-
-  useEffect(() => {
-    if(getDpsksLoading || !dpskList) return
-    const dpsksMap = new Map()
-    dpskList.data.forEach(item => {
-      const { policySetId } = item
-      if(dpsksMap.has(policySetId)) {
-        dpsksMap.set(policySetId, [ ...dpsksMap.get(policySetId), item.name])
-      }else {
-        dpsksMap.set(policySetId, [item.name])
-      }
+      }, skip: !isCloudpathEnabled
     })
-    setAssignedDpsks(dpsksMap)
-  }, [dpskList])
 
-  useEffect(() => {
-    if (tableQuery.isLoading)
-      return
-    tableQuery.data?.data.forEach(policy => {
-      const { id } = policy
-      getPrioritizedPolicies({ params: { policySetId: id } })
-        .unwrap()
-        .then(result => {
-          if (result.data) {
-            // eslint-disable-next-line max-len
-            const polices: string [] = [...result.data].sort((p1, p2) => p1.priority - p2.priority).map(item => item.policyId)
-            setPrioritizedPoliciesMap(map => new Map(map.set(id, polices)))
-          }
-        })
+  const { dpskList, getDpsksLoading } = useGetDpskListQuery(
+    { payload: { pageSize: 10000 } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const dpskList = new Map(data?.data.map((dpsk) =>
+          [dpsk.id, dpsk.name]))
+        return {
+          dpskList,
+          getDpsksLoading: isLoading
+        }
+      }, skip: !isCloudpathEnabled
     })
-  }, [tableQuery.data])
 
   function useColumns () {
     const { $t } = useIntl()
@@ -128,39 +85,51 @@ export default function AdaptivePolicySetTable () {
       },
       {
         title: $t({ defaultMessage: 'Contained Policies' }),
-        key: 'policyCount',
-        dataIndex: 'policyCount',
+        key: 'mappedPolicyCount',
+        dataIndex: 'mappedPolicyCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
-          // eslint-disable-next-line max-len
-          const policies: string [] = prioritizedPoliciesMap.has(row.id) ? prioritizedPoliciesMap.get(row.id).map((item:string) => {
-            return policyList?.data.find(p => p.id === item)?.name ?? ''
-          }) : []
-
-          return policies.length === 0 ? '0' :
-            <SimpleListTooltip items={policies} displayText={policies.length}/>
+          if(row.mappedPolicyCount === 0) return 0
+          const policies = row.policyNames ?? []
+          return <SimpleListTooltip items={policies}
+            displayText={row.mappedPolicyCount}
+            totalCountOfItems={row.mappedPolicyCount}/>
         }
       },
       {
         title: $t({ defaultMessage: 'Scope' }),
-        key: 'scope',
-        dataIndex: 'scope',
+        key: 'assignmentCount',
+        dataIndex: 'assignmentCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
-          let items = [] as string []
-          const pools: string [] = assignedMacPools.get(row.id) ?? []
-          const dpsks: string [] = assignedDpsks.get(row.id) ?? []
-          if(dpsks.length > 0) {
+          if(row.assignmentCount === 0) return 0
+          // eslint-disable-next-line max-len
+          const macAssignments = row.externalAssignments
+            .map(assignment => assignment.identityId).flat()
+            .filter(id => macRegList.has(id))
+            .map(id => macRegList.get(id) ?? '') ?? []
+
+          // eslint-disable-next-line max-len
+          const dpskAssignments = row.externalAssignments
+            .map(assignment => assignment.identityId).flat()
+            .filter(id => dpskList.has(id))
+            .map(id => dpskList.get(id) ?? '') ?? []
+
+          let assignments = [] as string []
+          if(macAssignments.length > 0) {
             // eslint-disable-next-line max-len
-            items = [...items, $t({ defaultMessage: 'DPSK Pools ({size})' }, { size: dpsks.length }), ...dpsks]
+            assignments = [...assignments, $t({ defaultMessage: 'DPSK Pools ({size})' }, { size: dpskAssignments.length }), ...dpskAssignments]
           }
-          if(pools.length > 0){
+          if(dpskAssignments.length > 0){
             // eslint-disable-next-line max-len
-            items = [...items, $t({ defaultMessage: 'Mac Registration Lists ({size})' }, { size: pools.length }), ...pools]
+            assignments = [...assignments, $t({ defaultMessage: 'Mac Registration Lists ({size})' }, { size: macAssignments.length }), ...macAssignments]
           }
-          const totalCount = pools.length + dpsks.length
-          return totalCount === 0 ? '0' :
-            <SimpleListTooltip items={items} displayText={totalCount}/>
+
+          return <SimpleListTooltip items={assignments}
+            displayText={row.assignmentCount}
+            totalCountOfItems={row.assignmentCount + 2}/>
         }
       }
     ]
@@ -182,36 +151,30 @@ export default function AdaptivePolicySetTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ([{ name, id }], clearSelection) => {
-      if (assignedMacPools.has(id) || assignedDpsks.has(id)) {
-        showActionModal({
-          type: 'error',
+    onClick: ([selectedRow], clearSelection) => {
+      const name = selectedRow.name
+      doProfileDelete(
+        [selectedRow],
+        $t({ defaultMessage: 'Policy' }),
+        name,
+        [
           // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'This set is in use by one or more Mac Registrations Lists and one or more DPSK.' })
-        })
-      } else {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy Set' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            deletePolicy({ params: { policySetId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Policy Set {name} was deleted' }, { name })
-                })
-                clearSelection()
-              }).catch((error) => {
-                console.log(error) // eslint-disable-line no-console
+          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'Mac Registration Lists or DPSK' }) }
+        ],
+        async () => {
+          deletePolicy({ params: { policySetId: selectedRow.id } })
+            .unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'Policy Set {name} was deleted' }, { name })
               })
-          }
-        })
-      }
+              clearSelection()
+            }).catch((error) => {
+              console.log(error) // eslint-disable-line no-console
+            })
+        }
+      )
     }
   }]
 
@@ -236,7 +199,7 @@ export default function AdaptivePolicySetTable () {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isDeletePolicyUpdating }
+      { isLoading: getMacListLoading || getDpsksLoading, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         enableApiFilter
