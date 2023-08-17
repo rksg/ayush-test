@@ -12,7 +12,8 @@ import {
   NetworkType,
   TableQuery,
   GuestNetworkTypeEnum,
-  checkVenuesNotInSetup
+  checkVenuesNotInSetup,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
@@ -23,6 +24,21 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 const disabledType: NetworkTypeEnum[] = []
 
 function getCols (intl: ReturnType<typeof useIntl>) {
+  function getDpskSecurityProtocol (securityProtocol: WlanSecurityEnum) {
+    let _securityProtocol: string = ''
+    switch (securityProtocol) {
+      case WlanSecurityEnum.WPA2Personal:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2 (Recommended)' })
+        break
+      case WlanSecurityEnum.WPAPersonal:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA' })
+        break
+      case WlanSecurityEnum.WPA23Mixed:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        break
+    }
+    return _securityProtocol
+  }
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -137,7 +153,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      render: (data, row) => row?.securityProtocol || noDataDisplay
+      render: (data, row) =>
+        getDpskSecurityProtocol(row?.securityProtocol as WlanSecurityEnum) || noDataDisplay
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',

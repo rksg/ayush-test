@@ -94,6 +94,8 @@ function SettingsForm () {
               </Option>
               <Option value={WlanSecurityEnum.WPAPersonal}>
                 { $t({ defaultMessage: 'WPA' }) }</Option>
+              <Option value={WlanSecurityEnum.WPA23Mixed}>
+                { $t({ defaultMessage: 'WPA3/WPA2 mixed mode' }) }</Option>
             </Select>
           </Form.Item>
 
