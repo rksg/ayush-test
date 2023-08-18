@@ -131,6 +131,7 @@ export function QosMapSetFrom () {
                 )
               }
             }}
+            data-testid='qos-map-set-option-table'
           />
           <QosMapRuleSettingDrawer
             visible={qosMapRuleDrawerVisible}
