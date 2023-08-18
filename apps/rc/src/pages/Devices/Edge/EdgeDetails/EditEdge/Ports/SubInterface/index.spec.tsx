@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { act, renderHook, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent                                               from '@testing-library/user-event'
 import { rest }                                                from 'msw'
@@ -155,6 +157,8 @@ describe('EditEdge ports - sub-interface', () => {
   })
 
   it('should close subInterface drawer after routed into another subTab', async () => {
+    const useStateSpy = jest.spyOn(React, 'useState')
+
     const getWrapper = (basePath: string = '') =>
       ({ children }: { children: React.ReactElement }) => (
         <IntlProvider locale='en'>
@@ -183,9 +187,12 @@ describe('EditEdge ports - sub-interface', () => {
     const { result } = renderHook(() => useNavigate(), { wrapper: getWrapper('') })
 
     await screen.findAllByRole('columnheader')
+    await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    const dialog = await screen.findByTestId('subDialog')
-    expect(within(dialog).queryByText('visible')).toBeValid()
+    const addFormDialog = await screen.findByTestId('subDialog')
+    expect(within(addFormDialog).queryByText('visible')).toBeValid()
+    await screen.findByRole('dialog')
+
     act(() => {
       // eslint-disable-next-line max-len
       result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
@@ -194,6 +201,8 @@ describe('EditEdge ports - sub-interface', () => {
     await waitFor(async () => {
       expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBeValid()
     })
+
+    expect(useStateSpy).toBeCalledWith(false)
   })
 
   it('should be able to import by CSV', async () => {
