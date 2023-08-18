@@ -95,6 +95,7 @@ export function valueFrom <Mapping extends Record<string, MessageDescriptor>> (
 export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   const sourceMapping: Record<keyof typeof typeMapping, keyof Event> = {
     AP: 'apName',
+    SECURITY: 'apName',
     CLIENT: 'clientName',
     NETWORK: 'apName',
     SWITCH: 'switchName',

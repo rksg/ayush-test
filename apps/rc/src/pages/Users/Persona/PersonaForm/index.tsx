@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance, Space } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Subtitle } from '@acx-ui/components'
-import { Persona }  from '@acx-ui/rc/utils'
+import { Subtitle }                        from '@acx-ui/components'
+import { useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
+import { Persona }                         from '@acx-ui/rc/utils'
 
 
 import { PersonaContextForm } from './PersonaContextForm'
@@ -17,23 +18,33 @@ export function PersonaForm (props: {
 }) {
   const { $t } = useIntl()
   const { form, defaultValue } = props
+  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [selectedGroupId, setSelectedGroupId] = useState('')
+  const [canAddDevices, setCanAddDevices] = useState(false)
 
   useEffect(() => {
     if (defaultValue) {
       form.setFieldsValue(defaultValue)
 
       if (!defaultValue.groupId) return
-      setSelectedGroupId(defaultValue?.groupId)
+      onGroupChange(defaultValue?.groupId)
     }
   }, [defaultValue])
+
+  const onGroupChange = (groupId: string) => {
+    setSelectedGroupId(groupId)
+    getPersonaGroupById({ params: { groupId } })
+      .then(({ data }) => {
+        setCanAddDevices(!!data?.macRegistrationPoolId)
+      })
+  }
 
   return (
     <Space direction={'vertical'} size={20} style={{ display: 'flex' }}>
       <PersonaContextForm
         form={form}
         defaultValue={defaultValue}
-        onGroupChange={setSelectedGroupId}
+        onGroupChange={onGroupChange}
       />
 
       {!defaultValue?.id &&
@@ -46,7 +57,10 @@ export function PersonaForm (props: {
             >
               <Form.Item
                 name={'devices'}
-                children={<PersonaDevicesForm groupId={selectedGroupId}/>}
+                children={<PersonaDevicesForm
+                  groupId={selectedGroupId}
+                  canAddDevices={canAddDevices}
+                />}
               />
             </Form>
           </>

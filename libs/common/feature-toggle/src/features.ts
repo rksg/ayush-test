@@ -65,7 +65,6 @@ export enum Features {
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
   WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
-  WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   SWITCH_EDIT_PORTS_FROM_PANEL = 'acx-ui-edit-ports-from-panel',
@@ -74,6 +73,7 @@ export enum Features {
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
+  WIFI_EDA_NEIGHBORS_TOGGLE = 'wifi-eda-neighbors-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
@@ -83,6 +83,15 @@ export enum Features {
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
+  WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
+  AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
+  WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
+  WIFI_AMB_TOGGLE = 'wifi-amb-toggle',
+  WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
+  WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
+  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
+  SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
+  ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle'
 }
 

@@ -26,9 +26,9 @@ import {
   NewEntitlementSummary,
   TenantAuthentications
 } from '@acx-ui/rc/utils'
-import { baseAdministrationApi }      from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseAdministrationApi }                        from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -299,7 +299,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     inviteDelegation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.inviteVAR, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.inviteVAR, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -389,7 +391,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     addRecipient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -399,7 +403,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     updateRecipient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.updateRecipient, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.updateRecipient, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -491,7 +497,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     convertNonVARToMSP: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.convertNonVARToMSP, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.convertNonVARToMSP, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload

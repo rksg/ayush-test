@@ -42,7 +42,7 @@ const RogueApDrawer = (props: {
       title: $t({ defaultMessage: 'Rule Type' }),
       dataIndex: 'type',
       key: 'type',
-      render: (data, row: RogueAPRule) => {
+      render: (_, row: RogueAPRule) => {
         return $t(rogueRuleLabelMapping[row.type as RogueRuleType])
       }
     },

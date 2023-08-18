@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -20,6 +21,13 @@ import {
 import NetworkFormContext from '../NetworkFormContext'
 
 import { HostApprovalForm } from './HostApprovalForm'
+
+jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
+  ...jest.requireActual('../NetworkMoreSettings/NetworkMoreSettingsForm'),
+  __esModule: true,
+  NetworkMoreSettingsForm: () => <div data-testid='NetworkMoreSettingsFormTest'></div>
+}))
+
 
 describe('CaptiveNetworkForm-HostApproval', () => {
   beforeEach(() => {
@@ -55,13 +63,14 @@ describe('CaptiveNetworkForm-HostApproval', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it.skip('should test Host approval network successfully', async () => {
+  it('should test Host approval network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: false, cloneMode: true, data: hostapprovalData
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm><HostApprovalForm /></StepsFormLegacy.StepForm>
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
@@ -83,15 +92,24 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       { name: /1 Day/ }))
   })
   it('should create Host approval network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: false, cloneMode: false, data: hostapprovalData
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><HostApprovalForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider><NetworkFormContext.Provider
+        value={{
+          editMode: false, cloneMode: false, data: hostapprovalData
+        }}
+      ><StepsFormLegacy><StepsFormLegacy.StepForm><HostApprovalForm /></StepsFormLegacy.StepForm>
+        </StepsFormLegacy></NetworkFormContext.Provider></Provider>
+      , { route: { params } }
+    )
+
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /1 Hour/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /4 Hours/ }))
+
+    await screen.findByRole('textbox', {
+      name: /walled garden clear/i
+    })
   })
 })

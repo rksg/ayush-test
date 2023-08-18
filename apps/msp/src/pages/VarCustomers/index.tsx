@@ -151,7 +151,7 @@ export function VarCustomers () {
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
-        render: function (data, row) {
+        render: function (_, row) {
           return onAcceptInvite(row)
         }
       }
@@ -213,9 +213,9 @@ export function VarCustomers () {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(tenantName)}</Link>
         )
       }
     },
@@ -282,7 +282,7 @@ export function VarCustomers () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformNextExpirationDate(row)
       }
     }
@@ -338,7 +338,7 @@ export function VarCustomers () {
     )
   }
 
-  const title = userProfile?.support
+  const title = userProfile?.support || userProfile?.dogfood
     ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>

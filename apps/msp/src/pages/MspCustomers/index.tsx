@@ -108,6 +108,7 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -133,6 +134,7 @@ export function MspCustomers () {
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -157,16 +159,22 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+      userProfile?.support === false) {
+    navigate(linkVarPath, { replace: true })
+  }
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload: {
       filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
       fields: [
         'id',
         'name'
       ],
-      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
     }
@@ -266,9 +274,9 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
-          (row.status === 'Active') ? <Link to=''>{highlightFn(data as string)}</Link> : data
+          (row.status === 'Active') ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
         )
       }
     },
@@ -277,7 +285,7 @@ export function MspCustomers () {
       dataIndex: 'status',
       key: 'status',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return getStatus(row)
       }
     },
@@ -301,7 +309,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
             ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
@@ -329,7 +337,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data: React.ReactNode, row: MspEc) {
+      render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
@@ -351,7 +359,7 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data: React.ReactNode, row: MspEc) {
+      render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
@@ -425,7 +433,7 @@ export function MspCustomers () {
       dataIndex: 'creationDate',
       key: 'creationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformCreationDate(row)
       }
     },
@@ -434,7 +442,7 @@ export function MspCustomers () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformExpirationDate(row)
       }
     },
@@ -448,7 +456,6 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
-    const navigate = useNavigate()
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,

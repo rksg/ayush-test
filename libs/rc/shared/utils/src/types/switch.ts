@@ -202,6 +202,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
+  unitId = 1
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -273,6 +274,7 @@ export interface SwitchRow {
   members?: number
   clients?: number
   incidents?: number
+  clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
 }
@@ -406,6 +408,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   adminStatus?: string;
   portSpeed?: string;
   poeType: string;
+  poeUsage: string;
   poeEnabled: boolean;
   poeTotal: number;
   poeUsed: number;

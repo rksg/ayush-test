@@ -11,7 +11,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockFirewall } from './__tests__/fixtures'
+import { mockFirewall, mockedFirewallDataList } from './__tests__/fixtures'
 
 import  EdgeFirewall from './'
 
@@ -43,6 +43,12 @@ describe('Venue Firewall Service', () => {
         (req, res, ctx) => {
           mockedGetFirewallFn()
           return res(ctx.json(mockFirewall))
+        }
+      ),
+      rest.post(
+        EdgeFirewallUrls.getEdgeFirewallViewDataList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedFirewallDataList))
         }
       )
     )

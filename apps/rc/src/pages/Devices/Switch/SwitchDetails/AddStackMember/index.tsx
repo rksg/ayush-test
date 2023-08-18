@@ -23,6 +23,8 @@ import {
 } from '@acx-ui/react-router-dom'
 
 
+import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from '../../SwitchForm/blockListRelatedTsb.util'
+
 import {
   TableContainer,
   DisabledDeleteOutlinedIcon
@@ -101,6 +103,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [tableData, setTableData] = useState(defaultArray)
 
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {
@@ -108,7 +111,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: function (data, row, index) {
+      render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
           validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
@@ -134,14 +137,14 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
       key: 'model',
-      render: function (data: React.ReactNode) {
-        return <div>{data ? data : '--'}</div>
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        return <div>{row.model ? row.model : '--'}</div>
       }
     }] : []),
     {
       key: 'action',
       dataIndex: 'action',
-      render: (data, row, index) => (
+      render: (_, row, index) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -230,6 +233,12 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
     try {
       const payload = {
         ...switchData,

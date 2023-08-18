@@ -5,9 +5,9 @@ import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
 
-import { Button, Modal, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }               from '@acx-ui/icons'
-import { MdnsFencingWiredRule }             from '@acx-ui/rc/utils'
+import { Button, Modal, Table, TableProps }               from '@acx-ui/components'
+import { DeleteOutlinedIcon }                             from '@acx-ui/icons'
+import { MdnsFencingWiredRule, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext }            from '../../MdnsFencingServiceTable'
 import { FencingRangeRadioGroup, FieldsetItem } from '../../utils'
@@ -163,7 +163,7 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (data, row) => <Button
+    render: (_, row) => <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
@@ -303,11 +303,11 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   }
 
   const validateFormData = () => {
-    const { name, closestApMac='', deviceMacAddresses=[] } = form.getFieldsValue()
-
+    const { closestApMac='', deviceMacAddresses=[] } = form.getFieldsValue()
+    const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
 
     const isClosestApConflict = !!closestApMac && _.includes(deviceMacAddresses, closestApMac)
-    const isValid = (!!name && deviceMacAddresses.length > 0 &&
+    const isValid = (!hasErrors && deviceMacAddresses.length > 0 &&
       !!closestApMac && !isClosestApConflict)
 
     setConflictMacAddes(isClosestApConflict? closestApMac : '')
@@ -342,7 +342,8 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
         { min: 2 },
         { max: 32 },
         { required: true },
-        { validator: () => ruleNameDuplicationValidator() }
+        { validator: () => ruleNameDuplicationValidator() },
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     />
     <FencingRangeRadioGroup
@@ -457,15 +458,15 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     title: $t({ defaultMessage: 'Fencing Range' }),
     dataIndex: 'fencingRange',
     key: 'fencingRange',
-    render: function (data) {
-      return (data === 'SAME_AP')?
+    render: function (_, { fencingRange }) {
+      return (fencingRange === 'SAME_AP')?
         $t({ defaultMessage: 'Same AP' }) : $t({ defaultMessage: '1-hop AP neighbors' })
     }
   }, {
     title: $t({ defaultMessage: 'MAC Address' }),
     dataIndex: 'deviceMacAddresses',
     key: 'deviceMacAddresses',
-    render: function (data, row) {
+    render: function (_, row) {
       const { deviceMacAddresses: macAddrs } = row
       return macAddrs.map(d => <div>{d}</div>)
     }
@@ -473,9 +474,9 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     title: $t({ defaultMessage: 'Closest AP' }),
     dataIndex: 'closestApMac',
     key: 'closestApMac',
-    render: function (data) {
-      const ap = _.find(venueAps, (ap) => ap.apMac === data)
-      return ap?.name || data
+    render: function (__, { closestApMac }) {
+      const ap = _.find(venueAps, (ap) => ap.apMac === closestApMac)
+      return ap?.name || closestApMac
     }
   }]
 

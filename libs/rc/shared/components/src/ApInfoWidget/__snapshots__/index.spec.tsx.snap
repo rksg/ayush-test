@@ -3,7 +3,7 @@
 exports[`AP Information Widget should render "No active alarms" when no alarms exist 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
     type="solid-bg"
   >
     <div
@@ -55,7 +55,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             />
           </div>
           <div
@@ -63,7 +63,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
@@ -105,7 +105,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
@@ -131,7 +131,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
@@ -157,7 +157,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
@@ -183,7 +183,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             style="padding: 10px 10px 10px 10px;"
           >
             <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              class="Grid__Container-sc-5irhjd-1 dRhDDA"
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-btivk0-1 kAyhXP"
