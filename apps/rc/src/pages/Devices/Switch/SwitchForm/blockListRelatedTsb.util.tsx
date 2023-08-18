@@ -7,7 +7,7 @@ const TSB_BLOCKED_LIST = ['FJN3224U001', 'FJN3224U002', 'FJN3224U003', 'FJN3224U
 export const showTsbBlockedSwitchErrorDialog = () => {
   const { $t } = getIntl()
 
-  const link = 'https://support.ruckuswireless.com/technical_support_bulletins_downloads/635?type=pdf'
+  const link = 'https://support.ruckuswireless.com/technical_support_bulletins/636'
 
   showActionModal({
     type: 'error',
