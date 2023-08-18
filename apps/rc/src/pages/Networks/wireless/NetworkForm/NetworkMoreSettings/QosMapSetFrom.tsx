@@ -363,17 +363,14 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     const uniqueNumbers = new Set()
     const dscpExceptionValuesArray = qosMapRulesList.flatMap(item => item.dscpExceptionValues)
     dscpExceptionValuesArray.forEach(exceptionValues => {uniqueNumbers.add(exceptionValues)})
-
     if (value.length < 1){
       return Promise.resolve()
     }
     let numbers = null
-    if (value instanceof String){
-      numbers = value.split(',').map(Number)
-    } else if (value instanceof Array){
+    if (value instanceof Object){
       numbers = value
     } else {
-      numbers = []
+      numbers = value.split(',').map(Number)
     }
     for (const number of numbers) {
       if (isNaN(number) || number < 0 || number > 63) {
@@ -467,11 +464,15 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
         layout='vertical'
         form={form}
         onFinish={(data: QosMapSetOptions) => {
-          const dscpExceptionValuesString = data.dscpExceptionValues.toString()
-          if (data?.dscpExceptionValues === undefined || data?.dscpExceptionValues.length < 1){
-            data.dscpExceptionValues = []
+          if (data?.dscpExceptionValues){
+            const dscpExceptionValuesString = data.dscpExceptionValues.toString()
+            if (data?.dscpExceptionValues === undefined || data?.dscpExceptionValues.length < 1){
+              data.dscpExceptionValues = []
+            } else {
+              data.dscpExceptionValues = dscpExceptionValuesString.split(',').map((str) => parseFloat(str))
+            }
           } else {
-            data.dscpExceptionValues = dscpExceptionValuesString.split(',').map((str) => parseFloat(str))
+            data.dscpExceptionValues = []
           }
           setQosMapRule({
             ...data
