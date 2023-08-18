@@ -18,7 +18,6 @@ export const ArrowChevronRightIcon = styled(ArrowChevronRight)`
 export const MoreVerticalIcon = styled(MoreVertical)``
 
 export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
-  margin-bottom: -2px;
   width: 16px;
   height: 16px;
   path {
@@ -65,6 +64,12 @@ export const Wrapper = styled.div<WrapperProps>`
   }
   .ant-card-head-title {
     padding: 0;
+    .ant-space {
+      // icon
+      .ant-space-item:last-child {
+        line-height: 0;
+      }
+    }
   }
   .ant-card-head-wrapper {
     align-items: start;
