@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space } from 'antd'
-import { isEqual, replace }                     from 'lodash'
+import { isEqual }                              from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, Tabs }                                            from '@acx-ui/components'
-import { LanPortSettings }                                         from '@acx-ui/rc/components'
+import { Loader, Tabs }                                                 from '@acx-ui/components'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
@@ -86,7 +86,7 @@ export function LanPorts () {
           ? {
             ...item,
             lanPorts: lan,
-            ...(poeMode && item.poeMode && { poeMode: poeMode }),
+            ...(poeMode && { poeMode: poeMode }),
             ...(poeOut && { poeOut: poeOut[activeTabIndex] })
           } : item
       }) as VenueLanPorts[]
@@ -121,15 +121,18 @@ export function LanPorts () {
   const handleModelChange = (value: string) => {
     const modelCaps = venueCaps?.data?.apModels?.filter(item => item.model === value)[0]
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
-    const tabIndex = (modelCaps?.lanPorts?.length ?? 0) <= activeTabIndex ? 0 : activeTabIndex
-    setActiveTabIndex(tabIndex)
+    const lanPortsCap = modelCaps?.lanPorts || []
+    const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
+    const tabIndex = 0
+
     setSelectedModel(selected)
     setSelectedModelCaps(modelCaps as ApModel)
+    setActiveTabIndex(tabIndex)
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
 
     form?.setFieldsValue({
       ...selected,
-      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(selected?.poeOut),
+      poeOut: poeOutFormData,
       lan: selected?.lanPorts
     })
   }
@@ -193,23 +196,18 @@ export function LanPorts () {
             onChange={handleModelChange}
           />}
         />
-        { selectedModelCaps?.canSupportPoeMode && <Form.Item
-          name='poeMode'
-          label={$t({ defaultMessage: 'PoE Operating Mode' })}
-          initialValue={selectedModel?.poeMode}
-          children={<Select
-            options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
-              label: toReadablePoeMode(item), value: item
-            }))}
-            onChange={() => handleGUIChanged('poeMode')}
-          />}
-        /> }
+        <LanPortPoeSettings
+          selectedModel={selectedModel}
+          selectedModelCaps={selectedModelCaps}
+          onGUIChanged={handleGUIChanged}
+        />
       </Col>
     </Row>
     <Row gutter={24}>
       <Col span={24}> {
         selectedModel?.lanPorts && <Tabs
           type='third'
+          activeKey={`lan-${activeTabIndex+1}`}
           onChange={onTabChange}
         	animated={true}
         >
@@ -257,9 +255,4 @@ export function LanPorts () {
 
 function getSelectedModelData (list: VenueLanPorts[], model: string) {
   return list?.filter(item => item.model === model)?.[0]
-}
-
-export function toReadablePoeMode (poeMode:string) {
-  const replaced = replace(poeMode, '-', '/')
-  return replace(replaced, '_', ' ')
 }

@@ -230,6 +230,7 @@ export function WISPrAuthAccServer (props : {
         </div>
         <Form.Item
           name={'authRadius'}
+          children={<></>}
           hidden
         />
 
@@ -244,8 +245,8 @@ export function WISPrAuthAccServer (props : {
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'/>
         }
-        <Form.Item name={['guestPortal','wisprPage','accountingRadius']} noStyle/>
-        <Form.Item name={['guestPortal','wisprPage','authRadius']} noStyle/>
+        <Form.Item name={['guestPortal','wisprPage','accountingRadius']} children={<></>} noStyle/>
+        <Form.Item name={['guestPortal','wisprPage','authRadius']} children={<></>} noStyle/>
       </div>
     </Space>
   )
