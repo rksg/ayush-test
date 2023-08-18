@@ -176,11 +176,16 @@ describe('WifiCallingTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+    await userEvent.click(
+      await screen.findByRole('button', { name: /Delete Service/i })
+    )
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByText(/delete "wifi\-1"\?/i)).toBeNull()
     })
   })
 
