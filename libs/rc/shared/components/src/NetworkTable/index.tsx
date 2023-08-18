@@ -286,7 +286,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
-      }
+      },
+      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Clone' }),

@@ -78,6 +78,7 @@ function SettingsForm () {
     form.setFieldsValue({ ...data })
   },[data])
   const disableAAA = !useIsSplitOn(Features.POLICIES)
+  const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -94,8 +95,10 @@ function SettingsForm () {
               </Option>
               <Option value={WlanSecurityEnum.WPAPersonal}>
                 { $t({ defaultMessage: 'WPA' }) }</Option>
-              <Option value={WlanSecurityEnum.WPA23Mixed}>
-                { $t({ defaultMessage: 'WPA3/WPA2 mixed mode' }) }</Option>
+              {
+                isWpaDsae3Toggle && <Option value={WlanSecurityEnum.WPA23Mixed}>
+                  { $t({ defaultMessage: 'WPA3/WPA2 mixed mode' }) }</Option>
+              }
             </Select>
           </Form.Item>
 
