@@ -53,7 +53,7 @@ describe('Table', () => {
     expect(tbody).toBeVisible()
     const body = within(tbody)
     expect(await screen.findByRole('table')).toBeVisible()
-    expect(await body.findAllByRole('row')).toHaveLength(8)
+    expect(await body.findAllByRole('row')).toHaveLength(9)
     expect(await screen.findByText('480')).toBeVisible()
     expect(await screen.findByText('Background scanning')).toBeVisible()
     expect(await screen.findByText('Auto')).toBeVisible()
@@ -93,7 +93,7 @@ describe('Table', () => {
     })
   })
 
-  it('should handle kpi fileter', async () => {
+  it('should handle kpi filter', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
@@ -103,14 +103,14 @@ describe('Table', () => {
 
     await userEvent.click(await screen.findByText('Add KPI filter'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByText('Auto Channel Selection: Mode (2.4 GHz)')).toBeVisible()
+    expect(await screen.findByText('Name')).toBeVisible()
     expect(await screen.findByText('BSS Min. Rate')).toBeVisible()
 
     await userEvent.click(await screen.findByText('Add KPI filter'))
     await userEvent.click(
       await screen.findByRole('menuitemcheckbox', { name: 'Client Throughput' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(screen.queryByText('Auto Channel Selection: Mode (2.4 GHz)')).toBeNull()
+    expect(screen.queryByText('Name')).toBeNull()
     expect(await screen.findByText('BSS Min. Rate')).toBeVisible()
   })
 })

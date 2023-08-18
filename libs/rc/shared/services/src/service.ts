@@ -711,6 +711,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
       query: ({ params, payload }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.tenantId
+        }
         const req = createHttpRequest(
           DpskUrls.exportPassphrases,
           {
@@ -718,7 +721,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             timezone: payload?.timezone ?? 'UTC',
             dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
           },
-          {},
+          CUSTOM_HEADER,
           true
         )
 
