@@ -211,6 +211,14 @@ export const validationMessages = {
     defaultMessage: 'IP address is not in the subnet pool',
     description: 'Validation - Cellular IP pool size'
   }),
+  multicastIpAddress: defineMessage({
+    defaultMessage: 'Please enter valid multicast IP address',
+    description: 'Validation - multicast IP address'
+  }),
+  multicastIpAddressExcluded: defineMessage({
+    defaultMessage: 'Please exclude multicast IP address',
+    description: 'Validation - non-multicast IP address'
+  }),
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'

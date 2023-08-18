@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { BrowserRouter }                              from '@acx-ui/react-router-dom'
 import { fireEvent, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '.'
@@ -50,13 +51,15 @@ describe('Import CSV Drawer', () => {
         description: 'Serial number is invalid. In row: 1'
       }]
     }
-    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
-      {...props}
-      importError={{
-        status: 422,
-        data: errorRes
-      }}
-    />)
+    render(<BrowserRouter>
+      <ImportFileDrawer type={ImportFileDrawerType.AP}
+        {...props}
+        importError={{
+          status: 422,
+          data: errorRes
+        }}
+      />
+    </BrowserRouter>)
     const dialog = await screen.findByRole('dialog')
 
     fireEvent.click(await within(dialog).findByRole('link', { name: 'See errors' }))
@@ -88,6 +91,25 @@ describe('Import CSV Drawer', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
     await waitFor(() => expect(importRequest).toBeCalledTimes(1))
+  })
+
+  it('upload file with readAsText and keep comma in result', async () => {
+    render(<ImportFileDrawer type={ImportFileDrawerType.AP}
+      readAsText={true}
+      skipCsvTextConvert={true}
+      {...props}
+    />)
+    const csvFile = new File(['mockdata,test,123'], 'aps_import_template.csv', { type: 'text/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
+    await waitFor(() => expect(importRequest).toBeCalledTimes(1))
+    expect(importRequest).toBeCalledWith(
+      expect.anything(),
+      expect.anything(),
+      'mockdata,test,123'
+    )
   })
 
   it('should render extra descriptions', async () => {

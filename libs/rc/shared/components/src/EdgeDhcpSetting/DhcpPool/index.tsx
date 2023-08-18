@@ -4,7 +4,6 @@ import { Form }         from 'antd'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { showActionModal }                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
@@ -29,6 +28,7 @@ export default function DhcpPoolTable ({
   const { $t } = useIntl()
   const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
+  const [importErrorMsg, setImportErrorMsg] = useState<string | undefined>(undefined)
   const form = Form.useFormInstance()
   const {
     openDrawer,
@@ -92,12 +92,14 @@ export default function DhcpPoolTable ({
       }
     }
 
+
+
     return Promise.resolve()
   }
 
   const appendDHCPPools = async (content: string[], callback: () => void) => {
     const newValues: EdgeDhcpPool[] = content.map((item) => {
-      const fields = item.split(' ')
+      const fields = item.split(',')
       return {
         id: '_NEW_'+uuidv4(),
         poolName: fields[0],
@@ -113,12 +115,60 @@ export default function DhcpPoolTable ({
       onChange && onChange(value.concat(newValues))
       callback()
     } catch (error) {
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Invalid Validation' }),
-        content: error as string
-      })
+      setImportErrorMsg(error as string)
     }
+  }
+
+  const importContentValidator = (content: string) => {
+    const onlyCommaSpaceRegex = /^(,*\s*)*$/
+    const dataArray = content.split(/\r?\n|\r/).filter(row => {
+      const trimmed = row.trim()
+      return trimmed
+            && !trimmed.startsWith('#')
+            && !onlyCommaSpaceRegex.test(trimmed)
+            && trimmed !== 'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway'
+    })
+
+    if (dataArray.length > MAX_IMPORT_ENTRIES) {
+      return Promise.reject($t({ defaultMessage: 'Exceed maximum entries.' }))
+    }
+
+    const newValues: EdgeDhcpPool[] = dataArray.map((item) => {
+      const fields = item.split(',')
+      return {
+        id: '_NEW_'+uuidv4(),
+        poolName: fields[0],
+        subnetMask: fields[1],
+        poolStartIp: fields[2],
+        poolEndIp: fields[3],
+        gatewayIp: fields[4]
+      } as EdgeDhcpPool
+    })
+
+    return validateCSVData(newValues)
+  }
+
+  const importHandler = (formData: FormData, values: object, content?: string) => {
+    setImportErrorMsg(undefined)
+
+    const onlyCommaSpaceRegex = /^(,*\s*)*$/
+    const dataArray = content!.split(/\r?\n|\r/).filter(row => {
+      const trimmed = row.trim()
+      return trimmed
+            && !trimmed.startsWith('#')
+            && !onlyCommaSpaceRegex.test(trimmed)
+            && trimmed !== 'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway'
+    })
+
+    if (dataArray.length > MAX_IMPORT_ENTRIES) {
+      setImportErrorMsg($t({ defaultMessage: 'Exceed maximum entries.' }))
+      return
+    }
+
+    appendDHCPPools(
+      dataArray,
+      () => setImportModalvisible(false)
+    )
   }
 
   return (
@@ -159,28 +209,10 @@ export default function DhcpPoolTable ({
           templateLink={importTemplateLink}
           visible={importModalvisible}
           readAsText={true}
-          importRequest={(formData, values, content) => {
-            const dataArray = content!.split('\n').filter(row => {
-              const trimmed = row.trim()
-              return trimmed
-                    && !trimmed.startsWith('#')
-                    && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
-            })
-
-            if (dataArray.length > MAX_IMPORT_ENTRIES) {
-              showActionModal({
-                type: 'error',
-                title: $t({ defaultMessage: 'Invalid Validation' }),
-                content: $t({ defaultMessage: 'Exceed maximum entries.' })
-              })
-              return
-            }
-
-            appendDHCPPools(
-              dataArray,
-              () => setImportModalvisible(false)
-            )
-          }}
+          skipCsvTextConvert={true}
+          validator={importContentValidator}
+          importError={importErrorMsg}
+          importRequest={importHandler}
           onClose={() => setImportModalvisible(false)}
         />}
     </>
