@@ -1,6 +1,7 @@
 import React, { ReactNode, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, Input, Select, Tag } from 'antd'
+import TextArea                                    from 'antd/lib/input/TextArea'
 import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
@@ -104,10 +105,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [
     accessStatus,
     policyName,
+    description,
     l2AclPolicyId
   ] = [
     useWatch<string>('layer2Access', contentForm),
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'l2AclPolicyId'])
   ]
 
@@ -162,6 +165,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   useEffect(() => {
     if (layer2PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
+      contentForm.setFieldValue('description', layer2PolicyInfo.description)
       contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
       setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
         macAddress: address
@@ -228,6 +232,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     contentForm.setFieldValue('layer2Access', undefined)
     setMacAddressList([])
   }
@@ -367,7 +372,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       macAddresses: macAddressList.map((item: { macAddress: string }) =>
         item.macAddress
       ),
-      description: null
+      description: description
     }
 
     return {
@@ -422,6 +427,14 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           }
         ]}
         children={<Input disabled={isViewMode()}/>}
+      />
+      <DrawerFormItem
+        name='description'
+        label={$t({ defaultMessage: 'Description' })}
+        rules={[
+          { max: 255 }
+        ]}
+        children={<TextArea disabled={isViewMode()} />}
       />
       <DrawerFormItem
         name='layer2Access'
