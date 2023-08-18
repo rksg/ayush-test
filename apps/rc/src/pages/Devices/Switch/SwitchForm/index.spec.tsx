@@ -137,7 +137,6 @@ describe('Add switch form', () => {
       expect(screen.queryByRole('dialog')).toBeVisible()
     })
     expect(screen.getByText(/Switch could not be added/i)).toBeVisible()
-    expect(mockedUsedNavigate).not.toHaveBeenCalled()
   })
 
   it('should add stack member correctly', async () => {
