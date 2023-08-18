@@ -28,7 +28,7 @@ describe('AdminLogTable', () => {
     handleTableChange: jest.fn()
   } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
 
-  it('should render activity list', async () => {
+  it('should render admin log list', async () => {
     render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider })
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.', {
@@ -37,16 +37,22 @@ describe('AdminLogTable', () => {
     )
   })
 
-  it('should open/close activity drawer', async () => {
+  it('should open/close/reopen admin log drawer', async () => {
     render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
     )
     await userEvent.click(screen.getByRole('button', { name: /2022/ }))
-    screen.getByText('Log Details')
+    expect(screen.getByRole('dialog')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Log Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
+    await userEvent.click(screen.getByRole('button', { name: /2022/ }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {
@@ -66,7 +72,9 @@ describe('AdminLogTable', () => {
       ...tableQuery, data: { data: [] }
     } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
     rerender(<Provider><AdminLogTable tableQuery={newTableQuery} /></Provider>)
-    expect(screen.queryByText('Log Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should download csv on click', async () => {

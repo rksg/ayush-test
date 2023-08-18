@@ -112,7 +112,7 @@ describe('EventTable', () => {
     expect(await screen.findAllByText('Product')).toHaveLength(2)
   })
 
-  it('should open/close event drawer', async () => {
+  it('should open/close/reopen event drawer', async () => {
     render(
       <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
@@ -121,9 +121,15 @@ describe('EventTable', () => {
       name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
     })
     await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
-    screen.getByText('Event Details')
+    expect(screen.getByRole('dialog')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Event Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
+    await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {
@@ -143,7 +149,9 @@ describe('EventTable', () => {
       ...tableQuery, data: { data: [] }
     } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
     rerender(<Provider><EventTable tableQuery={newTableQuery} /></Provider>)
-    expect(screen.queryByText('Event Details')).toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.getByRole('dialog').parentNode)
+      .toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('renders value as-is for non entity prop', async () => {
