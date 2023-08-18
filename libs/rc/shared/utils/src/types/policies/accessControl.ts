@@ -1,6 +1,7 @@
 export interface l2AclPolicyInfoType {
   id: string,
   macAddresses: string[],
+  description?: string,
   name: string,
   access: string
 }
@@ -8,6 +9,7 @@ export interface l2AclPolicyInfoType {
 export interface l3AclPolicyInfoType {
   id: string,
   l3Rules: L3Rule[],
+  description?: string,
   name: string,
   defaultAccess: string
 }
@@ -64,6 +66,7 @@ export interface AccessControlInfoType {
 export interface appPolicyInfoType {
   id: string,
   rules: AppRule[],
+  description?: string,
   name: string,
   tenantId: string
 }
@@ -71,6 +74,7 @@ export interface appPolicyInfoType {
 export interface devicePolicyInfoType {
   id: string,
   rules: DeviceRule[],
+  description?: string,
   name: string,
   defaultAccess: string,
   tenantId: string

@@ -86,7 +86,7 @@ export function LanPorts () {
           ? {
             ...item,
             lanPorts: lan,
-            ...(poeMode && item.poeMode && { poeMode: poeMode }),
+            ...(poeMode && { poeMode: poeMode }),
             ...(poeOut && { poeOut: poeOut[activeTabIndex] })
           } : item
       }) as VenueLanPorts[]

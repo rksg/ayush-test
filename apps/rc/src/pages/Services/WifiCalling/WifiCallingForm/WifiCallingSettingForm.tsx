@@ -7,7 +7,7 @@ import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { QosPriorityEnum, WifiCallingActionTypes }                          from '@acx-ui/rc/utils'
+import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 import WifiCallingFormContext                 from '../WifiCallingFormContext'
@@ -127,7 +127,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
                 )
               }
               return Promise.resolve()
-            } }
+            } },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
