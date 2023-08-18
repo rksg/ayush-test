@@ -27,7 +27,7 @@ exports[`useAnalyticsFilter imports dashboard filter with single venue 1`] = `
 exports[`useAnalyticsFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}} | []
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}} | [{"type":"network","name":"Network"}]
   </div>
 </DocumentFragment>
 `;

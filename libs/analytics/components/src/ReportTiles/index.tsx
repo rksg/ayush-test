@@ -34,6 +34,7 @@ export const ReportTile = () => {
   }, [queryResults.data?.length])
 
   const currentTile = queryResults.data?.[selected]!
+
   return <Loader states={[queryResults]}>{
     queryResults.data
       ? <ReportTileWrapper>
@@ -53,7 +54,7 @@ export const ReportTile = () => {
           <Statistic
             title={$t(currentTile.text)}
             value={currentTile.value
-              ? (currentTile.format?.(currentTile.value) || currentTile.value)
+              ? currentTile.format(currentTile.value)
               : noDataDisplay}/>
         </TenantLink>
       </ReportTileWrapper>

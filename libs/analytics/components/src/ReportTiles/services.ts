@@ -78,7 +78,7 @@ const switchSummaryAttributes = [
   'switchTotalTraffic'
 ]
 
-const getAttributes = (node: PathNode) => {
+export const getAttributes = (node?: PathNode) => {
   const defaultAttributes = ['type', 'clientCount', 'apCount']
   if(!node) return defaultAttributes
 
@@ -114,7 +114,7 @@ const getAttributes = (node: PathNode) => {
   return attributes[node.type as Exclude<NodeType, 'controller'>] || defaultAttributes
 }
 
-const getSummaryAttributes = (node: PathNode) => {
+export const getSummaryAttributes = (node: PathNode) => {
   switch (node.type) {
     case 'network':
     case 'system':
@@ -130,7 +130,7 @@ const getSummaryAttributes = (node: PathNode) => {
     case 'switch':
       return switchSummaryAttributes
     default:
-      return null
+      return
   }
 }
 
@@ -175,13 +175,15 @@ const getSwitchQuery = (attributes: string[]) => gql`
   }
 `
 
-type NetworkSummaryInfoProps = {
+export type NetworkSummaryInfoProps = {
   startDate: string
   endDate: string
   path: PathNode[]
 }
 
-const genNetworkSummaryInfoQuery = ({ startDate, endDate, path }: NetworkSummaryInfoProps) => {
+export const genNetworkSummaryInfoQuery = (
+  { startDate, endDate, path }: NetworkSummaryInfoProps
+) => {
   const [ node ] = path.slice(-1)
   const attributes = getSummaryAttributes(node) || getAttributes(node)
 
@@ -201,7 +203,7 @@ const genNetworkSummaryInfoQuery = ({ startDate, endDate, path }: NetworkSummary
   return { document: queryGenerator(attributes), variables }
 }
 
-const { useNetworkSummaryInfoQuery: fetchNetworkSummaryInfo } = dataApi.injectEndpoints({
+export const { useNetworkSummaryInfoQuery } = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkSummaryInfo: build.query<
       ({ key: string, value: string|number|null } & TileMapType)[], NetworkSummaryInfoProps>({
@@ -214,9 +216,3 @@ const { useNetworkSummaryInfoQuery: fetchNetworkSummaryInfo } = dataApi.injectEn
       })
   })
 })
-
-export function useNetworkSummaryInfoQuery (params: NetworkSummaryInfoProps) {
-  return fetchNetworkSummaryInfo(params,
-    { skip: params.path.length <= 0 } // TODO
-  )
-}
