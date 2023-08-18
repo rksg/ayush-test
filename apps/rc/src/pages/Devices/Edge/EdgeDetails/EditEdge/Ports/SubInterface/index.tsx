@@ -8,7 +8,7 @@ import { Loader, NoData, showActionModal, Table, TableProps, Tabs }             
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
+import { EdgeSubInterface, useTableQuery }                                                             from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                   from '@acx-ui/user'
 
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
@@ -21,7 +21,7 @@ interface SubInterfaceProps {
 }
 
 interface SubInterfaceTableProps {
-  index: number
+  currentTab: string
   ip: string
   mac: string
 }
@@ -50,8 +50,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   useEffect(() => {
     setDrawerVisible(false)
     setSelectedRows([])
-    tableQuery.setPayload(DEFAULT_PAGINATION)
-  }, [props.mac])
+  }, [props.currentTab])
 
   useEffect(() => {
     if (params.activeSubTab !== 'sub-interface') {
@@ -213,10 +212,15 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 const SubInterface = (props: SubInterfaceProps) => {
   const { data } = props
   const { $t } = useIntl()
+  const [currentTab, setCurrentTab] = useState('port_1')
+
+  const handleTabChange = (activeKey: string) => {
+    setCurrentTab(activeKey)
+  }
 
   return (
     data.length > 0 ?
-      <Tabs defaultActiveKey='port_1' type='third'>
+      <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
         {
           data.map((item, index) =>
             <Tabs.TabPane
@@ -224,7 +228,7 @@ const SubInterface = (props: SubInterfaceProps) => {
               key={'port_' + (index + 1)}
               children={
                 <SubInterfaceTable
-                  index={index}
+                  currentTab={currentTab}
                   ip={item.statusIp}
                   mac={item.mac}
                 />
