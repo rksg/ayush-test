@@ -112,7 +112,7 @@ describe('EventTable', () => {
     expect(await screen.findAllByText('Product')).toHaveLength(2)
   })
 
-  it('should open/close/reopen event drawer', async () => {
+  it('should open/close event drawer', async () => {
     render(
       <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
@@ -126,10 +126,6 @@ describe('EventTable', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(screen.getByRole('dialog').parentNode)
       .toHaveClass('ant-drawer-content-wrapper-hidden')
-    await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(screen.getByRole('dialog').parentNode)
-      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {

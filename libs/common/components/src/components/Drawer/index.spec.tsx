@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { BulbOutlined }              from '@acx-ui/icons'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { BulbOutlined }                       from '@acx-ui/icons'
+import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import { Drawer } from '.'
 
@@ -51,22 +51,6 @@ describe('Drawer', () => {
     expect(onClose).toBeCalled()
   })
 
-  it('should render drawer without mask attribute correctly', async () => {
-    render(<Drawer
-      title={'Test Mask Drawer'}
-      visible={true}
-      onClose={onClose}
-      children={content}
-    />)
-
-    const button = screen.getByRole('button', { name: /close/i })
-    await screen.findByText('Test Mask Drawer')
-    await screen.findByText('some content')
-
-    fireEvent.click(button)
-    expect(onClose).toBeCalled()
-  })
-
   it('should render custom drawer correctly', async () => {
     const footer = [
       <button onClick={onClose} >Save</button>,
@@ -106,6 +90,59 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
+  })
+
+  it('should close 1st drawer 2nd opened and cleanup so 2nd can open again', async () => {
+    const firstOnClose = jest.fn()
+    const secondOnClose = jest.fn()
+    const TestComponent = ({ secondDrawerVisible }: { secondDrawerVisible: boolean }) => {
+      return <>
+        <Drawer
+          title={'First Drawer'}
+          visible={true}
+          onClose={firstOnClose}
+          children={content}
+        />
+        {secondDrawerVisible && <Drawer
+          title={'Second Drawer'}
+          visible={secondDrawerVisible}
+          onClose={secondOnClose}
+          children={content}
+        />}
+      </>
+    }
+    const { rerender } = render(<TestComponent secondDrawerVisible={false} />)
+    rerender(<TestComponent secondDrawerVisible={true} />)
+    await waitFor(() => expect(firstOnClose).toBeCalled())
+    rerender(<TestComponent secondDrawerVisible={false} />)
+    rerender(<TestComponent secondDrawerVisible={true} />)
+    expect(await screen.findByText('Second Drawer')).toBeVisible()
+    expect(secondOnClose).not.toBeCalled()
+  })
+
+  it('should not close 1st drawer if it has footer (is a form)', async () => {
+    const firstOnClose = jest.fn()
+    const TestComponent = ({ secondDrawerVisible }: { secondDrawerVisible: boolean }) => {
+      return <>
+        <Drawer
+          title={'First Drawer'}
+          visible={true}
+          onClose={firstOnClose}
+          children={content}
+          footer={<div />}
+        />
+        {secondDrawerVisible && <Drawer
+          title={'Second Drawer'}
+          visible={secondDrawerVisible}
+          onClose={onClose}
+          children={content}
+        />}
+      </>
+    }
+    const { rerender } = render(<TestComponent secondDrawerVisible={false} />)
+    rerender(<TestComponent secondDrawerVisible={true} />)
+    expect(await screen.findByText('Second Drawer')).toBeVisible()
+    expect(firstOnClose).not.toBeCalled()
   })
 
   describe('FormFooter', () => {

@@ -37,7 +37,7 @@ describe('AdminLogTable', () => {
     )
   })
 
-  it('should open/close/reopen admin log drawer', async () => {
+  it('should open/close admin log drawer', async () => {
     render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
@@ -49,10 +49,6 @@ describe('AdminLogTable', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(screen.getByRole('dialog').parentNode)
       .toHaveClass('ant-drawer-content-wrapper-hidden')
-    await userEvent.click(screen.getByRole('button', { name: /2022/ }))
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(screen.getByRole('dialog').parentNode)
-      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {

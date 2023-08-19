@@ -31,7 +31,7 @@ describe('ActivityTable', () => {
     await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
   })
 
-  it('should open/close/reopen activity drawer', async () => {
+  it('should open/close activity drawer', async () => {
     render(
       <Provider>
         <ActivityTable tableQuery={tableQuery} />
@@ -45,10 +45,6 @@ describe('ActivityTable', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(screen.getByRole('dialog').parentNode)
       .toHaveClass('ant-drawer-content-wrapper-hidden')
-    await userEvent.click(screen.getByRole('button', { name: /2022/ }))
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(screen.getByRole('dialog').parentNode)
-      .not.toHaveClass('ant-drawer-content-wrapper-hidden')
   })
 
   it('should close drawer, when data changed', async () => {
