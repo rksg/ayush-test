@@ -24,7 +24,7 @@ export function AdvancedTab () {
 
   return (
     <>
-      { qosMirroringFlag && <QoS wlanData={data} /> }
+      { qosMirroringFlag && <QoS /> }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
         <UserConnectionComponent/>
       }

@@ -1,11 +1,7 @@
-import { useEffect } from 'react'
-
 import { Form, Select, Space, Switch } from 'antd'
-import { useWatch }                    from 'antd/lib/form/Form'
 import { useIntl }                     from 'react-intl'
 
-import { Tooltip }         from '@acx-ui/components'
-import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { Tooltip } from '@acx-ui/components'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
@@ -15,18 +11,21 @@ export enum QoSMirroringScope {
   ALL_CLIENTS = 'ALL_CLIENTS'
 }
 
-function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
+interface Option {
+  type: QoSMirroringScope
+  label: string
+  value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+  key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+  message: string
+}
+
+const { useWatch } = Form
+
+function QoS () {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
 
-  const qoSMirroringScopeOptions: {
-    type: QoSMirroringScope
-    label: string
-    value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
-    key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
-    message: string
-  }[] = [
+  const options: Option[] = [
     {
       type: QoSMirroringScope.MSCS_REQUESTS_ONLY,
       label: $t({ defaultMessage: 'MSCS requests only' }),
@@ -52,27 +51,10 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
     useWatch<string>(['wlan', 'advancedCustomization', 'qosMirroringScope'])
   ]
 
-  useEffect(() => {
-    const loadData = () => {
-      const defaultQosMirroringEnabled = true
-      const defaultQosMirroringScope = QoSMirroringScope.MSCS_REQUESTS_ONLY
-      const dataQosMirroringEnabled: boolean | undefined =
-              wlanData?.wlan?.advancedCustomization?.qosMirroringEnabled
-      const dataQosMirroringScope: string | undefined =
-              wlanData?.wlan?.advancedCustomization?.qosMirroringScope
-      const valueOfQosMirroringEnabled = typeof dataQosMirroringEnabled === 'undefined' ?
-        defaultQosMirroringEnabled : dataQosMirroringEnabled
-      form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringEnabled'],
-        valueOfQosMirroringEnabled)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'qosMirroringScope'],
-        // eslint-disable-next-line max-len
-        (typeof dataQosMirroringScope === 'undefined' || !dataQosMirroringScope) && valueOfQosMirroringEnabled ?
-          defaultQosMirroringScope : dataQosMirroringScope)
-    }
-
-    loadData()
-  }, [])
-
+  const initQosMirroringEnabled =
+          typeof qosMirroringEnabled === 'undefined' ? true : qosMirroringEnabled
+  const initQosMirroringScope = typeof qosMirroringScope === 'undefined' ?
+    QoSMirroringScope.MSCS_REQUESTS_ONLY : qosMirroringScope
 
   return (
     <>
@@ -94,6 +76,7 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
           name={['wlan', 'advancedCustomization', 'qosMirroringEnabled']}
           style={{ marginBottom: '10px', width: '300px' }}
           valuePropName='checked'
+          initialValue={initQosMirroringEnabled}
           children={<Switch />}
         />
       </UI.FieldLabel>
@@ -102,15 +85,16 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
                     label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
                     extra={
                       <div style={{ width: '250px' }}>
-                        { qoSMirroringScopeOptions.find(option =>
+                        { options.find(option =>
                           option.value === qosMirroringScope)?.message }
                       </div>
                     }
                     name={['wlan', 'advancedCustomization', 'qosMirroringScope']}
+                    initialValue={initQosMirroringScope}
                     children={
                       <Select
                         style={{ width: '280px', height: '30px', fontSize: '11px' }}
-                        options={qoSMirroringScopeOptions}
+                        options={options}
                       />
                     }
                   />
