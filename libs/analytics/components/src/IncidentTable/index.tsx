@@ -18,22 +18,65 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
-import { noDataDisplay }                               from '@acx-ui/utils'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
   useMuteIncidentsMutation,
   IncidentTableRow
 } from './services'
-import * as UI           from './styledComponents'
-import {
-  GetIncidentBySeverity,
-  ShortIncidentDescription,
-  filterMutedIncidents
-} from './utils'
+import * as UI                                                                   from './styledComponents'
+import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function convertJSONToCSV (jsonData: any[], selectedKeys: any[]) {
+  const separator = ','
+  const header = selectedKeys.map(key => key.title).concat('Muted').join(separator)
+  const keys = selectedKeys.map(key => key.key).concat(['isMuted'])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rows = jsonData.map((obj: { [x: string]: any }) => {
+    return keys.map((key: string | number) => {
+      if(key === 'severity')
+        key = 'severityLabel'
+      let cellValue = obj[key]
+      if (typeof cellValue === 'string') {
+        cellValue = `"${cellValue}"`
+      }
+      return cellValue
+    }).join(separator)
+  })
+
+  return [header, ...rows].join('\n')
+}
+
+function downloadCSV (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  jsonData: any,
+  fileName: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  convertor: any,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  selectedKeys : any[]) {
+  const csvData = convertor(jsonData, selectedKeys)
+  const blob = new Blob([csvData], { type: 'text/csv' })
+  const url = URL.createObjectURL(blob)
+
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName + '.csv'
+  document.body.appendChild(a)
+  a.click()
+
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -216,7 +259,6 @@ export function IncidentTable ({ filters, systemNetwork }: {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
-
   return (
     <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
@@ -225,6 +267,10 @@ export function IncidentTable ({ filters, systemNetwork }: {
         dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
+        iconButton={{
+          icon: <DownloadOutlined />,
+          disabled: !Boolean(data?.length),
+          onClick: () => {downloadCSV(data, 'test', convertJSONToCSV, ColumnHeaders)} }}
         rowSelection={!systemNetwork && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
