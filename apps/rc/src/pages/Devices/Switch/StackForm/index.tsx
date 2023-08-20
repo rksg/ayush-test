@@ -345,6 +345,12 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
     if (readOnly) {
       navigate({
         ...basePath,
