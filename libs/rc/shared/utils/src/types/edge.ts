@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, ScheduleVersionInfo, SkippedVersion }                         from '..'
+import { FirmwareCategory, SkippedVersion }                                              from '..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
@@ -136,20 +136,17 @@ export interface EdgeVenueFirmware {
   versions: EdgeFirmwareVersion[]
   availableVersions: EdgeFirmwareVersion[]
   nextSchedule: EdgeSchedule
-  lastSkippedVersions: SkippedVersion[]
+  lastSkippedVersions?: SkippedVersion[]
 }
 
 export interface EdgeSchedule {
   timeSlot: {
     startDateTime: string
-    versionInfo: ScheduleVersionInfo
-  };
-  version?: {
-    name: string;
-    category: FirmwareCategory
+    endDateTime: string
   }
-  versionAboveTen?: {
-    name: string;
+  version: {
+    id: string
+    name: string
     category: FirmwareCategory
   }
 }

@@ -96,7 +96,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                 $t({ defaultMessage: 'Choose which version to update the venue to:' })
               }
             </Typography>
-            <UI.TitleActive>Active Device</UI.TitleActive>
+            <UI.TitleActive>{$t({ defaultMessage: 'Active Device' })}</UI.TitleActive>
             <Form.Item
               name='selectMode'
               initialValue={VersionsSelectMode.Radio}
@@ -129,9 +129,15 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
         }
         <UI.Section>
           <UI.Ul>
-            { // eslint-disable-next-line max-len
-              <UI.Li>Please note, during firmware update your network device(s) might reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
-            <UI.Li>You will be notified once the update process has finished.</UI.Li>
+            <UI.Li>
+              {
+                // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Please note, during firmware update your network device(s) might reboot, and service may be interrupted for up to 15 minutes.' })
+              }
+            </UI.Li>
+            <UI.Li>
+              {$t({ defaultMessage: 'You will be notified once the update process has finished.' })}
+            </UI.Li>
           </UI.Ul>
         </UI.Section>
       </Form>

@@ -1,57 +1,108 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Loader, Table,
   TableProps,
-  Tooltip
+  Tooltip,
+  showActionModal
 } from '@acx-ui/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
+  useGetEdgeUpgradePreferencesQuery,
   useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
-  useUpdateEdgeFirmwareMutation
+  useSkipEdgeUpgradeSchedulesMutation,
+  useUpdateEdgeFirmwareMutation,
+  useUpdateEdgeUpgradePreferencesMutation,
+  useUpdateEdgeVenueSchedulesMutation
 } from '@acx-ui/rc/services'
 import {
-  dateSort,
-  defaultSort,
+  EdgeFirmwareVersion,
+  EdgeUpdateScheduleRequest,
   EdgeVenueFirmware,
   FirmwareCategory,
   FirmwareSwitchVenue,
+  UpgradePreferences,
+  dateSort,
+  defaultSort,
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
-  toUserDate,
   compareVersions,
-  isSwitchNextScheduleTooltipDisabled,
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip
+  getSwitchNextScheduleTplTooltip,
+  isSwitchNextScheduleTooltipDisabled,
+  toUserDate
 } from '../../FirmwareUtils'
-import * as UI from '../../styledComponents'
+import { PreferencesDialog } from '../../PreferencesDialog'
+import * as UI               from '../../styledComponents'
 
-import { UpdateNowDialog } from './UpdateNowDialog'
+import { ChangeScheduleDialog } from './ChangeScheduleDialog'
+import { UpdateNowDialog }      from './UpdateNowDialog'
 
 
 export function VenueFirmwareList () {
   const intl = useIntl()
   const { $t } = intl
+  const params = useParams()
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
+  const [
+    changeScheduleAvailableVersions,
+    setChangeScheduleAvailableVersions
+  ] = useState<EdgeFirmwareVersion[]>()
+  const [updateModalVisible, setUpdateModalVisible] = useState(false)
+  const [preferenceModalVisible, setPreferenceModalVisible] = useState(false)
+  const [changeScheduleModal, setChangeScheduleModal] = useState(false)
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
-  } = useGetVenueEdgeFirmwareListQuery({})
+  } = useGetVenueEdgeFirmwareListQuery({}, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        data: data?.map(item => ({ ...item, nextSchedule: {
+          timeSlot: {
+            startDateTime: '2023-08-26T02:00:00-07:00',
+            endDateTime: '2023-08-26T04:00:00-07:00'
+          },
+          version: {
+            id: '1.0.0.333',
+            name: '1.0.0.333',
+            category: FirmwareCategory.RECOMMENDED
+          }
+        } })),
+        isLoading
+      }
+    }
+  })
   const { latestReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
     selectFromResult: ({ data }) => ({
       latestReleaseVersion: data?.[0]
     })
   })
   const { data: availableVersions } = useGetAvailableEdgeFirmwareVersionsQuery({})
+  const { preferenceData } = useGetEdgeUpgradePreferencesQuery({ params }, {
+    selectFromResult: ({ data }) => {
+      return {
+        preferenceData: {
+          ...data,
+          days: data?.days?.map(day =>
+            day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
+          )
+        }
+      }
+    }
+  })
   const [updateNow] = useUpdateEdgeFirmwareMutation()
+  const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
+  const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
+  const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
@@ -59,8 +110,7 @@ export function VenueFirmwareList () {
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
-      defaultSortOrder: 'ascend',
-      width: 120
+      defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Current Firmware' }),
@@ -69,8 +119,7 @@ export function VenueFirmwareList () {
       sorter: { compare: sortProp('versions[0].name', defaultSort) },
       render: function (_, row) {
         return row.versions?.[0]?.name || '--'
-      },
-      width: 120
+      }
     },
     {
       title: $t({ defaultMessage: 'Firmware Type' }),
@@ -83,8 +132,7 @@ export function VenueFirmwareList () {
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
         if (!subText) return text
         return `${text} (${subText})`
-      },
-      width: 120
+      }
     },
     {
       title: $t({ defaultMessage: 'Last Update' }),
@@ -94,8 +142,7 @@ export function VenueFirmwareList () {
       render: function (_, row) {
         if (!row.updatedDate) return '--'
         return toUserDate(row.updatedDate)
-      },
-      width: 120
+      }
     },
     {
       title: $t({ defaultMessage: 'Next Update Schedule' }),
@@ -134,7 +181,7 @@ export function VenueFirmwareList () {
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (selectedRows) => {
         setVenueIds(selectedRows.map(item => item.id))
-        setUpdateModelVisible(true)
+        setUpdateModalVisible(true)
       }
     },
     {
@@ -142,52 +189,19 @@ export function VenueFirmwareList () {
         return selectedRows.every(row => hasSchedule(row))
       },
       label: $t({ defaultMessage: 'Change Update Schedule' }),
-      disabled: (selectedRows) => {
-        return !hasAvailableSwitchFirmware(selectedRows)
-      },
-      // tooltip: (selectedRows) => {
-      //   return hasAvailableSwitchFirmware(selectedRows) ?
-      //     '' : $t({ defaultMessage: 'No available versions' })
-      // },
       onClick: (selectedRows) => {
-        setVenues(selectedRows)
-        let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-        let nonIcx8200Count = 0, icx8200Count = 0
-        let currentScheduleVersion = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-          (selectedRows[0].nextSchedule?.version ? selectedRows[0].nextSchedule.version.name : '') : ''
-        // eslint-disable-next-line max-len
-        let currentScheduleVersionAboveTen = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-          (selectedRows[0].nextSchedule?.versionAboveTen ? selectedRows[0].nextSchedule.versionAboveTen.name : '') : ''
-
-        selectedRows.forEach((row: FirmwareSwitchVenue) => {
-          const version = row.switchFirmwareVersion?.id
-          const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
-          // eslint-disable-next-line max-len
-          removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
-
-          if (enableSwitchTwoVersionUpgrade) {
-            nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-            icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-          }
+        const filteredAvailableVersions = availableVersions?.filter(availableVersion => {
+          return !selectedRows.some(row =>
+            row.versions.some(version => version.id === availableVersion.id))
         })
-
-        setChangeUpgradeVersions(filterVersions)
-        setNonIcx8200Count(nonIcx8200Count)
-        setIcx8200Count(icx8200Count)
-        setCurrentScheduleVersion(currentScheduleVersion)
-        setCurrentScheduleVersionAboveTen(currentScheduleVersionAboveTen)
-        setChangeScheduleModelVisible(true)
+        setVenueIds(selectedRows.map(item => item.id))
+        setChangeScheduleAvailableVersions(filteredAvailableVersions)
+        setChangeScheduleModal(true)
       }
     },
     {
       visible: (selectedRows) => {
-        let skipUpdateVisilibity = true
-        selectedRows.forEach((row) => {
-          if (!hasSchedule(row)) {
-            skipUpdateVisilibity = false
-          }
-        })
-        return skipUpdateVisilibity
+        return selectedRows.every(row => hasSchedule(row))
       },
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (selectedRows, clearSelection) => {
@@ -200,9 +214,10 @@ export function VenueFirmwareList () {
           okText: $t({ defaultMessage: 'Skip' }),
           cancelText: $t({ defaultMessage: 'Cancel' }),
           onOk () {
-            skipSwitchUpgradeSchedules({
-              params: { ...params },
-              payload: selectedRows.map((row) => row.id)
+            skipSchedule({
+              payload: {
+                venueIds: selectedRows.map((row) => row.id)
+              }
             }).then(clearSelection)
           },
           onCancel () {}
@@ -211,10 +226,8 @@ export function VenueFirmwareList () {
     }
   ]
 
-  const [updateModelVisible, setUpdateModelVisible] = useState(false)
-
   const handleUpdateModalCancel = () => {
-    setUpdateModelVisible(false)
+    setUpdateModalVisible(false)
   }
 
   const handleUpdateModalSubmit = async (data: string) => {
@@ -224,6 +237,32 @@ export function VenueFirmwareList () {
     }
     try {
       await updateNow({ payload }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handlePreferenceModalCancel = () => {
+    setPreferenceModalVisible(false)
+  }
+
+  const handlePreferenceModalSubmit = async (payload: UpgradePreferences) => {
+    try {
+      await updatePreferences({ params, payload }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handleChangeScheduleModalCancel = () => {
+    setChangeScheduleModal(false)
+  }
+
+  const handleChangeScheduleModalSubmit = async (data: EdgeUpdateScheduleRequest) => {
+    const payload = { ...data, venueIds }
+    try {
+      await updateSchedule({ payload }).unwrap()
+      // setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -239,12 +278,28 @@ export function VenueFirmwareList () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { type: 'checkbox' }}
+        actions={[{
+          label: $t({ defaultMessage: 'Preferences' }),
+          onClick: () => setPreferenceModalVisible(true)
+        }]}
       />
       <UpdateNowDialog
-        visible={updateModelVisible}
+        visible={updateModalVisible}
         availableVersions={availableVersions}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
+      />
+      <PreferencesDialog
+        visible={preferenceModalVisible}
+        data={preferenceData}
+        onCancel={handlePreferenceModalCancel}
+        onSubmit={handlePreferenceModalSubmit}
+      />
+      <ChangeScheduleDialog
+        visible={changeScheduleModal}
+        availableVersions={changeScheduleAvailableVersions}
+        onCancel={handleChangeScheduleModalCancel}
+        onSubmit={handleChangeScheduleModalSubmit}
       />
     </Loader>
   )

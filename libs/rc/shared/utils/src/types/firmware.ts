@@ -49,6 +49,13 @@ export interface UpdateScheduleRequest {
   switchVersionAboveTen?: string
 }
 
+export interface EdgeUpdateScheduleRequest {
+  date?: string;
+  time?: string;
+  version?: string
+  venueIds?: string[] | null
+}
+
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
   firmwareVersion?: string;
@@ -71,6 +78,7 @@ export enum FirmwareType {
   AP_FIRMWARE_UPGRADE = 'AP_FIRMWARE_UPGRADE',
   DP_FIRMWARE_UPGRADE = 'DP_FIRMWARE_UPGRADE',
   SWITCH_FIRMWARE_UPGRADE = 'SWITCH_FIRMWARE_UPGRADE',
+  EDGE_FIRMWARE_UPGRADE = 'EDGE_FIRMWARE_UPGRADE',
 }
 
 export interface VenueUpdateAdvice {
