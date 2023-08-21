@@ -7,11 +7,11 @@ import { RuleObject }                                    from 'antd/lib/form'
 import { useIntl }                                       from 'react-intl'
 
 
-import { Drawer, Table, TableProps }               from '@acx-ui/components'
-import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
-import { QosMapSetOptions, sortProp, defaultSort } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }               from '@acx-ui/user'
-import { validationMessages }                      from '@acx-ui/utils'
+import { Drawer, Table, TableProps }         from '@acx-ui/components'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
+import { QosMapRule, sortProp, defaultSort } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }         from '@acx-ui/user'
+import { validationMessages }                from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -39,9 +39,9 @@ export function QosMapSetFrom () {
     { enabled: true, priority: 7, dscpLow: 56, dscpHigh: 63, dscpExceptionValues: [] }
   ]
   const [ selectedRows, setSelectedRows] = useState<Key[]>([])
-  const [ drawerFormRule, setDrawerFormRule ] = useState<QosMapSetOptions>()
+  const [ drawerFormRule, setDrawerFormRule ] = useState<QosMapRule>()
   const [ qosMapRuleDrawerVisible, setQosMapRuleDrawerVisible ] = useState(false)
-  const [ qosMapSetOptionTable, setQosMapSetOptionTable ] = useState<QosMapSetOptions[]>([])
+  const [ qosMapSetOptionTable, setQosMapSetOptionTable ] = useState<QosMapRule[]>([])
 
   const { data } = useContext(NetworkFormContext)
 
@@ -58,7 +58,7 @@ export function QosMapSetFrom () {
         let ruleData = qosMapSetData.rules
         if (ruleData) {
           ruleData = ruleData.map(data => {
-            const newData: QosMapSetOptions = {
+            const newData: QosMapRule = {
               priority: data.priority || 0,
               enabled: data.enabled || false,
               dscpLow: data.dscpLow || 0,
@@ -67,7 +67,7 @@ export function QosMapSetFrom () {
             }
             return newData
           })
-          setQosMapSetOptionTable(ruleData as QosMapSetOptions[])
+          setQosMapSetOptionTable(ruleData as QosMapRule[])
         } else {
           setQosMapSetOptionTable(initialQosMapSetData)
         }
@@ -75,7 +75,7 @@ export function QosMapSetFrom () {
     }
   }, [enableQosMapSet, data])
 
-  const handleSetQosMapSetOptionTable = (data: QosMapSetOptions) => {
+  const handleSetQosMapSetOptionTable = (data: QosMapRule) => {
     const filterData = qosMapSetOptionTable.filter(
       (item: { priority: number }) => item.priority.toString() !== drawerFormRule?.priority.toString())
     setQosMapSetOptionTable([...filterData, data])
@@ -85,7 +85,7 @@ export function QosMapSetFrom () {
     return true
   }
 
-  const rowActions: TableProps<QosMapSetOptions>['rowActions'] = [
+  const rowActions: TableProps<QosMapRule>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -153,7 +153,7 @@ export function QosMapSetFrom () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<QosMapSetOptions>['columns'] = [
+  const columns: TableProps<QosMapRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
       key: 'priority',
@@ -203,17 +203,17 @@ function useColumns () {
 
 
 interface QosMapRuleSettingDrawerProps {
-  qosMapRule?: QosMapSetOptions
-  setQosMapRule: (r: QosMapSetOptions) => void
+  qosMapRule?: QosMapRule
+  setQosMapRule: (r: QosMapRule) => void
   visible: boolean
   setVisible: (v: boolean) => void
-  qosMapRulesList: QosMapSetOptions[]
+  qosMapRulesList: QosMapRule[]
 }
 
 function QosMapRuleSettingDrawer (props: QosMapRuleSettingDrawerProps) {
   const { $t } = useIntl()
   const { qosMapRule, setQosMapRule, visible, setVisible, qosMapRulesList } = props
-  const [form] = Form.useForm<QosMapSetOptions>()
+  const [form] = Form.useForm<QosMapRule>()
   const currentPriority = qosMapRule?.priority || 0
 
   const onClose = () => {
@@ -257,10 +257,10 @@ function QosMapRuleSettingDrawer (props: QosMapRuleSettingDrawerProps) {
 }
 
 interface QosMapRuleSettingFormProps {
-  form: FormInstance<QosMapSetOptions>
-  qosMapRule?: QosMapSetOptions
-  setQosMapRule: (r: QosMapSetOptions) => void
-  qosMapRulesList: QosMapSetOptions[]
+  form: FormInstance<QosMapRule>
+  qosMapRule?: QosMapRule
+  setQosMapRule: (r: QosMapRule) => void
+  qosMapRulesList: QosMapRule[]
 }
 
 function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
@@ -463,7 +463,7 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
       <Form
         layout='vertical'
         form={form}
-        onFinish={(data: QosMapSetOptions) => {
+        onFinish={(data: QosMapRule) => {
           if (data?.dscpExceptionValues){
             const dscpExceptionValuesString = data.dscpExceptionValues.toString()
             if (data?.dscpExceptionValues === undefined || data?.dscpExceptionValues.length < 1){

@@ -491,7 +491,7 @@ export interface SwitchClient {
   dhcpClientHostName?: string
 }
 
-export interface QosMapSetOptions {
+export interface QosMapRule {
   enabled: boolean
   priority: number
   dscpLow: number

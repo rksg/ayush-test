@@ -1,4 +1,4 @@
-export class QosMapSetRules {
+export class QosMapSetRule {
   enabled: boolean
   priority: number
   dscpLow: number
@@ -15,7 +15,7 @@ export class QosMapSetRules {
 }
 
 export class QosMapSetOptions {
-  rules?: Array<QosMapSetRules>
+  rules?: Array<QosMapSetRule>
 
   constructor () {
     this.rules = []
