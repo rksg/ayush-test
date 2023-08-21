@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/icons'
 import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
 import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 import ApLocateDetail from './ApLocateDetail'
 
@@ -153,7 +154,14 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Closest AP' }),
         dataIndex: 'closestAp.apName',
         // filterable: true, // TODO: change to search or provide static list
-        sorter: true
+        sorter: true,
+        render: (_, row) => {
+          return row.closestAp.apName
+            ? <TenantLink to={`/devices/wifi/${row.closestAp.apSerialNumber}/details/overview`}>
+              {row.closestAp.apName}
+            </TenantLink>
+            : null
+        }
       },
       {
         key: 'numberOfDetectingAps',
