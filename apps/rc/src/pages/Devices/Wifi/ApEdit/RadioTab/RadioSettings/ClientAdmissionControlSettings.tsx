@@ -2,6 +2,7 @@ import { useContext, useEffect, useState, useRef } from 'react'
 
 
 import { Form }      from 'antd'
+import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
@@ -29,6 +30,7 @@ export const FieldGroup = styled.div`
 `
 
 export function ClientAdmissionControlSettings () {
+  const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const form = Form.useFormInstance()
 
@@ -149,6 +151,8 @@ export function ClientAdmissionControlSettings () {
   const onFormDataChanged = () => {
     setEditContextData && setEditContextData({
       ...editContextData,
+      unsavedTabKey: 'radio',
+      tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
 
