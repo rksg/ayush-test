@@ -223,45 +223,50 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
         }
       ]}
       validateFirst
-      children={sortOptions(options).map(option => {
-        if (is6GHz(option) && !isEnabled6GHz) {
-          return (
-            <Tooltip
-              title={$t({
-                // eslint-disable-next-line max-len
-                defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption'
-              })}
-              placement='rightBottom'
-              style={{
-                height: 10,
-                display: 'flex'
-              }}
-              children={
+      children={
+        <>
+          { sortOptions(options).map((option, key) => {
+            if (is6GHz(option) && !isEnabled6GHz) {
+              return (
+                <Tooltip
+                  key={key}
+                  title={$t({
+                    // eslint-disable-next-line max-len
+                    defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption'
+                  })}
+                  placement='rightBottom'
+                  style={{
+                    height: 10,
+                    display: 'flex'
+                  }}
+                  children={
+                    <Checkbox
+                      key={key}
+                      name={option.name}
+                      checked={option.value}
+                      disabled={true}
+                      onChange={handleChange}
+                      children={option.label}
+                    />
+                  }
+                />
+              )
+            }
+            else {
+              return (
                 <Checkbox
-                  key={option.index + 'disabled'}
+                  key={key}
                   name={option.name}
                   checked={option.value}
-                  disabled={true}
+                  disabled={option.disabled}
                   onChange={handleChange}
                   children={option.label}
                 />
-              }
-            />
-          )
-        }
-        else {
-          return (
-            <Checkbox
-              key={option.index}
-              name={option.name}
-              checked={option.value}
-              disabled={option.disabled}
-              onChange={handleChange}
-              children={option.label}
-            />
-          )
-        }
-      })}
+              )
+            }
+          }) }
+        </>
+      }
     />
   )
 }
