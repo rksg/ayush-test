@@ -31,7 +31,7 @@ export enum ImportFileDrawerType {
   EdgeSubInterface
 }
 
-type ImportErrorRes = {
+export type ImportErrorRes = {
   errors: {
     code: number
     description?: string
@@ -70,28 +70,6 @@ const fileTypeMap: Record<AcceptableType, string[]>= {
   csv: ['text/csv', 'application/vnd.ms-excel'],
   xlsx: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   txt: ['text/plain']
-}
-
-
-const readFileContent = (
-  file: File,
-  fileName: string,
-  skipCsvTextConvert?: boolean):Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader()
-    fileReader.onload = () => {
-      try {
-        let result = String(fileReader.result)
-        if (isCsvFile(fileName as string) && !skipCsvTextConvert) {
-          result = convertCsvToText(result)
-        }
-
-        resolve(result)
-      } catch(error) {reject(error)}
-    }
-
-    fileReader.readAsText(file as Blob)
-  })
 }
 
 export function ImportFileDrawer (props: ImportFileDrawerProps) {
@@ -145,13 +123,14 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
         setFormData(undefined)
         setFileDescription(<>
-          { errors && <Typography.Text type='danger'><WarningOutlined /> {$t(
-            { defaultMessage: `{count, plural,
+          { errors && <Typography.Text type='danger'>
+            <WarningOutlined /> {$t(
+              { defaultMessage: `{count, plural,
                 one {{description}}
                 other {{count} errors found.}
             }` },
-            { count: errors.length, description }
-          )}</Typography.Text>}
+              { count: errors.length, description }
+            )}</Typography.Text>}
           { downloadUrl && <Typography.Link href={downloadUrl}
             onClick={(e)=>{
               e.stopPropagation()
@@ -193,7 +172,9 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       setFile(file)
       setFileName(file.name)
       setFormData(newFormData)
-      setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
+      setFileDescription(<UI.FileNameText ellipsis={{ tooltip: file.name }}>
+        <FileTextOutlined /> {file.name}
+      </UI.FileNameText>)
 
       return false
     } catch(err) {
@@ -205,39 +186,16 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       )
       return Upload.LIST_IGNORE
     }
-
-    // if (errorMsg) {
-    //   setFormData(undefined)
-    //   setFileDescription(
-    //     <Typography.Text type='danger'>
-    //       <WarningOutlined /> {errorMsg}
-    //     </Typography.Text>
-    //   )
-    //   return Upload.LIST_IGNORE
-    // }
-
-    // const newFormData = new FormData()
-    // newFormData.append(formDataName, file, file.name)
-
-    // setFile(file)
-    // setFileName(file.name)
-    // setFormData(newFormData)
-    // setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
-
-    // return false
   }
 
   const okHandler = () => {
     if (readAsText) {
-      const fileReader = new FileReader()
-      fileReader.onload = () => {
-        let result = String(fileReader.result)
-        if (isCsvFile(fileName as string) && !skipCsvTextConvert) {
-          result = convertCsvToText(result)
-        }
-        importRequest(formData as FormData, {}, result)
-      }
-      fileReader.readAsText(file as Blob)
+      const fileObject = new File([file!], fileName!)
+      readFileContent(fileObject, fileName!, skipCsvTextConvert)
+        .then(result => {
+          importRequest(formData as FormData, {}, result)
+        })
+        .catch(() => {})
     } else {
       form.validateFields().then(values => {
         formData && importRequest(formData, values)
@@ -267,7 +225,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       maxCount={1}
       showUploadList={false}
       beforeUpload={beforeUpload} >
-      <Space style={{ height: '90px' }}>
+      <Space>
         { fileDescription ? fileDescription :
           <Typography.Text>
             {$t({ defaultMessage: 'Drag & drop file here or' })}
@@ -323,4 +281,25 @@ function convertCsvToText (csvData: string) {
     }
   }
   return text
+}
+
+const readFileContent = (
+  file: File,
+  fileName: string,
+  skipCsvTextConvert?: boolean):Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.onload = () => {
+      try {
+        let result = String(fileReader.result)
+        if (isCsvFile(fileName as string) && !skipCsvTextConvert) {
+          result = convertCsvToText(result)
+        }
+
+        resolve(result)
+      } catch(error) {reject(error)}
+    }
+
+    fileReader.readAsText(file as Blob)
+  })
 }

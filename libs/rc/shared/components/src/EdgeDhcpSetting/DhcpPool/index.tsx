@@ -28,7 +28,6 @@ export default function DhcpPoolTable ({
   const { $t } = useIntl()
   const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
-  const [importErrorMsg, setImportErrorMsg] = useState<string | undefined>(undefined)
   const form = Form.useFormInstance()
   const {
     openDrawer,
@@ -46,12 +45,10 @@ export default function DhcpPoolTable ({
     const count = data.concat(value).reduce((result, item) => ({ ...result,
       [item.poolName]: (result[item.poolName] || 0) + 1
     }), {} as { [key:string]: number })
-
-    const hasDuplicates = Object.keys(count).filter((a) => count[a] > 1).length > 0
-    if (hasDuplicates) {
-      const entityName = $t({ defaultMessage: 'Pool Name' })
+    const hasDuplicates = Object.keys(count).filter((a) => count[a] > 1)//.length > 0
+    if (hasDuplicates.length > 0) {
       return Promise.reject($t(validationMessages.duplication, {
-        entityName: entityName,
+        entityName: $t({ defaultMessage: 'Pool Name' }),
         key: $t({ defaultMessage: 'name' }),
         extra: ''
       }))
@@ -92,34 +89,10 @@ export default function DhcpPoolTable ({
       }
     }
 
-
-
     return Promise.resolve()
   }
 
-  const appendDHCPPools = async (content: string[], callback: () => void) => {
-    const newValues: EdgeDhcpPool[] = content.map((item) => {
-      const fields = item.split(',')
-      return {
-        id: '_NEW_'+uuidv4(),
-        poolName: fields[0],
-        subnetMask: fields[1],
-        poolStartIp: fields[2],
-        poolEndIp: fields[3],
-        gatewayIp: fields[4]
-      } as EdgeDhcpPool
-    })
-
-    try {
-      await validateCSVData(newValues)
-      onChange && onChange(value.concat(newValues))
-      callback()
-    } catch (error) {
-      setImportErrorMsg(error as string)
-    }
-  }
-
-  const importContentValidator = (content: string) => {
+  const mapCSVToModel = (content: string):EdgeDhcpPool[] => {
     const onlyCommaSpaceRegex = /^(,*\s*)*$/
     const dataArray = content.split(/\r?\n|\r/).filter(row => {
       const trimmed = row.trim()
@@ -129,11 +102,7 @@ export default function DhcpPoolTable ({
             && trimmed !== 'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway'
     })
 
-    if (dataArray.length > MAX_IMPORT_ENTRIES) {
-      return Promise.reject($t({ defaultMessage: 'Exceed maximum entries.' }))
-    }
-
-    const newValues: EdgeDhcpPool[] = dataArray.map((item) => {
+    return dataArray.map((item) => {
       const fields = item.split(',')
       return {
         id: '_NEW_'+uuidv4(),
@@ -144,31 +113,21 @@ export default function DhcpPoolTable ({
         gatewayIp: fields[4]
       } as EdgeDhcpPool
     })
+  }
 
-    return validateCSVData(newValues)
+  const importContentValidator = (content: string) => {
+    const dataArray = mapCSVToModel(content)
+    if (dataArray.length > MAX_IMPORT_ENTRIES) {
+      return Promise.reject($t({ defaultMessage: 'Exceed maximum entries.' }))
+    }
+
+    return validateCSVData(dataArray)
   }
 
   const importHandler = (formData: FormData, values: object, content?: string) => {
-    setImportErrorMsg(undefined)
-
-    const onlyCommaSpaceRegex = /^(,*\s*)*$/
-    const dataArray = content!.split(/\r?\n|\r/).filter(row => {
-      const trimmed = row.trim()
-      return trimmed
-            && !trimmed.startsWith('#')
-            && !onlyCommaSpaceRegex.test(trimmed)
-            && trimmed !== 'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway'
-    })
-
-    if (dataArray.length > MAX_IMPORT_ENTRIES) {
-      setImportErrorMsg($t({ defaultMessage: 'Exceed maximum entries.' }))
-      return
-    }
-
-    appendDHCPPools(
-      dataArray,
-      () => setImportModalvisible(false)
-    )
+    const dataArray = mapCSVToModel(content!)
+    onChange && onChange(value.concat(dataArray))
+    setImportModalvisible(false)
   }
 
   return (
@@ -211,7 +170,6 @@ export default function DhcpPoolTable ({
           readAsText={true}
           skipCsvTextConvert={true}
           validator={importContentValidator}
-          importError={importErrorMsg}
           importRequest={importHandler}
           onClose={() => setImportModalvisible(false)}
         />}
