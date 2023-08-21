@@ -10,7 +10,7 @@ describe('Tabs', () => {
       <Tabs.TabPane tab='Tab 2' key='tab2'>Tab 2 Content</Tabs.TabPane>
     </Tabs>
   }
-  const types: TabsType[] = ['line', 'card', 'third']
+  const types: TabsType[] = ['line', 'card', 'second', 'third']
   it('render default as line', async () => {
     render(renderTab())
     expect(screen.getAllByRole('tab')).toHaveLength(2)
