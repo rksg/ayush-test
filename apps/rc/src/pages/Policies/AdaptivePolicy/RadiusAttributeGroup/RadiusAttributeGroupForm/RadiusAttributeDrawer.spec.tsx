@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 import { AttributeAssignment, DataType, OperatorType, RadiusAttributeGroupUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                                from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }                                       from '@acx-ui/test-utils'
 
 import { attributeList, vendorList } from './__tests__/fixtures'
 import { RadiusAttributeDrawer }     from './RadiusAttributeDrawer'
@@ -86,7 +86,7 @@ describe('RadiusAttributeDrawer', () => {
 
     const inputs = await screen.findAllByRole('textbox')
     const attributeValue = inputs[1]
-    expect(attributeValue).toHaveValue(editAttribute.attributeValue)
+    await waitFor(() => expect(attributeValue).toHaveValue(editAttribute.attributeValue))
 
     const attributeDataType = inputs[2]
     expect(attributeDataType).toHaveValue(editAttribute.dataType)

@@ -5,7 +5,8 @@ import { useParams }                    from 'react-router-dom'
 import { useLazyGetClientIsolationListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  ClientIsolationClient
+  ClientIsolationClient,
+  servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
@@ -53,7 +54,8 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
               { required: true },
               { min: 2 },
               { max: 32 },
-              { validator: (_, value) => nameValidator(value) }
+              { validator: (_, value) => nameValidator(value) },
+              { validator: (_, value) => servicePolicyNameRegExp(value) }
             ]}
             validateFirst
             hasFeedback
