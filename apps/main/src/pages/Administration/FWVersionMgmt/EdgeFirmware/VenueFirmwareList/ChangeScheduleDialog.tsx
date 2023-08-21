@@ -78,11 +78,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             { // eslint-disable-next-line max-len
               $t({ defaultMessage: 'Choose which version to update the venue to:' })}
           </Typography>
-          <Form.Item name='version' noStyle>
+          <Form.Item
+            name='version'
+            initialValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
+            noStyle
+          >
             <Radio.Group
               style={{ margin: 12 }}
-              // eslint-disable-next-line max-len
-              defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
             >
               <Space direction={'vertical'}>
                 {

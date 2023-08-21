@@ -22,5 +22,3 @@ export const VersionBanner = () => {
     <FirmwareBanner data={versionInfo} />
   )
 }
-
-export default VersionBanner

@@ -54,16 +54,13 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   //   }
   // })
 
-  const triggerSubmit = () => {
-    form.validateFields()
-      .then(() => {
-        if(selectMode === VersionsSelectMode.Radio) {
-          onSubmit(versionOptions[0].id || '')
-        } else {
-          onSubmit(selectedVersion)
-        }
-        onModalCancel()
-      })
+  const handleFinish = () => {
+    if(selectMode === VersionsSelectMode.Radio) {
+      onSubmit(versionOptions[0].id || '')
+    } else {
+      onSubmit(selectedVersion)
+    }
+    onModalCancel()
   }
 
   const onModalCancel = () => {
@@ -71,14 +68,13 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
     onCancel()
   }
 
-
   return (
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={visible}
       width={560}
       okText={$t({ defaultMessage: 'Run Update' })}
-      onOk={triggerSubmit}
+      onOk={() => form.submit()}
       onCancel={onModalCancel}
       okButtonProps={{
         disabled: selectMode === undefined ||
@@ -87,9 +83,9 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
     >
       <Form
         form={form}
-        name={'updateModalForm'}
+        onFinish={handleFinish}
       >
-        { versionOptions.length > 0 ?
+        { versionOptions.length > 0 &&
           <div>
             <Typography>
               { // eslint-disable-next-line max-len
@@ -125,7 +121,6 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
               </Radio.Group>
             </Form.Item>
           </div>
-          : null
         }
         <UI.Section>
           <UI.Ul>

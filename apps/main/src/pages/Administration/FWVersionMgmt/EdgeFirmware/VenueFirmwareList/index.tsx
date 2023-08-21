@@ -53,6 +53,7 @@ export function VenueFirmwareList () {
   const params = useParams()
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [
     changeScheduleAvailableVersions,
     setChangeScheduleAvailableVersions
@@ -220,6 +221,7 @@ export function VenueFirmwareList () {
     }
     try {
       await updateNow({ payload }).unwrap()
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -245,7 +247,7 @@ export function VenueFirmwareList () {
     const payload = { ...data, venueIds }
     try {
       await updateSchedule({ payload }).unwrap()
-      // setSelectedRowKeys([])
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -260,7 +262,7 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferenceModalVisible(true)
