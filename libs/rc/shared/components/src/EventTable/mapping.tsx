@@ -10,6 +10,7 @@ export const severityMapping = {
 
 export const eventTypeMapping = {
   AP: defineMessage({ defaultMessage: 'AP' }),
+  SECURITY: defineMessage({ defaultMessage: 'Security' }),
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),

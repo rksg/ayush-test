@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import TextArea                                                        from 'antd/lib/input/TextArea'
 import _                                                               from 'lodash'
 import { DndProvider, useDrag, useDrop }                               from 'react-dnd'
 import { HTML5Backend }                                                from 'react-dnd-html5-backend'
@@ -190,10 +191,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [
     accessStatus,
     policyName,
+    description,
     l3AclPolicyId
   ] = [
     useWatch<string>('layer3DefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
 
@@ -249,6 +252,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   useEffect(() => {
     if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
+      contentForm.setFieldValue('description', layer3PolicyInfo.description)
       contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
         return {
@@ -390,6 +394,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     contentForm.setFieldValue('layer3DefaultAccess', undefined)
     setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
@@ -503,7 +508,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
         }
       })],
-      description: null
+      description: description
     }
 
     return {
@@ -744,6 +749,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
+    />
+    <DrawerFormItem
+      name='description'
+      label={$t({ defaultMessage: 'Description' })}
+      rules={[
+        { max: 255 }
+      ]}
+      children={<TextArea disabled={isViewMode()} />}
     />
     <DrawerFormItem
       name='layer3DefaultAccess'
