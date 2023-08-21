@@ -81,7 +81,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -639,7 +639,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -1197,7 +1197,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              class="styledComponents__Pill-sc-j61ge1-0 gceAYH"
               type="P2"
             >
               P2
@@ -1795,7 +1795,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              class="styledComponents__Pill-sc-j61ge1-0 igIonA"
               type="P1"
             >
               P1
@@ -2353,7 +2353,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              class="styledComponents__Pill-sc-j61ge1-0 gceAYH"
               type="P2"
             >
               P2
@@ -2954,7 +2954,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              class="styledComponents__Pill-sc-j61ge1-0 ehvnaF"
               type="P4"
             >
               P4
@@ -3511,7 +3511,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              class="styledComponents__Pill-sc-j61ge1-0 ehvnaF"
               type="P4"
             >
               P4
@@ -4060,7 +4060,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              class="styledComponents__Pill-sc-j61ge1-0 ehvnaF"
               type="P4"
             >
               P4
@@ -4633,7 +4633,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -5194,7 +5194,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -5755,7 +5755,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -6316,7 +6316,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -6877,7 +6877,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
               type="P3"
             >
               P3
@@ -7438,7 +7438,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              class="styledComponents__Pill-sc-j61ge1-0 gceAYH"
               type="P2"
             >
               P2
@@ -7902,7 +7902,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              class="styledComponents__Pill-sc-j61ge1-0 igIonA"
               type="P1"
             >
               P1
@@ -8379,7 +8379,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              class="styledComponents__Pill-sc-j61ge1-0 igIonA"
               type="P1"
             >
               P1
@@ -8843,7 +8843,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              class="styledComponents__Pill-sc-j61ge1-0 ehvnaF"
               type="P4"
             >
               P4

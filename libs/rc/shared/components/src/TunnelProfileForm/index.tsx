@@ -1,9 +1,9 @@
 import { Col, Form, Input, InputNumber, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                          from 'react-intl'
 
-import { StepsFormLegacy }            from '@acx-ui/components'
-import { MtuTypeEnum, TunnelProfile } from '@acx-ui/rc/utils'
-import { getIntl }                    from '@acx-ui/utils'
+import { StepsFormLegacy }                                     from '@acx-ui/components'
+import { MtuTypeEnum, TunnelProfile, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { getIntl }                                             from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -49,9 +49,11 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
+            { max: 32 },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           children={<Input disabled={isDefaultTunnelProfile}/>}
+          validateFirst
         />
       </Col>
       {/* <Col span={14}>
