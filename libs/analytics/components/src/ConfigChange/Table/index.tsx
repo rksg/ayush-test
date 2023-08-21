@@ -23,7 +23,11 @@ import { Badge, CascaderFilterWrapper }                        from './styledCom
 import { EntityType, enumTextMap, filterKPIData, jsonMapping } from './util'
 
 export function Table (props: {
-  onRowClick?: (params: unknown) => void,
+  selected: ConfigChange | null,
+  onRowClick: (params: ConfigChange) => void,
+  pagination: { current: number, pageSize: number },
+  setPagination: (params: { current: number, pageSize: number }) => void,
+  dotSelect: number | null
 }) {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
@@ -37,6 +41,8 @@ export function Table (props: {
     ...queryResults,
     data: filterKPIData(queryResults.data ?? [], kpiFilter)
   }) })
+
+  const { selected, onRowClick, pagination, setPagination, dotSelect } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -114,10 +120,14 @@ export function Table (props: {
   ]
 
   const rowSelection = {
-    // TODO: need to handle sync betweem chart and table
-    onChange: (selectedRowKeys: React.Key[], selectedRows: ConfigChange[]) => {
-      props.onRowClick?.({ id: selectedRowKeys[0], value: selectedRows[0] })
-    }
+    onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
+      onRowClick?.(selectedRows[0])
+    },
+    ...(selected === null ? { selectedRowKeys: [] } : { selectedRowKeys: [selected.id!] })
+  }
+
+  const handlePaginationChange = (current: number, pageSize: number) => {
+    setPagination({ current, pageSize })
   }
 
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
@@ -150,6 +160,11 @@ export function Table (props: {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
+        pagination={{
+          ...pagination,
+          onChange: handlePaginationChange
+        }}
+        key={dotSelect}
       />
     </Loader>
   </>
