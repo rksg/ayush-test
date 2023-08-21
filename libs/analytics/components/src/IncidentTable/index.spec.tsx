@@ -451,7 +451,23 @@ describe('IncidentTable', () => {
     }))
   })
 })
+it('should render download button', async () => {
+  mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+    data: { network: { hierarchyNode: { incidents: incidentTests } } }
+  })
 
+  render(<Provider><IncidentTable filters={filters}/></Provider>,{
+    route: {
+      path: '/tenantId/t/analytics/incidents',
+      wrapRoutes: false,
+      params: {
+        tenantId: '1'
+      }
+    }
+  })
+  fireEvent.click(await screen.findByTestId('DownloadOutlined'))
+  expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
+})
 describe('CSV Functions', () => {
 
   const data = [{
