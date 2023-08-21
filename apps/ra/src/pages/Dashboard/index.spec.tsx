@@ -15,6 +15,8 @@ describe('Dashboard', () => {
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
     expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
+    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
+    expect(await screen.findByTestId('AIOperations')).toBeVisible()
   })
 })
 
