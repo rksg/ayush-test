@@ -92,7 +92,7 @@ describe('Drawer', () => {
     expect(handleBackClick).toBeCalled()
   })
 
-  it('should close 1st drawer 2nd opened and cleanup so 2nd can open again', async () => {
+  it('should close 1st drawer when 2nd opened and cleanup so 2nd can open again', async () => {
     const firstOnClose = jest.fn()
     const secondOnClose = jest.fn()
     const TestComponent = ({ secondDrawerVisible }: { secondDrawerVisible: boolean }) => {
