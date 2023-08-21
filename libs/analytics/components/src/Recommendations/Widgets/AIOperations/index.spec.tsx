@@ -1,4 +1,4 @@
-import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { IncidentFilter }                     from '@acx-ui/analytics/utils'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -8,8 +8,9 @@ import {
 }                    from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
+import { api } from '../../services'
+
 import { expectedData } from './__tests__/fixtures'
-import { api }          from '../../services'
 
 import { AIOperations } from '.'
 
@@ -31,7 +32,7 @@ describe('AIOperations dashboard', () => {
       route: true,
       wrapper: Provider
     })
-    
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('AI Operations')).toBeVisible()

@@ -12,7 +12,7 @@ import { states, codes, Priorities  } from '../config'
 type RecommendationsDetailsPayload = {
   id: string;
   code?: string;
-}
+}[]
 
 type RecommendationKpi = Record<string, {
   current: number | number[];
@@ -104,26 +104,25 @@ const kpiHelper = ({ code }: { code?: string }) => {
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationDetails: build.query<EnhancedRecommendation, RecommendationsDetailsPayload>({
+    recommendationDetails: build.query<EnhancedRecommendation[], RecommendationsDetailsPayload>({
       query: (payload) => ({
         document: gql`
-          query ConfigRecommendationDetails($id: String) {
-            recommendation(id: $id) {
-              id code status appliedTime isMuted
-              originalValue currentValue recommendedValue metadata
-              sliceType sliceValue
-              path { type name }
-              statusTrail { status createdAt }
-              ${kpiHelper(payload)}
-            }
+          query ConfigRecommendationDetails {
+            ${payload?.map(({ id, code }, index) =>`
+              recommendation${index}: recommendation(id: \"${id}\") {
+                id code status appliedTime isMuted
+                originalValue currentValue recommendedValue metadata
+                sliceType sliceValue
+                path { type name }
+                statusTrail { status createdAt }
+                ${kpiHelper({ code })}
+              }
+            `).join('\n')}
           }
-        `,
-        variables: {
-          id: payload.id
-        }
+        `
       }),
-      transformResponse: (response: { recommendation: RecommendationDetails }) =>
-        transformDetailsResponse(response.recommendation),
+      transformResponse: (response: Record<string, RecommendationDetails> ) =>
+        Object.values(response).map(details => transformDetailsResponse(details)),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     }),
     getAps: build.query<RecommendationAp[], RecommendationApPayload>({

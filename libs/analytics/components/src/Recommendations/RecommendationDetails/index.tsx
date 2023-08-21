@@ -21,11 +21,11 @@ export const RecommendationDetails = () => {
   const id = get(params, 'id', undefined) as string
   const activeTab = get(params, 'activeTab', 'crrm') as keyof typeof linkMap
   const link = `recommendations/${activeTab}`
-  const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
+  const codeQuery = useRecommendationDetailsQuery([{ id: id }])
   const detailsQuery = useRecommendationDetailsQuery(
-    { ...(codeQuery.data!) },
-    { skip: !Boolean(codeQuery.data?.code) })
-  const details = detailsQuery.data!
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data?.[0].code) })
+  const details = detailsQuery.data?.[0]
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
       title={$t(details.summary)}
@@ -41,7 +41,7 @@ export const RecommendationDetails = () => {
         type: $t(linkMap[activeTab])
       }} />]}
     />}
-    <GridRow>
+    {details && <GridRow>
       <GridCol col={{ span: 3 }}>
         <Overview details={details} />
       </GridCol>
@@ -52,6 +52,7 @@ export const RecommendationDetails = () => {
         <Kpis details={details} />
       </GridCol>
     </GridRow>
+    }
   </Loader>
 }
 
