@@ -20,7 +20,7 @@ import {
 } from './styledComponents'
 
 
-const getValues = (details: EnhancedRecommendation) => {
+export const getValues = (details: EnhancedRecommendation) => {
   const {
     status,
     originalValue,
@@ -44,20 +44,20 @@ const getValues = (details: EnhancedRecommendation) => {
   }
 }
 
-function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
+export function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
   const { current, previous, projected } = value!
   const [before, after] = [previous, current, projected]
     .filter(value => value !== null)
   return [before, after]
 }
 
-const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
+export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
   return codes[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
 
-const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => {
+export const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => {
   const config = getKpiConfig(recommendation, key)
   const prop = `kpi_${snakeCase(key)}`
   const [before, after] = extractBeforeAfter(recommendation[prop])
@@ -65,7 +65,7 @@ const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => 
   return { before, after }
 }
 
-const translateMetadataValue = (value: string) => {
+export const translateMetadataValue = (value: string) => {
   switch (value) {
     case 'BACKGROUND_SCANNING': return 'Background Scanning'
     case 'CHANNEL_FLY': return 'ChannelFly'
@@ -73,7 +73,7 @@ const translateMetadataValue = (value: string) => {
   }
 }
 
-const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
+export const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
   const {
     path,
     sliceType,
