@@ -30,7 +30,7 @@ describe('AddDpskPassphrasesForm', () => {
     expect(macAddressElem).not.toBeInTheDocument()
   })
 
-  it('should show the MAC Address field when selecting Same as pool option', async () => {
+  it('should show the MAC Address field and do validation', async () => {
     mockServer.use(
       rest.get(
         NewDpskBaseUrlWithId,
@@ -53,6 +53,10 @@ describe('AddDpskPassphrasesForm', () => {
     )
 
     await userEvent.click((await screen.findAllByRole('radio', { name: /Same as pool/i }))[0])
-    expect(await screen.findByLabelText('MAC Address')).toBeVisible()
+    const macField = await screen.findByLabelText('MAC Address')
+    expect(macField).toBeVisible()
+
+    await userEvent.type(macField, 'aabbccddeeff ')
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 })

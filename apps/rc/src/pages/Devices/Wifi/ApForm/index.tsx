@@ -54,7 +54,8 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams, TenantLink
+  useParams, TenantLink,
+  useLocation
 } from '@acx-ui/react-router-dom'
 import { compareVersions, validationMessages } from '@acx-ui/utils'
 
@@ -115,6 +116,10 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
+  const location = useLocation()
+
+  const venueFromNavigate = location.state as { venueId?: string }
+
 
   const BASE_VERSION = '6.2.1'
 
@@ -202,6 +207,13 @@ export function ApForm () {
       setVenueOption(venuesList?.data?.map(item => ({
         label: item.name, value: item.id
       })) ?? [])
+
+      if (venueFromNavigate?.venueId &&
+        venuesList?.data.find(venue => venue.id === venueFromNavigate?.venueId)
+      ) {
+        formRef?.current?.setFieldValue('venueId', venueFromNavigate?.venueId)
+        handleVenueChange(venueFromNavigate?.venueId)
+      }
     }
   }, [venuesList])
 

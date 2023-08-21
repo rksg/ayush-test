@@ -256,8 +256,10 @@ const seriesMappingEdge = () => [
     color: cssStr('--acx-semantics-green-50') }
 ] as Array<{ key: string, name: string, color: string }>
 
-export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) => DonutChartData[] =
-(statistic) => {
+export const getEdgeDonutChartData:
+  (statistic?: EdgeStatusSeverityStatistic,
+    shouldShowOffline?: boolean) => DonutChartData[] =
+(statistic, shouldShowOffline=true) => {
   const chartData: DonutChartData[] = []
   if (statistic) {
     seriesMappingEdge().forEach(({ key, name, color }) => {
@@ -266,12 +268,24 @@ export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) =>
         const setupPhase = find(chartData, {
           name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false)
         })
-        const offlineCount: number = value ?? 0
+        const offlineCount = value
+
+        // having setupPhase and offline at same time.
         if (setupPhase) {
-          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${offlineCount}`
+          if (shouldShowOffline)
+            setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${offlineCount}`
+
+          // count offline together with setupPhase
           setupPhase.value = setupPhase.value + offlineCount
         } else {
-          chartData.push({ name, value: offlineCount, color })
+          if (shouldShowOffline)
+            chartData.push({ name, value: offlineCount, color })
+          else
+            chartData.push({
+              name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false),
+              value,
+              color
+            })
         }
       } else if (value) {
         chartData.push({ name, value, color })
@@ -282,7 +296,7 @@ export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) =>
 }
 export const getEdgeStackedBarChartData =
 (edgeSummary: VenueDetailHeader['edges'] | undefined): ChartData[] => {
-  const series = getEdgeDonutChartData(edgeSummary)
+  const series = getEdgeDonutChartData(edgeSummary, false)
   const finalSeries=seriesMappingEdge()
     .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
       const matched=series.filter(item=>item.name===status.name)
