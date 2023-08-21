@@ -63,24 +63,7 @@ export function VenueFirmwareList () {
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
-  } = useGetVenueEdgeFirmwareListQuery({}, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        data: data?.map(item => ({ ...item, nextSchedule: {
-          timeSlot: {
-            startDateTime: '2023-08-26T02:00:00-07:00',
-            endDateTime: '2023-08-26T04:00:00-07:00'
-          },
-          version: {
-            id: '1.0.0.333',
-            name: '1.0.0.333',
-            category: FirmwareCategory.RECOMMENDED
-          }
-        } })),
-        isLoading
-      }
-    }
-  })
+  } = useGetVenueEdgeFirmwareListQuery({})
   const { latestReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
     selectFromResult: ({ data }) => ({
       latestReleaseVersion: data?.[0]
