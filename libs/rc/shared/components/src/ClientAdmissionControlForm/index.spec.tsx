@@ -7,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum } from './ClientAdmissionControlForm'
+import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum } from '.'
 
 describe('ClientAdmissionControlForm component', () => {
   afterEach(() => cleanup())

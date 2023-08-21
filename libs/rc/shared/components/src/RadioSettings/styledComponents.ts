@@ -41,12 +41,3 @@ export const Label = styled.span`
   font-size: var(--acx-body-4-font-size);
   line-height: 34px;
 `
-
-export const ClientAdmissionControlSliderBlock = styled.div`
-  border-radius: 4px;
-  border: 1px solid var(--acx-neutrals-30);
-  margin-top:-25px;
-  height:auto;
-  text-align:center;
-  padding:25px 5px 10px 30px;
-`

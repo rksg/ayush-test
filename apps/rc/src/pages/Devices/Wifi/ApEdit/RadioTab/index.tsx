@@ -10,7 +10,7 @@ import { useTenantLink }                 from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '..'
 
-import { ClientAdmissionControlSettings } from './RadioSettings/ClientAdmissionControlSettings'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
 import { RadioSettings }                  from './RadioSettings/RadioSettings'
 
 export interface ApRadioContext {

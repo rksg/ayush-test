@@ -22,7 +22,7 @@ jest.mock('./RadioSettings/RadioSettings', () => ({
   RadioSettings: () => <div data-testid={'radioSettings'}></div>
 }))
 
-jest.mock('./RadioSettings/ClientAdmissionControlSettings', () => ({
+jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () => ({
   ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
 }))
 
