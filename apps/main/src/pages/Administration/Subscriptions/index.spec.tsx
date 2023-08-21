@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                             from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
@@ -82,6 +82,7 @@ describe('Subscriptions', () => {
 
   it('should render correctly', async () => {
     jest.mocked(isDelegationMode).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
 
     render(
       <Provider>
@@ -166,6 +167,7 @@ describe('Subscriptions', () => {
   })
 
   it('should correctly handle device sub type', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
     render(
       <Provider>
         <Subscriptions />
@@ -184,6 +186,7 @@ describe('Subscriptions', () => {
   })
 
   it('should correctly handle edge data', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
     render(
       <Provider>
         <Subscriptions />
@@ -196,6 +199,7 @@ describe('Subscriptions', () => {
   })
   it('should filter edge data when PLM FF is not denabled', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
 
     render(
       <Provider>
