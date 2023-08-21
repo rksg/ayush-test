@@ -97,7 +97,9 @@ describe('SmartEdgeForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsForm><SmartEdgeForm /></StepsForm>
+        <StepsForm buttonLabel={{ submit: 'mockedAdd' }}>
+          <SmartEdgeForm />
+        </StepsForm>
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -108,6 +110,7 @@ describe('SmartEdgeForm', () => {
     )
 
     await user.click(await screen.findByRole('button', { name: 'Add' }))
+    await screen.findByRole('dialog')
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
@@ -197,7 +200,8 @@ describe('SmartEdgeForm', () => {
     await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
     await user.click(await screen.findByText('PoolTest1'))
     await user.click(await screen.findByRole('button', { name: 'Select' }))
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Step2 - Smart edge will be block by mandatory validation', async () => {
@@ -211,7 +215,7 @@ describe('SmartEdgeForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter SmartEdge')
     await screen.findByText('Please enter Number of Segments')
     await screen.findByText('Please enter Number of devices per Segment')

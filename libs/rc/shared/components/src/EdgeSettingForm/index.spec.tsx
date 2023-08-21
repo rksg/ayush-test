@@ -123,7 +123,7 @@ describe('EdgeSettingForm', () => {
     const serialNumberInput = await screen.findByRole('textbox',
       { name: 'Serial Number' })
     await user.type(serialNumberInput, '12345')
-    await user.click(screen.getByRole('button', { name: 'Finish' }))
+    await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 })

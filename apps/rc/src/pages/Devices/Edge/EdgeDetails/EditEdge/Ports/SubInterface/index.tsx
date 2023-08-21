@@ -4,11 +4,11 @@ import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps }   from '@acx-ui/components'
+import { Loader, NoData, showActionModal, Table, TableProps, Tabs }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
+import { EdgeSubInterface, useTableQuery }                                                             from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                   from '@acx-ui/user'
 
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
@@ -21,10 +21,9 @@ interface SubInterfaceProps {
 }
 
 interface SubInterfaceTableProps {
-  index: number
+  currentTab: string
   ip: string
   mac: string
-  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
@@ -48,23 +47,29 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
   const [uploadCSV, uploadCSVResult] = useImportSubInterfacesCSVMutation()
 
-  useEffect(() => {
+  const closeDrawers = () => {
     setDrawerVisible(false)
+    setImportModalvisible(false)
+  }
+
+  useEffect(() => {
+    closeDrawers()
     setSelectedRows([])
-    tableQuery.setPayload(DEFAULT_PAGINATION)
-  }, [props.mac])
+  }, [props.currentTab])
 
   useEffect(() => {
     if (params.activeSubTab !== 'sub-interface') {
-      setDrawerVisible(false)
+      closeDrawers()
     }
   }, [params])
+
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
     {
       title: '#',
       key: '',
       dataIndex: 'index',
+      width: 50,
       render: (_, __, index) => {
         const pagination = tableQuery.pagination
         return ++index + (pagination.page - 1) * pagination.pageSize
@@ -73,12 +78,14 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'portType',
-      dataIndex: 'portType'
+      dataIndex: 'portType',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
-      dataIndex: 'ipMode'
+      dataIndex: 'ipMode',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
@@ -212,39 +219,32 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-
   const { data } = props
   const { $t } = useIntl()
-  const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
-  const [isFetching, setIsFetching] = useState(false)
+  const [currentTab, setCurrentTab] = useState('port_1')
 
-  useEffect(() => {
-    setTabDetails(data.map((item, index) => {
-      return {
-        label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-        value: 'port_' + (index + 1),
-        children: <SubInterfaceTable
-          index={index}
-          ip={item.statusIp}
-          mac={item.mac}
-          setIsFetching={setIsFetching} />
-      }
-    }))
-  }, [data, $t])
+  const handleTabChange = (activeKey: string) => {
+    setCurrentTab(activeKey)
+  }
 
   return (
     data.length > 0 ?
-      <Loader states={[{
-        isLoading: false,
-        isFetching: isFetching
-      }]}>
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          defaultValue={'port_1'}
-          size='large'
-          align='left'
-        />
-      </Loader>
+      <Tabs type='third' activeKey={currentTab} onChange={handleTabChange}>
+        {
+          data.map((item, index) =>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Port {index}' }, { index: index + 1 })}
+              key={'port_' + (index + 1)}
+              children={
+                <SubInterfaceTable
+                  currentTab={currentTab}
+                  ip={item.statusIp}
+                  mac={item.mac}
+                />
+              } />
+          )
+        }
+      </Tabs>
       : <NoData />
   )
 }

@@ -58,9 +58,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const appTokenData = tenantAuthenticationData?.filter(n =>
     n.authenticationType !== TenantAuthenticationType.saml)
   useEffect(() => {
-    if (appTokenData && appTokenData.length > 0) {
-      setAppToken(true)
-    }
+    const hasTokenData = (Array.isArray(appTokenData) && appTokenData.length > 0)
+    setAppToken(hasTokenData)
   }, [appTokenData])
 
   const AddAppLink = () => {
@@ -100,7 +99,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         dataIndex: 'clientID',
         align: 'center',
         key: 'clientID',
-        width: 245,
+        width: 235,
         render: function (_, row) {
           return <div>
             <Input
@@ -121,10 +120,11 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         }
       },
       {
-        title: $t({ defaultMessage: 'Share Secret' }),
+        title: $t({ defaultMessage: 'Shared Secret' }),
         dataIndex: 'clientSecret',
         align: 'center',
         key: 'clientSecret',
+        width: 235,
         render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
@@ -138,31 +138,6 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               icon={<CopyOutlined />}
               onClick={() =>
                 navigator.clipboard.writeText(row.clientSecret ?? '')
-              }
-            />
-          </div>
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'URL' }),
-        align: 'center',
-        dataIndex: 'url',
-        key: 'url',
-        width: 245,
-        render: function (_, row) {
-          return <div>
-            <Input
-              readOnly
-              bordered={false}
-              value={row.clientID}
-              style={{ overflow: 'hidden', width: '190px' }}
-            />
-            <Button
-              ghost
-              data-testid={'copy'}
-              icon={<CopyOutlined />}
-              onClick={() =>
-                navigator.clipboard.writeText(row.url ?? '')
               }
             />
           </div>
@@ -307,7 +282,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col style={{ width: '1200px' }}>
         <Form.Item
-          style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '-10px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}

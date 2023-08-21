@@ -54,7 +54,8 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams, TenantLink
+  useParams, TenantLink,
+  useLocation
 } from '@acx-ui/react-router-dom'
 import { compareVersions, validationMessages } from '@acx-ui/utils'
 
@@ -115,6 +116,10 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
+  const location = useLocation()
+
+  const venueFromNavigate = location.state as { venueId?: string }
+
 
   const BASE_VERSION = '6.2.1'
 
@@ -135,8 +140,8 @@ export function ApForm () {
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
-      apModels: triApModels.slice(0, -1).join(','),
-      lastApModel: triApModels[triApModels.length - 1],
+      apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
+      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
       fwManagementLink: (<TenantLink
         to={'/administration/fwVersionMgmt'}>{
@@ -202,13 +207,22 @@ export function ApForm () {
       setVenueOption(venuesList?.data?.map(item => ({
         label: item.name, value: item.id
       })) ?? [])
+
+      if (venueFromNavigate?.venueId &&
+        venuesList?.data.find(venue => venue.id === venueFromNavigate?.venueId)
+      ) {
+        formRef?.current?.setFieldValue('venueId', venueFromNavigate?.venueId)
+        handleVenueChange(venueFromNavigate?.venueId)
+      }
     }
   }, [venuesList])
 
   useEffect(() => {
     if (selectedVenue.hasOwnProperty('id')) {
       const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
-      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+      setVenueFwVersion(venueInfo && venueInfo.hasOwnProperty('versions')
+        ? venueInfo.versions[0].version
+        : '-')
     }
   }, [selectedVenue, venueVersionList])
 

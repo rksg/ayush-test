@@ -1,6 +1,7 @@
 import { IntlShape } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
+import { getIntl }   from '@acx-ui/utils'
 
 export type DidYouKnowData = {
   key: keyof typeof factsConfig
@@ -92,7 +93,11 @@ export const toObject = (prefix: string, list: string[],
   }), {})
 }
 
-export function getFactsData (data: DidYouKnowData[], intl: IntlShape) {
+export function getFactsData (
+  data: DidYouKnowData[],
+  options: { maxSlideChar?: number, maxFactPerSlide?: number } = {}
+) {
+  const intl = getIntl()
   let factsList: string[]
   factsList = data?.map(({ key, values, labels }) => {
     const fact:{ valueFormatter?:CallableFunction } = factsConfig[key]
@@ -104,8 +109,7 @@ export function getFactsData (data: DidYouKnowData[], intl: IntlShape) {
     return formatText(intl, options, key)
   })
   let slideContent: string[] = []
-  const maxSlideChar = 480
-  const maxFactPerSlide = 5
+  const { maxSlideChar = 480, maxFactPerSlide = 5 } = options
   let slideCharCount = 0
   let slideContentList:string[][] = []
   factsList?.forEach(function (fact, index) {
