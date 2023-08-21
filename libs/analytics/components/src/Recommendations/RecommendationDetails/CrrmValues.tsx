@@ -40,8 +40,8 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
 
   return <GridRow>
     <GridCol col={{ span: 16 }}>
+      <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
       <DetailsWrapper>
-        <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
         <Card type='solid-bg'>
           <GridRow>
             {fields

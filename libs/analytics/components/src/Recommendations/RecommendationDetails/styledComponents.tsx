@@ -28,7 +28,7 @@ export const DetailsWrapper = styled.div`
 
 export const Title = styled(Subtitle).attrs({ level: 2 })`
   margin-top: 40px;
-  &:first-child { margin-top: 0 }
+  &:first-child { margin-top: 0; }
 `
 
 export const KpiTitle = styled.span`
