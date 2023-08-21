@@ -5,6 +5,8 @@ import { impactedArea }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
+import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+
 import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
@@ -39,7 +41,11 @@ export const CrrmDetails = () => {
     />}
     <GridRow>
       <GridCol col={{ span: 3 }}>
-        <Overview details={details} />
+        <FixedAutoSizer>
+          {({ width }) => (<div style={{ width }}>
+            <Overview details={details} />
+          </div>)}
+        </FixedAutoSizer>
       </GridCol>
       <GridCol col={{ span: 21 }}>
         <CrrmValues details={details}/>

@@ -4,6 +4,8 @@ import { useIntl, defineMessage } from 'react-intl'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
+import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+
 import { Kpis }                          from './kpis'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
@@ -39,7 +41,11 @@ export const RecommendationDetails = () => {
     />}
     <GridRow>
       <GridCol col={{ span: 3 }}>
-        <Overview details={details} />
+        <FixedAutoSizer>
+          {({ width }) => (<div style={{ width }}>
+            <Overview details={details} />
+          </div>)}
+        </FixedAutoSizer>
       </GridCol>
       <GridCol col={{ span: 13 }}>
         <Values details={details}/>
