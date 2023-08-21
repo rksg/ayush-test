@@ -45,8 +45,8 @@ export default function DhcpPoolTable ({
     const count = data.concat(value).reduce((result, item) => ({ ...result,
       [item.poolName]: (result[item.poolName] || 0) + 1
     }), {} as { [key:string]: number })
-    const hasDuplicates = Object.keys(count).filter((a) => count[a] > 1)//.length > 0
-    if (hasDuplicates.length > 0) {
+    const hasDuplicates = Object.keys(count).filter((a) => count[a] > 1).length > 0
+    if (hasDuplicates) {
       return Promise.reject($t(validationMessages.duplication, {
         entityName: $t({ defaultMessage: 'Pool Name' }),
         key: $t({ defaultMessage: 'name' }),

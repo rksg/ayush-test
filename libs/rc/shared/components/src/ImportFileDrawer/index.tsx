@@ -48,7 +48,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   maxSize: number
   maxEntries?: number
   isLoading?: boolean
-  importError?: FetchBaseQueryError | string
+  importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object, content?: string)=>void
   readAsText?: boolean,
   skipCsvTextConvert?: boolean,

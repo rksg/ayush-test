@@ -24,7 +24,6 @@ jest.mock('antd', () => {
       onClick={(e) => {
         e.preventDefault()
         onClick(e)
-        // e.stopPropagation()
       }}>{children}</a>
   }
   return { ...antd }
@@ -133,16 +132,6 @@ describe('Import CSV Drawer', () => {
       fireEvent.click(await within(dialog).findByRole('link', { name: 'See errors' }))
 
       expect(dialog).toHaveTextContent('3 errors found.')
-    })
-
-    it('should correctly render string error', async () => {
-      render(<ImportFileDrawer
-        type={ImportFileDrawerType.AP}
-        importError='import error in string'
-        {...props}
-      />)
-
-      expect(await screen.findByText('import error in string')).toBeVisible()
     })
 
     it('should correctly render request failed message', async () => {
