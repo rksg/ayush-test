@@ -85,7 +85,7 @@ export function SwitchOverviewTab () {
 
     <Tabs onChange={onTabChange}
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>

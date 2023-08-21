@@ -52,6 +52,21 @@ const cardStyle = css`
   }
 `
 
+const secondStyle = css`
+  ${cardStyle}
+  &.ant-tabs-top > .ant-tabs-nav {
+    position: sticky;
+    top: calc(
+      var(--acx-header-height) +
+      var(--acx-content-vertical-space) +
+      var(--acx-pageheader-height)
+    );
+    background: var(--acx-primary-white);
+    z-index: 6;
+    box-shadow: var(--acx-primary-white) 0px 10px 10px;
+  }
+`
+
 const thirdStyle = css`
   > .ant-tabs-content-holder{
     border: 0;
@@ -118,6 +133,7 @@ const thirdStyle = css`
 const styles: Record<TabsType, FlattenSimpleInterpolation> = {
   line: lineStyle,
   card: cardStyle,
+  second: secondStyle,
   third: thirdStyle
 }
 

@@ -44,6 +44,7 @@ export const Wrapper = styled.div`
       a:hover {
         text-decoration: underline;
       }
+      line-height: 16px;
     }
     .ant-breadcrumb + .ant-page-header-heading {
       margin-top: 3px;

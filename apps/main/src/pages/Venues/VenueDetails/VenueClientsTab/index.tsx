@@ -30,7 +30,7 @@ export function VenueClientsTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='card'>
+      type='second'>
       <Tabs.TabPane
         tab={isNavbarEnhanced
           ? $t({ defaultMessage: 'Wireless' })
