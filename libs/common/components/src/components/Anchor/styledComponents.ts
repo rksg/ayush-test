@@ -52,5 +52,8 @@ export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
 `
 
 export const Container = styled.div`
-  min-height: 100vh;
+  margin-bottom: 48px;
+  &:last-child{
+    min-height: 100vh;
+  }
 `
