@@ -7,15 +7,15 @@ import { withDottedUnderline } from '../styledComponents'
 
 export const DetailsHeader = styled.div`
   color: var(--acx-primary-black);
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-3-font-size);
+  line-height: var(--acx-headline-3-line-height);
+  font-weight: var(--acx-headline-3-font-weight);
   margin-bottom: 12px;
 `
 
 export const ValueDetails = styled.div`
-  font-weight: 700;
-  font-style: normal;
+  font-weight: var(--acx-body-font-weight-bold);
 `
 
 export const ValueDetailsWithIcon = styled.span`
@@ -28,13 +28,14 @@ export const DetailsWrapper = styled.div`
 
 export const Title = styled(Subtitle).attrs({ level: 2 })`
   margin-top: 40px;
+  &:first-child { margin-top: 0 }
 `
 
 export const KpiTitle = styled.span`
-  line-height: 16px;
   text-align: center;
   vertical-align: middle;
-  font-size: 12px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
 `
 
 export const InfoIcon = styled(InformationSolid)`
@@ -46,8 +47,8 @@ export const InfoIcon = styled(InformationSolid)`
 export const KpiLabelWrapper = styled.div`
   display: block;
   text-align: center;
-  font-weight: 700;
-  font-size: 30px;
+  font-weight: var(--acx-body-font-weight-bold);
+  font-size: 30px; // exceptional, not in DS
   line-height: 40px;
 `
 
@@ -67,8 +68,8 @@ export const StatusTrailDateLabel = styled.span`
 `
 
 export const StatusTrailItemWrapper = styled.div`
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-body-font-weight);
   line-height: 18px;
 `
 
@@ -97,13 +98,6 @@ export const BulbOutlinedIcon = styled(BulbOutlined)`
   margin-top: 2px;
 `
 
-export const CrrmTitle = styled(Subtitle).attrs({ level: 2 })``
-
-export const CrrmDiv = styled.div`
+export const CrrmValuesText = styled.div`
   padding-top: 20px;
 `
-
-export const LabelSpan = styled.span`
-  font-weight: 700;
-`
-

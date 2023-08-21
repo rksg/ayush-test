@@ -10,8 +10,7 @@ import {
   DetailsHeader,
   DetailsWrapper,
   Title,
-  CrrmTitle,
-  CrrmDiv,
+  CrrmValuesText,
   ValueDetails
 } from './styledComponents'
 import { getRecommendationsText, getValues } from './values'
@@ -52,15 +51,15 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
                 <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
               </Fragment>)}
           </GridRow>
-          <CrrmDiv>
+          <CrrmValuesText>
             {recommendationText.actionText}
-          </CrrmDiv>
+          </CrrmValuesText>
         </Card>
       </DetailsWrapper>
       <div style={{ paddingTop: 50 }}>Crrm Graph</div>
     </GridCol>
     <GridCol col={{ span: 8 }}>
-      <CrrmTitle>{$t({ defaultMessage: 'Why this recommendation?' })}</CrrmTitle>
+      <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
       {recommendationText.reasonText}
       <Title>{$t({ defaultMessage: 'Potential trade-off' })}</Title>
       {recommendationText.tradeoffText}
