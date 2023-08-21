@@ -25,6 +25,10 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
 const incidentTests = [
   {
     severity: 0.12098536225957168,
@@ -454,7 +458,13 @@ describe('CSV Functions', () => {
     severity: 1,
     isMuted: false,
     severityLabel: 'P1',
-    endTime: '2023-08-21T05:37:30.000Z'
+    endTime: '2023-08-21T05:37:30.000Z',
+    children: [{
+      severity: 1,
+      isMuted: false,
+      severityLabel: 'P3',
+      endTime: '2023-08-21T05:40:30.000Z'
+    }]
   },
   {
     severity: 0.5,
@@ -500,7 +510,8 @@ describe('CSV Functions', () => {
     downloadIncidentList(data as IncidentNodeData, selectedKeys, fileName)
 
     expect(global.Blob).toHaveBeenCalledWith(
-      ['Severity,Date,Muted\nP1,2023-08-21T05:37:30.000Z,false\nP2,2023-08-21T05:39:30.000Z,true'],
+      // eslint-disable-next-line max-len
+      ['Severity,Date,Muted\nP1,2023-08-21T05:37:30.000Z,false\nP3,2023-08-21T05:40:30.000Z,false\nP2,2023-08-21T05:39:30.000Z,true'],
       { type: 'text/csv' }
     )
     global.Blob = originalBlob

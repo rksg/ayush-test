@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 
 import { Checkbox }                                 from 'antd'
+import { omit }                                     from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -34,20 +35,26 @@ import * as UI                                                                  
 import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-
 export function downloadIncidentList (
-  jsonData: IncidentNodeData,
-  selectedKeys: TableProps<IncidentTableRow>['columns'],
+  incidents: IncidentNodeData,
+  columns: TableProps<IncidentTableRow>['columns'],
   fileName: string
 ) {
   const separator = ','
-  const header = selectedKeys.map(key => key.title).concat('Muted').join(separator)
-  const keys = selectedKeys.map(key => key.key).concat(['isMuted'])
-  const rows = jsonData.map((obj) => {
+  const header = columns.map(key => key.title).concat('Muted').join(separator)
+  const keys = columns.map(key => key.key).concat(['isMuted'])
+  const allIncidents= incidents.reduce((data : Incident[], incident) => {
+    data.push(omit(incident, ['children']))
+    if (incident.children?.length) {
+      data = data.concat(incident.children)
+    }
+    return data
+  }, [])
+  const rows = allIncidents.map((obj) => {
     return keys.map((key) => {
       if(key === 'severity')
         key = 'severityLabel'
-      return obj[key as keyof IncidentTableRow]
+      return obj[key as keyof Incident]
     }).join(separator)
   })
   return handleBlobDownloadFile(

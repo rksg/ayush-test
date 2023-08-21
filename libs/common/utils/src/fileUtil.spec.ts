@@ -8,7 +8,6 @@ describe('handleBlobDownloadFile', () => {
 
     const createElementSpy = jest.spyOn(document, 'createElement')
     const createObjectURLMock = jest.fn().mockReturnValue('mocked-url')
-    // @ts-ignore
     URL.createObjectURL = createObjectURLMock
 
     handleBlobDownloadFile(fileBlob, fileName)
