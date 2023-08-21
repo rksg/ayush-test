@@ -140,31 +140,9 @@ const userProfile =
 
 const mspEcAccount: MspEcData =
     {
-      // id?: string;
       name: 'mspeleu',
-      // tenant_type?: string,
-      // address?: Address,
       street_address: '123 Main Street',
-      // state?: string;
-      // country?: string;
-      // postal_code?: string;
-      // phone_number?: string;
-      // fax_number?: string;
-      // city?: string;
-      // mapping_url?: string;
-      // service_effective_date?: string;
-      // service_expiration_date?: string;
       is_active: 'true'
-      // tenant_id?: string;
-      // parent_tenant_id?: string;
-      // admin_email?: string;
-      // admin_firstname?: string;
-      // admin_lastname?: string;
-      // admin_role?: string;
-      // licenses?: {};
-      // delegations?: MspIntegratorDelegated[];
-      // admin_delegations?: MspEcDelegatedAdmins[];
-      // number_of_days?: string;
     }
 
 const administrators: MspAdministrator[] = [
@@ -174,7 +152,6 @@ const administrators: MspAdministrator[] = [
     name: 'John',
     email: 'johnsmith@mail.com',
     role: RolesEnum.PRIME_ADMIN,
-    // delegateToAllECs?: boolean;
     detailLevel: 'detaillevel'
   }
 ]

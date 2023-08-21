@@ -121,25 +121,6 @@ const assignmentHistory =
     }
   ]
 
-// const apswAssignmentHistory =
-//   [
-//     {
-//       createdBy: 'msp.eleu1658@rwbigdog.com',
-//       dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
-//       dateAssignmentRevoked: null,
-//       dateEffective: '2022-12-13 19:00:08Z',
-//       dateExpires: '2023-02-12 07:59:59Z',
-//       deviceType: 'MSP_APSW',
-//       id: 130468,
-//       mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
-//       mspTenantId: '3061bd56e37445a8993ac834c01e2710',
-//       quantity: 2,
-//       revokedBy: null,
-//       status: 'VALID',
-//       trialAssignment: false
-//     }
-//   ]
-
 const userProfile =
     {
       adminId: '9b85c591260542c188f6a12c62bb3912',
@@ -160,31 +141,9 @@ const userProfile =
 
 const mspEcAccount: MspEcData =
     {
-      // id?: string;
       name: 'mspeleu',
-      // tenant_type?: string,
-      // address?: Address,
       street_address: '123 Main Street',
-      // state?: string;
-      // country?: string;
-      // postal_code?: string;
-      // phone_number?: string;
-      // fax_number?: string;
-      // city?: string;
-      // mapping_url?: string;
-      // service_effective_date?: string;
-      // service_expiration_date?: string;
       is_active: 'true'
-      // tenant_id?: string;
-      // parent_tenant_id?: string;
-      // admin_email?: string;
-      // admin_firstname?: string;
-      // admin_lastname?: string;
-      // admin_role?: string;
-      // licenses?: {};
-      // delegations?: MspIntegratorDelegated[];
-      // admin_delegations?: MspEcDelegatedAdmins[];
-      // number_of_days?: string;
     }
 
 const administrators: MspAdministrator[] = [
@@ -194,7 +153,6 @@ const administrators: MspAdministrator[] = [
     name: 'John',
     email: 'johnsmith@mail.com',
     role: RolesEnum.PRIME_ADMIN,
-    // delegateToAllECs?: boolean;
     detailLevel: 'detaillevel'
   }
 ]
@@ -383,7 +341,6 @@ describe('ManageCustomer', () => {
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
-    // expect(screen.getByRole('button', { name: 'Cancel' })).toBeEnabled()
 
     expect(screen.getByDisplayValue('123 Main Street')).toBeVisible()
   })
@@ -449,14 +406,7 @@ describe('ManageCustomer', () => {
     expect(screen.getByPlaceholderText('Set address here')).toBeEnabled()
     const input = screen.getByTestId('address-input')
     fireEvent.change(input, { target: { value: '123 Main St, Edison, NJ 08817, USA' } })
-    // await userEvent.type(input, '123 Main St, Edison, NJ 08817, USA')
-    // await screen.findByText('123 Main St, Edison, NJ 08817, USA')
     await screen.findByDisplayValue('123 Main St, Edison, NJ 08817, USA')
-    // const address = '123 Main St, Edison, NJ 08817, USA'
-    // expect(await screen.findByText('My Customers')).toBeVisible()
-    // expect(screen.getByRole('link', {
-    //   name: 'MSP Customers'
-    // })).toBeVisible()
   })
 
   it('should validate customer name correctly', async () => {
