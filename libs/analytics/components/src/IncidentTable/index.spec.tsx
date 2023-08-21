@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { TableProps }                  from '@acx-ui/components'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -15,16 +16,15 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { api } from './services'
+import { api, IncidentTableRow, IncidentNodeData } from './services'
 
-import { IncidentTable } from './index'
+import { IncidentTable, downloadIncidentList } from './index'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-
 const incidentTests = [
   {
     severity: 0.12098536225957168,
@@ -445,5 +445,64 @@ describe('IncidentTable', () => {
     expect(mockedNavigate).lastCalledWith(expect.objectContaining({
       pathname: `/1/t/analytics/incidents/${incidentTests[0].id}`
     }))
+  })
+})
+
+describe('CSV Functions', () => {
+
+  const data = [{
+    severity: 1,
+    isMuted: false,
+    severityLabel: 'P1',
+    endTime: '2023-08-21T05:37:30.000Z'
+  },
+  {
+    severity: 0.5,
+    isMuted: true,
+    severityLabel: 'P2',
+    endTime: '2023-08-21T05:39:30.000Z'
+  }
+  ]
+
+  const selectedKeys: TableProps<IncidentTableRow>['columns'] = [
+    {
+      title: 'Severity',
+      width: 80,
+      dataIndex: 'severityLabel',
+      key: 'severity',
+      sorter: {},
+      defaultSortOrder: 'descend',
+      fixed: 'left',
+      filterable: true
+    },
+    {
+      title: 'Date',
+      width: 80,
+      dataIndex: 'endTime',
+      key: 'endTime',
+      sorter: {},
+      defaultSortOrder: 'descend',
+      fixed: 'left',
+      filterable: true
+    } ]
+  const fileName = 'test.csv'
+
+  it('downloadIncidentList triggers download correctly', () => {
+    const originalBlob = global.Blob
+    global.Blob = jest.fn(() => ({
+      type: 'text/csv',
+      arrayBuffer: jest.fn()
+    } as unknown as Blob))
+    const downloadSpy = jest.fn()
+    const anchorMock = document.createElement('a')
+    jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
+    anchorMock.click = downloadSpy
+    downloadIncidentList(data as IncidentNodeData, selectedKeys, fileName)
+
+    expect(global.Blob).toHaveBeenCalledWith(
+      ['Severity,Date,Muted\nP1,2023-08-21T05:37:30.000Z,false\nP2,2023-08-21T05:39:30.000Z,true'],
+      { type: 'text/csv' }
+    )
+    global.Blob = originalBlob
   })
 })

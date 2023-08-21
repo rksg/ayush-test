@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 
 import { Checkbox }                                 from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
@@ -21,62 +21,41 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }         from '@acx-ui/react-router-dom'
+import { noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
   useMuteIncidentsMutation,
-  IncidentTableRow
+  IncidentTableRow,
+  IncidentNodeData
 } from './services'
 import * as UI                                                                   from './styledComponents'
 import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function convertJSONToCSV (jsonData: any[], selectedKeys: any[]) {
+export function downloadIncidentList (
+  jsonData: IncidentNodeData,
+  selectedKeys: TableProps<IncidentTableRow>['columns'],
+  fileName: string
+) {
   const separator = ','
   const header = selectedKeys.map(key => key.title).concat('Muted').join(separator)
   const keys = selectedKeys.map(key => key.key).concat(['isMuted'])
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rows = jsonData.map((obj: { [x: string]: any }) => {
-    return keys.map((key: string | number) => {
+  const rows = jsonData.map((obj) => {
+    return keys.map((key) => {
       if(key === 'severity')
         key = 'severityLabel'
-      let cellValue = obj[key]
-      if (typeof cellValue === 'string') {
-        cellValue = `"${cellValue}"`
-      }
-      return cellValue
+      return obj[key as keyof IncidentTableRow]
     }).join(separator)
   })
-
-  return [header, ...rows].join('\n')
+  return handleBlobDownloadFile(
+    new Blob([[header, ...rows].join('\n')], { type: 'text/csv' }),
+    fileName
+  )
 }
 
-function downloadCSV (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-  jsonData: any,
-  fileName: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-  convertor: any,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-  selectedKeys : any[]) {
-  const csvData = convertor(jsonData, selectedKeys)
-  const blob = new Blob([csvData], { type: 'text/csv' })
-  const url = URL.createObjectURL(blob)
-
-  const a = document.createElement('a')
-  a.href = url
-  a.download = fileName + '.csv'
-  document.body.appendChild(a)
-  a.click()
-
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-}
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -128,6 +107,9 @@ export function IncidentTable ({ filters, systemNetwork }: {
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident] = useMuteIncidentsMutation()
+  const { startDate, endDate } = filters
+  const csvFilename = `Incidents-${startDate}-${endDate}.csv`
+
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     code: string,
@@ -270,7 +252,9 @@ export function IncidentTable ({ filters, systemNetwork }: {
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
-          onClick: () => {downloadCSV(data, 'test', convertJSONToCSV, ColumnHeaders)} }}
+          onClick: () => {
+            downloadIncidentList(data as IncidentNodeData,ColumnHeaders,csvFilename)
+          } }}
         rowSelection={!systemNetwork && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
