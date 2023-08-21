@@ -1303,5 +1303,6 @@ export const {
   useGetVenueRadiusOptionsQuery,
   useUpdateVenueRadiusOptionsMutation,
   useGetVenueClientAdmissionControlQuery,
+  useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation
 } = venueApi
