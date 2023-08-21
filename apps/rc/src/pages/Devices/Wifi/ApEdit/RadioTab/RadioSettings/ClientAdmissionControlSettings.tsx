@@ -80,6 +80,7 @@ export function ClientAdmissionControlSettings () {
       }
       setData()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, getApClientAdmissionControl?.data, apDetails])
 
   const setDataToForm = (data: ClientAdmissionControl ) => {
@@ -112,7 +113,6 @@ export function ClientAdmissionControlSettings () {
   }
 
   const handleUpdateClientAdmissionControl = async () => {
-    console.log(isUseVenueSettingsRef.current)
     try {
       const payload: ApClientAdmissionControl = {
         enable24G: form.getFieldValue(enable24GFieldName),
