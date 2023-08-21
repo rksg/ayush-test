@@ -212,7 +212,7 @@ export const validationMessages = {
     description: 'Validation - Cellular IP pool size'
   }),
   multicastIpAddress: defineMessage({
-    defaultMessage: 'Please enter valid multicast IP address',
+    defaultMessage: 'Please enter a valid multicast IP address',
     description: 'Validation - multicast IP address'
   }),
   multicastIpAddressExcluded: defineMessage({
