@@ -37,7 +37,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const selectedTime = Form.useWatch('time', form)
 
   useEffect(() => {
-    const shouldDisabled = !selectedDate || !selectedDate || !selectedTime
+    const shouldDisabled = !selectedVersion || !selectedDate || !selectedTime
     setDisableSave(shouldDisabled)
   }, [selectedVersion, selectedDate, selectedTime])
 
@@ -80,7 +80,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           </Typography>
           <Form.Item
             name='version'
-            initialValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
+            initialValue={availableVersions?.[0]?.id || ''}
             noStyle
           >
             <Radio.Group
