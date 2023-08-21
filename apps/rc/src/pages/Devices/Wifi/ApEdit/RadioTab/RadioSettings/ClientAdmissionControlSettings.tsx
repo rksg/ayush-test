@@ -144,7 +144,7 @@ export function ClientAdmissionControlSettings () {
     setEditRadioContextData && setEditRadioContextData({
       ...editRadioContextData,
       updateClientAdmissionControl: handleUpdateClientAdmissionControl,
-      discardClientAdmissionControl: handleDiscard
+      discardClientAdmissionControlChanges: handleDiscard
     })
   }
 
