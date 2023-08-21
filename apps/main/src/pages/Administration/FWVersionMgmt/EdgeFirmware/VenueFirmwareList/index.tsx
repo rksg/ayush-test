@@ -4,7 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   Loader, Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
@@ -17,6 +18,7 @@ import {
   defaultSort,
   EdgeVenueFirmware,
   FirmwareCategory,
+  FirmwareSwitchVenue,
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -24,14 +26,19 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
   toUserDate,
-  compareVersions
+  compareVersions,
+  isSwitchNextScheduleTooltipDisabled,
+  getNextScheduleTpl,
+  getSwitchNextScheduleTplTooltip
 } from '../../FirmwareUtils'
+import * as UI from '../../styledComponents'
 
 import { UpdateNowDialog } from './UpdateNowDialog'
 
 
 export function VenueFirmwareList () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const {
@@ -89,13 +96,35 @@ export function VenueFirmwareList () {
         return toUserDate(row.updatedDate)
       },
       width: 120
+    },
+    {
+      title: $t({ defaultMessage: 'Next Update Schedule' }),
+      key: 'nextSchedule',
+      dataIndex: 'nextSchedule',
+      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
+      render: function (_, row) {
+        const rowData = row as unknown as FirmwareSwitchVenue
+        return (!isSwitchNextScheduleTooltipDisabled(rowData)
+          ? getNextScheduleTpl(intl, rowData)
+          : (
+            <Tooltip title={
+              <UI.ScheduleTooltipText>
+                {getSwitchNextScheduleTplTooltip(rowData)}
+              </UI.ScheduleTooltipText>
+            }
+            placement='bottom'>
+              <UI.WithTooltip>{getNextScheduleTpl(intl, rowData)}</UI.WithTooltip>
+            </Tooltip>
+          )
+        )
+      }
     }
   ]
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
-      visible: (selectedItems) => {
-        const hasOutdatedFw = selectedItems?.some(
+      visible: (selectedRows) => {
+        const hasOutdatedFw = selectedRows?.some(
           item => latestReleaseVersion?.id &&
           ((item.versions?.[0].id
             && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
@@ -106,6 +135,78 @@ export function VenueFirmwareList () {
       onClick: (selectedRows) => {
         setVenueIds(selectedRows.map(item => item.id))
         setUpdateModelVisible(true)
+      }
+    },
+    {
+      visible: (selectedRows) => {
+        return selectedRows.every(row => hasSchedule(row))
+      },
+      label: $t({ defaultMessage: 'Change Update Schedule' }),
+      disabled: (selectedRows) => {
+        return !hasAvailableSwitchFirmware(selectedRows)
+      },
+      // tooltip: (selectedRows) => {
+      //   return hasAvailableSwitchFirmware(selectedRows) ?
+      //     '' : $t({ defaultMessage: 'No available versions' })
+      // },
+      onClick: (selectedRows) => {
+        setVenues(selectedRows)
+        let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+        let nonIcx8200Count = 0, icx8200Count = 0
+        let currentScheduleVersion = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
+          (selectedRows[0].nextSchedule?.version ? selectedRows[0].nextSchedule.version.name : '') : ''
+        // eslint-disable-next-line max-len
+        let currentScheduleVersionAboveTen = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
+          (selectedRows[0].nextSchedule?.versionAboveTen ? selectedRows[0].nextSchedule.versionAboveTen.name : '') : ''
+
+        selectedRows.forEach((row: FirmwareSwitchVenue) => {
+          const version = row.switchFirmwareVersion?.id
+          const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
+          // eslint-disable-next-line max-len
+          removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+
+          if (enableSwitchTwoVersionUpgrade) {
+            nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
+            icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
+          }
+        })
+
+        setChangeUpgradeVersions(filterVersions)
+        setNonIcx8200Count(nonIcx8200Count)
+        setIcx8200Count(icx8200Count)
+        setCurrentScheduleVersion(currentScheduleVersion)
+        setCurrentScheduleVersionAboveTen(currentScheduleVersionAboveTen)
+        setChangeScheduleModelVisible(true)
+      }
+    },
+    {
+      visible: (selectedRows) => {
+        let skipUpdateVisilibity = true
+        selectedRows.forEach((row) => {
+          if (!hasSchedule(row)) {
+            skipUpdateVisilibity = false
+          }
+        })
+        return skipUpdateVisilibity
+      },
+      label: $t({ defaultMessage: 'Skip Update' }),
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          width: 460,
+          title: $t({ defaultMessage: 'Skip This Update?' }),
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+          okText: $t({ defaultMessage: 'Skip' }),
+          cancelText: $t({ defaultMessage: 'Cancel' }),
+          onOk () {
+            skipSwitchUpgradeSchedules({
+              params: { ...params },
+              payload: selectedRows.map((row) => row.id)
+            }).then(clearSelection)
+          },
+          onCancel () {}
+        })
       }
     }
   ]
@@ -147,4 +248,8 @@ export function VenueFirmwareList () {
       />
     </Loader>
   )
+}
+
+const hasSchedule = (venue: EdgeVenueFirmware): boolean => {
+  return !!venue.nextSchedule
 }
