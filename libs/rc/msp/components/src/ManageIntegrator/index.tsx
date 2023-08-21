@@ -409,8 +409,10 @@ export function ManageIntegrator () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToIntegrators, { replace: true })
+      return true
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+      return false
     }
   }
 
@@ -467,8 +469,10 @@ export function ManageIntegrator () {
       await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
         payload: customer }).unwrap()
       navigate(linkToIntegrators, { replace: true })
+      return true
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+      return false
     }
   }
 
