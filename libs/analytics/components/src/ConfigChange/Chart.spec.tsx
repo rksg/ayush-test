@@ -1,15 +1,30 @@
+import userEvent from '@testing-library/user-event'
+
+import type { ConfigChange }                from '@acx-ui/components'
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { DateRange, defaultRanges }         from '@acx-ui/utils'
 
-import { configChanges }        from './__tests__/fixtures'
-import { Chart }                from './Chart'
-import { ConfigChangeProvider } from './context'
+import { configChanges } from './__tests__/fixtures'
+import { Chart }         from './Chart'
+import {
+  ConfigChangeProvider,
+  ConfigChangeContext,
+  KPIFilterContext
+} from './context'
 
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  ConfigChangeChart: () => <div data-testid='ConfigChangeChart' />
-}))
+jest.mock('@acx-ui/components', () => {
+  const configChange = require('./__tests__/fixtures').configChanges[0]
+  return {
+    ...jest.requireActual('@acx-ui/components'),
+    ConfigChangeChart: ({ onDotClick }: { onDotClick: (params: ConfigChange) => void }) => {
+      return <>
+        <div data-testid='dot' onClick={() => onDotClick(configChange)} />
+        <div data-testid='ConfigChangeChart' />
+      </>
+    }
+  }
+})
 
 describe('Chart', () => {
   const handleClick = jest.fn()
@@ -54,5 +69,34 @@ describe('Chart', () => {
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
+  })
+  it('should handle click on dot', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+    const configChangeContextValue = {
+      dateRange: DateRange.last7Days,
+      timeRanges: defaultRanges()[DateRange.last7Days]!,
+      setDateRange: jest.fn(),
+      kpiTimeRanges: [[0, 0], [0, 0]],
+      setKpiTimeRanges: jest.fn()
+    }
+    const mockedApplyKpiFilter = jest.fn()
+    const kpiFilterContextValue = {
+      kpiFilter: [],
+      setKpiFilter: jest.fn(),
+      applyKpiFilter: mockedApplyKpiFilter
+    }
+    render(<ConfigChangeContext.Provider value={configChangeContextValue}>
+      <KPIFilterContext.Provider value={kpiFilterContextValue}>
+        <Chart
+          selected={null}
+          onClick={handleClick}
+        />
+      </KPIFilterContext.Provider>
+    </ConfigChangeContext.Provider>, { wrapper: Provider, route: {} })
+    expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
+    await userEvent.click(screen.getByTestId('dot'))
+    expect(handleClick).toBeCalledWith(configChanges[0])
+    expect(mockedApplyKpiFilter).toBeCalledWith([])
   })
 })

@@ -17,7 +17,7 @@ function BasicChart (props: {
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }){
-  const { kpiFilter } = useContext(KPIFilterContext)
+  const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const {
     timeRanges: [startDate, endDate],
     setKpiTimeRanges,
@@ -43,15 +43,20 @@ function BasicChart (props: {
     })
   }, [dateRange])
 
+  const onDotClick = (params: ConfigChange) => {
+    applyKpiFilter([])
+    onClick(params)
+  }
+
   return <Loader states={[queryResults]}>
     <Card type='no-border'>
       <AutoSizer>
         {({ width }) =>
           <ConfigChangeChart
             style={{ width }}
-            data={queryResults.data ?? []}
+            data={queryResults.data}
             chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
-            onDotClick={onClick}
+            onDotClick={onDotClick}
             selectedData={selected?.id}
             onBrushPositionsChange={setKpiTimeRanges}
             chartZoom={chartZoom}
