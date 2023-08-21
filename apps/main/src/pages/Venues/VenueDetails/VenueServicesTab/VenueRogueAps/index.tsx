@@ -115,7 +115,10 @@ export function VenueRogueAps () {
         key: 'classificationPolicyName',
         title: intl.$t({ defaultMessage: 'Classification Rule' }),
         dataIndex: 'classificationPolicyName',
-        sorter: true
+        sorter: true,
+        render: (_, row) => {
+          return `${row.classificationPolicyName}/${row.classificationRuleName}`
+        }
       },
       {
         key: 'ssid',
