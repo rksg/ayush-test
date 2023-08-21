@@ -1,7 +1,10 @@
 import { Form, Select, Space, Switch } from 'antd'
+import { useWatch }                    from 'antd/lib/form/Form'
+import { get }                         from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }         from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
@@ -11,21 +14,17 @@ export enum QoSMirroringScope {
   ALL_CLIENTS = 'ALL_CLIENTS'
 }
 
-interface Option {
-  type: QoSMirroringScope
-  label: string
-  value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
-  key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
-  message: string
-}
-
-const { useWatch } = Form
-
-function QoS () {
+function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
 
-  const options: Option[] = [
+  const qoSMirroringScopeOptions: {
+    type: QoSMirroringScope
+    label: string
+    value: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+    key: 'MSCS_REQUESTS_ONLY' | 'ALL_CLIENTS'
+    message: string
+  }[] = [
     {
       type: QoSMirroringScope.MSCS_REQUESTS_ONLY,
       label: $t({ defaultMessage: 'MSCS requests only' }),
@@ -52,9 +51,10 @@ function QoS () {
   ]
 
   const initQosMirroringEnabled =
-          typeof qosMirroringEnabled === 'undefined' ? true : qosMirroringEnabled
-  const initQosMirroringScope = typeof qosMirroringScope === 'undefined' ?
-    QoSMirroringScope.MSCS_REQUESTS_ONLY : qosMirroringScope
+          get(wlanData, ['wlan', 'advancedCustomization', 'qosMirroringEnabled'], true)
+  const initQosMirroringScope =
+          get(wlanData, ['wlan', 'advancedCustomization', 'qosMirroringScope'],
+            QoSMirroringScope.MSCS_REQUESTS_ONLY)
 
   return (
     <>
@@ -85,7 +85,7 @@ function QoS () {
                     label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
                     extra={
                       <div style={{ width: '250px' }}>
-                        { options.find(option =>
+                        { qoSMirroringScopeOptions.find(option =>
                           option.value === qosMirroringScope)?.message }
                       </div>
                     }
@@ -94,7 +94,7 @@ function QoS () {
                     children={
                       <Select
                         style={{ width: '280px', height: '30px', fontSize: '11px' }}
-                        options={options}
+                        options={qoSMirroringScopeOptions}
                       />
                     }
                   />
