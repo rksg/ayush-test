@@ -43,7 +43,6 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
       if (!customMappingEnabled) {
         showActionModal({
           type: 'error',
-          //title: $t({ defaultMessage: 'Error' }),
           content:
           $t({
             defaultMessage: 'The Custom Mapping must be enabled when the service is \'Other\'.'
@@ -56,7 +55,6 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
     if (wiredEnabled && wiredRules.length === 0) {
       showActionModal({
         type: 'error',
-        //title: $t({ defaultMessage: 'Error' }),
         content:
           $t({
             defaultMessage: 'The Wired Connection settings must contain at least one fencing rule.'
@@ -68,7 +66,6 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
     if (customMappingEnabled && customStrings.length === 0) {
       showActionModal({
         type: 'error',
-        //title: $t({ defaultMessage: 'Error' }),
         content:
           $t({
             defaultMessage: 'The Custom String List can\'t empty.'

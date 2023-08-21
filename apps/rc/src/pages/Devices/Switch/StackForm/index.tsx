@@ -67,6 +67,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
@@ -96,7 +97,6 @@ export function StackForm () {
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -127,7 +127,10 @@ export function StackForm () {
 
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
@@ -310,6 +313,13 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
+
     try {
       const payload = {
         name: values.name || '',
@@ -335,6 +345,12 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
     if (readOnly) {
       navigate({
         ...basePath,
