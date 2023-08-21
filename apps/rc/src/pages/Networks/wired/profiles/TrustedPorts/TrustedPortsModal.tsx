@@ -26,8 +26,10 @@ export function TrustedPortsModal (props: {
     useState<VlanTrustPortInterface>({ family: '', model: '', trustedPorts: [] })
 
   useEffect(()=>{
-    form.resetFields()
-    if (open && editRecord) {
+    if (form && open){
+      form.resetFields()
+    }
+    if (form && open && editRecord) {
       form.setFieldsValue(editRecord)
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
@@ -62,6 +64,7 @@ export function TrustedPortsModal (props: {
           }
           return false
         }}
+        form={form}
         buttonLabel={{ submit: editRecord ?
           $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' }) }}
       >
