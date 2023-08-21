@@ -25,8 +25,8 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }    from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { MspAssignmentSummary, MspEntitlementSummary }                                   from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   dateSort,
   defaultSort,
@@ -59,6 +59,7 @@ export function Subscriptions () {
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -262,22 +263,39 @@ export function Subscriptions () {
         <Subtitle level={4} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
-        <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
-          {
-            subscriptionDeviceTypeList.map((item) => {
-              const summary = summaryData[item.value]
-              return summary ? <MspSubscriptionUtilizationWidget
-                key={item.value}
-                deviceType={item.value}
-                title={item.label}
-                total={summary.total}
-                assigned={summary.assigned}
-                used={summary.used}
-                tooltip={summary.tooltip}
-              /> : ''
-            })
-          }
-        </SpaceWrapper>
+
+        {isMspSelfAssignmentEnabled
+          ? <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+            {
+              subscriptionDeviceTypeList.map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <MspSubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  assigned={summary.assigned}
+                  used={summary.used}
+                  tooltip={summary.tooltip}
+                /> : ''
+              })
+            }
+          </SpaceWrapper>
+          : <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
+            {
+              subscriptionDeviceTypeList.map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <SubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  used={summary.used}
+                /> : ''
+              })
+            }
+          </SpaceWrapper>
+        }
       </>
     )
   }
@@ -322,11 +340,12 @@ export function Subscriptions () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Subscriptions' })}
+        title={isMspSelfAssignmentEnabled
+          ? $t({ defaultMessage: 'Subscriptions' }) : $t({ defaultMessage: 'MSP Subscriptions' })}
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive}
+              hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           <TenantLink to='/dashboard'>
@@ -334,7 +353,7 @@ export function Subscriptions () {
           </TenantLink>
         ]}
       />
-      <Tabs
+      {isMspSelfAssignmentEnabled && <Tabs
         defaultActiveKey='mspSubscriptions'
         onChange={onTabChange}
       >
@@ -344,10 +363,11 @@ export function Subscriptions () {
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
           key='assignedSubscriptions' />
-      </Tabs>
+      </Tabs>}
 
       <SubscriptionUtilization />
-      {isAssignedActive ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
+      {(isAssignedActive && isMspSelfAssignmentEnabled)
+        ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
     </>
   )
 }
