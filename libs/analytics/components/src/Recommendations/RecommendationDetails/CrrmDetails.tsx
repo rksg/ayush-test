@@ -1,10 +1,9 @@
 import { get }                    from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { impactedArea, nodeTypes }              from '@acx-ui/analytics/utils'
+import { impactedArea }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
-import { NodeType }                             from '@acx-ui/utils'
 
 import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
@@ -25,10 +24,7 @@ export const CrrmDetails = () => {
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
-      title={`
-        ${nodeTypes(details?.sliceType as NodeType)}
-        (${impactedArea(details?.path, details?.sliceValue)})
-      `}
+      title={impactedArea(details?.path, details?.sliceValue)}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
