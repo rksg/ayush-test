@@ -47,22 +47,29 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
   const [uploadCSV, uploadCSVResult] = useImportSubInterfacesCSVMutation()
 
-  useEffect(() => {
+  const closeDrawers = () => {
     setDrawerVisible(false)
+    setImportModalvisible(false)
+  }
+
+  useEffect(() => {
+    closeDrawers()
     setSelectedRows([])
   }, [props.currentTab])
 
   useEffect(() => {
     if (params.activeSubTab !== 'sub-interface') {
-      setDrawerVisible(false)
+      closeDrawers()
     }
   }, [params])
+
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
     {
       title: '#',
       key: '',
       dataIndex: 'index',
+      width: 50,
       render: (_, __, index) => {
         const pagination = tableQuery.pagination
         return ++index + (pagination.page - 1) * pagination.pageSize
@@ -71,12 +78,14 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'portType',
-      dataIndex: 'portType'
+      dataIndex: 'portType',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
-      dataIndex: 'ipMode'
+      dataIndex: 'ipMode',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
