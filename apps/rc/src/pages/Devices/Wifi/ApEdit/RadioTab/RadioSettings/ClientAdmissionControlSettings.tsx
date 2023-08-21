@@ -5,10 +5,16 @@ import { Form }      from 'antd'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { Loader }                                                                                                                                           from '@acx-ui/components'
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum }                                                                                       from '@acx-ui/rc/components'
-import { useLazyGetVenueQuery, useLazyGetVenueClientAdmissionControlQuery, useGetApClientAdmissionControlQuery, useUpdateApClientAdmissionControlMutation } from '@acx-ui/rc/services'
-import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl, VenueExtended }                                                     from '@acx-ui/rc/utils'
+import { Loader }                                                     from '@acx-ui/components'
+import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum } from '@acx-ui/rc/components'
+import {
+  useLazyGetVenueQuery,
+  useLazyGetVenueClientAdmissionControlQuery,
+  useGetApClientAdmissionControlQuery,
+  useUpdateApClientAdmissionControlMutation,
+  useDeleteApClientAdmissionControlMutation
+} from '@acx-ui/rc/services'
+import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl, VenueExtended } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -54,6 +60,8 @@ export function ClientAdmissionControlSettings () {
     useGetApClientAdmissionControlQuery({ params: { serialNumber } })
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApClientAdmissionControlMutation()
+  const [deleteClientAdmissionControl, { isLoading: isDeletingClientAdmissionControl }] =
+    useDeleteApClientAdmissionControlMutation()
 
   const venueRef = useRef<VenueClientAdmissionControl>()
   const initDataRef = useRef<ApClientAdmissionControl>()
@@ -114,22 +122,25 @@ export function ClientAdmissionControlSettings () {
 
   const handleUpdateClientAdmissionControl = async () => {
     try {
-      const payload: ApClientAdmissionControl = {
-        enable24G: form.getFieldValue(enable24GFieldName),
-        enable50G: form.getFieldValue(enable50GFieldName),
-        minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
-        minClientCount50G: form.getFieldValue(minClientCount50GFieldName),
-        maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
-        maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
-        minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
-        minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
-        useVenueSettings: isUseVenueSettingsRef.current
+      if(isUseVenueSettingsRef.current) {
+        await deleteClientAdmissionControl({ params: { serialNumber } }).unwrap()
+      } else {
+        const payload: ApClientAdmissionControl = {
+          enable24G: form.getFieldValue(enable24GFieldName),
+          enable50G: form.getFieldValue(enable50GFieldName),
+          minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
+          minClientCount50G: form.getFieldValue(minClientCount50GFieldName),
+          maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
+          maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
+          minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
+          minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
+          useVenueSettings: isUseVenueSettingsRef.current
+        }
+        await updateClientAdmissionControl({
+          params: { serialNumber },
+          payload
+        }).unwrap()
       }
-      await updateClientAdmissionControl({
-        params: { serialNumber },
-        payload
-      }).unwrap()
-
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -158,7 +169,7 @@ export function ClientAdmissionControlSettings () {
 
   return (<Loader states={[{
     isLoading: getApClientAdmissionControl.isLoading,
-    isFetching: isUpdatingClientAdmissionControl
+    isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
   }]}>
     <VenueSettingsHeader venue={venue}
       isUseVenueSettings={isUseVenueSettings}

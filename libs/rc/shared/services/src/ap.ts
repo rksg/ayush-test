@@ -819,6 +819,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    deleteApClientAdmissionControl: build.mutation<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     })
   })
 })
@@ -896,7 +905,8 @@ export const {
   useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
   useGetApClientAdmissionControlQuery,
-  useUpdateApClientAdmissionControlMutation
+  useUpdateApClientAdmissionControlMutation,
+  useDeleteApClientAdmissionControlMutation
 } = apApi
 
 
