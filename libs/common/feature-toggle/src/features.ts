@@ -90,6 +90,7 @@ export enum Features {
   WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
+  WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle'
