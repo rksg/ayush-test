@@ -11,14 +11,11 @@ import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
 import { DistributionSwitchTable }          from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                         from '../GeneralSettingsForm/styledComponents'
-import * as UI                              from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
-
-const SummaryStepTitle = styled(Subtitle).attrs({ level: 4 })`
+styled(Subtitle).attrs({ level: 4 })`
   margin-top: 1.2em;
 `
-
 export const SummaryForm = () => {
 
   const { $t } = useIntl()
@@ -26,7 +23,6 @@ export const SummaryForm = () => {
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const nsgName = useWatch('name', form)
-  const tags = useWatch('tags', form)
   const venueName = useWatch('venueName', form)
   const edgeName = useWatch('edgeName', form)
   const segments = useWatch('segments', form)
