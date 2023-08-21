@@ -65,7 +65,7 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('VideoCallQoeForm')).toBeVisible()
   })
-  it('should render recommendations correctly', async () => {
+  it('should render recommendations crrm correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/crrm' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
