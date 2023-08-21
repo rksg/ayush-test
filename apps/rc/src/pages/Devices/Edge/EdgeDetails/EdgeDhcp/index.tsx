@@ -8,6 +8,7 @@ import { showActionModal, Tabs }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
 import {
+  useGetDhcpByEdgeIdQuery,
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
   usePatchEdgeDhcpServiceMutation
@@ -32,6 +33,15 @@ export const EdgeDhcp = () => {
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
+    { params: { edgeId: serialNumber } },
+    {
+      skip: !!!serialNumber,
+      selectFromResult: ({ data }) => ({
+        isLeaseTimeInfinite: data?.leaseTime === -1
+      })
+    }
+  )
   const getDhcpPoolStatsPayload = {
     fields: [
       'id',
@@ -76,7 +86,7 @@ export const EdgeDhcp = () => {
         { defaultMessage: 'Leases ( {count} online )' },
         { count: dhcpHostStats?.totalCount || 0 }
       ),
-      content: <EdgeDhcpLeaseTable edgeId={serialNumber} />
+      content: <EdgeDhcpLeaseTable edgeId={serialNumber} isInfinite={isLeaseTimeInfinite} />
     }
   }
 
