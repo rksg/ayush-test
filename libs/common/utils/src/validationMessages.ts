@@ -211,6 +211,14 @@ export const validationMessages = {
     defaultMessage: 'IP address is not in the subnet pool',
     description: 'Validation - Cellular IP pool size'
   }),
+  multicastIpAddress: defineMessage({
+    defaultMessage: 'Please enter a valid multicast IP address',
+    description: 'Validation - multicast IP address'
+  }),
+  multicastIpAddressExcluded: defineMessage({
+    defaultMessage: 'Please exclude multicast IP address',
+    description: 'Validation - non-multicast IP address'
+  }),
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
@@ -388,7 +396,7 @@ export const validationMessages = {
     description: 'Validation - tags'
   }),
   servicePolicyNameInvalid: defineMessage({
-    defaultMessage: 'Name is invalid',
+    defaultMessage: 'Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.',
     description: 'Validation - name for service and policy'
   }),
   specialCharacterNameInvalid: defineMessage({

@@ -7,7 +7,10 @@ import { useParams }               from 'react-router-dom'
 import { Alert, Button, Card, Descriptions, Modal } from '@acx-ui/components'
 import { VenueMarkerGrey, VenueMarkerRed }          from '@acx-ui/icons'
 import { ApFloorplan }                              from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery }   from '@acx-ui/rc/services'
+import {
+  useApDetailsQuery,
+  useApViewModelQuery
+} from '@acx-ui/rc/services'
 import {
   NetworkDevice,
   NetworkDevicePosition,
@@ -119,6 +122,9 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
             activeDevice={currentApDevice}
             venueId={apDetails?.venueId as string}
             apPosition={apDetails?.position as NetworkDevicePosition}
+            rogueApMac={row.rogueMac}
+            rogueCategory={row.category}
+            numLocatingAps={row.numberOfDetectingAps}
           /> : null }
           {/* eslint-disable-next-line max-len */}
           <Alert message={$t({ defaultMessage: 'Note: Rogue AP placement is intended as an approximation, many factors can affect the output of this visualization.' })} type='warning' showIcon />

@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { Divider, Form, FormInstance, Input, Select } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 
-import { Tooltip }                                                              from '@acx-ui/components'
-import { MdnsFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                        from '@acx-ui/components'
+import { MdnsFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext } from '../MdnsFencingServiceTable'
 
@@ -103,7 +103,8 @@ export default function MdnsFencingServiceForm (props: MdnsFencingServicesFormPr
           { required: true },
           { min: 2 },
           { max: 32 },
-          { validator: () => customServiceNameDuplicationValidator() }
+          { validator: () => customServiceNameDuplicationValidator() },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         children={<Input />}
       />
