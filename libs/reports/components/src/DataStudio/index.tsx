@@ -3,13 +3,15 @@ import { useState, useEffect } from 'react'
 import { IFrame }                  from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { useAuthenticateMutation } from '@acx-ui/reports/services'
+import { useUserProfileContext }   from '@acx-ui/user'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development')
     return get('IS_MLISA_SA') ?
       'https://staging.mlisa.io'
       :
-      'https://dev.ruckus.cloud'
+      // 'https://dev.ruckus.cloud'
+      'https://alto.local.mlisa.io'
 
   return origin
 }
@@ -17,11 +19,22 @@ export const getHostName = (origin: string) => {
 export function DataStudio () {
   const [url, setUrl] = useState<string>()
   const [ authenticate ] = useAuthenticateMutation()
+  const { data: userProfile } = useUserProfileContext()
+  const { firstName, lastName, email } = userProfile || {}
 
   useEffect(() => {
-    authenticate({}).unwrap().then(url => {
+    authenticate({
+      payload: {
+        user: {
+          firstName,
+          lastName,
+          email
+        }
+      }
+    }).unwrap().then(url => {
       setUrl(url)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticate])
 
   return (

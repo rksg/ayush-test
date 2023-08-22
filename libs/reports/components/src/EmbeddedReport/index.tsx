@@ -12,6 +12,7 @@ import { useParams }                                    from '@acx-ui/react-rout
 import { useGuestTokenMutation, useEmbeddedIdMutation } from '@acx-ui/reports/services'
 import { useReportsFilter }                             from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                     from '@acx-ui/store'
+import { useUserProfileContext }                        from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath }      from '@acx-ui/utils'
 
 import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportModeMapping } from '../mapping/reportsMapping'
@@ -105,6 +106,8 @@ export function EmbeddedReport (props: ReportProps) {
   const { filters: { paths, bands } } = useReportsFilter()
   const { networkClause, radioBandClause } = getSupersetRlsClause(reportName,
     paths,bands as RadioBand[])
+  const { data: userProfile } = useUserProfileContext()
+  const { firstName, lastName, email } = userProfile || {}
 
   /**
   * Hostname - Backend service where superset is running.
@@ -116,7 +119,8 @@ export function EmbeddedReport (props: ReportProps) {
     ? get('IS_MLISA_SA') ?
       'https://staging.mlisa.io'
       :
-      'https://dev.ruckus.cloud'
+      // 'https://dev.ruckus.cloud'
+      'https://alto.local.mlisa.io'
     : window.location.origin // Production
 
   useEffect(() => {
@@ -129,7 +133,11 @@ export function EmbeddedReport (props: ReportProps) {
   }, [embedDashboardName])
 
   const guestTokenPayload = {
-    user: {},
+    user: {
+      firstName,
+      lastName,
+      email
+    },
     resources: [{
       type: 'dashboard',
       id: dashboardEmbeddedId
