@@ -88,14 +88,16 @@ export function Subscriptions () {
         title: $t({ defaultMessage: 'Subscription' }),
         dataIndex: 'name',
         key: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
         filterable: true
       },
       {
         title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'deviceSubType',
         key: 'deviceSubType',
+        sorter: { compare: sortProp('deviceSubType', defaultSort) },
         render: function (data: React.ReactNode, row: MspEntitlement) {
-          if (row.deviceType === 'MSP_WIFI')
+          if (row.deviceType === EntitlementDeviceType.MSP_WIFI)
             return EntitlementUtil.tempLicenseToString(row.isTrial)
           return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
         }

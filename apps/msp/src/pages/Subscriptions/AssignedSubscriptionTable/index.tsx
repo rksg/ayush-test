@@ -16,6 +16,7 @@ import { MspAssignmentHistory } from '@acx-ui/msp/utils'
 import {
   dateSort,
   defaultSort,
+  EntitlementDeviceType,
   EntitlementUtil,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -33,15 +34,17 @@ export function AssignedSubscriptionTable () {
     {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     ...(isDeviceAgnosticEnabled ? [] : [
       {
         title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'deviceSubType',
         key: 'deviceSubType',
+        sorter: { compare: sortProp('deviceSubType', defaultSort) },
         render: function (data: React.ReactNode, row: MspAssignmentHistory) {
-          if (row.deviceType === 'MSP_WIFI')
+          if (row.deviceType === EntitlementDeviceType.MSP_WIFI)
             return EntitlementUtil.tempLicenseToString(row.trialAssignment)
           return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
         }
@@ -59,9 +62,9 @@ export function AssignedSubscriptionTable () {
     },
     {
       title: $t({ defaultMessage: 'Starting Date' }),
-      dataIndex: 'effectiveDate',
-      key: 'effectiveDate',
-      sorter: { compare: sortProp('effectiveDate', dateSort) },
+      dataIndex: 'dateEffective',
+      key: 'dateEffective',
+      sorter: { compare: sortProp('dateEffective', dateSort) },
       render: function (_, row) {
         const effectiveDate = new Date(Date.parse(row.dateEffective))
         return formatter(DateFormatEnum.DateFormat)(effectiveDate)
@@ -69,9 +72,9 @@ export function AssignedSubscriptionTable () {
     },
     {
       title: $t({ defaultMessage: 'Expiration Date' }),
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: { compare: sortProp('expirationDate', dateSort) },
+      dataIndex: 'dateExpires',
+      key: 'dateExpires',
+      sorter: { compare: sortProp('dateExpires', dateSort) },
       render: function (_, row) {
         const expirationDate = new Date(Date.parse(row.dateExpires))
         return formatter(DateFormatEnum.DateFormat)(expirationDate)
@@ -79,10 +82,10 @@ export function AssignedSubscriptionTable () {
     },
     {
       title: $t({ defaultMessage: 'Time left' }),
-      dataIndex: 'expirationDate',
+      dataIndex: 'dateExpires',
       // key needs to be unique
       key: 'timeLeft',
-      sorter: { compare: sortProp('expirationDate', dateSort) },
+      sorter: { compare: sortProp('dateExpires', dateSort) },
       // active license should be first
       defaultSortOrder: 'descend',
       render: function (_, row) {
@@ -105,14 +108,7 @@ export function AssignedSubscriptionTable () {
   ]
 
   const AssignedTable = () => {
-    const queryResults = useMspAssignmentHistoryQuery({
-      params: useParams()
-    },{
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    })
+    const queryResults = useMspAssignmentHistoryQuery({ params: useParams() })
 
     const subscriptionData = queryResults.data?.map(response => {
       return {

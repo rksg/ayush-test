@@ -38,6 +38,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
   ]
 
   let series = [
+    // name does not need i18n as these will not shown, just for ordering purpose.
     { name: '<3>used',
       value: isZeroQuantity ? 0: (used / total)*100 },
     { name: '<2>assigned',

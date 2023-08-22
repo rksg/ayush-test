@@ -785,7 +785,10 @@ export function ManageCustomer () {
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableWifiLicense} available</label>
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableWifiLicense} available' }, {
+            availableWifiLicense: availableWifiLicense })}
+        </label>
       </UI.FieldLabelSubs>
     </div>
   }
@@ -805,7 +808,10 @@ export function ManageCustomer () {
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableSwitchLicense} available</label>
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableSwitchLicense} available' }, {
+            availableSwitchLicense: availableSwitchLicense })}
+        </label>
       </UI.FieldLabelSubs>
     </div>
   }
@@ -825,7 +831,10 @@ export function ManageCustomer () {
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableApswLicense} available</label>
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+            availableApswLicense: availableApswLicense })}
+        </label>
       </UI.FieldLabelSubs>
     </div>
   }
