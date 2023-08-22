@@ -33,7 +33,10 @@ export function MulticastForm () {
   const [
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
-    enableMulticastDownLimit
+    enableMulticastDownLimit,
+    enableMulticastUpLimit6G,
+    enableMulticastDownLimit6G,
+    enableMulticastFilter
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
@@ -42,15 +45,12 @@ export function MulticastForm () {
     useWatch<boolean>(enableMulticastDownLimit6GFieldName),
     useWatch<boolean>(enableMulticastFilterFieldName)
   ]
-
-  const [ multicastFilter ] = [ useWatch<boolean>(enableMulticastFilterFieldName) ]
-
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
-  const [switchDisabled, setSwitchDisabled] = useState(false)
+  const [switchMulticastRateLimitingDisabled, setSwitchMulticastRateLimitingDisabled] = useState(false)
   const multicastFilterTooltipContent = (
     <div>
       <p>Drop all multicast or broadcast traffic from associated wireless clients,
@@ -70,7 +70,7 @@ export function MulticastForm () {
   )
 
   useEffect(() => {
-    setSwitchDisabled(!enableMulticastRateLimiting && multicastFilter)
+    setSwitchMulticastRateLimitingDisabled(!enableMulticastRateLimiting && enableMulticastFilter)
   }, [])
 
   const handleMulticastFilterOnChange = (checked: boolean) => {
@@ -83,7 +83,7 @@ export function MulticastForm () {
         form.setFieldValue(enableMulticastDownLimit6GFieldName, false)
       }
     }
-    setSwitchDisabled(checked)
+    setSwitchMulticastRateLimitingDisabled(checked)
   }
 
   return (
@@ -122,7 +122,7 @@ export function MulticastForm () {
               valuePropName='checked'
             >
               <Switch
-                disabled={switchDisabled}
+                disabled={switchMulticastRateLimitingDisabled}
               />
             </Form.Item>
           </UI.FieldLabel>
