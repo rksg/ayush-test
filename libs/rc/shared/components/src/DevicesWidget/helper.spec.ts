@@ -219,6 +219,42 @@ describe('getEdgeDonutChartData', () => {
       name: 'Offline',
       value: 3
     }])
+
+    //Removing 1_InSetupPhase_Offline count
+    const dataWithoutOffline = omit(data, 'summary.1_InSetupPhase_Offline')
+    expect(getEdgeDonutChartData(dataWithoutOffline)).toEqual([{
+      color: '#ED1C24',
+      name: 'Requires Attention',
+      value: 3
+    }, {
+      color: '#ACAEB0',
+      name: 'In Setup Phase',
+      value: 5
+    }])
+  })
+
+  it('should return correct formatted data when not to show offline', async () => {
+    expect(getEdgeDonutChartData(data, false)).toEqual([{
+      color: '#ED1C24',
+      name: 'Requires Attention',
+      value: 3
+    }, {
+      color: '#ACAEB0',
+      name: 'In Setup Phase',
+      value: 8
+    }])
+
+    //Removing 1_InSetupPhase, and it should return 1_InSetupPhase_Offline count
+    const modifiedData = omit(data, 'summary.1_InSetupPhase')
+    expect(getEdgeDonutChartData(modifiedData, false)).toEqual([{
+      color: '#ED1C24',
+      name: 'Requires Attention',
+      value: 3
+    }, {
+      color: '#ACAEB0',
+      name: 'In Setup Phase',
+      value: 3
+    }])
   })
   it('should return empty array if no data', ()=>{
     expect(getEdgeDonutChartData(null as unknown as EdgeStatusSeverityStatistic)).toEqual([])
