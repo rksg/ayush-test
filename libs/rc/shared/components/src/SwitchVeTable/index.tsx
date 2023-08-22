@@ -223,6 +223,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
         tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
         onClick: () => {
           setIsEditMode(false)
+          setEditData({} as VeViewModel)
           setVisible(true) }
       }])}
     />

@@ -10,7 +10,7 @@ export const MessageMapping = {
   default_system_language_description: defineMessage({ defaultMessage: 'Changes will affect only new user accounts. Existing user account that have logged in previously will stay unchanged.' }),
   map_region_description: defineMessage({ defaultMessage: 'Selected Map Region affects all the user in this account.' }),
   map_region_not_enabled_message: defineMessage({ defaultMessage: 'Map is not enabled.' }),
-  enable_access_support_description: defineMessage({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary administrator-level access for 21 days. Enable when requested by Ruckus Support team.' }),
+  enable_access_support_description: defineMessage({ defaultMessage: 'If checked, Ruckus support team is granted a temporary administrator-level access for 21 days.{br} Enable when requested by Ruckus support team.' }),
   enable_mfa_description_1: defineMessage({ defaultMessage: '- By enabling this option, all users of this account will be required to set and use MFA' }),
   enable_mfa_description_2: defineMessage({ defaultMessage: '- All users of this account will be required to provide verification code via chosen security method (email, SMS or authentication app)' }),
   enable_mfa_description_3: defineMessage({ defaultMessage: '- Managing the personal authentication settings will be done in the User Profile menu, accessible in the portal\'s header' }),

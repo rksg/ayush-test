@@ -5,9 +5,9 @@ import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
 
-import { Button, Modal, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }               from '@acx-ui/icons'
-import { MdnsFencingWiredRule }             from '@acx-ui/rc/utils'
+import { Button, Modal, Table, TableProps }               from '@acx-ui/components'
+import { DeleteOutlinedIcon }                             from '@acx-ui/icons'
+import { MdnsFencingWiredRule, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext }            from '../../MdnsFencingServiceTable'
 import { FencingRangeRadioGroup, FieldsetItem } from '../../utils'
@@ -303,11 +303,11 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   }
 
   const validateFormData = () => {
-    const { name, closestApMac='', deviceMacAddresses=[] } = form.getFieldsValue()
-
+    const { closestApMac='', deviceMacAddresses=[] } = form.getFieldsValue()
+    const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
 
     const isClosestApConflict = !!closestApMac && _.includes(deviceMacAddresses, closestApMac)
-    const isValid = (!!name && deviceMacAddresses.length > 0 &&
+    const isValid = (!hasErrors && deviceMacAddresses.length > 0 &&
       !!closestApMac && !isClosestApConflict)
 
     setConflictMacAddes(isClosestApConflict? closestApMac : '')
@@ -342,7 +342,8 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
         { min: 2 },
         { max: 32 },
         { required: true },
-        { validator: () => ruleNameDuplicationValidator() }
+        { validator: () => ruleNameDuplicationValidator() },
+        { validator: (_, value) => trailingNorLeadingSpaces(value) }
       ]}
     />
     <FencingRangeRadioGroup
