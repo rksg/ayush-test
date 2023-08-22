@@ -407,10 +407,11 @@ export function PropertyManagementTab () {
                     {$t({ defaultMessage: 'Add Persona Group' })}
                   </Button>
                 </Form.Item>
-                <Form.Item
-                  hidden
-                  name={['unitConfig', 'type']}
-                />
+
+                <Form.Item noStyle name={['unitConfig', 'type']}>
+                  <Input type='hidden' />
+                </Form.Item>
+
                 <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
@@ -490,8 +491,11 @@ export function PropertyManagementTab () {
                 {msgTemplateEnabled &&
                   <>
                     <Form.Item
-                      hidden
-                      name={['communicationConfig', 'type']}/>
+                      noStyle
+                      name={['communicationConfig', 'type']}
+                    >
+                      <Input type='hidden' />
+                    </Form.Item>
                     <Subtitle level={4} style={{ paddingTop: '8px' }}>
                       {$t({ defaultMessage: 'Communication Templates' })}
                     </Subtitle>
