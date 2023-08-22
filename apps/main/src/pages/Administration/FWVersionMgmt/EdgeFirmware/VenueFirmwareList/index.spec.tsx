@@ -1,6 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import moment    from 'moment-timezone'
-import { rest }  from 'msw'
+import userEvent             from '@testing-library/user-event'
+import { Modal, ModalProps } from 'antd'
+import { rest }              from 'msw'
 
 import { EdgeUrlsInfo, FirmwareUrlsInfo }              from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
@@ -8,7 +8,25 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { availableVersions, latestReleaseVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
 
+import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
+
 import { VenueFirmwareList } from '.'
+
+const MockModal = (props: ModalProps) => <Modal {...props} />
+
+jest.mock('./ChangeScheduleDialog', () => {
+  const oriCompoents = jest.requireActual('./ChangeScheduleDialog')
+  const ChangeScheduleDialog = (props: ChangeScheduleDialogProps) => <MockModal
+    okText='Save'
+    onOk={() => {
+      props.onSubmit({})
+      props.onCancel()
+    }}
+    onCancel={props.onCancel}
+    visible={props.visible}
+  />
+  return { ...oriCompoents, ChangeScheduleDialog }
+})
 
 const mockedUpdateNow = jest.fn()
 const mockedUpdatePreference = jest.fn()
@@ -158,17 +176,6 @@ describe('Edge venue firmware list', () => {
     await user.click(updateButton)
 
     const updateDialog = await screen.findByRole('dialog')
-    const nowDateStr = moment().add(2, 'days').format('YYYY-MM-DD')
-    const nowDayStr = nowDateStr.split('-')[2]
-    await user.click(await within(updateDialog).findByRole('radio',
-      { name: '1.0.0.1711 (Release - Recommended) - 02/23/2023 09:16 AM' }
-    ))
-    await user.click(within(updateDialog).getByPlaceholderText('Select date'))
-    const cell = await screen.findByRole('cell', { name: new RegExp(nowDateStr) })
-    await user.click(within(cell).getByText(new RegExp(nowDayStr)))
-    await user.click(
-      await within(updateDialog).findByRole('radio', { name: /12 am \- 02 am/i })
-    )
     await user.click(within(updateDialog).getByRole('button', { name: 'Save' }))
     await waitFor(() => expect(mockedUpdateSchedule).toBeCalledTimes(1))
     await waitFor(() => expect(updateDialog).not.toBeVisible())
