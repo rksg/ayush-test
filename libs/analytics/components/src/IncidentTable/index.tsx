@@ -50,7 +50,7 @@ export function downloadIncidentList (
     }
     return data
   }, [])
-  const rows = allIncidents.map((obj) => {
+  const rows = allIncidents.sort((a, b) => b.severity - a.severity).map((obj) => {
     return keys.map((key) => {
       if(key === 'severity')
         key = 'severityLabel'
