@@ -12,10 +12,6 @@ import { api, EnhancedRecommendation, RecommendationAp } from './services'
 
 
 describe('recommendation services', () => {
-  const recommendationPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
-  }
-
   const recommendationApPayload = {
     id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
     search: ''
@@ -27,15 +23,14 @@ describe('recommendation services', () => {
         recommendation: mockedRecommendationFirmware
       }
     })
+    const payload = [{ id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf', code: 'i-zonefirmware-upgrade' }]
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
-        ...recommendationPayload,
-        code: 'i-zonefirmware-upgrade'
-      })
+      api.endpoints.recommendationDetails.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    const removedMsgs = omit(data, [
+    expect(data).toBeDefined()
+    const removedMsgs = omit(data![0], [
       'category',
       'priority',
       'summary',
@@ -77,15 +72,14 @@ describe('recommendation services', () => {
         recommendation: mockedRecommendationFirmware
       }
     })
+    const payload = [{ id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf', code: 'c-aclb-enable' }]
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
-        ...recommendationPayload,
-        code: 'c-aclb-enable'
-      })
+      api.endpoints.recommendationDetails.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    const removedMsgs = omit(data, [
+    expect(data).toBeDefined()
+    const removedMsgs = omit(data![0], [
       'category',
       'priority',
       'summary',
@@ -127,12 +121,14 @@ describe('recommendation services', () => {
         recommendation: mockedRecommendationCRRM
       }
     })
+    const payload = [{ id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf', code: 'c-crrm-channel24g-auto' }]
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate(recommendationPayload)
+      api.endpoints.recommendationDetails.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    const removedMsgs = omit(data, [
+    expect(data).toBeDefined()
+    const removedMsgs = omit(data![0], [
       'category',
       'priority',
       'summary',

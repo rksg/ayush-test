@@ -8,9 +8,10 @@ import {
 }                    from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { api } from '../../services'
+import { api as recommendationDetailsApi } from '../../RecommendationDetails/services'
+import { api as recommendationListApi }    from '../../services'
 
-import { expectedData } from './__tests__/fixtures'
+import { expectedData, expectedDetailData } from './__tests__/fixtures'
 
 import { AIDrivenRRM } from '.'
 
@@ -22,12 +23,17 @@ const filters : IncidentFilter = {
 }
 
 describe('AIDrivenRRM dashboard', () => {
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  beforeEach(() => store.dispatch(recommendationListApi.util.resetApiState()))
+  beforeEach(() => store.dispatch(recommendationDetailsApi.util.resetApiState()))
 
   it('renders recommendation', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
       data: expectedData
     })
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+      data: expectedDetailData
+    })
+
     render(<AIDrivenRRM filters={filters} />, {
       route: true,
       wrapper: Provider
@@ -48,6 +54,9 @@ describe('AIDrivenRRM dashboard', () => {
       data: {
         recommendations: []
       }
+    })
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+      data: []
     })
     render(<AIDrivenRRM filters={filters} />, {
       route: true,

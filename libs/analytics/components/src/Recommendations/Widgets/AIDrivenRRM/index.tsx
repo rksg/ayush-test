@@ -3,6 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, Card, NoActiveData } from '@acx-ui/components'
+import { TenantLink }                 from '@acx-ui/react-router-dom'
 import { NodeType }                   from '@acx-ui/utils'
 
 import { EnhancedRecommendation, useRecommendationDetailsQuery } from '../../RecommendationDetails/services'
@@ -46,7 +47,6 @@ function AIDrivenRRMWidget ({
   const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {optimized}/{total} have been optimized' }, { total, optimized })
 
   const items = detailedRecommendation?.slice(0,5).map(props => {
-    console.log('props', props)
     const {
       sliceType, sliceValue, id, status,
       kpi_number_of_interfering_links, appliedOnce
@@ -56,12 +56,12 @@ function AIDrivenRRMWidget ({
 
     const optimized = checkOptimized([props])?.length !== 0 ? true : false
     const applied = appliedOnce && status !== 'reverted'
-    const before = applied
+    const before = (applied
       ? kpi_number_of_interfering_links?.previous
-      : kpi_number_of_interfering_links?.current
-    const after = applied
+      : kpi_number_of_interfering_links?.current) || 0
+    const after = (applied
       ? kpi_number_of_interfering_links?.current
-      : kpi_number_of_interfering_links?.projected || 0
+      : kpi_number_of_interfering_links?.projected) || 0
 
     const optimizedText = $t({
       defaultMessage:
@@ -79,7 +79,12 @@ function AIDrivenRRMWidget ({
     return <UI.Detail key={id}>
       <div style={{ display: 'flex' }}>
         <UI.OptimizedIcon value={optimized ? 0 : 1}/>
-        <span>{text}</span>
+        <TenantLink
+          to={`/recommendations/aiOps/${id}`}
+          style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
+        >
+          <span>{text}</span>
+        </TenantLink>
       </div>
       <UI.Subtitle>{optimized ? optimizedText : nonOptimizedText}</UI.Subtitle>
     </UI.Detail>

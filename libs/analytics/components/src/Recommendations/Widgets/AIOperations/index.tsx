@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { AnalyticsFilter }                        from '@acx-ui/analytics/utils'
 import { Loader, Card, NoActiveData }             from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats } from '@acx-ui/formatter'
-import { useNavigateToPath }          from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigateToPath }          from '@acx-ui/react-router-dom'
 
 import { useRecommendationListQuery } from '../../services'
 import * as UI                        from '../styledComponents'
@@ -38,8 +38,13 @@ function AIOperationsWidget ({
     const { category, priority, updatedAt, id } = props
     return <UI.Detail key={id}>
       <div style={{ display: 'flex' }}>
-        <UI.PriorityIcon value={priority}/>
-        <span>{category}</span>
+        <UI.PriorityIcon value={priority} />
+        <TenantLink
+          to={`/recommendations/aiOps/${id}`}
+          style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
+        >
+          <span>{category}</span>
+        </TenantLink>
       </div>
       <UI.Subtitle>{formatter(DateFormatEnum.DateFormat)(updatedAt)}</UI.Subtitle>
     </UI.Detail>
@@ -49,7 +54,7 @@ function AIOperationsWidget ({
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick}>
       <AutoSizer>
-        {({ width, height }) => (
+        {({ width }) => (
           noData
             ? <NoActiveData text={$t({ defaultMessage: 'No recommendations' })} />
             : <UI.Wrapper
