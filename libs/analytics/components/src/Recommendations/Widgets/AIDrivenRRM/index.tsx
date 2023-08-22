@@ -79,7 +79,7 @@ function AIDrivenRRMWidget ({
       <div style={{ display: 'flex' }}>
         <UI.OptimizedIcon value={optimized ? 0 : 1}/>
         <TenantLink
-          to={`/recommendations/aiOps/${id}`}
+          to={`/recommendations/crrm/${id}`}
           style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
         >
           <span>{text}</span>
