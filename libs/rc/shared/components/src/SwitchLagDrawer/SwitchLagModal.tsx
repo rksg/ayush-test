@@ -216,6 +216,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         setLoading(false)
         onClose()
       } catch (err) {
+        setLoading(false)
         console.log(err) // eslint-disable-line no-console
       }
     } else {

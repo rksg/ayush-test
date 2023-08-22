@@ -42,6 +42,23 @@ export function generalIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function multicastIpAddressRegExp (value: string, isInverted?: boolean) {
+  const { $t } = getIntl()
+
+  if (value) {
+    const ipLong = convertIpToLong(value)
+
+    // outside 224.0.0.0 ~ 239.255.255.255
+    if (ipLong < 3758096384 || ipLong > 4026531839) {
+      return isInverted ? Promise.resolve() : Promise.reject($t(validationMessages.multicastIpAddress))
+    } else {
+      return isInverted ? Promise.reject($t(validationMessages.multicastIpAddressExcluded)) : Promise.resolve()
+    }
+  }
+
+  return Promise.resolve()
+}
+
 export function networkWifiPortRegExp (value: number) {
   const { $t } = getIntl()
   if (value && value <= 0){

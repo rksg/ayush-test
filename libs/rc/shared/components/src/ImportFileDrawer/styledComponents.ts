@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Typography } from 'antd'
+import styled         from 'styled-components/macro'
 
 import {  Drawer } from '@acx-ui/components'
 
@@ -23,4 +24,15 @@ export const ImportFileDrawer = styled(Drawer)`
       }
     }
   }
+
+  .ant-drawer-body .ant-upload .ant-upload-drag-container {
+    & > div {
+      height: 90px;
+      padding: 0 var(--acx-descriptions-space);
+    }
+  }
+`
+
+export const FileNameText = styled(Typography.Text)`
+  width: 250px;
 `
