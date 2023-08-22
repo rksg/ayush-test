@@ -527,7 +527,7 @@ describe('CSV Functions', () => {
 
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      ['Severity,Date,Muted\nP1,2023-08-21T05:37:30.000Z,false\nP3,2023-08-21T05:40:30.000Z,false\nP2,2023-08-21T05:39:30.000Z,true'],
+      ['Severity,Date,Muted\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"'],
       { type: 'text/csv' }
     )
     global.Blob = originalBlob
