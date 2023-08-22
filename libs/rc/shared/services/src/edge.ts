@@ -98,7 +98,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -216,7 +217,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           })
         })
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'SUB_INTERFACE' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'SUB_INTERFACE' }],
+      extraOptions: { maxRetries: 5 }
     }),
     addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -285,7 +287,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
       query: () => {
@@ -433,7 +436,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEdgesTopTraffic: build.query<EdgesTopTraffic,
       RequestPayload<EdgeTimeSeriesPayload>>({

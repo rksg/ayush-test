@@ -87,7 +87,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           })
         })
       },
-      providesTags: [{ type: 'Firmware', id: 'LIST' }]
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
@@ -225,7 +226,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as TableResult<FirmwareSwitchVenue>
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getSwitchAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {

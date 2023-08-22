@@ -101,7 +101,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
@@ -226,7 +227,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Device', id: 'MESH' }]
+      providesTags: [{ type: 'Device', id: 'MESH' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -494,7 +496,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AAA', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getAaaSetting: build.query<AAASetting, RequestPayload>({
       query: ({ params }) => {
@@ -716,7 +719,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
       query: ({ params, payload }) => {
@@ -872,7 +876,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           totalCount: res.response.totalCount,
           page: arg.payload.page
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1019,7 +1024,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       transformResponse (result: NewTableResult<PropertyConfigs>) {
         return transferToTableResult<PropertyConfigs>(result)
       },
-      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }]
+      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1112,7 +1118,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     downloadPropertyUnits: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
