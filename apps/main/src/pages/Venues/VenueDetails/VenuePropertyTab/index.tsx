@@ -16,6 +16,7 @@ import {
   Features,
   useIsSplitOn
 }                                from '@acx-ui/feature-toggle'
+import {  DateFormatEnum,  userDateTimeFormat } from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   WarningTriangleSolid
@@ -59,7 +60,6 @@ import {
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
-
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
 path:nth-child(1) {
@@ -91,7 +91,7 @@ function ConnectionMeteringLink (props:{
       showWarning = true
       expired = false
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
-        , { expireDate: expirationTime.format('YYYY/MM/DD') })
+        , { expireDate: expirationTime.format(userDateTimeFormat(DateFormatEnum.DateFormat)) })
     }
   }
   return (
