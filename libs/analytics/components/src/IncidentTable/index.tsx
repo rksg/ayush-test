@@ -58,7 +58,7 @@ export function downloadIncidentList (
     }).join(separator)
   })
   return handleBlobDownloadFile(
-    new Blob([[header, ...rows].join('\n')], { type: 'text/csv' }),
+    new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' }),
     fileName
   )
 }
