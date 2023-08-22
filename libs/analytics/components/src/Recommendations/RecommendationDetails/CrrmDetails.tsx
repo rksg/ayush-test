@@ -1,24 +1,24 @@
 import { get }                    from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
+import { impactedArea }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { Kpis }                          from './kpis'
+import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
 import { useRecommendationDetailsQuery } from './services'
-import { Values }                        from './values'
 
-const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
+const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
-export const RecommendationDetails = () => {
+export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = 'recommendations/aiOps'
+  const link = 'recommendations/crrm'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },
@@ -26,17 +26,17 @@ export const RecommendationDetails = () => {
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
-      title={$t(details.summary)}
+      title={impactedArea(details?.path, details?.sliceValue)}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
-        { text: $t(aiOps), link }
+        { text: $t(crrm), link }
       ]}
       extra={[<MuteRecommendation {...{
         id: details.id,
         isMuted: details.isMuted,
         link,
-        type: $t(aiOps)
+        type: $t(crrm)
       }} />]}
     />}
     <GridRow>
@@ -47,11 +47,8 @@ export const RecommendationDetails = () => {
           </div>)}
         </FixedAutoSizer>
       </GridCol>
-      <GridCol col={{ span: 13 }}>
-        <Values details={details}/>
-      </GridCol>
-      <GridCol col={{ span: 8 }}>
-        <Kpis details={details} />
+      <GridCol col={{ span: 21 }}>
+        <CrrmValues details={details}/>
       </GridCol>
     </GridRow>
   </Loader>
