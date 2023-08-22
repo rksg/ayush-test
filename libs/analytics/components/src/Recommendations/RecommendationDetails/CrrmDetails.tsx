@@ -9,7 +9,7 @@ import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
 import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './overview'
+import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
 
 const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })

@@ -5,16 +5,16 @@ import { mockedRecommendationFirmware } from './__tests__/fixtures'
 
 import { RecommendationDetails } from '.'
 
-jest.mock('./overview', () => ({
-  Overview: () => <div data-testid='overview'>Overview</div>
+jest.mock('./Overview', () => ({
+  Overview: () => <div data-testid='Overview'>Overview</div>
 }))
 
-jest.mock('./kpis', () => ({
-  Kpis: () => <div data-testid='kpis'>Kpis</div>
+jest.mock('./Kpis', () => ({
+  Kpis: () => <div data-testid='Kpis'>Kpis</div>
 }))
 
-jest.mock('./values', () => ({
-  Values: () => <div data-testid='values'>Values</div>
+jest.mock('./Values', () => ({
+  Values: () => <div data-testid='Values'>Values</div>
 }))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -35,9 +35,9 @@ describe('RecommendationDetails', () => {
       },
       wrapper: Provider
     })
-    expect(await screen.findByTestId('overview')).toBeVisible()
-    expect(await screen.findByTestId('kpis')).toBeVisible()
-    expect(await screen.findByTestId('values')).toBeVisible()
+    expect(await screen.findByTestId('Overview')).toBeVisible()
+    expect(await screen.findByTestId('Kpis')).toBeVisible()
+    expect(await screen.findByTestId('Values')).toBeVisible()
     await waitFor(async () => {
       expect(await screen.findByText('Zone firmware upgrade')).toBeVisible()
     })

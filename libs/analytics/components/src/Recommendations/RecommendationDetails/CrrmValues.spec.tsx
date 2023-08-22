@@ -8,8 +8,8 @@ import {
 import { CrrmValues }               from './CrrmValues'
 import { transformDetailsResponse } from './services'
 
-jest.mock('./graph', () => ({
-  CloudRRMGraph: () => <div data-testid='graph'>Values</div>
+jest.mock('./Graph', () => ({
+  CloudRRMGraph: () => <div data-testid='Graph'>Values</div>
 }))
 
 describe('Recommendation Overview', () => {
@@ -30,6 +30,6 @@ describe('Recommendation Overview', () => {
   it('should render graph correctly', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
-    expect(await screen.findByTestId('graph')).toBeVisible()
+    expect(await screen.findByTestId('Graph')).toBeVisible()
   })
 })

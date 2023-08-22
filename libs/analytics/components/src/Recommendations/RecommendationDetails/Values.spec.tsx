@@ -11,7 +11,7 @@ import {
   mockRecommendationAutoBackground
 } from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
-import { Values }                                          from './values'
+import { Values }                                          from './Values'
 
 describe('Recommendation Overview', () => {
   it('should render correctly for crrm', async () => {

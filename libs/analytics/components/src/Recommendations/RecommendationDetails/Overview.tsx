@@ -11,7 +11,7 @@ import { DescriptionSection }     from '../../DescriptionSection'
 import { codes, statusTrailMsgs } from '../config'
 import { Priority, PriorityIcon } from '../styledComponents'
 
-import { DownloadRRMComparison }                                    from './graph/DownloadRRMComparison'
+import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 

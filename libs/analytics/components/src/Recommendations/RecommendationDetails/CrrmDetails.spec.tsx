@@ -4,12 +4,12 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { mockedRecommendationCRRM } from './__tests__/fixtures'
 import { CrrmDetails }              from './CrrmDetails'
 
-jest.mock('./overview', () => ({
-  Overview: () => <div data-testid='overview'>Overview</div>
+jest.mock('./Overview', () => ({
+  Overview: () => <div data-testid='Overview'>Overview</div>
 }))
 
 jest.mock('./CrrmValues', () => ({
-  CrrmValues: () => <div data-testid='crrmValues'>CrrmValues</div>
+  CrrmValues: () => <div data-testid='CrrmValues'>CrrmValues</div>
 }))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -33,7 +33,7 @@ describe('CrrmDetails', () => {
       wrapper: Provider
     })
 
-    expect(await screen.findByTestId('overview')).toBeVisible()
-    expect(await screen.findByTestId('crrmValues')).toBeVisible()
+    expect(await screen.findByTestId('Overview')).toBeVisible()
+    expect(await screen.findByTestId('CrrmValues')).toBeVisible()
   })
 })

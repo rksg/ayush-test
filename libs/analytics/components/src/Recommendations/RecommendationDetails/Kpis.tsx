@@ -11,7 +11,7 @@ import { noDataDisplay }             from '@acx-ui/utils'
 import { codes } from '../config'
 
 import { EnhancedRecommendation } from './services'
-import { StatusTrail }            from './statusTrail'
+import { StatusTrail }            from './StatusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,

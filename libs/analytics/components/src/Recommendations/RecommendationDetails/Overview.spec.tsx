@@ -8,7 +8,7 @@ import {
   mockedRecommendationApFirmware,
   mockedRecommendationClientLoad
 } from './__tests__/fixtures'
-import { Overview }                 from './overview'
+import { Overview }                 from './Overview'
 import { transformDetailsResponse } from './services'
 
 const mockGet = get as jest.Mock
@@ -18,7 +18,7 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-jest.mock('./graph/DownloadRRMComparison', () => ({
+jest.mock('./Graph/DownloadRRMComparison', () => ({
   DownloadRRMComparison: () => <div data-testid='downlaod-button'>RRM comparison</div>
 }))
 

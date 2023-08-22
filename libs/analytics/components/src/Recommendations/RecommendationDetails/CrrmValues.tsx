@@ -4,9 +4,9 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { CloudRRMGraph }          from './graph'
+import { CloudRRMGraph }          from './Graph'
 import { EnhancedRecommendation } from './services'
-import { StatusTrail }            from './statusTrail'
+import { StatusTrail }            from './StatusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,
@@ -14,7 +14,7 @@ import {
   CrrmValuesText,
   ValueDetails
 } from './styledComponents'
-import { getRecommendationsText, getValues } from './values'
+import { getRecommendationsText, getValues } from './Values'
 
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()

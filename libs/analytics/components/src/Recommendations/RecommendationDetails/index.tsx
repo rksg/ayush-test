@@ -6,11 +6,11 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { Kpis }                          from './kpis'
+import { Kpis }                          from './Kpis'
 import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './overview'
+import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
-import { Values }                        from './values'
+import { Values }                        from './Values'
 
 const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
 
