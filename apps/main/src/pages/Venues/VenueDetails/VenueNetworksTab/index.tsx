@@ -68,7 +68,9 @@ const defaultPayload = {
     'ssid',
     'vlanPool',
     'captiveType',
-    'id'
+    'id',
+    'isOweMaster',
+    'owePairNetworkId'
   ]
 }
 

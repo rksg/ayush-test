@@ -33,8 +33,8 @@ function NetworkPageHeader ({
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   useEffect(() => {
-    if ((supportOweTransition && !isLoading)) {
-      setDisableConfigure(networkData?.isOweMaster === false)
+    if ((supportOweTransition && networkData && !isLoading)) {
+      setDisableConfigure('owePairNetworkId' in networkData && networkData?.isOweMaster === false)
     }
   }, [networkData, isLoading, supportOweTransition])
 

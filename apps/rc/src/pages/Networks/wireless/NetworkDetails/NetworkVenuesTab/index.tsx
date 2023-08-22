@@ -75,7 +75,9 @@ const defaultPayload = {
     'latitude',
     'longitude',
     'mesh',
-    'status'
+    'status',
+    'isOweMaster',
+    'owePairNetworkId'
   ]
 }
 
@@ -151,7 +153,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
         }
       })
       setTableData(data)
