@@ -40,11 +40,11 @@ export function AdvancedTab () {
 
 
   const anchorItems = [{
-    title: $t({ defaultMessage: 'Access Point LED' }),
+    title: $t({ defaultMessage: 'Access Point LEDs' }),
     key: 'apLed',
     content: <>
       <StepsFormLegacy.SectionTitle id='access-point-led'>
-        { $t({ defaultMessage: 'Access Point LED' }) }
+        { $t({ defaultMessage: 'Access Point LEDs' }) }
       </StepsFormLegacy.SectionTitle>
       <div style={{ maxWidth: '465px' }}>
         <AccessPointLED />
