@@ -160,10 +160,7 @@ function useColumns () {
       dataIndex: 'priority',
       align: 'center',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('priority', defaultSort) },
-      render: function (data, row) {
-        return `${row.priority}`
-      }
+      sorter: { compare: sortProp('priority', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'DSCP Range' }),
@@ -189,11 +186,9 @@ function useColumns () {
       dataIndex: 'status',
       align: 'center',
       render: function (data, row) {
-        if (row.enabled) {
-          return 'Enabled'
-        } else {
-          return 'Disabled'
-        }
+        return (row.enabled)
+          ? $t({ defaultMessage: 'Enabled' })
+          : $t({ defaultMessage: 'Disabled' })
       }
     }
   ]
