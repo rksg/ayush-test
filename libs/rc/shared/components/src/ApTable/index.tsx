@@ -182,9 +182,10 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (status: unknown, row : APExtended) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
           row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
 
           const afcInfo = row.apStatusData?.afcInfo
@@ -206,7 +207,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             </span>
           )
         } else {
-          return <APStatus status={status as ApDeviceStatusEnum} />
+          return <APStatus status={status.props.children} />
         }
         /* eslint-enable max-len */
       }
