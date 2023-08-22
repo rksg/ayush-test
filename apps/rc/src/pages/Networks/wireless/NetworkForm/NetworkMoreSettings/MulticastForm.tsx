@@ -66,7 +66,9 @@ export function MulticastForm () {
   )
 
   useEffect(() => {
-    setSwitchMulticastRateLimitingDisabled(!enableMulticastRateLimiting && enableMulticastFilter)
+    const multicastRateLimiting = form.getFieldValue(enableMulticastRateLimitingFieldName)
+    const multicastFilter = form.getFieldValue(enableMulticastFilterFieldName)
+    setSwitchMulticastRateLimitingDisabled(!multicastRateLimiting && multicastFilter)
   }, [])
 
   const handleMulticastFilterOnChange = (checked: boolean) => {

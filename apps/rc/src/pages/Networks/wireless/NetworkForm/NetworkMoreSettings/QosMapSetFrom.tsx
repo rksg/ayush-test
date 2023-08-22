@@ -440,17 +440,20 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
     return Promise.resolve()
   }
 
-  const validateDscp255 = (_:RuleObject, value: string) => {
+  const validateDscpLow255 = (_:RuleObject, value: string) => {
     const parsedValue = parseInt(value, 10)
-    if (parsedValue === 255 && (dscpLow !== 255 || dscpHigh !== 255)){
-      return Promise.reject($t(validationMessages.dscp255Value))
-    }else if(parsedValue !== 255 && (dscpLow === 255 || dscpHigh === 255)){
-      return Promise.reject($t(validationMessages.dscp255Value))
-    }else if(parsedValue === 255 && (dscpLow === 255 || dscpHigh === 255)){
-      return Promise.resolve()
-    }else{
+    if (parsedValue === 255 && dscpLow === 255) {
       return Promise.resolve()
     }
+    return Promise.reject($t(validationMessages.dscp255Value))
+  }
+
+  const validateDscpHigh255 = (_:RuleObject, value: string) => {
+    const parsedValue = parseInt(value, 10)
+    if (parsedValue === 255 && dscpHigh === 255) {
+      return Promise.resolve()
+    }
+    return Promise.reject($t(validationMessages.dscp255Value))
   }
 
   return (
@@ -503,7 +506,7 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
                 rules={[
                   { validator: validateDscpInputRange },
                   { validator: validateDscpLow },
-                  { validator: validateDscp255 },
+                  { validator: validateDscpHigh255 },
                   { validator: validateDscpLowOverlap },
                   { validator: validateDscpLowAlreadyMapped }
                 ]}
@@ -526,7 +529,7 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
                 rules={[
                   { validator: validateDscpInputRange },
                   { validator: validateDscpHigh },
-                  { validator: validateDscp255 },
+                  { validator: validateDscpLow255 },
                   { validator: validateDscpHighOverlap },
                   { validator: validateDscpHighAlreadyMapped }
                 ]}
