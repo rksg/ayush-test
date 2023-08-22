@@ -19,7 +19,7 @@ export function ClientAdmissionControlForm (props: {
   readOnly: boolean
   isEnabled: boolean,
   isMutuallyExclusive: boolean,
-	enabledFieldName: NamePath,
+  enabledFieldName: NamePath,
   minClientCountFieldName: NamePath,
   maxRadioLoadFieldName: NamePath,
   minClientThroughputFieldName: NamePath,
