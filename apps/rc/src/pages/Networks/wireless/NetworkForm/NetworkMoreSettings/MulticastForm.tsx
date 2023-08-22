@@ -33,13 +33,11 @@ export function MulticastForm () {
   const [
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
-    enableMulticastDownLimit,
-    enableMulticastFilter
+    enableMulticastDownLimit
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
-    useWatch<boolean>(enableMulticastDownLimitFieldName),
-    useWatch<boolean>(enableMulticastFilterFieldName)
+    useWatch<boolean>(enableMulticastDownLimitFieldName)
   ]
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
