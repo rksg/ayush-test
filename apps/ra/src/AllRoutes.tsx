@@ -15,6 +15,7 @@ import IncidentDetails from './pages/IncidentDetails'
 import Incidents       from './pages/Incidents'
 import Layout          from './pages/Layout'
 import Recommendations from './pages/Recommendations'
+import SearchResults   from './pages/SearchResults'
 
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function AllRoutes () {
@@ -40,6 +41,7 @@ function AllRoutes () {
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
+      <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin/*' element={<div>Admin</div>} />
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />

@@ -8,6 +8,7 @@ import {
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import { HomeSolid }     from '@acx-ui/icons'
+import { HeaderContext } from '@acx-ui/main/components'
 import {
   ActivityButton,
   AlarmsButton,
@@ -15,8 +16,8 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext,
-  RegionButton
+  RegionButton,
+  GlobalSearchBar
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -30,9 +31,9 @@ import { hasRoles, useUserProfileContext }                        from '@acx-ui/
 import { AccountType, getJwtTokenPayload, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-import SearchBar         from './SearchBar'
-import * as UI           from './styledComponents'
-import { useLogo }       from './useLogo'
+//import SearchBar         from './SearchBar'
+import * as UI     from './styledComponents'
+import { useLogo } from './useLogo'
 
 function Layout () {
   const { $t } = useIntl()
@@ -112,7 +113,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <SearchBar />
+          <GlobalSearchBar />
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         {isDelegationMode()
