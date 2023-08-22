@@ -15,7 +15,7 @@ import { mockServer,
 import { VenueEditContext }                from '../..'
 import { mockVenueClientAdmissionControl } from '../../../__tests__/fixtures'
 
-import { ClientAdmissionControl } from './ClientAdmissionControl'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
 
 
 const params = {
@@ -46,7 +46,7 @@ describe('Venue Client Admission Control', () => {
           setEditRadioContextData: jest.fn()
         }}>
           <Form>
-            <ClientAdmissionControl />
+            <ClientAdmissionControlSettings />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -78,7 +78,7 @@ describe('Venue Client Admission Control', () => {
           setEditRadioContextData: jest.fn()
         }}>
           <Form>
-            <ClientAdmissionControl />
+            <ClientAdmissionControlSettings />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -118,7 +118,7 @@ describe('Venue Client Admission Control', () => {
           setEditRadioContextData: jest.fn()
         }}>
           <Form>
-            <ClientAdmissionControl />
+            <ClientAdmissionControlSettings />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -160,7 +160,7 @@ describe('Venue Client Admission Control', () => {
           setEditRadioContextData: jest.fn()
         }}>
           <Form>
-            <ClientAdmissionControl />
+            <ClientAdmissionControlSettings />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {

@@ -2,6 +2,7 @@ import {
   Descriptions as AntDescriptions,
   DescriptionsProps
 } from 'antd'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 import styled, { css } from 'styled-components/macro'
 
 export const TextContent = styled.span`${props => props.onClick ? css`
@@ -24,4 +25,8 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
+`
+
+export const FixedAutoSizer = styled(AutoSizer)`
+  position: fixed;
 `
