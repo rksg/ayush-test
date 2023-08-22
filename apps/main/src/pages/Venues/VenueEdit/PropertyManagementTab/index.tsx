@@ -291,12 +291,12 @@ export function PropertyManagementTab () {
     const modal = AntModal['confirm']({})
 
     modal.update({
-      title: $t({ defaultMessage: 'Disable Property Management?' }),
+      title: $t({ defaultMessage: 'Delete Property Management?' }),
       content: <>
         {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
-        {confirmForm({ text: 'Disable', modal })}
+        {confirmForm({ text: 'Delete', modal })}
       </>,
-      okText: $t({ defaultMessage: 'Disable' }),
+      okText: $t({ defaultMessage: 'Delete' }),
       okButtonProps: { disabled: true },
       onOk: () => {callback()},
       icon: <> </>
