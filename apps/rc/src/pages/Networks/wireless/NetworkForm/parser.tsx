@@ -357,6 +357,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
   }
 
+  // clean the qosMirroringScope when qosMirroringEnabled is disabled
+  if (!get(data, 'wlan.advancedCustomization.qosMirroringEnabled')) {
+    advancedCustomization.qosMirroringScope = undefined
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,
@@ -375,10 +380,6 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
         ...data.guestPortal
       }
     }
-  }
-
-  if (!get(data, 'wlan.advancedCustomization.qosMirroringEnabled')) {
-    advancedCustomization.qosMirroringScope = undefined
   }
 
   if (saveData.dpskServiceProfileId === '') {
