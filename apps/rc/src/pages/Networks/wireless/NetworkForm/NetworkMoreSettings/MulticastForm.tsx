@@ -34,15 +34,11 @@ export function MulticastForm () {
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
     enableMulticastDownLimit,
-    enableMulticastUpLimit6G,
-    enableMulticastDownLimit6G,
     enableMulticastFilter
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
     useWatch<boolean>(enableMulticastDownLimitFieldName),
-    useWatch<boolean>(enableMulticastUpLimit6GFieldName),
-    useWatch<boolean>(enableMulticastDownLimit6GFieldName),
     useWatch<boolean>(enableMulticastFilterFieldName)
   ]
   const form = Form.useFormInstance()
