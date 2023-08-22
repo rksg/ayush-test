@@ -477,6 +477,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     importSubInterfacesCSV: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.importSubInterfacesCSV, params, {
+          ...ignoreErrorModal,
           'Content-Type': undefined
         })
         return {
