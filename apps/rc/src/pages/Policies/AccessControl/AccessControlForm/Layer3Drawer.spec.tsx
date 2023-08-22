@@ -18,6 +18,7 @@ const queryLayer3 = [
   {
     id: '233d3182a1aa49ee9f50aeb039347021',
     name: 'l3-010',
+    description: 'des',
     rulesCount: 1,
     networksCount: 0
   },
