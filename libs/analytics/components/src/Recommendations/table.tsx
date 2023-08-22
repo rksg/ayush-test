@@ -39,7 +39,7 @@ export interface RecommendationRow extends Recommendation {
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
   const { activeTab } = useParams()
-  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
+  return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
@@ -131,7 +131,6 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'summary',
       render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
       sorter: { compare: sortProp('summary', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     ...(showCrrm ? [] : [{
@@ -175,6 +174,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       dataIndex: 'id',
       width: 80,
       align: 'left',
+      className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

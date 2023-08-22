@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
-import { ReactNode, CSSProperties, useEffect } from 'react'
+import { ReactNode, CSSProperties } from 'react'
 
 import {
   Checkbox,
@@ -27,6 +27,8 @@ export function MulticastForm () {
   const enableMulticastRateLimitingFieldName = ['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']
   const enableMulticastUpLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']
   const enableMulticastDownLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']
+  const enableMulticastUpLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']
+  const enableMulticastDownLimit6GFieldName = ['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']
   const enableMulticastFilterFieldName = ['wlan', 'advancedCustomization', 'multicastFilterEnabled']
   const [
     enableMulticastRateLimiting,
@@ -37,20 +39,13 @@ export function MulticastForm () {
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
     useWatch<boolean>(enableMulticastDownLimitFieldName),
+    useWatch<boolean>(enableMulticastUpLimit6GFieldName),
+    useWatch<boolean>(enableMulticastDownLimit6GFieldName),
     useWatch<boolean>(enableMulticastFilterFieldName)
   ]
 
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
-
-
-  useEffect(() => {
-    let multicastRateLimitingSwitch = false
-    if(form.getFieldValue(enableMulticastUpLimitFieldName) || form.getFieldValue(enableMulticastDownLimitFieldName)) {
-      multicastRateLimitingSwitch = true
-    }
-    form.setFieldValue(enableMulticastRateLimitingFieldName, multicastRateLimitingSwitch )
-  }, [])
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
@@ -270,7 +265,7 @@ function getDLMax (value : String) : number {
   switch (value) {
     case BssMinRateEnum.VALUE_1: return 1
     case BssMinRateEnum.VALUE_2: return 1
-    case BssMinRateEnum.VALUE_5_5: return 3
+    case BssMinRateEnum.VALUE_5_5: return 2
     case BssMinRateEnum.VALUE_12: return 6
     case BssMinRateEnum.VALUE_24: return 12
     default: return 6

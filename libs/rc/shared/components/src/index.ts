@@ -25,7 +25,6 @@ export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
-export type { EdgeDhcpSettingFormData } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   AdminLogTable,
@@ -45,7 +44,7 @@ export {
 export { ImportFileDrawer, CsvSize, ImportFileDrawerType } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortPoeSettings } from './LanPortPoeSettings'
-export { LanPortSettings } from './LanPortSettings'
+export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
@@ -59,6 +58,10 @@ export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
+export {
+  ClientAdmissionControlForm,
+  ClientAdmissionControlTypeEnum
+} from './ClientAdmissionControlForm'
 export { StatusLight } from './StatusLight'
 export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
 export { SwitchInfoWidget } from './SwitchInfoWidget'

@@ -88,8 +88,8 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       dataIndex: 'upTime',
       align: 'center',
       width: 100,
-      render: (data) => {
-        return formatter('longDurationFormat')(data)
+      render: (_, { upTime }) => {
+        return formatter('longDurationFormat')(upTime ?? 0)
       }
     },
     {
@@ -118,7 +118,7 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       dataIndex: 'action',
       align: 'center',
       width: 80,
-      render: (data, row) => {
+      render: (_, row) => {
         return <ActivateSwitch row={row}/>
       }
     }
@@ -160,7 +160,10 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       'firewallName'
     ],
     sortField: 'name',
-    sortOrder: 'ASC'
+    sortOrder: 'ASC',
+    filters: {
+      wanPortEnabled: ['TRUE']
+    }
   }
 
   return (

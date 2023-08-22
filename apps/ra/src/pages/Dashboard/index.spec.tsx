@@ -9,7 +9,17 @@ jest.mock('@acx-ui/analytics/components', () => {
   return Object.fromEntries(sets)
 })
 
+const mockedUseLayoutContext = jest.fn()
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useLayoutContext: () => mockedUseLayoutContext(),
+  cssNumber: () => 20
+}))
+
 describe('Dashboard', () => {
+  beforeEach(() => mockedUseLayoutContext.mockReturnValue({ pageHeaderY: 100 }))
+  afterEach(() => jest.restoreAllMocks())
+
   it('renders correct components', async () => {
     render(<Dashboard />, { route: true })
 
@@ -18,41 +28,30 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
     expect(await screen.findByTestId('AIOperations')).toBeVisible()
   })
-})
 
-describe('useMonitorHeight', () => {
-  afterEach(() => jest.restoreAllMocks())
-  it('update height', async () => {
-    const box = { top: 100 } as DOMRect
-    jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue(box)
-
-    const { result, rerender } = renderHook(() => useMonitorHeight(100))
-    render(<div ref={result.current[1]} />)
-    rerender()
-
-    expect(result.current[0]).toEqual(window.innerHeight - box.top - 20)
-  })
-  it('fallback to minHeight if computed height lower', async () => {
-    const box = { top: window.innerHeight } as DOMRect
-    jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue(box)
-
-    const { result, rerender } = renderHook(() => useMonitorHeight(100))
-    render(<div ref={result.current[1]} />)
-    rerender()
-
-    expect(result.current[0]).toEqual(100)
-  })
-  it('update height on window resize', async () => {
-    const box = { top: 100 } as DOMRect
-    const spy = jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue(box)
-
-    const { result, rerender } = renderHook(() => useMonitorHeight(100))
-    render(<div ref={result.current[1]} />)
-    rerender()
-
-    spy.mockReturnValue({ ...box, top: 200 })
-    act(() => { window.dispatchEvent(new Event('resize')) })
-
-    expect(result.current[0]).toEqual(window.innerHeight - 200 - 20)
+  describe('useMonitorHeight', () => {
+    it('update height', async () => {
+      const { result } = renderHook(() => useMonitorHeight(100))
+      expect(result.current).toEqual(window.innerHeight - 100 - 20)
+    })
+    it('fallback to minHeight if computed height lower', async () => {
+      const { innerHeight } = window
+      Object.defineProperty(window, 'innerHeight',
+        { writable: true, configurable: true, value: 100 })
+      const { result } = renderHook(() => useMonitorHeight(100))
+      expect(result.current).toEqual(100)
+      Object.defineProperty(window, 'innerHeight',
+        { writable: true, configurable: true, value: innerHeight })
+    })
+    it('update height on window resize', async () => {
+      const { innerHeight } = window
+      Object.defineProperty(window, 'innerHeight',
+        { writable: true, configurable: true, value: 1000 })
+      const { result } = renderHook(() => useMonitorHeight(100))
+      act(() => { window.dispatchEvent(new Event('resize')) })
+      expect(result.current).toEqual(1000 - 100 - 20)
+      Object.defineProperty(window, 'innerHeight',
+        { writable: true, configurable: true, value: innerHeight })
+    })
   })
 })

@@ -24,13 +24,17 @@ const Container = styled.div`
   flex-direction: column;
   // Set flex to 1 for it to take up full width
   flex: 1;
+  // Prevent content from overflowing
+  min-width: 0;
 `
 
-export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<
+export const gridGap = 20
+
+export const GridRow = styled(AntRow).attrs({ gutter: [gridGap, gridGap] })<
   AntRowProps & { $divider?: boolean }
 >`${props => props.$divider
   ? css`
-    padding-bottom: 20px;
+    padding-bottom: ${gridGap}px;
     &:not(:last-of-type)::after {
       content: '';
       margin: 0 10px;

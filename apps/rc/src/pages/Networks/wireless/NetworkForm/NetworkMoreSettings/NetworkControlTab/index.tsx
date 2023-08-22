@@ -43,7 +43,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
   const labelWidth = '250px'
 
-  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const showSingleSessionIdAccounting = !isRadiusOptionsSupport

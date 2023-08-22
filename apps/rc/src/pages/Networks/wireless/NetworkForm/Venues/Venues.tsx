@@ -30,7 +30,8 @@ import {
   useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
   SchedulingModalState,
-  RadioTypeEnum
+  RadioTypeEnum,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -93,7 +94,10 @@ export function Venues () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = data?.wlan && data?.wlan.wlanSecurity === 'WPA3'
+  const isWPA3security = data?.wlan?.wlanSecurity &&
+                         [WlanSecurityEnum.WPA3,
+                           WlanSecurityEnum.OWE,
+                           WlanSecurityEnum.OWETransition].includes(data?.wlan.wlanSecurity)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -271,7 +275,7 @@ export function Venues () {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.aggregatedApStatus) { return 0 }
         return Object
           .values(row.aggregatedApStatus)
@@ -282,7 +286,7 @@ export function Venues () {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
-      render: function (activated, row) {
+      render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
@@ -295,7 +299,7 @@ export function Venues () {
           title={title}
           placement='bottom'><Switch
             disabled={disabled}
-            checked={Boolean(activated)}
+            checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
               handleActivateVenue(checked, [row])
@@ -309,7 +313,7 @@ export function Venues () {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: 80,
-      render: function (currentData, row) {
+      render: function (_, row) {
         return transformAps(getCurrentVenue(row),
           data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
@@ -319,7 +323,7 @@ export function Venues () {
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: 140,
-      render: function (currentData, row) {
+      render: function (_, row) {
         return transformRadios(getCurrentVenue(row),
           data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
@@ -328,7 +332,7 @@ export function Venues () {
       key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformScheduling(
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }

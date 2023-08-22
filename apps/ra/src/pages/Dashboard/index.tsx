@@ -1,34 +1,37 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { AIDrivenRRM, AIOperations, DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
-import { Card, PageHeader, RangePicker }                                     from '@acx-ui/components'
-import { useDashboardFilter, useDateFilter }                                 from '@acx-ui/utils'
+import {
+  Card,
+  PageHeader,
+  RangePicker,
+  cssNumber,
+  useLayoutContext
+} from '@acx-ui/components'
+import { useDashboardFilter, useDateFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export const useMonitorHeight = (minHeight: number): [number, React.RefObject<HTMLDivElement>] => {
+export const useMonitorHeight = (minHeight: number): number => {
   const [height, setHeight] = useState(minHeight)
-  const ref = useRef<HTMLDivElement>(null)
+  const { pageHeaderY } = useLayoutContext()
 
-  const updateScreenWidth = useCallback(() => {
-    const box = ref.current?.getBoundingClientRect()
-
-    const bottomSpace = 20
-    const nextHeight = window.innerHeight - Number(box?.top) - bottomSpace
+  const updateHeight = useCallback(() => {
+    const bottomSpace = cssNumber('--acx-content-vertical-space')
+    const nextHeight = window.innerHeight - pageHeaderY - bottomSpace
     setHeight(nextHeight < minHeight ? minHeight : nextHeight)
-  }, [minHeight])
+  }, [minHeight, pageHeaderY])
 
   useEffect(() => {
-    updateScreenWidth()
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
+  }, [updateHeight])
 
-    window.addEventListener('resize', updateScreenWidth)
-    return () => window.removeEventListener('resize', updateScreenWidth)
-  })
-
-  return [height, ref]
+  return height
 }
 
 export default function Dashboard () {
@@ -36,7 +39,7 @@ export default function Dashboard () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters } = useDashboardFilter()
 
-  const [height, elementRef] = useMonitorHeight(536)
+  const height = useMonitorHeight(536)
 
   return <>
     <PageHeader
@@ -51,7 +54,7 @@ export default function Dashboard () {
         />
       ]}
     />
-    <UI.Grid ref={elementRef} style={{ height }}>
+    <UI.Grid style={{ height }}>
       <div style={{ gridArea: 'a1' }}>
         <Card title={$t({ defaultMessage: 'Network Filter' })} />
       </div>

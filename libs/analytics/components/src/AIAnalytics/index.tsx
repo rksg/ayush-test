@@ -1,10 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { PageHeader, Tabs }                      from '@acx-ui/components'
+import { get }                                   from '@acx-ui/config'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { useConfigChange }          from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
@@ -28,6 +27,7 @@ interface Tab {
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
+  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -55,12 +55,12 @@ const useTabs = () : Tab[] => {
   ]
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') ? recommendationTab : []),
+    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : []),
     ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : [])
   ]
 }
 
-export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
+export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
@@ -70,7 +70,11 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
       pathname: `${basePath.pathname}/${tab}`
     })
   }
-
+  const { activeTab } = useParams()
+  const tabEnumKey = activeTab?.toUpperCase() as string
+  if (!tab) {
+    tab = AIAnalyticsTabEnum[tabEnumKey as keyof typeof AIAnalyticsTabEnum]
+  }
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
@@ -82,9 +86,7 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={get('IS_MLISA_SA')
-        ? tabs.find(({ key }) => key === tab)?.headerExtra
-        : filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

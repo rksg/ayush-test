@@ -1,8 +1,10 @@
 import styled from 'styled-components/macro'
 
+import { gridGap } from '@acx-ui/components'
+
 export const Grid = styled.div`
   display: grid;
-  grid-gap: 20px;
+  grid-gap: ${gridGap}px;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 1fr;
   grid-template-areas:

@@ -69,7 +69,7 @@ export const UpdateAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedRules',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
@@ -107,7 +107,7 @@ export const MergedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
@@ -140,7 +140,7 @@ export const RemovedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }
@@ -177,7 +177,7 @@ export const ChangedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'impactedItems',
       sorter: false,
       align: 'center',
-      render: (data, row)=>{
+      render: (_, row)=>{
         return getRulesInfo(row)
       }
     }

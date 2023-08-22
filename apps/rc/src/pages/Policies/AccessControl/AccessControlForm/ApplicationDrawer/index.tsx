@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, FormItemProps, Input, Select } from 'antd'
+import TextArea                               from 'antd/lib/input/TextArea'
 import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 import { useParams }                          from 'react-router-dom'
@@ -176,9 +177,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const [
     policyName,
+    description,
     applicationPolicyId
   ] = [
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
@@ -299,6 +302,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   useEffect(() => {
     if (appPolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
+      contentForm.setFieldValue('description', appPolicyInfo.description)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
       )] as ApplicationsRule[])
@@ -339,7 +343,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       dataIndex: 'ruleType',
       key: 'ruleType',
       sorter: { compare: sortProp('ruleType', defaultSort) },
-      render: (data, row) => {
+      render: (__, row) => {
         return _.startCase(row.ruleType)
       }
     },
@@ -354,7 +358,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       dataIndex: 'accessControl',
       key: 'accessControl',
       sorter: { compare: sortProp('accessControl', defaultSort) },
-      render: (data, row) => {
+      render: (__, row) => {
         return _.startCase(row.accessControl)
       }
     },
@@ -362,7 +366,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       title: $t({ defaultMessage: 'Details' }),
       dataIndex: 'details',
       key: 'details',
-      render: (data, row) => {
+      render: (_, row) => {
         return <GenDetailsContent editRow={row} />
       }
     }
@@ -375,6 +379,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     setApplicationsRule({} as ApplicationsRule)
     setApplicationsRuleList([] as ApplicationsRule[])
   }
@@ -448,7 +453,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           payload: {
             name: policyName,
             rules: transformedRules,
-            description: null,
+            description: description,
             tenantId: params.tenantId
           }
         }).unwrap()
@@ -466,7 +471,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             id: queryPolicyId,
             name: policyName,
             rules: transformedRules,
-            description: null,
+            description: description,
             tenantId: params.tenantId
           }
         }).unwrap()
@@ -537,6 +542,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
+    />
+    <DrawerFormItem
+      name='description'
+      label={$t({ defaultMessage: 'Description' })}
+      rules={[
+        { max: 255 }
+      ]}
+      children={<TextArea disabled={isViewMode()} />}
     />
     <DrawerFormItem
       name='applicationsRule'

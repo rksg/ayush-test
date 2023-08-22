@@ -2,11 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import * as CommonComponent from '@acx-ui/components'
-import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -18,7 +16,6 @@ import { mockEdgeList, mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import { EdgeDetailsPageHeader } from '.'
 
-const mockedShowActionModal = jest.fn()
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -76,7 +73,8 @@ describe('Edge Detail Page Header', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('More Actions'))
+    await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
+    expect((await screen.findAllByRole('menuitem')).length).toBe(3)
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
@@ -87,11 +85,13 @@ describe('Edge Detail Page Header', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Configure'))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
-      hash: '',
-      search: ''
+    await userEvent.click(screen.getByText('Configure'))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
+        hash: '',
+        search: ''
+      })
     })
   })
 
@@ -173,29 +173,125 @@ describe('Edge Detail Page Header', () => {
       expect(resetDialog).not.toBeVisible()
     })
   })
+})
 
-  it('should do nothing if serialNumber in URL is "undefined"', async () => {
-    let invalidParams: { tenantId: string, serialNumber: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: 'undefined' }
+describe('Edge Detail Page Header - action show up logic', () => {
+  const currentEdge = mockEdgeList.data[0]
+  let params: { tenantId: string, serialNumber: string } =
+  { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
-    jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
-      mockedShowActionModal
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.delete(
+        EdgeUrlsInfo.deleteEdge.url,
+        (req, res, ctx) => {
+          mockedDeleteApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.reboot.url,
+        (req, res, ctx) => {
+          mockedRebootApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.factoryReset.url,
+        (req, res, ctx) => {
+          mockedResetApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+      )
     )
+  })
 
+  it('should show reset & reboot in applying config status', async () => {
+    const applyingConfigData = {
+      ...mockEdgeList,
+      data: [{
+        ...mockEdgeList.data[0],
+        deviceStatus: EdgeStatusEnum.APPLYING_CONFIGURATION
+      }]
+    }
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(applyingConfigData))
+      ))
     render(
       <Provider>
         <EdgeDetailsPageHeader />
       </Provider>, {
-        route: { params: invalidParams }
+        route: { params }
       })
 
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
-    await userEvent.click(deleteBtn)
-
-    expect(mockedShowActionModal).toBeCalledTimes(0)
+    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 
+  it('should show reset & reboot in config failed status', async () => {
+    const configFailedData = {
+      ...mockEdgeList,
+      data: [{
+        ...mockEdgeList.data[0],
+        deviceStatus: EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED
+      }]
+    }
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(configFailedData))
+      ))
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
+  })
+
+  it('should show reset & reboot in FW update failed status', async () => {
+    const fwUpdateFailedData = {
+      ...mockEdgeList,
+      data: [{
+        ...mockEdgeList.data[0],
+        deviceStatus: EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
+      }]
+    }
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(fwUpdateFailedData))
+      ))
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
+  })
 })

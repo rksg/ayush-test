@@ -120,14 +120,14 @@ export function VenueSetting () {
       dataIndex: 'switches',
       align: 'center',
       sorter: true,
-      render: function (data) { return data ? data : 0 }
+      render: function (_, { switches }) { return switches ? switches : 0 }
     },
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return <Switch
           checked={form.getFieldValue('venues').includes(row.id)}
           onClick={(checked, event) => {

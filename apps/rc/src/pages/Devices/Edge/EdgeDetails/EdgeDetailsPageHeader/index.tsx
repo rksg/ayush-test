@@ -6,7 +6,7 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery
@@ -58,6 +58,33 @@ export const EdgeDetailsPageHeader = () => {
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
 
+  const menuConfig = [
+    {
+      label: $t({ defaultMessage: 'Reboot' }),
+      key: 'reboot',
+      showupstatus: [
+        EdgeStatusEnum.OPERATIONAL,
+        EdgeStatusEnum.APPLYING_CONFIGURATION,
+        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
+      ]
+    },
+    {
+      label: $t({ defaultMessage: 'Reset and Recover' }),
+      key: 'factoryReset',
+      showupstatus: [
+        EdgeStatusEnum.OPERATIONAL,
+        EdgeStatusEnum.APPLYING_CONFIGURATION,
+        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
+      ]
+    },
+    {
+      label: $t({ defaultMessage: 'Delete SmartEdge' }),
+      key: 'delete',
+      showupstatus: [...Object.values(EdgeStatusEnum)]
+    }
+  ] as { label: string, key: string, showupstatus?: EdgeStatusEnum[] } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!currentEdge) return
@@ -78,20 +105,17 @@ export const EdgeDetailsPageHeader = () => {
         return
     }
   }
-
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[{
-        label: $t({ defaultMessage: 'Reboot' }),
-        key: 'reboot'
-      }, {
-        label: $t({ defaultMessage: 'Reset and Recover' }),
-        key: 'factoryReset'
-      }, {
-        label: $t({ defaultMessage: 'Delete SmartEdge' }),
-        key: 'delete'
-      }].filter(item => currentEdgeOperational || item.key === 'delete')}
+      items={
+        menuConfig.filter(item =>
+          item.showupstatus?.includes(status)
+        ).map(item => {
+          delete item.showupstatus
+          return item
+        })
+      }
     />
   )
 
@@ -102,32 +126,33 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
-      extra={filterByAccess([
+      extra={[
         <RangePicker
-          key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>{()=>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>,
+          <Button
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )
