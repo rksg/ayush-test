@@ -33,7 +33,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo'
+  'clientInfo', 'detectApNeighbors'
 ]
 
 export const errorMessage = {
@@ -125,9 +125,6 @@ export const getErrorContent = (action: ErrorAction) => {
       type = 'info'
       needLogout = true
       break
-    case 404:
-      errorMsg = errorMessage.VALIDATION_ERROR
-      break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
       break
@@ -149,7 +146,7 @@ export const getErrorContent = (action: ErrorAction) => {
       if (countryInvalid) {
         errorMsg = errorMessage.COUNTRY_INVALID
       } else {
-        errorMsg = errorMessage.SERVER_ERROR
+        errorMsg = errorMessage.VALIDATION_ERROR
       }
       break
     default:

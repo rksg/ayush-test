@@ -36,8 +36,8 @@ jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', (
 jest.mock('./WifiConfigTab/RadioTab/RadioSettings', () => ({
   RadioSettings: () => <div data-testid='RadioSettings' />
 }))
-jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControl', () => ({
-  ClientAdmissionControl: () => <div data-testid='ClientAdmissionControl' />
+jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControlSettings', () => ({
+  ClientAdmissionControlSettings: () => <div data-testid='ClientAdmissionControlSettings' />
 }))
 jest.mock('./WifiConfigTab/RadioTab/LoadBalancing', () => ({
   LoadBalancing: () => <div data-testid='LoadBalancing' />

@@ -6,12 +6,35 @@ import {
   ApLanPortTypeEnum,
   ApModel,
   CapabilitiesApModel,
+  CapabilitiesLanPort,
   checkVlanMember,
   LanPort,
   VenueLanPorts,
   WifiApSetting,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
+
+
+export const ConvertPoeOutToFormData = (
+  lanPortsData: WifiApSetting | VenueLanPorts,
+  lanPortsCap: LanPort[] | CapabilitiesLanPort[]
+) => {
+  const newData = { ...lanPortsData }
+  const { poeOut, lanPorts = [] } = newData
+
+  if (poeOut === undefined) {
+    return undefined
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let poeOutObj: any = {}
+  for (let i=0; i<lanPorts.length; i++) {
+    if (lanPortsCap?.[i].isPoeOutPort) {
+      poeOutObj[i] = poeOut
+    }
+  }
+  return poeOutObj
+}
 
 export function LanPortSettings (props: {
   index: number,
