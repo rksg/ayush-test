@@ -46,7 +46,8 @@ import {
   APMeshSettings,
   MeshUplinkAp,
   ApRfNeighborsResponse,
-  ApLldpNeighborsResponse
+  ApLldpNeighborsResponse,
+  SupportCcdVenue
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -799,6 +800,13 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+        }
+      }
     })
   })
 })
@@ -874,7 +882,8 @@ export const {
   useDownloadApsCSVMutation,
   useLazyGetApRfNeighborsQuery,
   useLazyGetApLldpNeighborsQuery,
-  useDetectApNeighborsMutation
+  useDetectApNeighborsMutation,
+  useGetCcdSupportVenuesQuery
 } = apApi
 
 

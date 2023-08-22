@@ -480,6 +480,20 @@ export function colonSeparatedMacAddressRegExp (value: string){
   return Promise.resolve()
 }
 
+export function MacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  const regex = (includes(value, ':') || includes(value, '-'))
+    ? /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+    : (includes(value, '.'))
+      ? /^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/
+      : /^([0-9A-F]{12})$/
+
+  if (value && !regex.test(value.toUpperCase())) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function MacRegistrationFilterRegExp (value: string){
   const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
