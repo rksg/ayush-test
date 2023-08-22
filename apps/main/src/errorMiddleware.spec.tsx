@@ -58,6 +58,12 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 403 }
     } as unknown as ErrorAction).title).toBe('Session Expired')
   })
+  it('should handle 404', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 404 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Validation Error')
+  })
   it('should handle 408', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 408 } } },
@@ -108,7 +114,7 @@ describe('getErrorContent', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 422 } } },
       payload: {}
-    } as unknown as ErrorAction).title).toBe('Validation Error')
+    } as unknown as ErrorAction).title).toBe('Server Error')
     expect(getErrorContent({
       meta: {},
       payload: { originalStatus: 422, data: { error: { errors: [{ code: 'WIFI-10114' }] } } }
