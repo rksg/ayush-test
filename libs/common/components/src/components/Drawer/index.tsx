@@ -38,9 +38,9 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 let currentDrawer: {
-  ref: RefObject<boolean>,
-  onClose: CallableFunction
-}
+  ref: RefObject<boolean> | null,
+  onClose: CallableFunction | null
+} = { ref: null, onClose: null }
 
 export function useCloseOutsideClick (
   onClose: CallableFunction,
@@ -54,7 +54,15 @@ export function useCloseOutsideClick (
       currentDrawer = { ref: wasVisible, onClose }
     }
     wasVisible.current = visible
-  }, [onClose, footer, wasVisible, visible])
+  }, [onClose, footer, visible])
+  useEffect(() => {
+    return () => {
+      if (currentDrawer?.ref === wasVisible) {
+        wasVisible.current = false
+        currentDrawer = { ref: null, onClose: null }
+      }
+    }
+  }, [])
 }
 
 export const Drawer = (props: DrawerProps) => {
