@@ -18,10 +18,8 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-jest.mock('./Graph/DownloadRRMComparison', () => ({
-  DownloadRRMComparison: () => <div data-testid='downlaod-button'>RRM comparison</div>
-}))
-
+jest.mock('./Graph/DownloadRRMComparison', () =>
+  ({ DownloadRRMComparison: () => <div data-testid='download-button' /> }))
 
 describe('Recommendation Overview', () => {
   beforeEach(() => mockGet.mockClear())
@@ -115,7 +113,7 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Scheduled')).toBeVisible()
     expect(await screen.findByText('Date')).toBeVisible()
     expect(await screen.findByText('06/26/2023 06:04')).toBeVisible()
-    expect(await screen.findByTestId('downlaod-button')).toBeVisible()
+    expect(await screen.findByTestId('download-button')).toBeVisible()
   })
 
   it('should render correctly for low priority (client load)', async () => {

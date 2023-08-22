@@ -10,6 +10,7 @@ import { Kpis }                          from './Kpis'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
+import { StatusTrail }                   from './StatusTrail'
 import { Values }                        from './Values'
 
 const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
@@ -52,6 +53,7 @@ export const RecommendationDetails = () => {
       </GridCol>
       <GridCol col={{ span: 8 }}>
         <Kpis details={details} />
+        <StatusTrail details={details}/>
       </GridCol>
     </GridRow>
   </Loader>

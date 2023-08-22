@@ -4,13 +4,10 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { CloudRRMGraph }          from './Graph'
 import { EnhancedRecommendation } from './services'
-import { StatusTrail }            from './StatusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,
-  Title,
   CrrmValuesText,
   ValueDetails
 } from './styledComponents'
@@ -39,32 +36,22 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     }
   ]
 
-  return <GridRow>
-    <GridCol col={{ span: 16 }}>
-      <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
-      <DetailsWrapper>
-        <Card type='solid-bg'>
-          <GridRow>
-            {fields
-              .filter(({ value }) => value !== null)
-              .map(({ label, value }, ind) => <Fragment key={ind}>
-                <GridCol col={{ span: 8 }}>{label}</GridCol>
-                <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
-              </Fragment>)}
-          </GridRow>
-          <CrrmValuesText>
-            {recommendationText.actionText}
-          </CrrmValuesText>
-        </Card>
-      </DetailsWrapper>
-      <CloudRRMGraph/>
-    </GridCol>
-    <GridCol col={{ span: 8 }}>
-      <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
-      {recommendationText.reasonText}
-      <Title>{$t({ defaultMessage: 'Potential trade-off' })}</Title>
-      {recommendationText.tradeoffText}
-      <StatusTrail details={details}/>
-    </GridCol>
-  </GridRow>
+  return <>
+    <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
+    <DetailsWrapper>
+      <Card type='solid-bg'>
+        <GridRow>
+          {fields
+            .filter(({ value }) => value !== null)
+            .map(({ label, value }, ind) => <Fragment key={ind}>
+              <GridCol col={{ span: 8 }}>{label}</GridCol>
+              <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
+            </Fragment>)}
+        </GridRow>
+        <CrrmValuesText>
+          {recommendationText.actionText}
+        </CrrmValuesText>
+      </Card>
+    </DetailsWrapper>
+  </>
 }

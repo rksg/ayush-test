@@ -8,9 +8,12 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
 import { CrrmValues }                    from './CrrmValues'
+import { CrrmValuesExtra }               from './CrrmValuesExtra'
+import { CloudRRMGraph }                 from './Graph'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
+import { StatusTrail }                   from './StatusTrail'
 
 const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
@@ -47,8 +50,13 @@ export const CrrmDetails = () => {
           </div>)}
         </FixedAutoSizer>
       </GridCol>
-      <GridCol col={{ span: 20 }}>
+      <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
+        <CloudRRMGraph/>
+      </GridCol>
+      <GridCol col={{ span: 6 }}>
+        <CrrmValuesExtra details={details}/>
+        <StatusTrail details={details}/>
       </GridCol>
     </GridRow>
   </Loader>

@@ -5,18 +5,20 @@ import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMnew
 } from './__tests__/fixtures'
-import { CrrmValues }               from './CrrmValues'
+import { CrrmValuesExtra }          from './CrrmValuesExtra'
 import { transformDetailsResponse } from './services'
 
-describe('CrrmValues', () => {
+describe('CrrmValuesExtra', () => {
   it('should render correctly for new crrm', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
-    render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
-    expect(await screen.findByText('Recommended Configuration')).toBeVisible()
+    render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
+    expect(await screen
+      .findByText(/^Based on our AI Analytics, enabling AI-Driven Cloud RRM will/)).toBeVisible()
   })
   it('should render correctly for applied crrm', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
-    render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
-    expect(await screen.findByText('Original Configuration')).toBeVisible()
+    render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
+    expect(await screen
+      .findByText(/^AI-Driven Cloud RRM will constantly monitor the network/)).toBeVisible()
   })
 })

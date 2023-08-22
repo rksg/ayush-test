@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-
 import {
   mockedRecommendationCRRM,
   mockedRecommendationPower,

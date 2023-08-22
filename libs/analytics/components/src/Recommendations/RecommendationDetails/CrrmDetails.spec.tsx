@@ -4,13 +4,12 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { mockedRecommendationCRRM } from './__tests__/fixtures'
 import { CrrmDetails }              from './CrrmDetails'
 
-jest.mock('./Overview', () => ({
-  Overview: () => <div data-testid='Overview'>Overview</div>
-}))
-
-jest.mock('./CrrmValues', () => ({
-  CrrmValues: () => <div data-testid='CrrmValues'>CrrmValues</div>
-}))
+jest.mock('./Overview', () => ({ Overview: () => <div data-testid='Overview' /> }))
+jest.mock('./CrrmValues', () => ({ CrrmValues: () => <div data-testid='CrrmValues' /> }))
+jest.mock('./Graph', () => ({ CloudRRMGraph: () => <div data-testid='CloudRRMGraph' /> }))
+jest.mock('./CrrmValuesExtra', () =>
+  ({ CrrmValuesExtra: () => <div data-testid='CrrmValuesExtra' /> }))
+jest.mock('./StatusTrail', () => ({ StatusTrail: () => <div data-testid='StatusTrail' /> }))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -35,5 +34,8 @@ describe('CrrmDetails', () => {
 
     expect(await screen.findByTestId('Overview')).toBeVisible()
     expect(await screen.findByTestId('CrrmValues')).toBeVisible()
+    expect(await screen.findByTestId('CloudRRMGraph')).toBeVisible()
+    expect(await screen.findByTestId('CrrmValuesExtra')).toBeVisible()
+    expect(await screen.findByTestId('StatusTrail')).toBeVisible()
   })
 })

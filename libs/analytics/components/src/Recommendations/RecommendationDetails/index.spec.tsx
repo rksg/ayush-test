@@ -5,17 +5,10 @@ import { mockedRecommendationFirmware } from './__tests__/fixtures'
 
 import { RecommendationDetails } from '.'
 
-jest.mock('./Overview', () => ({
-  Overview: () => <div data-testid='Overview'>Overview</div>
-}))
-
-jest.mock('./Kpis', () => ({
-  Kpis: () => <div data-testid='Kpis'>Kpis</div>
-}))
-
-jest.mock('./Values', () => ({
-  Values: () => <div data-testid='Values'>Values</div>
-}))
+jest.mock('./Overview', () => ({ Overview: () => <div data-testid='Overview' /> }))
+jest.mock('./Kpis', () => ({ Kpis: () => <div data-testid='Kpis' /> }))
+jest.mock('./StatusTrail', () => ({ StatusTrail: () => <div data-testid='StatusTrail' /> }))
+jest.mock('./Values', () => ({ Values: () => <div data-testid='Values' /> }))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -37,6 +30,7 @@ describe('RecommendationDetails', () => {
     })
     expect(await screen.findByTestId('Overview')).toBeVisible()
     expect(await screen.findByTestId('Kpis')).toBeVisible()
+    expect(await screen.findByTestId('StatusTrail')).toBeVisible()
     expect(await screen.findByTestId('Values')).toBeVisible()
     await waitFor(async () => {
       expect(await screen.findByText('Zone firmware upgrade')).toBeVisible()
