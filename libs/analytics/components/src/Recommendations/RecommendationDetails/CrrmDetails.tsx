@@ -19,11 +19,10 @@ export const CrrmDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'recommendations/crrm'
-  const codeQuery = useRecommendationDetailsQuery([{ id: id }])
-
+  const codeQuery = useRecommendationDetailsQuery([{ id: id }], { skip: id ? false : true })
   const detailsQuery = useRecommendationDetailsQuery(
     codeQuery.data!,
-    { skip: !Boolean(codeQuery.data?.[0].code) })
+    { skip: codeQuery.data ? !Boolean(codeQuery.data?.[0].code) : true })
   const details = detailsQuery.data?.[0]
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader

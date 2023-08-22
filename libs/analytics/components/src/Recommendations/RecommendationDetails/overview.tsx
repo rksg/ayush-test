@@ -9,6 +9,7 @@ import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
 import { DescriptionSection }     from '../../DescriptionSection'
 import { codes, statusTrailMsgs } from '../config'
+import { Priority, PriorityIcon } from '../styledComponents'
 import { checkOptimized }         from '../Widgets/AIDrivenRRM'
 import { OptimizedIcon }          from '../Widgets/styledComponents'
 
@@ -58,7 +59,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const [visible, setVisible] = useState(false)
   const {
     statusTrail, category, sliceValue, status, code, id,
-    appliedOnce, kpi_number_of_interfering_links
+    appliedOnce, kpi_number_of_interfering_links, priority
   } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
@@ -88,13 +89,20 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
 
   const crrmText = optimized ? optimizedText : nonOptimizedText
 
+  const Icon = () => <Priority>
+    <PriorityIcon value={priority.order} />
+    <span>{$t(priority.label)}</span>
+  </Priority>
+
   const Optimized = () => <div style={{ display: 'flex' }}>
     <OptimizedIcon value={optimized ? 0 : 1} />
     <span style={{ paddingTop: 5 }}>{optimized ? 'Optimized' : 'Non-optimized'}</span>
   </div>
 
   const fields = [
-    { label: $t({ defaultMessage: 'Zone RRM' }), children: <Optimized /> },
+    ...(isRrm
+      ? [{ label: $t({ defaultMessage: 'Zone RRM' }), children: <Optimized /> }]
+      : [{ label: $t({ defaultMessage: 'Priority' }), children: <Icon /> }]),
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
