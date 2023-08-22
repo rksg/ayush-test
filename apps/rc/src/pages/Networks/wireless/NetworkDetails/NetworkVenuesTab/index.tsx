@@ -169,7 +169,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(network?.wlan.wlanSecurity)
+    const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE].includes(network?.wlan.wlanSecurity)
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -219,7 +219,7 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(network?.wlan.wlanSecurity)
+      const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE].includes(network?.wlan.wlanSecurity)
       if (triBandRadioFeatureFlag && isWPA3security) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }

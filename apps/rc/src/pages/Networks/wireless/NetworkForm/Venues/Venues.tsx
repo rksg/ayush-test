@@ -96,8 +96,7 @@ export function Venues () {
   const prevIsWPA3securityRef = useRef(false)
   const isWPA3security = data?.wlan?.wlanSecurity &&
                          [WlanSecurityEnum.WPA3,
-                           WlanSecurityEnum.OWE,
-                           WlanSecurityEnum.OWETransition].includes(data?.wlan.wlanSecurity)
+                           WlanSecurityEnum.OWE].includes(data?.wlan.wlanSecurity)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
