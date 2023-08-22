@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
-import { get }                           from 'lodash'
-import { useIntl }                       from 'react-intl'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { MultiLinkOperationOptions } from 'libs/rc/shared/utils/src/models/MultiLinkOperationOptions'
+import { get, isUndefined }          from 'lodash'
+import { useIntl }                   from 'react-intl'
 
 import { Tooltip }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
@@ -13,13 +15,6 @@ import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
-
-interface MultiLinkOperationOptions {
-  enable24G: boolean
-  enable50G: boolean
-  enable6G: boolean
-}
-
 interface Option {
   index: number
   name: string
@@ -28,8 +23,6 @@ interface Option {
   disabled: boolean
 }
 
-const LABEL_OF_6GHZ = '6 GHz'
-
 export const getInitMloOptions = (mloOption: {
   enable24G?: boolean
   enable50G?: boolean
@@ -37,16 +30,17 @@ export const getInitMloOptions = (mloOption: {
 } | undefined) : MultiLinkOperationOptions => {
   if (mloOption &&
           Object.values(mloOption).filter(value =>
-            typeof value === 'undefined').length === 0) {
+            isUndefined(value)).length === 0) {
     return {
-      enable24G: typeof mloOption.enable24G === 'undefined' ? true : mloOption.enable24G,
-      enable50G: typeof mloOption.enable50G === 'undefined' ? true : mloOption.enable50G,
-      enable6G: typeof mloOption.enable6G === 'undefined' ? false : mloOption.enable6G
-    }
+      enable24G: mloOption.enable24G,
+      enable50G: mloOption.enable50G,
+      enable6G: mloOption.enable6G
+    } as MultiLinkOperationOptions
   }
 
   return getDefaultMloOptions()
 }
+
 export const sortOptions = (options: Option[]) => options.sort((a, b) => a.index - b.index)
 
 export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkOperationOptions => {
@@ -56,8 +50,6 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
     enable6G: options.find(option => option.name === 'enable6G')?.value || false
   }
 }
-
-export const is6GHz = (option: Option) => option.label === LABEL_OF_6GHZ
 
 export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
   if (!wlanSecurity)
@@ -85,7 +77,7 @@ export const disabledUnCheckOption = (options: Option[]) => {
   return [...checkedOptions, ...newStateOfUnCheckedOptions]
 }
 
-export const enableAll = (options: Option[]) => {
+export const enableAllRadioCheckboxes = (options: Option[]) => {
   const newOptions = options.map(option =>
     ({ ...option, disabled: false })
   )
@@ -98,7 +90,7 @@ export const handleDisabledOfOptions = (options: Option[]) => {
   const numberOfSelected = options.filter(option => option.value).length
 
   return (numberOfSelected === MAX_SELECTED_LIMIT) ?
-    disabledUnCheckOption(options) : enableAll(options)
+    disabledUnCheckOption(options) : enableAllRadioCheckboxes(options)
 }
 
 export const getDefaultMloOptions = (): MultiLinkOperationOptions => ({
@@ -107,33 +99,36 @@ export const getDefaultMloOptions = (): MultiLinkOperationOptions => ({
   enable6G: false
 })
 
-export const getInitialOptions = (mloOptions: MultiLinkOperationOptions): Option[] => {
-  const initOptions = [
+export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels: {
+  labelOf24G: string,
+  labelOf50G: string,
+  labelOf60G: string,
+}): Option[] => {
+  const initOptions: Option[] = [
     {
       index: 0,
       name: 'enable24G',
-      value: mloOptions.enable24G,
-      label: '2.4 GHz',
+      value: isUndefined(mloOptions.enable24G) ? true: mloOptions.enable24G,
+      label: labels.labelOf24G,
       disabled: false
     },
     {
       index: 1,
       name: 'enable50G',
-      value: mloOptions.enable50G,
-      label: '5 GHz',
+      value: isUndefined(mloOptions.enable50G) ? true: mloOptions.enable50G,
+      label: labels.labelOf50G,
       disabled: false
     },
     {
       index: 2,
       name: 'enable6G',
-      value: mloOptions.enable6G,
-      label: LABEL_OF_6GHZ,
+      value: isUndefined(mloOptions.enable6G) ? false: mloOptions.enable6G,
+      label: labels.labelOf60G,
       disabled: false
     }
   ]
-  const updatedOptions = handleDisabledOfOptions(initOptions)
 
-  return sortOptions(updatedOptions)
+  return handleDisabledOfOptions(initOptions)
 }
 
 const { useWatch } = Form
@@ -142,10 +137,15 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
+  const labels = {
+    labelOf24G: $t({ defaultMessage: '2.4 GHz' }),
+    labelOf50G: $t({ defaultMessage: '5 GHz' }),
+    labelOf60G: $t({ defaultMessage: '6 GHz' })
+  }
   const dataMloOptions =
           wlanData?.wlan?.advancedCustomization?.multiLinkOperationOptions
   const mloOptions = getInitMloOptions(dataMloOptions)
-  const initOptions = getInitialOptions(mloOptions)
+  const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
   const isEnabled6GHz = isEnableOptionOf6GHz(wlanData?.wlan?.wlanSecurity)
@@ -161,34 +161,13 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
 
   useEffect(() => {
     const resetCheckboxGroup = () => {
-      const initOptions = [
-        {
-          index: 0,
-          name: 'enable24G',
-          value: true,
-          label: '2.4 GHz',
-          disabled: false
-        },
-        {
-          index: 1,
-          name: 'enable50G',
-          value: true,
-          label: '5 GHz',
-          disabled: false
-        },
-        {
-          index: 2,
-          name: 'enable6G',
-          value: false,
-          label: LABEL_OF_6GHZ,
-          disabled: false
-        }
-      ]
+      const defaultMloOptions = getDefaultMloOptions()
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'],
+        defaultMloOptions)
+
+      const initOptions = getInitialOptions(defaultMloOptions, labels)
       const updatedOptions = disabledUnCheckOption(initOptions)
-      const sortedUpdatedOptions = sortOptions(updatedOptions)
-      setOptions(sortedUpdatedOptions)
-      const mloOptions = covertToMultiLinkOperationOptions(sortedUpdatedOptions)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationOptions'], mloOptions)
+      setOptions(updatedOptions)
     }
 
     if (!isEnabled6GHz) {
@@ -226,7 +205,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       children={
         <>
           { sortOptions(options).map((option, key) => {
-            if (is6GHz(option) && !isEnabled6GHz) {
+            if (option.name === 'enable6G' && !isEnabled6GHz) {
               return (
                 <Tooltip
                   key={key}
@@ -270,11 +249,12 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
     />
   )
 }
+
 export const getInitMloEnabled = (wlanData: NetworkSaveData | null, initWifi7Enabled: boolean) => {
   const dataMloEnabled =
           get(wlanData, ['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
 
-  return typeof dataMloEnabled === 'undefined' ? false : initWifi7Enabled && dataMloEnabled
+  return isUndefined(dataMloEnabled) ? false : initWifi7Enabled && dataMloEnabled
 }
 
 function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {

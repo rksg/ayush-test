@@ -11,7 +11,7 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import WiFi7, {
   disabledUnCheckOption,
-  enableAll,
+  enableAllRadioCheckboxes,
   getInitMloEnabled,
   getInitMloOptions,
   inverseTargetValue,
@@ -320,7 +320,7 @@ describe('test enableAll func', () => {
       }
     ]
 
-    const actuals = enableAll(options)
+    const actuals = enableAllRadioCheckboxes(options)
 
     expecteds.forEach(expected => expect(actuals).toContainEqual(expected))
   })

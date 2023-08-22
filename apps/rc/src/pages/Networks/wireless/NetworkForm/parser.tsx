@@ -357,6 +357,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
   }
 
+  // clean multiLinkOperationOptions when multiLinkOperationEnabled is false
+  if (!get(data, 'wlan.advancedCustomization.multiLinkOperationEnabled')) {
+    advancedCustomization.multiLinkOperationOptions = undefined
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,
@@ -375,11 +380,6 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
         ...data.guestPortal
       }
     }
-  }
-
-  // clean multiLinkOperationOptions when multiLinkOperationEnabled is false
-  if (!get(data, 'wlan.advancedCustomization.multiLinkOperationEnabled')) {
-    advancedCustomization.multiLinkOperationOptions = undefined
   }
 
   if (saveData.dpskServiceProfileId === '') {
