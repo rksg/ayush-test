@@ -17,7 +17,7 @@ type AIDrivenRRMProps = {
 }
 
 export const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
-  const optimizedStates = ['applied', 'applyscheduleinprogress', 'applied']
+  const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
   return recommendation?.filter(detail => optimizedStates.includes(detail.status))
 }
 
