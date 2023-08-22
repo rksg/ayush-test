@@ -67,7 +67,7 @@ describe('AP Led', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('Access Point LED'))
+    await waitFor(() => screen.findByText('Access Point LEDs'))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
     expect(await screen.findByTestId('ApLed-text')).toBeVisible()
@@ -100,7 +100,7 @@ describe('AP Led', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('Access Point LED'))
+    await waitFor(() => screen.findByText('Access Point LEDs'))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
     expect(await screen.findByTestId('ApLed-text')).toBeVisible()

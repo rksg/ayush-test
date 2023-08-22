@@ -43,7 +43,7 @@ export function AdvancedTab () {
     && apCapabilities?.support11AX
 
 
-  const apLedTitle = $t({ defaultMessage: 'Access Point LED' })
+  const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
   const bssColoringTitle = $t({ defaultMessage: 'BSS Coloring' })
 
   const anchorItems = [
