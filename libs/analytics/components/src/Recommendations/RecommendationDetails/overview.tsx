@@ -60,6 +60,18 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
+  const applied = details.appliedOnce && status !== 'reverted'
+  const before = applied
+    ? details.kpi_number_of_interfering_links?.previous
+    : details.kpi_number_of_interfering_links?.current
+  const after = applied
+    ? details.kpi_number_of_interfering_links?.current
+    : details.kpi_number_of_interfering_links?.projected || 0
+  const crrmText = $t({
+    defaultMessage:
+      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
+    description: 'Translation string - interfering, link, links, can be optimised to'
+  }, { before, after })
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
     <span>{$t(priority.label)}</span>
@@ -69,9 +81,11 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
-    { label: get('IS_MLISA_SA')
-      ? $t({ defaultMessage: 'Zone' })
-      : $t({ defaultMessage: 'Venue' }), children: sliceValue },
+    ...(isRrm ? [] : [{
+      label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
+      children: sliceValue
+    }]),
+    ...(isRrm ? [{ label: $t({ defaultMessage: 'Summary' }), children: crrmText }] : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 
