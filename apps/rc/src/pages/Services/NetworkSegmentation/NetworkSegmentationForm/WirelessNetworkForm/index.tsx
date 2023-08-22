@@ -41,6 +41,7 @@ export const WirelessNetworkForm = () => {
   useState<{ label: string; value: string; }[]|undefined>(undefined)
   const [isFilterNetworksLoading, setIsFilterNetworksLoading] = useState(true)
   const venueId = useWatch('venueId', form)
+  const venueName = useWatch('venueName', form)
 
   const { tunnelProfileList , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
@@ -168,6 +169,13 @@ export const WirelessNetworkForm = () => {
                           <Checkbox value={item.value} children={item.label} key={item.value} />
                         ))
                       }
+                      <UI.Description>
+                        {
+                          !unusedNetworkOptions?.length &&
+                            $t({ defaultMessage: 'No networks activated on Venue ({venueName})' },
+                              { venueName: venueName })
+                        }
+                      </UI.Description>
                     </Space>
                   </Checkbox.Group>
                 }
