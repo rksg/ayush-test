@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { Space }    from 'antd'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
@@ -94,9 +93,7 @@ export const CloudRRMGraph = () => {
             queryResult.data,
             recommendation.data.monitoring,
             bandwidthMapping[recommendation.data?.band])}
-          <Space>
-            <DownloadRRMComparison />
-          </Space>
+          <DownloadRRMComparison />
         </DrawerGraphWrapper>
       }/>
   </Wrapper>

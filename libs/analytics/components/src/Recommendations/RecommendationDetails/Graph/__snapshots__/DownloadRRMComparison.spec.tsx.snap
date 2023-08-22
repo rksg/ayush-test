@@ -2,7 +2,9 @@
 
 exports[`DownloadRRMComparison disable download button when monitoring 1`] = `
 <DocumentFragment>
-  <span>
+  <div
+    class="sc-ezWOiH fOFIGf"
+  >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
@@ -20,6 +22,6 @@ exports[`DownloadRRMComparison disable download button when monitoring 1`] = `
         </span>
       </button>
     </div>
-  </span>
+  </div>
 </DocumentFragment>
 `;

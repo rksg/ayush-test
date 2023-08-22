@@ -30,6 +30,10 @@ export const GraphWrapper = styled.div`
   width: 100%;
 `
 
+export const DownloadWrapper = styled.div`
+  width: fit-content;
+`
+
 export const DrawerGraphWrapper = styled.div`
   display: grid;
   grid-template-columns: 3fr 3fr 1fr;
@@ -37,7 +41,7 @@ export const DrawerGraphWrapper = styled.div`
   gap: 10px;
   width: 100%;
   height: 100%;
-  .ant-space {
+  ${DownloadWrapper} {
     grid-column-start: 1;
     grid-column-end: 3;
     grid-row-start: 2;
@@ -64,13 +68,16 @@ export const LegendWrapper = styled.div`
 
 export const LegendTitle = styled.div`
   color: var(--acx-primary-black);
-  font-size: 12px;
-  font-weight: bold;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight);
   `
 
 export const LegendText = styled.div`
   color: var(--acx-primary-black);
-  font-size: 12px;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-body-font-weight);
 `
 
 export const Circle = styled.span<{ $size: string }>`
@@ -85,8 +92,8 @@ export const Circle = styled.span<{ $size: string }>`
 export const Square = styled.span<{ $color: string }>`
   background-color: ${props => props.$color};
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   justify-self: end;
 `
 

@@ -4,8 +4,8 @@ import { scalePow }                        from 'd3-scale'
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import PropTypes                           from 'prop-types'
 
-import { cssStr }         from '../../theme/helper'
-import { tooltipOptions } from '../Chart/helper'
+import { cssStr, cssNumber } from '../../theme/helper'
+import { tooltipOptions }    from '../Chart/helper'
 
 import { categoryStyles, tooltipFormatter } from './helper'
 import * as Type                            from './type'
@@ -53,22 +53,25 @@ export function Graph (props: GraphProps) {
     title: {
       text: props.title,
       textStyle: {
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: cssStr('--acx-primary-black')
+        color: cssStr('--acx-primary-black'),
+        fontFamily: cssStr('--acx-neutral-brand-font'),
+        fontSize: cssNumber('--acx-subtitle-4-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-4-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-4-font-weight')
       },
       ...(props.subtext ? {
         subtext: props.subtext,
         subtextStyle: {
-          fontWeight: 'lighter',
-          fontSize: 12,
           color: cssStr('--acx-primary-black'),
+          fontFamily: cssStr('--acx-neutral-brand-font'),
+          fontSize: cssNumber('--acx-body-4-font-size'),
+          lineHeight: cssNumber('--acx-body-4-line-height'),
+          fontWeight: cssNumber('--acx-body-font-weight'),
           width: 500,
-          overflow: 'break',
-          lineHeight: 15
+          overflow: 'break'
         }
       } : {}),
-      itemGap: 5,
+      itemGap: 3,
       top: 15,
       left: 15
     },

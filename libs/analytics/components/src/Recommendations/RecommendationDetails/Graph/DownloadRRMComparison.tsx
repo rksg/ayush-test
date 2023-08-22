@@ -8,7 +8,8 @@ import { Button, Loader, recommendationBandMapping, SuspenseBoundary } from '@ac
 import { formatter }                                                   from '@acx-ui/formatter'
 import { DownloadOutlined }                                            from '@acx-ui/icons'
 
-import { useCRRMQuery } from './services'
+import { useCRRMQuery }    from './services'
+import { DownloadWrapper } from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -35,13 +36,16 @@ export function DownloadRRMComparison (props: { title?: string }) {
     kebabCase(formatter('radioFormat')(band).toLowerCase())
   ].join('-') + '.csv')
 
-  return <span><Loader states={[recommendation, queryResult]} fallback={<Spinner size='default' />}>
-    <Button
-      size='small'
-      disabled={!!recommendation.data?.monitoring}
-      icon={<DownloadOutlined/>}
-      download={filename}
-      href={url}
-    >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button></Loader></span>
+  return <DownloadWrapper>
+    <Loader states={[recommendation, queryResult]} fallback={<Spinner size='default' />}>
+      <Button
+        size='small'
+        disabled={!!recommendation.data?.monitoring}
+        icon={<DownloadOutlined/>}
+        download={filename}
+        href={url}
+      >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button>
+    </Loader>
+  </DownloadWrapper>
 }
 

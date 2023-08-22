@@ -145,19 +145,23 @@ exports[`Graph should match snapshot 1`] = `
             stroke-width="0"
           />
           <path
-            d="M-5 -5l17 0l0 11l-17 0Z"
+            d="M-5 -5l17 0l0 30l-17 0Z"
             fill="rgb(0,0,0)"
             fill-opacity="0"
             stroke="#ccc"
             stroke-width="0"
           />
+          <path
+            d="M0 0l7 0l0 20l-7 0Z"
+            fill="none"
+          />
           <text
             dominant-baseline="central"
             fill="#333333"
-            style="font-size:14px;font-family:sans-serif;font-weight:bold;"
+            style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:600;"
             text-anchor="start"
             transform="translate(20 20)"
-            y="0.5"
+            y="10"
           >
             Current
           </text>
@@ -208,33 +212,37 @@ exports[`Graph should match snapshot when subtext is provided 1`] = `
         />
         <g>
           <path
-            d="M-5 -5l17 0l0 31l-17 0Z"
+            d="M-5 -5l17 0l0 49l-17 0Z"
             fill="rgb(0,0,0)"
             fill-opacity="0"
             stroke="#ccc"
             stroke-width="0"
           />
-          <text
-            dominant-baseline="central"
-            fill="#333333"
-            style="font-size:14px;font-family:sans-serif;font-weight:bold;"
-            text-anchor="start"
-            transform="translate(20 20)"
-            y="0.5"
-          >
-            Current
-          </text>
           <path
-            d="M0 6l7 0l0 15l-7 0Z"
+            d="M0 0l7 0l0 20l-7 0Z"
             fill="none"
           />
           <text
             dominant-baseline="central"
             fill="#333333"
-            style="font-size:12px;font-family:sans-serif;font-weight:lighter;"
+            style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:600;"
             text-anchor="start"
             transform="translate(20 20)"
-            y="13.5"
+            y="10"
+          >
+            Current
+          </text>
+          <path
+            d="M0 23l7 0l0 16l-7 0Z"
+            fill="none"
+          />
+          <text
+            dominant-baseline="central"
+            fill="#333333"
+            style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+            text-anchor="start"
+            transform="translate(20 20)"
+            y="31"
           >
             Subtext
           </text>
@@ -285,19 +293,23 @@ exports[`Graph should match snapshot when there are no nodes or links 1`] = `
         />
         <g>
           <path
-            d="M-5 -5l17 0l0 11l-17 0Z"
+            d="M-5 -5l17 0l0 30l-17 0Z"
             fill="rgb(0,0,0)"
             fill-opacity="0"
             stroke="#ccc"
             stroke-width="0"
           />
+          <path
+            d="M0 0l7 0l0 20l-7 0Z"
+            fill="none"
+          />
           <text
             dominant-baseline="central"
             fill="#333333"
-            style="font-size:14px;font-family:sans-serif;font-weight:bold;"
+            style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:600;"
             text-anchor="start"
             transform="translate(20 20)"
-            y="0.5"
+            y="10"
           >
             Current
           </text>
