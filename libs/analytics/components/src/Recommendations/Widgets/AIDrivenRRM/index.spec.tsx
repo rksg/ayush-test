@@ -34,12 +34,25 @@ describe('AIDrivenRRM dashboard', () => {
       data: expectedDetailData
     })
 
+    const payload = [
+      { id: '1', code: 'c-crrm-channel5g-auto' },
+      { id: '2', code: 'c-crrm-channel24g-auto' },
+      { id: '3', code: 'c-crrm-channel6g-auto' }
+    ]
+    const { status, data, error } = await store.dispatch(
+      recommendationDetailsApi.endpoints.recommendationDetails.initiate(payload)
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toBeDefined()
+
     render(<AIDrivenRRM filters={filters} />, {
       route: true,
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await new Promise((r)=>{setTimeout(r, 1000)}) // wait for second recommendationDetailsQuery
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText(

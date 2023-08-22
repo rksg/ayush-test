@@ -36,10 +36,10 @@ function AIDrivenRRMWidget ({
     return { id: data.id }
   })
 
-  const codeQuery = useRecommendationDetailsQuery(data!)
+  const codeQuery = useRecommendationDetailsQuery(data!, { skip: data ? data.length === 0 : true })
   const detailsQuery = useRecommendationDetailsQuery(
     codeQuery.data?.filter(i => i.code) as EnhancedRecommendation[],
-    { skip: codeQuery.data?.filter(i => i.code).length === 0 })
+    { skip: codeQuery.data ? codeQuery.data?.filter(i => i.code).length === 0 : true })
   const detailedRecommendation = detailsQuery.data
   const optimized = checkOptimized(detailedRecommendation as EnhancedRecommendation[])?.length
   // eslint-disable-next-line max-len
@@ -89,7 +89,7 @@ function AIDrivenRRMWidget ({
     </UI.Detail>
   })
 
-  return <Loader states={[queryResults]}>
+  return <Loader states={[queryResults, codeQuery, detailsQuery]}>
     <Card title={title} subTitle={subTitle}>
       <AutoSizer>
         {({ width }) => (
