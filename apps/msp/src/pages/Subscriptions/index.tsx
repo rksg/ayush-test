@@ -214,12 +214,12 @@ export function Subscriptions () {
       if (summaryData.length > 0 || assignedData.length > 0) {
         summaryData.forEach(summary => {
           quantity += summary.quantity + summary.courtesyQuantity
-          used += summary.quantity + summary.courtesyQuantity - summary.remainingLicenses
           courtesy += summary.courtesyQuantity
         })
 
         assignedData.forEach(summary => {
           assigned += summary.myAssignments || 0
+          used += summary.quantity
         })
 
         // including to display 0 quantity.
