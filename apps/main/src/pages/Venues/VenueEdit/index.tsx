@@ -184,6 +184,10 @@ function processWifiTab (
         editRadioContextData?.updateLoadBalancing?.()
       }
 
+      if (editRadioContextData.isClientAdmissionControlDataChanged) {
+        editRadioContextData?.updateClientAdmissionControl?.()
+      }
+
       break
     case 'security':
       editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)

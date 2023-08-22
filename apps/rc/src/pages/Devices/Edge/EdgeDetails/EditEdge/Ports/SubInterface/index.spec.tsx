@@ -184,8 +184,8 @@ describe('EditEdge ports - sub-interface', () => {
 
     await screen.findAllByRole('columnheader')
     await userEvent.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    const dialog = await screen.findByTestId('subDialog')
-    expect(within(dialog).queryByText('visible')).toBeValid()
+    const addFormDialog = await screen.findByTestId('subDialog')
+    expect(within(addFormDialog).queryByText('visible')).toBeValid()
     act(() => {
       // eslint-disable-next-line max-len
       result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
