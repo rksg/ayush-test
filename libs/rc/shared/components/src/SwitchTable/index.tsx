@@ -431,6 +431,19 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
+
+    if (customFilters.deviceStatus?.includes(SwitchStatusEnum.FIRMWARE_UPD_START)) {
+      customFilters.deviceStatus = [
+        SwitchStatusEnum.FIRMWARE_UPD_START,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS,
+        SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE,
+        SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE,
+        SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH,
+        SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      ]
+    }
+
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
