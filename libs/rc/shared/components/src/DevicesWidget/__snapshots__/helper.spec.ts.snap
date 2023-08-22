@@ -85,7 +85,7 @@ Array [
     "series": Array [
       Object {
         "name": "<0>In Setup Phase",
-        "value": 0,
+        "value": 7,
       },
       Object {
         "name": "<1>Requires Attention",
@@ -111,7 +111,7 @@ Array [
     "series": Array [
       Object {
         "name": "<0>In Setup Phase",
-        "value": 0,
+        "value": 1,
       },
       Object {
         "name": "<1>Requires Attention",

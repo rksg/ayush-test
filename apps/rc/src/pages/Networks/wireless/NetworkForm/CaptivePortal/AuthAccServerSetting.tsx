@@ -104,8 +104,8 @@ export function AuthAccServerSetting () {
             {proxyServiceTooltip}
           </Form.Item>}
         </>}
-        <Form.Item name={['guestPortal','wisprPage','accountingRadius']} noStyle/>
-        <Form.Item name={['guestPortal','wisprPage','authRadius']} noStyle/>
+        <Form.Item name={['guestPortal','wisprPage','accountingRadius']} children={<></>} noStyle/>
+        <Form.Item name={['guestPortal','wisprPage','authRadius']} children={<></>} noStyle/>
       </div>
     </Space>
   )

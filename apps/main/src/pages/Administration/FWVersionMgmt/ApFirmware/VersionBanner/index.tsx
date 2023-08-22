@@ -1,21 +1,27 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import {
-  useGetLatestFirmwareListQuery
+  useGetAvailableABFListQuery
 } from '@acx-ui/rc/services'
+import { ABFVersion, FirmwareCategory } from '@acx-ui/rc/utils'
 
-import { FirmwareBanner }     from '../../FirmwareBanner'
-import { getReleaseFirmware } from '../../FirmwareUtils'
-import { useApEolFirmware }   from '../VenueFirmwareList/useApEolFirmware'
+import { FirmwareBanner }   from '../../FirmwareBanner'
+import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  const versions = getReleaseFirmware(latestReleaseVersions)
-  const firmware = versions[0]
+  const { latestActiveVersions } = useGetAvailableABFListQuery({}, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        latestActiveVersions: data
+          ? data.filter(abfVersion => abfVersion.abf === 'active')
+          : []
+      }
+    }
+  })
+  const firmware = getRecommendedFirmware(latestActiveVersions)[0]
   const { latestEolVersionByABFs } = useApEolFirmware()
 
   if (!firmware) return null
@@ -26,7 +32,7 @@ export const VersionBanner = () => {
       firmware: {
         version: firmware.name,
         category: firmware.category,
-        releaseDate: firmware.onboardDate ?? firmware.createdDate
+        releaseDate: firmware.releaseDate
       }
     },
     ...(latestEolVersionByABFs.map(item => ({
@@ -34,7 +40,7 @@ export const VersionBanner = () => {
       firmware: {
         version: item.name,
         category: item.category,
-        releaseDate: item.onboardDate
+        releaseDate: item.releaseDate
       }
     })))
   ]
@@ -45,3 +51,10 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
+
+function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []): ABFVersion[] {
+  return firmwareVersions.filter((abf: ABFVersion) => {
+    // eslint-disable-next-line max-len
+    return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
+  })
+}

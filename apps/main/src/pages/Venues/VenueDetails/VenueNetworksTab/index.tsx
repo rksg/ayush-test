@@ -154,8 +154,8 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && row.deepNetwork.wlan &&
-              row.deepNetwork.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
+          if (triBandRadioFeatureFlag && row.deepNetwork.wlan?.wlanSecurity &&
+               [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(row.deepNetwork.wlan.wlanSecurity)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })

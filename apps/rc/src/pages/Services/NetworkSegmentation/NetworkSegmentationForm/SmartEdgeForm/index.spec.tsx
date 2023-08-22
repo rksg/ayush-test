@@ -93,11 +93,13 @@ describe('SmartEdgeForm', () => {
     )
   })
 
-  it.skip('Add DHCP service', async () => {
+  it('Add DHCP service', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsForm><SmartEdgeForm /></StepsForm>
+        <StepsForm buttonLabel={{ submit: 'mockedAdd' }}>
+          <SmartEdgeForm />
+        </StepsForm>
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -108,6 +110,7 @@ describe('SmartEdgeForm', () => {
     )
 
     await user.click(await screen.findByRole('button', { name: 'Add' }))
+    await screen.findByRole('dialog')
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
