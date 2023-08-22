@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { MultiLinkOperationOptions } from 'libs/rc/shared/utils/src/models/MultiLinkOperationOptions'
-import { get, isUndefined }          from 'lodash'
-import { useIntl }                   from 'react-intl'
+import { get, isUndefined }              from 'lodash'
+import { useIntl }                       from 'react-intl'
 
-import { Tooltip }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { InformationSolid }                  from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { InformationSolid }                                             from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -23,23 +21,20 @@ interface Option {
   disabled: boolean
 }
 
-export const getInitMloOptions = (mloOption: {
-  enable24G?: boolean
-  enable50G?: boolean
-  enable6G?: boolean
-} | undefined) : MultiLinkOperationOptions => {
-  if (mloOption &&
+export const getInitMloOptions =
+        (mloOption: MultiLinkOperationOptions | undefined) : MultiLinkOperationOptions => {
+          if (mloOption &&
           Object.values(mloOption).filter(value =>
             isUndefined(value)).length === 0) {
-    return {
-      enable24G: mloOption.enable24G,
-      enable50G: mloOption.enable50G,
-      enable6G: mloOption.enable6G
-    } as MultiLinkOperationOptions
-  }
+            return {
+              enable24G: mloOption.enable24G,
+              enable50G: mloOption.enable50G,
+              enable6G: mloOption.enable6G
+            } as MultiLinkOperationOptions
+          }
 
-  return getDefaultMloOptions()
-}
+          return getDefaultMloOptions()
+        }
 
 export const sortOptions = (options: Option[]) => options.sort((a, b) => a.index - b.index)
 
