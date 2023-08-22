@@ -182,7 +182,7 @@ export const EventTable = ({
       enableApiFilter={true}
       iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
-    {visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
       visible={visible}
       onClose={() => setVisible(false)}

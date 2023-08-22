@@ -172,7 +172,7 @@ export const WirelessNetworkForm = () => {
                       <UI.Description>
                         {
                           !unusedNetworkOptions?.length &&
-                            $t({ defaultMessage: 'No networks activated on {venueName}' },
+                            $t({ defaultMessage: 'No networks activated on Venue ({venueName})' },
                               { venueName: venueName })
                         }
                       </UI.Description>
