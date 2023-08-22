@@ -1,8 +1,9 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Col, Row }  from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { Col, Row }            from 'antd'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { Loader, NoData, showActionModal, Table, TableProps, Tabs }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
@@ -208,6 +209,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
                 templateLink={importTemplateLink}
                 visible={importModalvisible}
                 isLoading={uploadCSVResult.isLoading}
+                importError={uploadCSVResult.error as FetchBaseQueryError}
                 importRequest={importSubInterfaces}
                 onClose={() => setImportModalvisible(false)}
               />}
