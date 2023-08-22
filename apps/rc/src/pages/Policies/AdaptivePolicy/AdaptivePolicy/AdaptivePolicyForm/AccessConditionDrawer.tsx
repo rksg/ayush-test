@@ -185,7 +185,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           attributeType !== 'DATE_RANGE' ?
             <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
               name='attributeValue'
-              rules={[{ required: true }]}
+              rules={[{ required: true }, { max: 255 }]}
               children={<Input />}/>
             : <>
               <Form.Item label={$t({ defaultMessage: 'When' })}

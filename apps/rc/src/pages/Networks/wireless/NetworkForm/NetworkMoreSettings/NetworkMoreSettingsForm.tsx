@@ -7,6 +7,7 @@ import { get }                    from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                     from '@acx-ui/components'
+import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -17,6 +18,7 @@ import { NetworkingTab }     from './NetworkingTab'
 import { RadioTab }          from './RadioTab'
 import * as UI               from './styledComponents'
 import { VlanTab }           from './VlanTab'
+
 
 
 export function NetworkMoreSettingsForm (props: {
@@ -95,7 +97,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
-  const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
+  const isSupportQosMap = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
 
   const [currentTab, setCurrentTab] = useState('vlan')
 
