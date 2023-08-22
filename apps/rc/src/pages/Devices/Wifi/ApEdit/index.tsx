@@ -145,6 +145,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
   switch(editContextData?.unsavedTabKey){
     case 'radio':
       editRadioContextData.updateWifiRadio?.()
+      editRadioContextData.updateClientAdmissionControl?.()
       editRadioContextData.updateExternalAntenna?.()
       break
     case 'networking':
@@ -178,6 +179,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
   switch(editContextData?.unsavedTabKey){
     case 'radio':
       editRadioContextData.discardWifiRadioChanges?.()
+      editRadioContextData.discardClientAdmissionControlChanges?.()
       editRadioContextData.discardExternalAntennaChanges?.()
       break
     case 'networking':
@@ -228,6 +230,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       const newRadioContextData = { ...editRadioContextData }
       delete newRadioContextData.updateWifiRadio
       delete newRadioContextData.discardWifiRadioChanges
+      delete newRadioContextData.updateClientAdmissionControl
+      delete newRadioContextData.discardClientAdmissionControlChanges
       delete newRadioContextData.updateExternalAntenna
       delete newRadioContextData.discardWifiRadioChanges
 
