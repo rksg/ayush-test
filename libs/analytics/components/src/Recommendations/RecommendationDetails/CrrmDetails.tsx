@@ -19,11 +19,12 @@ export const CrrmDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'recommendations/crrm'
-  const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
+  const codeQuery = useRecommendationDetailsQuery([{ id: id }])
+
   const detailsQuery = useRecommendationDetailsQuery(
-    { ...(codeQuery.data!) },
-    { skip: !Boolean(codeQuery.data?.code) })
-  const details = detailsQuery.data!
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data?.[0].code) })
+  const details = detailsQuery.data?.[0]
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
       title={impactedArea(details?.path, details?.sliceValue)}
@@ -39,7 +40,7 @@ export const CrrmDetails = () => {
         type: $t(crrm)
       }} />]}
     />}
-    <GridRow>
+    {details && <GridRow>
       <GridCol col={{ span: 3 }}>
         <FixedAutoSizer>
           {({ width }) => (<div style={{ width }}>
@@ -50,6 +51,6 @@ export const CrrmDetails = () => {
       <GridCol col={{ span: 21 }}>
         <CrrmValues details={details}/>
       </GridCol>
-    </GridRow>
+    </GridRow>}
   </Loader>
 }

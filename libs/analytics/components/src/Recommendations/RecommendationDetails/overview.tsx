@@ -9,7 +9,8 @@ import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
 import { DescriptionSection }     from '../../DescriptionSection'
 import { codes, statusTrailMsgs } from '../config'
-import { Priority, PriorityIcon } from '../styledComponents'
+import { checkOptimized }         from '../Widgets/AIDrivenRRM'
+import { OptimizedIcon }          from '../Widgets/styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -55,28 +56,45 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { priority, statusTrail, category, sliceValue, status, code, id } = details
+  const {
+    statusTrail, category, sliceValue, status, code, id,
+    appliedOnce, kpi_number_of_interfering_links
+  } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
-  const applied = details.appliedOnce && status !== 'reverted'
-  const before = applied
-    ? details.kpi_number_of_interfering_links?.previous
-    : details.kpi_number_of_interfering_links?.current
-  const after = applied
-    ? details.kpi_number_of_interfering_links?.current
-    : details.kpi_number_of_interfering_links?.projected || 0
-  const crrmText = $t({
+  const optimized = checkOptimized([details])?.length !== 0 ? true : false
+
+  const applied = appliedOnce && status !== 'reverted'
+  const before = (applied
+    ? kpi_number_of_interfering_links?.previous
+    : kpi_number_of_interfering_links?.current) || 0
+  const after = (applied
+    ? kpi_number_of_interfering_links?.current
+    : kpi_number_of_interfering_links?.projected) || 0
+
+  const optimizedText = $t({
     defaultMessage:
+      'From {before} to {after} interfering {after, plural, one {link} other {links}}',
+    description: 'Translation string - From, to, interfering, link, links'
+  }, { before, after })
+
+  const nonOptimizedText = $t({
+    defaultMessage:
+    // eslint-disable-next-line max-len
       '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
     description: 'Translation string - interfering, link, links, can be optimised to'
   }, { before, after })
-  const Icon = () => <Priority>
-    <PriorityIcon value={priority.order} />
-    <span>{$t(priority.label)}</span>
-  </Priority>
+
+  const crrmText = optimized ? optimizedText : nonOptimizedText
+
+  const Optimized = () => <div style={{ display: 'flex' }}>
+    <OptimizedIcon value={optimized ? 0 : 1} />
+    <span style={{ paddingTop: 5 }}>{optimized ? 'Optimized' : 'Non-optimized'}</span>
+  </div>
+
   const fields = [
-    { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
+    { label: $t({ defaultMessage: 'Zone RRM' }), children: <Optimized /> },
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),

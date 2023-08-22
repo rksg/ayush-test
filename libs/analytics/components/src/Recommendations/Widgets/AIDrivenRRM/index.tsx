@@ -16,7 +16,7 @@ type AIDrivenRRMProps = {
   filters: AnalyticsFilter
 }
 
-const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
+export const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
   const optimizedStates = ['applied', 'applyscheduleinprogress', 'applied']
   return recommendation?.filter(detail => optimizedStates.includes(detail.status))
 }
@@ -24,12 +24,11 @@ const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
 function AIDrivenRRMWidget ({
   filters
 }: AIDrivenRRMProps) {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const queryResults = useRecommendationListQuery(filters)
   const crrmData = queryResults?.data?.filter((row) =>
     (true === row.code.includes('crrm'))
   )
-  const { $t } = intl
   const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const total = crrmData?.length
   const noData = total === 0
