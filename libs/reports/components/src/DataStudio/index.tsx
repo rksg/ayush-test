@@ -10,8 +10,7 @@ export const getHostName = (origin: string) => {
     return get('IS_MLISA_SA') ?
       'https://staging.mlisa.io'
       :
-      // 'https://dev.ruckus.cloud'
-      'https://alto.local.mlisa.io'
+      'https://dev.ruckus.cloud'
 
   return origin
 }
