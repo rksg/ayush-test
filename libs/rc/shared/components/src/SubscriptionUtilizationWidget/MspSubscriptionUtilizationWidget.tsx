@@ -1,4 +1,5 @@
 import { Tooltip, Typography } from 'antd'
+import { useIntl }             from 'react-intl'
 
 import { cssStr, StackedBarChart } from '@acx-ui/components'
 import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
@@ -18,6 +19,7 @@ interface MspSubscriptionUtilizationWidgetProps {
 }
 
 export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizationWidgetProps) => {
+  const { $t } = useIntl()
   const {
     deviceType,
     title,
@@ -71,11 +73,11 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
     </SpaceWrapper>
     <div style={{ marginTop: '15px' }}>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[0] }} />
-      <span >MSP EC ({used})</span>
+      <span >{$t({ defaultMessage: 'MSP EC' })} ({used})</span>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
-      <span >MSP Assigned ({assigned})</span>
+      <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
-      <span >Pending ({total - used - assigned})</span>
+      <span >{$t({ defaultMessage: 'Pending' })} ({total - used - assigned})</span>
     </div>
 
   </>
