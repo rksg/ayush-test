@@ -45,6 +45,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   } else {
     versionOptions = [...copyAvailableVersions]
   }
+  // first GA just support one firmware version
   // otherVersions = copyAvailableVersions.slice(1)
 
   // const otherOptions = otherVersions.map((version) => {
@@ -105,6 +106,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                     {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   {
+                    // first GA just support one firmware version
                     // otherVersions.length > 0 ?
                     //   <Radio value={VersionsSelectMode.Dropdown}>
                     //     <Form.Item name='selectedVersion'>
