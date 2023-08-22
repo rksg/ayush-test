@@ -54,7 +54,7 @@ export function downloadIncidentList (
     return keys.map((key) => {
       if(key === 'severity')
         key = 'severityLabel'
-      return obj[key as keyof Incident]
+      return `"${obj[key as keyof Incident]}"`
     }).join(separator)
   })
   return handleBlobDownloadFile(
