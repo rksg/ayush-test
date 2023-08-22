@@ -1,9 +1,12 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, SummaryCard }            from '@acx-ui/components'
-import { EdgeFirewallGroupedStatsTables } from '@acx-ui/rc/components'
-import { useGetEdgeFirewallQuery }        from '@acx-ui/rc/services'
+import { Loader, SummaryCard }                                    from '@acx-ui/components'
+import { EdgeFirewallGroupedStatsTables, EdgeServiceStatusLight } from '@acx-ui/rc/components'
+import {
+  useGetEdgeFirewallQuery,
+  useGetEdgeFirewallViewDataListQuery
+} from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeStatus,
@@ -30,6 +33,27 @@ const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
   } = useGetEdgeFirewallQuery({ params: { serviceId } },
     { skip: !!!serviceId })
 
+  const getEdgeFirewallViewDataPayload = {
+    fields: [
+      'tenantId',
+      'id',
+      'firewallName',
+      'edgeIds',
+      'edgeAlarmSummary'
+    ],
+    filters: { id: [serviceId] }
+  }
+  const { edgeAlarmSummary } = useGetEdgeFirewallViewDataListQuery(
+    { payload: getEdgeFirewallViewDataPayload },
+    {
+      selectFromResult: ({ data }) => ({
+        edgeAlarmSummary: data?.data?.[0].edgeAlarmSummary?.find(
+          item => item.edgeId.toLocaleLowerCase() === edgeData.serialNumber.toLocaleLowerCase()
+        )
+      })
+    }
+  )
+
   const infoFields = edgeFirewallData ? [
     {
       title: $t({ defaultMessage: 'Service Name' }),
@@ -44,7 +68,9 @@ const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
     {
       title: $t({ defaultMessage: 'Service Health' }),
       // TODO: query statistic data and aggregate with rules.
-      content: () => (<></>)
+      content: () => (
+        <EdgeServiceStatusLight data={edgeAlarmSummary ? [edgeAlarmSummary] : []} />
+      )
     },
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),

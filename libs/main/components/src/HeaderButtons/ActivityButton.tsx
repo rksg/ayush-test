@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
@@ -44,8 +45,8 @@ export default function ActivityButton () {
   const basePath = useTenantLink('/timeline')
   const [status, setStatus] = useState('all')
   const [detail, setDetail] = useState<Activity>()
-  const [detailModal, setDetailModalOpen] = useState<boolean>()
-  const [activityModal, setActivityModalOpen] = useState<boolean>()
+  const [detailModal, setDetailModalOpen] = useState<boolean>(false)
+  const [activityModal, setActivityModalOpen] = useState<boolean>(false)
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -64,7 +65,7 @@ export default function ActivityButton () {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        ...tableQuery.payload.filters as Payload['filters'],
+        ..._.omit(tableQuery.payload.filters as Payload['filters'], ['status']),
         ...(status === 'all' ? {} : { status: [status] })
       }
     })
@@ -186,12 +187,10 @@ export default function ActivityButton () {
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
       visible={activityModal}
-      onClose={() => {
-        setActivityModalOpen(false)
-      }}
+      onClose={() => setActivityModalOpen(false)}
       children={activityList}
     />
-    {detailModal && <TimelineDrawer
+    {detail && <TimelineDrawer
       width={464}
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}

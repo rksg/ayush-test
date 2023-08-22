@@ -24,5 +24,6 @@ export const Wrapper = styled.section`
   li {
     list-style-position: inside;
     margin-block-end: 1em;
+    &:last-of-type { margin-block-end: 0; }
   }
 `

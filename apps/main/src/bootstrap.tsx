@@ -60,6 +60,7 @@ export function loadMessages (locales: readonly string[]): LangKey {
 
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  script.setAttribute('nonce', 'pendo-inline-script')
   script.defer = true
   // @ts-ignore
   const key = get('PENDO_API_KEY')
@@ -122,10 +123,11 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
-  const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
+  const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
 
-  const lang = userPreflang? userPreflang : defaultLang
-
+  // this condition userPreflang !== DEFAULT_SYS_LANG is needed when FF is off
+  // need to be cleaned up once FF acx-ui-i18n-phase2-toggle is globally enabled
+  const lang = userPreflang !== DEFAULT_SYS_LANG? userPreflang : defaultLang
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: result.isLoading || result.isFetching

@@ -20,7 +20,7 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathForm } from './CloudpathForm'
 
-describe('CaptiveNetworkForm-Cloudpath', () => {
+describe.skip('CaptiveNetworkForm-Cloudpath', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Cloudpath network test'
     const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',

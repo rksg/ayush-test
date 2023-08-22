@@ -270,6 +270,7 @@ export const Buttons = styled(Space)`
 
 export const ApplyMsgWrapper = styled.div`
   padding: 0 12px;
+  white-space: normal;
 `
 
 export const HiddenDateInput = styled.div`
@@ -278,31 +279,23 @@ export const HiddenDateInput = styled.div`
 
   ${datePickerStyle}
 
-  .datepicker input {
-    height: 0px;
-    width: 0px;
-    padding: 0px;
-    width: 0px;
-    position: absolute;
-  }
-
-  .datepicker {
+  .ant-picker-borderless {
+    > .ant-picker-input > input {
+      height: 0px;
+      width: 0px;
+      padding: 0px;
+      position: absolute;
+    }
     border: 0px;
     padding: 0px;
-    
-    .ant-picker-input {
-      height: 24px;
-      width: 24px;
+  }
+  .ant-picker-panel {
+    .ant-picker-footer {
+      display: block;
+      border-top: 0px;
     }
-
-    .ant-picker-panel {
-      .ant-picker-footer {
-        display: block;
-        border-top: 0px;
-      }
-      .ant-picker-footer-extra {
-        padding: 0px;
-      }
+    .ant-picker-footer-extra {
+      padding: 0px;
     }
   }
 `
@@ -311,6 +304,7 @@ export const FooterWrapper = styled.div`
   line-height: 20px;
   font-size: 9.5px;
   margin-top: 5px;
+  width: 280px;
 
   button {
     float: right;
@@ -331,18 +325,6 @@ export const FooterWrapper = styled.div`
       .ant-picker-ranges {
         display: none;
       }
-    }
-  }
-
-  ${TimePickerWrapper} {
-    input {
-      display: block;
-      height: auto;
-      width: 30px;
-    }
-    .ant-picker-input {
-      justify-content: flex-end;
-      height: 15px;
     }
   }
 `

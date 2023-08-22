@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
@@ -100,6 +101,7 @@ const ActivityTable = ({
   const columns: TableProps<Activity>['columns'] = [
     {
       key: 'startDatetime',
+      width: 135,
       title: $t({ defaultMessage: 'Date' }),
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
@@ -144,12 +146,14 @@ const ActivityTable = ({
     },
     {
       key: 'name',
+      width: 220,
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: ['admin', 'name'],
       sorter: true
     },
     {
       key: 'description',
+      width: Infinity,
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       render: function (_, row) {
@@ -197,10 +201,10 @@ const ActivityTable = ({
       enableApiFilter={true}
       columnState={columnState}
     />
-    {current && visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
-      onClose={()=>setVisible(false)}
+      onClose={() => setVisible(false)}
       data={getDrawerData(current)}
       width={464}
       activity={current}

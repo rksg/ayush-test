@@ -23,7 +23,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
     accountingRadiusId: data.accountingRadiusId,
-    authRadiusId: data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {
@@ -159,7 +159,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     accountingRadiusId: data.accountingRadiusId,
-    authRadiusId: data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {

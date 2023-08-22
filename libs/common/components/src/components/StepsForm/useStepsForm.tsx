@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { Col, Form, Row, Space, Steps }    from 'antd'
 import _                                   from 'lodash'
+import { ValidateErrorEntity }             from 'rc-field-form/es/interface'
 import { useIntl }                         from 'react-intl'
 import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
 
@@ -26,6 +27,7 @@ type UseStepsFormParam <T> = Omit<
   defaultFormValues?: Partial<T>
   current?: number
   onFinish?: (values: T) => Promise<boolean | void>
+  onFinishFailed?: (errorInfo: ValidateErrorEntity) => void
   onCancel?: (values: T) => void
 
   steps: React.ReactElement<InternalStepFormProps<T>>[]
@@ -44,6 +46,7 @@ export function useStepsForm <T> ({
   buttonLabel = {},
   onFinish,
   onCancel,
+  onFinishFailed,
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
@@ -66,7 +69,9 @@ export function useStepsForm <T> ({
   function handleAsyncSubmit <T> (promise: Promise<T>) {
     const timeout = setTimeout(setLoading, 50, true)
     return promise
-      .catch(() => {/* do nothing */})
+      .catch((errorInfo: ValidateErrorEntity) => {
+        currentStep?.props.onFinishFailed?.(errorInfo)
+      })
       .finally(() => {
         clearTimeout(timeout)
         setLoading(false)
@@ -124,7 +129,8 @@ export function useStepsForm <T> ({
     initialValues: config.defaultFormValues,
     requiredMark: true,
     preserve: true,
-    disabled: submitting
+    disabled: submitting,
+    onFinishFailed: onFinishFailed
   }
 
   const stepsProps: StepsProps = {
@@ -152,7 +158,7 @@ export function useStepsForm <T> ({
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
     apply: $t({ defaultMessage: 'Apply' }),
-    submit: $t({ defaultMessage: 'Finish' }),
+    submit: $t({ defaultMessage: 'Add' }),
     pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' }),
     ...buttonLabel

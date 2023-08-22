@@ -174,7 +174,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -183,7 +183,7 @@ function useColumns () {
               serviceId: row.id!,
               activeTab: DpskDetailsTabKey.OVERVIEW
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -195,11 +195,11 @@ function useColumns () {
       sorter: true,
       filterKey: 'passphraseFormat',
       filterable: passphraseFormatOptions,
-      render: function (data) {
+      render: function (_, { passphraseFormat }) {
         return transformDpskNetwork(
           intl,
           DpskNetworkType.FORMAT,
-          data as string
+          passphraseFormat
         )
       }
     },
@@ -214,7 +214,7 @@ function useColumns () {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformAdvancedDpskExpirationText(
           intl,
           {
@@ -230,7 +230,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.networkIds || row.networkIds.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)

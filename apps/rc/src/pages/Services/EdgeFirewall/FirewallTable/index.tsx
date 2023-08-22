@@ -12,6 +12,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeFirewallMutation,
   useGetEdgeFirewallViewDataListQuery,
@@ -84,7 +85,7 @@ const FirewallTable = () => {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -93,7 +94,7 @@ const FirewallTable = () => {
               serviceId: row.id!
             })}
           >
-            {data}
+            {row.firewallName}
           </TenantLink>
         )
       }
@@ -104,7 +105,7 @@ const FirewallTable = () => {
       dataIndex: 'ddosEnabled',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.ddosEnabled
           ? <Tooltip
             placement='bottom'
@@ -142,7 +143,7 @@ const FirewallTable = () => {
       dataIndex: 'statefulAclEnabled',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           row.statefulAclEnabled
             ? row.statefulAcls?.map((item) => (
@@ -161,7 +162,7 @@ const FirewallTable = () => {
       dataIndex: 'edgeIds',
       align: 'center',
       filterable: edgeOptions,
-      render: (data, row) => {
+      render: (__, row) => {
         return (row.edgeIds && row.edgeIds.length)
           ? <Tooltip
             placement='bottom'
@@ -180,9 +181,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      align: 'center'
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeIds?.length ?? 0)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
@@ -197,7 +204,7 @@ const FirewallTable = () => {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'serviceVersions',
       dataIndex: 'serviceVersions',
-      render: (data, row) => {
+      render: (__, row) => {
         return (
           (row.serviceVersions && Object.keys(row.serviceVersions).length)
             ? _.uniq(Object.values(row.serviceVersions)).join(', ')
