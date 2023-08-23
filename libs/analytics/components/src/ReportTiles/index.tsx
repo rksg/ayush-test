@@ -4,7 +4,7 @@ import { Statistic } from 'antd'
 import { useIntl }   from 'react-intl'
 
 import { useAnalyticsFilter }           from '@acx-ui/analytics/utils'
-import {  Loader }                      from '@acx-ui/components'
+import { Card, Loader }                 from '@acx-ui/components'
 import { TenantLink }                   from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
 
@@ -35,8 +35,8 @@ export const ReportTile = () => {
 
   const currentTile = queryResults.data?.[selected]!
 
-  return <Loader states={[queryResults]}>{
-    queryResults.data
+  return <Loader states={[queryResults]}>
+    <Card>{queryResults.data
       ? <ReportTileWrapper>
         <div>{
           queryResults.data?.map(({ key }, index) => {
@@ -58,7 +58,7 @@ export const ReportTile = () => {
               : noDataDisplay}/>
         </TenantLink>
       </ReportTileWrapper>
-      : null
-  }
+      : null}
+    </Card>
   </Loader>
 }

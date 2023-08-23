@@ -59,7 +59,7 @@ export default function Dashboard () {
         <Card title={$t({ defaultMessage: 'Network Filter' })} />
       </div>
       <div style={{ gridArea: 'b1' }}>
-        <Card><ReportTile /></Card>
+        <ReportTile />
       </div>
       <div style={{ gridArea: 'b2' }}>
         <Card title={$t({ defaultMessage: 'Network History' })} />
