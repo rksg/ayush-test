@@ -2,7 +2,6 @@ import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Path, To }                                         from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
@@ -128,54 +127,6 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-describe('WifiCallingConfigureForm feature flag on', () => {
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    mockServer.use(
-      rest.get(
-        WifiCallingUrls.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
-      ),
-      rest.get(
-        WifiCallingUrls.getWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkResult))
-      )
-    )
-
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <WifiCallingFormContext.Provider value={{
-        state: initState,
-        dispatch: jest.fn()
-      }}>
-        <Provider>
-          <WifiCallingConfigureForm />
-        </Provider>
-      </WifiCallingFormContext.Provider>
-      , {
-        route: {
-          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
-        }
-      }
-    )
-    expect(screen.getAllByText('Settings')).toBeTruthy()
-    expect(screen.getAllByText('Scope')).toBeTruthy()
-
-    await screen.findByRole('heading', { name: 'Settings', level: 3 })
-
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-
-    expect(screen.getByRole('link', {
-      name: 'Wi-Fi Calling'
-    })).toBeVisible()
-  })
-})
-
 describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
     mockServer.use(
@@ -244,6 +195,31 @@ describe('WifiCallingConfigureForm', () => {
     expect(mockedUpdateService).toBeCalledTimes(1)
   })
 
+  it('should render breadcrumb correctly', async () => {
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Wi-Fi Calling'
+    })).toBeVisible()
+  })
+
   it('should render form successfully then click the cancel button', async () => {
     render(
       <WifiCallingFormContext.Provider value={{
@@ -264,52 +240,5 @@ describe('WifiCallingConfigureForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(mockedUseNavigate).toBeCalledTimes(2)
-  })
-})
-
-describe.skip('WifiCallingConfigureForm feature flag off', () => {
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    mockServer.use(
-      rest.get(
-        WifiCallingUrls.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
-      ),
-      rest.get(
-        WifiCallingUrls.getWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkResult))
-      )
-    )
-
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <WifiCallingFormContext.Provider value={{
-        state: initState,
-        dispatch: jest.fn()
-      }}>
-        <Provider>
-          <WifiCallingConfigureForm />
-        </Provider>
-      </WifiCallingFormContext.Provider>
-      , {
-        route: {
-          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
-        }
-      }
-    )
-
-    expect(screen.getAllByText('Settings')).toBeTruthy()
-    expect(screen.getAllByText('Scope')).toBeTruthy()
-
-    await screen.findByRole('heading', { name: 'Settings', level: 3 })
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Services'
-    })).toBeVisible()
   })
 })

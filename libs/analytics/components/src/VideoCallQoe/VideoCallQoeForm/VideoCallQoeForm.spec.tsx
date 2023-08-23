@@ -45,17 +45,6 @@ describe('VideoCallQoeForm', () => {
     expect(await screen.findByText('Video Call QoE')).toBeVisible()
   })
 
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<VideoCallQoeForm />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
-    })
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-  })
-
   it('works correctly for create flow', async () => {
     render(<VideoCallQoeForm />, {
       wrapper: Provider,

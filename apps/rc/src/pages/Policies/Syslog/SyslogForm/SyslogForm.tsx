@@ -7,7 +7,6 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -41,7 +40,6 @@ const SyslogForm = (props: SyslogFormProps) => {
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { edit } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyName = ''
   const server = ''
@@ -134,7 +132,7 @@ const SyslogForm = (props: SyslogFormProps) => {
         title={edit
           ? $t({ defaultMessage: 'Edit Syslog Server' })
           : $t({ defaultMessage: 'Add Syslog Server' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -144,10 +142,7 @@ const SyslogForm = (props: SyslogFormProps) => {
             text: $t({ defaultMessage: 'Syslog Server' }),
             link: tablePath
           }
-        ] : [{
-          text: $t({ defaultMessage: 'Syslog' }),
-          link: tablePath
-        }]}
+        ]}
       />
       <StepsForm<SyslogContextType>
         form={form}
