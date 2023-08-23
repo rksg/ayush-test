@@ -16,6 +16,8 @@ export type DateRangeFilter = {
   range: DateRange
 }
 
+const ceilMinute = () => moment().add(1, 'minutes').seconds(0).milliseconds(0)
+
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
 
@@ -38,22 +40,10 @@ export function getDateRangeFilter (
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last24Hours]: [
-      moment().subtract(1, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.last7Days]: [
-      moment().subtract(7, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.last30Days]: [
-      moment().subtract(30, 'days').seconds(0).milliseconds(0),
-      moment().seconds(59).milliseconds(999)
-    ],
-    [DateRange.allTime]: [
-      moment(),
-      moment()
-    ]
+    [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
+    [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
+    [DateRange.last30Days]: [ceilMinute().subtract(30, 'days'), ceilMinute()],
+    [DateRange.allTime]: [moment(), moment()]
   }
   if (subRange) {
     return pick(defaultRange, subRange)
