@@ -19,6 +19,30 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                AI Analytics
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/undefined/t/analytics/incidents"
                 >

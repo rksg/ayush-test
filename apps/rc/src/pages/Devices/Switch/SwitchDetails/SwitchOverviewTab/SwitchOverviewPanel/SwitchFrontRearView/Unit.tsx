@@ -276,7 +276,7 @@ export function Unit (props:{
       switchUnit: switchMember.unitId,
       model: switchMember.model || getUnitSwitchModel(switchMember),
       serialNumber: switchMember.serialNumber,
-      stackId: switchMember.id,
+      stackId: switchMember?.unitId ? String(switchMember.unitId) : '1',
       poeUsage: getPoeUsage(switchMember as unknown as SwitchViewModel),
       unitStatus: {
         status: switchMember.deviceStatus,
