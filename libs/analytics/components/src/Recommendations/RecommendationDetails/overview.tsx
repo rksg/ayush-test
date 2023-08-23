@@ -7,11 +7,11 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection }     from '../../DescriptionSection'
-import { codes, statusTrailMsgs } from '../config'
-import { Priority, PriorityIcon } from '../styledComponents'
-import { checkOptimized }         from '../Widgets/AIDrivenRRM'
-import { OptimizedIcon }          from '../Widgets/styledComponents'
+import { DescriptionSection }          from '../../DescriptionSection'
+import { codes, statusTrailMsgs }      from '../config'
+import { Priority, PriorityIcon }      from '../styledComponents'
+import { checkOptimized, getCrrmText } from '../Widgets/AIDrivenRRM'
+import { OptimizedIcon }               from '../Widgets/styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -55,39 +55,14 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 }
 
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const [visible, setVisible] = useState(false)
-  const {
-    statusTrail, category, sliceValue, status, code, id,
-    appliedOnce, kpi_number_of_interfering_links, priority
-  } = details
+  const { statusTrail, category, sliceValue, status, code, id, priority } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
-  const optimized = checkOptimized([details])?.length !== 0 ? true : false
-
-  const applied = appliedOnce && status !== 'reverted'
-  const before = (applied
-    ? kpi_number_of_interfering_links?.previous
-    : kpi_number_of_interfering_links?.current) || 0
-  const after = (applied
-    ? kpi_number_of_interfering_links?.current
-    : kpi_number_of_interfering_links?.projected) || 0
-
-  const optimizedText = $t({
-    defaultMessage:
-      'From {before} to {after} interfering {after, plural, one {link} other {links}}',
-    description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
-
-  const nonOptimizedText = $t({
-    defaultMessage:
-    // eslint-disable-next-line max-len
-      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
-    description: 'Translation string - interfering, link, links, can be optimised to'
-  }, { before, after })
-
-  const crrmText = optimized ? optimizedText : nonOptimizedText
+  const optimized = checkOptimized([details]).isOptimized
 
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
@@ -110,7 +85,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
       children: sliceValue
     }]),
-    ...(isRrm ? [{ label: $t({ defaultMessage: 'Summary' }), children: crrmText }] : []),
+    ...(isRrm
+      ? [{ label: $t({ defaultMessage: 'Summary' }), children: getCrrmText(details, intl.$t) }]
+      : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 

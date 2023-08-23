@@ -1,5 +1,5 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { IntlShape, useIntl } from 'react-intl'
+import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, Card, NoActiveData } from '@acx-ui/components'
@@ -18,13 +18,45 @@ type AIDrivenRRMProps = {
 
 export const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
   const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-  return recommendation?.filter(detail => optimizedStates.includes(detail.status))
+  const optimizedData = recommendation?.filter(detail => optimizedStates.includes(detail.status))
+  return {
+    total: optimizedData?.length,
+    isOptimized: optimizedData?.length > 0
+  }
+}
+
+export const getCrrmText = (recommendation: EnhancedRecommendation, $t: IntlShape['$t']) => {
+  const { appliedOnce, status, kpi_number_of_interfering_links } = recommendation
+  const optimized = checkOptimized([recommendation]).isOptimized
+  const applied = appliedOnce && status !== 'reverted'
+  const before = (applied
+    ? kpi_number_of_interfering_links?.previous
+    : kpi_number_of_interfering_links?.current) || 0
+  const after = (applied
+    ? kpi_number_of_interfering_links?.current
+    : kpi_number_of_interfering_links?.projected) || 0
+
+  const optimizedText = $t({
+    defaultMessage:
+      'From {before} to {after} interfering {after, plural, one {link} other {links}}',
+    description: 'Translation string - From, to, interfering, link, links'
+  }, { before, after })
+
+  const nonOptimizedText = $t({
+    defaultMessage:
+    // eslint-disable-next-line max-len
+      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
+    description: 'Translation string - interfering, link, links, can be optimised to'
+  }, { before, after })
+
+  return optimized ? optimizedText : nonOptimizedText
 }
 
 function AIDrivenRRMWidget ({
   filters
 }: AIDrivenRRMProps) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const queryResults = useRecommendationListQuery(filters)
   const crrmData = queryResults?.data?.filter((row) =>
     (true === row.code.includes('crrm'))
@@ -41,39 +73,14 @@ function AIDrivenRRMWidget ({
     codeQuery.data?.filter(i => i.code) as EnhancedRecommendation[],
     { skip: codeQuery.data ? codeQuery.data?.filter(i => i.code).length === 0 : true })
   const detailedRecommendation = detailsQuery.data
-  const optimized = checkOptimized(detailedRecommendation as EnhancedRecommendation[])?.length
+  const optimized = checkOptimized(detailedRecommendation as EnhancedRecommendation[]).total
   // eslint-disable-next-line max-len
   const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {optimized}/{total} have been optimized' }, { total, optimized })
 
-  const items = detailedRecommendation?.slice(0,5).map(props => {
-    const {
-      sliceType, sliceValue, id, status,
-      kpi_number_of_interfering_links, appliedOnce
-    } = props
+  const items = detailedRecommendation?.slice(0,5).map(recommendation => {
+    const { sliceType, sliceValue, id } = recommendation
     const type = nodeTypes(sliceType as NodeType)
     const text = `${type}(${sliceValue})`
-
-    const optimized = checkOptimized([props])?.length !== 0 ? true : false
-    const applied = appliedOnce && status !== 'reverted'
-    const before = (applied
-      ? kpi_number_of_interfering_links?.previous
-      : kpi_number_of_interfering_links?.current) || 0
-    const after = (applied
-      ? kpi_number_of_interfering_links?.current
-      : kpi_number_of_interfering_links?.projected) || 0
-
-    const optimizedText = $t({
-      defaultMessage:
-        'From {before} to {after} interfering {after, plural, one {link} other {links}}',
-      description: 'Translation string - From, to, interfering, link, links'
-    }, { before, after })
-
-    const nonOptimizedText = $t({
-      defaultMessage:
-      // eslint-disable-next-line max-len
-        '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
-      description: 'Translation string - interfering, link, links, can be optimised to'
-    }, { before, after })
 
     return <UI.Detail key={id}>
       <div style={{ display: 'flex' }}>
@@ -85,7 +92,7 @@ function AIDrivenRRMWidget ({
           <span>{text}</span>
         </TenantLink>
       </div>
-      <UI.Subtitle>{optimized ? optimizedText : nonOptimizedText}</UI.Subtitle>
+      <UI.Subtitle>{getCrrmText(recommendation, intl.$t)}</UI.Subtitle>
     </UI.Detail>
   })
 
