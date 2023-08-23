@@ -14,6 +14,7 @@ const optimizedColors = [
 
 export const Wrapper = styled.div`
   height: auto;
+  margin-block: 20px;
 `
 
 export const TitleBadge = styled.span`

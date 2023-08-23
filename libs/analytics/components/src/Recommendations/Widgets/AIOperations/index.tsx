@@ -63,7 +63,7 @@ function AIOperationsWidget ({
           noData
             ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
             : <UI.Wrapper
-              style={{ width, marginBlock: 20 }}
+              style={{ width }}
               children={items}
             />
         )}
