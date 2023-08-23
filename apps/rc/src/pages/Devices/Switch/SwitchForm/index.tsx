@@ -113,7 +113,6 @@ export function SwitchForm () {
   const [previousPath, setPreviousPath] = useState('')
 
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
