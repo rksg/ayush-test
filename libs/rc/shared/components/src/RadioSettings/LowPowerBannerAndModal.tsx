@@ -19,7 +19,6 @@ interface LowerPowerBannerSetting {
     paddingTop: string,
     paddingBottom: string
   },
-  warningMessage: string,
   buttonStyle: {
     color?: string
   }
@@ -40,11 +39,6 @@ export function LowPowerBannerAndModal (props: {
 
   const { $t } = useIntl()
 
-  const VenueWarningMessage = `${lowPowerAPs?.lowPowerAPCount} ${$t({ defaultMessage: 'out of' })} ${lowPowerAPs?.allAPCount} \
-  ${$t({ defaultMessage: 'Access points that support 6 GHz are currently operating in low power mode' })}`
-
-  const APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
-
   const lowPowerBannerSettings : settings = {
     venue: {
       bannerColSpan: 16,
@@ -55,7 +49,6 @@ export function LowPowerBannerAndModal (props: {
         paddingTop: '10px',
         paddingBottom: '10px'
       },
-      warningMessage: VenueWarningMessage,
       buttonStyle: { color: cssStr('--acx-accents-blue-20') }
     },
     ap: {
@@ -68,17 +61,27 @@ export function LowPowerBannerAndModal (props: {
         paddingTop: '10px',
         paddingBottom: '10px'
       },
-      warningMessage: APWarningMessage,
       buttonStyle: {}
     }
   }
 
   const [displayLowPowerModeModal, setDisplayLowPowerModeModal] = useState(false)
   const [bannerSettings, setBannerSettings] = useState(lowPowerBannerSettings['venue'])
+  const [bannerText, setBannerText] = useState('')
 
 
   useEffect(()=> {
     setBannerSettings(lowPowerBannerSettings[parent])
+    const VenueWarningMessage = `${lowPowerAPs?.lowPowerAPCount} ${$t({ defaultMessage: 'out of' })} ${lowPowerAPs?.allAPCount} \
+    ${$t({ defaultMessage: 'Access points that support 6 GHz are currently operating in low power mode' })}`
+
+    const APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+    if(parent === 'venue') {
+      setBannerText(VenueWarningMessage)
+    } else {
+      setBannerText(APWarningMessage)
+    }
   }, [])
 
   if (context === 'ap') {
@@ -107,7 +110,7 @@ export function LowPowerBannerAndModal (props: {
         }}>
         <Col span={bannerSettings.bannerColSpan}
           style={bannerSettings.colStyle}>
-          {bannerSettings.warningMessage}
+          {bannerText}
         </Col>
         <Col span={2}
           style={bannerSettings.colStyle}>
