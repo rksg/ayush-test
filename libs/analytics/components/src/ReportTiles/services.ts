@@ -15,12 +15,12 @@ const tileMap: Record<string, TileMapType> = {
   apCount: {
     text: defineMessage({ defaultMessage: 'AP Count' }),
     url: '/reports/aps',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   clientCount: {
     text: defineMessage({ defaultMessage: 'Unique Clients' }),
     url: '/reports/clients',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   totalTraffic: {
     text: defineMessage({ defaultMessage: 'Traffic' }),
@@ -30,27 +30,27 @@ const tileMap: Record<string, TileMapType> = {
   totalApplicationCount: {
     text: defineMessage({ defaultMessage: 'Applications' }),
     url: '/reports/applications',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   totalActiveWlanCount: {
     text: defineMessage({ defaultMessage: 'Active WLANs' }),
     url: '/reports/wlans',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   switchCount: {
     text: defineMessage({ defaultMessage: 'Switch Count' }),
     url: '/reports/switches',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   portCount: {
     text: defineMessage({ defaultMessage: 'Port Count' }),
     url: '/reports/switches',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   connectedWiredDevices: {
     text: defineMessage({ defaultMessage: 'Connected Wired Devices' }),
     url: '/reports/wired',
-    format: formatter('countFormat')
+    format: formatter('countFormatRound')
   },
   poeUtilization: {
     text: defineMessage({ defaultMessage: 'POE Utilization' }),
