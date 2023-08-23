@@ -56,7 +56,7 @@ describe('AIDrivenRRM dashboard', () => {
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText(
-      'AI-Driven RRM has been run on 3 zones and already 1/3 have been optimized')).toBeVisible()
+      'AI-Driven RRM has been run on 3 zones and already 1/3 have been optimized.')).toBeVisible()
     expect(await screen.findByText('Venue(zone-1)')).toBeVisible()
     expect(await screen.findByText('Venue(zone-2)')).toBeVisible()
     expect(await screen.findByText('Venue(Deeps Place)')).toBeVisible()
