@@ -1,5 +1,4 @@
 import '@testing-library/react'
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -45,29 +44,7 @@ describe.skip('NetworkPageHeader', () => {
     expect(dateFilter).not.toBeInTheDocument()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <NetworkPageHeader />,
-      </Provider>,
-      {
-        route: {
-          params: {
-            tenantId: 'testId',
-            networkId: 'test',
-            activeTab: 'overview'
-          }
-        }
-      }
-    )
-    expect(screen.getByRole('link', {
-      name: /networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <NetworkPageHeader />,

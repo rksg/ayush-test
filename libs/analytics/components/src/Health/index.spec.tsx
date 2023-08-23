@@ -81,15 +81,4 @@ describe('HealthPage', () => {
       search: ''
     })
   })
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(await screen.findByText('Health')).toBeVisible()
-    expect(await screen.findByTestId('Summary Boxes')).toBeVisible()
-    expect(await screen.findByText('Summary TimeSeries')).toBeVisible()
-    expect(await screen.findByText('Overview')).toBeVisible()
-    expect(await screen.findByText('Customized SLA Threshold')).toBeVisible()
-    expect(await screen.findByText('Kpi Section')).toBeVisible()
-  })
 })
