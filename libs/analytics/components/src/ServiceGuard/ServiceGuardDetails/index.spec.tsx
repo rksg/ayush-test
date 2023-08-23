@@ -63,20 +63,4 @@ describe('Service Validation', () => {
       search: ''
     })
   })
-
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <ServiceGuardDetails />
-      </Provider>,
-      { route: { params } }
-    )
-    expect(await screen.findByText('Service Validation')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardDetails-Title')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardDetails-SubTitle')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardDetails-ReRunButton')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardDetails-TestRunButton')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardDetails-Overview')).toBeVisible()
-  })
 })
