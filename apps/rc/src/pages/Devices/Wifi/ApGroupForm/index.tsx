@@ -11,7 +11,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useLazyVenueDefaultApGroupQuery,
@@ -48,7 +47,6 @@ export function ApGroupForm () {
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const isEditMode = action === 'edit'
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [apGroupsList] = useLazyApGroupsListQuery()
@@ -165,12 +163,10 @@ export function ApGroupForm () {
     <PageHeader
       title={!isEditMode ? $t({ defaultMessage: 'Add AP Group' }) :
         $t({ defaultMessage: 'Edit AP Group' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ] : [
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />
     <StepsFormLegacy
