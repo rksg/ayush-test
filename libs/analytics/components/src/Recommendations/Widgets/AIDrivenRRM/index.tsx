@@ -79,7 +79,7 @@ function AIDrivenRRMWidget ({
   // eslint-disable-next-line max-len
   const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {totalOptimized}/{total} have been optimized.' }, { total, totalOptimized })
 
-  const items = detailedRecommendation?.slice(0,5).map(recommendation => {
+  const items = detailedRecommendation?.map(recommendation => {
     const { sliceType, sliceValue, id } = recommendation
     const type = nodeTypes(sliceType as NodeType)
     const text = `${type}(${sliceValue})`
