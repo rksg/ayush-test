@@ -7,7 +7,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -37,7 +36,6 @@ const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
   const [ createAAAPolicy ] = useAddAAAPolicyMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
   const [saveState, updateSaveState] = useState<AAAPolicyType>({
@@ -84,14 +82,12 @@ const AAAForm = (props: AAAFormProps) => {
         title={edit
           ? $t({ defaultMessage: 'Edit RADIUS Server' })
           : $t({ defaultMessage: 'Add RADIUS Server' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
-        ] : [
           { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
         ]}
       />}

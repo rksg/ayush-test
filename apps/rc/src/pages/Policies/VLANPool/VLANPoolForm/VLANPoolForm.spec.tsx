@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   VlanPoolUrls,
   WifiUrlsInfo,
@@ -89,26 +88,7 @@ describe('VLANPoolForm', () => {
     expect(addVlanPool).toBeCalledTimes(1)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      networkId: 'UNKNOWN-NETWORK-ID',
-      tenantId: 'tenant-id',
-      type: 'wifi',
-      policyId: 'policy-id'
-    }
-    render(<Provider><VLANPoolForm edit={false}/></Provider>, {
-      route: { params }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'VLAN Pools'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = {
       networkId: 'UNKNOWN-NETWORK-ID',
       tenantId: 'tenant-id',

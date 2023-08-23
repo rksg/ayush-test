@@ -1,8 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { AaaUrls }      from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { AaaUrls }  from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -95,31 +94,7 @@ describe('AAA Detail Page', () => {
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.post(
-        AaaUrls.getAAANetworkInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        AaaUrls.getAAAProfileDetail.url,
-        (req, res, ctx) => res(ctx.json({ ...detailResult, type: 'AUTHENTICATION',
-          networkIds: ['1','2'] }))
-      )
-    )
-    render(<Provider><AAAPolicyDetail /></Provider>, {
-      route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'RADIUS Server'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     mockServer.use(
       rest.post(
         AaaUrls.getAAANetworkInstances.url,

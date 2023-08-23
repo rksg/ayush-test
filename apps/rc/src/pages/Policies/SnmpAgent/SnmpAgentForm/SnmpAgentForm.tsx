@@ -4,7 +4,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }    from '@acx-ui/rc/services'
 import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
@@ -22,7 +21,6 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const params = useParams()
 
@@ -97,15 +95,12 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         title={editMode
           ? $t({ defaultMessage: 'Edit SNMP Agent' })
           : $t({ defaultMessage: 'Add SNMP Agent' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
-        ] : [
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath() },
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
         ]}
       />
