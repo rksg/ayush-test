@@ -10,14 +10,16 @@ import {
   mockGraphqlQuery,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { renderHook }                                                from '@acx-ui/test-utils'
 import { TimeStampRange }                                            from '@acx-ui/types'
 import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import KpiSection from '.'
+import KpiSection, { useKpiThresholdsQuery } from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -229,5 +231,33 @@ describe('Kpi Section', () => {
     </Provider></Router>)
 
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
+  })
+})
+
+describe('useKpiThresholdsQuery', () => {
+  it('should return correct data', async () => {
+    const filters: AnalyticsFilter = {
+      startDate: '2022-04-07T09:15:00.000Z',
+      endDate: '2022-04-07T10:15:00.000Z',
+      range: DateRange.last24Hours,
+      filter: {}
+    }
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: { timeToConnectThreshold: { value: 30000 } } })
+
+    const { result } = renderHook(() => useKpiThresholdsQuery({ filters }), { wrapper: Provider })
+    await waitFor(async () => {
+      expect(result.current.kpiThresholdsQueryResults.isLoading).toBe(false)
+    })
+    expect(result.current.thresholds).toBe({
+      apCapacity: 50,
+      apServiceUptime: 0.995,
+      apToSZLatency: 200,
+      clientThroughput: 10000,
+      clusterLatency: 10,
+      rss: -75,
+      switchPoeUtilization: 0.8,
+      timeToConnect: 30000
+    })
   })
 })
