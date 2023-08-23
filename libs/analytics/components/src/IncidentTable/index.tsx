@@ -47,7 +47,7 @@ export function downloadIncidentList (
       .reduce((data : Incident[], incident) => {
         data.push(omit(incident, ['children']))
         if (incident.children?.length) {
-          data = data.concat(incident.children)
+          data.push(...incident.children)
         }
         return data
       }, [])
