@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
@@ -155,6 +156,14 @@ export class AAAWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  wifi6Enabled?: boolean
+
+  wifi7Enabled?: boolean
+
+  multiLinkOperationEnabled?: boolean
+
+  multiLinkOperationOptions?: MultiLinkOperationOptions
+
   qosMirroringEnabled?: boolean
 
   qosMirroringScope?: string
@@ -274,6 +283,12 @@ export class AAAWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.wifi6Enabled = true
+
+    this.wifi7Enabled = true
+
+    this.multiLinkOperationEnabled = false
 
     this.qosMirroringEnabled = true
 

@@ -71,3 +71,5 @@ export * from './Mesh'
 export * from './Channel320MHzGroupEnum'
 export * from './ChannelBandwidth6GEnum'
 export * from './ClientAdmissionControl'
+export * from './MultiLinkOperationOptions'
+
