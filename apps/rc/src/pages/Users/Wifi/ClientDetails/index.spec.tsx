@@ -137,36 +137,7 @@ describe('ClientDetails', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'user-id',
-      activeTab: 'overview'
-    }
-    render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
-    })
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
-    expect(screen.getAllByRole('tab')).toHaveLength(4)
-    expect(await screen.findByTestId('ClientOverviewWidget')).toBeVisible()
-    expect(await screen.findByTestId('ClientProperties')).toBeVisible()
-    expect(await screen.findAllByTestId('TopApplications')).toHaveLength(2)
-    expect(await screen.findByTestId('analytics-TrafficByUsage')).toBeVisible()
-    expect(await screen.findByTestId('analytics-TrafficByBand')).toBeVisible()
-
-    expect(screen.queryByText('Clients')).toBeNull()
-    expect(screen.queryByText('Wireless')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Wi-Fi Users'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
