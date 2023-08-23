@@ -1,21 +1,10 @@
+import { handleBlobDownloadFile } from '@acx-ui/utils'
+
 export const downloadFile = (response: { blob: () => Promise<BlobPart> }, fileName: string) => {
   response.blob().then(myBlob => {
-    const fileFlob = new File([myBlob], fileName)
-    handleBlobDownloadFile(fileFlob, fileName)
+    const fileBlob = new File([myBlob], fileName)
+    handleBlobDownloadFile(fileBlob, fileName)
   })
-}
-
-export const handleBlobDownloadFile = (fileFlob: Blob, fileName:string) => {
-  const link = document.createElement('a')
-  if (link.download !== undefined) {
-    const url = URL.createObjectURL(fileFlob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', fileName)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
 }
 
 export const exportCSV =
@@ -54,16 +43,5 @@ export const exportCSV =
 
     // Download CSV file
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    if (link.download !== undefined) {
-    // Browsers that support HTML5 download attribute
-      const url = URL.createObjectURL(blob)
-      link.setAttribute('href', url)
-      link.setAttribute('download', filename)
-      link.style.visibility = 'hidden'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-
+    handleBlobDownloadFile(blob, filename)
   }
