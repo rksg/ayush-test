@@ -108,6 +108,7 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -131,6 +132,7 @@ export function MspCustomers () {
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -155,6 +157,10 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+      userProfile?.support === false) {
+    navigate(linkVarPath, { replace: true })
+  }
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -428,7 +434,6 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
-    const navigate = useNavigate()
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,

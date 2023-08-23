@@ -44,7 +44,10 @@ import {
   SEARCH,
   SORTER,
   APMeshSettings,
-  MeshUplinkAp
+  MeshUplinkAp,
+  ApRfNeighborsResponse,
+  ApLldpNeighborsResponse,
+  ApClientAdmissionControl
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -774,6 +777,57 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
       }
+    }),
+    getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
+        }
+      }
+    }),
+    getApLldpNeighbors: build.query<ApLldpNeighborsResponse, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params)
+        }
+      }
+    }),
+    detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getApClientAdmissionControl: build.query<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    updateApClientAdmissionControl: build.mutation<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApClientAdmissionControl, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    deleteApClientAdmissionControl: build.mutation<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     })
   })
 })
@@ -846,7 +900,13 @@ export const {
   useUpdateApMeshSettingsMutation,
   useGetMeshUplinkApsQuery,
   useLazyGetMeshUplinkApsQuery,
-  useDownloadApsCSVMutation
+  useDownloadApsCSVMutation,
+  useLazyGetApRfNeighborsQuery,
+  useLazyGetApLldpNeighborsQuery,
+  useDetectApNeighborsMutation,
+  useGetApClientAdmissionControlQuery,
+  useUpdateApClientAdmissionControlMutation,
+  useDeleteApClientAdmissionControlMutation
 } = apApi
 
 

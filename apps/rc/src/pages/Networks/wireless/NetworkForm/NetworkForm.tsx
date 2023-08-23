@@ -138,7 +138,13 @@ export default function NetworkForm (props:{
   const { data } = useGetNetworkQuery({ params })
 
   useEffect(() => {
-    if(data && saveState.name === ''){
+    if(saveState){
+      saveContextRef.current = saveState
+    }
+  }, [saveState])
+
+  useEffect(() => {
+    if(data){
       let name = data.name
       if (cloneMode) {
         name = data.name + ' - copy'
@@ -158,11 +164,7 @@ export default function NetworkForm (props:{
         enableAccountingService: (data.accountingRadius||
           data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
-
-    if(saveState){
-      saveContextRef.current = saveState
-    }
-  }, [data, saveState])
+  }, [data])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)

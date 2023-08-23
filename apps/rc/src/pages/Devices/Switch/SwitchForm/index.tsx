@@ -54,7 +54,8 @@ import { store } from '@acx-ui/store'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
-import * as UI from './styledComponents'
+import {  getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from './blockListRelatedTsb.util'
+import * as UI                                                   from './styledComponents'
 
 const { Option } = Select
 
@@ -110,7 +111,10 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
     searchString: '',
@@ -206,6 +210,13 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(values.id)?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
+
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
         if (isOnlyFirmware) { values.specifiedType = FIRMWARE.AUTO }

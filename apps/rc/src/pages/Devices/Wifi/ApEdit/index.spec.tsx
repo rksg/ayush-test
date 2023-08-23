@@ -73,6 +73,10 @@ async function showUnsavedChangesModal (tabKey: string, action: string) {
 
 let dialog = null
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
+}))
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())

@@ -71,6 +71,10 @@ export interface Network {
   vlanPool?: { name: string }
   activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
+  children?: Network[]
+  dsaeOnboardNetwork?: Network
+  securityProtocol?: string
+  isOnBoarded?: boolean
   isOweMaster?: boolean
 }
 
@@ -489,4 +493,12 @@ export interface SwitchClient {
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
   dhcpClientHostName?: string
+}
+
+export interface QosMapRule {
+  enabled: boolean
+  priority: number
+  dscpLow: number
+  dscpHigh: number
+  dscpExceptionValues: number[]
 }

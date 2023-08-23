@@ -7,11 +7,11 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
+import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
 import MuteIncident from './MuteIncident'
-import * as UI      from './styledComponents'
 
 export const SwitchVlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
@@ -40,11 +40,11 @@ export const SwitchVlanMismatch = (incident: Incident) => {
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
-          <UI.FixedAutoSizer>
+          <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
-          </UI.FixedAutoSizer>
+          </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />

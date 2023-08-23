@@ -4,6 +4,7 @@ import { hasAccess } from '@acx-ui/user'
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'
 import { ApContextProvider }    from './ApContextProvider'
+import { ApNeighborsTab }       from './ApNeighbors'
 import { ApNetworksTab }        from './ApNetworksTab'
 import { ApOverviewTab }        from './ApOverviewTab'
 import ApPageHeader             from './ApPageHeader'
@@ -20,7 +21,8 @@ const tabs = {
   networks: ApNetworksTab,
   clients: ApClientsTab,
   services: ApServicesTab,
-  timeline: ApTimelineTab
+  timeline: ApTimelineTab,
+  neighbors: ApNeighborsTab
 }
 
 export default function ApDetails () {

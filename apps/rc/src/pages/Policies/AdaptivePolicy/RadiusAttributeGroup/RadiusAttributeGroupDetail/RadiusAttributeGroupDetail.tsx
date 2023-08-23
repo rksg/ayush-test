@@ -72,9 +72,9 @@ export default function RadiusAttributeGroupDetail () {
   }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
-    return attributes?.map((attribute) => {
+    return attributes?.map((attribute, idx) => {
       return (
-        <Col span={6} key={attribute.attributeName}>
+        <Col span={6} key={'attribute_' + idx}>
           <Form.Item
             label={attribute.attributeName}>
             <Paragraph>{attribute.attributeValue}</Paragraph>

@@ -314,7 +314,7 @@ export function VarCustomers () {
     )
   }
 
-  const title = userProfile?.support
+  const title = userProfile?.support || userProfile?.dogfood
     ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>

@@ -37,11 +37,9 @@ describe('EdgeDhcpLeaseTable', () => {
   it('Should render expired time correctly', async () => {
     render(
       <Provider>
-        <EdgeDhcpLeaseTable edgeId='testId' />
+        <EdgeDhcpLeaseTable edgeId='testId' isInfinite />
       </Provider>)
-    const infiniteText = await screen.findByText('Infinite')
-    const timeText = await screen.findByText('1,440 Days 00:00:00')
-    expect(infiniteText).toBeVisible()
-    expect(timeText).toBeVisible()
+    const infiniteText = await screen.findAllByText('Infinite')
+    expect(infiniteText.length).toBe(2)
   })
 })
