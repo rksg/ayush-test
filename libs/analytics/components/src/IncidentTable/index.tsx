@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 
 import { Checkbox }                                 from 'antd'
+import { stringify }                                from 'csv-stringify/browser/esm/sync'
+import { omit }                                     from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -18,22 +20,59 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
-import { noDataDisplay }                               from '@acx-ui/utils'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import { TenantLink, useNavigateToPath }         from '@acx-ui/react-router-dom'
+import { noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
   useMuteIncidentsMutation,
-  IncidentTableRow
+  IncidentTableRow,
+  IncidentNodeData
 } from './services'
-import * as UI           from './styledComponents'
-import {
-  GetIncidentBySeverity,
-  ShortIncidentDescription,
-  filterMutedIncidents
-} from './utils'
+import * as UI                                                                   from './styledComponents'
+import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+export function downloadIncidentList (
+  incidents: IncidentNodeData,
+  columns: TableProps<IncidentTableRow>['columns'],
+  { startDate, endDate }: IncidentFilter
+) {
+  const data = stringify(
+    incidents
+      .reduce((data : Incident[], incident) => {
+        data.push(omit(incident, ['children']))
+        if (incident.children?.length) {
+          data.push(...incident.children)
+        }
+        return data
+      }, [])
+      .sort((a, b) => b.severity - a.severity),
+    {
+      header: true,
+      quoted: true,
+      cast: {
+        string: s => s === '--' ? '-' : s,
+        boolean: b => b ? 'true' : 'false'
+      },
+      columns: [
+        ...columns.map(({ key, title }) => ({
+          key: key === 'severity' ? 'severityLabel' : key,
+          header: title as string
+        })),
+        { key: 'isMuted', header: 'Muted' }
+      ]
+    }
+  )
+  handleBlobDownloadFile(
+    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
+    `Incidents-${startDate}-${endDate}.csv`
+  )
+}
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -216,7 +255,6 @@ export function IncidentTable ({ filters, systemNetwork }: {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
-
   return (
     <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
@@ -225,6 +263,12 @@ export function IncidentTable ({ filters, systemNetwork }: {
         dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
+        iconButton={{
+          icon: <DownloadOutlined />,
+          disabled: !Boolean(data?.length),
+          onClick: () => {
+            downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
+          } }}
         rowSelection={!systemNetwork && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
