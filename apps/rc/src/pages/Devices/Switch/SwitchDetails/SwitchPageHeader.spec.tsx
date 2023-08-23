@@ -3,7 +3,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { render, screen, mockServer }                    from '@acx-ui/test-utils'
@@ -112,23 +111,7 @@ describe('SwitchPageHeader', () => {
     await screen.findByText('Reboot Switch')
   })
 
-  it('should render switch breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider>
-      <SwitchDetailsContext.Provider value={{
-        switchDetailsContextData,
-        setSwitchDetailsContextData: jest.fn()
-      }}>
-        <SwitchPageHeader />
-      </SwitchDetailsContext.Provider>
-    </Provider>, { route: { params } })
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-  })
-
-  it('should render switch breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render switch breadcrumb correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
