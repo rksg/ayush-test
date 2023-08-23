@@ -19,8 +19,8 @@ import { SwitchDetailsContext } from '../..'
 
 import { SwitchConfigBackupTable } from '.'
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   handleBlobDownloadFile: jest.fn()
 }))
 
