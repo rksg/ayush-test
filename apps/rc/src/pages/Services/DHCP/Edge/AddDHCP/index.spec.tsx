@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
@@ -75,22 +74,7 @@ describe('AddEdgeDhcp', () => {
     await screen.findByText('Please create DHCP pools')
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <AddDhcp/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/services/dhcp/create' }
-      })
-
-    expect(await screen.findByRole('link', { name: 'Services' })).toBeVisible()
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <AddDhcp/>

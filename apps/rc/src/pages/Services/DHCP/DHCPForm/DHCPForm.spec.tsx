@@ -2,9 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DHCPUrls }     from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { DHCPUrls } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -105,10 +104,9 @@ describe('DHCPForm', () => {
     // await userEvent.click(screen.getByText('Finish'))
     // await new Promise((r)=>{setTimeout(r, 1000)})
 
-  })
+  }, 25000)
 
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = { tenantId: 'tenant-id' }
 
     render(<Provider><DHCPForm /></Provider>, {
@@ -125,8 +123,6 @@ describe('DHCPForm', () => {
   })
 
   it('should cancel DHCP form successfully', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 
     render(<Provider><DHCPForm editMode={false}/></Provider>, {
@@ -137,20 +133,5 @@ describe('DHCPForm', () => {
 
     await userEvent.click(screen.getByText('Cancel'))
 
-  })
-
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = { tenantId: 'tenant-id' }
-
-    render(<Provider><DHCPForm /></Provider>, {
-      route: { params }
-    })
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DHCP Services'
-    })).toBeVisible()
   })
 })

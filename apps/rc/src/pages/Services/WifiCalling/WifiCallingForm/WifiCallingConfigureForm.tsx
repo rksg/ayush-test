@@ -7,7 +7,6 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -31,7 +30,6 @@ const WifiCallingConfigureForm = () => {
   })
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
 
@@ -75,12 +73,10 @@ const WifiCallingConfigureForm = () => {
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'Wi-Fi Calling' }), link: tablePath }
-        ] : [
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
