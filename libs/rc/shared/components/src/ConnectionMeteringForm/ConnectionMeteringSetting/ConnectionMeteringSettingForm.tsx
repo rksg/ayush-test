@@ -33,7 +33,7 @@ export function ConnectionMeteringSettingForm () {
       <GridRow>
         <GridCol col={{ span: 8 }}>
           <Form.Item
-            name='name'
+            name={'name'}
             label={$t({ defaultMessage: 'Profile Name' })}
             validateFirst
             validateTrigger={['onBlur']}
