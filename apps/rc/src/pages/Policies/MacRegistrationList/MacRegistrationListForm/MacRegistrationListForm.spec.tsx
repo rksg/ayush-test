@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -138,29 +138,7 @@ describe('MacRegistrationListForm', () => {
     )
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <MacRegistrationListForm />
-      </Provider>, {
-        route: {
-          params: { tenantId: mockedTenantId },
-          path: createPath
-        }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'MAC Registration Lists'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <MacRegistrationListForm />

@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { Provider, store, r1VideoCallQoeURL }                          from '@acx-ui/store'
-import { screen, render, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Provider, store, r1VideoCallQoeURL } from '@acx-ui/store'
+import { screen, render, mockGraphqlQuery }   from '@acx-ui/test-utils'
 
 import { getAllCallQoeTests, getAllCallQoeTestsWithNotStarted } from './__tests__/fixtures'
 import { api }                                                  from './services'
 
-import { useVideoCallQoe, VideoCallQoe } from '.'
+import { useVideoCallQoe } from '.'
 
 describe('VideoCallQoeListPage', () => {
   const params = { tenantId: 'tenant-id' }
@@ -52,15 +52,6 @@ describe('VideoCallQoeListPage', () => {
     }
     render(<Component/>, { wrapper: Provider, route: { params } })
     expect(await screen.findByRole('button', { name: /create test call/i })).toBeDisabled()
-  })
-
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<VideoCallQoe/>, { wrapper: Provider, route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    expect(await screen.findByText('Test Call Name')).toBeVisible()
-    expect(await screen.findByRole('button', { name: /create test call/i })).toBeEnabled()
   })
 
   it('should update tab count by context', async () => {
