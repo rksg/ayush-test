@@ -107,7 +107,7 @@ export const NetworkSegmentationServiceInfo = styled((
       title: $t({ defaultMessage: 'Service Health' }),
       content: () => ((nsgViewData?.edgeInfos?.length)
         ? <EdgeServiceStatusLight data={nsgViewData.edgeAlarmSummary} />
-        : $t({ defaultMessage: '--' })
+        : '--'
       )
     },
     {
