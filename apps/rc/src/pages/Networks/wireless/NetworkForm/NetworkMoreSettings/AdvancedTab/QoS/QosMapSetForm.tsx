@@ -8,20 +8,19 @@ import { useIntl }                                       from 'react-intl'
 
 
 import { Drawer, Table, TableProps }         from '@acx-ui/components'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import { QosMapRule, sortProp, defaultSort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }         from '@acx-ui/user'
 import { validationMessages }                from '@acx-ui/utils'
 
-import NetworkFormContext from '../NetworkFormContext'
+import NetworkFormContext from '../../../../NetworkForm/NetworkFormContext'
+import * as UI            from '../../../NetworkMoreSettings/styledComponents'
 
-import * as UI from './styledComponents'
+
 
 const { useWatch } = Form
 
-export function QosMapSetFrom () {
+export function QosMapSetForm () {
   const { $t } = useIntl()
-  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
 
   const enableQosMapSetFieldName = ['wlan', 'advancedCustomization', 'qosMapSetEnabled']
   const qosMapSetRulesFieldName = ['wlan', 'advancedCustomization', 'qosMapSetOptions', 'rules']
@@ -96,26 +95,22 @@ export function QosMapSetFrom () {
   ]
 
   return (
-    qosMapSetFlag ?
-      <>
-        <UI.Subtitle>
-          {$t({ defaultMessage: 'QoS Map' })}
-        </UI.Subtitle>
-        <UI.FieldLabel width='250px'>
-          <Space>
-            {$t({ defaultMessage: 'QoS Map Set' })}
-          </Space>
-          <Form.Item
-            name={enableQosMapSetFieldName}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch
-              data-testid='qos-map-set-enabled'
-            />}
-          />
-        </UI.FieldLabel>
-        {enableQosMapSet &&
+    <>
+      <UI.FieldLabel width='250px'>
+        <Space>
+          {$t({ defaultMessage: 'QoS Map Set' })}
+        </Space>
+        <Form.Item
+          name={enableQosMapSetFieldName}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch
+            data-testid='qos-map-set-enabled'
+          />}
+        />
+      </UI.FieldLabel>
+      {enableQosMapSet &&
         <UI.FieldLabel width='600px'>
           <Table
             columns={columns}
@@ -145,8 +140,8 @@ export function QosMapSetFrom () {
             hidden={true}
           />
         </UI.FieldLabel>
-        }
-      </>:null
+      }
+    </>
   )
 }
 
