@@ -87,6 +87,7 @@ function ConnectionMeteringLink (props:{
     if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
+      tooltip = $t({ defaultMessage: 'The Data Consumption date has expired' })
     } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
