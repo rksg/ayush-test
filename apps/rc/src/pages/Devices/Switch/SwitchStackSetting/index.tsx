@@ -64,26 +64,27 @@ export function SwitchStackSetting
   }
 
   useEffect(()=>{
-    const fieldWatcher = () => {
-      if(form.getFieldValue('ipAddressType')) {
-        setEnableDhcp(form.getFieldValue('ipAddressType') === IP_ADDRESS_TYPE.DYNAMIC)
-      }
-
-      if(form.getFieldValue('switchType')){
-        setIsL3ConfigAllowed(isL3FunctionSupported(form.getFieldValue('switchType')))
-      }
-
-      if(form.getFieldValue('ipAddressInterfaceType')){
-        setIpAddressInterfaceType(form.getFieldValue('ipAddressInterfaceType'))
-      }
-
-      if(form.getFieldValue('ipAddressInterface')){
-        setIpAddressInterface(form.getFieldValue('ipAddressInterface'))
-      }
+    if(form.getFieldValue('ipAddressType')) {
+      setEnableDhcp(form.getFieldValue('ipAddressType') === IP_ADDRESS_TYPE.DYNAMIC)
     }
 
-    fieldWatcher()
-  }, [form])
+    if(form.getFieldValue('switchType')){
+      setIsL3ConfigAllowed(isL3FunctionSupported(form.getFieldValue('switchType')))
+    }
+
+    if(form.getFieldValue('ipAddressInterfaceType')){
+      setIpAddressInterfaceType(form.getFieldValue('ipAddressInterfaceType'))
+    }
+
+    if(form.getFieldValue('ipAddressInterface')){
+      setIpAddressInterface(form.getFieldValue('ipAddressInterface'))
+    }
+  }, [
+    form.getFieldValue('ipAddressType'),
+    form.getFieldValue('switchType'),
+    form.getFieldValue('ipAddressInterfaceType'),
+    form.getFieldValue('ipAddressInterface')
+  ])
 
   const onEditJumboMode = (checked: boolean) => {
     showActionModal({
