@@ -19,7 +19,7 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     appliedOnce, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const recommendationText = getRecommendationsText(details, $t)
+  const recommendationText = getRecommendationsText(details)
 
   const fields = [
     {
