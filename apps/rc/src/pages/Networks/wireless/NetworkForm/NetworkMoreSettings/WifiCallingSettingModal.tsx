@@ -4,13 +4,11 @@ import {
   useState
 } from 'react'
 
-import {
-  Form, Transfer
-} from 'antd'
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Modal }                     from '@acx-ui/components'
+import { Button, Modal, Transfer }           from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
 import { WifiCallingSettingContext } from './NetworkControlTab'
@@ -42,14 +40,15 @@ export function WifiCallingSettingModal () {
 
   const transferComponent = <Transfer
     showSearch
+    showSelectAll={false}
     listStyle={{
       width: '100%',
-      height: '100%'
+      height: 300
     }}
     operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
     dataSource={data?.map(data => {
       return { ...data, key: data.id }
-    })}
+    }) || []}
     render={item => item.serviceName}
     onChange={onChange}
     onSelectChange={onSelectChange}
