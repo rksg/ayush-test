@@ -2,11 +2,10 @@ import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
 import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
-
-
 
 export class DpskWlanAdvancedCustomization {
   devicePolicyId?: string | null
@@ -158,6 +157,10 @@ export class DpskWlanAdvancedCustomization {
 
   multiLinkOperationOptions?: MultiLinkOperationOptions
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: QosMapSetOptions
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -271,5 +274,9 @@ export class DpskWlanAdvancedCustomization {
     this.wifi7Enabled = true
 
     this.multiLinkOperationEnabled = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }
