@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
-import { ReactNode, CSSProperties } from 'react'
+import { ReactNode, CSSProperties, useState, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -33,22 +33,18 @@ export function MulticastForm () {
   const [
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
-    enableMulticastDownLimit,
-    enableMulticastFilter
+    enableMulticastDownLimit
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
-    useWatch<boolean>(enableMulticastDownLimitFieldName),
-    useWatch<boolean>(enableMulticastUpLimit6GFieldName),
-    useWatch<boolean>(enableMulticastDownLimit6GFieldName),
-    useWatch<boolean>(enableMulticastFilterFieldName)
+    useWatch<boolean>(enableMulticastDownLimitFieldName)
   ]
-
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
+  const [switchMulticastRateLimitingDisabled, setSwitchMulticastRateLimitingDisabled] = useState(false)
   const multicastFilterTooltipContent = (
     <div>
       <p>Drop all multicast or broadcast traffic from associated wireless clients,
@@ -67,22 +63,23 @@ export function MulticastForm () {
     </div>
   )
 
+  useEffect(() => {
+    const multicastRateLimiting = form.getFieldValue(enableMulticastRateLimitingFieldName)
+    const multicastFilter = form.getFieldValue(enableMulticastFilterFieldName)
+    setSwitchMulticastRateLimitingDisabled(!multicastRateLimiting && multicastFilter)
+  }, [])
+
   const handleMulticastFilterOnChange = (checked: boolean) => {
     if (checked) {
       if (enableMulticastRateLimiting) {
         form.setFieldValue(enableMulticastRateLimitingFieldName, false)
         form.setFieldValue(enableMulticastUpLimitFieldName, false)
         form.setFieldValue(enableMulticastDownLimitFieldName, false)
+        form.setFieldValue(enableMulticastUpLimit6GFieldName, false)
+        form.setFieldValue(enableMulticastDownLimit6GFieldName, false)
       }
     }
-  }
-
-  const handleMulticastRateLimitingOnChange = (checked: boolean) => {
-    if (checked) {
-      if (enableMulticastFilter) {
-        form.setFieldValue(enableMulticastFilterFieldName, false)
-      }
-    }
+    setSwitchMulticastRateLimitingDisabled(checked)
   }
 
   return (
@@ -120,7 +117,9 @@ export function MulticastForm () {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
             >
-              <Switch onChange={handleMulticastRateLimitingOnChange} />
+              <Switch
+                disabled={switchMulticastRateLimitingDisabled}
+              />
             </Form.Item>
           </UI.FieldLabel>
 

@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -145,6 +146,10 @@ export class OpenWlanAdvancedCustomization {
 
   enableAdditionalRegulatoryDomains?: boolean
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: QosMapSetOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -252,5 +257,9 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastDownlinkRateLimiting6G = false
 
     this.enableAdditionalRegulatoryDomains = true
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }

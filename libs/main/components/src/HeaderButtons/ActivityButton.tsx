@@ -45,8 +45,8 @@ export default function ActivityButton () {
   const basePath = useTenantLink('/timeline')
   const [status, setStatus] = useState('all')
   const [detail, setDetail] = useState<Activity>()
-  const [detailModal, setDetailModalOpen] = useState<boolean>()
-  const [activityModal, setActivityModalOpen] = useState<boolean>()
+  const [detailModal, setDetailModalOpen] = useState<boolean>(false)
+  const [activityModal, setActivityModalOpen] = useState<boolean>(false)
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -187,12 +187,10 @@ export default function ActivityButton () {
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
       visible={activityModal}
-      onClose={() => {
-        setActivityModalOpen(false)
-      }}
+      onClose={() => setActivityModalOpen(false)}
       children={activityList}
     />
-    {detailModal && <TimelineDrawer
+    {detail && <TimelineDrawer
       width={464}
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}

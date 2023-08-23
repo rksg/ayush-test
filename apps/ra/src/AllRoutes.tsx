@@ -4,6 +4,7 @@ import {
   RecommendationDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
+  CrrmDetails,
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails
@@ -30,7 +31,8 @@ function AllRoutes () {
       <Route path='dashboard' element={<Dashboard />} />
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />

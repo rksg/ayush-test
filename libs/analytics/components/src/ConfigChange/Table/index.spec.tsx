@@ -16,12 +16,20 @@ describe('Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
+  const handleClick = jest.fn()
+  const setPagination = jest.fn()
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-      <Table />
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
@@ -30,7 +38,13 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-      <Table />
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -45,7 +59,13 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-      <Table />
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -64,12 +84,17 @@ describe('Table', () => {
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
   })
 
-  it('should log rows when clicked', async () => {
-    const onRowClick = jest.fn()
+  it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-      <Table onRowClick={onRowClick}/>
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -77,19 +102,16 @@ describe('Table', () => {
 
     await userEvent.click(radio[0])
 
-    expect(onRowClick).toHaveBeenCalledTimes(1)
-    expect(onRowClick).toHaveBeenCalledWith({
+    expect(handleClick).toHaveBeenCalledTimes(1)
+    expect(handleClick).toHaveBeenCalledWith({
+      children: undefined,
       id: 0,
-      value: {
-        children: undefined,
-        id: 0,
-        key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-        name: '94:B3:4F:3D:21:80',
-        newValues: ['480'],
-        oldValues: [],
-        timestamp: '1685427082900',
-        type: 'ap'
-      }
+      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+      name: '94:B3:4F:3D:21:80',
+      newValues: ['480'],
+      oldValues: [],
+      timestamp: '1685427082900',
+      type: 'ap'
     })
   })
 
@@ -97,7 +119,13 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
-      <Table />
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -112,5 +140,48 @@ describe('Table', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(screen.queryByText('Name')).toBeNull()
     expect(await screen.findByText('BSS Min. Rate')).toBeVisible()
+  })
+
+  it('should handle pagination correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: {
+        configChanges: configChanges.slice(0, 7).concat(new Array(10).fill(configChanges[7]))
+      } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+    await userEvent.click(await screen.findByText(2))
+    expect(setPagination).toHaveBeenCalledTimes(1)
+  })
+
+  it('should select row when selected value is passed in', async () => {
+    const selected = {
+      id: 0,
+      timestamp: '1685427082100',
+      type: 'ap',
+      name: '94:B3:4F:3D:21:80',
+      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+      oldValues: [],
+      newValues: ['480']
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <Table
+        selected={selected}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
   })
 })

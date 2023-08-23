@@ -6,7 +6,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
       type="default"
     >
       <div
@@ -38,7 +38,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
+                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
