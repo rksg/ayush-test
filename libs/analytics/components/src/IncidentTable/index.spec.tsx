@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { TableProps }                  from '@acx-ui/components'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -15,16 +16,19 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { api } from './services'
+import { api, IncidentTableRow, IncidentNodeData } from './services'
 
-import { IncidentTable } from './index'
+import { IncidentTable, downloadIncidentList } from './index'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
 const incidentTests = [
   {
     severity: 0.12098536225957168,
@@ -445,5 +449,88 @@ describe('IncidentTable', () => {
     expect(mockedNavigate).lastCalledWith(expect.objectContaining({
       pathname: `/1/t/analytics/incidents/${incidentTests[0].id}`
     }))
+  })
+})
+it('should render download button', async () => {
+  mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+    data: { network: { hierarchyNode: { incidents: incidentTests } } }
+  })
+
+  render(<Provider><IncidentTable filters={filters}/></Provider>,{
+    route: {
+      path: '/tenantId/t/analytics/incidents',
+      wrapRoutes: false,
+      params: {
+        tenantId: '1'
+      }
+    }
+  })
+  fireEvent.click(await screen.findByTestId('DownloadOutlined'))
+  expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
+})
+describe('CSV Functions', () => {
+  const data = [{
+    severity: 1,
+    isMuted: false,
+    severityLabel: 'P1',
+    endTime: '2023-08-21T05:37:30.000Z',
+    children: [{
+      severity: 1,
+      isMuted: false,
+      severityLabel: 'P3',
+      endTime: '2023-08-21T05:40:30.000Z'
+    }]
+  }, {
+    severity: 0.5,
+    isMuted: true,
+    severityLabel: 'P2',
+    endTime: '2023-08-21T05:39:30.000Z'
+  }]
+  const columns: TableProps<IncidentTableRow>['columns'] = [
+    {
+      title: 'Severity',
+      width: 80,
+      dataIndex: 'severityLabel',
+      key: 'severity',
+      sorter: {},
+      defaultSortOrder: 'descend',
+      fixed: 'left',
+      filterable: true
+    },
+    {
+      title: 'Date',
+      width: 80,
+      dataIndex: 'endTime',
+      key: 'endTime',
+      sorter: {},
+      defaultSortOrder: 'descend',
+      fixed: 'left',
+      filterable: true
+    }
+  ]
+  const originalBlob = global.Blob
+  beforeEach(() => {
+    global.Blob = jest.fn(() => ({
+      type: 'text/csv;charset=utf-8;',
+      arrayBuffer: jest.fn()
+    } as unknown as Blob))
+  })
+  afterEach(() => {
+    global.Blob = originalBlob
+  })
+  it('downloadIncidentList triggers download correctly', () => {
+    const downloadSpy = jest.fn()
+    const anchorMock = document.createElement('a')
+    jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
+    anchorMock.click = downloadSpy
+    downloadIncidentList(data as IncidentNodeData, columns, {
+      startDate: '2023-08-22T10:19:00+08:00',
+      endDate: '2023-08-23T10:19:00+08:00'
+    } as IncidentFilter)
+    expect(global.Blob).toHaveBeenCalledWith(
+      // eslint-disable-next-line max-len
+      ['"Severity","Date","Muted"\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"\n'],
+      { type: 'text/csv;charset=utf-8;' }
+    )
   })
 })

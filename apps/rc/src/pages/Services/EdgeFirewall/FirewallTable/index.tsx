@@ -11,7 +11,6 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeFirewallMutation,
@@ -49,7 +48,6 @@ const FirewallTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeFirewallViewDataListQuery,
     defaultPayload: {},
@@ -272,24 +270,14 @@ const FirewallTable = () => {
           { defaultMessage: 'Firewall ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={
-          isNavbarEnhanced
-            ? [
-              { text: $t({ defaultMessage: 'Network Control' }) },
-              {
-                text: $t({ defaultMessage: 'My Services' }),
-                link: getServiceListRoutePath(true)
-              }
-            ]
-            : [
-              {
-                text: $t({ defaultMessage: 'My Services' }),
-                link: getServiceListRoutePath(true)
-              }
-            ]
-        }
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'My Services' }),
+            link: getServiceListRoutePath(true)
+          }
+        ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getServiceRoutePath({
               type: ServiceType.EDGE_FIREWALL,
