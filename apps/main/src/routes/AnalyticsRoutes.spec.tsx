@@ -101,7 +101,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
   ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>,
   RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
-  CrrmDetails: () => <div data-testid='CrrmDetails'/>,
+  CrrmDetails: () => <div data-testid='CrrmDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
