@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiURL }             from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store, dataApi } from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }     from '@acx-ui/test-utils'
 
 import { networkSummaryInfo } from './__tests__/fixtures'
 
@@ -9,6 +9,7 @@ import { ReportTile } from '.'
 
 describe('ReportTile', () => {
   beforeEach(()=> {
+    store.dispatch(dataApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'NetworkInfo', { data: { network: { node: networkSummaryInfo } } })
   })
   it('should render correctly', async () => {
