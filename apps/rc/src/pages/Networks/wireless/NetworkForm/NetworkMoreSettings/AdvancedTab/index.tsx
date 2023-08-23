@@ -4,6 +4,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum }        from '@acx-ui/rc/utils'
 
 import NetworkFormContext     from '../../NetworkFormContext'
+import { QosMapSetFrom }      from '../QosMapSetFrom'
 import { UserConnectionForm } from '../UserConnectionForm'
 
 import QoS from './QoS'
@@ -25,6 +26,8 @@ export function AdvancedTab () {
   return (
     <>
       { qosMirroringFlag && <QoS wlanData={data} /> }
+      <QosMapSetFrom/>
+
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
         <UserConnectionComponent/>
       }

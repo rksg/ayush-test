@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -149,6 +150,10 @@ export class OpenWlanAdvancedCustomization {
 
   qosMirroringScope?: string
 
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: QosMapSetOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -260,5 +265,9 @@ export class OpenWlanAdvancedCustomization {
     this.qosMirroringEnabled = true
 
     this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }
