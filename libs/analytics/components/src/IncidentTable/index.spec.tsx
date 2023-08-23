@@ -469,7 +469,6 @@ it('should render download button', async () => {
   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
 })
 describe('CSV Functions', () => {
-
   const data = [{
     severity: 1,
     isMuted: false,
@@ -481,15 +480,12 @@ describe('CSV Functions', () => {
       severityLabel: 'P3',
       endTime: '2023-08-21T05:40:30.000Z'
     }]
-  },
-  {
+  }, {
     severity: 0.5,
     isMuted: true,
     severityLabel: 'P2',
     endTime: '2023-08-21T05:39:30.000Z'
-  }
-  ]
-
+  }]
   const columns: TableProps<IncidentTableRow>['columns'] = [
     {
       title: 'Severity',
@@ -510,14 +506,19 @@ describe('CSV Functions', () => {
       defaultSortOrder: 'descend',
       fixed: 'left',
       filterable: true
-    } ]
-
-  it('downloadIncidentList triggers download correctly', () => {
-    const originalBlob = global.Blob
+    }
+  ]
+  const originalBlob = global.Blob
+  beforeEach(() => {
     global.Blob = jest.fn(() => ({
       type: 'text/csv;charset=utf-8;',
       arrayBuffer: jest.fn()
     } as unknown as Blob))
+  })
+  afterEach(() => {
+    global.Blob = originalBlob
+  })
+  it('downloadIncidentList triggers download correctly', () => {
     const downloadSpy = jest.fn()
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
@@ -531,6 +532,5 @@ describe('CSV Functions', () => {
       ['"Severity","Date","Muted"\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
-    global.Blob = originalBlob
   })
 })
