@@ -82,7 +82,6 @@ export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { data: userProfile } = useUserProfileContext()
@@ -344,9 +343,7 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

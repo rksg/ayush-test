@@ -9,7 +9,7 @@ import {
   Loader,
   TableColumn
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -46,7 +46,6 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -88,16 +87,13 @@ export default function DpskTable () {
   ]
 
   const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
-    ? (isNavbarEnhanced ? [
+    ? [
       { text: intl.$t({ defaultMessage: 'Network Control' }) },
       {
         text: intl.$t({ defaultMessage: 'My Services' }),
         link: getServiceListRoutePath(true)
       }
-    ] : [{
-      text: intl.$t({ defaultMessage: 'My Services' }),
-      link: getServiceListRoutePath(true)
-    }])
+    ]
     : []
 
   const title = !hasRoles(RolesEnum.DPSK_ADMIN)

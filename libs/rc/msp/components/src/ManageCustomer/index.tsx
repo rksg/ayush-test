@@ -164,7 +164,6 @@ export function ManageCustomer () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const navigate = useNavigate()
@@ -1201,17 +1200,13 @@ export function ManageCustomer () {
           intl.$t({ defaultMessage: 'Customer Account' })
         }
         titleExtra={<TrialBanner></TrialBanner>}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: intl.$t({ defaultMessage: 'My Customers' }) },
-            {
-              text: intl.$t({ defaultMessage: 'MSP Customers' }),
-              link: '/dashboard/mspcustomers', tenantType: 'v'
-            }]
-          : [{
-            text: intl.$t({ defaultMessage: ' Customers' }),
+        breadcrumb={[
+          { text: intl.$t({ defaultMessage: 'My Customers' }) },
+          {
+            text: intl.$t({ defaultMessage: 'MSP Customers' }),
             link: '/dashboard/mspcustomers', tenantType: 'v'
-          }]
-        }
+          }
+        ]}
       />
       <StepsFormLegacy
         formRef={formRef}
