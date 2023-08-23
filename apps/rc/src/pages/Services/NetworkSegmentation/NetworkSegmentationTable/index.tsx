@@ -1,3 +1,4 @@
+import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
   useGetEdgeListQuery,
@@ -37,7 +39,8 @@ const getNetworkSegmentationPayload = {
     'venueInfos',
     'edgeInfos',
     'distributionSwitchInfos',
-    'accessSwitchInfos'
+    'accessSwitchInfos',
+    'edgeAlarmSummary'
   ]
 }
 const venueOptionsDefaultPayload = {
@@ -201,9 +204,15 @@ const NetworkSegmentationTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      sorter: true
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeInfos?.length)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
