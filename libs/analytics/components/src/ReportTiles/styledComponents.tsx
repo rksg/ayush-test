@@ -1,7 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { Tile as TileIcon } from '@acx-ui/icons'
-
 export const ReportTileWrapper = styled.div`
   display: grid;
   grid-template-columns: 5fr 6fr;
@@ -29,13 +27,15 @@ export const ReportTileWrapper = styled.div`
 `
 ReportTileWrapper.displayName = 'ReportTileWrapper'
 
-export const Tile = styled(TileIcon)<{ selected?: boolean }>`
+export const Tile = styled.div.attrs({ 'data-testid': 'Tile' })<{ selected?: boolean }>`
   display: block;
   margin: auto;
   margin-top: -4px;
+  background-color: #35b1ff;
+  transform: skew(-56deg);
   opacity: ${props => props.selected ? 0.7 : 0.3};
-  ${({ selected }) => selected && 'filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .3));'}
-  width: 61.11px;
+  ${({ selected }) => selected && 'box-shadow: 7px 4px 3px rgba(0, 0, 0, .3);'}
+  width: 39px;
   height: 15px;
   cursor: pointer;
   &:hover { opacity: ${props => props.selected ? 1 : 0.5}; }
