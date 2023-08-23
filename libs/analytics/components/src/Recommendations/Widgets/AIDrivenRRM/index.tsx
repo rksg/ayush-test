@@ -1,10 +1,9 @@
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, nodeTypes } from '@acx-ui/analytics/utils'
-import { Loader, Card, NoActiveData } from '@acx-ui/components'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
-import { NodeType }                   from '@acx-ui/utils'
+import { AnalyticsFilter }               from '@acx-ui/analytics/utils'
+import { Loader, Card, NoData }          from '@acx-ui/components'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 
 import { EnhancedRecommendation, useRecommendationDetailsQuery } from '../../RecommendationDetails/services'
 import { useRecommendationListQuery }                            from '../../services'
@@ -48,8 +47,8 @@ export const getCrrmText = (
   const nonOptimizedText = $t({
     defaultMessage:
     // eslint-disable-next-line max-len
-      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
-    description: 'Translation string - interfering, link, links, can be optimised to'
+      '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
+    description: 'Translation string - interfering, link, links, can be optimized to'
   }, { before, after })
 
   return optimized ? optimizedText : nonOptimizedText
@@ -59,6 +58,7 @@ function AIDrivenRRMWidget ({
   filters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
+  const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
   const queryResults = useRecommendationListQuery(filters)
   const crrmData = queryResults?.data?.filter((row) =>
     (true === row.code.includes('crrm'))
@@ -80,9 +80,7 @@ function AIDrivenRRMWidget ({
   const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {totalOptimized}/{total} have been optimized.' }, { total, totalOptimized })
 
   const items = detailedRecommendation?.map(recommendation => {
-    const { sliceType, sliceValue, id } = recommendation
-    const type = nodeTypes(sliceType as NodeType)
-    const text = `${type}(${sliceValue})`
+    const { sliceValue, id } = recommendation
     const optimized = getOptimized([recommendation]).isOptimized
 
     return <UI.Detail key={id}>
@@ -92,7 +90,7 @@ function AIDrivenRRMWidget ({
           to={`/recommendations/crrm/${id}`}
           style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
         >
-          <span>{text}</span>
+          <span>{sliceValue}</span>
         </TenantLink>
       </div>
       <UI.Subtitle>{getCrrmText(recommendation, $t, optimized)}</UI.Subtitle>
@@ -100,11 +98,11 @@ function AIDrivenRRMWidget ({
   })
 
   return <Loader states={[queryResults, codeQuery, detailsQuery]}>
-    <Card title={title} subTitle={noData ? '' : subTitle}>
+    <Card title={title} subTitle={noData ? '' : subTitle} onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ width }) => (
           noData
-            ? <NoActiveData text={$t({ defaultMessage: 'No recommendations' })} />
+            ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
             : <UI.Wrapper
               style={{ width, marginBlock: 20 }}
               children={items}
