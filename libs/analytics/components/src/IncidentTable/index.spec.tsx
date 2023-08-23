@@ -490,7 +490,7 @@ describe('CSV Functions', () => {
   }
   ]
 
-  const selectedKeys: TableProps<IncidentTableRow>['columns'] = [
+  const columns: TableProps<IncidentTableRow>['columns'] = [
     {
       title: 'Severity',
       width: 80,
@@ -511,7 +511,6 @@ describe('CSV Functions', () => {
       fixed: 'left',
       filterable: true
     } ]
-  const fileName = 'test.csv'
 
   it('downloadIncidentList triggers download correctly', () => {
     const originalBlob = global.Blob
@@ -523,11 +522,13 @@ describe('CSV Functions', () => {
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
     anchorMock.click = downloadSpy
-    downloadIncidentList(data as IncidentNodeData, selectedKeys, fileName)
-
+    downloadIncidentList(data as IncidentNodeData, columns, {
+      startDate: '2023-08-22T10:19:00+08:00',
+      endDate: '2023-08-23T10:19:00+08:00'
+    } as IncidentFilter)
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      ['Severity,Date,Muted\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"'],
+      ['"Severity","Date","Muted"\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
     global.Blob = originalBlob

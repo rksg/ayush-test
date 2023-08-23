@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 
 import { Checkbox }                                 from 'antd'
+import { stringify }                                from 'csv-stringify/browser/esm/sync'
 import { omit }                                     from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
@@ -35,34 +36,43 @@ import * as UI                                                                  
 import { GetIncidentBySeverity, ShortIncidentDescription, filterMutedIncidents } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
 export function downloadIncidentList (
   incidents: IncidentNodeData,
   columns: TableProps<IncidentTableRow>['columns'],
-  fileName: string
+  { startDate, endDate }: IncidentFilter
 ) {
-  const separator = ','
-  const header = columns.map(key => key.title).concat('Muted').join(separator)
-  const keys = columns.map(key => key.key).concat(['isMuted'])
-  const allIncidents= incidents.reduce((data : Incident[], incident) => {
-    data.push(omit(incident, ['children']))
-    if (incident.children?.length) {
-      data = data.concat(incident.children)
+  const data = stringify(
+    incidents
+      .reduce((data : Incident[], incident) => {
+        data.push(omit(incident, ['children']))
+        if (incident.children?.length) {
+          data = data.concat(incident.children)
+        }
+        return data
+      }, [])
+      .sort((a, b) => b.severity - a.severity),
+    {
+      header: true,
+      quoted: true,
+      cast: {
+        string: s => s === '--' ? '-' : s,
+        boolean: b => b ? 'true' : 'false'
+      },
+      columns: [
+        ...columns.map(({ key, title }) => ({
+          key: key === 'severity' ? 'severityLabel' : key,
+          header: title as string
+        })),
+        { key: 'isMuted', header: 'Muted' }
+      ]
     }
-    return data
-  }, [])
-  const rows = allIncidents.sort((a, b) => b.severity - a.severity).map((obj) => {
-    return keys.map((key) => {
-      if(key === 'severity')
-        key = 'severityLabel'
-      return `"${obj[key as keyof Incident]}"`
-    }).join(separator)
-  })
-  return handleBlobDownloadFile(
-    new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' }),
-    fileName
+  )
+  handleBlobDownloadFile(
+    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
+    `Incidents-${startDate}-${endDate}.csv`
   )
 }
-
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -114,9 +124,6 @@ export function IncidentTable ({ filters, systemNetwork }: {
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident] = useMuteIncidentsMutation()
-  const { startDate, endDate } = filters
-  const csvFilename = `Incidents-${startDate}-${endDate}.csv`
-
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     code: string,
@@ -260,7 +267,7 @@ export function IncidentTable ({ filters, systemNetwork }: {
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
           onClick: () => {
-            downloadIncidentList(data as IncidentNodeData,ColumnHeaders,csvFilename)
+            downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
         rowSelection={!systemNetwork && {
           type: 'radio',
