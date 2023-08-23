@@ -396,7 +396,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        return !row?.syncedAdminPassword && isConfigSynced
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
     onClick: handleClickMatchPassword
