@@ -55,8 +55,7 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 }
 
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { statusTrail, category, sliceValue, status, code, id, priority } = details
   const { createdAt } = statusTrail[0]
@@ -88,7 +87,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     ...(isRrm
       ? [{
         label: $t({ defaultMessage: 'Summary' }),
-        children: getCrrmText(details, intl.$t, optimized)
+        children: getCrrmText(details, $t, optimized)
       }]
       : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }

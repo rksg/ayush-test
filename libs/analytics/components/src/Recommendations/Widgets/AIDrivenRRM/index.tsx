@@ -58,8 +58,7 @@ export const getCrrmText = (
 function AIDrivenRRMWidget ({
   filters
 }: AIDrivenRRMProps) {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
   const queryResults = useRecommendationListQuery(filters)
   const crrmData = queryResults?.data?.filter((row) =>
     (true === row.code.includes('crrm'))
@@ -96,7 +95,7 @@ function AIDrivenRRMWidget ({
           <span>{text}</span>
         </TenantLink>
       </div>
-      <UI.Subtitle>{getCrrmText(recommendation, intl.$t, optimized)}</UI.Subtitle>
+      <UI.Subtitle>{getCrrmText(recommendation, $t, optimized)}</UI.Subtitle>
     </UI.Detail>
   })
 
