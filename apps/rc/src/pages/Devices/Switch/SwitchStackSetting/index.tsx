@@ -79,12 +79,7 @@ export function SwitchStackSetting
     if(form.getFieldValue('ipAddressInterface')){
       setIpAddressInterface(form.getFieldValue('ipAddressInterface'))
     }
-  }, [
-    form.getFieldValue('ipAddressType'),
-    form.getFieldValue('switchType'),
-    form.getFieldValue('ipAddressInterfaceType'),
-    form.getFieldValue('ipAddressInterface')
-  ])
+  }, [form])
 
   const onEditJumboMode = (checked: boolean) => {
     showActionModal({
