@@ -27,8 +27,13 @@ export function networkWifiIpRegExp (value: string) {
 export function serverIpAddressRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
-  if (value && !re.test(value)) {
-    return Promise.reject($t(validationMessages.ipAddress))
+  if (value) {
+    const ipArray = value.split(' ')
+    for (let ip of ipArray) {
+      if (!re.test(ip)) {
+        return Promise.reject($t(validationMessages.ipAddress))
+      }
+    }
   }
   return Promise.resolve()
 }
