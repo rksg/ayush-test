@@ -76,23 +76,23 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         />
       </UI.FieldLabel>
       { qosMirroringEnabled &&
-                        <Form.Item
-                          label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
-                          extra={
-                            <div style={{ width: '250px' }}>
-                              { qoSMirroringScopeOptions.find(option =>
-                                option.value === qosMirroringScope)?.message }
-                            </div>
-                          }
-                          name={['wlan', 'advancedCustomization', 'qosMirroringScope']}
-                          initialValue={initQosMirroringScope}
-                          children={
-                            <Select
-                              style={{ width: '280px', height: '30px', fontSize: '11px' }}
-                              options={qoSMirroringScopeOptions}
-                            />
-                          }
-                        />
+              <Form.Item
+                label={$t({ defaultMessage: 'QoS Mirroring Scope' })}
+                extra={
+                  <div style={{ width: '250px' }}>
+                    { qoSMirroringScopeOptions.find(option =>
+                      option.value === qosMirroringScope)?.message }
+                  </div>
+                }
+                name={['wlan', 'advancedCustomization', 'qosMirroringScope']}
+                initialValue={initQosMirroringScope}
+                children={
+                  <Select
+                    style={{ width: '280px', height: '30px', fontSize: '11px' }}
+                    options={qoSMirroringScopeOptions}
+                  />
+                }
+              />
       }
     </>
   )
