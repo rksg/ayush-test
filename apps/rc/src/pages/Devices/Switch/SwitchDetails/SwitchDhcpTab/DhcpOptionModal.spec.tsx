@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { DHCP_OPTION_TYPE } from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
-import {render, screen, waitFor} from '@acx-ui/test-utils'
+import { DHCP_OPTION_TYPE }        from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 

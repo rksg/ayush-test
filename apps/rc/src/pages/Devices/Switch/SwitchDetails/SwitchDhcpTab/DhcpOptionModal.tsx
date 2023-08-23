@@ -37,7 +37,7 @@ const validatorMap: { [key in DHCP_OPTION_TYPE]: Rule[] } = {
   ]
 }
 
-export async function dhcpOptionIpsValidation(value: string) {
+export async function dhcpOptionIpsValidation (value: string) {
   if (value) {
     const ipArray = value.split(' ')
     for (let ip of ipArray) {
