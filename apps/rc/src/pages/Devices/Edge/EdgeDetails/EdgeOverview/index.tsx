@@ -134,6 +134,7 @@ export const EdgeOverview = () => {
       <Col span={24}>
         <Tabs
           type='second'
+          scrollToTop={false}
           activeKey={currentTab}
           defaultActiveKey={activeSubTab || tabs[0].value}
           onChange={handleTabChange}
