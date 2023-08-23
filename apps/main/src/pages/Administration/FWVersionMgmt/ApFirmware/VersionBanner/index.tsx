@@ -32,7 +32,7 @@ export const VersionBanner = () => {
       firmware: {
         version: firmware.name,
         category: firmware.category,
-        releaseDate: firmware.releaseDate
+        releaseDate: firmware.releaseDate ?? firmware.createdDate
       }
     },
     ...(latestEolVersionByABFs.map(item => ({
@@ -52,9 +52,10 @@ export const VersionBanner = () => {
 
 export default VersionBanner
 
-function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []): ABFVersion[] {
+function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []):
+(ABFVersion & { createdDate: string })[] {
   return firmwareVersions.filter((abf: ABFVersion) => {
     // eslint-disable-next-line max-len
     return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
-  })
+  }) as (ABFVersion & { createdDate: string })[] // createdDate for legacy usage
 }
