@@ -41,9 +41,9 @@ const FirewallDetail = () => {
   const firewallInfo = [
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => ((edgeFirewallData.edgeIds?.length ?? 0)
+      content: () => ((edgeFirewallData.edgeIds?.length)
         ? <EdgeServiceStatusLight data={edgeFirewallData.edgeAlarmSummary} />
-        : $t({ defaultMessage: '--' })
+        :'--'
       )
     },
     {

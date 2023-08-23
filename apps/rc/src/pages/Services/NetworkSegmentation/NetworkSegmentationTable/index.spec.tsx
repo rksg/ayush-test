@@ -86,6 +86,8 @@ describe('NetworkSegmentationList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /nsg/i })
     expect(row.length).toBe(2)
+    await screen.findByRole('row', { name: 'nsg1 MockVenue1 SmartEdge1 1 0 Poor No' })
+    await screen.findByRole('row', { name: 'nsg2 1 0 Unknown No' })
   })
 
 
@@ -137,7 +139,7 @@ describe('NetworkSegmentationList', () => {
         route: { params, path: tablePath }
       })
     const smartEdgeLink = await screen.findByRole('link',
-      { name: 'Smart Edge 1' }) as HTMLAnchorElement
+      { name: 'SmartEdge1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
       .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
   })
@@ -149,7 +151,7 @@ describe('NetworkSegmentationList', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const venue1List = await screen.findAllByRole('link', { name: 'Mock Venue 1' })
+    const venue1List = await screen.findAllByRole('link', { name: 'MockVenue1' })
     const venue1Link = venue1List[0] as HTMLAnchorElement
     expect(venue1Link.href)
       .toContain(`/${params.tenantId}/t/venues/mock_venue_1/venue-details/overview`)
