@@ -4,7 +4,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
@@ -39,7 +38,6 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
   const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addAdaptivePolicySet] = useAddAdaptivePolicySetMutation()
   const [updateAdaptiveSetPolicy] = useUpdateAdaptivePolicySetMutation()
@@ -142,20 +140,13 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
         title={editMode
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy Set' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
           { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
-            link: tablePath }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
             link: tablePath }
         ]}
       />}
