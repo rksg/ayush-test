@@ -1,4 +1,4 @@
-import { Provider, dataApi, dataApiURL, store }  from '@acx-ui/store'
+import { Provider, dataApiURL }                  from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 import { NodeType, PathNode }                    from '@acx-ui/utils'
 
@@ -161,10 +161,6 @@ describe('genNetworkSummaryInfoQuery', () => {
 })
 
 describe('useNetworkSummaryInfoQuery', () => {
-  afterEach(() => {
-    store.dispatch(dataApi.util.resetApiState())
-    jest.resetAllMocks()
-  })
   it('should return correct data', async () => {
     const param: NetworkSummaryInfoProps = {
       path: [{ type: 'network', name: 'Network' }],
