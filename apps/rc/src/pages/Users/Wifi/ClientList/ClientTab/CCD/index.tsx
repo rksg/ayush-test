@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Input, Select, Space } from 'antd'
 import { DefaultOptionType }          from 'antd/lib/select'
 import { useIntl }                    from 'react-intl'
 import { useParams }                  from 'react-router-dom'
 
+import { Tooltip }                                            from '@acx-ui/components'
 import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid } from '@acx-ui/icons'
 import { useGetCcdSupportVenuesQuery }                        from '@acx-ui/rc/services'
 import { MacAddressRegExp }                                   from '@acx-ui/rc/utils'
@@ -37,6 +38,7 @@ export function ClientConnectionDiagnosis () {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedAps, setSelectedAps] = useState<string[]>()
   const [selectedApsDisplayText, setSelectedApsDisplayText] = useState<string>()
+  const [selectedApsTooltip, setSelectedApsTooltip] = useState<string| ReactNode>()
   const [isTracing, setIsTracing] = useState(false)
   const [isValid, setIsValid] = useState(false)
 
@@ -57,8 +59,18 @@ export function ClientConnectionDiagnosis () {
     setShowSelectApsDraw(true)
   }
 
-  const handleSelectAps = (selectAps: string[], selectApsDisplayText: string) => {
-    setSelectedApsDisplayText(selectApsDisplayText)
+  const handleSelectAps = (selectAps: string[], selectApGroups: string[]) => {
+    let displayText = selectApGroups.join(', ')
+    let tooltip
+    if (displayText.length > 25) {
+      displayText = selectApGroups[0] + ' ...'
+
+      tooltip = selectApGroups.map(apg => {
+        return <div>{apg}</div>
+      })
+    }
+    setSelectedApsDisplayText(displayText)
+    setSelectedApsTooltip(tooltip)
     setSelectedAps(selectAps)
   }
 
@@ -82,7 +94,7 @@ export function ClientConnectionDiagnosis () {
     <ApGroupSelecterDrawer
       visible={showSelectApsDraw}
       venueId={venueId}
-      updateSelectAps={(aps: string[], displayText: string) => handleSelectAps(aps, displayText)}
+      updateSelectAps={(aps: string[], apGroups: string[]) => handleSelectAps(aps, apGroups)}
       onCancel={() => setShowSelectApsDraw(false)}
     />
     <Form form={form}
@@ -122,11 +134,13 @@ export function ClientConnectionDiagnosis () {
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           children={<Space>
-            <Input readOnly
-              placeholder={$t({ defaultMessage: 'Select...' })}
-              style={{ width: '250px' }}
-              value={selectedApsDisplayText}
-            />
+            <Tooltip title={selectedApsTooltip} placement='bottom'>
+              <Input readOnly
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                style={{ width: '250px' }}
+                value={selectedApsDisplayText}
+              />
+            </Tooltip>
             <Button type='link'
               disabled={!venueId}
               onClick={openSelectAps}>
@@ -137,7 +151,6 @@ export function ClientConnectionDiagnosis () {
 
         <Form.Item
           label=' '
-          name='ap'
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           children={
@@ -157,7 +170,6 @@ export function ClientConnectionDiagnosis () {
 
         <Form.Item
           label=' '
-          name='ap'
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           children={

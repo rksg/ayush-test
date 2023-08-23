@@ -12,7 +12,7 @@ import { APExtendedGrouped }  from '@acx-ui/rc/utils'
 type ApGroupSelecterDrawerProps = {
   visible: boolean,
   venueId?: string,
-  updateSelectAps: (d: string[], s:string) => void
+  updateSelectAps: (aps: string[], apGroups:string[]) => void
   onCancel: () => void
 }
 /*
@@ -223,11 +223,18 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
     selectedKeysRef.current = checkedKeys as string[]
   }
 
-
   const content = (<Tree checkable
     onCheck={onApsCheck}
     treeData={apsTreeData}
   />)
+
+  // reset form fields when drawer is closed
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      selectedKeysRef.current = []
+    }
+  }
+
 
   return (
     <Drawer
@@ -237,6 +244,7 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
       children={content}
       destroyOnClose={true}
       width={'500px'}
+      afterVisibleChange={handleOpenChange}
       footer={
         <Drawer.FormFooter
           buttonLabel={({
@@ -251,19 +259,19 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
 
               const apgMap = apGroupMapRef.current
 
-              let displayArr = []
+              let selectedApGroups = []
               if (apgMap) {
                 for (let key of apgMap.keys()) {
                   const aps = selectedApKeys.filter(apKey => apKey.includes(key+'-'))
                   const numOfAps = (aps && aps.length) || 0
                   if (numOfAps > 0) {
                     const apgName = apgMap.get(key)
-                    displayArr.push(`${apgName} (${numOfAps} APs)`)
+                    selectedApGroups.push(`${apgName} (${numOfAps} APs)`)
                   }
                 }
               }
 
-              updateSelectAps(selectedAps, displayArr.join(','))
+              updateSelectAps(selectedAps, selectedApGroups)
               props.onCancel()
             } catch (error) {
               if (error instanceof Error) throw error
