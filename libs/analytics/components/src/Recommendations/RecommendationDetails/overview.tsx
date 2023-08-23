@@ -7,11 +7,11 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection }          from '../../DescriptionSection'
-import { codes, statusTrailMsgs }      from '../config'
-import { Priority, PriorityIcon }      from '../styledComponents'
-import { checkOptimized, getCrrmText } from '../Widgets/AIDrivenRRM'
-import { OptimizedIcon }               from '../Widgets/styledComponents'
+import { DescriptionSection }        from '../../DescriptionSection'
+import { codes, statusTrailMsgs }    from '../config'
+import { Priority, PriorityIcon }    from '../styledComponents'
+import { getOptimized, getCrrmText } from '../Widgets/AIDrivenRRM'
+import { OptimizedIcon }             from '../Widgets/styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -62,7 +62,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
-  const optimized = checkOptimized([details]).isOptimized
+  const optimized = getOptimized([details]).isOptimized
 
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
@@ -86,7 +86,10 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       children: sliceValue
     }]),
     ...(isRrm
-      ? [{ label: $t({ defaultMessage: 'Summary' }), children: getCrrmText(details, intl.$t) }]
+      ? [{
+        label: $t({ defaultMessage: 'Summary' }),
+        children: getCrrmText(details, intl.$t, optimized)
+      }]
       : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]

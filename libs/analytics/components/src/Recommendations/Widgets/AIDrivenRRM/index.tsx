@@ -16,7 +16,7 @@ type AIDrivenRRMProps = {
   filters: AnalyticsFilter
 }
 
-export const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
+export const getOptimized = (recommendation: EnhancedRecommendation[]) => {
   const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
   const optimizedData = recommendation?.filter(detail => optimizedStates.includes(detail.status))
   return {
@@ -25,9 +25,12 @@ export const checkOptimized = (recommendation: EnhancedRecommendation[]) => {
   }
 }
 
-export const getCrrmText = (recommendation: EnhancedRecommendation, $t: IntlShape['$t']) => {
+export const getCrrmText = (
+  recommendation: EnhancedRecommendation,
+  $t: IntlShape['$t'],
+  optimized: boolean
+) => {
   const { appliedOnce, status, kpi_number_of_interfering_links } = recommendation
-  const optimized = checkOptimized([recommendation]).isOptimized
   const applied = appliedOnce && status !== 'reverted'
   const before = (applied
     ? kpi_number_of_interfering_links?.previous
@@ -73,14 +76,15 @@ function AIDrivenRRMWidget ({
     codeQuery.data?.filter(i => i.code) as EnhancedRecommendation[],
     { skip: codeQuery.data ? codeQuery.data?.filter(i => i.code).length === 0 : true })
   const detailedRecommendation = detailsQuery.data
-  const optimized = checkOptimized(detailedRecommendation as EnhancedRecommendation[]).total
+  const totalOptimized = getOptimized(detailedRecommendation as EnhancedRecommendation[]).total|| 0
   // eslint-disable-next-line max-len
-  const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {optimized}/{total} have been optimized' }, { total, optimized })
+  const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {totalOptimized}/{total} have been optimized.' }, { total, totalOptimized })
 
   const items = detailedRecommendation?.slice(0,5).map(recommendation => {
     const { sliceType, sliceValue, id } = recommendation
     const type = nodeTypes(sliceType as NodeType)
     const text = `${type}(${sliceValue})`
+    const optimized = getOptimized([recommendation]).isOptimized
 
     return <UI.Detail key={id}>
       <div style={{ display: 'flex' }}>
@@ -92,12 +96,12 @@ function AIDrivenRRMWidget ({
           <span>{text}</span>
         </TenantLink>
       </div>
-      <UI.Subtitle>{getCrrmText(recommendation, intl.$t)}</UI.Subtitle>
+      <UI.Subtitle>{getCrrmText(recommendation, intl.$t, optimized)}</UI.Subtitle>
     </UI.Detail>
   })
 
   return <Loader states={[queryResults, codeQuery, detailsQuery]}>
-    <Card title={title} subTitle={subTitle}>
+    <Card title={title} subTitle={noData ? '' : subTitle}>
       <AutoSizer>
         {({ width }) => (
           noData
