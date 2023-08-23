@@ -121,7 +121,7 @@ export function StackForm () {
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchViewModel[])
 
   const [activeRow, setActiveRow] = useState('1')
-  const [rowKey, setRowKey] = useState(3)
+  const [rowKey, setRowKey] = useState(2)
 
   const dataFetchedRef = useRef(false)
 
@@ -205,11 +205,11 @@ export function StackForm () {
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
           (item: { id: string; model: undefined }, index: number) => {
-            const key: string = (index + 1).toString()
+            const key: number = _.get(item, 'unitId') || (index + 1)
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
               formRef?.current?.setFieldValue('active', key)
-              setActiveRow(key)
+              setActiveRow(key.toString())
             }
             setVisibleNotification(true)
             return {
@@ -476,9 +476,6 @@ export function StackForm () {
     {
       dataIndex: 'key',
       key: 'key',
-      render: (_, __, index) => {
-        return index + 1
-      },
       showSorterTooltip: false
     },
     {
