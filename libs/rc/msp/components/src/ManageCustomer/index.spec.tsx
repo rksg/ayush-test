@@ -363,24 +363,7 @@ describe('ManageCustomer', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeEnabled()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    params.action = 'edit'
-    render(
-      <Provider>
-        <ManageCustomer />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.queryByText('My Customers')).toBeNull()
-    expect(screen.queryByText('MSP Customers')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Customers'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NAVBAR_ENHANCEMENT)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <ManageCustomer />
