@@ -954,12 +954,11 @@ export function ManageCustomer () {
           <Form.Item
             name='service_expiration_date'
             label=''
-            initialValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
             children={
               <DatePicker
                 format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')
@@ -1068,12 +1067,11 @@ export function ManageCustomer () {
           <Form.Item
             name='service_expiration_date'
             label=''
-            initialValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
             children={
               <DatePicker
                 format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')

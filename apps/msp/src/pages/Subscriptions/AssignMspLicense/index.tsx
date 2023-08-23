@@ -343,6 +343,11 @@ export function AssignMspLicense () {
         <Form.Item
           name='serviceExpirationDate'
           label=''
+          rules={[
+            { required: true,
+              message: intl.$t({ defaultMessage: 'Please select expiration date' })
+            }
+          ]}
           children={
             <DatePicker
               format={formatter(DateFormatEnum.DateFormat)}
