@@ -53,7 +53,7 @@ export interface Switch {
   switchVersion: string
 }
 
-export const SearchApi = dataApiSearch.injectEndpoints({
+export const searchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
     search: build.query<SearchResponse, RequestPayload>({
       query: (payload) => ({
@@ -109,4 +109,4 @@ export const SearchApi = dataApiSearch.injectEndpoints({
 
 export const {
   useSearchQuery
-} = SearchApi
+} = searchApi
