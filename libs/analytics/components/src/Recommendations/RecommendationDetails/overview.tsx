@@ -7,11 +7,11 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { getOptimized, getCrrmLinkText } from '../../AIDrivenRRM'
 import { FlexDiv, OptimizedIcon }        from '../../AIDrivenRRM/styledComponents'
 import { DescriptionSection }            from '../../DescriptionSection'
 import { codes, statusTrailMsgs }        from '../config'
 import { Priority, PriorityIcon }        from '../styledComponents'
+import { getOptimized, getCrrmLinkText } from '../utils'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
