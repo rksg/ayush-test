@@ -5,20 +5,9 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@ac
 
 import { searchFixture, emptySearchFixture } from './__fixtures__/searchMocks'
 
-
 import SearchResults from '.'
 
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({
-    data: {
-      detailLevel: 'it',
-      dateFormat: 'mm/dd/yyyy'
-    }
-  })
-}))
-
-const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+const params = { searchVal: 'test%3F' }
 
 describe.only('Search Results', () => {
   it('should decode search string correctly', async () => {

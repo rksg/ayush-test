@@ -8,11 +8,11 @@ import {
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import { HomeSolid }     from '@acx-ui/icons'
-import { HeaderContext } from '@acx-ui/main/components'
 import {
   ActivityButton,
   AlarmsButton,
   FetchBot,
+  HeaderContext,
   HelpButton,
   UserButton,
   LicenseBanner,
@@ -31,9 +31,8 @@ import { hasRoles, useUserProfileContext }                        from '@acx-ui/
 import { AccountType, getJwtTokenPayload, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-//import SearchBar         from './SearchBar'
-import * as UI     from './styledComponents'
-import { useLogo } from './useLogo'
+import * as UI           from './styledComponents'
+import { useLogo }       from './useLogo'
 
 function Layout () {
   const { $t } = useIntl()

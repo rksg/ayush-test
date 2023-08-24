@@ -15,12 +15,6 @@ describe('SearchResults - NoData', () => {
     'Data Studio'
   ]
 
-  // const toggleOffLinks = [
-  //   'Venues',
-  //   'Networks',
-  //   'Dashboard'
-  // ]
-
   it('should render correctly for snapshot test with toggles on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<NoData />, { route: { params: { tenantId: '1234' } } })
@@ -29,11 +23,4 @@ describe('SearchResults - NoData', () => {
     }))
   })
 
-  // it('should render correctly for snapshot test with toggles off', async () => {
-  //   jest.mocked(useIsSplitOn).mockReturnValue(false)
-  //   render(<NoData />, { route: { params: { tenantId: '1234' } } })
-  //   await Promise.all(toggleOffLinks.map(async (val) => {
-  //     expect(await screen.findByText(val)).toBeInTheDocument()
-  //   }))
-  // })
 })

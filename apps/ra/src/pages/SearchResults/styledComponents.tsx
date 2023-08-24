@@ -1,4 +1,3 @@
-//import { Collapse as AcxCollapse } from 'antd'
 import styled from 'styled-components'
 
 import { Collapse as AcxCollapse } from '@acx-ui/components'

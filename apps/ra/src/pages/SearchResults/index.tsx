@@ -20,34 +20,11 @@ const params = {
 
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
-  const results = useSearchQuery(
-    { ...params, query: searchVal! }
-    // { selectFromResult: (states) => {
-    //   // ...states,
-    //   // data: states.data && aggregateDataBy<AP>('mac')(states.data.aps)
-    //   console.log('## aggregateDataBy',
-    //     states.data && aggregateDataBy<AP>('macAddress')(states.data.aps))
-    //   //return states
-    //   return {
-    //     ...states,
-    //     data: states.data && {
-    //       aps: aggregateDataBy<AP>('macAddress')(states.data.aps),
-    //       networkHierarchy: aggregateDataBy<NetworkHierarchy>('macAddress')(
-    //         states.data.networkHierarchy
-    //       ),
-    //       clients: aggregateDataBy<Client>('macAddress')(states.data.clients),
-    //       switches: aggregateDataBy<Switch>('macAddress')(states.data.switches)
-    //     }
-    //   }
-    // }
-    // }
-  )
+  const results = useSearchQuery({ ...params, query: searchVal! })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
     count += (value as []).length || 0
   })
-
-
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
@@ -105,7 +82,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       },
       sorter: { compare: sortProp('networkPath', defaultSort) }
     }
-
   ]
 
   const clientTablecolumnHeaders: TableProps<Client>['columns'] = [
