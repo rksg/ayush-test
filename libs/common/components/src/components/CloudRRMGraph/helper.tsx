@@ -1,12 +1,13 @@
-import _                            from 'lodash'
-import { unparse }                  from 'papaparse'
-import { renderToString }           from 'react-dom/server'
-import { IntlShape, defineMessage } from 'react-intl'
+import _                                                               from 'lodash'
+import { unparse }                                                     from 'papaparse'
+import { renderToString }                                              from 'react-dom/server'
+import { FormattedMessage, IntlShape, RawIntlProvider, defineMessage } from 'react-intl'
 
 import { formatter }              from '@acx-ui/formatter'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { cssStr } from '../../theme/helper'
+import { cssStr }         from '../../theme/helper'
+import { TooltipWrapper } from '../Chart'
 
 import channelGroupOf24gMap from './mapping/channelGroupOf24gMap.json'
 import channelGroupOf5gMap  from './mapping/channelGroupOf5gMap.json'
@@ -34,7 +35,7 @@ export interface TooltipFormatterProps {
 }
 
 export const tooltipFormatter = (params: TooltipFormatterProps) => {
-  const { $t } = getIntl()
+  const intl = getIntl()
   const showTooltip = params.dataType === 'node' && params.data.showTooltip
   const showTxPower = params.dataType === 'node' && params.data.category === 'txPower'
   if (!showTooltip) return null
@@ -47,24 +48,40 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
     txPower: formatter('txFormat')(set.txPower)
   }))
   return renderToString(
-    <div>
-      <div>{$t({ defaultMessage: 'AP Name: {apName}' }, _.pick(params.data, 'apName'))}</div>
-      {variables.map(vars =>
-        <div key={`channel-${vars.radio}`}>
-          {$t({ defaultMessage: 'Channel number (radio {radio}): {channel}' },
-            _.pick(vars, ['radio', 'channel']))}
-        </div>)}
-      {variables.map(vars =>
-        <div key={`bandwidth-${vars.radio}`}>
-          {$t({ defaultMessage: 'Bandwidth (radio {radio}): {bandwidth}' },
-            _.pick(vars, ['radio', 'bandwidth']))}
-        </div>)}
-      {showTxPower && variables.map(vars =>
-        <div key={`txpower-${vars.radio}`}>
-          {$t({ defaultMessage: 'TxPower (radio {radio}): {txPower}' },
-            _.pick(vars, ['radio', 'txPower']))}
-        </div>)}
-    </div>
+    <RawIntlProvider value={intl}>
+      <TooltipWrapper>
+        <ul>
+          <FormattedMessage
+            defaultMessage='AP Name: <b>{apName}</b>'
+            values={{
+              ..._.pick(params.data, 'apName'),
+              b: (contents) => <b>{contents}</b>
+            }}
+          />
+          <li>{variables.map(vars => <FormattedMessage
+            defaultMessage='Channl number (radio {radio}): <b>{channel}</b>'
+            values={{
+              ..._.pick(vars, ['radio', 'channel']),
+              b: (contents) => <b>{contents}</b>
+            }}
+          />)}</li>
+          <li>{variables.map(vars => <FormattedMessage
+            defaultMessage='Bandwidth (radio {radio}): <b>{bandwidth}</b>'
+            values={{
+              ..._.pick(vars, ['radio', 'bandwidth']),
+              b: (contents) => <b>{contents}</b>
+            }}
+          />)}</li>
+          {showTxPower && <li>{variables.map(vars => <FormattedMessage
+            defaultMessage='TxPower (radio {radio}): <b>{txPower}</b>'
+            values={{
+              ..._.pick(vars, ['radio', 'txPower']),
+              b: (contents) => <b>{contents}</b>
+            }}
+          />)}</li>}
+        </ul>
+      </TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 
