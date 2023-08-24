@@ -16,7 +16,7 @@ import { FieldLabel, RadioDescription } from '../styledComponents'
 
 const { useWatch } = Form
 
-export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void; }) {
+export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void }) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
