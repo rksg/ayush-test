@@ -255,7 +255,7 @@ describe('AssignMspLicense', () => {
     const input = screen.getAllByRole('spinbutton')[0]
     fireEvent.change(input, { target: { value: '-1' } })
     await waitFor(() => {
-      expect(screen.getByText('Invalid number')).toBeVisible()
+      expect(screen.getByText('Number should be between 0 and 0')).toBeVisible()
     })
   })
   it('should validate wifi input correctly', async () => {
@@ -270,7 +270,7 @@ describe('AssignMspLicense', () => {
     const input = screen.getAllByRole('spinbutton')[0]
     fireEvent.change(input, { target: { value: '-1' } })
     await waitFor(() => {
-      expect(screen.getByText('Invalid number')).toBeVisible()
+      expect(screen.getByText('Number should be between 0 and 12')).toBeVisible()
     })
   })
   it('should validate switch input correctly', async () => {
@@ -286,7 +286,7 @@ describe('AssignMspLicense', () => {
     await userEvent.clear(input)
     fireEvent.change(input, { target: { value: '-1' } })
     await waitFor(() => {
-      expect(screen.getByText('Invalid number')).toBeVisible()
+      expect(screen.getByText('Number should be between 0 and 92')).toBeVisible()
     })
   })
   it('expiration date dropdown should set five years date correctly', async () => {

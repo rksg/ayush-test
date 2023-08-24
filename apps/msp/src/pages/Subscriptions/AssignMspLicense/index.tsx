@@ -125,7 +125,8 @@ export function AssignMspLicense () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
