@@ -591,6 +591,9 @@ export function SwitchForm () {
                   <>
                     <Form.Item name='id' hidden={true}><Input /></Form.Item>
                     <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
                     <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
               }
