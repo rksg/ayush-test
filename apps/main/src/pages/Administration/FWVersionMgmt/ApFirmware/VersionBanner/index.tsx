@@ -11,6 +11,7 @@ import {
   ABFVersion
 } from '@acx-ui/rc/utils'
 
+import { compareVersions }  from '../../FirmwareUtils'
 import * as UI              from '../../styledComponents'
 import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
@@ -22,7 +23,9 @@ export const VersionBanner = () => {
     selectFromResult: ({ data }) => {
       return {
         latestActiveVersions: data
-          ? data.filter(abfVersion => abfVersion.abf === 'active')
+          ? data
+            .filter(abfVersion => abfVersion.abf === 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
           : []
       }
     }
