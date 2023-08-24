@@ -17,6 +17,11 @@ import { SwitchClientDetails } from './SwitchClientDetails'
 
 import { SwitchClientsTable } from './'
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+
 const clientList = {
   fields: [
     'clientDesc',

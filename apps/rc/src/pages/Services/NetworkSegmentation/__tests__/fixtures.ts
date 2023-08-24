@@ -162,7 +162,8 @@ export const mockNsgStatsList = {
     'networkIds',
     'name',
     'id',
-    'tags'
+    'tags',
+    'edgeAlarmSummary'
   ],
   totalCount: 2,
   page: 1,
@@ -177,7 +178,7 @@ export const mockNsgStatsList = {
         {
           id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
           venueId: 'mock_venue_1',
-          venueName: 'Mock Venue 1',
+          venueName: 'MockVenue1',
           personaGroupId: 'per-444'
         }
       ],
@@ -185,12 +186,21 @@ export const mockNsgStatsList = {
         {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
           edgeId: '0000000001',
-          edgeName: 'Smart Edge 1',
+          edgeName: 'SmartEdge1',
           segments: 1,
           devices: 1,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
           dhcpPoolId: '1',
           vniRange: ''
+        }
+      ],
+      edgeAlarmSummary: [
+        {
+          edgeId: '0000000001',
+          severitySummary: {
+            critical: 1
+          },
+          totalCount: 1
         }
       ]
     },

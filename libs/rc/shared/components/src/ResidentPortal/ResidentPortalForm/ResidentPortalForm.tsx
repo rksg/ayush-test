@@ -8,7 +8,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useAddResidentPortalMutation,
   useDeleteResidentPortalFaviconMutation,
   useDeleteResidentPortalLogoMutation,
@@ -53,7 +52,6 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ addResidentPortal ] = useAddResidentPortalMutation()
   const [ updateResidentPortal ] = useUpdateResidentPortalMutation()
@@ -171,19 +169,10 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
           ? $t({ defaultMessage: 'Edit Resident Portal' })
           : $t({ defaultMessage: 'Add Resident Portal' })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Resident Portals' }),
-            link: tablePath
-          }
-        ] : [
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Resident Portals' }),
-            link: tablePath
-          }
+          { text: $t({ defaultMessage: 'Resident Portals' }), link: tablePath }
         ]}
       />}
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
