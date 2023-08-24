@@ -8,7 +8,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation
@@ -134,7 +133,6 @@ const AccessControlForm = (props: AccessControlFormProps) => {
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { editMode } = props
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
@@ -172,14 +170,12 @@ const AccessControlForm = (props: AccessControlFormProps) => {
         title={editMode
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
-        ] : [
           { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
         ]}
       />

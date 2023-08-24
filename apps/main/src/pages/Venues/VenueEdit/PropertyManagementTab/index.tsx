@@ -291,12 +291,12 @@ export function PropertyManagementTab () {
     const modal = AntModal['confirm']({})
 
     modal.update({
-      title: $t({ defaultMessage: 'Disable Property Management?' }),
+      title: $t({ defaultMessage: 'Delete Property Management?' }),
       content: <>
         {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
-        {confirmForm({ text: 'Disable', modal })}
+        {confirmForm({ text: 'Delete', modal })}
       </>,
-      okText: $t({ defaultMessage: 'Disable' }),
+      okText: $t({ defaultMessage: 'Delete' }),
       okButtonProps: { disabled: true },
       onOk: () => {callback()},
       icon: <> </>
@@ -407,10 +407,11 @@ export function PropertyManagementTab () {
                     {$t({ defaultMessage: 'Add Persona Group' })}
                   </Button>
                 </Form.Item>
-                <Form.Item
-                  hidden
-                  name={['unitConfig', 'type']}
-                />
+
+                <Form.Item noStyle name={['unitConfig', 'type']}>
+                  <Input type='hidden' />
+                </Form.Item>
+
                 <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
@@ -490,8 +491,11 @@ export function PropertyManagementTab () {
                 {msgTemplateEnabled &&
                   <>
                     <Form.Item
-                      hidden
-                      name={['communicationConfig', 'type']}/>
+                      noStyle
+                      name={['communicationConfig', 'type']}
+                    >
+                      <Input type='hidden' />
+                    </Form.Item>
                     <Subtitle level={4} style={{ paddingTop: '8px' }}>
                       {$t({ defaultMessage: 'Communication Templates' })}
                     </Subtitle>

@@ -40,8 +40,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       transformResponse (result: TableResult<Network>) {
         result.data = result.data.map(item => ({
           ...item,
-          activated: item.activated ?? { isActivated: false }
-        }))
+          activated: item.activated ?? { isActivated: false },
+          ...(item?.dsaeOnboardNetwork &&
+            { children: [{ ...item?.dsaeOnboardNetwork,
+              isOnBoarded: true,
+              id: item?.name + 'onboard' } as Network] })
+        })) as Network[]
         return result
       },
       keepUnusedDataFor: 0,

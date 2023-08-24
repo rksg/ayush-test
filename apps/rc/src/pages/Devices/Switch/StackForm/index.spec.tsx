@@ -5,7 +5,6 @@ import { debounce }   from 'lodash'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -247,26 +246,7 @@ describe('Switch Stack Form - Add', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should render correct breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
-
-    await changeVenue()
-    await fillInForm()
-
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-  })
-
-  it('should render correct breadcrumb when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render correct breadcrumb', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
