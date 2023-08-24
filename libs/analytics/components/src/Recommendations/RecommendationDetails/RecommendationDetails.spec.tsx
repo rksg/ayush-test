@@ -2,8 +2,7 @@ import { recommendationUrl, Provider }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedRecommendationFirmware } from './__tests__/fixtures'
-
-import { RecommendationDetails } from '.'
+import { RecommendationDetails }        from './RecommendationDetails'
 
 jest.mock('./overview', () => ({
   Overview: () => <div data-testid='overview'>Overview</div>
