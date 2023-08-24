@@ -69,7 +69,7 @@ export function CloudpathForm () {
           'Copy from your Cloudpath\'s configuration' })}
           />}
         />
-        <Form.Item>
+        <div style={{ display: 'flex' }}>
           <Form.Item
             name={['wlan','bypassCPUsingMacAddressAuthentication']}
             noStyle
@@ -86,7 +86,7 @@ export function CloudpathForm () {
           placement='bottom'>
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip>
-        </Form.Item>
+        </div>
         <BypassCaptiveNetworkAssistantCheckbox
           guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath} />
         <WalledGardenTextArea
