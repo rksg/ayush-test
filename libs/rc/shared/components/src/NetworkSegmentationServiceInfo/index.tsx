@@ -13,7 +13,8 @@ import {
 import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
 
-import { defaultApPayload } from '../NetworkSegmentationDetailTableGroup/ApsTable'
+import { EdgeServiceStatusLight } from '../EdgeServiceStatusLight'
+import { defaultApPayload }       from '../NetworkSegmentationDetailTableGroup/ApsTable'
 
 import * as UI from './styledComponents'
 
@@ -104,7 +105,10 @@ export const NetworkSegmentationServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => (<></>)
+      content: () => ((nsgViewData?.edgeInfos?.length)
+        ? <EdgeServiceStatusLight data={nsgViewData.edgeAlarmSummary} />
+        : '--'
+      )
     },
     {
       title: $t({ defaultMessage: 'Venue' }),

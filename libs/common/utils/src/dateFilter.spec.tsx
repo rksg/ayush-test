@@ -21,8 +21,8 @@ describe('useDateFilter', () => {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
     })
     expect(result.current).toMatchObject({
-      startDate: '2021-12-31T00:00:00+00:00',
-      endDate: '2022-01-01T00:00:59+00:00',
+      startDate: '2021-12-31T00:01:00+00:00',
+      endDate: '2022-01-01T00:01:00+00:00',
       range: 'Last 24 Hours'
     })
   })
@@ -96,9 +96,9 @@ describe('defaultRanges', () => {
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
       'All Time': ['2022-01-01T00:00:30.123Z', '2022-01-01T00:00:30.123Z'],
-      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:59.999Z'],
-      'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:59.999Z'],
-      'Last 30 Days': ['2021-12-02T00:00:00.000Z', '2022-01-01T00:00:59.999Z']
+      'Last 24 Hours': ['2021-12-31T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
+      'Last 7 Days': ['2021-12-25T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
+      'Last 30 Days': ['2021-12-02T00:01:00.000Z', '2022-01-01T00:01:00.000Z']
     })
   })
 
@@ -110,7 +110,7 @@ describe('defaultRanges', () => {
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:59.999Z']
+      'Last 24 Hours': ['2021-12-31T00:01:00.000Z', '2022-01-01T00:01:00.000Z']
     })
   })
 })

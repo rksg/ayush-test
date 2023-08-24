@@ -3,12 +3,13 @@ import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/co
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
-import { DeviceInventory } from './pages/DeviceInventory'
-import { Integrators }     from './pages/Integrators'
-import Layout              from './pages/Layout'
-import { MspCustomers }    from './pages/MspCustomers'
-import { Subscriptions }   from './pages/Subscriptions'
-import { VarCustomers }    from './pages/VarCustomers'
+import { DeviceInventory }  from './pages/DeviceInventory'
+import { Integrators }      from './pages/Integrators'
+import Layout               from './pages/Layout'
+import { MspCustomers }     from './pages/MspCustomers'
+import { Subscriptions }    from './pages/Subscriptions'
+import { AssignMspLicense } from './pages/Subscriptions/AssignMspLicense'
+import { VarCustomers }     from './pages/VarCustomers'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
@@ -23,7 +24,7 @@ export default function MspRoutes () {
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators/*' element={<CustomersRoutes />} />
       <Route path='deviceinventory' element={<DeviceInventory />} />
-      <Route path='msplicenses' element={<Subscriptions />} />
+      <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
     </Route>
   )
@@ -47,6 +48,10 @@ function CustomersRoutes () {
         <Route index element={<Integrators />} />
         <Route path='create' element={<ManageIntegrator />} />
         <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
+      </Route>
+      <Route path=':tenantId/v/msplicenses'>
+        <Route index element={<Subscriptions />} />
+        <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
   )

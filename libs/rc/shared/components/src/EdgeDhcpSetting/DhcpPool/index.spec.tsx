@@ -214,11 +214,9 @@ describe('DHCP Pool table(Edge)', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
-    await screen.findByText('Invalid Validation')
-    await screen.findByText('Pool Name with that name already exists')
-    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+    await within(drawer).findByRole('img', { name: 'warning' })
+    expect(await within(drawer).findByText('Pool Name with that name already exists')).toBeVisible()
+    expect(within(drawer).getByRole('button', { name: 'Import' })).toBeDisabled()
   })
 
   it('should do field value validation when import by CSV', async () => {
@@ -240,11 +238,9 @@ describe('DHCP Pool table(Edge)', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
-    await screen.findByText('Invalid Validation')
-    await screen.findByText('IP address is not in the subnet pool')
-    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+    await within(drawer).findByRole('img', { name: 'warning' })
+    expect(await within(drawer).findByText('IP address is not in the subnet pool')).toBeVisible()
+    expect(within(drawer).getByRole('button', { name: 'Import' })).toBeDisabled()
   })
 
   it('should check max entries when import by CSV', async () => {
@@ -267,11 +263,9 @@ describe('DHCP Pool table(Edge)', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
-    await screen.findByText('Invalid Validation')
-    await screen.findByText('Exceed maximum entries.')
-    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+    await within(drawer).findByRole('img', { name: 'warning' })
+    expect(await within(drawer).findByText('Exceed maximum entries.')).toBeVisible()
+    expect(within(drawer).getByRole('button', { name: 'Import' })).toBeDisabled()
   })
 
   it('gateway should be empty when DHCP relay enabled', async () => {

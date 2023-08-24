@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
@@ -94,23 +93,7 @@ describe('Firewall Table', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <FirewallTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/firewall/list' }
-      }
-    )
-    expect(await screen.findByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.queryByText('Network Control')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <FirewallTable />

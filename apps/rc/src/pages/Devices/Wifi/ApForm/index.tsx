@@ -88,7 +88,6 @@ export function ApForm () {
   const {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
@@ -118,7 +117,7 @@ export function ApForm () {
   const [triApModels, setTriApModels] = useState([] as string[])
   const location = useLocation()
 
-  const venueFromNavigate = location.state as { venueId: string }
+  const venueFromNavigate = location.state as { venueId?: string }
 
 
   const BASE_VERSION = '6.2.1'
@@ -208,11 +207,11 @@ export function ApForm () {
         label: item.name, value: item.id
       })) ?? [])
 
-      if (venueFromNavigate.venueId &&
-        venuesList?.data.find(venue => venue.id === venueFromNavigate.venueId)
+      if (venueFromNavigate?.venueId &&
+        venuesList?.data.find(venue => venue.id === venueFromNavigate?.venueId)
       ) {
-        formRef?.current?.setFieldValue('venueId', venueFromNavigate.venueId)
-        handleVenueChange(venueFromNavigate.venueId)
+        formRef?.current?.setFieldValue('venueId', venueFromNavigate?.venueId)
+        handleVenueChange(venueFromNavigate?.venueId)
       }
     }
   }, [venuesList])
@@ -378,12 +377,10 @@ export function ApForm () {
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ] : [
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
     <StepsFormLegacy
@@ -442,7 +439,7 @@ export function ApForm () {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
-                    if (!!selectVenue?.dhcp?.enabled) {
+                    if (!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
                         cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
                       )

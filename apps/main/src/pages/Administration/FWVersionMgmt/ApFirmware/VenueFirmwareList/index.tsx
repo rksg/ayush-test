@@ -189,6 +189,7 @@ export const VenueFirmwareTable = (
     selectFromResult: ({ data }) => {
       return {
         availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+          .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
       }
     }
   })

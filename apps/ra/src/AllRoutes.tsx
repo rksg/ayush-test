@@ -4,7 +4,7 @@ import {
   RecommendationDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
-  VideoCallQoe,
+  CrrmDetails,
   VideoCallQoeForm,
   VideoCallQoeDetails
 }                                                       from '@acx-ui/analytics/components'
@@ -16,15 +16,22 @@ import Incidents       from './pages/Incidents'
 import Layout          from './pages/Layout'
 import Recommendations from './pages/Recommendations'
 
+const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
+
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
-    <Route path='/' element={<Navigate replace to={MLISA_BASE_PATH} />} />
+    <Route path='/' element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />} />
+    <Route
+      path={MLISA_BASE_PATH}
+      element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />}
+    />
     <Route path={MLISA_BASE_PATH}>
-      <Route path='dashboard' element={<div>dashboard</div>} />
+      <Route path='dashboard' element={<Dashboard />} />
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
@@ -34,8 +41,8 @@ function AllRoutes () {
       <Route path='reports/*' element={<ReportsRoutes />} />
       <Route path='dataStudio/*' element={<ReportsRoutes />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
-      <Route path='videoCallQoe/*' >
-        <Route index element={<VideoCallQoe/>} />
+      <Route path='videoCallQoe' >
+        <Route index element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>
