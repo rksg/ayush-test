@@ -21,6 +21,7 @@ type Key = keyof Omit<NetworkHistoryData, 'time'>
 
 interface NetworkHistoryWidgetComponentProps {
   hideTitle?: boolean;
+  hideLegends?: boolean;
   type?: CardTypes;
   filters: IncidentFilter;
   hideIncidents?: boolean;
@@ -34,6 +35,7 @@ export const NetworkHistory = forwardRef<
 >((props, ref) => {
   const {
     hideTitle,
+    hideLegends,
     type = 'default',
     filters,
     hideIncidents=false,
@@ -76,6 +78,7 @@ export const NetworkHistory = forwardRef<
                 brush={brush?.timeWindow}
                 onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
                 chartRef={ref as RefCallback<ReactECharts> | undefined}
+                disableLegend={hideLegends}
               />
               : <NoData/>
           )}

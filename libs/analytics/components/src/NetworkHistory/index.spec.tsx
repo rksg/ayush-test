@@ -1,7 +1,7 @@
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { AnalyticsFilter }                           from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }               from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
+import { DateRange }                                 from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -70,6 +70,15 @@ describe('NetworkHistoryWidget', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('should render chart without lengends', async () => {
+    const { asFragment } = render(
+      <NetworkHistory hideLegends filters={filters}/>, { wrapper: Provider })
+    // eslint-disable-next-line testing-library/no-node-access
+    await waitFor(() => {
+      expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    })
+    expect(screen.queryByText('New Client Associations')).toBeNull()
   })
 })
 describe('Handle No Data', () => {

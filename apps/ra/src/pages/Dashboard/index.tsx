@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities } from '@acx-ui/analytics/components'
+import { DidYouKnow, IncidentsCountBySeverities, NetworkHistoryWidget } from '@acx-ui/analytics/components'
 import {
   Card,
   PageHeader,
@@ -62,7 +62,7 @@ export default function Dashboard () {
         <Card title={$t({ defaultMessage: 'Stats' })} />
       </div>
       <div style={{ gridArea: 'b2' }}>
-        <Card title={$t({ defaultMessage: 'Network History' })} />
+        <NetworkHistoryWidget />
       </div>
       <div style={{ gridArea: 'b3' }}>
         <Card title={$t({ defaultMessage: 'SLA' })} />
