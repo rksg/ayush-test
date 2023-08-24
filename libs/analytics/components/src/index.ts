@@ -49,8 +49,9 @@ export { useConfigChange } from './ConfigChange'
 export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
 export {
-  RecommendationDetails } from './Recommendations/RecommendationDetails/RecommendationDetails'
-export { CrrmDetails } from './Recommendations/RecommendationDetails/CrrmDetails'
+  RecommendationDetails,
+  CrrmDetails
+} from './Recommendations/RecommendationDetails'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
 export { ServiceGuardForm } from './ServiceGuard/ServiceGuardForm'
 export * from './ServiceGuard/types'
