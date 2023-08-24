@@ -54,10 +54,10 @@ export interface RadioContext {
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
 
   isLoadBalancingDataChanged?: boolean,
-  updateLoadBalancing?: (() => void)
+  updateLoadBalancing?: ((callback?: () => void) => void)
 
   isClientAdmissionControlDataChanged?: boolean,
-  updateClientAdmissionControl?: (() => void)
+  updateClientAdmissionControl?: ((callback?: () => void) => void)
 }
 
 export const VenueEditContext = createContext({} as {

@@ -109,11 +109,26 @@ export function RadioTab () {
       if (radioData) {
         await editRadioContextData.updateWifiRadio?.(radioData)
       }
-      if (isLoadBalancingDataChanged) {
-        await editRadioContextData.updateLoadBalancing?.()
-      }
-      if (isClientAdmissionControlDataChanged) {
-        await editRadioContextData.updateClientAdmissionControl?.()
+
+      // ACX-38403: Load or band balancing and client admission control cannot be updated simultaneously.
+      if (isLoadBalancingDataChanged && isClientAdmissionControlDataChanged) {
+        // The disable operation should be updated before the enable operation.
+        if (isLoadOrBandBalaningEnabled) {
+          await editRadioContextData.updateClientAdmissionControl?.(
+            editRadioContextData.updateLoadBalancing
+          )
+        } else {
+          await editRadioContextData.updateLoadBalancing?.(
+            editRadioContextData.updateClientAdmissionControl
+          )
+        }
+      } else {
+        if (isLoadBalancingDataChanged) {
+          await editRadioContextData.updateLoadBalancing?.()
+        }
+        if (isClientAdmissionControlDataChanged) {
+          await editRadioContextData.updateClientAdmissionControl?.()
+        }
       }
 
       if (

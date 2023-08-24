@@ -117,13 +117,14 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     return `${value}%`
   }
 
-  const handleUpdateLoadBalancing = async () => {
+  const handleUpdateLoadBalancing = async (callback?: () => void) => {
     try {
       const payload = getLoadBalancingDataFromFields()
 
       await updateVenueLoadBalancing({
         params: { venueId },
-        payload
+        payload,
+        callback: callback
       }).unwrap()
 
     } catch (error) {

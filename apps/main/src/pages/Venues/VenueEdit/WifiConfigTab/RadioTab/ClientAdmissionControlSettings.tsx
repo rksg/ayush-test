@@ -80,7 +80,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
     }
   }, [form, isLoadOrBandBalaningEnabled])
 
-  const handleUpdateClientAdmissionControl = async () => {
+  const handleUpdateClientAdmissionControl = async (callback?: () => void) => {
     try {
       const payload: VenueClientAdmissionControl = {
         enable24G: form.getFieldValue(enable24GFieldName),
@@ -94,7 +94,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       }
       await updateClientAdmissionControl({
         params: { venueId },
-        payload
+        payload,
+        callback: callback
       }).unwrap()
 
     } catch (error) {
