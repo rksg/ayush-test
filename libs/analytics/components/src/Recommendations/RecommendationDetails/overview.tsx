@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                 from 'moment-timezone'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
@@ -54,29 +54,38 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   />
 }
 
+const Icon = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
+  const { priority } = details
+  return <Priority>
+    <PriorityIcon value={priority.order} />
+    <span>{$t(priority.label)}</span>
+  </Priority>
+}
+
+const Optimized = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
+  const optimized = getOptimized([details]).isOptimized
+  return <FlexDiv>
+    <OptimizedIcon value={optimized ? 0 : 1} />
+    <span style={{ paddingTop: 5 }}>{optimized
+      ? $t({ defaultMessage: 'Optimized' })
+      : $t({ defaultMessage: 'Non-optimized' })}
+    </span>
+  </FlexDiv>
+}
+
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { statusTrail, category, sliceValue, status, code, id, priority } = details
+  const { statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
   const optimized = getOptimized([details]).isOptimized
 
-  const Icon = () => <Priority>
-    <PriorityIcon value={priority.order} />
-    <span>{$t(priority.label)}</span>
-  </Priority>
-
-  const Optimized = () => <FlexDiv>
-    <OptimizedIcon value={optimized ? 0 : 1} />
-    <span style={{ paddingTop: 5 }}>{optimized ? 'Optimized' : 'Non-optimized'}</span>
-  </FlexDiv>
-
   const fields = [
     ...(isRrm
-      ? [{ label: $t({ defaultMessage: 'Zone RRM' }), children: <Optimized /> }]
-      : [{ label: $t({ defaultMessage: 'Priority' }), children: <Icon /> }]),
+      ? [{ label: $t({ defaultMessage: 'Zone RRM' }), children: Optimized(details, $t) }]
+      : [{ label: $t({ defaultMessage: 'Priority' }), children: Icon(details, $t) }]),
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
