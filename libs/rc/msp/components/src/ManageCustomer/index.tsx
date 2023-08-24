@@ -285,10 +285,10 @@ export function ManageCustomer () {
         setSubscriptionEndDate(moment(data?.service_expiration_date))
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
+          setApswLicense(apswLic)
+        } else {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
-        } else {
-          setApswLicense(apswLic)
         }
       }
     }
