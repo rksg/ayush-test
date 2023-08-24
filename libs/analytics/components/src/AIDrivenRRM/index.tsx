@@ -33,7 +33,7 @@ function AIDrivenRRMWidget ({
     return { id: data.id }
   })
 
-  const codeQuery = useRecommendationDetailsQuery(data!, { skip: data ? data.length === 0 : true })
+  const codeQuery = useRecommendationDetailsQuery(data!, { skip: !Boolean(data?.length) })
   const detailsQuery = useRecommendationDetailsQuery(
     codeQuery.data?.filter(i => i.code) as EnhancedRecommendation[],
     { skip: codeQuery.data ? codeQuery.data?.filter(i => i.code).length === 0 : true })
