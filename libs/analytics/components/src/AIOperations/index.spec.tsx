@@ -8,7 +8,7 @@ import {
 }                    from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { api } from '../../services'
+import { api } from '../Recommendations/services'
 
 import { expectedData } from './__tests__/fixtures'
 
