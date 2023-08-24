@@ -3,10 +3,9 @@ import { useState, useEffect } from 'react'
 import {
   DatePicker,
   Form,
-  Input,
+  InputNumber,
   Select
 } from 'antd'
-import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -145,11 +144,30 @@ export function AssignMspLicense () {
 
       const addAssignment = []
       const updateAssignment = []
-      if (_.isString(ecFormData.wifiLicenses)) {
+      if (isDeviceAgnosticEnabled) {
+        // device assignment
+        const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+        const quantityApsw = ecFormData.apswLicenses || 0
+        apswAssignId ?
+          updateAssignment.push({
+            startDate: today,
+            endDate: expirationDate,
+            quantity: quantityApsw,
+            assignmentId: apswAssignId
+          })
+          : addAssignment.push({
+            quantity: quantityApsw,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+      }
+      else {
+        // wifi assignment
         const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
-        const quantityWifi = parseInt(ecFormData.wifiLicenses, 10)
+        const quantityWifi = ecFormData.wifiLicenses || 0
         wifiAssignId ?
           updateAssignment.push({
+            startDate: today,
+            endDate: expirationDate,
             quantity: quantityWifi,
             assignmentId: wifiAssignId
           })
@@ -157,31 +175,19 @@ export function AssignMspLicense () {
             quantity: quantityWifi,
             deviceType: EntitlementDeviceType.MSP_WIFI
           })
-      }
-      if (_.isString(ecFormData.switchLicenses)) {
+        // switch assignment
         const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
-        const quantitySwitch = parseInt(ecFormData.switchLicenses, 10)
+        const quantitySwitch = ecFormData.switchLicenses || 0
         switchAssignId ?
           updateAssignment.push({
+            startDate: today,
+            endDate: expirationDate,
             quantity: quantitySwitch,
             assignmentId: switchAssignId
           })
           : addAssignment.push({
             quantity: quantitySwitch,
             deviceType: EntitlementDeviceType.MSP_SWITCH
-          })
-      }
-      if (_.isString(ecFormData.apswLicenses)) {
-        const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
-        const quantityApsw = parseInt(ecFormData.apswLicenses, 10)
-        apswAssignId ?
-          updateAssignment.push({
-            quantity: quantityApsw,
-            assignmentId: apswAssignId
-          })
-          : addAssignment.push({
-            quantity: quantityApsw,
-            deviceType: EntitlementDeviceType.MSP_APSW
           })
       }
       if (addAssignment.length > 0) {
@@ -266,10 +272,12 @@ export function AssignMspLicense () {
           label=''
           initialValue={0}
           rules={[
-            { required: true },
+            { required: true,
+              message: intl.$t({ defaultMessage: 'Please enter device subscription' })
+            },
             { validator: (_, value) => fieldValidator(value, availableApswLicense) }
           ]}
-          children={<Input type='number'/>}
+          children={<InputNumber/>}
           style={{ paddingRight: '20px' }}
         />
         <label>
@@ -286,10 +294,12 @@ export function AssignMspLicense () {
             label=''
             initialValue={0}
             rules={[
-              { required: true },
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter Wi-Fi subscription' })
+              },
               { validator: (_, value) => fieldValidator(value, availableWifiLicense) }
             ]}
-            children={<Input type='number'/>}
+            children={<InputNumber/>}
             style={{ paddingRight: '20px' }}
           />
           <label>
@@ -305,10 +315,12 @@ export function AssignMspLicense () {
             label=''
             initialValue={0}
             rules={[
-              { required: true },
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter switch subscription' })
+              },
               { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
             ]}
-            children={<Input type='number'/>}
+            children={<InputNumber/>}
             style={{ paddingRight: '20px' }}
           />
           <label>

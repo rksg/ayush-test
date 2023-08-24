@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { Provider }        from '@acx-ui/store'
-import { render, screen  } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
+import { render, screen  }        from '@acx-ui/test-utils'
 
 import { AssignedSubscriptionTable } from '.'
 
@@ -90,4 +91,20 @@ describe('AssignedSubscriptionTable', () => {
     expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
   })
+  it('should render correctly feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
+    render(
+      <Provider>
+        <AssignedSubscriptionTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
+
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(screen.getByText('Switch')).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Generate Usage Report' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
+  })
+
 })

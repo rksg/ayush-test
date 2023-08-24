@@ -243,6 +243,21 @@ describe('AssignMspLicense', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 
   })
+  it('should validate device input correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params, path: '/:tenantId/msplicenses/assign' }
+      })
+
+    const input = screen.getAllByRole('spinbutton')[0]
+    fireEvent.change(input, { target: { value: '-1' } })
+    await waitFor(() => {
+      expect(screen.getByText('Invalid number')).toBeVisible()
+    })
+  })
   it('should validate wifi input correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
