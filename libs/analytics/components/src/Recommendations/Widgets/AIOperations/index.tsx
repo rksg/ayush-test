@@ -37,7 +37,7 @@ function AIOperationsWidget ({
   const items = data?.slice(0,5).map(props => {
     const { category, priority, updatedAt, id, summary, sliceValue } = props
     return <UI.Detail key={id}>
-      <div style={{ display: 'flex' }}>
+      <UI.FlexDiv>
         <UI.PriorityIcon value={priority} />
         <TenantLink
           to={`/recommendations/aiOps/${id}`}
@@ -50,7 +50,7 @@ function AIOperationsWidget ({
             {category}
           </Tooltip>
         </TenantLink>
-      </div>
+      </UI.FlexDiv>
       <UI.Subtitle>{formatter(DateFormatEnum.DateFormat)(updatedAt)}</UI.Subtitle>
     </UI.Detail>
   })

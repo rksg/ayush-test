@@ -24,7 +24,7 @@ export const getOptimized = (recommendation: EnhancedRecommendation[]) => {
   }
 }
 
-export const getCrrmText = (
+export const getCrrmLinkText = (
   recommendation: EnhancedRecommendation,
   $t: IntlShape['$t'],
   optimized: boolean
@@ -84,7 +84,7 @@ function AIDrivenRRMWidget ({
     const optimized = getOptimized([recommendation]).isOptimized
 
     return <UI.Detail key={id}>
-      <div style={{ display: 'flex' }}>
+      <UI.FlexDiv>
         <UI.OptimizedIcon value={optimized ? 0 : 1}/>
         <TenantLink
           to={`/recommendations/crrm/${id}`}
@@ -92,8 +92,8 @@ function AIDrivenRRMWidget ({
         >
           <span>{sliceValue}</span>
         </TenantLink>
-      </div>
-      <UI.Subtitle>{getCrrmText(recommendation, $t, optimized)}</UI.Subtitle>
+      </UI.FlexDiv>
+      <UI.Subtitle>{getCrrmLinkText(recommendation, $t, optimized)}</UI.Subtitle>
     </UI.Detail>
   })
 

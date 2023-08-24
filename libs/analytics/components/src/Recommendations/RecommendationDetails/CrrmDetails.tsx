@@ -19,7 +19,7 @@ export const CrrmDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'recommendations/crrm'
-  const codeQuery = useRecommendationDetailsQuery([{ id: id }], { skip: id ? false : true })
+  const codeQuery = useRecommendationDetailsQuery([{ id }], { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     codeQuery.data!,
     { skip: codeQuery.data ? !Boolean(codeQuery.data?.[0].code) : true })

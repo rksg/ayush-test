@@ -7,11 +7,11 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection }        from '../../DescriptionSection'
-import { codes, statusTrailMsgs }    from '../config'
-import { Priority, PriorityIcon }    from '../styledComponents'
-import { getOptimized, getCrrmText } from '../Widgets/AIDrivenRRM'
-import { OptimizedIcon }             from '../Widgets/styledComponents'
+import { DescriptionSection }            from '../../DescriptionSection'
+import { codes, statusTrailMsgs }        from '../config'
+import { Priority, PriorityIcon }        from '../styledComponents'
+import { getOptimized, getCrrmLinkText } from '../Widgets/AIDrivenRRM'
+import { FlexDiv, OptimizedIcon }        from '../Widgets/styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -68,10 +68,10 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     <span>{$t(priority.label)}</span>
   </Priority>
 
-  const Optimized = () => <div style={{ display: 'flex' }}>
+  const Optimized = () => <FlexDiv>
     <OptimizedIcon value={optimized ? 0 : 1} />
     <span style={{ paddingTop: 5 }}>{optimized ? 'Optimized' : 'Non-optimized'}</span>
-  </div>
+  </FlexDiv>
 
   const fields = [
     ...(isRrm
@@ -87,7 +87,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     ...(isRrm
       ? [{
         label: $t({ defaultMessage: 'Summary' }),
-        children: getCrrmText(details, $t, optimized)
+        children: getCrrmLinkText(details, $t, optimized)
       }]
       : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }

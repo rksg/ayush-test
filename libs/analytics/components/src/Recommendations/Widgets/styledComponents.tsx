@@ -66,3 +66,7 @@ export const Subtitle = styled.div`
   color: var(--acx-neutrals-50);
   line-height: 1.1;
 `
+
+export const FlexDiv = styled.div`
+  display: flex;
+`
