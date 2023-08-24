@@ -2,7 +2,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                       from '@acx-ui/feature-toggle'
 import { useGetAAAProfileDetailQuery }                                                                                  from '@acx-ui/rc/services'
 import { AAAPolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                   from '@acx-ui/react-router-dom'
@@ -14,7 +13,6 @@ import AAAOverview       from './AAAOverview'
 export default function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const queryResults = useGetAAAProfileDetailQuery({ params })
   const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
 
@@ -22,14 +20,12 @@ export default function AAAPolicyDetail () {
     <>
       <PageHeader
         title={queryResults.data?.name||''}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
-        ] : [
           { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
         ]}
         extra={filterByAccess([

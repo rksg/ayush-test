@@ -152,7 +152,8 @@ export const mockedNsgStatsList = {
     'networkIds',
     'name',
     'id',
-    'tags'
+    'tags',
+    'edgeAlarmSummary'
   ],
   totalCount: 2,
   page: 1,
@@ -183,6 +184,15 @@ export const mockedNsgStatsList = {
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
           dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
           vniRange: ''
+        }
+      ],
+      edgeAlarmSummary: [
+        {
+          edgeId: '0000000001',
+          severitySummary: {
+            critical: 1
+          },
+          totalCount: 1
         }
       ]
     },

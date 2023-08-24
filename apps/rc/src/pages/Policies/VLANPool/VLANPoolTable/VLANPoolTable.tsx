@@ -2,7 +2,6 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
 import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
@@ -24,7 +23,6 @@ export default function VLANPoolTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
@@ -85,16 +83,13 @@ export default function VLANPoolTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           }
-        ] : [{
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}>

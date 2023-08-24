@@ -3,9 +3,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm }  from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useNavigateToPath }      from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm } from '@acx-ui/components'
+import { useNavigateToPath }     from '@acx-ui/react-router-dom'
 
 import { useCreateCallQoeTestMutation } from '../services'
 
@@ -17,10 +16,8 @@ export function VideoCallQoeForm () {
   const [ link, setLink ] = useState('')
   const navigateToList = useNavigateToPath('/analytics/videoCallQoe')
   const breadcrumb = [
-    ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-      { text: $t({ defaultMessage: 'AI Assurance' }) },
-      { text: $t({ defaultMessage: 'Network Assurance' }) }
-    ]:[]),
+    { text: $t({ defaultMessage: 'AI Assurance' }) },
+    { text: $t({ defaultMessage: 'Network Assurance' }) },
     { text: $t({ defaultMessage: 'Video Call QoE' }), link: '/analytics/videoCallQoe' }]
 
   const [ submit ] = useCreateCallQoeTestMutation()

@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, DHCPUrls, DpskUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                      from '@acx-ui/store'
 import {
@@ -149,20 +148,7 @@ describe('MyServices', () => {
     expect(await screen.findByRole('link', { name: 'Add Service' })).toHaveAttribute('href', createPageLink)
   })
 
-  it('should not render breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <MyServices />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <MyServices />

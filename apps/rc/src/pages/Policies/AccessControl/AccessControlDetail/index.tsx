@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useGetAccessControlProfileQuery }      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -23,7 +22,6 @@ import AccessControlOverview       from './AccessControlOverview'
 export default function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
 
@@ -33,7 +31,7 @@ export default function AccessControlDetail () {
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -43,8 +41,6 @@ export default function AccessControlDetail () {
             text: $t({ defaultMessage: 'Access Control' }),
             link: tablePath
           }
-        ] : [
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
         ]}
         extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({

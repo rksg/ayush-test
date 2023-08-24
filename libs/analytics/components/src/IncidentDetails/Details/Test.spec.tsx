@@ -171,16 +171,14 @@ describe('Test', () => {
         fakeIncident: fakeIncidentChannelDist, //5g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: [],
-        exclude_NAVBAR_ENHANCEMENT_Test: true
+        charts: []
       },
       {
         component: ChannelDist,
         fakeIncident: { ...fakeIncidentChannelDist, code: 'p-channeldist-suboptimal-plan-24g' }, //2.4g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: [],
-        exclude_NAVBAR_ENHANCEMENT_Test: true
+        charts: []
       }
     ].forEach((test) => {
       it(`should render ${test.component.name} correctly`, () => {
@@ -208,17 +206,6 @@ describe('Test', () => {
           expect(screen.getByTestId(chart)).toBeVisible()
         })
         expect(asFragment()).toMatchSnapshot()
-      })
-      if (test.exclude_NAVBAR_ENHANCEMENT_Test) return
-      // eslint-disable-next-line max-len
-      it(`should handle ${test.component.name} when feature flag NAVBAR_ENHANCEMENT is off`, async () => {
-        jest.mocked(useIsSplitOn).mockReturnValue(false)
-        const params = { incidentId: test.fakeIncident.id }
-        render(<Provider>
-          <test.component {...test.fakeIncident} />
-        </Provider>, { route: { params } })
-        expect(screen.queryByText('AI Assurance')).toBeNull()
-        expect(screen.queryByText('Network Assurance')).toBeNull()
       })
     })
   })

@@ -6,6 +6,7 @@ import {
 import { ABFVersion, FirmwareCategory } from '@acx-ui/rc/utils'
 
 import { FirmwareBanner }   from '../../FirmwareBanner'
+import { compareVersions }  from '../../FirmwareUtils'
 import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
@@ -16,7 +17,9 @@ export const VersionBanner = () => {
     selectFromResult: ({ data }) => {
       return {
         latestActiveVersions: data
-          ? data.filter(abfVersion => abfVersion.abf === 'active')
+          ? data
+            .filter(abfVersion => abfVersion.abf === 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
           : []
       }
     }
@@ -57,5 +60,5 @@ function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []):
   return firmwareVersions.filter((abf: ABFVersion) => {
     // eslint-disable-next-line max-len
     return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
-  }) as (ABFVersion & { createdDate: string })[] // createdDate for legacy usage
+  }) as (ABFVersion & { createdDate: string })[] // createdDate is for legacy usage
 }
