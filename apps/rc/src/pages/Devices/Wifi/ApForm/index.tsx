@@ -439,7 +439,7 @@ export function ApForm () {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
-                    if (!!selectVenue?.dhcp?.enabled) {
+                    if (!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
                         cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
                       )
