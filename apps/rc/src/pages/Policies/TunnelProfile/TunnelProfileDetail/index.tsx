@@ -2,7 +2,6 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   MtuTypeEnum,
@@ -23,7 +22,6 @@ const TunnelProfileDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath({
     type: PolicyType.TUNNEL_PROFILE,
     oper: PolicyOperation.LIST
@@ -71,17 +69,8 @@ const TunnelProfileDetail = () => {
     <>
       <PageHeader
         title={tunnelProfileData.name}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)

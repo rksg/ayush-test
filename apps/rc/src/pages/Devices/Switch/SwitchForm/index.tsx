@@ -113,7 +113,6 @@ export function SwitchForm () {
   const [previousPath, setPreviousPath] = useState('')
 
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
@@ -375,12 +374,10 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wired' }) },
         { text: $t({ defaultMessage: 'Switches' }) },
         { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-      ] : [
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
     <StepsFormLegacy

@@ -357,6 +357,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
   }
 
+  // clean multiLinkOperationOptions when multiLinkOperationEnabled is false
+  if (!get(data, 'wlan.advancedCustomization.multiLinkOperationEnabled')) {
+    advancedCustomization.multiLinkOperationOptions = undefined
+  }
+
   if (!get(data, 'wlan.advancedCustomization.qosMapSetEnabled')) {
     advancedCustomization.qosMapSetEnabled = false
   }

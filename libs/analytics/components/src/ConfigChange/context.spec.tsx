@@ -66,8 +66,8 @@ describe('ConfigChangeProvider', () => {
     expect(await screen.findByTestId('date'))
       .toHaveTextContent('Last 30 Days')
     expect(await screen.findByTestId('time'))
-      .toHaveTextContent('2022-09-15T00:00:00Z, 2022-10-15T00:00:59Z')
+      .toHaveTextContent('2022-09-15T00:01:00Z, 2022-10-15T00:01:00Z')
     expect(await screen.findByTestId('kpitime')).toHaveTextContent(
-      '2022-09-15T00:00:00Z, 2022-09-16T00:00:00Z, 2022-10-14T00:00:59Z, 2022-10-15T00:00:59Z')
+      '2022-09-15T00:01:00Z, 2022-09-16T00:01:00Z, 2022-10-14T00:01:00Z, 2022-10-15T00:01:00Z')
   })
 })
