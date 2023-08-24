@@ -61,6 +61,9 @@ export const AnchorLayoutSidebar = styled(Col)`
       (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
     ) !important;
   }
+  > div > :not(.ant-affix) > .ant-anchor-wrapper .ant-anchor-ink-ball {
+    top: 13.5px !important;
+  }
 `
 
 export const Container = styled.div`
