@@ -1,222 +1,220 @@
-export const venueListData = {
-  totalCount: 1,
-  data: [
-    {
-      id: 'e0788dea6307472d98795300fcda1119',
-      name: 'bdcPerformanceVenue2',
-      city: 'Sunnyvale, California',
-      country: 'United States',
-      latitude: '37.4112751',
-      longitude: '-122.0191908',
-      networks: {
-        count: 3,
-        names: [
-          '!!!AAA_dpsk_performance_test!!!',
-          '!!bdc_tenant_test!!',
-          '!!.1xPerformance!!'
+export const searchFixture = {
+  search: {
+    clients: [
+      {
+        hostname: '02AA01AB50120H4M',
+        username: '18b43003e603',
+        mac: '18:B4:30:03:E6:03',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.42',
+        lastActiveTime: '2023-08-23T05:08:20.000Z'
+      },
+      {
+        hostname: '02AA01AB50120E2Q',
+        username: '18b43004d810',
+        mac: '18:B4:30:04:D8:10',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.44',
+        lastActiveTime: '2023-08-23T05:07:23.000Z'
+      },
+      {
+        hostname: '02AA01AB50120G7G',
+        username: '18b430051cbe',
+        mac: '18:B4:30:05:1C:BE',
+        osType: 'Nest Learning Thermostat',
+        ipAddress: '10.0.1.69',
+        lastActiveTime: '2023-08-23T05:07:23.000Z'
+      }
+    ],
+    networkHierarchy: [
+      {
+        name: '01-US-CA-D1-Test-Home',
+        root: 'vsz34',
+        type: 'Domain',
+        apCount: 1,
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'vsz34',
+            type: 'system'
+          },
+          {
+            name: '01-US-CA-D1-Test-Home',
+            type: 'domain'
+          }
         ],
-        vlans: [
-          1
+        switchCount: 0
+      },
+      {
+        name: 'Ramesh-TestZone',
+        root: 'Aaron-Public-1',
+        type: 'Zone',
+        apCount: 1,
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'Aaron-Public-1',
+            type: 'system'
+          },
+          {
+            name: 'Ramesh-TestZone',
+            type: 'zone'
+          }
+        ],
+        switchCount: null
+      },
+      {
+        name: 'CDC_BB_TEST',
+        root: 'Public-vSZ-2',
+        type: 'Zone',
+        apCount: 1,
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'Public-vSZ-2',
+            type: 'system'
+          },
+          {
+            name: 'CDC_BB_TEST',
+            type: 'zone'
+          }
+        ],
+        switchCount: null
+      }
+    ],
+    aps: [
+      {
+        apName: 'AL-Guest-R610',
+        macAddress: '90:3A:72:24:D0:40',
+        apModel: 'R610',
+        ipAddress: '192.168.2.105',
+        version: '6.1.2.0.580',
+        apZone: 'Albert-Home-Main',
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'vsz34',
+            type: 'system'
+          },
+          {
+            name: '04-US-CA-D4-Albert-Home',
+            type: 'domain'
+          },
+          {
+            name: 'Albert-Home-Main',
+            type: 'zone'
+          },
+          {
+            name: 'default',
+            type: 'apGroup'
+          },
+          {
+            name: '90:3A:72:24:D0:40',
+            type: 'AP'
+          }
         ]
       },
-      aggregatedApStatus: {
-        '3_04_DisconnectedFromCloud': 78,
-        '3_02_FirmwareUpdateFailed': 329,
-        '1_01_NeverContactedCloud': 91,
-        '1_07_Initializing': 2
-      },
-      status: '3_RequiresAttention'
-    }
-  ]
-}
-
-export const networkListData = {
-  totalCount: 3,
-  data: [
-    {
-      name: '!!!!!_Cap_',
-      id: 'e796c63f5db646e181f9e5aa8a75e3c1',
-      vlan: 1,
-      nwSubType: 'guest',
-      captiveType: 'ClickThrough',
-      ssid: '!!!!!_Cap_',
-      venues: {
-        count: 0,
-        names: [
-
+      {
+        apName: 'BDC-Test AP Feb',
+        macAddress: '58:FB:96:01:A5:A0',
+        apModel: 'R350',
+        ipAddress: '192.168.1.26',
+        version: 'Unknown',
+        apZone: '45-IN-BDC-D45-AM',
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'vsz34',
+            type: 'system'
+          },
+          {
+            name: '45-IN-BDC-D45-AM',
+            type: 'zone'
+          },
+          {
+            name: 'default',
+            type: 'apGroup'
+          },
+          {
+            name: '58:FB:96:01:A5:A0',
+            type: 'AP'
+          }
         ]
       },
-      aps: 0,
-      clients: 0
-    },
-    {
-      name: 'Joseph_captive',
-      id: '349f5794ff5c4d8fa480a7860c12d098',
-      vlan: 1,
-      nwSubType: 'guest',
-      captiveType: 'GuestPass',
-      ssid: 'Joseph_captive',
-      venues: {
-        count: 0,
-        names: [
-
+      {
+        apName: 'GuestHouse@SD',
+        macAddress: '34:20:E3:2D:11:20',
+        apModel: 'H550',
+        ipAddress: '192.168.1.67',
+        version: '6.1.1.0.1274',
+        apZone: 'TommySD@Home',
+        networkPath: [
+          {
+            name: 'Network',
+            type: 'network'
+          },
+          {
+            name: 'vsz34',
+            type: 'system'
+          },
+          {
+            name: '49-US-CA-TommySD',
+            type: 'domain'
+          },
+          {
+            name: 'TommySD@Home',
+            type: 'zone'
+          },
+          {
+            name: 'default',
+            type: 'apGroup'
+          },
+          {
+            name: '34:20:E3:2D:11:20',
+            type: 'AP'
+          }
         ]
-      },
-      aps: 0,
-      clients: 0
-    }
-  ]
+      }
+    ],
+    switches: [
+      {
+        switchName: 'west-density-7650-stack',
+        switchMac: '60:9C:9F:52:C9:86',
+        switchModel: 'ICX7650-48ZP',
+        switchVersion: 'TNS08095h'
+      }
+    ]
+  }
 }
 
-export const apListData = {
-  fields: [
-    'clients','serialNumber','IP','apMac','apStatusData.APRadio.channel','deviceStatus','tags',
-    'venueName','meshRole','apStatusData.APRadio.band','apStatusData.APRadio.radioId','switchName',
-    'deviceGroupId','venueId','name','deviceGroupName','model','fwVersion'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [{
-    serialNumber: '932173000117',
-    name: '350-11-69',
-    model: 'R350',
-    fwVersion: '6.2.0.103.513',
-    venueId: '70ffc8b0c3f540049379a84c17e5bab3',
-    venueName: '123roam',
-    deviceStatus: '2_00_Operational',
-    IP: '192.168.11.69',
-    apMac: '58:FB:96:01:9A:30',
-    apStatusData: {
-      APRadio: [
-        { txPower: null,channel: 9,band: '2.4G',Rssi: null,radioId: 0 },
-        { txPower: null,channel: 40,band: '5G',Rssi: null,radioId: 1 }
-      ]
-    },
-    meshRole: 'DISABLED',
-    deviceGroupId: '48392c8c2eda43be90213e8dd09468fe',
-    tags: '',
-    deviceGroupName: ''
-  }]
-}
+export const emptySearchFixture = {
+  search: {
+    clients: [
 
-export const eventListData = {
-  data: [
-    {
-      severity: 'Info',
-      adminName: 'FisrtName 12 LastName 12',
-      product: 'WIFI',
-      entity_type: 'ADMINACTIVITY',
-      event_datetime: '2022-11-30T09:51:26Z',
-      name: 'AdminActivity',
-      id: '1f6a9c969c734f7abea7af3fe634c224',
-      entity_id: '18036ce747664d97a73dc278e8c9ff46',
-      // eslint-disable-next-line max-len
-      message: '{ "message_template": "Network %%networkName was added by %%adminName (%%adminEmail).", "data": {"adminName":{"entityType":"NETWORK"},"networkName":{"entityType":"NETWORK"},"adminEmail":{"entityType":"NETWORK"}} }',
-      ssid: 'mike test 1',
-      adminEmail: 'dog12@email.com'
-    }
-  ],
-  subsequentQueries: [
-    {
-      fields: [
-        'apName',
-        'switchName',
-        'networkName',
-        'networkId',
-        'administratorEmail',
-        'venueName',
-        'apGroupId',
-        'apGroupName',
-        'floorPlanName',
-        'recipientName'
-      ],
-      url: '/api/eventalarmapi/662b4f2c76a0428a9e7faaa64534d67a/event/meta'
-    }
-  ],
-  totalCount: 1,
-  fields: [
-    'event_datetime',
-    'severity',
-    'entity_type',
-    'product',
-    'entity_id',
-    'macAddress',
-    'message',
-    'dpName',
-    'apMac',
-    'clientMac',
-    'serialNumber',
-    'ssid',
-    'radio',
-    'raw_event',
-    'sourceType',
-    'adminName',
-    'clientName',
-    'userName',
-    'hostname',
-    'adminEmail',
-    'venueId',
-    'transactionId',
-    'name'
-  ]
-}
+    ],
+    networkHierarchy: [
 
-export const eventMetaData = {
-  data: [
-    {
-      networkName: 'mike test 1',
-      networkId: '18036ce747664d97a73dc278e8c9ff46',
-      id: '1f6a9c969c734f7abea7af3fe634c224',
-      isApExists: false,
-      isNetworkExists: true,
-      isSwitchExists: false
-    }
-  ],
-  fields: [
-    'apName',
-    'switchName',
-    'networkName',
-    'networkId',
-    'administratorEmail',
-    'venueName',
-    'apGroupId',
-    'floorPlanName',
-    'recipientName'
-  ]
-}
+    ],
+    aps: [
 
-export const switchListData = {
-  fields: [
-    'suspendingDeployTime', 'serialNumber', 'syncedSwitchConfig', 'ipAddress',
-    'check-all', 'configReady', 'cliApplied', 'isStack', 'syncDataStartTime',
-    'deviceStatus', 'uptime', 'venueName', 'switchMac', 'formStacking', 'switchName',
-    'operationalWarning', 'venueId', 'syncDataId', 'name', 'model', 'activeSerial',
-    'cog', 'id', 'clientCount'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: 'c0:c5:20:aa:24:57',
-      model: 'ICX7150-C12P',
-      uptime: '20 days, 22 hours',
-      switchName: 'ICX7150-C12 Router',
-      serialNumber: 'FEK3224R08H',
-      activeSerial: 'FEK3224R08H',
-      ipAddress: '10.206.10.40',
-      deviceStatus: 'ONLINE',
-      switchMac: 'c0:c5:20:aa:24:57',
-      isStack: false,
-      name: 'ICX7150-C12 Router',
-      venueId: '977d4caed36b40b5adbed075f2d57a23',
-      venueName: 'My-Venue',
-      clientCount: 1,
-      configReady: true,
-      syncedSwitchConfig: true,
-      syncDataEndTime: '',
-      cliApplied: false,
-      formStacking: false,
-      suspendingDeployTime: ''
-    }
-  ]
+    ],
+    switches: [
+
+    ]
+  }
 }
