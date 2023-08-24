@@ -68,6 +68,9 @@ export const editStackData = {
   enableStack: true,
   igmpSnooping: 'none',
   jumboMode: false,
+  softDeleted: false,
+  isPrimaryDeleted: false,
+  sendedHostname: true,
   dhcpClientEnabled: true,
   dhcpServerEnabled: false,
   rearModule: 'none'
