@@ -1,8 +1,11 @@
-import { gql } from 'graphql-request'
+import { gql }       from 'graphql-request'
+import { omit, get } from 'lodash'
 
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { dataApi }                             from '@acx-ui/store'
 import { NetworkPath, PathNode }               from '@acx-ui/utils'
+
+import { IncidentTableRow, useIncidentsListQuery } from '../IncidentTable/services'
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
@@ -20,6 +23,17 @@ export type Child = NetworkData & ApsOrSwitches
 interface Response {
   network: {
     hierarchyNode: { children: Child[] }
+  }
+}
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[], parentKey?: string[] }
+interface NetworkNode extends NetworkHierarchy<Child>{}
+type IncidentHierarchy<T> = T & { children: IncidentHierarchy<T> | null }
+type IncidentPriority = { P1: number, P2: number, P3: number, P4: number }
+interface IncidentMap extends IncidentHierarchy<IncidentPriority>{}
+interface HierarchyResponse {
+  network: {
+    apHierarchy: NetworkNode[]
+    switchHierarchy: NetworkNode[]
   }
 }
 export const api = dataApi.injectEndpoints({
@@ -106,8 +120,157 @@ export const api = dataApi.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
       transformResponse: (response: Response) => response.network.hierarchyNode.children
+    }),
+    networkHierarchy: build.query<
+      HierarchyResponse,
+      Omit<NetworkHierarchyFilter, 'filter'>
+    >({
+      query: payload => ({
+        document: gql`
+          query Network($start: DateTime, $end: DateTime) {
+              network(start: $start, end: $end) {
+                apHierarchy
+                ${payload.shouldQuerySwitch ? 'switchHierarchy' : ''}
+            }
+          }
+        `,
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate
+        }
+      })
     })
   })
 })
 
-export const { useNetworkFilterQuery, useRecentNetworkFilterQuery } = api
+export const {
+  useNetworkFilterQuery,
+  useRecentNetworkFilterQuery
+} = api
+
+const { useNetworkHierarchyQuery } = api
+
+export const useHierarchyQuery = (
+  {
+    filters,
+    shouldQuerySwitch,
+    includeIncidents
+  }: {
+    filters: AnalyticsFilter,
+    shouldQuerySwitch: boolean,
+    includeIncidents: boolean
+  }
+) => {
+  const networkFilter = { ...filters, shouldQuerySwitch }
+
+  const createIncidentNode = () => ({ P1: 0, P2: 0, P3: 0, P4: 0, children: null })
+  const buildIncidentMap = (incidentList: IncidentTableRow[] | undefined) => {
+    const mapper: Record<string, IncidentMap> = {}
+    if (!incidentList) return mapper
+    incidentList?.forEach(({ path, severityLabel }) => {
+      let currMapper = mapper
+      let copyPath = [...path]
+      if (path.map(({ type }) => type).includes('system')) {
+        copyPath = [path[0], { name: 'Administration Domain', type: 'domain' }, ...path.slice(1)]
+      }
+      for (let { name } of copyPath) {
+        if (!currMapper[name]) {
+          currMapper[name] = createIncidentNode()
+        }
+        currMapper[name][severityLabel as keyof Omit<IncidentMap, 'children'>] += 1
+        currMapper[name].children = createIncidentNode()
+        currMapper = currMapper[name].children as unknown as typeof mapper
+      }
+    })
+    return mapper
+  }
+  const incidentQuery = useIncidentsListQuery(
+    { ...filters, includeMuted: true },
+    {
+      skip: !includeIncidents,
+      selectFromResult: ({ data, ...rest }) => ({
+        ...rest,
+        data: buildIncidentMap(data)
+      })
+    })
+  const incidentMap = incidentQuery.data
+
+  const cleanHierarchyName = (name: string) => {
+    if (name.startsWith('1||') || name.startsWith('2||')) {
+      return name.slice(3)
+    }
+    return name
+  }
+
+  const traverseHierarchy = (origin: NetworkNode, incidentMap: Record<string, IncidentMap>) => {
+    if (!origin) return {} as unknown as NetworkNode & IncidentPriority
+    const stack: NetworkNode[] = []
+    const root: NetworkNode = JSON.parse(JSON.stringify(origin))
+    stack.push(root)
+    while (stack.length > 0) {
+      let node = stack.pop() as NetworkNode
+      const { name, parentKey } = node
+      const key = cleanHierarchyName(name)
+      const nameNode = { ...node, name: key }
+      node = Object.assign(node, nameNode)
+      const incidentsStats = parentKey
+        ? get(incidentMap, [...parentKey, key])
+        : incidentMap[key]
+      if (node && incidentsStats) {
+        const newNode = {
+          ...node,
+          ...omit(incidentsStats, 'children'),
+          name: key
+        } as unknown as NetworkNode & IncidentPriority
+        node = Object.assign(node, newNode)
+      }
+      if (node.children && node.children.length > 0) {
+        function elemPushHelper (
+          elem: NetworkNode | undefined
+        ) {
+          if (!elem) return
+          let typedNodes = elem as unknown as NetworkNode[]
+          if (typedNodes.length > 0) {
+            typedNodes = typedNodes.map((val) => {
+              const item = {
+                ...val,
+                parentKey: parentKey
+                  ? [...parentKey, key, 'children']
+                  : [key, 'children']
+              }
+              stack.push(item)
+              return item
+            })
+            return typedNodes
+          }
+          const item = {
+            ...elem,
+            parentKey: parentKey
+              ? [...parentKey, key, 'children']
+              : [key, 'children']
+          }
+          stack.push(item)
+          return item
+        }
+        node.children = node.children?.map(elemPushHelper) as NetworkNode[]
+      }
+    }
+    return root
+  }
+
+  const hierarchyQuery = useNetworkHierarchyQuery(omit(networkFilter, 'path', 'filter'),
+    {
+      selectFromResult: ({ data, ...rest }) => {
+        if (!includeIncidents) return { ...rest, data }
+        const { apHierarchy, switchHierarchy } = data?.network || {}
+        const aps = apHierarchy?.map(ap => traverseHierarchy(ap, incidentMap))
+        const switches = switchHierarchy?.map(sw => traverseHierarchy(sw, incidentMap))
+        return {
+          ...rest,
+          data: { network: { apHierarchy: aps, switchHierarchy: switches } } }
+      }
+    }
+  )
+
+  return hierarchyQuery
+}

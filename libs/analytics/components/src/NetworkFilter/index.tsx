@@ -11,15 +11,15 @@ import {
   Incident } from '@acx-ui/analytics/utils'
 import { Cascader, Loader, RadioBand } from '@acx-ui/components'
 import type { CascaderOption }         from '@acx-ui/components'
+import { get }                         from '@acx-ui/config'
 import { useReportsFilter }            from '@acx-ui/reports/utils'
 import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
-import { SeverityCircles }                          from './SeverityCircles'
-import * as UI                                      from './styledComponents'
-
+import { Child, useNetworkFilterQuery, ApOrSwitch, useHierarchyQuery } from './services'
+import { SeverityCircles }                                             from './SeverityCircles'
+import * as UI                                                         from './styledComponents'
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
 export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
@@ -223,7 +223,10 @@ function ConnectedNetworkFilter (
   )
 
   const networkFilter = { ...filters, shouldQuerySwitch }
-  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
+  const isRA = Boolean(get('IS_MLISA_SA'))
+  const testQuer = useHierarchyQuery({ filters, includeIncidents: true, shouldQuerySwitch })
+  const r1QueryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
+    skip: isRA,
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
         getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
@@ -246,7 +249,7 @@ function ConnectedNetworkFilter (
   }
   return (
     <UI.Container $open={open}>
-      <Loader states={[queryResults]}>
+      <Loader states={[r1QueryResults, testQuer]}>
         <Cascader
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
@@ -259,7 +262,7 @@ function ConnectedNetworkFilter (
           isRadioBandDisabled={isRadioBandDisabled}
           radioBandDisabledReason={radioBandDisabledReason}
           value={defaultValue || rawVal}
-          options={queryResults.data}
+          options={r1QueryResults.data}
           dropdownAlign={{ overflow: { adjustX: false, adjustY: false } }}
           onApply={(value,bands) => {
             if(showRadioBand || multiple){
