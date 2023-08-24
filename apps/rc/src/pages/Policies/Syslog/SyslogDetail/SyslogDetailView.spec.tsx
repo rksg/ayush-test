@@ -3,7 +3,6 @@ import React from 'react'
 import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { policyApi }                  from '@acx-ui/rc/services'
 import { SyslogUrls }                 from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -123,33 +122,7 @@ describe('SyslogDetailView', () => {
 
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(rest.get(
-      SyslogUrls.getSyslogPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ))
-    render(
-      <SyslogDetailView />
-      , {
-        wrapper: wrapper,
-        route: {
-          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
-        }
-      }
-    )
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Syslog'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     mockServer.use(rest.get(
       SyslogUrls.getSyslogPolicy.url,
       (_, res, ctx) => res(

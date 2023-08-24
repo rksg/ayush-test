@@ -27,7 +27,6 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -40,19 +39,18 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
     })
   }
   const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
-    skip: !hasAdministratorTab || !isNavbarEnhanced,
+    skip: !hasAdministratorTab,
     pollingInterval: 30_000
   })
   const notificationList = useGetNotificationRecipientsQuery({
     params: { tenantId },
     payload: defaultPayload
   }, {
-    skip: !isNavbarEnhanced,
     pollingInterval: 30_000
   })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params },
-    { skip: !hasAdministratorTab || !isNavbarEnhanced }
+    { skip: !hasAdministratorTab }
   )
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
@@ -64,24 +62,14 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       activeKey={activeTab}
       onChange={onTabChange}
     >
-      <Tabs.TabPane tab={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Settings' })
-        : $t({ defaultMessage: 'Account Settings' })
-      }
-      key='accountSettings' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='accountSettings' />
       { hasAdministratorTab &&
       ( <Tabs.TabPane
-        tab={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })
-          : $t({ defaultMessage: 'Administrators' })
-        }
+        tab={$t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
         key='administrators' /> )
       }
       <Tabs.TabPane
-        tab={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })
-          : $t({ defaultMessage: 'Notifications' })
-        }
+        tab={$t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })}
         key='notifications'
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
@@ -113,7 +101,6 @@ export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
   const { data: userProfileData } = useUserProfileContext()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
   if (isAdministratorAccessible === false && activeTab === 'administrators') {
@@ -124,10 +111,7 @@ export default function Administration () {
 
   return (<>
     <PageHeader
-      title={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Account Management' })
-        : $t({ defaultMessage: 'Administration' })
-      }
+      title={$t({ defaultMessage: 'Account Management' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }) }
       ]}

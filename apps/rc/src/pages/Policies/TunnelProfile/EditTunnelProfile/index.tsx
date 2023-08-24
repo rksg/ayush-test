@@ -5,11 +5,9 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { PageHeader, StepsForm }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { TunnelProfileForm, TunnelProfileFormType }                     from '@acx-ui/rc/components'
 import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
@@ -37,7 +35,6 @@ const EditTunnelProfile = () => {
     { params: { id: params.policyId } }
   )
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
@@ -79,7 +76,7 @@ const EditTunnelProfile = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -88,19 +85,6 @@ const EditTunnelProfile = () => {
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          },
-          {
-            text: tunnelProfileData?.name || '',
-            link: getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.DETAIL,
-              policyId: tunnelProfileData?.id || ''
-            })
           }
         ]}
       />
