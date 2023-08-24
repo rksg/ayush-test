@@ -6,8 +6,8 @@ import { Loader, Card, Tooltip, NoData }          from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats } from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }          from '@acx-ui/react-router-dom'
 
-import { useRecommendationListQuery } from '../../services'
-import * as UI                        from '../styledComponents'
+import * as UI                        from '../AIDrivenRRM/styledComponents'
+import { useRecommendationListQuery } from '../Recommendations/services'
 
 export { AIOperationsWidget as AIOperations }
 

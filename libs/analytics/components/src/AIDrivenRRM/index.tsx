@@ -5,9 +5,10 @@ import { AnalyticsFilter }               from '@acx-ui/analytics/utils'
 import { Loader, Card, NoData }          from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 
-import { EnhancedRecommendation, useRecommendationDetailsQuery } from '../../RecommendationDetails/services'
-import { useRecommendationListQuery }                            from '../../services'
-import * as UI                                                   from '../styledComponents'
+import { EnhancedRecommendation, useRecommendationDetailsQuery } from '../Recommendations/RecommendationDetails/services'
+import { useRecommendationListQuery }                            from '../Recommendations/services'
+
+import * as UI from './styledComponents'
 
 export { AIDrivenRRMWidget as AIDrivenRRM }
 
