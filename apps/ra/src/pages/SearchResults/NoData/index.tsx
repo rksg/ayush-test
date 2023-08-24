@@ -10,13 +10,11 @@ import * as UI from './styledComponents'
 const useLinkData = () => {
   const { $t } = useIntl()
   const linkData = [
-    { title: 'Venues', to: '/venues' },
-    { title: 'Networks', to: '/networks' },
-    { title: 'APs', to: '/devices/wifi' },
-    { title: 'Switches', to: '/devices/switch' },
-    { title: 'Wi-Fi Clients', to: '/users/wifi/clients' },
-    { title: 'Switch Clients', to: '/users/switch/clients' },
-    { title: 'Dashboard', to: '/dashboard' }
+    { title: 'Dashboard', to: '/dashboard' },
+    { title: 'Incidents', to: '/incidents' },
+    { title: 'Network Assurance', to: '/health' },
+    { title: 'Reports', to: '/reports' },
+    { title: 'Data Studio', to: '/dataStudio' }
   ]
 
   const data = linkData.map(val => <TenantLink to={val.to}>
