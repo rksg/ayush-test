@@ -64,7 +64,7 @@ export function AssignMspLicense () {
 
   const navigate = useNavigate()
   const linkToSubscriptions = useTenantLink('/msplicenses', 'v')
-  const { action, tenantId } = useParams()
+  const { tenantId } = useParams()
   const [form] = Form.useForm()
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
@@ -76,7 +76,6 @@ export function AssignMspLicense () {
   // const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
 
   const { Option } = Select
-  const isEditMode = action === 'edit'
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
@@ -109,7 +108,8 @@ export function AssignMspLicense () {
         checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
         form.setFieldsValue({
           serviceExpirationDate:
-            wifi.length > 0 ? moment(wifi[0].dateExpires) : moment().add(30,'days'),
+            moment((isDeviceAgnosticEnabled ? apsw[0]?.dateExpires : wifi[0]?.dateExpires)
+            || moment().add(30,'days')),
           wifiLicenses: wLic,
           switchLicenses: sLic,
           apswLicenses: apswLic
@@ -118,11 +118,7 @@ export function AssignMspLicense () {
         checkAvailableLicense(licenseSummary)
       }
     }
-
-    if (!isEditMode) { // Add mode
-      setSubscriptionStartDate(moment())
-      // setSubscriptionEndDate(moment().add(30,'days'))
-    }
+    setSubscriptionStartDate(moment())
   }, [licenseSummary, licenseAssignment])
 
 
