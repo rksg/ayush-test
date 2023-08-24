@@ -1,34 +1,22 @@
-import { Table as AntdTable } from 'antd'
-import moment                 from 'moment-timezone'
-import { useIntl }            from 'react-intl'
-import { useParams }          from 'react-router-dom'
+import moment        from 'moment-timezone'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
 import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
 
-import NoData              from './NoData'
-import { Collapse, Panel } from './styledComponents'
-
-
-//import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
-
-import { Ul, Chevron, Li } from './styledComponents'
-
-import type { ColumnsType } from 'antd/es/table'
+import NoData                                from './NoData'
+import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
 const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 const params = {
-  start: moment().subtract(7, 'days').seconds(0).format(),
+  start: moment().subtract(1, 'days').seconds(0).format(),
   end: moment().format(),
   limit: 10
 }
-
-
-
-
 
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
@@ -54,74 +42,54 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     // }
     // }
   )
-  //const count = results.data.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  // console.log( '###### results: ', JSON.stringify(results.data,null,1))
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
     count += (value as []).length || 0
   })
 
 
-  //const count = 11
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
-      width: 100,
       dataIndex: 'apName',
       key: 'apName',
-      //fixed: 'left',
-      ellipsis: true
-      //searchable: true,
-      // render: (value: unknown) => {
-      //   return value ?
-      //     (value as string) : '-'
-      // }
-
-      //sorter: { compare: sortProp('apName', defaultSort) }
+      width: 130,
+      sorter: { compare: sortProp('apName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
-      width: 100,
       dataIndex: 'macAddress',
       key: 'mac',
-      fixed: 'left',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+      width: 100,
       sorter: { compare: sortProp('macAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'AP Model' }),
       dataIndex: 'apModel',
       key: 'apModel',
-      fixed: 'left',
-      width: 100,
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+      width: 70,
       sorter: { compare: sortProp('apModel', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+      width: 80,
+
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Version' }),
+      width: 70,
       dataIndex: 'version',
       key: 'version',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('version', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Network' }),
+      width: 450,
       dataIndex: 'networkPath',
       key: 'networkPath',
       render: (_, value ) => {
@@ -146,19 +114,14 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-      ellipsis: true,
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Username' }),
       dataIndex: 'username',
       key: 'username',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('username', defaultSort) }
     },
     {
@@ -166,9 +129,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'mac',
       key: 'mac',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -176,18 +137,14 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('osType', defaultSort) }
     },
     {
@@ -195,7 +152,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'lastActiveTime',
       key: 'lastActiveTime',
       render: (value: unknown) => {
-        return value ? (formatter(DateFormatEnum.DateTimeFormat)(value)) : '-'
+        return formatter(DateFormatEnum.DateTimeFormat)(value)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
     }
@@ -207,37 +164,28 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'switchMac',
       key: 'switchMac',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('switchMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'switchModel',
       key: 'switchModel',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('switchModel', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Version' }),
-      width: 100,
       dataIndex: 'switchVersion',
       key: 'switchVersion',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('switchVersion', defaultSort) }
     }
   ]
@@ -248,9 +196,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -258,9 +204,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'type',
       key: 'type',
       fixed: 'left',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
@@ -268,9 +212,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'root',
       key: 'root',
       fixed: 'left',
-      render: (value: unknown) => {
-        return value ? (value as string) : '-'
-      },
+
       sorter: { compare: sortProp('root', defaultSort) }
     },
     {
@@ -315,7 +257,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { searchVal, count }
         )} />
         <Collapse
-          defaultActiveKey={Object.keys(results)}
+          defaultActiveKey={Object.keys(results.data!)}
         >
           { results.data?.aps.length &&
             <Panel
