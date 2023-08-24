@@ -5,10 +5,10 @@ import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }              from 'lodash'
 import { useIntl }                       from 'react-intl'
 
-import { Tooltip }                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { InformationSolid }                                             from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                             from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3security } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -50,10 +50,7 @@ export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
   if (!wlanSecurity)
     return false
 
-  const isWPA3Security = wlanSecurity === WlanSecurityEnum.WPA3
-  const isOWESecurity = wlanSecurity === WlanSecurityEnum.OWE
-
-  return isWPA3Security || isOWESecurity
+  return IsWPA3security(wlanSecurity as WlanSecurityEnum)
 }
 
 export const inverseTargetValue =
