@@ -362,6 +362,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.multiLinkOperationOptions = undefined
   }
 
+  // clean the qosMirroringScope when qosMirroringEnabled is disabled
+  if (!get(data, 'wlan.advancedCustomization.qosMirroringEnabled')) {
+    advancedCustomization.qosMirroringScope = undefined
+  }
+
   if (!get(data, 'wlan.advancedCustomization.qosMapSetEnabled')) {
     advancedCustomization.qosMapSetEnabled = false
   }
