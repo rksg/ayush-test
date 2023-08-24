@@ -169,7 +169,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
-      {channelBandwidth === '320MHz' ?
+      {(channelBandwidth === '320MHz' && radioType === ApRadioTypeEnum.Radio6G)?
         <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
           <InformationOutlined style={{
             height: '14px',
