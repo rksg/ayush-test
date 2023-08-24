@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { VlanPoolUrls } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
@@ -81,20 +80,7 @@ describe('VLAN Pool Detail Page', () => {
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(2))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><VLANPoolDetail /></Provider>, {
-      route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'VLAN Pools'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><VLANPoolDetail /></Provider>, {
       route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
     })
