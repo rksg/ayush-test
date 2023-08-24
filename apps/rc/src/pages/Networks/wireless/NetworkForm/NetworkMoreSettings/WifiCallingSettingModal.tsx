@@ -71,7 +71,11 @@ export function WifiCallingSettingModal () {
       ['wlan', 'advancedCustomization', 'wifiCallingIds'],
       targetKeys
     )
-    await form.validateFields()
+    try {
+      await form.validateFields()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const handleCancel = () => {

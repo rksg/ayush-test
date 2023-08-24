@@ -35,7 +35,7 @@ export const TransferLayout = styled(Space)`
   .ant-transfer-list-body-search-wrapper {
     padding: 0 0 4px;
     .ant-transfer-list-search {
-      border: 1px solid var(--acx-neutrals-40);
+      border: 1px solid var(--acx-neutrals-40) !important;
       padding: 0 8px;
       height: 24px;
       .ant-input-prefix {
@@ -98,8 +98,20 @@ export const TransferLayout = styled(Space)`
   }
   .ant-transfer-operation {
     margin: 0 20px;
-    .ant-btn:first-child {
-      margin-bottom: 10px;
+    .ant-btn {
+      &:first-child {
+        margin-bottom: 10px;
+        background-color: var(--acx-accents-orange-50);
+        border-color: var(--acx-accents-orange-50);
+      }
+      &:last-child {
+        background-color: transparent;
+        border-color: var(--acx-primary-black);
+        color: var(--acx-primary-black);
+        &:after {
+          display: none;
+        }
+      }
     }
   }
 `
