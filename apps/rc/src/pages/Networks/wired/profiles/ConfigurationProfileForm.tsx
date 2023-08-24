@@ -20,6 +20,7 @@ import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
 import { VlanSetting }                              from './VlanSetting'
+import { VoiceVlan } from './VoiceVlan'
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
@@ -28,6 +29,7 @@ export function ConfigurationProfileForm () {
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
   const [form] = Form.useForm()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -40,6 +42,7 @@ export function ConfigurationProfileForm () {
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
   const [ arpInspection, setArpInspection ] = useState(false)
+  const [ vlansWithTaggedPorts, setVlansWithTaggedPorts] = useState(false)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
@@ -189,6 +192,16 @@ export function ConfigurationProfileForm () {
           >
             <VlanSetting />
           </StepsForm.StepForm>
+
+          {
+            (isSwitchVoiceVlanEnhanced) && 
+            <StepsForm.StepForm
+              title={$t({ defaultMessage: 'Voice VLAN' })}
+              onFinish={updateCurrentData}
+            >
+              <VoiceVlan />
+            </StepsForm.StepForm>
+          }
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'ACLs' })}
