@@ -99,7 +99,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && canMSPDelegation && (
+        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && canMSPDelegation && !isMspEc && (
           <>
             <Divider />
             <AuthServerFormItem
@@ -108,7 +108,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && canMSPDelegation && (
+        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && canMSPDelegation && !isMspEc && (
           <>
             <Divider />
             <AppTokenFormItem

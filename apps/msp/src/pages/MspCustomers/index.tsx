@@ -116,6 +116,7 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const MAX_ALLOWED_SELECTED_EC = 200
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -151,6 +152,15 @@ export function MspCustomers () {
     else if (data?.mspIntegratorAdminCount)
       return data.mspIntegratorAdminCount
     return isIntegrator ? 0 : data.mspAdminCount
+  }
+
+  const transformAdminCountHeader = () => {
+    const type = tenantDetailsData.data?.tenantType
+    return type === AccountType.MSP_INSTALLER
+      ? $t({ defaultMessage: 'MSP Installer Count' })
+      : (type === AccountType.MSP_INTEGRATOR
+        ? $t({ defaultMessage: 'MSP Integrator Count' })
+        : $t({ defaultMessage: 'MSP Admin Count' }))
   }
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
@@ -295,7 +305,7 @@ export function MspCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'MSP Admin Count' }),
+      title: transformAdminCountHeader(),
       dataIndex: 'mspAdminCount',
       align: 'center',
       key: 'mspAdminCount',
@@ -482,9 +492,22 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length >= 2)
+          return (isAssignMultipleEcEnabled && selectedRows.length >= 1)
         },
         onClick: (selectedRows) => {
+          if (selectedRows.length > MAX_ALLOWED_SELECTED_EC) {
+            const title = $t({ defaultMessage: 'Max numbers of EC selection exceeded' })
+            const msg = $t(
+              { defaultMessage: 'Maximum number of selected EC is {value}' },
+              { value: MAX_ALLOWED_SELECTED_EC }
+            )
+            showActionModal({
+              type: 'info',
+              title,
+              content: msg
+            })
+            return
+          }
           const selectedEcIds = selectedRows.map(item => item.id)
           setSelEcTenantIds(selectedEcIds)
           setDrawerAssignEcMspAdminsVisible(true)
