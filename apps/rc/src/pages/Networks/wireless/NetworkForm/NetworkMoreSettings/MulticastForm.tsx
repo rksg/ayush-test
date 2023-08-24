@@ -224,9 +224,15 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <Checkbox data-testid='enableMulticastUpLimit6G'
+                    <><Checkbox data-testid='enableMulticastUpLimit6G'
                       children={$t({ defaultMessage: 'Upload Limit' })}
-                      disabled={isNotWPA3(wlanData)} />}
+                      disabled={isNotWPA3(wlanData)} />
+                    { isNotWPA3(wlanData) && <Tooltip.Question
+                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption." Similiar to the "MLO.' })}
+                      placement='right'
+                      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} /> }
+                    </>
+                  }
                 />
               </div>
 
@@ -237,9 +243,15 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <Checkbox data-testid='enableMulticastDownLimit6G'
+                    <><Checkbox data-testid='enableMulticastDownLimit6G'
                       children={$t({ defaultMessage: 'Download Limit' })}
-                      disabled={isNotWPA3(wlanData)} />}
+                      disabled={isNotWPA3(wlanData)} />
+                    { isNotWPA3(wlanData) && <Tooltip.Question
+                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption." Similiar to the "MLO.' })}
+                      placement='right'
+                      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} /> }
+                    </>
+                  }
                 />
               </div>
 
