@@ -4,7 +4,7 @@ import {
   RecommendationDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
-  VideoCallQoe,
+  CrrmDetails,
   VideoCallQoeForm,
   VideoCallQoeDetails
 }                                                       from '@acx-ui/analytics/components'
@@ -30,7 +30,8 @@ function AllRoutes () {
       <Route path='dashboard' element={<Dashboard />} />
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
@@ -40,8 +41,8 @@ function AllRoutes () {
       <Route path='reports/*' element={<ReportsRoutes />} />
       <Route path='dataStudio/*' element={<ReportsRoutes />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
-      <Route path='videoCallQoe/*' >
-        <Route index element={<VideoCallQoe/>} />
+      <Route path='videoCallQoe' >
+        <Route index element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>

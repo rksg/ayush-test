@@ -174,6 +174,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       dataIndex: 'id',
       width: 80,
       align: 'left',
+      className: 'actions-column',
       render: (_, value) => <RecommendationActions recommendation={value} />
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

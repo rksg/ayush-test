@@ -3,7 +3,6 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -74,20 +73,7 @@ describe('AP Group Form - Add', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByRole('link', {
-      name: /access points/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><ApGroupForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
