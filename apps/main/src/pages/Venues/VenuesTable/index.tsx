@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -291,7 +291,6 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
@@ -316,10 +315,7 @@ export function VenuesTable () {
   return (
     <>
       <PageHeader
-        title={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
-          : $t({ defaultMessage: 'Venues' })
-        }
+        title={$t({ defaultMessage: 'Venues ({count})' }, { count })}
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

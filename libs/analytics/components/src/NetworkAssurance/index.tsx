@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,6 +26,7 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
@@ -43,7 +45,7 @@ const useTabs = () : Tab[] => {
   return [
     healthTab,
     serviceGuardTab,
-    ...(useIsSplitOn(Features.VIDEO_CALL_QOE) ? [videoCallQoeTab] : [])
+    ...(get('IS_MLISA_SA') || videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 
