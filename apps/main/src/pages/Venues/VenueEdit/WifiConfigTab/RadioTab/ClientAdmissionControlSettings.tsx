@@ -15,7 +15,7 @@ import { VenueEditContext } from '../..'
 
 const { useWatch } = Form
 
-export function ClientAdmissionControlSettings () {
+export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEnabled?: boolean }) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
@@ -42,6 +42,7 @@ export function ClientAdmissionControlSettings () {
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
+  const { isLoadOrBandBalaningEnabled } = props
   const getClientAdmissionControl = useGetVenueClientAdmissionControlQuery({ params: { venueId } })
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateVenueClientAdmissionControlMutation()
@@ -70,20 +71,14 @@ export function ClientAdmissionControlSettings () {
   }, [isTurnedOffAndGrayedOut, form, getClientAdmissionControl?.data])
 
   useEffect(() => {
-    const isSwitchTurnedOffAndGrayedOut = editRadioContextData?.isBandBalancingEnabled ||
-    editRadioContextData?.isLoadBalancingEnabled
-    if (isSwitchTurnedOffAndGrayedOut) {
+    if (isLoadOrBandBalaningEnabled) {
       form.setFieldValue(enable24GFieldName, false)
       form.setFieldValue(enable50GFieldName, false)
       setIsTurnedOffAndGrayedOut(true)
     } else {
       setIsTurnedOffAndGrayedOut(false)
     }
-  }, [
-    form,
-    editRadioContextData?.isBandBalancingEnabled,
-    editRadioContextData?.isLoadBalancingEnabled
-  ])
+  }, [form, isLoadOrBandBalaningEnabled])
 
   const handleUpdateClientAdmissionControl = async () => {
     try {

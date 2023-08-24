@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -27,6 +27,8 @@ export function RadioTab () {
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+
+  const [isLoadOrBandBalaningEnabled, setIsLoadOrBandBalaningEnabled] = useState<boolean>(false)
   const basePath = useTenantLink('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
@@ -56,7 +58,7 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='load-balancing'>
           { loadBalancingTitle }
         </StepsFormLegacy.SectionTitle>
-        <LoadBalancing />
+        <LoadBalancing setIsLoadOrBandBalaningEnabled={setIsLoadOrBandBalaningEnabled} />
       </>
     )
   }] : []),
@@ -75,7 +77,7 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        <ClientAdmissionControlSettings />
+        <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
       </>
     )
   }]: []),
