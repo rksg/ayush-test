@@ -160,10 +160,6 @@ describe('SwitchClientsTable', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('img', { name: 'loader' })
-    )
-
     await screen.findByText('34:20:E3:2C:B5:B0')
 
     const searchInput = await screen.findByRole('textbox')

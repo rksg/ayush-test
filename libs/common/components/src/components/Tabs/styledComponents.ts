@@ -59,7 +59,8 @@ const secondStyle = css`
     top: calc(
       var(--acx-header-height) +
       var(--acx-content-vertical-space) +
-      var(--acx-pageheader-height)
+      var(--acx-pageheader-height) +
+      (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
     );
     background: var(--acx-primary-white);
     z-index: 6;

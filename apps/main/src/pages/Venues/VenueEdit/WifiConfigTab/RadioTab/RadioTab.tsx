@@ -156,7 +156,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} offsetTop={275} />
+        <AnchorLayout items={anchorItems} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
