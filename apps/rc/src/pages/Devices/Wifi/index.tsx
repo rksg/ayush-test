@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
@@ -29,7 +28,6 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 
 const useTabs = () : WifiTab[] => {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const listTab = {
     key: WifiTabsEnum.LIST,
     ...useApsTable()
@@ -52,17 +50,13 @@ const useTabs = () : WifiTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.AIRTIME_UTILIZATION)
   }
-  return [
-    listTab,
-    ...(isNavbarEnhanced ? [apReportTab, airtimeReportTab] : [])
-  ]
+  return [listTab, apReportTab, airtimeReportTab]
 }
 
 export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -72,10 +66,8 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
   const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
-      title={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Access Points' })
-        : $t({ defaultMessage: 'Wi-Fi' })}
-      breadcrumb={isNavbarEnhanced ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }] : undefined}
+      title={$t({ defaultMessage: 'Access Points' })}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Wi-Fi' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

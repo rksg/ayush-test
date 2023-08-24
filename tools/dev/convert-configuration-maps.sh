@@ -1,4 +1,5 @@
-# Before start this script, please make sure you have copied the mapping files to dir.
+# Before running this script, please make sure you have copied the mapping files
+# from rsa-shared/mapping/configuration/* to dir.
 dir="./libs/analytics/components/src/ConfigChange/Table/mapping"
 
 for input_file in ${dir}/*.json; do

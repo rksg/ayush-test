@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -81,29 +80,7 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByRole('button', { name: 'Cancel' })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <AdaptivePolicySetForm/>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenant-id' },
-          path: createPath
-        }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Adaptive Set Policy'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <AdaptivePolicySetForm/>

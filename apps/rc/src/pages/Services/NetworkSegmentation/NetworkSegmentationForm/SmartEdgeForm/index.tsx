@@ -156,8 +156,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const warningMsg = <FormattedMessage
     defaultMessage={
-      `Please note that additional configuration is required in the external DHCP server 
-        for the pool & segment mgmt. and the available document will be exposed on 
+      `Please note that additional configuration is required in the external DHCP server
+        for the pool & segment mgmt. and the available document will be exposed on
         this {detailPage}.`
     }
 
@@ -296,13 +296,13 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                   />
                 }
               </Space>
-              {
-                poolId &&
-                <DhcpPoolTable
-                  data={poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)}
-                />
-              }
             </Form.Item>
+          }
+          {
+            poolId &&
+            <DhcpPoolTable
+              data={poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)}
+            />
           }
         </Col>
       </Row>

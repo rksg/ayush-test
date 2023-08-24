@@ -184,12 +184,12 @@ export const VenueFirmwareTable = (
   { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  // eslint-disable-next-line max-len
   const { availableVersions } = useGetAvailableABFListQuery({ params }, {
     refetchOnMountOrArgChange: false,
     selectFromResult: ({ data }) => {
       return {
         availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+          .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
       }
     }
   })
@@ -309,83 +309,13 @@ export const VenueFirmwareTable = (
   },
   {
     visible: (selectedRows) => {
-      if (!availableVersions || availableVersions.length === 0) {
-        return false
-      }
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (!version) {
-          return false
-        }
-        for (let i = 0; i < availableVersions.length; i++) {
-          if (compareVersions(availableVersions[i].id, version) > 0) {
-            filterVersions.push(availableVersions[i])
-          }
-        }
-        return filterVersions.length > 0
-      }
-
-      let minVersion = ''
-      let isSameVersion = true
-      const ok = selectedRows.every((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (!version) {
-          return false
-        }
-        if (minVersion && compareVersions(version, minVersion) !== 0) {
-          isSameVersion = false
-        }
-
-        if (!minVersion || compareVersions(version, minVersion) > 0) {
-          minVersion = version
-        }
-        return true
-      })
-      if (!ok) return false
-      for (let i = 0; i < availableVersions.length; i++) {
-        // eslint-disable-next-line max-len
-        if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-          filterVersions.push(availableVersions[i])
-        }
-      }
-      return filterVersions.length > 0
+      const activeApFirmwares = extractAvailableApFirmwares(selectedRows)
+      return activeApFirmwares.length > 0
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      } else {
-        let minVersion = ''
-        let isSameVersion = true
-        selectedRows.forEach((row: FirmwareVenue) => {
-          const version = getApVersion(row)
-          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
-            isSameVersion = false
-          }
-          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
-            minVersion = version as string
-          }
-        })
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            // eslint-disable-next-line max-len
-            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      }
-      setChangeUpgradeVersions(filterVersions)
+      setChangeUpgradeVersions(extractAvailableApFirmwares(selectedRows))
       setChangeScheduleModelVisible(true)
     }
   },
@@ -451,7 +381,7 @@ export const VenueFirmwareTable = (
         const version = getApVersion(row)
         if (availableVersions) {
           for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) < 0) {
+            if (compareVersions(availableVersions[i].id, version) < 0) {
               filterVersions.push(availableVersions[i])
             }
           }

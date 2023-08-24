@@ -386,6 +386,59 @@ export const mockedRecommendationCRRM = {
   }
 } as unknown as RecommendationDetails
 
+export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
+  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
+  code: 'c-crrm-channel5g-auto',
+  status: 'new',
+  appliedTime: '2023-06-25T00:00:25.772Z',
+  originalValue: [
+    {
+      channelMode: 'CHANNEL_FLY',
+      channelWidth: '_80MHZ',
+      radio: '5',
+      autoCellSizing: null
+    }
+  ],
+  currentValue: [{
+    channelMode: 'CHANNEL_FLY',
+    channelWidth: '_AUTO',
+    radio: '5',
+    autoCellSizing: true
+  }],
+  recommendedValue: {
+    recommended: 'crrm',
+    txPowerAPCount: 0
+  },
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: '21_US_Beta_Samsung',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '21_US_Beta_Samsung'
+    },
+    {
+      type: 'zone',
+      name: '21_US_Beta_Samsung'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2023-05-17T07:04:11.663Z'
+    }
+  ],
+  kpi_number_of_interfering_links: {
+    current: 0,
+    previous: null,
+    projected: 0
+  }
+} as unknown as RecommendationDetails
+
 export const mockedRecommendationFirmware = {
   id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
   code: 'i-zonefirmware-upgrade',

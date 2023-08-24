@@ -56,18 +56,7 @@ describe('Add switch form', () => {
     expect(await screen.findByText(/add switch/i)).toBeVisible()
   })
 
-  it('should render switch breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/switch/:action' }
-    })
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-  })
-
-  it('should render switch breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render switch breadcrumb correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
@@ -105,6 +94,38 @@ describe('Add switch form', () => {
       fireEvent.click(addButton)
     })
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
+
+  it('should cannot add TSB standalone switch', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><SwitchForm /></Provider>, {
+      route: {
+        params: { tenantId: 'tenant-id', action: 'add' },
+        path: '/:tenantId/t/devices/switch/:action'
+      }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+
+    await userEvent.click(screen.getByRole('combobox', {
+      name: /venue/i
+    }))
+    const venue = await screen.findAllByText('My-Venue')
+    await userEvent.click(venue[0])
+
+    const serialNumber = screen.getByRole('textbox', {
+      name: /serial number/i
+    })
+    await userEvent.type(serialNumber, 'FJN3227U04A')
+
+    await screen.findByText(/ICX7150-48ZP/i)
+
+    const addButton = await screen.findByRole('button', { name: /add/i })
+    await userEvent.click(addButton)
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeVisible()
+    })
+    expect(screen.getByText(/Switch could not be added/i)).toBeVisible()
   })
 
   it('should add stack member correctly', async () => {

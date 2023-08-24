@@ -48,7 +48,8 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
           label={$t({ defaultMessage: 'Policy Set Name' })}
           rules={[
             { required: true },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { max: 255 }
           ]}
           validateFirst
           hasFeedback
