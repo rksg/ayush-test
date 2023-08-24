@@ -63,10 +63,10 @@ describe('DhcpOptionModal', () => {
     expect(radio).toBeEnabled()
 
     const input = await screen.findByLabelText('Option Value')
-    await userEvent.type(input, '1.2.3.4 4.5.6.')
+    await userEvent.type(input, ' 3.')
     input.focus()
 
-    expect(await screen.findByDisplayValue('1.2.3.4 4.5.6.')).toBeVisible()
+    expect(await screen.findByDisplayValue('1.2.3.4 4.5.6.7 3.')).toBeVisible()
     const invalidMessage = await screen.findByRole('alert', {
       name: (_, el) => el.textContent === 'Please enter a valid IP address'
     })
