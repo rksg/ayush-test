@@ -10,8 +10,8 @@ import {
   useUpdateSwitchConfigProfileMutation,
   useGetSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchConfigurationProfile, SwitchModel, Vlan } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
@@ -20,7 +20,7 @@ import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
 import { VlanSetting }                              from './VlanSetting'
-import { VoiceVlan } from './VoiceVlan'
+import { VoiceVlan }                                from './VoiceVlan'
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
@@ -78,18 +78,54 @@ export function ConfigurationProfileForm () {
     return true
   }
 
+  const generateVoiceVlanConfig = (vlans: Vlan[]) => {
+    const modelMap:{ [key:string]: any[] } = {}
+    vlans.forEach((vlan: Vlan) => {
+      if(vlan.switchFamilyModels) {
+        vlan.switchFamilyModels.forEach((model: SwitchModel) => {
+          if(model.taggedPorts?.length){
+            if(modelMap[model.model]) {
+              modelMap[model.model].push({
+                vlanId: vlan.vlanId,
+                taggedPorts: model.taggedPorts.split(',')
+              })
+            } else {
+              modelMap[model.model] = [{
+                vlanId: vlan.vlanId,
+                taggedPorts: model.taggedPorts.split(',')
+              }]
+            }
+          }
+        })
+      }
+    })
+    const voiceVlanOptions = Object.keys(modelMap).map(model => ({
+      model,
+      voiceVlans: modelMap[model]
+    }))
+    console.log('voiceVlanOptions: ', voiceVlanOptions)
+    return voiceVlanOptions
+  }
+
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
     const ipv4DhcpSnoopingValue =
       data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
     const arpInspectionValue =
       data.vlans?.filter((item: Partial<Vlan>) => item.arpInspection === true) || []
-
+    const vlansWithTaggedPortsValue =
+      data.vlans?.filter((item: Partial<Vlan>) => {
+        return item.switchFamilyModels ?
+          item.switchFamilyModels.find(model => model?.taggedPorts?.length)
+          : false
+      }) || []
     setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
     setArpInspection(arpInspectionValue.length > 0)
-
+    setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
+    const voiceVlanOptions = generateVoiceVlanConfig(data.vlans as Vlan[])
     setCurrentData({
       ...currentData,
-      ...data
+      ...data,
+      voiceVlanOptions
     })
 
     return true
@@ -194,7 +230,7 @@ export function ConfigurationProfileForm () {
           </StepsForm.StepForm>
 
           {
-            (isSwitchVoiceVlanEnhanced) && 
+            (isSwitchVoiceVlanEnhanced && vlansWithTaggedPorts) &&
             <StepsForm.StepForm
               title={$t({ defaultMessage: 'Voice VLAN' })}
               onFinish={updateCurrentData}

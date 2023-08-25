@@ -680,6 +680,10 @@ export interface SwitchConfigurationProfile {
   vlans: Vlan[]
   description: string
   trustedPorts: TrustedPort[]
+  voiceVlanOptions: {
+    model: string;
+    voiceVlans: any[];
+  }[]
 }
 
 export interface AclStandardRule {

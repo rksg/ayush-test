@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect, Key } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Row, Col, Form, Input, Space } from 'antd'
 import _                         from 'lodash'
 
-import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip, Button } from '@acx-ui/components'
 import { VlanSettingDrawer }                                            from '@acx-ui/rc/components'
 import {
   Vlan,
@@ -25,7 +25,7 @@ export function VoiceVlan () {
   const form = Form.useFormInstance()
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [ vlanTable, setVlanTable ] = useState<Vlan[]>([])
-  const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
+  const [ voiceVlanOptions, setVoiceVlanOptions ] = useState<any>([])
   const [ drawerFormRule, setDrawerFormRule ] = useState<Vlan>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ vlanDrawerVisible, setVlanDrawerVisible ] = useState(false)
@@ -33,15 +33,8 @@ export function VoiceVlan () {
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
 
   useEffect(() => {
-    if(currentData.vlans){
-      form.setFieldsValue(currentData)
-
-      const defaultVlanData = currentData.vlans.filter(
-        item => item.vlanName === 'DEFAULT-VLAN' )[0] || {}
-      setDefaultVlan(defaultVlanData)
-
-      const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
-      setVlanTable(vlanList)
+    if(currentData.voiceVlanOptions){
+      setVoiceVlanOptions(currentData.voiceVlanOptions)
     }
   }, [currentData, editMode])
 
@@ -50,12 +43,29 @@ export function VoiceVlan () {
       <Row gutter={20}>
         <Col span={10}>
         <StepsFormLegacy.Title children={$t({ defaultMessage: 'Voice VLAN' })} />
-        <StepsFormLegacy.SectionTitle id='aaa-servers'>
-          test
-        </StepsFormLegacy.SectionTitle>
-        <Form.Item
-          label={$t({ defaultMessage: 'Voice VLAN' })}
-        />
+        {
+          voiceVlanOptions.map((item:any) => <>
+            <StepsFormLegacy.SectionTitle style={{width: '800px', marginBottom: '15px'}}>
+              {item?.model}
+            </StepsFormLegacy.SectionTitle>
+            <Space style={{
+              width: '800px', display: 'flex', justifyContent: 'space-between'
+            }}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Voice VLAN' })}
+                children={<></>}
+              />
+              <Button type='link'
+                  size='small'
+                  onClick={()=>{}}
+              >
+                {$t({ defaultMessage: 'Set Voice VLAN' })}
+              </Button>
+            </Space>
+           
+          </>)
+        }
+       
         </Col>
       </Row>
     </>
