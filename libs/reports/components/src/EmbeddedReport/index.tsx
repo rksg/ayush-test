@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
+import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import {
   RadioBand,
   Loader
@@ -12,7 +13,7 @@ import { useParams }                                    from '@acx-ui/react-rout
 import { useGuestTokenMutation, useEmbeddedIdMutation } from '@acx-ui/reports/services'
 import { useReportsFilter }                             from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                     from '@acx-ui/store'
-import { useUserProfileContext }                        from '@acx-ui/user'
+import { getUserProfile as getUserProfileR1 }           from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath }      from '@acx-ui/utils'
 
 import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportModeMapping } from '../mapping/reportsMapping'
@@ -106,8 +107,9 @@ export function EmbeddedReport (props: ReportProps) {
   const { filters: { paths, bands } } = useReportsFilter()
   const { networkClause, radioBandClause } = getSupersetRlsClause(reportName,
     paths,bands as RadioBand[])
-  const { data: userProfile } = useUserProfileContext()
-  const { firstName, lastName, email } = userProfile || {}
+  const { firstName, lastName, email } = get('IS_MLISA_SA')
+    ? getUserProfileRA()
+    : getUserProfileR1().profile
 
   /**
   * Hostname - Backend service where superset is running.

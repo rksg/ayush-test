@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 
-import { IFrame }                  from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { useAuthenticateMutation } from '@acx-ui/reports/services'
-import { useUserProfileContext }   from '@acx-ui/user'
+import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
+import { IFrame }                             from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { useAuthenticateMutation }            from '@acx-ui/reports/services'
+import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development')
@@ -18,8 +19,9 @@ export const getHostName = (origin: string) => {
 export function DataStudio () {
   const [url, setUrl] = useState<string>()
   const [ authenticate ] = useAuthenticateMutation()
-  const { data: userProfile } = useUserProfileContext()
-  const { firstName, lastName, email } = userProfile || {}
+  const { firstName, lastName, email } = get('IS_MLISA_SA')
+    ? getUserProfileRA()
+    : getUserProfileR1().profile
 
   useEffect(() => {
     authenticate({
@@ -33,8 +35,7 @@ export function DataStudio () {
     }).unwrap().then(url => {
       setUrl(url)
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authenticate])
+  }, [authenticate, email, firstName, lastName])
 
   return (
     <div data-testid='data-studio'>
