@@ -2871,14 +2871,16 @@ exports[`getCrrmCsvData returns correct state for AP missing in current 1`] = `
 "AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
 AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
-AP 3,00:00:00:00:00:03,5 GHz,36,,80 MHz,,Full,"
+AP 3,00:00:00:00:00:03,5 GHz,36,,80 MHz,,Full,
+"
 `;
 
 exports[`getCrrmCsvData returns correct state for AP missing in previous 1`] = `
 "AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
 AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
-AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full"
+AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full
+"
 `;
 
 exports[`getCrrmCsvData returns correct state for APs missing in both previous & current 1`] = `
@@ -2886,24 +2888,27 @@ exports[`getCrrmCsvData returns correct state for APs missing in both previous &
 AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
 AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
 AP 4,00:00:00:00:00:04,5 GHz,36,,80 MHz,,Full,
-AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full"
+AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full
+"
 `;
 
 exports[`getCrrmCsvData returns correct state for equal nodes 1`] = `
 "AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)"
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+"
 `;
 
 exports[`getCrrmCsvData returns correct state for nodes with TxPower = null 1`] = `
 "AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,,
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,Full"
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,Full
+"
 `;
 
-exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div><div>AP Name: ap</div><div>Channel number (radio 5 GHz): 48</div><div>Channel number (radio 6(5) GHz): 124</div><div>Bandwidth (radio 5 GHz): 20 MHz</div><div>Bandwidth (radio 6(5) GHz): 40 MHz</div><div>TxPower (radio 5 GHz): Full</div><div>TxPower (radio 6(5) GHz): Min</div></div>"`;
+exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channl number (radio 5 GHz): <b>48</b>Channl number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li><li>TxPower (radio 5 GHz): <b>Full</b>TxPower (radio 6(5) GHz): <b>Min</b></li></ul></div>"`;
 
-exports[`tooltipFormatter should match snapshot 1`] = `"<div><div>AP Name: ap</div><div>Channel number (radio 5 GHz): 48</div><div>Channel number (radio 6(5) GHz): 124</div><div>Bandwidth (radio 5 GHz): 20 MHz</div><div>Bandwidth (radio 6(5) GHz): 40 MHz</div></div>"`;
+exports[`tooltipFormatter should match snapshot 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channl number (radio 5 GHz): <b>48</b>Channl number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li></ul></div>"`;
 
 exports[`trimGraph should return correct trimed graph data 1`] = `
 Object {

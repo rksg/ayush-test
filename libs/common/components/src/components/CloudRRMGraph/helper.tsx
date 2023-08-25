@@ -1,5 +1,5 @@
+import { stringify }                                                   from 'csv-stringify/browser/esm/sync'
 import _                                                               from 'lodash'
-import { unparse }                                                     from 'papaparse'
 import { renderToString }                                              from 'react-dom/server'
 import { FormattedMessage, IntlShape, RawIntlProvider, defineMessage } from 'react-intl'
 
@@ -370,7 +370,7 @@ export function getCrrmCsvData (graphs: Type.ProcessedCloudRRMGraph[], $t: IntlS
     return agg
   })
 
-  return unparse([[
+  return stringify([[
     $t({ defaultMessage: 'AP Name' }),
     $t({ defaultMessage: 'AP MAC' }),
     $t({ defaultMessage: 'WiFi Radio Band' }),
