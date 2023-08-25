@@ -351,14 +351,19 @@ export function getCrrmCsvData (graphs: Type.ProcessedCloudRRMGraph[], $t: IntlS
 
     const agg = []
     for (let i = 0; i < size; i++) {
+      const isChangeChannel = channel[i][0] !== channel[i][1]
       const bandwidthBefore = formatter('bandwidthFormat')(channelWidth[i][0])
       const bandwidthAfter = formatter('bandwidthFormat')(channelWidth[i][1])
+      const isChangeBandWidth = bandwidthBefore !== bandwidthAfter
       const txFormatBefore = formatter('txFormat')(txPower[i][0])
       const txFormatAfter = formatter('txFormat')(txPower[i][1] ?? (after && txPower[i][0]))
+      const isChangeTx = txFormatBefore !== txFormatAfter
       agg.push([
         name,
         apMac,
         formatter('radioFormat')(band2radio(before?.band ?? after?.band, i)),
+        [isChangeChannel, isChangeBandWidth, isChangeTx].some(value => value)
+          ? $t({ defaultMessage: 'TRUE' }) : $t({ defaultMessage: 'FALSE' }),
         channel[i][0],
         channel[i][1],
         bandwidthBefore === noDataDisplay ? '' : bandwidthBefore,
@@ -374,6 +379,7 @@ export function getCrrmCsvData (graphs: Type.ProcessedCloudRRMGraph[], $t: IntlS
     $t({ defaultMessage: 'AP Name' }),
     $t({ defaultMessage: 'AP MAC' }),
     $t({ defaultMessage: 'WiFi Radio Band' }),
+    $t({ defaultMessage: 'Is Changed' }),
     $t({ defaultMessage: '[Before] Channel Number' }),
     $t({ defaultMessage: '[After] Channel Number' }),
     $t({ defaultMessage: '[Before] Bandwidth' }),
