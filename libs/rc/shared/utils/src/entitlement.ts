@@ -47,6 +47,9 @@ export class EntitlementUtil {
         return $t({ defaultMessage: 'Analytics' })
       case EntitlementDeviceType.EDGE:
         return $t({ defaultMessage: 'SmartEdge' })
+      case EntitlementDeviceType.APSW:
+      case EntitlementDeviceType.MSP_APSW:
+        return $t({ defaultMessage: 'Devices' })
       default:
         return ''
     }

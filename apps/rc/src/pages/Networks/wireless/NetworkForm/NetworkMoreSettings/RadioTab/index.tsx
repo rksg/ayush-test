@@ -69,9 +69,6 @@ export function RadioTab () {
         managementFrameMinimumPhyRate: value
       })
     }
-    if (value === BssMinRateEnum.VALUE_1) {
-      form.setFieldValue(['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting'], false)
-    }
     const curValue = form.getFieldValue(['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting'])
     if(curValue > getDownloadMaxValue()) {
       form.setFieldValue(['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting'],
