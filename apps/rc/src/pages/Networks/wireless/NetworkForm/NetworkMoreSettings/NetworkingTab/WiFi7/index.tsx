@@ -8,7 +8,7 @@ import { useIntl }                       from 'react-intl'
 import { Tooltip }                                                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { InformationSolid }                                                             from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3security } from '@acx-ui/rc/utils'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3Security } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -50,7 +50,7 @@ export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
   if (!wlanSecurity)
     return false
 
-  return IsWPA3security(wlanSecurity as WlanSecurityEnum)
+  return IsWPA3Security(wlanSecurity as WlanSecurityEnum)
 }
 
 export const inverseTargetValue =

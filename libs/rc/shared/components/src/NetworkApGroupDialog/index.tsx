@@ -34,7 +34,7 @@ import {
   getVlanString,
   NetworkVenue,
   NetworkSaveData,
-  IsWPA3security
+  IsWPA3Security
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -143,7 +143,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
 
   const RadioSelect = (props: SelectProps) => {
-    const isWPA3 = IsWPA3security(wlan?.wlanSecurity)
+    const isWPA3 = IsWPA3Security(wlan?.wlanSecurity)
     const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
     if (!triBandRadioFeatureFlag || !isWPA3) {
       _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)

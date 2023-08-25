@@ -31,7 +31,7 @@ import {
   generateDefaultNetworkVenue,
   SchedulingModalState,
   RadioTypeEnum,
-  IsWPA3security
+  IsWPA3Security
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -94,7 +94,7 @@ export function Venues () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = IsWPA3security(data?.wlan?.wlanSecurity)
+  const isWPA3security = IsWPA3Security(data?.wlan?.wlanSecurity)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
