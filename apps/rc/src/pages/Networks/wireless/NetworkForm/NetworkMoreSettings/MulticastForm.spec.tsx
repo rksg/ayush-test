@@ -6,9 +6,9 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { Provider }               from '@acx-ui/store'
-import { within, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { MulticastForm } from './MulticastForm'
 
@@ -21,7 +21,7 @@ describe('MulticastForm', () => {
     render(
       <Provider>
         <Form>
-          <MulticastForm/>
+          <MulticastForm wlanData={null}/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -41,7 +41,7 @@ describe('MulticastForm', () => {
     render(
       <Provider>
         <Form>
-          <MulticastForm/>
+          <MulticastForm wlanData={null}/>
         </Form>
       </Provider>,
       { route: { params } })
