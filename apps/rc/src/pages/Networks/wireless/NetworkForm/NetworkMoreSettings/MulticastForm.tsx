@@ -126,6 +126,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
               valuePropName='checked'
             >
               <Switch
+                data-testid='multicastRateLimitSwitch'
                 disabled={switchMulticastRateLimitingDisabled}
               />
             </Form.Item>

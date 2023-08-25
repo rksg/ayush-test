@@ -26,8 +26,8 @@ describe('MulticastForm', () => {
       </Provider>,
       { route: { params } })
 
-    const multicastRateLimitSwitch = screen.getByText(/Multicast Rate Limiting/i)
-    await userEvent.click(within(multicastRateLimitSwitch).getByRole('switch'))
+    const multicastRateLimitSwitch = screen.getByTestId('multicastRateLimitSwitch')
+    await userEvent.click(multicastRateLimitSwitch)
     expect(await screen.findByTestId('enableMulticastUpLimit')).toBeVisible()
     expect(await screen.findByTestId('enableMulticastDownLimit')).toBeVisible()
     expect(await screen.findByTestId('enableMulticastUpLimit6G')).toBeVisible()
