@@ -5,13 +5,14 @@ import { DefaultOptionType }          from 'antd/lib/select'
 import { useIntl }                    from 'react-intl'
 import { useParams }                  from 'react-router-dom'
 
-import { Tooltip }                                            from '@acx-ui/components'
-import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid } from '@acx-ui/icons'
-import { useGetCcdSupportVenuesQuery }                        from '@acx-ui/rc/services'
-import { MacAddressRegExp }                                   from '@acx-ui/rc/utils'
+import { Tooltip }                                                           from '@acx-ui/components'
+import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid }                from '@acx-ui/icons'
+import { useGetCcdSupportVenuesQuery, useRunCcdMutation }                    from '@acx-ui/rc/services'
+import { CatchErrorResponse, ConvertToStandardMacAddress, MacAddressRegExp } from '@acx-ui/rc/utils'
 
-import ApGroupSelecterDrawer from './ApGroupSelecterDrawer'
-import { Button }            from './styledComponents'
+import ApGroupSelecterDrawer       from './ApGroupSelecterDrawer'
+import { Button }                  from './styledComponents'
+import { useCcd, DetectionStatus } from './useCcd'
 
 
 const defaultPayload = {
@@ -30,8 +31,11 @@ export function ClientConnectionDiagnosis () {
   const clientMac = Form.useWatch('client', form)
   const venueId = Form.useWatch('venue', form)
 
+  const { setRequestId, detectionStatus, handleError } = useCcd('', socketHandler)
+
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useGetCcdSupportVenuesQuery({ params: { tenantId }, payload: defaultPayload })
+  const [ diagnosisClientConnection, { isLoading: isDetecting } ] = useRunCcdMutation()
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [showSelectApsDraw, setShowSelectApsDraw] = useState(false)
@@ -74,8 +78,45 @@ export function ClientConnectionDiagnosis () {
     setSelectedAps(selectAps)
   }
 
-  const handleStartTrace = () => {
+  const handleSwitchDiagnosis = async () => {
+    const wantToStart = !isTracing
     setIsTracing(!isTracing)
+
+    const payload = {
+      state: wantToStart? 'START' : 'STOP',
+      clientMac: ConvertToStandardMacAddress(clientMac),
+      ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
+    }
+
+    try {
+      const result = await diagnosisClientConnection({
+        params: { venueId },
+        payload: payload
+      }).unwrap()
+
+      if (wantToStart) {
+        setRequestId(result.requestId)
+      } else {
+        setRequestId('') // close socket when stop
+      }
+    } catch (error) {
+      setRequestId('')
+      handleError(error as CatchErrorResponse)
+    }
+
+  }
+
+  async function socketHandler (msg: string) {
+    const data = JSON.parse(msg)
+    const m = JSON.parse(data.message)
+    console.log('socketHandler: ', m)
+    /*
+    try {
+
+    } catch (error) {
+      handleError(error as CatchErrorResponse)
+    }
+    */
   }
 
   const handleClear = () => {
@@ -111,18 +152,20 @@ export function ClientConnectionDiagnosis () {
             { validator: (_, value) => MacAddressRegExp(value) }
           ]}
           children={<Input prefix={<SearchOutlined />}
+            disabled={isTracing}
             placeholder={$t({ defaultMessage: 'Enter MAC address' })}
             style={{ width: '300px' }}
           />}
         />
 
-        <Form.Item
+        <Form.Item required
           label={$t({ defaultMessage: 'Venue' })}
           name='venue'
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           children={<Select
             options={venueOption}
+            disabled={isTracing}
             placeholder={$t({ defaultMessage: 'Select...' })}
             style={{ width: '250px' }}
           />}
@@ -142,7 +185,7 @@ export function ClientConnectionDiagnosis () {
               />
             </Tooltip>
             <Button type='link'
-              disabled={!venueId}
+              disabled={!venueId || isTracing}
               onClick={openSelectAps}>
               {$t({ defaultMessage: 'Select' })}
             </Button>
@@ -158,8 +201,8 @@ export function ClientConnectionDiagnosis () {
               type='text'
               icon={!isTracing? <PlaySolid2 /> : <StopSolid />}
               style={{ width: '200px', paddingTop: '10px' }}
-              disabled={showSelectApsDraw || !isValid}
-              onClick={handleStartTrace}
+              disabled={showSelectApsDraw || !venueId || !isValid}
+              onClick={handleSwitchDiagnosis}
             >
               {!isTracing
                 ? $t({ defaultMessage: 'Trace Connectivity' })

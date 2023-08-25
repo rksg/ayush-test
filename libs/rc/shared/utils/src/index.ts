@@ -20,4 +20,7 @@ export * from './entitlement'
 export * from './pdfGeneratorService'
 export * from './ipCalculatorUtilsService'
 export * from './pokeSocket'
+export * from './ccdSocket'
+export * from './macAddressUtils'
+
 
