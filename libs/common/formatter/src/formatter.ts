@@ -211,7 +211,7 @@ const json2keymap = (
     ), new Map())
 
 type CrrmTextType = { txPowerAPCount: number }
-  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: boolean }>
+  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: string }>
 
 const crrmText = (value: CrrmTextType) => {
   const { $t } = getIntl()
@@ -219,15 +219,76 @@ const crrmText = (value: CrrmTextType) => {
   const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
   const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
   if (Array.isArray(value)) {
-    return value.map(config => {
-      const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
+    const data = value.map(config => {
+      const channelMode = enumTextMap.get(`${enumMode}-${config.channelMode}`)
       const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
       const radio = formats.radioFormat(config.radio)
-      const autoCellSizing = config.autoCellSizing ? 'Auto Cell Sizing on' : 'static AP Power'
-      return $t({
-        defaultMessage: '{channelMode} and {channelWidth} for {radio} with {autoCellSizing}' },
-      { channelMode, channelWidth, radio, autoCellSizing } )
-    }).join(', ')
+      const autoCellSizing = config.autoCellSizing === 'true'
+        ? 'Auto Cell Sizing on'
+        : 'static AP Power'
+      return {
+        mode: channelMode,
+        width: channelWidth,
+        radio: radio,
+        autoCellSizing: autoCellSizing
+      }
+    })
+
+    const seenConfigs = new Map()
+    const duplicateRadios = new Set()
+
+    data.forEach(config => {
+      const { mode, width, autoCellSizing, radio } = config
+      const configKey = `${mode}-${width}-${autoCellSizing}`
+      if (seenConfigs.has(configKey)) {
+        duplicateRadios.add(radio)
+        duplicateRadios.add(seenConfigs.get(configKey))
+      } else {
+        seenConfigs.set(configKey, radio)
+      }
+    })
+
+    const duplicatesArray = Array.from(duplicateRadios)
+
+    if (duplicatesArray.length === 0) {
+      return data.map(config => {
+        const { mode, width, radio, autoCellSizing } = config
+        return $t({ defaultMessage: '{mode} and {width} for {radio} with {autoCellSizing}' },
+          { mode, width, radio, autoCellSizing } )
+      }).join(', ')
+    } else if (duplicatesArray.length === 3) {
+      const mode = data[0].mode
+      const width = data[0].width
+      const autoCellSizing = data[0].autoCellSizing
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: '{mode} and {width} for 5 GHz, lower and upper 5 GHz with {autoCellSizing}' },
+        { mode, width, autoCellSizing })
+    }
+
+    const individual = data.filter(i => !duplicatesArray.includes(i.radio))
+    const mode1 = data[0].mode
+    const width1 = data[0].width
+    const autoCellSizing1 = data[0].autoCellSizing
+    const mode2 = data[1].mode
+    const width2 = data[1].width
+    const autoCellSizing2 = data[1].autoCellSizing
+    const mode3 = data[2].mode
+    const width3 = data[2].width
+    const autoCellSizing3 = data[2].autoCellSizing
+
+    switch (individual[0].radio) {
+      case '5 GHz':
+        // eslint-disable-next-line max-len
+        return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz with {autoCellSizing1}, {mode2} and {width2} for lower and upper 5 GHz with {autoCellSizing2}' },
+          { mode1, width1, autoCellSizing1, mode2, width2, autoCellSizing2 } )
+      case 'lower 5 GHz':
+        // eslint-disable-next-line max-len
+        return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz and upper 5 GHz with {autoCellSizing1}, {mode2} and {width2} for lower 5 GHz with {autoCellSizing2}' },
+          { mode1, width1, autoCellSizing1, mode2, width2, autoCellSizing2 } )
+    }
+    // eslint-disable-next-line max-len
+    return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz and lower 5 GHz with {autoCellSizing1}, {mode3} and {width3} for upper 5 GHz with {autoCellSizing3}' },
+      { mode1, width1, autoCellSizing1, mode3, width3, autoCellSizing3 } )
   } else {
     const { txPowerAPCount } = value
     // eslint-disable-next-line max-len

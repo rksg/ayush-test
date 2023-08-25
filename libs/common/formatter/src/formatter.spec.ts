@@ -373,8 +373,122 @@ describe('formatter', () => {
         radio: '5.0',
         channelWidth: '_80MHZ',
         channelMode: 'CHANNEL_FLY',
-        autoCellSizing: true
+        autoCellSizing: 'true'
       }])).toMatch('ChannelFly and 80 MHz for 5.0 GHz with Auto Cell Sizing on')
+    })
+
+    it('should return correct value for crrm dual5g object', () => {
+      const config5gDual = [
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_20MHZ',
+          radio: '5',
+          autoCellSizing: 'false'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_80_80MHZ',
+          radio: 'lower 5',
+          autoCellSizing: 'true'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_160MHZ',
+          radio: 'upper 5',
+          autoCellSizing: 'false'
+        }
+      ]
+      const config5gDualAllSame = [
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_AUTO',
+          radio: '5',
+          autoCellSizing: 'true'
+        },
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_AUTO',
+          radio: 'lower 5',
+          autoCellSizing: 'true'
+        },
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_AUTO',
+          radio: 'upper 5',
+          autoCellSizing: 'true'
+        }
+      ]
+      const config5gDualNormalDiff = [
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_20MHZ',
+          radio: '5',
+          autoCellSizing: 'true'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_40MHZ',
+          radio: 'lower 5',
+          autoCellSizing: 'false'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_40MHZ',
+          radio: 'upper 5',
+          autoCellSizing: 'false'
+        }
+      ]
+      const config5gDualLowerDiff = [
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_20MHZ',
+          radio: '5',
+          autoCellSizing: 'true'
+        },
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_40MHZ',
+          radio: 'lower 5',
+          autoCellSizing: 'false'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_20MHZ',
+          radio: 'upper 5',
+          autoCellSizing: 'true'
+        }
+      ]
+      const config5gDualUpperDiff = [
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_20MHZ',
+          radio: '5',
+          autoCellSizing: 'false'
+        },
+        {
+          channelMode: 'BACKGROUND_SCANNING',
+          channelWidth: '_20MHZ',
+          radio: 'lower 5',
+          autoCellSizing: 'false'
+        },
+        {
+          channelMode: 'CHANNEL_FLY',
+          channelWidth: '_AUTO',
+          radio: 'upper 5',
+          autoCellSizing: 'true'
+        }
+      ]
+
+      // eslint-disable-next-line max-len
+      expect(formatter('crrmFormat')(config5gDual)).toBe('Background scanning and 20 MHz for 5 GHz with static AP Power, Background scanning and 80+80 MHz for lower 5 GHz with Auto Cell Sizing on, Background scanning and 160 MHz for upper 5 GHz with static AP Power')
+      // eslint-disable-next-line max-len
+      expect(formatter('crrmFormat')(config5gDualAllSame)).toBe('ChannelFly and Auto for 5 GHz, lower and upper 5 GHz with Auto Cell Sizing on')
+      // eslint-disable-next-line max-len
+      expect(formatter('crrmFormat')(config5gDualNormalDiff)).toBe('ChannelFly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower and upper 5 GHz with static AP Power')
+      // eslint-disable-next-line max-len
+      expect(formatter('crrmFormat')(config5gDualLowerDiff)).toBe('Background scanning and 20 MHz for 5 GHz and upper 5 GHz with Auto Cell Sizing on, ChannelFly and 40 MHz for lower 5 GHz with static AP Power')
+      // eslint-disable-next-line max-len
+      expect(formatter('crrmFormat')(config5gDualUpperDiff)).toBe('Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on')
     })
     it('returns txPower texts', () => {
       expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len
