@@ -498,7 +498,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/wifi/add`
-            })
+            }, { state: { venueId: params.venueId } })
           }
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),

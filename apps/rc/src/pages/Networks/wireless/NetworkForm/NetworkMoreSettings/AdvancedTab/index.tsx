@@ -1,20 +1,18 @@
 import { useContext } from 'react'
 
-import { useIntl } from 'react-intl'
-
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NetworkTypeEnum }        from '@acx-ui/rc/utils'
 
 import NetworkFormContext     from '../../NetworkFormContext'
-import * as UI                from '../styledComponents'
 import { UserConnectionForm } from '../UserConnectionForm'
+
+import QoS from './QoS'
 
 
 export function AdvancedTab () {
-  const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
-
-  const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
-
+  const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
+  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
 
   const UserConnectionComponent = () => {
     return (
@@ -26,12 +24,7 @@ export function AdvancedTab () {
 
   return (
     <>
-      {isSupportQosMap &&
-      <>
-        <UI.Subtitle>{$t({ defaultMessage: 'QoS Map' })}</UI.Subtitle>
-        <div> implementing... </div>
-      </>}
-
+      { (qosMirroringFlag || qosMapSetFlag) && <QoS wlanData={data} /> }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
         <UserConnectionComponent/>
       }

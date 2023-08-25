@@ -1,7 +1,9 @@
 
-import { render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { Tabs, TabsType } from '.'
+
+window.scrollTo = jest.fn()
 
 describe('Tabs', () => {
   function renderTab (type?: TabsType) {
@@ -20,5 +22,15 @@ describe('Tabs', () => {
       render(renderTab(type))
       expect(screen.getAllByRole('tab')).toHaveLength(2)
     })
+  })
+  it('render as second', async () => {
+    render(renderTab('second'))
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs).toHaveLength(2)
+
+    fireEvent.click(tabs[1])
+
+    const content = await screen.findByText('Tab 2 Content')
+    expect(content).toBeVisible()
   })
 })

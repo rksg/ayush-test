@@ -5,7 +5,6 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { GridCol, GridRow, Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
 import {
   useAddRadiusAttributeGroupMutation,
   useGetRadiusAttributeGroupQuery,
@@ -13,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AttributeAssignment, getPolicyListRoutePath,
-  getPolicyRoutePath, OperatorType,
+  getPolicyRoutePath,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -45,7 +44,6 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   const [visible, setVisible] = useState(false)
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
   const [editAttributeMode, setEditAttributeMode] = useState(false)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   useEffect(() => {
     if(data) {
@@ -126,19 +124,14 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   }
 
   const onAddClick = () => {
-    setEditAttributeMode(false)
-    setEditAttribute({
-      attributeName: '' ,
-      operator: OperatorType.ADD,
-      attributeValue: ''
-    } as AttributeAssignment)
     setVisible(true)
+    setEditAttributeMode(false)
   }
 
   const onEditClick = (attribute: AttributeAssignment) => {
-    setEditAttribute(attribute)
-    setEditAttributeMode(true)
     setVisible(true)
+    setEditAttributeMode(true)
+    setEditAttribute(attribute)
   }
 
   return (
@@ -147,15 +140,8 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
         title={editMode
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add RADIUS Attributes Group' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-            link: tablePath }
-        ] : [
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)

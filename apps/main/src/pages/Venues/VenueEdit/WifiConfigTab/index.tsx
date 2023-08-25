@@ -58,7 +58,7 @@ export function WifiConfigTab () {
       onChange={onTabChange}
       defaultActiveKey='radio'
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
     >
       <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
         <RadioTab />

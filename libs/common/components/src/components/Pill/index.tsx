@@ -15,7 +15,6 @@ interface TrendPillProps {
   trend: TrendTypeEnum
   value: string
 }
-
 export const TrendPill = React.forwardRef((
   { trend, value, ...rest }: TrendPillProps,
   ref: React.ForwardedRef<HTMLSpanElement>
@@ -31,6 +30,16 @@ interface SeverityPillProps {
 export function SeverityPill ({ severity }: SeverityPillProps) {
   return (
     <UI.Pill type={severity}>{severity}</UI.Pill>
+  )
+}
+
+interface ColorPillProps {
+  color: string
+  value: string
+}
+export function ColorPill ({ color, value }: ColorPillProps) {
+  return (
+    <UI.Pill type='color' color={color}>{value}</UI.Pill>
   )
 }
 

@@ -65,11 +65,11 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
         { enableUploadLimit
           ? <Form.Item
             name={[...inputName, 'uplinkLimit']}
+            initialValue={DEFAULT_VALUE}
             children={
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={DEFAULT_VALUE}
                 step={1}
                 min={1}
                 max={200}
@@ -106,11 +106,11 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
         { enableDownloadLimit
           ? <Form.Item
             name={[...inputName, 'downlinkLimit']}
+            initialValue={DEFAULT_VALUE}
             children={
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={DEFAULT_VALUE}
                 step={1}
                 min={1}
                 max={200}
@@ -137,6 +137,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
             }))
           } }
         ]}
+        children={<></>}
       />
     </div>
   )

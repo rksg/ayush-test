@@ -6,8 +6,8 @@ import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
-import { mockEdgeDhcpHostStats }                       from '../../__tests__/fixtures'
+import { mockDhcpPoolStatsData, mockEdgeDhcpData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { mockEdgeDhcpHostStats }                                         from '../../__tests__/fixtures'
 
 import { EdgeDhcp } from '.'
 
@@ -48,6 +48,10 @@ describe('Edge DHCP no initial data', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
       )
     )
   })
@@ -96,6 +100,10 @@ describe('Edge DHCP', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
       )
     )
   })

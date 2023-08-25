@@ -10,10 +10,10 @@ import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
-import { ClientAdmissionControl } from './ClientAdmissionControl'
-import { ExternalAntennaSection } from './ExternalAntennaSection'
-import { LoadBalancing }          from './LoadBalancing'
-import { RadioSettings }          from './RadioSettings'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
+import { ExternalAntennaSection }         from './ExternalAntennaSection'
+import { LoadBalancing }                  from './LoadBalancing'
+import { RadioSettings }                  from './RadioSettings'
 
 export function RadioTab () {
   const { $t } = useIntl()
@@ -75,7 +75,7 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        <ClientAdmissionControl />
+        <ClientAdmissionControlSettings />
       </>
     )
   }]: []),
@@ -156,7 +156,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} offsetTop={275} />
+        <AnchorLayout items={anchorItems} offsetTop={56} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

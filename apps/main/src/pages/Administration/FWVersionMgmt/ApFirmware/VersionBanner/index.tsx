@@ -1,29 +1,36 @@
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
 
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
-  useGetLatestFirmwareListQuery
+  useGetAvailableABFListQuery
 } from '@acx-ui/rc/services'
 import {
   firmwareTypeTrans,
-  FirmwareVersion,
-  FirmwareVenueVersion,
   FirmwareCategory,
   ABFVersion
 } from '@acx-ui/rc/utils'
 
+import { compareVersions }  from '../../FirmwareUtils'
 import * as UI              from '../../styledComponents'
 import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  const versions = getReleaseFirmware(latestReleaseVersions)
-  const firmware = versions[0]
+  const { latestActiveVersions } = useGetAvailableABFListQuery({}, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        latestActiveVersions: data
+          ? data
+            .filter(abfVersion => abfVersion.abf === 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+          : []
+      }
+    }
+  })
+  const firmware = getRecommendedFirmware(latestActiveVersions)[0]
   const { latestEolVersionByABFs } = useApEolFirmware()
 
   if (!firmware) return null
@@ -53,11 +60,11 @@ export const VersionBanner = () => {
 
 export default VersionBanner
 
-const categoryIsReleaseFunc = ((lv : FirmwareVersion | FirmwareVenueVersion) =>
-  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
-
-function getReleaseFirmware (firmwareVersions: FirmwareVersion[] = []): FirmwareVersion[] {
-  return firmwareVersions.filter(categoryIsReleaseFunc)
+function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []): ABFVersion[] {
+  return firmwareVersions.filter((abf: ABFVersion) => {
+    // eslint-disable-next-line max-len
+    return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
+  })
 }
 
 interface FirmwareBannerProps {
@@ -65,8 +72,8 @@ interface FirmwareBannerProps {
   firmware: {
     name: string
     category: FirmwareCategory
-    onboardDate?: string
     createdDate?: string
+    releaseDate?: string
   }
 }
 
@@ -74,7 +81,7 @@ const FirmwareBanner = (props: FirmwareBannerProps) => {
   const { $t } = useIntl()
   const transform = firmwareTypeTrans($t)
   const { label, firmware } = props
-  const onboardDate = firmware.onboardDate ?? firmware.createdDate
+  const releaseDate = firmware.releaseDate ?? firmware.createdDate
 
   return (
     <UI.FwContainer>
@@ -87,7 +94,7 @@ const FirmwareBanner = (props: FirmwareBannerProps) => {
           <span>{transform(firmware.category, 'type')} </span>
           <span>({transform(firmware.category, 'subType')})</span>
         </div>
-        {onboardDate && formatter(DateFormatEnum.DateFormat)(onboardDate)}
+        {releaseDate && formatter(DateFormatEnum.DateFormat)(releaseDate)}
       </UI.TypeSpace>
     </UI.FwContainer>
   )
