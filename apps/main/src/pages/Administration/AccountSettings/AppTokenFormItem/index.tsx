@@ -190,8 +190,9 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             title: title,
             content: $t({
               defaultMessage: `
-              Revoke "{formattedName}" will suspend all its services,
-                are you sure you want to proceed?
+              You are about to revoke access for the "{formattedName}" application.
+              This will prevent the application from accessing your data and performing 
+              actions on your behalf
               `
             }, { formattedName: rows[0].name }),
             okText: $t({ defaultMessage: 'Revoke' }),
@@ -219,31 +220,40 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           return false
         },
         onClick: (rows, clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Activate application "{formattedName}"?' },
-            { formattedName: rows[0].name }
-          )
+          const payload: TenantAuthentications = {
+            name: rows[0].name,
+            authenticationType: rows[0].authenticationType,
+            clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+          }
+          updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+            payload: payload })
+            .then(clearSelection)
+          reloadAuthTable(2)
+          // const title = $t(
+          //   { defaultMessage: 'Activate application "{formattedName}"?' },
+          //   { formattedName: rows[0].name }
+          // )
 
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t(
-              { defaultMessage: 'Activate this application "{formattedName}"?' },
-              { formattedName: rows[0].name }
-            ),
-            okText: $t({ defaultMessage: 'Activate' }),
-            onOk: () => {
-              const payload: TenantAuthentications = {
-                name: rows[0].name,
-                authenticationType: rows[0].authenticationType,
-                clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
-              }
-              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-                payload: payload })
-                .then(clearSelection)
-              reloadAuthTable(2)
-            }
-          })
+          // showActionModal({
+          //   type: 'confirm',
+          //   title: title,
+          //   content: $t(
+          //     { defaultMessage: 'Activate this application "{formattedName}"?' },
+          //     { formattedName: rows[0].name }
+          //   ),
+          //   okText: $t({ defaultMessage: 'Activate' }),
+          //   onOk: () => {
+          //     const payload: TenantAuthentications = {
+          //       name: rows[0].name,
+          //       authenticationType: rows[0].authenticationType,
+          //       clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+          //     }
+          //     updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+          //       payload: payload })
+          //       .then(clearSelection)
+          //     reloadAuthTable(2)
+          //   }
+          // })
         }
       },
       {

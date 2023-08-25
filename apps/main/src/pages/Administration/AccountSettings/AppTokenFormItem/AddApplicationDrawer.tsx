@@ -95,6 +95,8 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   }))
 
   const initClientId = editData?.clientID || generateHexKey(32)
+  const initClientSecret = editData?.clientSecret || generateHexKey(32)
+
   const formContent = <Form layout='vertical'form={form} >
     <Form.Item
       name='name'
@@ -126,7 +128,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     <Form.Item
       name='secret'
       label={$t({ defaultMessage: 'Client secret' })}
-      initialValue={editData?.clientSecret || ''}
+      initialValue={initClientSecret}
       rules={[
         { required: true },
         { validator: (_, value) =>
@@ -140,7 +142,10 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
         }
         },
         { validator: (_, value) => excludeSpaceRegExp(value) },
-        { validator: (_, value) => notAllDigitsRegExp(value) }
+        { validator: (_, value) => notAllDigitsRegExp(value),
+          message: $t({ defaultMessage:
+            'Secret must include letters or special characters; numbers alone are not accepted.' })
+        }
       ]}
       children={<PasswordInput />}
     />
@@ -165,7 +170,12 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       style={{ marginTop: '13px' }}
       label={$t({ defaultMessage: 'Scope' })}
       initialValue={editData?.scopes || ''}
-      rules={[{ required: true }]}
+      rules={[
+        { required: true,
+          message: $t({ defaultMessage:
+            'Please select the scope (role) to apply to this application' })
+        }
+      ]}
     >
       <Select
         options={rolesList}

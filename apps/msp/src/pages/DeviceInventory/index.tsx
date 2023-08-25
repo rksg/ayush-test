@@ -104,6 +104,7 @@ export function DeviceInventory () {
       'name',
       'deviceStatus'
     ],
+    pageSize: 10000,
     searchTargetFields: ['apMac','switchMac','serialNumber'],
     filters: {}
   }
