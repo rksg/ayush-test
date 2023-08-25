@@ -25,7 +25,7 @@ describe('Dashboard', () => {
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
     expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
-    expect(await screen.findByTestId('NetworkHistoryWidget')).toBeVisible()
+    expect(await screen.findByTestId('NetworkHistory')).toBeVisible()
   })
 
   describe('useMonitorHeight', () => {

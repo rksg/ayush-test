@@ -73,7 +73,7 @@ describe('NetworkHistoryWidget', () => {
   })
   it('should render chart without lengends', async () => {
     const { asFragment } = render(
-      <NetworkHistory hideLegends filters={filters}/>, { wrapper: Provider })
+      <NetworkHistory hideLegend filters={filters}/>, { wrapper: Provider })
     // eslint-disable-next-line testing-library/no-node-access
     await waitFor(() => {
       expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
