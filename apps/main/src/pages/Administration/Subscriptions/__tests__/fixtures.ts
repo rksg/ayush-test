@@ -54,6 +54,18 @@ export const mockedEtitlementsList =
       lastNotificationDate: null,
       quantity: 50,
       sku: ''
+    },
+    {
+      name: 'Device',
+      deviceType: 'APSW',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889506-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 30,
+      sku: '',
+      assignedLicense: true
     }
   ]
 
