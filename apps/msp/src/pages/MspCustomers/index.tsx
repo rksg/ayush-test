@@ -496,22 +496,10 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length >= 1)
+          const len = selectedRows.length
+          return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
-          if (selectedRows.length > MAX_ALLOWED_SELECTED_EC) {
-            const title = $t({ defaultMessage: 'Max numbers of EC selection exceeded' })
-            const msg = $t(
-              { defaultMessage: 'Maximum number of selected EC is {value}' },
-              { value: MAX_ALLOWED_SELECTED_EC }
-            )
-            showActionModal({
-              type: 'info',
-              title,
-              content: msg
-            })
-            return
-          }
           const selectedEcIds = selectedRows.map(item => item.id)
           setSelEcTenantIds(selectedEcIds)
           setDrawerAssignEcMspAdminsVisible(true)
