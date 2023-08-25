@@ -55,7 +55,7 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
 
   /* eslint-disable max-len */
   return (
-    <Form.Item data-testid='bypasscna-fullblock'>
+    <div style={{ display: 'flex', marginTop: '10px', marginBottom: '10px' }} data-testid='bypasscna-fullblock'>
       <Form.Item
         name={['wlan', 'bypassCNA']}
         noStyle
@@ -75,6 +75,6 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
         placement='bottom'>
         <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
-    </Form.Item>
+    </div>
   )
 }
