@@ -139,11 +139,10 @@ describe('Add Application Drawer', () => {
     expect(screen.getByText('Add API Token')).toBeVisible()
     const input = screen.getByLabelText('Client secret')
     fireEvent.change(input, { target: { value: '1' } })
-    /* eslint-disable max-len */
-    expect(await screen.findByText('Secret must include letters or special characters; numbers alone are not accepted.')).toBeVisible()
+    expect(await screen.findByText('Cannot be composed of ALL digits, e.g., 12345')).toBeVisible()
     fireEvent.change(input, { target: { value: '1A' } })
     await waitFor(() => {
-      expect(screen.queryByText('Secret must include letters or special characters; numbers alone are not accepted.')).toBeNull()
+      expect(screen.queryByText('Cannot be composed of ALL digits, e.g., 12345')).toBeNull()
     })
     fireEvent.change(input, { target: { value: '1A ' } })
     expect(await screen.findByText('Cannot contain space')).toBeVisible()
@@ -169,8 +168,7 @@ describe('Add Application Drawer', () => {
     fireEvent.change(input, { target: { value: 'test' } })
     await userEvent.click(screen.getByRole('button', { name: 'Generate Secret' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    /* eslint-disable max-len */
-    expect( await screen.findByText('Please select the scope (role) to apply to this application')).toBeVisible()
+    expect(await screen.findByText('Please enter Scope')).toBeVisible()
     expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
   })
   it('should generate client secret correctly', async () => {
