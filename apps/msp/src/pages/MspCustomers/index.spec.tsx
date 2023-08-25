@@ -73,7 +73,28 @@ const list = {
     {
       assignedMspEcList: [],
       creationDate: '1659589676050',
-      entitlements: [],
+      entitlements: [
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '5',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        },
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '0',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
       id: '701fe9df5f6b4c17928a29851c07cc06',
       integrator: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
@@ -81,6 +102,33 @@ const list = {
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 333',
+      status: 'Inactive',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_EC',
+      wifiLicenses: 0
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589676050',
+      entitlements: [
+        {
+          consumed: '0',
+          entitlementDeviceType: 'APSW',
+          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDateTs: '1667372399000',
+          quantity: '0',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc07',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
+      id: '701fe9df5f6b4c17928a29851c07cc07',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'ec 444',
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
@@ -217,6 +265,51 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(await screen.findByText('My Customers')).toBeVisible()
+  })
+  it('should render correctly when feature flag turned on', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    expect(screen.getByText('Installed Devices')).toBeVisible()
+    expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
+
+    expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
+  })
+  it('should render correctly when feature flag turned off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
+    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
+    expect(screen.getByText('Switch Licenses')).toBeVisible()
+    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
+    expect(screen.getByText('Active From')).toBeVisible()
+    expect(screen.getByText('Service Expires On')).toBeVisible()
+    expect(screen.queryByText('Tenant ID')).toBeNull()
+
+    expect(screen.queryByText('Installed Devices')).toBeNull()
+    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
   })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -586,5 +679,25 @@ describe('MspCustomers', () => {
     const row2 = await screen.findByRole('row', { name: /ec 222/i })
     expect(within(row2).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
       .toBeNull()
+  })
+  it('should navigate correctly for non-support var user', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: { tenantType: AccountType.VAR } }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/varCustomers`,
+      hash: '',
+      search: ''
+    }, { replace: true })
   })
 })
