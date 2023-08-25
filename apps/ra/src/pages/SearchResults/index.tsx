@@ -15,7 +15,7 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 const params = {
   start: moment().subtract(1, 'days').seconds(0).format(),
   end: moment().format(),
-  limit: 10
+  limit: 100
 }
 
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
