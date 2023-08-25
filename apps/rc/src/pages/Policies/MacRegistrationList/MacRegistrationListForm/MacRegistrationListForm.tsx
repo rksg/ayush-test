@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -46,7 +46,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   useEffect(() => {
     if (data && editMode) {
@@ -124,7 +123,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         title={editMode
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
           {
             text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
@@ -132,12 +131,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
           },
           { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
             link: tablePath }
-        ] : [{
-          text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },
-        { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
-          link: tablePath }
         ]}
       />}
       <StepsFormLegacy<MacRegistrationPoolFormFields>

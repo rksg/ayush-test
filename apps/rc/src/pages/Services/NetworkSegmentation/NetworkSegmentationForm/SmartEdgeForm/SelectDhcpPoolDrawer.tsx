@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Divider, Form, Row } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { Button, Drawer, StepsFormLegacy, Subtitle } from '@acx-ui/components'
@@ -106,7 +107,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const addPool = async (data: EdgeDhcpPool) => {
     const pathParams = { id: props.dhcpId }
-    const payload = { dhcpPools: [...(pools || []), data] }
+    const payload = _.cloneDeep({ dhcpPools: [...(pools || []), data] })
 
     // should not create service with UI used id
     payload.dhcpPools.forEach(item => {
