@@ -94,7 +94,9 @@ export enum Features {
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
-  WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle'
+  WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
+  DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
