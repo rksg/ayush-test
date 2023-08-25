@@ -229,7 +229,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                       children={$t({ defaultMessage: 'Upload Limit' })}
                       disabled={isNotWPA3(wlanData)} />
                     { isNotWPA3(wlanData) && <Tooltip.Question
-                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption." Similiar to the "MLO.' })}
+                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
                       placement='right'
                       iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} /> }
                     </>
@@ -248,7 +248,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
                       children={$t({ defaultMessage: 'Download Limit' })}
                       disabled={isNotWPA3(wlanData)} />
                     { isNotWPA3(wlanData) && <Tooltip.Question
-                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption." Similiar to the "MLO.' })}
+                      title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
                       placement='right'
                       iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} /> }
                     </>
