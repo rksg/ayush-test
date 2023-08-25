@@ -238,7 +238,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { results.data?.aps.length &&
             <Panel
               key='aps'
-              header={`APs (${results.data?.aps.length})`}>
+              header={`${$t({ defaultMessage: 'APs' })} (${results.data?.aps.length})`}>
               <Table<AP>
                 columns={apTablecolumnHeaders}
                 dataSource={results.data?.aps as unknown as AP[]}
@@ -249,7 +249,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { results.data?.clients.length &&
             <Panel
               key='clients'
-              header={`Clients (${results.data?.clients.length})`}>
+              header={`${$t({ defaultMessage: 'Clients' })} (${results.data?.clients.length})`}>
               <Table<Client>
                 columns={clientTablecolumnHeaders}
                 dataSource={results.data?.clients as unknown as Client[]}
@@ -260,7 +260,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { results.data?.switches.length &&
             <Panel
               key='switches'
-              header={`Switches (${results.data?.switches.length})`}>
+              header={`${$t({ defaultMessage: 'Switches' })} (${results.data?.switches.length})`}>
               <Table<Switch>
                 columns={switchTablecolumnHeaders}
                 dataSource={results.data?.switches as unknown as Switch[]}
@@ -271,7 +271,11 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { results.data?.networkHierarchy.length &&
             <Panel
               key='networkHierarchy'
-              header={`Network Hierarchy (${results.data?.networkHierarchy.length})`}>
+              header={
+                `${$t({
+                  defaultMessage: 'Network Hierarchy'
+                })} (${results.data?.networkHierarchy.length})`
+              }>
               <Table<NetworkHierarchy>
                 columns={networkHierarchyTablecolumnHeaders}
                 dataSource={results.data?.networkHierarchy as unknown as NetworkHierarchy[]}
