@@ -50,10 +50,10 @@ export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
     line-height: var(--acx-subtitle-5-line-height);
   }
 `
-export const AnchorLayoutSidebar = styled(Col)`
+export const AnchorLayoutSidebar = styled(Col)<{ $offsetTop?: number }>`
   > div > [aria-hidden] + .ant-affix {
     position: fixed;
-    top: calc(
+    top: calc(${props => props.$offsetTop || 0}px +
       var(--acx-header-height) +
       var(--acx-content-vertical-space) +
       var(--acx-pageheader-height) +
@@ -67,7 +67,7 @@ export const AnchorLayoutSidebar = styled(Col)`
 `
 
 export const Container = styled.div`
-  margin: 12px 0 48px;
+  margin: 12px 0 60px;
   &:last-child{
     min-height: 100vh;
   }

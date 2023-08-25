@@ -18,14 +18,13 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
-export const AnchorLayout = ({ items, offsetTop } : {
+export const AnchorLayout = ({ items, offsetTop = 0 } : {
   items: AnchorPageItem[],
   offsetTop?: number
 }) => {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
   const location = useLocation()
-  offsetTop = offsetTop || getTopWithPageheaderTab()
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -42,10 +41,9 @@ export const AnchorLayout = ({ items, offsetTop } : {
   }, [])
 
   return <Row gutter={20}>
-    <AnchorLayoutSidebar span={4}>
+    <AnchorLayoutSidebar span={4} $offsetTop={offsetTop}>
       <Anchor ref={anchorRef}
-        offsetTop={offsetTop}
-        targetOffset={offsetTop + 12}
+        offsetTop={offsetTop + getTopWithPageheaderTab()}
         onClick={(e) => handleClick(e)}
         $customType='layout'>
         {items.map(item => {
