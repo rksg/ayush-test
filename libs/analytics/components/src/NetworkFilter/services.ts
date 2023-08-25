@@ -167,11 +167,16 @@ export const useHierarchyQuery = (
   const buildIncidentMap = (incidentList: IncidentTableRow[] | undefined) => {
     const mapper: Record<string, IncidentMap> = {}
     if (!incidentList) return mapper
-    incidentList?.forEach(({ path, severityLabel }) => {
+    incidentList?.forEach(({ path, severityLabel, sliceType, sliceValue }) => {
       let currMapper = mapper
       let copyPath = [...path]
       if (path.map(({ type }) => type).includes('system')) {
-        copyPath = [path[0], { name: 'Administration Domain', type: 'domain' } , ...path.slice(1)]
+        copyPath = [
+          path[0],
+          { name: 'Administration Domain', type: 'domain' },
+          ...path.slice(1),
+          { name: sliceValue, type: sliceType }
+        ]
       }
       for (let { name } of copyPath) {
         if (!currMapper[name]) {
@@ -206,7 +211,6 @@ export const useHierarchyQuery = (
   }
 
   const traverseHierarchy = (origin: NetworkNode, incidentMap: Record<string, IncidentMap>) => {
-    if (!origin) return {} as unknown as NetworkNode & IncidentPriority
     const stack: NetworkNode[] = []
     const root: NetworkNode = JSON.parse(JSON.stringify(origin))
     stack.push(root)
@@ -219,7 +223,7 @@ export const useHierarchyQuery = (
       const incidentsStats = parentKey
         ? get(incidentMap, [...parentKey, key])
         : incidentMap[key]
-      if (node && incidentsStats) {
+      if (includeIncidents && node && incidentsStats) {
         const newNode = {
           ...node,
           ...omit(incidentsStats, 'children'),
@@ -231,7 +235,6 @@ export const useHierarchyQuery = (
         function elemPushHelper (
           elem: NetworkNode | undefined
         ) {
-          if (!elem) return
           let typedNodes = elem as unknown as NetworkNode[]
           if (typedNodes.length > 0) {
             typedNodes = typedNodes.map((val) => {
@@ -252,7 +255,7 @@ export const useHierarchyQuery = (
               ? [...parentKey, key, 'children']
               : [key, 'children']
           }
-          stack.push(item)
+          stack.push(item! as NetworkNode)
           return item
         }
         node.children = node.children?.map(elemPushHelper) as NetworkNode[]
@@ -270,7 +273,10 @@ export const useHierarchyQuery = (
         const switches = switchHierarchy?.map(sw => traverseHierarchy(sw, incidentMap))
         return {
           ...rest,
-          data: { network: { apHierarchy: aps, switchHierarchy: switches } } }
+          data: { network: {
+            apHierarchy: aps,
+            switchHierarchy: switches
+          } } }
       }
     }
   )
