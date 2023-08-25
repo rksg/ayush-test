@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
@@ -146,6 +147,18 @@ export class OpenWlanAdvancedCustomization {
 
   enableAdditionalRegulatoryDomains?: boolean
 
+  wifi6Enabled?: boolean
+
+  wifi7Enabled?: boolean
+
+  multiLinkOperationEnabled?: boolean
+
+  multiLinkOperationOptions?: MultiLinkOperationOptions
+
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
@@ -257,6 +270,16 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastDownlinkRateLimiting6G = false
 
     this.enableAdditionalRegulatoryDomains = true
+
+    this.wifi6Enabled = true
+
+    this.wifi7Enabled = true
+
+    this.multiLinkOperationEnabled = false
+
+    this.qosMirroringEnabled = true
+
+    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
 
     this.qosMapSetEnabled = false
 
