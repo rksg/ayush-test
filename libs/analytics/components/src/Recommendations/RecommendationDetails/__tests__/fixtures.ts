@@ -403,7 +403,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
     channelMode: 'CHANNEL_FLY',
     channelWidth: '_AUTO',
     radio: '5',
-    autoCellSizing: true
+    autoCellSizing: 'true'
   }],
   recommendedValue: {
     recommended: 'crrm',

@@ -43,7 +43,7 @@ describe('Recommendation services', () => {
 > EDU-MeshZone_S12348 (Venue)`,
       status: 'Applied',
       statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
-      summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
+      summary: 'Optimal Ch/Width and Tx power found for 5 Ghz radio',
       type: 'Venue',
       statusEnum: 'applied'
     }, {

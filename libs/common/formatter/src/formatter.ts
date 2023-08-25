@@ -292,14 +292,14 @@ const crrmText = (value: CrrmTextType) => {
   } else {
     const { txPowerAPCount } = value
     // eslint-disable-next-line max-len
-    return $t({ defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection with {txPowerAPCountText}' }, {
+    return $t({ defaultMessage: 'AI-Driven RRM for channel and bandwidth plan with {txPowerAPCountText}' }, {
       txPowerAPCountText: txPowerAPCount
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: `static AP transmit power and lower AP transmit power in {txPowerAPCount} {txPowerAPCount, plural,
+        ? $t({ defaultMessage: `static and reduced AP Tx power in {txPowerAPCount} {txPowerAPCount, plural,
             one {AP}
             other {APs}
           }` }, { txPowerAPCount })
-        : $t({ defaultMessage: 'no change in AP transmit power' })
+        : $t({ defaultMessage: 'no change in AP Tx power' })
     })
   }
 }

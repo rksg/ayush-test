@@ -360,7 +360,7 @@ describe('formatter', () => {
     it('should return correct value for string', () => {
       const test_auto = formatter('crrmFormat')('Auto')
       expect(test_auto)
-        .toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection')
+        .toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx power')
     })
 
     it('should return correct value for crrm object', () => {
@@ -491,9 +491,9 @@ describe('formatter', () => {
       expect(formatter('crrmFormat')(config5gDualUpperDiff)).toBe('Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on')
     })
     it('returns txPower texts', () => {
-      expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len
-      expect(formatter('crrmFormat')({ txPowerAPCount: 1 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 1 AP') // eslint-disable-line max-len
-      expect(formatter('crrmFormat')({ txPowerAPCount: 2 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 2 APs') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({})).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx power') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 1 })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx power in 1 AP') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 2 })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx power in 2 APs') // eslint-disable-line max-len
     })
   })
 
