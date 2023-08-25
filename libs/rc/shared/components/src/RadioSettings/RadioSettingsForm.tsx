@@ -5,7 +5,7 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { useIntl }                                            from 'react-intl'
 
-import { cssStr }                 from '@acx-ui/components'
+import { cssStr, Tooltip }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationOutlined }    from '@acx-ui/icons'
 
@@ -224,16 +224,25 @@ export function RadioSettingsForm (props:{
 
         {multicastRateLimitFlag && <>
           <FieldLabel width='175px'>
-            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Space>
+              {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+              <Tooltip.Question
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
             <Form.Item
               name={enableMulticastRateLimitingFieldName}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
             >
-              {!isUseVenueSettings ? (
-                <Switch
-                  disabled={disabled}
+              { isUseVenueSettings && !(form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)) ?
+                <span>OFF</span>
+                : <Switch
+                  disabled={disabled || isUseVenueSettings}
+                  defaultChecked={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
                   onChange={function (checked: boolean) {
                     if (!checked) {
                       form.setFieldValue(
@@ -242,7 +251,7 @@ export function RadioSettingsForm (props:{
                         enableUploadLimitFieldName, false)
                     }
                   }} />
-              ) : <span>ON</span>}
+              }
             </Form.Item>
           </FieldLabel>
 
