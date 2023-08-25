@@ -10,7 +10,7 @@ import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { QosMapSetFrom } from './QosMapSetFrom'
+import { QosMapSetForm } from './QosMapSetForm'
 
 describe('QosMapSetFrom', () => {
   it('Test case for Qos Map Set Enabled', async ()=> {
@@ -20,7 +20,7 @@ describe('QosMapSetFrom', () => {
     render(
       <Provider>
         <Form>
-          <QosMapSetFrom/>
+          <QosMapSetForm/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -35,7 +35,7 @@ describe('QosMapSetFrom', () => {
     render(
       <Provider>
         <Form>
-          <QosMapSetFrom/>
+          <QosMapSetForm/>
         </Form>
       </Provider>,
       { route: { params } })
