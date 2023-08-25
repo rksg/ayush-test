@@ -111,6 +111,9 @@ describe('Network More settings - Vlan Tab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const network = {
       type: NetworkTypeEnum.CAPTIVEPORTAL,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      },
       wlan: {
         bypassCPUsingMacAddressAuthentication: true
       }
