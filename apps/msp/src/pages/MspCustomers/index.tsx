@@ -118,14 +118,11 @@ export function MspCustomers () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
 
-  // const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
-  // const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  // const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -477,7 +474,6 @@ export function MspCustomers () {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       }
     })
-
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
@@ -485,7 +481,6 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          // setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
           navigate({
             ...basePath,

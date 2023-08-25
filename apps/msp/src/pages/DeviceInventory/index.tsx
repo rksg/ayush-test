@@ -277,7 +277,8 @@ export function DeviceInventory () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Device Inventory' })}
+        title={$t({ defaultMessage: 'Device Inventory ({count})' },
+          { count: list?.totalCount || 0 })}
         extra={
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
