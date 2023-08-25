@@ -95,6 +95,8 @@ export enum Features {
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
+  DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle'
 }
 
