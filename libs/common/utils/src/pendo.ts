@@ -11,21 +11,22 @@ export type PendoParameters = {
   visitor: {
     id: string
     full_name: string
-    username: string
+    username?: string
     email: string
     role: string
     region: string
     version: string
     support: boolean
-    dogfood: boolean
+    dogfood?: boolean
     delegated: boolean
-    var: boolean
+    var?: boolean
     varTenantId: string
   },
   account: {
-    productName: 'RuckusOne' | 'RuckusAi'
+    productName: 'RuckusOne' | 'RuckusAI'
     id: string
     name: string
+    isTrial?: boolean
   }
 }
 
