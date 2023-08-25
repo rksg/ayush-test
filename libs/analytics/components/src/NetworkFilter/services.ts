@@ -171,15 +171,18 @@ export const useHierarchyQuery = (
       let currMapper = mapper
       let copyPath = [...path]
       if (path.map(({ type }) => type).includes('system')) {
-        copyPath = [path[0], { name: 'Administration Domain', type: 'domain' }, ...path.slice(1)]
+        copyPath = [path[0], { name: 'Administration Domain', type: 'domain' } , ...path.slice(1)]
       }
       for (let { name } of copyPath) {
         if (!currMapper[name]) {
           currMapper[name] = createIncidentNode()
         }
         currMapper[name][severityLabel as keyof Omit<IncidentMap, 'children'>] += 1
-        currMapper[name].children = createIncidentNode()
-        currMapper = currMapper[name].children as unknown as typeof mapper
+        if (!currMapper[name].children) {
+          currMapper[name].children =
+              createIncidentNode() as unknown as IncidentHierarchy<IncidentPriority>
+        }
+        currMapper = currMapper[name].children as unknown as Record<string, IncidentMap>
       }
     })
     return mapper
