@@ -19,6 +19,30 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                AI Analytics
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/undefined/t/analytics/incidents"
                 >
@@ -145,7 +169,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__FixedAutoSizer-sc-sbdzeb-0 dpGfEK"
+            class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
@@ -549,7 +573,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 iGKJsl"
+                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"

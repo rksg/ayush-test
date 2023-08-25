@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useGetMacRegListQuery }  from '@acx-ui/rc/services'
+import { Button, PageHeader }    from '@acx-ui/components'
+import { useGetMacRegListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -17,7 +16,6 @@ import MacRegistrationListTabs from './MacRegistrationListTabs'
 function MacRegistrationListPageHeader () {
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
 
@@ -26,22 +24,13 @@ function MacRegistrationListPageHeader () {
   return (
     <PageHeader
       title={macRegistrationListQuery.data?.name || ''}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         },
         { text: $t({ defaultMessage: 'MAC Registration Lists' }),
-          link: tablePath
-        }
-      ] : [
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },
-        {
-          text: $t({ defaultMessage: 'MAC Registration Lists' }),
           link: tablePath
         }
       ]}

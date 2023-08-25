@@ -10,7 +10,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskFormFields,
@@ -44,7 +43,6 @@ export default function DpskForm (props: DpskFormProps) {
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
@@ -90,14 +88,9 @@ export default function DpskForm (props: DpskFormProps) {
           ? $t({ defaultMessage: 'Edit DPSK Service' })
           : $t({ defaultMessage: 'Add DPSK Service' })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DPSK' }),
-            link: tablePath
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'DPSK' }),
             link: tablePath
