@@ -57,9 +57,9 @@ const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
 }
 
-const transformApUtilization = (row: MspEc) => {
+const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+    en.entitlementDeviceType === deviceType)
   if (entitlement.length > 0) {
     const apEntitlement = entitlement[0]
     const quantity = parseInt(apEntitlement.quantity, 10)
@@ -113,9 +113,9 @@ export function MspCustomers () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -366,47 +366,67 @@ export function MspCustomers () {
         )
       }
     }]),
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicense',
-      key: 'wifiLicense',
-      align: 'center',
-      sorter: true,
-      render: function (_, row) {
-        return transformApEntitlement(row)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return row.apswLicenses || 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformUtilization(row, EntitlementNetworkDeviceType.APSW)
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      align: 'center',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      render: function (_, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicense',
-      align: 'center',
-      key: 'switchLicense',
-      sorter: true,
-      render: function (_, row) {
-        return transformSwitchEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'SmartEdge Licenses' }),
-      dataIndex: 'edgeLicenses',
-      align: 'center',
-      key: 'edgeLicenses',
-      sorter: true,
-      show: edgeEnabled,
-      render: function (_, row) {
-        return row?.edgeLicenses ? row?.edgeLicenses : 0
-      }
-    },
+    ] : [
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'wifiLicense',
+        key: 'wifiLicense',
+        // align: 'center',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformApEntitlement(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+        dataIndex: 'wifiLicensesUtilization',
+        // align: 'center',
+        key: 'wifiLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchLicense',
+        // align: 'center',
+        key: 'switchLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformSwitchEntitlement(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'SmartEdge Licenses' }),
+        dataIndex: 'edgeLicenses',
+        // align: 'center',
+        key: 'edgeLicenses',
+        sorter: true,
+        show: edgeEnabled,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return row?.edgeLicenses ? row?.edgeLicenses : 0
+        }
+      }]),
     {
       title: $t({ defaultMessage: 'Active From' }),
       dataIndex: 'creationDate',
@@ -633,9 +653,7 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

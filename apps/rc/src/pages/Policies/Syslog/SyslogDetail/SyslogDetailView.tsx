@@ -9,7 +9,6 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
 import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
 import { getPolicyDetailsLink, PolicyOperation }                                                           from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                      from '@acx-ui/react-router-dom'
@@ -25,7 +24,6 @@ const SyslogDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
 
@@ -33,7 +31,7 @@ const SyslogDetailView = () => {
     <SyslogDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -43,10 +41,7 @@ const SyslogDetailView = () => {
             text: $t({ defaultMessage: 'Syslog Server' }),
             link: tablePath
           }
-        ] : [{
-          text: $t({ defaultMessage: 'Syslog' }),
-          link: tablePath
-        }]}
+        ]}
         extra={policyName !== SyslogConstant.DefaultProfile ? filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.SYSLOG,

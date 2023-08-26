@@ -25,7 +25,7 @@ const validatorMap: { [key in DHCP_OPTION_TYPE]: Rule[] } = {
   ],
   IP: [
     { required: true },
-    { validator: (_, value) => serverIpAddressRegExp(value) }
+    { validator: (_, value) => dhcpOptionIpsValidation(value) }
   ],
   INTEGER: [
     { required: true },
@@ -35,6 +35,20 @@ const validatorMap: { [key in DHCP_OPTION_TYPE]: Rule[] } = {
     { required: true },
     { type: 'enum', enum: ['0', '1'] }
   ]
+}
+
+export async function dhcpOptionIpsValidation (value: string) {
+  if (value) {
+    const ipArray = value.split(' ')
+    for (let ip of ipArray) {
+      try {
+        await serverIpAddressRegExp(ip)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+  }
+  return Promise.resolve()
 }
 
 export function DhcpOptionModal (props: {
