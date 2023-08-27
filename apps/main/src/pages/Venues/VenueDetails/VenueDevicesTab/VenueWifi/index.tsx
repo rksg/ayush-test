@@ -219,15 +219,6 @@ export function VenueWifi () {
 
   return (
     <IconThirdTab>
-      <Tabs.TabPane key='overview'
-        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
-          <LineChartOutline />
-        </Tooltip>}>
-        <EmbeddedReport
-          reportName={ReportType.ACCESS_POINT}
-          rlsClause={`"zoneName" in ('${params?.venueId}')`}
-        />
-      </Tabs.TabPane>
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
@@ -246,6 +237,15 @@ export function VenueWifi () {
         </Tooltip>}>
         <VenueMeshApsTable />
       </Tabs.TabPane>}
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
+        <EmbeddedReport
+          reportName={ReportType.ACCESS_POINT}
+          rlsClause={`"zoneName" in ('${params?.venueId}')`}
+        />
+      </Tabs.TabPane>
     </IconThirdTab>
   )
 }

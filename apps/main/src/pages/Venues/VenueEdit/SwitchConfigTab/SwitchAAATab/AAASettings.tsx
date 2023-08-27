@@ -5,8 +5,7 @@ import {
   Form,
   Popconfirm,
   Select,
-  Switch,
-  Transfer
+  Switch
 } from 'antd'
 import { TransferItem } from 'antd/lib/transfer'
 import _                from 'lodash'
@@ -14,7 +13,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
-import { Loader, Fieldset }                                        from '@acx-ui/components'
+import { Loader, Fieldset, Transfer }                              from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
