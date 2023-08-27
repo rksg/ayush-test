@@ -484,7 +484,7 @@ describe('MspCustomers', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).toBeNull())
   })
-  xit('should open drawer for multi-selected rows', async () => {
+  it('should open drawer for multi-selected rows', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -509,7 +509,7 @@ describe('MspCustomers', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toBeVisible()
-    expect(screen.getByText('Assign MSP Administrators')).toBeVisible()
+    expect(screen.getAllByText('Assign MSP Administrators')).toHaveLength(2)
   })
   it('should render table for support user', async () => {
     const supportUserProfile = { ...userProfile }
