@@ -11,14 +11,14 @@ import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
 import { useNetworkSummaryInfoQuery } from './services'
 import { ReportTileWrapper, Tile }    from './styledComponents'
 
-export const ReportTile = () => {
+export const ReportTile = (props: { filter: ReturnType<typeof useAnalyticsFilter> }) => {
   const { $t } = useIntl()
 
   const [ selected, setSelected ] = useState<number>(0)
   const timer = useRef<ReturnType<typeof setInterval>>()
 
   const { startDate, endDate } = useDateFilter()
-  const { path } = useAnalyticsFilter()
+  const { path } = props.filter
   const queryResults = useNetworkSummaryInfoQuery({ path, startDate, endDate })
 
   const startTimer = useCallback((interval: number, numOfTile: number) => {

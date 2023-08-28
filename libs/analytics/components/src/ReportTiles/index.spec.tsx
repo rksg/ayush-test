@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { useAnalyticsFilter }                   from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL, store, dataApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }     from '@acx-ui/test-utils'
 
@@ -13,7 +14,11 @@ describe('ReportTile', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkInfo', { data: { network: { node: networkSummaryInfo } } })
   })
   it('should render correctly', async () => {
-    render(<ReportTile/>, {
+    render(<ReportTile
+      filter={{
+        path: [{ type: 'network', name: 'Network' }]
+      } as ReturnType<typeof useAnalyticsFilter>}
+    />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
     })
@@ -31,7 +36,11 @@ describe('ReportTile', () => {
   })
   it('should handle Tile onClick', async () => {
     const spy = jest.spyOn(global, 'setInterval')
-    render(<ReportTile/>, {
+    render(<ReportTile
+      filter={{
+        path: [{ type: 'network', name: 'Network' }]
+      } as ReturnType<typeof useAnalyticsFilter>}
+    />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
     })
