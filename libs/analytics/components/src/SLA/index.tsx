@@ -46,8 +46,8 @@ export const SLA = (props: { filters: AnalyticsFilter }) => {
   const { filters } = useAnalyticsFilter()
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
 
-  return <Card title={$t({ defaultMessage: 'SLA' })} >
-    <Loader states={[kpiThresholdsQueryResults]}>
+  return <Loader states={[kpiThresholdsQueryResults]}>
+    <Card title={$t({ defaultMessage: 'SLA' })} >
       {kpis.map((kpi, index)=>
         <SLAComponent
           key={`SLA${index}`}
@@ -55,6 +55,6 @@ export const SLA = (props: { filters: AnalyticsFilter }) => {
           threshold={thresholds[kpi as keyof KpiThresholdType]}
           filters={props.filters}
         />)}
-    </Loader>
-  </Card>
+    </Card>
+  </Loader>
 }
