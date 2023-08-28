@@ -5,7 +5,6 @@ import {
 
 export const mockFirewall = {
   id: 'mock-id',
-  tenantId: 't-id',
   serviceName: 'test',
   tags: [],
   edgeIds: [],

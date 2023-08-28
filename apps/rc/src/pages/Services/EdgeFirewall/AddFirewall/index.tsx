@@ -6,10 +6,10 @@ import { useAddEdgeFirewallMutation }                                           
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
-import FirewallForm, { filterCustomACLRules, FirewallFormEdge, FirewallFormModel, processFirewallACLPayload } from '../FirewallForm'
-import { ScopeForm }                                                                                          from '../FirewallForm/ScopeForm'
-import { SettingsForm }                                                                                       from '../FirewallForm/SettingsForm'
-import { SummaryForm }                                                                                        from '../FirewallForm/SummaryForm'
+import FirewallForm, { FirewallFormEdge, FirewallFormModel } from '../FirewallForm'
+import { ScopeForm }                                         from '../FirewallForm/ScopeForm'
+import { SettingsForm }                                      from '../FirewallForm/SettingsForm'
+import { SummaryForm }                                       from '../FirewallForm/SummaryForm'
 
 const AddFirewall = () => {
   const { $t } = useIntl()
@@ -39,10 +39,6 @@ const AddFirewall = () => {
 
   const handleFinish = async (formData: FirewallFormModel) => {
     try {
-      let statefulAcls = formData.statefulAclEnabled ? formData.statefulAcls : []
-      statefulAcls = filterCustomACLRules(statefulAcls)
-      processFirewallACLPayload(statefulAcls)
-
       const payload = {
         serviceName: formData.serviceName,
         // tags: formData.tags,
@@ -50,7 +46,7 @@ const AddFirewall = () => {
         ddosRateLimitingEnabled: formData.ddosRateLimitingEnabled,
         ddosRateLimitingRules: formData.ddosRateLimitingRules,
         statefulAclEnabled: formData.statefulAclEnabled,
-        statefulAcls: statefulAcls
+        statefulAcls: formData.statefulAcls
       }
 
       await addEdgeFirewall({ payload }).unwrap()

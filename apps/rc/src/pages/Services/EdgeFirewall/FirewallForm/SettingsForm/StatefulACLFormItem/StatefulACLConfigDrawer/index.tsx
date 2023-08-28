@@ -63,7 +63,9 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false)
   const [editMode, setEditMode] = useState<boolean>(false)
   const [editData, setEditData] = useState<StatefulAclRule>({} as StatefulAclRule)
-  const formData = form.getFieldsValue(true)
+  const direction = Form.useWatch('direction', form)
+  const rules = Form.useWatch('rules', form)
+  // const formData = form.getFieldsValue(true)
   const defaultColumns = useDefaultStatefulACLRulesColumns()
 
   const onChangeDialogVisible = (checked: boolean) => {
@@ -78,29 +80,29 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
         currentData[targetIdx] = _.merge(currentData[targetIdx], newData)
     } else {
       const lastItem = currentData.pop()
-      if (!lastItem) return
-
-      const lastPriority = lastItem.priority ?? (currentData.length + 1)
+      // rules have initialValue in add mode.
+      const lastPriority = lastItem!.priority ?? (currentData.length + 1)
       newData.priority = lastPriority
       currentData.push(newData)
-      lastItem.priority = lastPriority + 1
-      currentData.push(lastItem)
+      lastItem!.priority = lastPriority + 1
+      currentData.push(lastItem!)
     }
 
     form.setFieldValue('rules', currentData)
   }
 
   const isDefaultRule = useCallback((rule: StatefulAclRule) => {
-    const rulesAmount = formData.rules.length
+    if (!direction || !rules) return true
+    const rulesAmount = rules.length
 
     // inbound: last rule is the default rule
     // outbound: default rules are No.1 - No.3 and the last one.
     if (rule.priority === rulesAmount) {
       return true
     } else {
-      return formData.direction === ACLDirection.INBOUND ? false : Number(rule.priority) <= 3
+      return direction === ACLDirection.INBOUND ? false : Number(rule.priority) <= 3
     }
-  }, [formData])
+  }, [direction, rules])
 
   const onSortEnd = useCallback(
     ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
@@ -240,6 +242,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       />
 
       <StatefulACLRuleDialog
+        direction={direction}
         visible={dialogVisible}
         setVisible={onChangeDialogVisible}
         onSubmit={handleStatefulACLRuleSubmit}
