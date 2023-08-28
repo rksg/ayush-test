@@ -124,6 +124,8 @@ export interface UnitPersonaConfig {
 export interface PropertyUnitFormFields extends PropertyUnit {
   unitPersona?: UnitPersonaConfig,
   guestPersona?: UnitPersonaConfig,
+  enableGuestVlan?: boolean,
+  vxlan?: number,
   accessAp?: string,
   ports?: number[],
   apName?: string,
