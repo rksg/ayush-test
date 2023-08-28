@@ -59,6 +59,7 @@ describe('NetworkHistoryWidget', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(screen.getByTestId('HistoricalOutlined')).toBeVisible()
   })
   it('should render chart without title', async () => {
     const { asFragment } = render(
@@ -71,7 +72,7 @@ describe('NetworkHistoryWidget', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
-  it('should render chart without lengends', async () => {
+  it('should render chart without legend', async () => {
     const { asFragment } = render(
       <NetworkHistory hideLegend filters={filters}/>, { wrapper: Provider })
     // eslint-disable-next-line testing-library/no-node-access
@@ -79,6 +80,15 @@ describe('NetworkHistoryWidget', () => {
       expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     })
     expect(screen.queryByText('New Client Associations')).toBeNull()
+  })
+  it('should render chart without historical icon', async () => {
+    const { asFragment } = render(
+      <NetworkHistory hideLegend filters={filters} historicalIcon={false}/>, { wrapper: Provider })
+    // eslint-disable-next-line testing-library/no-node-access
+    await waitFor(() => {
+      expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    })
+    expect(screen.queryByTestId('HistoricalOutlined')).toBeNull()
   })
 })
 describe('Handle No Data', () => {
