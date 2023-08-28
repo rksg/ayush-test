@@ -5,7 +5,9 @@ import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
 
 import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
-import { Anchor, Container } from './styledComponents'
+import { cssNumber } from '../../theme/helper'
+
+import { Anchor, Container, AnchorLayoutSidebar } from './styledComponents'
 
 export { Anchor } from './styledComponents'
 
@@ -16,7 +18,7 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
-export const AnchorLayout = ({ items, offsetTop } : {
+export const AnchorLayout = ({ items, offsetTop = 0 } : {
   items: AnchorPageItem[],
   offsetTop?: number
 }) => {
@@ -39,9 +41,9 @@ export const AnchorLayout = ({ items, offsetTop } : {
   }, [])
 
   return <Row gutter={20}>
-    <Col span={4}>
+    <AnchorLayoutSidebar span={4} $offsetTop={offsetTop}>
       <Anchor ref={anchorRef}
-        offsetTop={offsetTop}
+        offsetTop={offsetTop + getTopWithPageheaderTab()}
         onClick={(e) => handleClick(e)}
         $customType='layout'>
         {items.map(item => {
@@ -49,7 +51,7 @@ export const AnchorLayout = ({ items, offsetTop } : {
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />
         })}
       </Anchor>
-    </Col>
+    </AnchorLayoutSidebar>
     <Col span={20}>{
       items.map(item => {
         const linkId = item.title.split(' ').join('-')
@@ -59,4 +61,17 @@ export const AnchorLayout = ({ items, offsetTop } : {
       })
     }</Col>
   </Row>
+}
+
+
+export const getTopWithPageheaderTab = () => {
+  const headerHeight = cssNumber('--acx-header-height')
+  const spaceHeight = cssNumber('--acx-content-vertical-space')
+  const pageheaderHeight = cssNumber('--acx-pageheader-height')
+  const tabsHeight = cssNumber('--acx-cartablist-height')
+
+  // eslint-disable-next-line max-len
+  const bannerHeight = cssNumber('--acx-cloudmessagebanner-height')*cssNumber('--acx-has-cloudmessagebanner')
+
+  return headerHeight + spaceHeight + pageheaderHeight+ tabsHeight + bannerHeight
 }

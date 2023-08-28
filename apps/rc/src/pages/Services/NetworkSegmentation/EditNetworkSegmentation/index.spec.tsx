@@ -46,7 +46,7 @@ jest.mock('react-router-dom', () => ({
 
 const updateNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
 
-describe.skip('Update NetworkSegmentation', () => {
+describe('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -68,6 +68,20 @@ describe.skip('Update NetworkSegmentation', () => {
         (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       )
     )
+  })
+
+  it('cancel and go back to device list', async () => {
+    const user = userEvent.setup()
+    render(<EditNetworkSegmentation />, {
+      wrapper: Provider,
+      route: { params, path: updateNsgPath }
+    })
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/services/list`,
+      search: ''
+    }))
   })
 
   it('should update networkSegmentation successfully', async () => {
@@ -112,20 +126,6 @@ describe.skip('Update NetworkSegmentation', () => {
     expect(screen.getByRole('link', {
       name: 'Network Segmentation'
     })).toBeVisible()
-  })
-
-  it('cancel and go back to device list', async () => {
-    const user = userEvent.setup()
-    render(<EditNetworkSegmentation />, {
-      wrapper: Provider,
-      route: { params, path: updateNsgPath }
-    })
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/services/list`,
-      hash: '',
-      search: ''
-    })
   })
 })
 

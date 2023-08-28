@@ -31,7 +31,7 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
-    const { path, raw: rawPath } = read() || { path: [], raw: [] }
+    const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
     const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
     const { filter, raw } = (isHealthPage && isSwitchPath)

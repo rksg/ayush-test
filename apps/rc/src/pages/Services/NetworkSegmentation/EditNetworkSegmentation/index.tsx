@@ -29,8 +29,8 @@ const EditNetworkSegmentation = () => {
     { type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.LIST })
 
   useEffect(() => {
-    form.resetFields()
     if(nsgData) {
+      form.resetFields()
       form.setFieldValue('name', nsgData.name)
       // form.setFieldValue('tags', nsgData.ta)
       form.setFieldValue('venueId', nsgData.venueInfos[0]?.venueId)

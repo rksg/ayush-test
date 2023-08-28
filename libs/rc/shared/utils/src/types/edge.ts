@@ -3,6 +3,8 @@ import type { TimeStamp } from '@acx-ui/types'
 import { FirmwareCategory, SkippedVersion }                                              from '..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
+export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
+
 export interface EdgeGeneralSetting {
   description: string
   edgeGroupId: string

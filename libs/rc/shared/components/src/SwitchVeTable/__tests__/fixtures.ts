@@ -125,6 +125,7 @@ export const switchList = {
   ipAddressInterfaceType: 'VE',
   ipAddressType: 'dynamic',
   jumboMode: false,
+  isPrimaryDeleted: false,
   name: '7150stack',
   rearModule: 'none',
   specifiedType: 'AUTO',
