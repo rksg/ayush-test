@@ -207,6 +207,7 @@ describe('Switch Stack Form - Add', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
   })
+
   it('should handle add stack by stack switches', async () => {
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
@@ -220,6 +221,7 @@ describe('Switch Stack Form - Add', () => {
     })
 
     expect(await screen.findByText('FEK3224R07X')).toBeVisible()
+    expect(await screen.findByText('FEK3224R07X_name')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 

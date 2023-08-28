@@ -496,7 +496,7 @@ export function StackForm () {
       render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
-          validateTrigger={['onKeyUp', 'onFocus', 'onBlur', 'onInputKeyDown']}
+          validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
           rules={[
             {
               required: activeRow === row.key ? true : false,
