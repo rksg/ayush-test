@@ -22,3 +22,15 @@ export const TagsSolidIcon = styled(TagsSolid)`
 export const PortSpan = styled.span`
   padding-left: 15px;
 `
+
+export const FormLabel = styled.div`
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+  .ant-form-item-control {
+    display: none;
+  }
+  .ant-form-item-label {
+    padding-bottom: 0;
+  }
+`
