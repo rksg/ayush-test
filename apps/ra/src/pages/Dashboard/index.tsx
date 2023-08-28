@@ -3,8 +3,13 @@ import { useCallback, useEffect, useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { DidYouKnow, IncidentsCountBySeverities, NetworkHistory } from '@acx-ui/analytics/components'
-import { useAnalyticsFilter }                                     from '@acx-ui/analytics/utils'
+import {
+  DidYouKnow,
+  IncidentsCountBySeverities,
+  NetworkHistory,
+  SLA
+} from '@acx-ui/analytics/components'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   PageHeader,
@@ -67,7 +72,7 @@ export default function Dashboard () {
         <NetworkHistory hideLegend filters={analyticsFilter} />
       </div>
       <div style={{ gridArea: 'b3' }}>
-        <Card title={$t({ defaultMessage: 'SLA' })} />
+        <SLA filters={analyticsFilter}/>
       </div>
       <div style={{ gridArea: 'c1' }}>
         <IncidentsCountBySeverities filters={filters} />
