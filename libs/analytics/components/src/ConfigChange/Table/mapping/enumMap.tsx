@@ -655,7 +655,7 @@ export const enumMap = [
   { id: 1, value: 'ALLOW', text: defineMessage({ defaultMessage: 'Enabled' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.AllowIndoorChannel' },
   { id: 0, value: 'NONE', text: defineMessage({ defaultMessage: 'Disabled' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode' },
   { id: 1, value: 'BACKGROUND_SCANNING', text: defineMessage({ defaultMessage: 'Background scanning' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode' },
-  { id: 2, value: 'CHANNEL_FLY', text: defineMessage({ defaultMessage: 'Channel Fly' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode' },
+  { id: 2, value: 'CHANNEL_FLY', text: defineMessage({ defaultMessage: 'ChannelFly' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode' },
   { id: 0, value: '_AUTO', text: defineMessage({ defaultMessage: 'Auto' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth' },
   { id: 1, value: '_20MHZ', text: defineMessage({ defaultMessage: '20' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth' },
   { id: 2, value: '_40MHZ', text: defineMessage({ defaultMessage: '40' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth' },
