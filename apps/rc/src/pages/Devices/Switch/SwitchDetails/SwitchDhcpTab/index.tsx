@@ -83,7 +83,7 @@ export function SwitchDhcpTab () {
       defaultActiveKey='pool'
       onChange={onTabChange}
       tabBarExtraContent={operations}
-      type='card'>
+      type='second'>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Pools' })} key='pool'>
         <SwitchDhcpPoolTable />
       </Tabs.TabPane>
