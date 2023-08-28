@@ -5,7 +5,7 @@ import { useIntl }                 from 'react-intl'
 import { useParams }               from 'react-router-dom'
 
 import { Alert, Button, Card, Descriptions, Modal } from '@acx-ui/components'
-import { VenueMarkerGrey, VenueMarkerRed }          from '@acx-ui/icons'
+import { VenueMarkerGrey, VenueMarkerOrange }       from '@acx-ui/icons'
 import { ApFloorplan }                              from '@acx-ui/rc/components'
 import {
   useApDetailsQuery,
@@ -80,7 +80,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   return (
     <>
       { row.locatable ? <Button style={{ borderStyle: 'none' }} onClick={showModal}>
-        <VenueMarkerRed />
+        <VenueMarkerOrange strokeWidth={0} />
       </Button> : <Button style={{ borderStyle: 'none' }} ><Tooltip
         title={$t({
           // eslint-disable-next-line max-len

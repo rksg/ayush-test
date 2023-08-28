@@ -8,14 +8,14 @@ import {
   Row,
   Select,
   Space } from 'antd'
-import { useWatch }               from 'antd/lib/form/Form'
-import { DefaultOptionType }      from 'antd/lib/select'
-import Transfer, { TransferItem } from 'antd/lib/transfer'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import { useWatch }          from 'antd/lib/form/Form'
+import { DefaultOptionType } from 'antd/lib/select'
+import { TransferItem }      from 'antd/lib/transfer'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                       from '@acx-ui/icons'
+import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip, Transfer } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                                 from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -485,7 +485,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             validator: () => validatePorts()
           }]}>
           <Transfer
-            operationStyle={{ margin: '0 20px' }}
             listStyle={{ width: 190, height: 316 }}
             showSearch
             showSelectAll={false}

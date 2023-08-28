@@ -157,6 +157,10 @@ export class DpskWlanAdvancedCustomization {
 
   multiLinkOperationOptions?: MultiLinkOperationOptions
 
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
@@ -274,6 +278,10 @@ export class DpskWlanAdvancedCustomization {
     this.wifi7Enabled = true
 
     this.multiLinkOperationEnabled = false
+
+    this.qosMirroringEnabled = true
+
+    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
 
     this.qosMapSetEnabled = false
 
