@@ -417,7 +417,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
       </UI.FieldLabel>
       }
 
-      <MulticastForm/>
+      <MulticastForm wlanData={wlanData}/>
 
       {enableBSSPriority &&
       <>
@@ -451,7 +451,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>}
 
-      { wifi6AndWifi7Flag && <WiFi7 /> }
+      { wifi6AndWifi7Flag && <WiFi7 wlanData={wlanData} /> }
 
       {showRadiusOptions &&
       <>

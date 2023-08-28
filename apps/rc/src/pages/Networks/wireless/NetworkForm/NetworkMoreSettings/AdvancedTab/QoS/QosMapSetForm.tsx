@@ -8,20 +8,19 @@ import { useIntl }                                       from 'react-intl'
 
 
 import { Drawer, Table, TableProps }         from '@acx-ui/components'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import { QosMapRule, sortProp, defaultSort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }         from '@acx-ui/user'
 import { validationMessages }                from '@acx-ui/utils'
 
-import NetworkFormContext from '../NetworkFormContext'
+import NetworkFormContext from '../../../../NetworkForm/NetworkFormContext'
+import * as UI            from '../../../NetworkMoreSettings/styledComponents'
 
-import * as UI from './styledComponents'
+
 
 const { useWatch } = Form
 
-export function QosMapSetFrom () {
+export function QosMapSetForm () {
   const { $t } = useIntl()
-  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
 
   const enableQosMapSetFieldName = ['wlan', 'advancedCustomization', 'qosMapSetEnabled']
   const qosMapSetRulesFieldName = ['wlan', 'advancedCustomization', 'qosMapSetOptions', 'rules']
@@ -96,27 +95,23 @@ export function QosMapSetFrom () {
   ]
 
   return (
-    qosMapSetFlag ?
-      <>
-        <UI.Subtitle>
-          {$t({ defaultMessage: 'QoS Map' })}
-        </UI.Subtitle>
-        <UI.FieldLabel width='250px'>
-          <Space>
-            {$t({ defaultMessage: 'QoS Map Set' })}
-          </Space>
-          <Form.Item
-            name={enableQosMapSetFieldName}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch
-              data-testid='qos-map-set-enabled'
-            />}
-          />
-        </UI.FieldLabel>
-        {enableQosMapSet &&
-        <UI.FieldLabel width='600px'>
+    <>
+      <UI.FieldLabel width='250px'>
+        <Space>
+          {$t({ defaultMessage: 'QoS Map Set' })}
+        </Space>
+        <Form.Item
+          name={enableQosMapSetFieldName}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch
+            data-testid='qos-map-set-enabled'
+          />}
+        />
+      </UI.FieldLabel>
+      {enableQosMapSet &&
+        <UI.FieldLabel width='650px'>
           <Table
             columns={columns}
             type={'tall'}
@@ -145,8 +140,8 @@ export function QosMapSetFrom () {
             hidden={true}
           />
         </UI.FieldLabel>
-        }
-      </>:null
+      }
+    </>
   )
 }
 
@@ -176,6 +171,7 @@ function useColumns () {
       key: 'exceptionDscpValues',
       dataIndex: 'exceptionDscpValues',
       align: 'center',
+      width: 200,
       render: function (data, row) {
         return `${row.dscpExceptionValues}`
       }
@@ -442,18 +438,24 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
 
   const validateDscpLow255 = (_:RuleObject, value: string) => {
     const parsedValue = parseInt(value, 10)
-    if (parsedValue === 255 && dscpLow === 255) {
-      return Promise.resolve()
+    if (parsedValue === 255) {
+      if (dscpLow === 255){
+        return Promise.resolve()
+      }
+      return Promise.reject($t(validationMessages.dscp255Value))
     }
-    return Promise.reject($t(validationMessages.dscp255Value))
+    return Promise.resolve()
   }
 
   const validateDscpHigh255 = (_:RuleObject, value: string) => {
     const parsedValue = parseInt(value, 10)
-    if (parsedValue === 255 && dscpHigh === 255) {
-      return Promise.resolve()
+    if (parsedValue === 255) {
+      if (dscpHigh === 255){
+        return Promise.resolve()
+      }
+      return Promise.reject($t(validationMessages.dscp255Value))
     }
-    return Promise.reject($t(validationMessages.dscp255Value))
+    return Promise.resolve()
   }
 
   return (
