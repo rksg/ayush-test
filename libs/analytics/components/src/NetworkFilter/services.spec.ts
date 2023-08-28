@@ -151,18 +151,20 @@ describe('useHierarchyQuery', () => {
     await store.dispatch(
       api.endpoints.networkHierarchy.initiate(props)
     )
-
-    const { result } = renderHook(() =>
-      useHierarchyQuery({
-        includeIncidents: true,
-        filters: props,
-        shouldQuerySwitch: true
-      }),
-    { wrapper: Provider }
+    const queryProps = {
+      includeIncidents: true,
+      filters: props,
+      shouldQuerySwitch: true
+    }
+    const { result, unmount } = renderHook(
+      () => useHierarchyQuery(queryProps),
+      { wrapper: Provider }
     )
-    await waitFor(() => expect(result.current.isSuccess).toBeTruthy())
-    await waitFor(() => expect(result.current.isFetching).toBeFalsy())
-    expect(result.current.data).toStrictEqual(fixtures.hierarchyQueryOuput)
+    await waitFor(async () => expect(result.current.isSuccess).toBeTruthy())
+    await waitFor(async () => expect(result.current.isFetching).toBeFalsy())
+    await waitFor(async () => expect(result.current.data)
+      .toStrictEqual(fixtures.hierarchyQueryOuput))
+    unmount()
   })
 
   it('should return correctly without incidents', async () => {
@@ -178,21 +180,23 @@ describe('useHierarchyQuery', () => {
       api.endpoints.networkHierarchy.initiate(props)
     )
 
-    const { result } = renderHook(() =>
-      useHierarchyQuery({
-        includeIncidents: false,
-        filters: props,
-        shouldQuerySwitch: false
-      }),
+    const queryProps = {
+      includeIncidents: false,
+      filters: props,
+      shouldQuerySwitch: false
+    }
+    const { result, unmount } = renderHook(() =>
+      useHierarchyQuery(queryProps),
     { wrapper: Provider }
     )
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy())
     await waitFor(() => expect(result.current.isFetching).toBeFalsy())
-    expect(result.current.data).toStrictEqual({
+    await waitFor(() => expect(result.current.data).toStrictEqual({
       network: {
         apHierarchy: fixtures.hierarchyQueryResult.network.apHierarchy
       }
-    })
+    }))
+    unmount()
   })
 
   it('should not error on undefined data', async () => {
@@ -216,17 +220,19 @@ describe('useHierarchyQuery', () => {
       api.endpoints.networkHierarchy.initiate(props)
     )
 
-    const { result } = renderHook(() =>
-      useHierarchyQuery({
-        includeIncidents: true,
-        filters: props,
-        shouldQuerySwitch: true
-      }),
+    const queryProps = {
+      includeIncidents: true,
+      filters: props,
+      shouldQuerySwitch: true
+    }
+    const { result, unmount } = renderHook(() =>
+      useHierarchyQuery(queryProps),
     { wrapper: Provider }
     )
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy())
     await waitFor(() => expect(result.current.isFetching).toBeFalsy())
-    expect(result.current.data).toStrictEqual({
-      network: { apHierarchy: undefined, switchHierarchy: undefined } })
+    await waitFor(() => expect(result.current.data).toStrictEqual({
+      network: { apHierarchy: undefined, switchHierarchy: undefined } }))
+    unmount()
   })
 })

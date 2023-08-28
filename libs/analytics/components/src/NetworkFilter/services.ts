@@ -169,16 +169,8 @@ export const useHierarchyQuery = (
     if (!incidentList) return mapper
     incidentList?.forEach(({ path, severityLabel, sliceType, sliceValue }) => {
       let currMapper = mapper
-      let copyPath = [...path]
-      if (path.map(({ type }) => type).includes('system')) {
-        copyPath = [
-          path[0],
-          { name: 'Administration Domain', type: 'domain' },
-          ...path.slice(1),
-          { name: sliceValue, type: sliceType }
-        ]
-      }
-      for (let { name } of copyPath) {
+      let fullPath = [...path, { name: sliceValue, type: sliceType }]
+      for (let { name } of fullPath) {
         if (!currMapper[name]) {
           currMapper[name] = createIncidentNode()
         }
@@ -204,10 +196,34 @@ export const useHierarchyQuery = (
   const incidentMap = incidentQuery.data
 
   const cleanHierarchyName = (name: string) => {
-    if (name.startsWith('1||') || name.startsWith('2||')) {
-      return name.slice(3)
+    const transformDomain = name.match(/^[1-9]\|\|/)
+    const validDomains = !name.includes('Administration Domain')
+    if (transformDomain) {
+      const key = name.slice(3)
+      return { key, validDomains }
     }
-    return name
+    return { key: name , validDomains }
+  }
+
+  const getIncidentMapKey = (key: string, parentKey?: string[]) => {
+    if (!parentKey) return [key]
+    return [...parentKey, key]
+  }
+
+  function appendNodeToStack (
+    elem: NetworkNode | NetworkHierarchy<Child>[] | undefined,
+    parentKey: string[] | undefined,
+    key: string,
+    stack: NetworkNode[]
+  ): NetworkNode {
+    const item = {
+      ...elem,
+      parentKey: parentKey
+        ? [...parentKey, key, 'children']
+        : [key, 'children']
+    }
+    stack.push(item! as NetworkNode)
+    return item as unknown as NetworkNode
   }
 
   const traverseHierarchy = (origin: NetworkNode, incidentMap: Record<string, IncidentMap>) => {
@@ -217,13 +233,11 @@ export const useHierarchyQuery = (
     while (stack.length > 0) {
       let node = stack.pop() as NetworkNode
       const { name, parentKey } = node
-      const key = cleanHierarchyName(name)
-      const nameNode = { ...node, name: key }
+      const { key } = cleanHierarchyName(name)
+      let nameNode = { ...node, name: key }
       node = Object.assign(node, nameNode)
-      const incidentsStats = parentKey
-        ? get(incidentMap, [...parentKey, key])
-        : incidentMap[key]
-      if (includeIncidents && node && incidentsStats) {
+      if (includeIncidents && node) {
+        const incidentsStats = get(incidentMap, getIncidentMapKey(key, parentKey))
         const newNode = {
           ...node,
           ...omit(incidentsStats, 'children'),
@@ -232,33 +246,41 @@ export const useHierarchyQuery = (
         node = Object.assign(node, newNode)
       }
       if (node.children && node.children.length > 0) {
+        const validChildren = node.children
+          .map((child) => {
+            const typedChild = child as unknown as NetworkNode[]
+            if (typedChild.length && typedChild.length >= 0) {
+              return true
+            }
+            const { name } = child
+            return cleanHierarchyName(name).validDomains
+          })
+        const invalidIndex = validChildren.findIndex((val) => val === false)
+        if (invalidIndex !== -1) {
+          const invalidChild = node.children[invalidIndex]
+          const childrenInInvalidChild = invalidChild.children
+          node.children.splice(invalidIndex, 1)
+          if (childrenInInvalidChild) {
+            node.children = [...node.children, ...childrenInInvalidChild]
+          }
+        }
+
         function elemPushHelper (
-          elem: NetworkNode | undefined
+          elem: NetworkNode
         ) {
           let typedNodes = elem as unknown as NetworkNode[]
           if (typedNodes.length > 0) {
-            typedNodes = typedNodes.map((val) => {
-              const item = {
-                ...val,
-                parentKey: parentKey
-                  ? [...parentKey, key, 'children']
-                  : [key, 'children']
-              }
-              stack.push(item)
+            typedNodes= typedNodes.map((val) => {
+              const item = appendNodeToStack(val, parentKey, key, stack)
               return item
             })
             return typedNodes
           }
-          const item = {
-            ...elem,
-            parentKey: parentKey
-              ? [...parentKey, key, 'children']
-              : [key, 'children']
-          }
-          stack.push(item! as NetworkNode)
+          const item = appendNodeToStack(elem, parentKey, key, stack)
           return item
         }
-        node.children = node.children?.map(elemPushHelper) as NetworkNode[]
+
+        node.children = node.children.map(elemPushHelper).filter(Boolean) as NetworkNode[]
       }
     }
     return root

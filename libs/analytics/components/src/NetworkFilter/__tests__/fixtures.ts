@@ -103,8 +103,8 @@ export const incidentQueryResult = {
           startTime: '2023-08-20T07:39:00.000Z',
           endTime: '2023-08-20T07:45:00.000Z',
           code: 'i-apserv-downtime-high',
-          sliceType: 'apGroup',
-          sliceValue: 'default',
+          sliceType: 'ap',
+          sliceValue: 'R750-Solution-1',
           id: '0e96b33b-f54f-4c6e-8723-bef21130b3e8',
           path: [
             {
@@ -114,6 +114,50 @@ export const incidentQueryResult = {
             {
               type: 'domain',
               name: 'BDC Domain'
+            },
+            {
+              name: 'Solution LAB',
+              type: 'zone'
+            },
+            {
+              name: 'default',
+              type: 'apGroup'
+            }
+          ],
+          metadata: {
+            dominant: {},
+            rootCauseChecks: {
+              checks: [],
+              params: {}
+            }
+          },
+          clientCount: -1,
+          impactedClientCount: -1,
+          isMuted: false,
+          mutedBy: null,
+          mutedAt: null
+        },
+        {
+          severity: 0.99000,
+          startTime: '2023-08-20T07:39:00.000Z',
+          endTime: '2023-08-20T07:45:00.000Z',
+          code: 'i-apserv-downtime-high',
+          sliceType: 'apGroup',
+          sliceValue: 'default',
+          id: '0e96b33b-f54f-4c6e-8723-bef21130b3e8',
+          path: [
+            {
+              name: 'density-vsze-cluster',
+              type: 'system'
+            },
+            {
+              name: 'Density',
+              type: 'switchGroup'
+            },
+            {
+              name: 'west-density-7650-stack',
+              type: 'switch',
+              mac: '60:9C:9F:52:C9:86'
             }
           ],
           metadata: {
@@ -406,8 +450,58 @@ export const hierarchyQueryOuput = {
         P4: 1,
         children: [
           {
-            name: 'Administration Domain',
-            type: 'domain',
+            name: 'AlphaNet_5_1',
+            type: 'zone',
+            parentKey: [
+              'Alphanet-BDC',
+              'children'
+            ],
+            children: [
+              {
+                name: 'default',
+                type: 'apGroup',
+                parentKey: [
+                  'Alphanet-BDC',
+                  'children',
+                  'AlphaNet_5_1',
+                  'children'
+                ],
+                children: [
+                  [
+                    {
+                      name: 'W-04',
+                      type: 'ap',
+                      mac: '0C:F4:D5:13:3A:F0',
+                      parentKey: [
+                        'Alphanet-BDC',
+                        'children',
+                        'AlphaNet_5_1',
+                        'children',
+                        'default',
+                        'children'
+                      ]
+                    },
+                    {
+                      name: 'E-02-BKP',
+                      type: 'ap',
+                      mac: '0C:F4:D5:18:40:30',
+                      parentKey: [
+                        'Alphanet-BDC',
+                        'children',
+                        'AlphaNet_5_1',
+                        'children',
+                        'default',
+                        'children'
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Default Zone',
+            type: 'zone',
             P1: 0,
             P2: 0,
             P3: 0,
@@ -418,108 +512,30 @@ export const hierarchyQueryOuput = {
             ],
             children: [
               {
-                name: 'AlphaNet_5_1',
-                type: 'zone',
+                name: 'default',
+                type: 'apGroup',
                 parentKey: [
                   'Alphanet-BDC',
                   'children',
-                  'Administration Domain',
+                  'Default Zone',
                   'children'
                 ],
                 children: [
-                  {
-                    name: 'default',
-                    type: 'apGroup',
-                    parentKey: [
-                      'Alphanet-BDC',
-                      'children',
-                      'Administration Domain',
-                      'children',
-                      'AlphaNet_5_1',
-                      'children'
-                    ],
-                    children: [
-                      [
-                        {
-                          name: 'W-04',
-                          type: 'ap',
-                          mac: '0C:F4:D5:13:3A:F0',
-                          parentKey: [
-                            'Alphanet-BDC',
-                            'children',
-                            'Administration Domain',
-                            'children',
-                            'AlphaNet_5_1',
-                            'children',
-                            'default',
-                            'children'
-                          ]
-                        },
-                        {
-                          name: 'E-02-BKP',
-                          type: 'ap',
-                          mac: '0C:F4:D5:18:40:30',
-                          parentKey: [
-                            'Alphanet-BDC',
-                            'children',
-                            'Administration Domain',
-                            'children',
-                            'AlphaNet_5_1',
-                            'children',
-                            'default',
-                            'children'
-                          ]
-                        }
+                  [
+                    {
+                      name: 'W-04',
+                      type: 'ap',
+                      mac: '0C:F4:D5:13:3A:F0',
+                      parentKey: [
+                        'Alphanet-BDC',
+                        'children',
+                        'Default Zone',
+                        'children',
+                        'default',
+                        'children'
                       ]
-                    ]
-                  }
-                ]
-              },
-              {
-                name: 'Default Zone',
-                type: 'zone',
-                P1: 0,
-                P2: 0,
-                P3: 0,
-                P4: 1,
-                parentKey: [
-                  'Alphanet-BDC',
-                  'children',
-                  'Administration Domain',
-                  'children'
-                ],
-                children: [
-                  {
-                    name: 'default',
-                    type: 'apGroup',
-                    parentKey: [
-                      'Alphanet-BDC',
-                      'children',
-                      'Administration Domain',
-                      'children',
-                      'Default Zone',
-                      'children'
-                    ],
-                    children: [
-                      [
-                        {
-                          name: 'W-04',
-                          type: 'ap',
-                          mac: '0C:F4:D5:13:3A:F0',
-                          parentKey: [
-                            'Alphanet-BDC',
-                            'children',
-                            'Administration Domain',
-                            'children',
-                            'Default Zone',
-                            'children',
-                            'default',
-                            'children'
-                          ]
-                        }
-                      ]
-                    ]
-                  }
+                    }
+                  ]
                 ]
               }
             ]
@@ -537,6 +553,10 @@ export const hierarchyQueryOuput = {
           {
             name: 'BDC Domain',
             type: 'domain',
+            P1: 0,
+            P2: 0,
+            P3: 0,
+            P4: 1,
             parentKey: [
               'BDC-Mini-Density',
               'children'
@@ -545,6 +565,10 @@ export const hierarchyQueryOuput = {
               {
                 name: 'Solution LAB',
                 type: 'zone',
+                P1: 0,
+                P2: 0,
+                P3: 0,
+                P4: 1,
                 parentKey: [
                   'BDC-Mini-Density',
                   'children',
@@ -555,6 +579,10 @@ export const hierarchyQueryOuput = {
                   {
                     name: 'default',
                     type: 'apGroup',
+                    P1: 0,
+                    P2: 0,
+                    P3: 0,
+                    P4: 1,
                     parentKey: [
                       'BDC-Mini-Density',
                       'children',
@@ -584,6 +612,10 @@ export const hierarchyQueryOuput = {
                           name: 'R750-Solution-1',
                           type: 'ap',
                           mac: '28:B3:71:2B:D8:30',
+                          P1: 0,
+                          P2: 0,
+                          P3: 0,
+                          P4: 1,
                           parentKey: [
                             'BDC-Mini-Density',
                             'children',
@@ -615,111 +647,83 @@ export const hierarchyQueryOuput = {
         P4: 1,
         children: [
           {
-            name: 'Administration Domain',
-            type: 'domain',
-            P1: 0,
-            P2: 0,
-            P3: 0,
-            P4: 1,
+            name: 'Default Group',
+            type: 'switchGroup',
             parentKey: [
               'Alphanet-BDC',
               'children'
             ],
             children: [
-              {
-                name: 'Default Group',
-                type: 'switchGroup',
-                parentKey: [
-                  'Alphanet-BDC',
-                  'children',
-                  'Administration Domain',
-                  'children'
-                ],
-                children: [
-                  [
-                    {
-                      name: 'ICX8200-C08ZP Router',
-                      type: 'switch',
-                      mac: '94:B3:4F:2F:7D:0A',
-                      parentKey: [
-                        'Alphanet-BDC',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'Default Group',
-                        'children'
-                      ]
-                    },
-                    {
-                      name: 'ICX8200-48ZP2 Router',
-                      type: 'switch',
-                      mac: '94:B3:4F:2F:C6:4E',
-                      parentKey: [
-                        'Alphanet-BDC',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'Default Group',
-                        'children'
-                      ]
-                    }
+              [
+                {
+                  name: 'ICX8200-C08ZP Router',
+                  type: 'switch',
+                  mac: '94:B3:4F:2F:7D:0A',
+                  parentKey: [
+                    'Alphanet-BDC',
+                    'children',
+                    'Default Group',
+                    'children'
                   ]
-                ]
-              },
-              {
-                name: 'EASTBLOCK',
-                type: 'switchGroup',
-                parentKey: [
-                  'Alphanet-BDC',
-                  'children',
-                  'Administration Domain',
-                  'children'
-                ],
-                children: [
-                  [
-                    {
-                      name: 'ICX7450-32ZP Router',
-                      type: 'switch',
-                      mac: '60:9C:9F:1D:D3:30',
-                      parentKey: [
-                        'Alphanet-BDC',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'EASTBLOCK',
-                        'children'
-                      ]
-                    }
+                },
+                {
+                  name: 'ICX8200-48ZP2 Router',
+                  type: 'switch',
+                  mac: '94:B3:4F:2F:C6:4E',
+                  parentKey: [
+                    'Alphanet-BDC',
+                    'children',
+                    'Default Group',
+                    'children'
                   ]
-                ]
-              },
-              {
-                name: 'WESTBLOCK',
-                type: 'switchGroup',
-                parentKey: [
-                  'Alphanet-BDC',
-                  'children',
-                  'Administration Domain',
-                  'children'
-                ],
-                children: [
-                  [
-                    {
-                      name: 'ICX7150-C12 Router',
-                      type: 'switch',
-                      mac: '58:FB:96:0B:12:CA',
-                      parentKey: [
-                        'Alphanet-BDC',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'WESTBLOCK',
-                        'children'
-                      ]
-                    }
+                }
+              ]
+            ]
+          },
+          {
+            name: 'EASTBLOCK',
+            type: 'switchGroup',
+            parentKey: [
+              'Alphanet-BDC',
+              'children'
+            ],
+            children: [
+              [
+                {
+                  name: 'ICX7450-32ZP Router',
+                  type: 'switch',
+                  mac: '60:9C:9F:1D:D3:30',
+                  parentKey: [
+                    'Alphanet-BDC',
+                    'children',
+                    'EASTBLOCK',
+                    'children'
                   ]
-                ]
-              }
+                }
+              ]
+            ]
+          },
+          {
+            name: 'WESTBLOCK',
+            type: 'switchGroup',
+            parentKey: [
+              'Alphanet-BDC',
+              'children'
+            ],
+            children: [
+              [
+                {
+                  name: 'ICX7150-C12 Router',
+                  type: 'switch',
+                  mac: '58:FB:96:0B:12:CA',
+                  parentKey: [
+                    'Alphanet-BDC',
+                    'children',
+                    'WESTBLOCK',
+                    'children'
+                  ]
+                }
+              ]
             ]
           }
         ]
@@ -864,68 +868,62 @@ export const hierarchyQueryOuput = {
       {
         name: 'density-vsze-cluster',
         type: 'system',
+        P1: 1,
+        P2: 0,
+        P3: 0,
+        P4: 0,
         children: [
           {
-            name: 'Administration Domain',
-            type: 'domain',
+            name: 'Density',
+            type: 'switchGroup',
+            P1: 1,
+            P2: 0,
+            P3: 0,
+            P4: 0,
             parentKey: [
               'density-vsze-cluster',
               'children'
             ],
             children: [
-              {
-                name: 'Density',
-                type: 'switchGroup',
-                parentKey: [
-                  'density-vsze-cluster',
-                  'children',
-                  'Administration Domain',
-                  'children'
-                ],
-                children: [
-                  [
-                    {
-                      name: 'west-density-7650-stack',
-                      type: 'switch',
-                      mac: '60:9C:9F:52:C9:86',
-                      parentKey: [
-                        'density-vsze-cluster',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'Density',
-                        'children'
-                      ]
-                    },
-                    {
-                      name: 'east-icxstack-density',
-                      type: 'switch',
-                      mac: '60:9C:9F:FE:56:42',
-                      parentKey: [
-                        'density-vsze-cluster',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'Density',
-                        'children'
-                      ]
-                    },
-                    {
-                      name: 'density-main-switch',
-                      type: 'switch',
-                      mac: '60:9C:9F:FE:64:14',
-                      parentKey: [
-                        'density-vsze-cluster',
-                        'children',
-                        'Administration Domain',
-                        'children',
-                        'Density',
-                        'children'
-                      ]
-                    }
+              [
+                {
+                  name: 'west-density-7650-stack',
+                  type: 'switch',
+                  mac: '60:9C:9F:52:C9:86',
+                  P1: 1,
+                  P2: 0,
+                  P3: 0,
+                  P4: 0,
+                  parentKey: [
+                    'density-vsze-cluster',
+                    'children',
+                    'Density',
+                    'children'
                   ]
-                ]
-              }
+                },
+                {
+                  name: 'east-icxstack-density',
+                  type: 'switch',
+                  mac: '60:9C:9F:FE:56:42',
+                  parentKey: [
+                    'density-vsze-cluster',
+                    'children',
+                    'Density',
+                    'children'
+                  ]
+                },
+                {
+                  name: 'density-main-switch',
+                  type: 'switch',
+                  mac: '60:9C:9F:FE:64:14',
+                  parentKey: [
+                    'density-vsze-cluster',
+                    'children',
+                    'Density',
+                    'children'
+                  ]
+                }
+              ]
             ]
           }
         ]
