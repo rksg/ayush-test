@@ -8,7 +8,6 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }                          from '@acx-ui/config'
 import { useGetPreferencesQuery }       from '@acx-ui/rc/services'
 import { BrowserRouter }                from '@acx-ui/react-router-dom'
 import { Provider }                     from '@acx-ui/store'
@@ -20,83 +19,46 @@ import {
   UserProfile as UserProfileInterface
 } from '@acx-ui/user'
 import {
+  renderPendo,
   getTenantId,
   createHttpRequest,
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG
 } from '@acx-ui/utils'
+import type { PendoParameters } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
 import { LoadMessages }    from './browser-dialog/browser-dialog'
 import { errorMiddleware } from './errorMiddleware'
+
 import '@acx-ui/theme'
 
-declare global {
-  /* eslint-disable no-var */
-  var pendo: {
-    initialize(init: Record<string, Record<string, string | boolean>>): void
-  }
-  function pendoInitalization (): void
-}
-
-export function renderPendoAnalyticsTag () {
-  const script = document.createElement('script')
-  script.setAttribute('nonce', 'pendo-inline-script')
-  script.defer = true
-  // @ts-ignore
-  const key = get('PENDO_API_KEY')
-  script.onerror = event => {
-    /* eslint-disable */  // Disables everything from this point down
-    console.error('Failed to load pendo api key from env', event)
-  }
-  // Installing Pendo snippet
-  const scriptText = `(function(apiKey){
-                      (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=[];
-                        v=['initialize','identify','updateOptions','pageLoad'];for(w=0,x=v.length;w<x;++w)(function(m){
-                        o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
-                        y=e.createElement(n);y.async=!0;y.onload=window.pendoInitalization;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
-                        z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
-                      })('${key}');`
-  /* eslint-enable */
-  const inlineScript = document.createTextNode(scriptText)
-  script.appendChild(inlineScript)
-  window.pendoInitalization = pendoInitalization
-  document.body.appendChild(script)
-}
-
-export async function pendoInitalization (): Promise<void> {
+async function pendoInitalization (): Promise<PendoParameters> {
   const tenantId = getTenantId()
   const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
-  const url = userProfileRequest.url
-
-  try {
-    const res = await fetch(url, userProfileRequest)
-    const user = await res.json()
-    window.pendo.initialize({
-      visitor: {
-        id: user.externalId,
-        full_name: `${user.firstName} ${user.lastName}`,
-        role: user.role,
-        version: user.pver,
-        var: user.var,
-        varTenantId: user.varTenantId,
-        support: user.support,
-        dogfood: user.dogfood,
-        region: user.region,
-        username: user.username,
-        delegated: user.tenantId !== user.varTenantId,
-        email: user.email
-      },
-      account: {
-        productName: 'RuckusOne',
-        id: user.tenantId,
-        name: user.companyName
-      }
-    })
-  } catch (error) {
-    /* eslint-disable no-console */
-    console.error(error)
+  const res = await fetch(userProfileRequest.url, userProfileRequest)
+  const user = await res.json()
+  return {
+    visitor: {
+      id: user.externalId,
+      full_name: `${user.firstName} ${user.lastName}`,
+      role: user.role,
+      version: user.pver,
+      var: user.var,
+      varTenantId: user.varTenantId,
+      support: user.support,
+      dogfood: user.dogfood,
+      region: user.region,
+      username: user.username,
+      delegated: user.tenantId !== user.varTenantId,
+      email: user.email
+    },
+    account: {
+      productName: 'RuckusOne',
+      id: user.tenantId,
+      name: user.companyName
+    }
   }
 }
 
@@ -115,8 +77,8 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: result.isLoading || result.isFetching ||
-        request.isLoading || request.isFetching }]}
+    states={[{ isLoading: result.isLoading || result.isFetching
+        || request.isLoading || request.isFetching }]}
     children={<ConfigProvider {...props} lang={lang} />}
   />
 }
@@ -136,14 +98,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  // Pendo initialization
-  // @ts-ignore
-  if ( get('DISABLE_PENDO') === 'false' ) {
-    renderPendoAnalyticsTag()
-  }
-
+  renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
-
   root.render(
     <React.StrictMode>
       <Provider>

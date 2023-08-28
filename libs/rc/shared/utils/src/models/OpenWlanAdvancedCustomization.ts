@@ -50,6 +50,8 @@ export class OpenWlanAdvancedCustomization {
 
   clientLoadBalancingEnable?: boolean
 
+  enableAaaVlanOverride?: boolean
+
   // This is a per radio client count at which an AP will stop converting group addressed data traffic to unicast. The directed threshold value (and action) is checked by the AP after it has performed other multicast handling actions (e.g. SmartCast), such as application detection and checking IGMP subscription of clients. Due to the order of actions on some traffic, the directed threshold may not be the final determinant in multicast frame handling.
   directedThreshold: number
 
