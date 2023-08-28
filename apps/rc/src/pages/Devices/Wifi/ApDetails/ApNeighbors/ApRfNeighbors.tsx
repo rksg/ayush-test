@@ -22,7 +22,7 @@ import { DetectionStatus, useApNeighbors } from './useApNeighbors'
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
-  const [ getApRfNeighbors, { isLoading: isLoadingApRfNeighbors }] = useLazyGetApRfNeighborsQuery()
+  const [ getApRfNeighbors, getApRfNeighborsStates ] = useLazyGetApRfNeighborsQuery()
   const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
   const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
   const [ tableData, setTableData ] = useState<ApRfNeighborsResponse>()
@@ -60,11 +60,16 @@ export default function ApRfNeighbors () {
     }
   }
 
-  const isTableLoading = (): boolean => {
-    return isLoadingApRfNeighbors || detectionStatus === DetectionStatus.FETCHING
+  const isTableFetching = () => {
+    return isDetecting ||
+      getApRfNeighborsStates.isFetching ||
+      detectionStatus === DetectionStatus.FETCHING
   }
 
-  return <Loader states={[{ isLoading: isTableLoading() }]}>
+  return <Loader states={[{
+    isLoading: getApRfNeighborsStates.isLoading,
+    isFetching: isTableFetching()
+  }]}>
     <Table
       settingsId='ap-rf-neighbors-table'
       rowKey='apMac'

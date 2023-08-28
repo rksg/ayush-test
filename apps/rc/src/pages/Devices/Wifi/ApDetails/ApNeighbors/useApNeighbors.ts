@@ -75,7 +75,6 @@ export function useApNeighbors (initRequestId: string, handler: () => void) {
   }
 
   return {
-    requestId,
     setRequestId,
     detectionStatus,
     handleError

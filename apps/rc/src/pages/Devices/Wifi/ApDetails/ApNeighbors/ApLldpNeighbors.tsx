@@ -25,7 +25,7 @@ export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   // eslint-disable-next-line max-len
-  const [ getApLldpNeighbors, { isLoading: isLoadingApLldpNeighbors }] = useLazyGetApLldpNeighborsQuery()
+  const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
   const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
   const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
   const [ tableData, setTableData ] = useState<ApLldpNeighborsResponse>()
@@ -65,15 +65,20 @@ export default function ApLldpNeighbors () {
     }
   }
 
-  const isTableLoading = (): boolean => {
-    return isLoadingApLldpNeighbors || detectionStatus === DetectionStatus.FETCHING
+  const isTableFetching = () => {
+    return isDetecting ||
+      getApLldpNeighborsStates.isFetching ||
+      detectionStatus === DetectionStatus.FETCHING
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
     return record.lldpTime + (record.lldpPortID ?? '') + (record.lldpChassisID ?? '')
   }
 
-  return <Loader states={[{ isLoading: isTableLoading() }]}>
+  return <Loader states={[{
+    isLoading: getApLldpNeighborsStates.isLoading,
+    isFetching: isTableFetching()
+  }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
       rowKey={getRowKey}
