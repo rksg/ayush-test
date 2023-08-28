@@ -11,6 +11,7 @@ import type { ParamsType }        from '@ant-design/pro-provider'
 import { TableProps } from '.'
 
 import type { TableColumnState } from './types'
+import React from 'react'
 
 export function GroupSelect<RecordType> ({
   $t, value, setValue, groupable, style
@@ -103,7 +104,8 @@ export function useGroupBy<RecordType> (
               if (searchable) {
                 return highlightFn(_.get(record, dataIndex))
               }
-              return dom
+
+              return React.isValidElement(dom) ? dom: null
             }
           }
           return {
