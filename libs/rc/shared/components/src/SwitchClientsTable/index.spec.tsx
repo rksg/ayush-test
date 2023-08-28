@@ -97,8 +97,15 @@ const apList = {
   data: []
 }
 
+const mockExportCsv = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  exportCSV: jest.fn().mockImplementation(() => mockExportCsv())
+}))
+
 describe('SwitchClientsTable', () => {
   beforeEach(() => {
+    mockExportCsv.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
@@ -139,11 +146,7 @@ describe('SwitchClientsTable', () => {
         }
       }
     )
-
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('img', { name: 'loader' })
-    )
-    await screen.findByText('34:20:E3:2C:B5:B0')
+    expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
   })
 
   it.skip('should trigger search client correctly', async () => {
@@ -165,10 +168,6 @@ describe('SwitchClientsTable', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('img', { name: 'loader' })
-    )
-
     await screen.findByText('34:20:E3:2C:B5:B0')
 
     const searchInput = await screen.findByRole('textbox')
@@ -178,7 +177,7 @@ describe('SwitchClientsTable', () => {
       screen.queryByRole('img', { name: 'loader' })
     )
 
-    await screen.findByText('34:20:E3:2C:B5:B0')
+    expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
   })
 
   it('should render switch client table correctly', async () => {
@@ -199,14 +198,10 @@ describe('SwitchClientsTable', () => {
         }
       }
     )
-
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('img', { name: 'loader' })
-    )
-    await screen.findByText('34:20:E3:2C:B5:B0')
+    expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
   })
 
-  it('should render switch client detail page correctly', async () => {
+  it('should render switch client detail page and download correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switch-id',
@@ -233,6 +228,8 @@ describe('SwitchClientsTable', () => {
 
     const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
     await userEvent.click(exportCSVButton)
+
+    expect(mockExportCsv).toBeCalled()
   })
 
   it('should render blank fields correctly', async () => {
@@ -274,6 +271,8 @@ describe('SwitchClientsTable', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByRole('img', { name: 'loader' })
     )
+
+    expect(await screen.findByText('1/1/7')).toBeVisible()
   })
 
   it('should render router type correctly', async () => {
@@ -408,5 +407,7 @@ describe('SwitchClientsTable', () => {
 
     const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
     await userEvent.click(exportCSVButton)
+
+    expect(mockExportCsv).toBeCalled()
   })
 })
