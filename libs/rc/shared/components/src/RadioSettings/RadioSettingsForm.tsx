@@ -176,7 +176,7 @@ export function RadioSettingsForm (props:{
             marginBottom: '-2px',
             marginRight: '2px'
           }}/>
-          {$t(
+          {(radioType === ApRadioTypeEnum.Radio6G) && $t(
             // eslint-disable-next-line max-len
             { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
           )}
