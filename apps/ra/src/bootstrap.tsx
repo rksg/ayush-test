@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Root } from 'react-dom/client'
 
-import { UserProfileProvider } from '@acx-ui/analytics/utils'
+import { UserProfile, UserProfileProvider } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
@@ -54,9 +54,8 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
-async function pendoInitalization (): Promise<PendoParameters> {
-  const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
-  const tenant = user.tenants.find(({ id }: { id: string }) => id === user.accountId) // TODO use selected tenant
+function pendoInitalization (user: UserProfile): PendoParameters {
+  const tenant = user.tenants.find(({ id }: { id: string }) => id === user.accountId)! // TODO use selected tenant
   return {
     visitor: {
       id: user.userId,
@@ -79,14 +78,15 @@ async function pendoInitalization (): Promise<PendoParameters> {
 }
 
 export async function init (root: Root) {
-  renderPendo(pendoInitalization)
+  const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
+  renderPendo(() => pendoInitalization(user))
   setUpIntl({ locale: 'en-US' })
   root.render(
     <React.StrictMode>
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-            <UserProfileProvider>
+            <UserProfileProvider profile={user}>
               <BrowserRouter>
                 <React.Suspense fallback={null}>
                   <AllRoutes />

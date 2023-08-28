@@ -30,7 +30,7 @@ export type PendoParameters = {
   }
 }
 
-export function renderPendo (pendoInitalization: () => Promise<PendoParameters>) {
+export function renderPendo (pendoInitalization: () => Promise<PendoParameters> | PendoParameters) {
   if (get('DISABLE_PENDO') === 'false') {
     const key = get('PENDO_API_KEY')
     const script = document.createElement('script')
