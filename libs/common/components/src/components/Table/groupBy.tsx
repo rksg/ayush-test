@@ -104,7 +104,7 @@ export function useGroupBy<RecordType> (
                 return highlightFn(_.get(record, dataIndex))
               }
 
-              return isValidElement(dom) ? dom: null
+              return isValidElement(dom) ? dom : null
             }
           }
           return {
