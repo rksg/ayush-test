@@ -289,7 +289,6 @@ export const useHierarchyQuery = (
   const hierarchyQuery = useNetworkHierarchyQuery(omit(networkFilter, 'path', 'filter'),
     {
       selectFromResult: ({ data, ...rest }) => {
-        if (!includeIncidents) return { ...rest, data }
         const { apHierarchy, switchHierarchy } = data?.network || {}
         const aps = apHierarchy?.map(ap => traverseHierarchy(ap, incidentMap))
         const switches = switchHierarchy?.map(sw => traverseHierarchy(sw, incidentMap))

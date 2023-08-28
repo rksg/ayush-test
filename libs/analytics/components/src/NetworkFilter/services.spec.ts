@@ -171,7 +171,27 @@ describe('useHierarchyQuery', () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: {
         network: {
-          apHierarchy: fixtures.hierarchyQueryResult.network.apHierarchy
+          apHierarchy: [
+            {
+              name: 'test-system',
+              type: 'system',
+              children: [
+                {
+                  name: '1||Administration Domain',
+                  type: 'domain',
+                  children: [
+                    {
+                      name: 'child under admin',
+                      type: 'zone'
+                    }
+                  ]
+                }, {
+                  name: '2||second domain',
+                  type: 'domain'
+                }
+              ]
+            }
+          ]
         }
       }
     })
@@ -193,7 +213,31 @@ describe('useHierarchyQuery', () => {
     await waitFor(() => expect(result.current.isFetching).toBeFalsy())
     await waitFor(() => expect(result.current.data).toStrictEqual({
       network: {
-        apHierarchy: fixtures.hierarchyQueryResult.network.apHierarchy
+        switchHierarchy: undefined,
+        apHierarchy: [
+          {
+            name: 'test-system',
+            type: 'system',
+            children: [
+              {
+                name: 'second domain',
+                type: 'domain',
+                parentKey: [
+                  'test-system',
+                  'children'
+                ]
+              },
+              {
+                name: 'child under admin',
+                type: 'zone',
+                parentKey: [
+                  'test-system',
+                  'children'
+                ]
+              }
+            ]
+          }
+        ]
       }
     }))
     unmount()
