@@ -923,7 +923,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })?.status !== 'IN_PROGRESS'))) {
               (requestArgs.callback as Function)()
             }
-          } catch {
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
           }
         })
       }
@@ -1230,7 +1232,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
               })?.status !== 'IN_PROGRESS'))) {
               (requestArgs.callback as Function)()
             }
-          } catch {
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
           }
         })
       }
