@@ -18,7 +18,10 @@ export enum DetectionStatus {
 
 type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
 const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
-  'WIFI-99999': 'ERROR_OCCURRED' // TODO: temporary
+  'WIFI-10496': 'FIRMWARE_IS_NOT_SUPPORTED',
+  'WIFI-10497': 'IS_NOT_OPERATIONAL',
+  'WIFI-10216': 'IS_NOT_FOUND',
+  'WIFI-10498': 'NO_DETECTED_NEIGHBOR_DATA'
 }
 
 export function useApNeighbors (initRequestId: string, handler: () => void) {
