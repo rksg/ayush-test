@@ -3,8 +3,6 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { Tabs, TabsType } from '.'
 
-window.scrollTo = jest.fn()
-
 describe('Tabs', () => {
   function renderTab (type?: TabsType) {
     return <Tabs type={type}>
