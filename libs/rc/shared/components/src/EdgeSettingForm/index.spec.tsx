@@ -108,7 +108,7 @@ describe('EdgeSettingForm', () => {
     expect(await screen.findByRole('alert')).toBeVisible()
   })
 
-  it('should show error when serial number is invalid', async () => {
+  it('should show error when serial number is not for v-edge', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -125,5 +125,62 @@ describe('EdgeSettingForm', () => {
     await user.type(serialNumberInput, '12345')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
+  it('should show error when v-edge sn contains invalid characters', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <EdgeSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const serialNumberInput = await screen.findByRole('textbox',
+      { name: 'Serial Number' })
+    await user.type(serialNumberInput, '96bacs;;aaaaaabbbbbbbbbbcccccccccc')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
+  it('should show error when length of v-edge sn is less then 34', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <EdgeSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const serialNumberInput = await screen.findByRole('textbox',
+      { name: 'Serial Number' })
+    await user.type(serialNumberInput, '96ABCDE')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+  })
+
+  it('should show error when length of v-edge sn is more then 34', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <EdgeSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const serialNumberInput = await screen.findByRole('textbox',
+      { name: 'Serial Number' })
+    await user.type(serialNumberInput, '967107237F423711EE948762BC9B5F795AB')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
   })
 })
