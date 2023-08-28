@@ -199,7 +199,9 @@ export const defaultNetworkPayload = {
     'captiveType',
     'id',
     'securityProtocol',
-    'dsaeOnboardNetwork'
+    'dsaeOnboardNetwork',
+    'isOweMaster',
+    'owePairNetworkId'
   ],
   page: 1,
   pageSize: 2048

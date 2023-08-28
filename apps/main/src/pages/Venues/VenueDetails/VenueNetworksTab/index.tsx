@@ -32,13 +32,13 @@ import {
   NetworkType,
   NetworkTypeEnum,
   RadioTypeEnum,
-  WlanSecurityEnum,
   generateDefaultNetworkVenue,
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
   NetworkSaveData,
-  NetworkVenue
+  NetworkVenue,
+  IsWPA3Security
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -68,7 +68,9 @@ const defaultPayload = {
     'ssid',
     'vlanPool',
     'captiveType',
-    'id'
+    'id',
+    'isOweMaster',
+    'owePairNetworkId'
   ]
 }
 
@@ -154,8 +156,7 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && row.deepNetwork.wlan?.wlanSecurity &&
-               [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(row.deepNetwork.wlan.wlanSecurity)) {
+          if (triBandRadioFeatureFlag && IsWPA3Security(row.deepNetwork.wlan?.wlanSecurity)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
