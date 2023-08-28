@@ -14,7 +14,7 @@ export const baseQuery = retry(
     if (result.error) {
       const status = result.error?.status
       const errorCode = _.get(result.error, 'originalStatus')
-      if(status !== 'FETCH_ERROR' || (errorCode !== 504 && errorCode !== 0)){
+      if(status !== 'FETCH_ERROR' && errorCode !== 504 && errorCode !== 0){
         retry.fail(result.error)
       }
     }
