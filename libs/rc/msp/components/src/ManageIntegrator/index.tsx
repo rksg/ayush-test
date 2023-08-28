@@ -89,6 +89,7 @@ interface EcFormData {
     admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number,
+    apswLicense: number,
     ecCustomers: MspEc[],
     number_of_days: string
 }
@@ -156,6 +157,7 @@ const defaultAddress: Address = {
 export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -166,6 +168,7 @@ export function ManageIntegrator () {
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
+  const [availableApswLicense, setAvailableApswLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -229,13 +232,17 @@ export function ManageIntegrator () {
       const sw = assigned.filter(en =>
         en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
       const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-      checkAvailableLicense(licenseSummary, wLic, sLic)
+      const apsw = assigned.filter(en =>
+        en.deviceType === EntitlementDeviceType.MSP_APSW && en.status === 'VALID')
+      const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+      checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
 
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
         wifiLicense: wLic,
-        switchLicense: sLic
+        switchLicense: sLic,
+        apswLicense: apswLic
         // service_expiration_date: data?.service_expiration_date
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -402,8 +409,10 @@ export function ManageIntegrator () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToIntegrators, { replace: true })
+      return true
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+      return false
     }
   }
 
@@ -460,8 +469,10 @@ export function ManageIntegrator () {
       await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
         payload: customer }).unwrap()
       navigate(linkToIntegrators, { replace: true })
+      return true
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+      return false
     }
   }
 
@@ -541,7 +552,7 @@ export function ManageIntegrator () {
   }
 
   const checkAvailableLicense =
-  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number) => {
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number) => {
     const wifiLicenses = entitlements.filter(p =>
       p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
     let remainingWifi = 0
@@ -558,6 +569,15 @@ export function ManageIntegrator () {
     })
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
+
+    const apswLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingApsw += lic.remainingDevices
+    })
+    apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
+      : setAvailableApswLicense(remainingApsw)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -740,8 +760,11 @@ export function ManageIntegrator () {
 
   const CustomerSubscriptionForm = () => {
     return <div>
-      <WifiSubscription />
-      <SwitchSubscription />
+      {!isDeviceAgnosticEnabled && <div>
+        <WifiSubscription />
+        <SwitchSubscription />
+      </div>}
+      {isDeviceAgnosticEnabled && <ApswSubscription />}
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
         <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
         <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
@@ -798,7 +821,10 @@ export function ManageIntegrator () {
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableWifiLicense} available</label>
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableWifiLicense} available' }, {
+            availableWifiLicense: availableWifiLicense })}
+        </label>
       </UI.FieldLabelSubs>
     </div>
   }
@@ -818,7 +844,33 @@ export function ManageIntegrator () {
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableSwitchLicense} available</label>
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableSwitchLicense} available' }, {
+            availableSwitchLicense: availableSwitchLicense })}
+        </label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
+
+  const ApswSubscription = () => {
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+        <Form.Item
+          name='apswLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
+          ]}
+          children={<Input type='number'/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>
+          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+            availableApswLicense: availableApswLicense })}
+        </label>
       </UI.FieldLabelSubs>
     </div>
   }
