@@ -45,6 +45,7 @@ export function ApNeighborsTab () {
   return (isApNeighborsOn
     ? <Tabs
       onChange={onTabChange}
+      destroyInactiveTabPane={true}
       activeKey={activeSubTab}
       type='second'
     >
