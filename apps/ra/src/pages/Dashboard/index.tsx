@@ -70,7 +70,7 @@ export default function Dashboard () {
         <ReportTile path={path} />
       </div>
       <div style={{ gridArea: 'b2' }}>
-        <NetworkHistory hideLegend filters={analyticsFilter} />
+        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
       </div>
       <div style={{ gridArea: 'b3' }}>
         <SLA filters={analyticsFilter}/>
