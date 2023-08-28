@@ -74,7 +74,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
-              index !== 0 && <Chevron key='chevron'>{'>'}</Chevron>,
+              index !== 0 && <Chevron key={`chevron-${index}`}>{'>'}</Chevron>,
               <Li key={index}>{name}</Li>
             ])}
           </Ul>
@@ -215,7 +215,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
-              index !== 0 && <Chevron key='chevron'>{'>'}</Chevron>,
+              index !== 0 && <Chevron key={`chevron-${index}`}>{'>'}</Chevron>,
               <Li key={index}>{name}</Li>
             ])}
           </Ul>
@@ -243,6 +243,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
                 columns={apTablecolumnHeaders}
                 dataSource={results.data?.aps as unknown as AP[]}
                 pagination={pagination}
+                settingsId='ap-search-table'
               />
             </Panel>
           }
@@ -254,6 +255,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
                 columns={clientTablecolumnHeaders}
                 dataSource={results.data?.clients as unknown as Client[]}
                 pagination={pagination}
+                settingsId='clients-search-table'
               />
             </Panel>
           }
@@ -265,6 +267,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
                 columns={switchTablecolumnHeaders}
                 dataSource={results.data?.switches as unknown as Switch[]}
                 pagination={pagination}
+                settingsId='switch-search-table'
               />
             </Panel>
           }
@@ -280,6 +283,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
                 columns={networkHierarchyTablecolumnHeaders}
                 dataSource={results.data?.networkHierarchy as unknown as NetworkHierarchy[]}
                 pagination={pagination}
+                settingsId='network-hierarchy-search-table'
               />
             </Panel>
           }
