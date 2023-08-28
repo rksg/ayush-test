@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo, Key } from 'react'
+import { useMemo, Key, isValidElement } from 'react'
 
 import { Select }    from 'antd'
 import _             from 'lodash'
@@ -11,7 +11,6 @@ import type { ParamsType }        from '@ant-design/pro-provider'
 import { TableProps } from '.'
 
 import type { TableColumnState } from './types'
-import React from 'react'
 
 export function GroupSelect<RecordType> ({
   $t, value, setValue, groupable, style
@@ -105,7 +104,7 @@ export function useGroupBy<RecordType> (
                 return highlightFn(_.get(record, dataIndex))
               }
 
-              return React.isValidElement(dom) ? dom: null
+              return isValidElement(dom) ? dom: null
             }
           }
           return {
