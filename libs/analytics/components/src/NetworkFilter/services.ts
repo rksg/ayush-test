@@ -1,11 +1,10 @@
-import { gql }       from 'graphql-request'
-import { omit, get } from 'lodash'
+import { gql }  from 'graphql-request'
+import { omit } from 'lodash'
 
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { dataApi }                             from '@acx-ui/store'
 import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
-import { IncidentTableRow, useIncidentsListQuery } from '../IncidentTable/services'
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
@@ -27,9 +26,6 @@ interface Response {
 }
 type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[], parentKey?: string[] }
 interface NetworkNode extends NetworkHierarchy<Child>{}
-type IncidentHierarchy<T> = T & { children: IncidentHierarchy<T> | null }
-type IncidentPriority = { P1: number, P2: number, P3: number, P4: number }
-interface IncidentMap extends IncidentHierarchy<IncidentPriority>{}
 interface HierarchyResponse {
   network: {
     apHierarchy: NetworkNode[]
@@ -153,47 +149,13 @@ const { useNetworkHierarchyQuery } = api
 export const useHierarchyQuery = (
   {
     filters,
-    shouldQuerySwitch,
-    includeIncidents
+    shouldQuerySwitch
   }: {
     filters: AnalyticsFilter,
-    shouldQuerySwitch: boolean,
-    includeIncidents: boolean
+    shouldQuerySwitch: boolean
   }
 ) => {
   const networkFilter = { ...filters, shouldQuerySwitch }
-
-  const createIncidentNode = () => ({ P1: 0, P2: 0, P3: 0, P4: 0, children: null })
-  const buildIncidentMap = (incidentList: IncidentTableRow[] | undefined) => {
-    const mapper: Record<string, IncidentMap> = {}
-    if (!incidentList) return mapper
-    incidentList?.forEach(({ path, severityLabel, sliceType, sliceValue }) => {
-      let currMapper = mapper
-      let fullPath = [...path, { name: sliceValue, type: sliceType }]
-      for (let { name } of fullPath) {
-        if (!currMapper[name]) {
-          currMapper[name] = createIncidentNode()
-        }
-        currMapper[name][severityLabel as keyof Omit<IncidentMap, 'children'>] += 1
-        if (!currMapper[name].children) {
-          currMapper[name].children =
-              createIncidentNode() as unknown as IncidentHierarchy<IncidentPriority>
-        }
-        currMapper = currMapper[name].children as unknown as Record<string, IncidentMap>
-      }
-    })
-    return mapper
-  }
-  const incidentQuery = useIncidentsListQuery(
-    { ...filters, includeMuted: true },
-    {
-      skip: !includeIncidents,
-      selectFromResult: ({ data, ...rest }) => ({
-        ...rest,
-        data: buildIncidentMap(data)
-      })
-    })
-  const incidentMap = incidentQuery.data
 
   const cleanHierarchyName = (name: string) => {
     const transformDomain = name.match(/^[1-9]\|\|/)
@@ -203,11 +165,6 @@ export const useHierarchyQuery = (
       return { key, validDomains }
     }
     return { key: name , validDomains }
-  }
-
-  const getIncidentMapKey = (key: string, parentKey?: string[]) => {
-    if (!parentKey) return [key]
-    return [...parentKey, key]
   }
 
   function appendNodeToStack (
@@ -226,7 +183,7 @@ export const useHierarchyQuery = (
     return item as unknown as NetworkNode
   }
 
-  const traverseHierarchy = (origin: NetworkNode, incidentMap: Record<string, IncidentMap>) => {
+  const traverseHierarchy = (origin: NetworkNode) => {
     const stack: NetworkNode[] = []
     const root: NetworkNode = JSON.parse(JSON.stringify(origin))
     stack.push(root)
@@ -236,15 +193,7 @@ export const useHierarchyQuery = (
       const { key } = cleanHierarchyName(name)
       let nameNode = { ...node, name: key }
       node = Object.assign(node, nameNode)
-      if (includeIncidents && node) {
-        const incidentsStats = get(incidentMap, getIncidentMapKey(key, parentKey))
-        const newNode = {
-          ...node,
-          ...omit(incidentsStats, 'children'),
-          name: key
-        } as unknown as NetworkNode & IncidentPriority
-        node = Object.assign(node, newNode)
-      }
+
       if (node.children && node.children.length > 0) {
         const validChildren = node.children
           .map((child) => {
@@ -290,8 +239,8 @@ export const useHierarchyQuery = (
     {
       selectFromResult: ({ data, ...rest }) => {
         const { apHierarchy, switchHierarchy } = data?.network || {}
-        const aps = apHierarchy?.map(ap => traverseHierarchy(ap, incidentMap))
-        const switches = switchHierarchy?.map(sw => traverseHierarchy(sw, incidentMap))
+        const aps = apHierarchy?.map(ap => traverseHierarchy(ap))
+        const switches = switchHierarchy?.map(sw => traverseHierarchy(sw))
         return {
           ...rest,
           data: { network: {

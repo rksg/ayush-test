@@ -444,10 +444,6 @@ export const hierarchyQueryOuput = {
       {
         name: 'Alphanet-BDC',
         type: 'system',
-        P1: 0,
-        P2: 0,
-        P3: 0,
-        P4: 1,
         children: [
           {
             name: 'AlphaNet_5_1',
@@ -502,10 +498,6 @@ export const hierarchyQueryOuput = {
           {
             name: 'Default Zone',
             type: 'zone',
-            P1: 0,
-            P2: 0,
-            P3: 0,
-            P4: 1,
             parentKey: [
               'Alphanet-BDC',
               'children'
@@ -544,19 +536,11 @@ export const hierarchyQueryOuput = {
       },
       {
         name: 'BDC-Mini-Density',
-        P1: 0,
-        P2: 0,
-        P3: 0,
-        P4: 1,
         type: 'system',
         children: [
           {
             name: 'BDC Domain',
             type: 'domain',
-            P1: 0,
-            P2: 0,
-            P3: 0,
-            P4: 1,
             parentKey: [
               'BDC-Mini-Density',
               'children'
@@ -565,10 +549,6 @@ export const hierarchyQueryOuput = {
               {
                 name: 'Solution LAB',
                 type: 'zone',
-                P1: 0,
-                P2: 0,
-                P3: 0,
-                P4: 1,
                 parentKey: [
                   'BDC-Mini-Density',
                   'children',
@@ -579,10 +559,6 @@ export const hierarchyQueryOuput = {
                   {
                     name: 'default',
                     type: 'apGroup',
-                    P1: 0,
-                    P2: 0,
-                    P3: 0,
-                    P4: 1,
                     parentKey: [
                       'BDC-Mini-Density',
                       'children',
@@ -612,10 +588,6 @@ export const hierarchyQueryOuput = {
                           name: 'R750-Solution-1',
                           type: 'ap',
                           mac: '28:B3:71:2B:D8:30',
-                          P1: 0,
-                          P2: 0,
-                          P3: 0,
-                          P4: 1,
                           parentKey: [
                             'BDC-Mini-Density',
                             'children',
@@ -641,10 +613,6 @@ export const hierarchyQueryOuput = {
       {
         name: 'Alphanet-BDC',
         type: 'system',
-        P1: 0,
-        P2: 0,
-        P3: 0,
-        P4: 1,
         children: [
           {
             name: 'Default Group',
@@ -868,18 +836,10 @@ export const hierarchyQueryOuput = {
       {
         name: 'density-vsze-cluster',
         type: 'system',
-        P1: 1,
-        P2: 0,
-        P3: 0,
-        P4: 0,
         children: [
           {
             name: 'Density',
             type: 'switchGroup',
-            P1: 1,
-            P2: 0,
-            P3: 0,
-            P4: 0,
             parentKey: [
               'density-vsze-cluster',
               'children'
@@ -890,10 +850,6 @@ export const hierarchyQueryOuput = {
                   name: 'west-density-7650-stack',
                   type: 'switch',
                   mac: '60:9C:9F:52:C9:86',
-                  P1: 1,
-                  P2: 0,
-                  P3: 0,
-                  P4: 0,
                   parentKey: [
                     'density-vsze-cluster',
                     'children',

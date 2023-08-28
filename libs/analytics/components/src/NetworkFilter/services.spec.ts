@@ -132,27 +132,15 @@ describe('useHierarchyQuery', () => {
   })
 
   it('should return correct data for main hook', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: fixtures.incidentQueryResult
-    })
-
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: fixtures.hierarchyQueryResult
     })
 
-    const { status, data, error } = await store.dispatch(
-      incidentServices.api.endpoints.incidentsList.initiate(props)
-    )
-
-    expect(error).toBeUndefined()
-    expect(data).toBeTruthy()
-    expect(status).toBe('fulfilled')
-
     await store.dispatch(
       api.endpoints.networkHierarchy.initiate(props)
     )
+
     const queryProps = {
-      includeIncidents: true,
       filters: props,
       shouldQuerySwitch: true
     }
@@ -201,7 +189,6 @@ describe('useHierarchyQuery', () => {
     )
 
     const queryProps = {
-      includeIncidents: false,
       filters: props,
       shouldQuerySwitch: false
     }
@@ -244,21 +231,9 @@ describe('useHierarchyQuery', () => {
   })
 
   it('should not error on undefined data', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: fixtures.incidentQueryResult
-    })
-
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: { network: {} }
     })
-
-    const { status, data, error } = await store.dispatch(
-      incidentServices.api.endpoints.incidentsList.initiate(props)
-    )
-
-    expect(error).toBeUndefined()
-    expect(data).toBeTruthy()
-    expect(status).toBe('fulfilled')
 
     await store.dispatch(
       api.endpoints.networkHierarchy.initiate(props)
