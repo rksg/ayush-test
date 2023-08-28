@@ -4,6 +4,7 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { DidYouKnow, IncidentsCountBySeverities, SLA } from '@acx-ui/analytics/components'
+import { useAnalyticsFilter }                          from '@acx-ui/analytics/utils'
 import {
   Card,
   PageHeader,
@@ -38,6 +39,7 @@ export default function Dashboard () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters } = useDashboardFilter()
+  const { filters: analyticsFilter } = useAnalyticsFilter()
 
   const height = useMonitorHeight(536)
 
@@ -65,7 +67,7 @@ export default function Dashboard () {
         <Card title={$t({ defaultMessage: 'Network History' })} />
       </div>
       <div style={{ gridArea: 'b3' }}>
-        <SLA />
+        <SLA filters={analyticsFilter}/>
       </div>
       <div style={{ gridArea: 'c1' }}>
         <IncidentsCountBySeverities filters={filters} />

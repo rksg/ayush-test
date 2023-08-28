@@ -1,10 +1,10 @@
 import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { KpiThresholdType, useApCountForNodeQuery } from '@acx-ui/analytics/services'
-import { kpiConfig, useAnalyticsFilter }            from '@acx-ui/analytics/utils'
-import { Card, Loader, ProgressBarV2 }              from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
+import { KpiThresholdType, useApCountForNodeQuery }       from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Card, Loader, ProgressBarV2 }                    from '@acx-ui/components'
+import { formatter }                                      from '@acx-ui/formatter'
 
 import { useKpiThresholdsQuery } from '../Health/Kpi'
 import { usePillQuery }          from '../Health/Kpi/Pill'
@@ -14,12 +14,11 @@ import * as UI from './styledComponents'
 type SLABarChartProps = {
   kpi: string,
   threshold: number
+  filters: AnalyticsFilter
 }
-const SLAComponent = ({ kpi, threshold } : SLABarChartProps) => {
+const SLAComponent = ({ kpi, threshold, filters } : SLABarChartProps) => {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-
-  const { filters } = useAnalyticsFilter()
 
   const apCountResult = useApCountForNodeQuery(filters)
   const apCount = apCountResult.data?.network.node.apCount
@@ -40,7 +39,7 @@ const SLAComponent = ({ kpi, threshold } : SLABarChartProps) => {
   </Loader>
 }
 
-export const SLA = () => {
+export const SLA = (props: { filters: AnalyticsFilter }) => {
   const { $t } = useIntl()
 
   const kpis= [ 'connectionSuccess', 'timeToConnect', 'clientThroughput']
@@ -54,6 +53,7 @@ export const SLA = () => {
           key={`SLA${index}`}
           kpi={kpi}
           threshold={thresholds[kpi as keyof KpiThresholdType]}
+          filters={props.filters}
         />)}
     </Loader>
   </Card>
