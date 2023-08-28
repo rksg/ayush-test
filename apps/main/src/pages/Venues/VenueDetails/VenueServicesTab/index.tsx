@@ -45,7 +45,7 @@ export function VenueServicesTab () {
   const isAppliedFirewall = !_.isEmpty(edgeData?.firewallId)
 
   return (
-    <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
+    <Tabs type='second' defaultActiveKey={ServiceType.DHCP}>
       <Tabs.TabPane key={ServiceType.DHCP}
         tab={$t({ defaultMessage: 'DHCP' })}>
         <Tabs type='third'>

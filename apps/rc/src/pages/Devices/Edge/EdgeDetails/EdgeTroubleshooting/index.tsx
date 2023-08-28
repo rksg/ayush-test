@@ -26,7 +26,7 @@ export function EdgeTroubleshooting () {
       onChange={onTabChange}
       defaultActiveKey='ping'
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
     >
       <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
         <EdgePingForm/>

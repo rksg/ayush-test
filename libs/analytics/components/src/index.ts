@@ -52,11 +52,13 @@ export {
   RecommendationDetails,
   CrrmDetails
 } from './Recommendations/RecommendationDetails'
+export { ReportTile } from './ReportTiles'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
 export { ServiceGuardForm } from './ServiceGuard/ServiceGuardForm'
 export * from './ServiceGuard/types'
 export * from './ServiceGuard/contents'
 export { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './ServiceGuard/ServiceGuardGuard'
+export { SLA } from './SLA'
 export { VideoCallQoeForm } from './VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
 export { NetworkAssurance, NetworkAssuranceTabEnum } from './NetworkAssurance'
 export { VideoCallQoeDetails } from './VideoCallQoeDetails'

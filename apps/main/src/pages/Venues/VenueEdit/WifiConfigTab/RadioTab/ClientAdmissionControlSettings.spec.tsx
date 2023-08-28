@@ -111,56 +111,12 @@ describe('Venue Client Admission Control', () => {
       <Provider>
         <VenueEditContext.Provider value={{
           editContextData: {},
-          editRadioContextData: {
-            isLoadBalancingEnabled: true
-          },
+          editRadioContextData: {},
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
           <Form>
-            <ClientAdmissionControlSettings />
-          </Form>
-        </VenueEditContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    const enable24gBtn = await screen.findByTestId('client-admission-control-enable-24g')
-    const enable50gBtn = await screen.findByTestId('client-admission-control-enable-50g')
-
-    expect(enable24gBtn).toHaveAttribute('aria-checked', 'false')
-    expect(enable24gBtn).toHaveClass('ant-switch-disabled')
-    expect(enable50gBtn).toHaveAttribute('aria-checked', 'false')
-    expect(enable50gBtn).toHaveClass('ant-switch-disabled')
-
-    expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
-      .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-max-client-load-24g'))
-      .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-min-client-throughput-24g'))
-      .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-min-client-count-50g'))
-      .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-max-client-load-50g'))
-      .not.toBeInTheDocument()
-    expect(screen.queryByTestId('client-admission-control-min-client-throughput-50g'))
-      .not.toBeInTheDocument()
-  })
-
-  it(`should turned off and grayed out switch buttons when 
-  band balancing is enabled`, async () => {
-    render(
-      <Provider>
-        <VenueEditContext.Provider value={{
-          editContextData: {},
-          editRadioContextData: {
-            isBandBalancingEnabled: true
-          },
-          setEditContextData: jest.fn(),
-          setEditRadioContextData: jest.fn()
-        }}>
-          <Form>
-            <ClientAdmissionControlSettings />
+            <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={true} />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
