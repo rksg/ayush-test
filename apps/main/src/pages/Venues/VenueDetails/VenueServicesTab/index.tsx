@@ -70,7 +70,7 @@ export function VenueServicesTab () {
 
   return (
     <Loader states={[{ isLoading: isEdgeLoading || isEdgeDhcpLoading || isGetNsgLoading }]}>
-      <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
+      <Tabs type='second' defaultActiveKey={ServiceType.DHCP}>
         <Tabs.TabPane key={ServiceType.DHCP}
           tab={$t({ defaultMessage: 'DHCP' })}>
           <Tabs type='third'>
