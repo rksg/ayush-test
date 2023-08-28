@@ -455,6 +455,6 @@ export const apKeyMap = [
   { id: 451, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_port', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 452, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_protocol', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmSyslog.Protocol', incidents: {}, kpis: {} },
   { id: 453, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_server_ip', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 454, value: 'initialState.ccmAP.managementIdentifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure venue changed)' }), enumType: '', incidents: {}, kpis: {} },
-  { id: 455, value: 'initialState.ccmAP.managementIdentifiers.map_entries.apGroupName', text: '', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} }
+  { id: 454, value: 'initialState.ccmAP.management_identifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure venue change)' }), enumType: '', incidents: {}, kpis: {} },
+  { id: 455, value: 'initialState.ccmAP.management_identifiers.map_entries.apGroupName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure AP Group change)' }), enumType: '', incidents: {}, kpis: {} }
 ]

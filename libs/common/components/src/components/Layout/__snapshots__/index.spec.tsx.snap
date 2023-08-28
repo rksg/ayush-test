@@ -390,7 +390,7 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-2 iluHTJ"
+              class="styledComponents__Content-sc-iwostn-2 jwfqPy"
             >
               <div>
                 content
@@ -554,7 +554,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-2 iluHTJ"
+              class="styledComponents__Content-sc-iwostn-2 jwfqPy"
             >
               <div>
                 content
