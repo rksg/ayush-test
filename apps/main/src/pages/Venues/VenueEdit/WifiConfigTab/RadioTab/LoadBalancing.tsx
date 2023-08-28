@@ -16,7 +16,7 @@ import { FieldLabel, RadioDescription } from '../styledComponents'
 
 const { useWatch } = Form
 
-export function LoadBalancing () {
+export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void }) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
@@ -37,6 +37,7 @@ export function LoadBalancing () {
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
+  const { setIsLoadOrBandBalaningEnabled } = props
   const getLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId } })
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
@@ -97,11 +98,7 @@ export function LoadBalancing () {
     const loadBalancingData = getLoadBalancing?.data
     if (loadBalancingData) {
       form.setFieldsValue(loadBalancingData)
-      setEditRadioContextData && setEditRadioContextData({
-        ...editRadioContextData,
-        isBandBalancingEnabled: loadBalancingData.bandBalancingEnabled,
-        isLoadBalancingEnabled: loadBalancingData.enabled
-      })
+      setIsLoadOrBandBalaningEnabled?.(loadBalancingData.enabled || loadBalancingData.bandBalancingEnabled)
     }
 
   }, [getLoadBalancing?.data])
@@ -120,13 +117,14 @@ export function LoadBalancing () {
     return `${value}%`
   }
 
-  const handleUpdateLoadBalancing = async () => {
+  const handleUpdateLoadBalancing = async (callback?: () => void) => {
     try {
       const payload = getLoadBalancingDataFromFields()
 
       await updateVenueLoadBalancing({
         params: { venueId },
-        payload
+        payload,
+        callback: callback
       }).unwrap()
 
     } catch (error) {
@@ -169,11 +167,11 @@ export function LoadBalancing () {
 
     setEditRadioContextData && setEditRadioContextData({
       ...editRadioContextData,
-      isBandBalancingEnabled: form.getFieldValue('bandBalancingEnabled'),
-      isLoadBalancingEnabled: form.getFieldValue('enabled'),
       isLoadBalancingDataChanged: true,
       updateLoadBalancing: handleUpdateLoadBalancing
     })
+
+    setIsLoadOrBandBalaningEnabled?.(form.getFieldValue('enabled') || form.getFieldValue('bandBalancingEnabled'))
   }
 
 

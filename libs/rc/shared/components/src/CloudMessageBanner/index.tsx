@@ -82,10 +82,23 @@ export function CloudMessageBanner () {
       })
   }
 
+  const setGlobalCSSProperty = (isShow: boolean) => {
+    document.documentElement.style.setProperty(
+      '--acx-has-cloudmessagebanner', isShow ? '1' : '0'
+    )
+  }
+
   /* eslint-disable max-len */
   const MessageBanner = () => {
     if (showMessageBanner) {
-      return <Alert message={data?.description} type='info' showIcon closable />
+      setGlobalCSSProperty(true)
+      return <Alert message={data?.description}
+        type='info'
+        showIcon
+        closable
+        onClose={()=>{
+          setGlobalCSSProperty(false)
+        }}/>
     } else {
       const showUpgradeSchedule = (newWifiScheduleExists || newSwitchScheduleExists) && !showMessageBanner
       const upgradeMessageTitle = showUpgradeSchedule
@@ -101,6 +114,7 @@ export function CloudMessageBanner () {
       }
 
       if (upgradeMessageTitle) {
+        setGlobalCSSProperty(true)
         return <Alert
           message={<Space>{upgradeMessageTitle}
             <Button type='link'
@@ -114,6 +128,7 @@ export function CloudMessageBanner () {
         />
       }
     }
+    setGlobalCSSProperty(false)
     return null
   }
   /* eslint-enable max-len */
