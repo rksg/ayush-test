@@ -8,14 +8,16 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { get }                          from '@acx-ui/config'
+import { useGetPreferencesQuery }       from '@acx-ui/rc/services'
+import { BrowserRouter }                from '@acx-ui/react-router-dom'
+import { Provider }                     from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
-  UserUrlsInfo
+  UserUrlsInfo,
+  useGetUserProfileQuery,
+  UserProfile as UserProfileInterface
 } from '@acx-ui/user'
 import {
   getTenantId,
@@ -99,13 +101,13 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  // const result = useGetUserProfileQuery({})
-  // const { data: userProfile } = result
-  const userPreflang = LoadMessages() as LangKey// browser detection + user profile lang
+  const result = useGetUserProfileQuery({})
+  const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-
-  // const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
+
+  const userPreflang = LoadMessages(userProfile as UserProfileInterface) as LangKey// browser detection + user profile lang
+  // const userPreflang = String(userProfile?.preferredLanguage) as LangKey
 
   // This condition userPreflang !== DEFAULT_SYS_LANG is needed when FF is off
   // TODO:  Need to be cleaned up once FF acx-ui-i18n-phase2-toggle is globally enabled
@@ -113,7 +115,8 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: request.isLoading || request.isFetching }]}
+    states={[{ isLoading: result.isLoading || result.isFetching ||
+        request.isLoading || request.isFetching }]}
     children={<ConfigProvider {...props} lang={lang} />}
   />
 }

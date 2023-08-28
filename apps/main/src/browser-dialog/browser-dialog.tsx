@@ -4,7 +4,6 @@ import { showActionModal }                from '@acx-ui/components'
 import { useParams }                      from '@acx-ui/react-router-dom'
 import { browserSupportedLocales as bsl } from '@acx-ui/types'
 import {
-  useGetUserProfileQuery,
   DetailLevel,
   useUpdateUserProfileMutation,
   UserProfile as UserProfileInterface
@@ -13,12 +12,11 @@ import { LangKey, DEFAULT_SYS_LANG }          from '@acx-ui/utils'
 import { getIntl, setUpIntl, IntlSetUpError } from '@acx-ui/utils'
 
 export interface BrowserDialogProps {
-  browserLanguages: Readonly<string[]>,
   detailLevel: DetailLevel,
   dateFormat: string,
   preferredLanguage: string,
   isDialogOpen: boolean
-  // setDialogOpen: (isDialogOpen: boolean) => void
+  setDialogOpen: (isDialogOpen: boolean) => void
 }
 
 const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
@@ -26,8 +24,8 @@ const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
   window.location.hostname === 'asia.ruckus.cloud' ||
   window.location.hostname === 'stage.ruckus.cloud' )
 
-export async function BrowserDialog ( broswerLang: LangKey, profile: BrowserDialogProps) {
-  let { detailLevel, dateFormat, isDialogOpen } = profile
+export async function BrowserDialog ( broswerLang: LangKey, props: BrowserDialogProps) {
+  let { detailLevel, dateFormat, preferredLanguage, isDialogOpen, setDialogOpen } = props
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const { tenantId } = useParams()
   const bLang = broswerLang.slice(0, 2)
@@ -42,8 +40,12 @@ export async function BrowserDialog ( broswerLang: LangKey, profile: BrowserDial
   }
   const { $t } = intl
   const bLangDisplay = browserLangDisplay.of(bLang)
+  const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
+    await updateUserProfile({ payload: data, params: { tenantId } })
+    localStorage.setItem('browserLang', broswerLang)
+    localStorage.setItem('isBrowserDialog', 'true')
+  }
   if (isDialogOpen && !isNonProdEnv) {
-    // const [isDialogVisible, setIsDialogVisible] = useState(false)
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -54,28 +56,23 @@ export async function BrowserDialog ( broswerLang: LangKey, profile: BrowserDial
           key: 'cancel',
           closeAfterAction: true,
           handler () {
-            isDialogOpen = false
+            setDialogOpen(false)
+            localStorage.setItem('browserLang', preferredLanguage)
+            localStorage.setItem('isBrowserDialog', 'true')
           }
         }, {
           text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
           type: 'primary',
           key: 'ok',
           closeAfterAction: true,
-          handler () {
-            // console.log(`broswerLang in dialogbox: ${broswerLang} User Profile: ${profile}`)
+          async handler () {
             const data = {
               dateFormat,
               detailLevel,
               preferredLanguage: broswerLang
             }
-            const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
-              await updateUserProfile({ payload: data, params: { tenantId } })
-              localStorage.setItem('browserLang', broswerLang)
-              localStorage.setItem('isBrowserDialog', 'true')
-              profile.isDialogOpen = false
-              isDialogOpen = false
-            }
-            handleUpdateSettings(data)
+            await handleUpdateSettings(data)
+            setDialogOpen(false)
           }
         }]
       },
@@ -85,38 +82,31 @@ export async function BrowserDialog ( broswerLang: LangKey, profile: BrowserDial
       { bLangDisplay })
     })
   }
-  // console.log(profile)
-  return profile
+  return props
 }
 
-export function LoadMessages (): LangKey {
-  const result = useGetUserProfileQuery({})
-  const { data: userProfile } = result
-  const bDialogProps: BrowserDialogProps = {
-    browserLanguages: navigator.languages,
-    detailLevel: userProfile?.detailLevel as DetailLevel,
-    dateFormat: userProfile?.dateFormat as string,
-    preferredLanguage: userProfile?.preferredLanguage as string,
-    isDialogOpen: false
-  }
-
-  const { browserLanguages, preferredLanguage } = bDialogProps
-  const locale = browserLanguages.find(locale =>
+export function LoadMessages (userProfile: UserProfileInterface): LangKey {
+  const locales = navigator.languages
+  const locale = locales.find(locale =>
     bsl[locale as keyof typeof bsl]) || DEFAULT_SYS_LANG
-  // return bsl[locale as keyof typeof bsl]
-  let supportedBrowserLang = bsl[locale as keyof typeof bsl]
-  const lsBrowserLang = localStorage.getItem('browserLang')
-  let browserLang = lsBrowserLang?? supportedBrowserLang
+  const supportedBrowserLang = bsl[locale as keyof typeof bsl]
+  const openDialog = supportedBrowserLang !== DEFAULT_SYS_LANG &&
+    supportedBrowserLang !== userProfile?.preferredLanguage
   const isBrowserDialog = localStorage.getItem('isBrowserDialog')
-  const openDialog = browserLang !== DEFAULT_SYS_LANG && browserLang !== preferredLanguage
 
-  if ( openDialog && Boolean(!isBrowserDialog) ) {
-    bDialogProps.isDialogOpen = true
-    const BDConfirm = BrowserDialog(browserLang as LangKey, bDialogProps)
+  if ( openDialog && isBrowserDialog !== 'true') {
+    const isOpen = true
+    const bDialogProps: BrowserDialogProps = {
+      detailLevel: userProfile?.detailLevel as DetailLevel,
+      dateFormat: userProfile?.dateFormat as string,
+      preferredLanguage: userProfile?.preferredLanguage as string,
+      isDialogOpen: true,
+      setDialogOpen: () => isOpen
+    }
+    const BDConfirm = BrowserDialog(supportedBrowserLang as LangKey, bDialogProps)
     BDConfirm.then(data => {
-      // console.log(data?.preferredLanguage)
       return data?.preferredLanguage as LangKey
     })
   }
-  return preferredLanguage as LangKey
+  return userProfile?.preferredLanguage as LangKey
 }
