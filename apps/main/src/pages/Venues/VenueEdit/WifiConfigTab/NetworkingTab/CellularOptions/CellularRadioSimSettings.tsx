@@ -11,8 +11,15 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Fieldset }                                                                                                                               from '@acx-ui/components'
-import { AvailableLteBands, CellularNetworkSelectionEnum, LteBandLockChannel, LteBandLockCountriesJson, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { Fieldset }    from '@acx-ui/components'
+import {
+  AvailableLteBands,
+  CellularNetworkSelectionEnum,
+  LteBandLockChannel,
+  LteBandLockCountriesJson,
+  LteBandRegionEnum,
+  VenueApModelCellular,
+  excludeSpaceRegExp } from '@acx-ui/rc/utils'
 
 import { LteBandChannels } from './LteBandChannels'
 
@@ -79,6 +86,9 @@ export function CellularRadioSimSettings (props: {
         name={['editData', props.formControlName, 'apn']}
         label={$t({ defaultMessage: 'APN:' })}
         initialValue={1}
+        rules={[
+          { validator: (_, value) => excludeSpaceRegExp(value) }
+        ]}
         children={<Input style={{ width: '150px' }}></Input>}
       />
 
