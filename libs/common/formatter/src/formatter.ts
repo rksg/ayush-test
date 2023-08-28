@@ -1,3 +1,4 @@
+import _       from 'lodash'
 import moment  from 'moment-timezone'
 import numeral from 'numeral'
 import {
@@ -234,61 +235,50 @@ const crrmText = (value: CrrmTextType) => {
       }
     })
 
-    const seenConfigs = new Map()
-    const duplicateRadios = new Set()
+    const groupByData = _.groupBy(
+      data, ({ mode, width, autoCellSizing }) => `${mode}-${width}-${autoCellSizing}`)
+    const result = Object.values(groupByData)
 
-    data.forEach(config => {
-      const { mode, width, autoCellSizing, radio } = config
-      const configKey = `${mode}-${width}-${autoCellSizing}`
-      if (seenConfigs.has(configKey)) {
-        duplicateRadios.add(radio)
-        duplicateRadios.add(seenConfigs.get(configKey))
-      } else {
-        seenConfigs.set(configKey, radio)
-      }
-    })
-
-    const duplicatesArray = Array.from(duplicateRadios)
-
-    if (duplicatesArray.length === 0) {
-      return data.map(config => {
-        const { mode, width, radio, autoCellSizing } = config
+    if (result.length === 3 || (result[0].length === 1 && result.length !== 2)) {
+      return result.map(config => {
+        const { mode, width, radio, autoCellSizing } = config[0]
         return $t({ defaultMessage: '{mode} and {width} for {radio} with {autoCellSizing}' },
           { mode, width, radio, autoCellSizing } )
       }).join(', ')
-    } else if (duplicatesArray.length === 3) {
-      const mode = data[0].mode
-      const width = data[0].width
-      const autoCellSizing = data[0].autoCellSizing
+    } else if (result.length === 1) {
+      // eslint-disable-next-line max-len
+      const mode = result[0][0].mode
+      const width = result[0][0].width
+      const autoCellSizing = result[0][0].autoCellSizing
       // eslint-disable-next-line max-len
       return $t({ defaultMessage: '{mode} and {width} for 5 GHz, lower and upper 5 GHz with {autoCellSizing}' },
         { mode, width, autoCellSizing })
-    }
+    } else {
+      const individualData = result.filter(i => i.length === 1)
+      const similarData = result.filter(i => i.length === 2)
+      const individualMode = individualData[0][0].mode
+      const individualWidth = individualData[0][0].width
+      const individualCell = individualData[0][0].autoCellSizing
+      const similarMode = similarData[0][0].mode
+      const similarWidth = similarData[0][0].width
+      const similarCell = similarData[0][0].autoCellSizing
 
-    const individual = data.filter(i => !duplicatesArray.includes(i.radio))
-    const mode1 = data[0].mode
-    const width1 = data[0].width
-    const autoCellSizing1 = data[0].autoCellSizing
-    const mode2 = data[1].mode
-    const width2 = data[1].width
-    const autoCellSizing2 = data[1].autoCellSizing
-    const mode3 = data[2].mode
-    const width3 = data[2].width
-    const autoCellSizing3 = data[2].autoCellSizing
-
-    switch (individual[0].radio) {
-      case '5 GHz':
+      switch (individualData[0][0].radio) {
+        case '5 GHz':
+          // eslint-disable-next-line max-len
+          return $t({ defaultMessage: '{individualMode} and {individualWidth} for 5 GHz with {individualCell}, {similarMode} and {similarWidth} for lower and upper 5 GHz with {similarCell}' },
+          // eslint-disable-next-line max-len
+            { individualMode, individualWidth, individualCell, similarMode, similarWidth, similarCell } )
+        case 'lower 5 GHz':
+          // eslint-disable-next-line max-len
+          return $t({ defaultMessage: '{similarMode} and {similarWidth} for 5 GHz and upper 5 GHz with {similarCell}, {individualMode} and {individualWidth} for lower 5 GHz with {individualCell}' },
+          // eslint-disable-next-line max-len
+            { similarMode, similarWidth, similarCell, individualMode, individualWidth, individualCell } )
+          // eslint-disable-next-line max-len
+      } return $t({ defaultMessage: '{similarMode} and {similarWidth} for 5 GHz and lower 5 GHz with {similarCell}, {individualMode} and {individualWidth} for upper 5 GHz with {individualCell}' },
         // eslint-disable-next-line max-len
-        return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz with {autoCellSizing1}, {mode2} and {width2} for lower and upper 5 GHz with {autoCellSizing2}' },
-          { mode1, width1, autoCellSizing1, mode2, width2, autoCellSizing2 } )
-      case 'lower 5 GHz':
-        // eslint-disable-next-line max-len
-        return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz and upper 5 GHz with {autoCellSizing1}, {mode2} and {width2} for lower 5 GHz with {autoCellSizing2}' },
-          { mode1, width1, autoCellSizing1, mode2, width2, autoCellSizing2 } )
+        { similarMode, similarWidth, similarCell, individualMode, individualWidth, individualCell } )
     }
-    // eslint-disable-next-line max-len
-    return $t({ defaultMessage: '{mode1} and {width1} for 5 GHz and lower 5 GHz with {autoCellSizing1}, {mode3} and {width3} for upper 5 GHz with {autoCellSizing3}' },
-      { mode1, width1, autoCellSizing1, mode3, width3, autoCellSizing3 } )
   } else {
     const { txPowerAPCount } = value
     // eslint-disable-next-line max-len
