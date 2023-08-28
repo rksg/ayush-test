@@ -30,7 +30,8 @@ import {
   Address,
   VenueExtended,
   checkObjectNotExists,
-  redirectPreviousPage
+  redirectPreviousPage,
+  whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -318,8 +319,9 @@ export function VenuesForm () {
                 label={intl.$t({ defaultMessage: 'Venue Name' })}
                 rules={[
                   { type: 'string', required: true },
-                  { min: 2 },
-                  { max: 32 },
+                  { min: 2, transform: (value) => value.trim() },
+                  { max: 32, transform: (value) => value.trim() },
+                  { validator: (_, value) => whitespaceOnlyRegExp(value) },
                   {
                     validator: (_, value) => nameValidator(value)
                   }
