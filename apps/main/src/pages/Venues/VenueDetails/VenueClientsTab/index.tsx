@@ -29,11 +29,17 @@ export function VenueClientsTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='card'>
+      type='second'>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wireless' })}
         key='wifi'>
         <IconThirdTab>
+          <Tabs.TabPane key='list'
+            tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
+              <ListSolid />
+            </Tooltip>}>
+            <ClientDualTable />
+          </Tabs.TabPane>
           <Tabs.TabPane key='overview'
             tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
               <LineChartOutline />
@@ -42,12 +48,6 @@ export function VenueClientsTab () {
               reportName={ReportType.CLIENT}
               rlsClause={`"zoneName" in ('${venueId}')`}
             />
-          </Tabs.TabPane>
-          <Tabs.TabPane key='list'
-            tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
-              <ListSolid />
-            </Tooltip>}>
-            <ClientDualTable />
           </Tabs.TabPane>
         </IconThirdTab>
       </Tabs.TabPane>
