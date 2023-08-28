@@ -1,28 +1,29 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
-import { ReactNode, CSSProperties, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import {
   Checkbox,
   Form,
   Switch,
   Slider,
-  FormItemProps,
   Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Fieldset, Tooltip }      from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { Fieldset, Tooltip }                 from '@acx-ui/components'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
+import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
 
-export function MulticastForm () {
+export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
 
   const { $t } = useIntl()
+  const { wlanData } = props
 
   const enableMulticastRateLimitingFieldName = ['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']
   const enableMulticastUpLimitFieldName = ['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']
@@ -33,13 +34,11 @@ export function MulticastForm () {
   const [
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
-    enableMulticastDownLimit,
-    enableMulticastFilter
+    enableMulticastDownLimit
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableMulticastUpLimitFieldName),
-    useWatch<boolean>(enableMulticastDownLimitFieldName),
-    useWatch<boolean>(enableMulticastFilterFieldName)
+    useWatch<boolean>(enableMulticastDownLimitFieldName)
   ]
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
@@ -66,7 +65,9 @@ export function MulticastForm () {
   )
 
   useEffect(() => {
-    setSwitchMulticastRateLimitingDisabled(!enableMulticastRateLimiting && enableMulticastFilter)
+    const multicastRateLimiting = form.getFieldValue(enableMulticastRateLimitingFieldName)
+    const multicastFilter = form.getFieldValue(enableMulticastFilterFieldName)
+    setSwitchMulticastRateLimitingDisabled(!multicastRateLimiting && multicastFilter)
   }, [])
 
   const handleMulticastFilterOnChange = (checked: boolean) => {
@@ -111,13 +112,21 @@ export function MulticastForm () {
       { multicastRateLimitFlag &&
         <>
           <UI.FieldLabel width='250px'>
-            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Space>
+              {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+              <Tooltip.Question
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
             <Form.Item
               name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
             >
               <Switch
+                data-testid='multicastRateLimitSwitch'
                 disabled={switchMulticastRateLimitingDisabled}
               />
             </Form.Item>
@@ -125,10 +134,9 @@ export function MulticastForm () {
 
           {enableMulticastRateLimiting &&
           <>
-            <FieldsetItem
-              name={['wlan', 'advancedCustomization', 'multicastRateLimit5GField']}
+            <Fieldset
               label={$t({ defaultMessage: '2.4 GHz & 5 GHz' })}
-              initialValue={true}
+              checked={true}
               switchStyle={{ display: 'none' }}
               style={{ width: 'max-content', marginLeft: '-8px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
@@ -201,14 +209,14 @@ export function MulticastForm () {
                     /> : <Unlimited />
                 }
               </div>
-            </FieldsetItem>
+            </Fieldset>
 
-            <FieldsetItem
-              name={['wlan', 'advancedCustomization', 'multicastRateLimit6GField']}
+            <Fieldset
               label={$t({ defaultMessage: '6 GHz' })}
-              initialValue={true}
+              checked={true}
               switchStyle={{ display: 'none' }}
-              style={{ width: 'max-content', marginLeft: '-8px' }}>
+              style={{ width: 'max-content', marginLeft: '-8px' }}
+            >
 
               <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
                 <UI.FormItemNoLabel
@@ -217,8 +225,18 @@ export function MulticastForm () {
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <Checkbox data-testid='enableMulticastUpLimit6G'
-                      children={$t({ defaultMessage: 'Upload Limit' })} />}
+                    <>
+                      <Checkbox data-testid='enableMulticastUpLimit6G'
+                        children={$t({ defaultMessage: 'Upload Limit' })}
+                        disabled={isNotWPA3(wlanData)} />
+                      {isNotWPA3(wlanData) &&
+                       <Tooltip.Question
+                         title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                         placement='right'
+                         iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                      }
+                    </>
+                  }
                 />
               </div>
 
@@ -229,16 +247,30 @@ export function MulticastForm () {
                   initialValue={false}
                   style={{ lineHeight: '50px' }}
                   children={
-                    <Checkbox data-testid='enableMulticastDownLimit6G'
-                      children={$t({ defaultMessage: 'Download Limit' })} />}
+                    <>
+                      <Checkbox data-testid='enableMulticastDownLimit6G'
+                        children={$t({ defaultMessage: 'Download Limit' })}
+                        disabled={isNotWPA3(wlanData)} />
+                      {isNotWPA3(wlanData) &&
+                      <Tooltip.Question
+                        title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                        placement='right'
+                        iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                      }
+                    </>
+                  }
                 />
               </div>
 
-            </FieldsetItem>
+            </Fieldset>
           </>}
         </>}
     </>
   )
+}
+
+function isNotWPA3 (wlanData: NetworkSaveData | null) : boolean {
+  return !(wlanData?.wlan?.wlanSecurity === WlanSecurityEnum.WPA3)
 }
 
 enum BssMinRateEnum {
@@ -270,15 +302,3 @@ function getDLMax (value : String) : number {
     default: return 6
   }
 }
-
-const FieldsetItem = ({
-  children,
-  label,
-  switchStyle,
-  ...props
-}: FormItemProps & { label: string, children: ReactNode, switchStyle: CSSProperties }) =>
-  <Form.Item
-    {...props}
-    valuePropName='checked'>
-    <Fieldset {...{ label, children }} switchStyle={switchStyle}/>
-  </Form.Item>
