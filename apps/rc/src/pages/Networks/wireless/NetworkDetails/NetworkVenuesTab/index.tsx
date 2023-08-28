@@ -38,8 +38,8 @@ import {
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
-  WlanSecurityEnum,
-  SchedulingModalState
+  SchedulingModalState,
+  IsWPA3Security
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -75,7 +75,9 @@ const defaultPayload = {
     'latitude',
     'longitude',
     'mesh',
-    'status'
+    'status',
+    'isOweMaster',
+    'owePairNetworkId'
   ]
 }
 
@@ -151,7 +153,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
         }
       })
       setTableData(data)
@@ -169,7 +171,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(network?.wlan.wlanSecurity)
+    const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -219,7 +221,7 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = network?.wlan?.wlanSecurity && [WlanSecurityEnum.WPA3, WlanSecurityEnum.OWE, WlanSecurityEnum.OWETransition].includes(network?.wlan.wlanSecurity)
+      const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
       if (triBandRadioFeatureFlag && isWPA3security) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
