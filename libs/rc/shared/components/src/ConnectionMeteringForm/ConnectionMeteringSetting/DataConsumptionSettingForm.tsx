@@ -97,7 +97,7 @@ export function DataConsumptionSettingForm () {
       <StepsForm.FieldLabel width='200px'>
         {$t({ defaultMessage: 'Enable Data Consumption control' })}
         <Form.Item
-          name='consumptionControlEnabled'
+          name={'consumptionControlEnabled'}
           valuePropName='checked'
           children={<Switch/>}
         />
@@ -105,7 +105,7 @@ export function DataConsumptionSettingForm () {
       {enabled &&
             <>
               <Form.Item
-                name='dataCapacity'
+                name={'dataCapacity'}
                 required={true}
                 label={
                   <>
@@ -185,7 +185,7 @@ export function DataConsumptionSettingForm () {
               </div>
 
               <Form.Item
-                name='dataCapacityEnforced'
+                name={'dataCapacityEnforced'}
                 required={true}
                 label={
                   <>
@@ -208,7 +208,7 @@ export function DataConsumptionSettingForm () {
                     options={dataCapacityEnforcedOptions}
                   />}/>
               <Form.Item
-                name='dataCapacityThreshold'
+                name={'dataCapacityThreshold'}
                 required={true}
                 label={
                   <>

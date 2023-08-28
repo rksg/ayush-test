@@ -36,6 +36,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
     }),
+    getEdgeUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getEdgeUpgradePreferences, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'EDGE_PREFERENCES' }]
+    }),
     updateUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.updateUpgradePreferences, params)
@@ -55,6 +64,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
+    }),
+    updateEdgeUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeUpgradePreferences, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'EDGE_PREFERENCES' }]
     }),
     getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -175,6 +194,24 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    skipEdgeUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateEdgeVenueSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeVenueSchedules)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchLatestFirmwareList, params)
@@ -290,5 +327,9 @@ export const {
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
-  useUpdateSwitchFirmwarePredownloadMutation
+  useUpdateSwitchFirmwarePredownloadMutation,
+  useGetEdgeUpgradePreferencesQuery,
+  useUpdateEdgeUpgradePreferencesMutation,
+  useSkipEdgeUpgradeSchedulesMutation,
+  useUpdateEdgeVenueSchedulesMutation
 } = firmwareApi
