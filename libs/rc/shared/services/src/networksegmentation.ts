@@ -9,6 +9,8 @@ import {
   NetworkSegmentationGroupViewData,
   NetworkSegmentationUrls,
   NewTableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
   SwitchLite,
   TableResult,
   transferToTableResult,
@@ -18,6 +20,8 @@ import {
 import { baseNsgApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+import { serviceApi } from './service'
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
@@ -41,7 +45,23 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+      providesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Network Segmentation Group',
+            'Update Network Segmentation Group',
+            'Delete FNetwork Segmentation Group'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+            api.dispatch(nsgApi.util.invalidateTags([
+              { type: 'Networksegmentation', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     deleteNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {

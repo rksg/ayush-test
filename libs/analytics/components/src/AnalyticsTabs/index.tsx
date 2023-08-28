@@ -30,7 +30,7 @@ export function AnalyticsTabs (props: {
     onChange={onTabChange}
     activeKey={activeSubTab}
     defaultActiveKey='incidents'
-    type='card'
+    type='second'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents'>
       <IncidentTabContent filters={{ ...dateFilter, ...incidentFilter }} />

@@ -2,7 +2,11 @@ import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   position: sticky;
-  top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
+  top: calc(
+    var(--acx-header-height) +
+    var(--acx-content-vertical-space) +
+    (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
+  );
   z-index: 6;
   background-color: var(--acx-primary-white);
   padding: 0 var(--acx-content-horizontal-space);
@@ -44,6 +48,7 @@ export const Wrapper = styled.div`
       a:hover {
         text-decoration: underline;
       }
+      line-height: 16px;
     }
     .ant-breadcrumb + .ant-page-header-heading {
       margin-top: 3px;
