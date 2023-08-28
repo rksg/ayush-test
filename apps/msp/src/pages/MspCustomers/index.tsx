@@ -154,9 +154,9 @@ export function MspCustomers () {
   const transformAdminCountHeader = () => {
     const type = tenantDetailsData.data?.tenantType
     return type === AccountType.MSP_INSTALLER
-      ? $t({ defaultMessage: 'MSP Installer Count' })
+      ? $t({ defaultMessage: 'Installer Admin Count' })
       : (type === AccountType.MSP_INTEGRATOR
-        ? $t({ defaultMessage: 'MSP Integrator Count' })
+        ? $t({ defaultMessage: 'Integrator Admin Count' })
         : $t({ defaultMessage: 'MSP Admin Count' }))
   }
 
