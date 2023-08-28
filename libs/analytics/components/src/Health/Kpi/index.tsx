@@ -36,24 +36,33 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
+
+type KpiThresholdsQueryProps = {
+  filters: AnalyticsFilter
+}
+
+export const useKpiThresholdsQuery = ({ filters }: KpiThresholdsQueryProps) => {
+  const kpis = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
+  const kpiThresholdsQueryResults = healthApi.useGetKpiThresholdsQuery({ ...filters, kpis })
+  const thresholds = kpis.reduce((agg, kpi) => {
+    agg[kpi] = kpiThresholdsQueryResults.data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
+    return agg
+  }, {} as KpiThresholdType)
+
+  return { thresholds, kpiThresholdsQueryResults }
+}
+
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
-  const { kpis } = kpisForTab(isMLISA)[tab]
-  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
-  let thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const { filter } = filters
-  const customThresholdQuery = useGetKpiThresholdsQuery({
-    ...filters, kpis: thresholdKeys })
-  const { data, fulfilledTimeStamp } = customThresholdQuery
-  const thresholds = thresholdKeys.reduce((kpis, kpi) => {
-    kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
-    return kpis
-  }, {} as KpiThresholdType)
+  const { kpis } = kpisForTab(isMLISA)[tab]
+  const { useFetchThresholdPermissionQuery } = healthApi
+  const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
-  return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
-    {fulfilledTimeStamp && <KpiSection
-      key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
+  return <Loader states={[kpiThresholdsQueryResults, thresholdPermissionQuery]}>
+    {kpiThresholdsQueryResults.fulfilledTimeStamp && <KpiSection
+      key={kpiThresholdsQueryResults.fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
       kpis={kpis}
       thresholds={thresholds}
       mutationAllowed={mutationAllowed}
