@@ -1,8 +1,11 @@
 import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { DdosRateLimitingRule } from '@acx-ui/rc/utils'
+import { Provider }             from '@acx-ui/store'
+import { render, screen }       from '@acx-ui/test-utils'
+
+import { DDoSRuleDialogProps } from '../DDoSRuleDialog'
 
 import { DDoSRateLimitConfigDrawer } from './'
 
@@ -35,81 +38,170 @@ jest.mock('antd', () => {
 
 const mockedSetFieldValue = jest.fn()
 const mockedGetFieldValue = jest.fn()
+const mockedGetRuleSubmitData = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   useStepFormContext: () => ({
     form: {
-      getFieldValue: mockedGetFieldValue.mockReturnValue([]),
+      getFieldValue: mockedGetFieldValue,
       setFieldValue: mockedSetFieldValue
     }
   })
 }))
+jest.mock('../DDoSRuleDialog', () => ({
+  ...jest.requireActual('../DDoSRuleDialog'),
+  DDoSRuleDialog: (props: DDoSRuleDialogProps) => {
+    const submitData = mockedGetRuleSubmitData()
+    return props.visible && <div data-testid='rc-DDoSRuleDialog'>
+      <div onClick={() => {
+        props.onSubmit(submitData, props.editMode)
+        props.setVisible(false)
+      }}>Submit</div>
+    </div>
+  }
+}))
 
-const { click, type, selectOptions } = userEvent
+const { click } = userEvent
 
 describe('DDos rate limit config drawer', () => {
   beforeEach(() => {
     mockedGetFieldValue.mockReset()
     mockedSetFieldValue.mockReset()
+    mockedGetRuleSubmitData.mockReset()
+    mockedGetFieldValue.mockReturnValue([])
   })
 
-  it('should correctly render', async () => {
+
+
+  it('should correctly edit rule and delete rule', async () => {
+    const mockedData = [{
+      ddosAttackType: 'DNS_RESPONSE',
+      rateLimiting: 150
+    }, {
+      ddosAttackType: 'ICMP',
+      rateLimiting: 200
+    }]
+    mockedGetFieldValue.mockReturnValue(mockedData)
+    mockedGetRuleSubmitData.mockReturnValue({
+      ddosAttackType: 'ICMP',
+      rateLimiting: 111
+    })
+
     render(
       <Provider>
         <DDoSRateLimitConfigDrawer
           visible={true}
           setVisible={() => {}}
+          data={mockedData as DdosRateLimitingRule[]}
         />
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
-
-    // add ddos rule
-    const addRuleBtn = screen.getByRole('button', { name: 'Add Rule' })
-    await click(addRuleBtn)
-    await screen.findByText('Add DDoS Rule')
-    const dialogs = screen.queryAllByRole('dialog')
-    const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
-
-    await selectOptions(
-      await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
-      'ICMP')
-    await type(within(dialog).getByRole('spinbutton'), '6')
-    await click(within(dialog).getByRole('button', { name: 'Add' }))
-    await screen.findByRole('row', { name: /ICMP/ })
-
-    // add another rule
-    await click(addRuleBtn)
-    await click(await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }))
-
-    // the added attack type should be disabled
-    const opts = await within(dialog).findAllByRole('option')
-    const icmp = opts.filter(o => o.textContent === 'ICMP')
-    expect(icmp[0]).toBeDisabled()
-    await selectOptions(
-      await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
-      'DNS Response')
-    await type(within(dialog).getByRole('spinbutton'), '{backspace}2')
-    await click(within(dialog).getByRole('button', { name: 'Add' }))
-    await screen.findByRole('row', { name: /DNS Response/ })
-
-    // delete ICMP rule
+    const drawer = screen.getByRole('dialog')
     const icmpRow = await screen.findByRole('row', { name: /ICMP/ })
+    const dnsRow = await screen.findByRole('row', { name: /DNS Response/ })
+
+    // edit ICMP rule
+    await click(await within(icmpRow).findByRole('checkbox'))
+    await click(await screen.findByRole('button', { name: 'Edit' }))
+    const dialog = await screen.findByTestId('rc-DDoSRuleDialog')
+    await click(await within(dialog).findByText('Submit'))
+    await click(await within(icmpRow).findByRole('checkbox'))
+
+    // delete DNS Response rule
+    await click(await within(dnsRow).findByRole('checkbox'))
+    await click(await screen.findByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "DNS Response"?')
+    await click(await screen.findByRole('button', { name: 'Delete Rule' }))
+
+    // submit
+    await click(within(drawer).getByRole('button', { name: 'Apply' }))
+
+    expect(mockedSetFieldValue).toBeCalledWith('ddosRateLimitingRules', [{
+      ddosAttackType: 'ICMP',
+      rateLimiting: 111
+    }])
+  })
+
+  it('should correctly delete multiple rules', async () => {
+    const mockedData = [{
+      ddosAttackType: 'TCP_SYN',
+      rateLimiting: 252
+    }, {
+      ddosAttackType: 'DNS_RESPONSE',
+      rateLimiting: 100
+    }, {
+      ddosAttackType: 'ICMP',
+      rateLimiting: 266
+    }]
+    mockedGetFieldValue.mockReturnValue(mockedData)
+
+    render(
+      <Provider>
+        <DDoSRateLimitConfigDrawer
+          visible={true}
+          setVisible={() => {}}
+          data={mockedData as DdosRateLimitingRule[]}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
+    const tcpSynRow = await screen.findByRole('row', { name: /TCP SYN/ })
+    const icmpRow = await screen.findByRole('row', { name: /ICMP/ })
+    await click(await within(tcpSynRow).findByRole('checkbox'))
     await click(await within(icmpRow).findByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "ICMP"?')
-    await click(await screen.findByRole('button', { name: 'Delete Rule' }))
+    await screen.findByText('Delete "2 Rules"?')
+    await click(await screen.findByRole('button', { name: 'Delete Rules' }))
 
     // submit
     await click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('ddosRateLimitingRules', [{
       ddosAttackType: 'DNS_RESPONSE',
-      rateLimiting: 252
+      rateLimiting: 100
     }])
   })
 
+  it('cancel should do nothing', async () => {
+    const mockedData = [{
+      ddosAttackType: 'DNS_RESPONSE',
+      rateLimiting: 252
+    }]
+    mockedGetFieldValue.mockReturnValue(mockedData)
+    mockedGetRuleSubmitData.mockReturnValue({
+      ddosAttackType: 'ICMP',
+      rateLimiting: 112
+    })
+
+    render(
+      <Provider>
+        <DDoSRateLimitConfigDrawer
+          visible={true}
+          setVisible={() => {}}
+          data={mockedData as DdosRateLimitingRule[]}
+        />
+      </Provider>)
+
+    expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
+    const drawer = screen.getByRole('dialog')
+    await screen.findByRole('row', { name: /DNS Response/ })
+
+    // add ddos rule
+    await click(screen.getByRole('button', { name: 'Add Rule' }))
+    const dialog = await screen.findByTestId('rc-DDoSRuleDialog')
+    await click(await within(dialog).findByText('Submit'))
+
+    await click(within(drawer).getByRole('button', { name: 'Cancel' }))
+    expect(mockedSetFieldValue).toBeCalledTimes(0)
+  })
+
   it('should reset data when click cancel', async () => {
+    mockedGetRuleSubmitData.mockReturnValue({
+      ddosAttackType: 'ICMP',
+      rateLimiting: 2566
+    })
+
     render(
       <Provider>
         <DDoSRateLimitConfigDrawer
@@ -122,17 +214,9 @@ describe('DDos rate limit config drawer', () => {
     const drawer = screen.getByRole('dialog')
 
     // add ddos rule
-    const addRuleBtn = screen.getByRole('button', { name: 'Add Rule' })
-    await click(addRuleBtn)
-    await screen.findByText('Add DDoS Rule')
-    const dialogs = screen.queryAllByRole('dialog')
-    const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
-
-    await selectOptions(
-      await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
-      'ICMP')
-    await type(within(dialog).getByRole('spinbutton'), '6')
-    await click(within(dialog).getByRole('button', { name: 'Add' }))
+    await click(screen.getByRole('button', { name: 'Add Rule' }))
+    const dialog = await screen.findByTestId('rc-DDoSRuleDialog')
+    await click(await within(dialog).findByText('Submit'))
     await within(drawer).findByRole('row', { name: /ICMP/ })
 
     // submit

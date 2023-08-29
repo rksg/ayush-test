@@ -7,6 +7,7 @@ import {
   ACLDirection,
   AddressType,
   DdosAttackType,
+  DdosRateLimitingRule,
   EdgeFirewallSetting,
   EdgeUrlsInfo,
   getServiceRoutePath,
@@ -34,7 +35,7 @@ import { SummaryForm }  from './SummaryForm'
 
 import FirewallForm from './'
 
-const { click, type, selectOptions, clear } = userEvent
+const { click, type } = userEvent
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -75,6 +76,20 @@ jest.mock('../FirewallForm/SettingsForm/StatefulACLFormItem/StatefulACLConfigDra
     editData: StatefulAcl
   }) => {
     return props.visible && <div data-testid='rc-StatefulACLConfigDrawer'>
+      <div onClick={() => {
+        props.setVisible(false)
+      }}>Apply</div>
+    </div>
+  }
+}))
+
+jest.mock('../FirewallForm/SettingsForm/DDoSRateFormItem/DDoSRateLimitConfigDrawer', () => ({
+  DDoSRateLimitConfigDrawer: (props: {
+    visible: boolean,
+    setVisible: (visible: boolean) => void,
+    data: DdosRateLimitingRule[]
+  }) => {
+    return props.visible && <div data-testid='rc-DDoSRateLimitConfigDrawer'>
       <div onClick={() => {
         props.setVisible(false)
       }}>Apply</div>
@@ -172,36 +187,14 @@ describe('firewall form', () => {
       expect(await body.findByRole('heading', { name: 'Settings' })).toBeVisible()
       await type(body.getByRole('textbox', { name: 'Service Name' }), 'Test 1')
       await click(body.getByRole('switch', { name: 'ddos' }))
-      const drawer = await screen.findByRole('dialog')
-      expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
-
-      // add ddos rule
-      const addRuleBtn = within(drawer).getByRole('button', { name: 'Add Rule' })
-      await click(addRuleBtn)
-      await screen.findByText('Add DDoS Rule')
-      const dialogs = screen.queryAllByRole('dialog')
-      const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
-
-      await selectOptions(
-        await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
-        'ICMP')
-      await clear(within(dialog).getByRole('spinbutton'))
-      await type(within(dialog).getByRole('spinbutton'), '6')
-      await click(within(dialog).getByRole('button', { name: 'Add' }))
-      await within(drawer).findByRole('row', { name: /ICMP/ })
-
-      // add another rule
-      await click(addRuleBtn)
-      await click(await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }))
-      await selectOptions(
-        await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
-        'DNS Response')
-      await type(within(dialog).getByRole('spinbutton'), '{backspace}{backspace}{backspace}2')
-      await click(within(dialog).getByRole('button', { name: 'Add' }))
-      await within(drawer).findByRole('row', { name: /DNS Response/ })
-      await click(within(drawer).getByRole('button', { name: 'Apply' }))
+      const drawer = await screen.findByTestId('rc-DDoSRateLimitConfigDrawer')
+      await click(within(drawer).getByText('Apply'))
 
       // Navigate to Step 2
+      await click(actions.getByRole('button', { name: 'Next' }))
+      await body.findByText('Please create 1 rule at least.')
+      await click(body.getByRole('switch', { name: 'ddos' }))
+
       await click(actions.getByRole('button', { name: 'Next' }))
       expect(await body.findByTestId('rc-ScopeForm')).toBeVisible()
 
@@ -213,7 +206,7 @@ describe('firewall form', () => {
       const ddosResult = await screen.findByText(/DDoS Rate-limiting/)
       // eslint-disable-next-line testing-library/no-node-access
       expect((ddosResult.parentNode as HTMLDivElement).textContent)
-        .toBe('DDoS Rate-limitingON (2 Rules)')
+        .toBe('DDoS Rate-limitingOFF')
 
       const aclResult = await screen.findByText(/Stateful ACL/)
       // eslint-disable-next-line testing-library/no-node-access
@@ -226,14 +219,8 @@ describe('firewall form', () => {
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
           serviceName: 'Test 1',
-          ddosRateLimitingEnabled: true,
-          ddosRateLimitingRules: [{
-            ddosAttackType: 'ICMP',
-            rateLimiting: 6
-          }, {
-            ddosAttackType: 'DNS_RESPONSE',
-            rateLimiting: 2
-          }],
+          ddosRateLimitingEnabled: false,
+          ddosRateLimitingRules: [],
           statefulAclEnabled: false,
           statefulAcls: []
         })
@@ -370,8 +357,8 @@ describe('firewall form', () => {
       await click(body.getByRole('switch', { name: 'ddos' }))
       // drawer won't open when ddos rule is not first-time setup
       await click(await body.findByRole('button', { name: 'Change' }))
-      const drawer = await screen.findByRole('dialog')
-      await click(within(drawer).getByText('Cancel'))
+      const drawer = await screen.findByTestId('rc-DDoSRateLimitConfigDrawer')
+      await click(within(drawer).getByText('Apply'))
 
       // Navigate to Step 2
       await click(screen.getByText('Scope'))
