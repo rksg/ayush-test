@@ -203,7 +203,7 @@ describe('Device Inventory Table', () => {
         route: { params }
       })
 
-    expect(screen.getByText('Device Inventory')).toBeVisible()
+    expect(screen.getByText('Device Inventory (10)')).toBeVisible()
     expect(screen.getByText('Manage My Account')).toBeVisible()
   })
   it('should render table', async () => {
