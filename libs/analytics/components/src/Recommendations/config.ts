@@ -87,11 +87,11 @@ export const states = {
   },
   beforeapplyinterrupted: {
     text: defineMessage({ defaultMessage: 'Interrupted (Recommendation not applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in the SmartZone on {updatedAt} that may interfere with this recommendation. As such, the recommendation scheduled for {scheduledAt} has been canceled. Manually check whether this recommendation is still valid.' })
+    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the recommendation scheduled for {scheduledAt} has been canceled. Manually check whether this recommendation is still valid.' })
   },
   afterapplyinterrupted: {
     text: defineMessage({ defaultMessage: 'Interrupted (Recommendation applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in the SmartZone on {updatedAt} that may interfere with this recommendation. As such, the results from the monitoring of this configuration change may not be relevant anymore. Manually check whether this recommendation is still valid.' })
+    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the results from the monitoring of this configuration change may not be relevant anymore. Manually check whether this recommendation is still valid.' })
   },
   applywarning: {
     text: defineMessage({ defaultMessage: 'REVERT' }),
@@ -177,6 +177,33 @@ export const codes = {
     valueFormatter: formatter('durationFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan Timer (5 GHz)' }),
     actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
+    kpis: [{
+      key: 'avg-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-bgscan-3rd-radio-timer': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Background scan timer on 6(5) GHz radio' }),
+    priority: priorities.low,
+    valueFormatter: formatter('durationFormat'),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6(5) GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: '6(5) GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
     reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{

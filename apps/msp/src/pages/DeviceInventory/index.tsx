@@ -32,7 +32,8 @@ import { AccountType }           from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
-  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' })
+  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  APSW: defineMessage({ defaultMessage: 'Device' })
 }
 
 const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) => {
@@ -103,6 +104,7 @@ export function DeviceInventory () {
       'name',
       'deviceStatus'
     ],
+    pageSize: 10000,
     searchTargetFields: ['apMac','switchMac','serialNumber'],
     filters: {}
   }
@@ -162,7 +164,7 @@ export function DeviceInventory () {
       filterable: Object.entries(deviceTypeMapping)
         .map(([key, value])=>({ key, value: $t(value) })),
       key: 'deviceType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceTypeString(row, intl)
       }
     },
@@ -191,7 +193,7 @@ export function DeviceInventory () {
       dataIndex: 'deviceStatus',
       sorter: true,
       key: 'deviceStatus',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceOperStatus(row, intl)
       }
     },
@@ -275,7 +277,8 @@ export function DeviceInventory () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Device Inventory' })}
+        title={$t({ defaultMessage: 'Device Inventory ({count})' },
+          { count: list?.totalCount || 0 })}
         extra={
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

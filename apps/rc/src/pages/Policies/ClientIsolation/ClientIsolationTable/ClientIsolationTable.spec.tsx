@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientIsolationUrls,
   CommonUrlsInfo,
@@ -99,24 +98,7 @@ describe('ClientIsolationTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <ClientIsolationTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <ClientIsolationTable />
@@ -164,6 +146,9 @@ describe('ClientIsolationTable', () => {
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 

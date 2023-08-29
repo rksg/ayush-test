@@ -94,8 +94,8 @@ export function TrustedPorts () {
     dataIndex: 'trustPorts',
     key: 'trustPorts',
     sorter: { compare: sortProp('trustPorts', defaultSort) },
-    render: (data, row) => {
-      if(data?.toString() === ''){
+    render: (_, row) => {
+      if(row.trustPorts?.toString() === ''){
         return <Button type='link'
           onClick={()=>{
             setSelected(row)
@@ -104,7 +104,7 @@ export function TrustedPorts () {
           {$t({ defaultMessage: 'Please select...' })}
         </Button>
       }else{
-        const taggedPorts = ((data || []) as string[])?.join(', ')
+        const taggedPorts = (row.trustPorts || [])?.join(', ')
         return taggedPorts
       }
     }

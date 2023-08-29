@@ -2,13 +2,13 @@ import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
-import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Path, To }                         from '@acx-ui/react-router-dom'
-import { Provider }                         from '@acx-ui/store'
-import { mockServer, render, screen }       from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                         from '@acx-ui/react-router-dom'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen }                       from '@acx-ui/test-utils'
 
 import { mockedTenantId }     from '../../MdnsProxy/MdnsProxyForm/__tests__/fixtures'
+import { mockNetworkResult }  from '../__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingConfigureForm from './WifiCallingConfigureForm'
@@ -98,6 +98,8 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
+const mockedUpdateService = jest.fn()
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -106,7 +108,26 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
-describe.skip('WifiCallingConfigureForm', () => {
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
+describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -119,17 +140,20 @@ describe.skip('WifiCallingConfigureForm', () => {
       ),
       rest.put(
         WifiCallingUrls.updateWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))
+        (req, res, ctx) => {
+          mockedUpdateService()
+          return res(ctx.json(wifiCallingServiceResponse))
+        }
       ),
       rest.get(
         WifiCallingUrls.getWifiCalling.url,
         (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
-  })
-
-  afterAll(() => {
-    mockServer.close()
   })
 
   it('should render wifiCallingConfigureForm successfully', async () => {
@@ -167,34 +191,11 @@ describe.skip('WifiCallingConfigureForm', () => {
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(mockedUpdateService).toBeCalledTimes(1)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <WifiCallingFormContext.Provider value={{
-        state: initState,
-        dispatch: jest.fn()
-      }}>
-        <Provider>
-          <WifiCallingConfigureForm />
-        </Provider>
-      </WifiCallingFormContext.Provider>
-      , {
-        route: {
-          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
-        }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
@@ -237,5 +238,7 @@ describe.skip('WifiCallingConfigureForm', () => {
     )
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).toBeCalledTimes(2)
   })
 })

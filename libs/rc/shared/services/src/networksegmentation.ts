@@ -9,21 +9,27 @@ import {
   NetworkSegmentationGroupViewData,
   NetworkSegmentationUrls,
   NewTableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
   SwitchLite,
   TableResult,
   transferToTableResult,
   WebAuthTemplate,
   WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
-import { baseNsgApi }        from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseNsgApi }                          from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+import { serviceApi } from './service'
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
     createNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(NetworkSegmentationUrls.createNetworkSegmentationGroup)
+        const req = createHttpRequest(NetworkSegmentationUrls.createNetworkSegmentationGroup, undefined, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -39,7 +45,23 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+      providesTags: [{ type: 'Networksegmentation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Network Segmentation Group',
+            'Update Network Segmentation Group',
+            'Delete Network Segmentation Group'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+            api.dispatch(nsgApi.util.invalidateTags([
+              { type: 'Networksegmentation', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     deleteNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -54,7 +76,10 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           NetworkSegmentationUrls.updateNetworkSegmentationGroup,
-          params
+          params,
+          {
+            ...ignoreErrorModal
+          }
         )
         return {
           ...req,

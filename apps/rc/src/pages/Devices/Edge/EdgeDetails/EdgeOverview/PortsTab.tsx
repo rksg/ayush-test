@@ -1,6 +1,7 @@
+import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, Loader }      from '@acx-ui/components'
+import { Button, GridRow, Loader }               from '@acx-ui/components'
 import { EdgePortsTable }                        from '@acx-ui/rc/components'
 import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -31,10 +32,10 @@ export const PortsTab = ({ data, isLoading }:
       </Button>
     }
 
-    <GridCol col={{ span: 24 }}>
+    <Col span={24}>
       <Loader states={[{ isLoading }]}>
         <EdgePortsTable data={data} />
       </Loader>
-    </GridCol>
+    </Col>
   </GridRow>
 }

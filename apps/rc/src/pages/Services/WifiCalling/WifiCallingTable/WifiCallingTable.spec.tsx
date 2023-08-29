@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -19,6 +18,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+
+import { mockNetworkResult } from '../__tests__/fixtures'
 
 import WifiCallingTable from './WifiCallingTable'
 
@@ -61,42 +62,6 @@ const mockTableResult = {
           domain: 'a.b.com'
         }
       ]
-    }
-  ]
-}
-
-const mockNetworkResult = {
-  fields: [
-    'clients',
-    'aps',
-    'description',
-    'check-all',
-    'ssid',
-    'captiveType',
-    'vlan',
-    'name',
-    'venues',
-    'cog',
-    'vlanPool',
-    'id',
-    'nwSubType'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      name: 'Open-Network',
-      id: '28ebc4915a94407faf8885bcd1fe7f0b',
-      vlan: 1,
-      nwSubType: 'open',
-      ssid: 'Open-Network',
-      venues: {
-        count: 0,
-        names: [],
-        ids: []
-      },
-      aps: 0,
-      clients: 0
     }
   ]
 }
@@ -153,23 +118,7 @@ describe('WifiCallingTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <WifiCallingTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <WifiCallingTable />
@@ -210,11 +159,16 @@ describe('WifiCallingTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+    await userEvent.click(
+      await screen.findByRole('button', { name: /Delete Service/i })
+    )
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByText(/delete "wifi\-1"\?/i)).toBeNull()
     })
   })
 

@@ -15,7 +15,7 @@ import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
-  useGetAvailableFirmwareListQuery,
+  useGetAvailableABFListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
@@ -36,7 +36,8 @@ import {
   sortProp,
   defaultSort,
   dateSort,
-  EolApFirmware
+  EolApFirmware,
+  ABFVersion
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
@@ -76,7 +77,7 @@ function useColumns (
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       searchable: searchable,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.name
       }
     },
@@ -87,8 +88,8 @@ function useColumns (
       sorter: { compare: sortCurrentApFirmware },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
-      render: function (data, row) {
-        return row.versions ? row.versions[0].version : '--'
+      render: function (_, row) {
+        return getApVersion(row) ?? '--'
       }
     },
     {
@@ -96,14 +97,12 @@ function useColumns (
       key: 'eolApFirmwares',
       dataIndex: 'eolApFirmwares',
       sorter: false,
-      // filterable: filterables ? filterables['version'] : false,
-      // filterMultiple: false,
-      render: function (data, row) {
-        const eolApFirmwares = row.eolApFirmwares
+      render: function (_, row) {
+        const firmwareText = getDisplayEolFirmwareText(row)
 
-        return eolApFirmwares
-          ? <Tooltip title={getEolFirmwareTooltipText(eolApFirmwares)}>
-            <UI.WithTooltip>{getEolFirmwareText(eolApFirmwares)}</UI.WithTooltip>
+        return firmwareText
+          ? <Tooltip title={getDisplayEolFirmwareTooltipText(row)}>
+            <UI.WithTooltip>{firmwareText}</UI.WithTooltip>
           </Tooltip>
           : '--'
       }
@@ -115,7 +114,7 @@ function useColumns (
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.versions) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
@@ -128,7 +127,7 @@ function useColumns (
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
       }
@@ -139,7 +138,7 @@ function useColumns (
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         const schedules = getApSchedules(row)
 
         return schedules.length === 0
@@ -160,12 +159,19 @@ function sortCurrentApFirmware (a: FirmwareVenue, b: FirmwareVenue) {
   return compareVersions(getApVersion(a), getApVersion(b))
 }
 
-function getEolFirmwareTooltipText (eolApFirmwares: EolApFirmware[]): string {
-  return eolApFirmwares.map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+function getDisplayEolFirmware (venue: FirmwareVenue): EolApFirmware[] {
+  const eolApFirmwares = venue.eolApFirmwares || []
+  const currentVersion = getApVersion(venue)
+  return eolApFirmwares.filter(eol => compareVersions(eol.currentEolVersion, currentVersion) < 0)
 }
 
-function getEolFirmwareText (eolApFirmwares: EolApFirmware[]): string {
-  return eolApFirmwares.map(eol => eol.currentEolVersion).join(', ')
+function getDisplayEolFirmwareTooltipText (venue: FirmwareVenue): string {
+  // eslint-disable-next-line max-len
+  return getDisplayEolFirmware(venue).map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+}
+
+function getDisplayEolFirmwareText (venue: FirmwareVenue): string {
+  return getDisplayEolFirmware(venue).map(eol => eol.currentEolVersion).join(', ')
 }
 
 type VenueTableProps = {
@@ -178,8 +184,15 @@ export const VenueFirmwareTable = (
   { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  // eslint-disable-next-line max-len
-  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params }, { refetchOnMountOrArgChange: false })
+  const { availableVersions } = useGetAvailableABFListQuery({ params }, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+          .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+      }
+    }
+  })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
@@ -296,83 +309,13 @@ export const VenueFirmwareTable = (
   },
   {
     visible: (selectedRows) => {
-      if (!availableVersions || availableVersions.length === 0) {
-        return false
-      }
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (!version) {
-          return false
-        }
-        for (let i = 0; i < availableVersions.length; i++) {
-          if (compareVersions(availableVersions[i].id, version) > 0) {
-            filterVersions.push(availableVersions[i])
-          }
-        }
-        return filterVersions.length > 0
-      }
-
-      let minVersion = ''
-      let isSameVersion = true
-      const ok = selectedRows.every((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (!version) {
-          return false
-        }
-        if (minVersion && compareVersions(version, minVersion) !== 0) {
-          isSameVersion = false
-        }
-
-        if (!minVersion || compareVersions(version, minVersion) > 0) {
-          minVersion = version
-        }
-        return true
-      })
-      if (!ok) return false
-      for (let i = 0; i < availableVersions.length; i++) {
-        // eslint-disable-next-line max-len
-        if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-          filterVersions.push(availableVersions[i])
-        }
-      }
-      return filterVersions.length > 0
+      const activeApFirmwares = extractAvailableApFirmwares(selectedRows)
+      return activeApFirmwares.length > 0
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      } else {
-        let minVersion = ''
-        let isSameVersion = true
-        selectedRows.forEach((row: FirmwareVenue) => {
-          const version = getApVersion(row)
-          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
-            isSameVersion = false
-          }
-          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
-            minVersion = version as string
-          }
-        })
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            // eslint-disable-next-line max-len
-            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      }
-      setChangeUpgradeVersions(filterVersions)
+      setChangeUpgradeVersions(extractAvailableApFirmwares(selectedRows))
       setChangeScheduleModelVisible(true)
     }
   },
@@ -438,7 +381,7 @@ export const VenueFirmwareTable = (
         const version = getApVersion(row)
         if (availableVersions) {
           for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) < 0) {
+            if (compareVersions(availableVersions[i].id, version) < 0) {
               filterVersions.push(availableVersions[i])
             }
           }

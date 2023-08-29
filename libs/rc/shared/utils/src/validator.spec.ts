@@ -24,7 +24,8 @@ import {
   validateRecoveryPassphrasePart,
   validateVlanId,
   ipv6RegExp,
-  validateTags
+  validateTags,
+  multicastIpAddressRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -367,6 +368,32 @@ describe('validator', () => {
       // eslint-disable-next-line max-len
       const result1 = validateTags(['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35'])
       await expect(result1).rejects.toEqual('No more than 24 Tags are allowed')
+    })
+  })
+
+  describe('multicast IP address', () => {
+    it('Should take care of value correctly', async () => {
+      const result = multicastIpAddressRegExp('224.0.1.0')
+      await expect(result).resolves.toEqual(undefined)
+
+      const reservedIp1 = multicastIpAddressRegExp('235.1.1.1')
+      await expect(reservedIp1).resolves.toEqual(undefined)
+
+      const reservedIp2 = multicastIpAddressRegExp('224.00.1.1')
+      await expect(reservedIp2).resolves.toEqual(undefined)
+    })
+
+    it('Should check value inverted', async () => {
+      const result = multicastIpAddressRegExp('224.0.1.0', true)
+      await expect(result).rejects.toEqual('Please exclude multicast IP address')
+
+      const reservedIp1 = multicastIpAddressRegExp('235.1.1.1', true)
+      await expect(reservedIp1).rejects.toEqual('Please exclude multicast IP address')
+    })
+
+    it('Should display error message if ip address values incorrectly', async () => {
+      const result = multicastIpAddressRegExp('8.8.8.8')
+      await expect(result).rejects.toEqual('Please enter a valid multicast IP address')
     })
   })
 })

@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -20,7 +20,8 @@ import {
   useGetSwitchCurrentVersionsQuery,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
-  useGetSwitchFirmwarePredownloadQuery
+  useGetSwitchFirmwarePredownloadQuery,
+  useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -30,13 +31,16 @@ import {
   TableQuery,
   useTableQuery,
   sortProp,
-  defaultSort
+  defaultSort,
+  FirmwareCategory,
+  switchSchedule
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 
 import {
   getNextScheduleTpl,
+  getReleaseFirmware,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion,
@@ -60,11 +64,10 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      // defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
         return row.name
       }
     },
@@ -76,7 +79,7 @@ function useColumns (
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
@@ -92,7 +95,7 @@ function useColumns (
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
     },
@@ -101,7 +104,7 @@ function useColumns (
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         // return getNextScheduleTpl(intl, row)
         return (!isSwitchNextScheduleTooltipDisabled(row)
           ? getNextScheduleTpl(intl, row)
@@ -128,13 +131,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type VenueTableProps = {
   tableQuery: TableQuery<FirmwareSwitchVenue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<FirmwareSwitchVenue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export const VenueFirmwareTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+  { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
@@ -143,11 +145,11 @@ export const VenueFirmwareTable = (
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [currentScheduleVersion, setCurrentScheduleVersion] = useState('')
-  const [currentScheduleVersionAboveTen, setCurrentScheduleVersionAboveTen] = useState('')
+  const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
 
@@ -158,6 +160,30 @@ export const VenueFirmwareTable = (
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
+
+
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+
+  const isLatestVersion = function (currentVersion: FirmwareVersion) {
+    if(_.isEmpty(currentVersion?.id)) return false
+    const latestVersions = getReleaseFirmware(latestReleaseVersions)
+    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
+    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
+    return (currentVersion.id === latestFirmware?.id ||
+      currentVersion.id === latestRodanFirmware?.id)
+  }
+
+
+  const filterVersions = function (availableVersions: FirmwareVersion[]) {
+
+    return availableVersions?.map((version) => {
+      if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
+        return { id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR }
+      } return version
+    })
+  }
+
+
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
@@ -187,6 +213,7 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -201,6 +228,7 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -208,6 +236,18 @@ export const VenueFirmwareTable = (
 
   // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
+
+  const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
+    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    selectedRows.forEach((row: FirmwareSwitchVenue) => {
+      const version = row.switchFirmwareVersion?.id
+      const rodanVersion = enableSwitchRodanFirmware ?
+        row.switchFirmwareVersionAboveTen?.id : ''
+      // eslint-disable-next-line max-len
+      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+    })
+    return filterVersions?.length > 0
+  }
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     visible: (selectedRows) => {
@@ -225,6 +265,13 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Update Now' }),
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -263,15 +310,21 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       let nonIcx8200Count = 0, icx8200Count = 0
-      let currentScheduleVersion = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-        (selectedRows[0].nextSchedule?.version ? selectedRows[0].nextSchedule.version.name : '') : ''
-      // eslint-disable-next-line max-len
-      let currentScheduleVersionAboveTen = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
-        (selectedRows[0].nextSchedule?.versionAboveTen ? selectedRows[0].nextSchedule.versionAboveTen.name : '') : ''
+
+      let currentSchedule = enableSwitchTwoVersionUpgrade && selectedRows.length === 1
+        ? (selectedRows[0].nextSchedule || undefined)
+        : undefined
 
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
@@ -288,8 +341,7 @@ export const VenueFirmwareTable = (
       setChangeUpgradeVersions(filterVersions)
       setNonIcx8200Count(nonIcx8200Count)
       setIcx8200Count(icx8200Count)
-      setCurrentScheduleVersion(currentScheduleVersion)
-      setCurrentScheduleVersionAboveTen(currentScheduleVersionAboveTen)
+      setCurrentSchedule(currentSchedule)
       setChangeScheduleModelVisible(true)
     }
   },
@@ -339,7 +391,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
-        rowSelection={rowSelection}
+        rowSelection={{ type: 'checkbox', selectedRowKeys }}
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
@@ -348,7 +400,7 @@ export const VenueFirmwareTable = (
       <UpdateNowDialog
         visible={updateModelVisible}
         data={venues}
-        availableVersions={upgradeVersions}
+        availableVersions={filterVersions(upgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
         onCancel={handleUpdateModalCancel}
@@ -357,11 +409,10 @@ export const VenueFirmwareTable = (
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
         data={venues}
-        availableVersions={changeUpgradeVersions}
+        availableVersions={filterVersions(changeUpgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
-        currentScheduleVersion={currentScheduleVersion}
-        currentScheduleVersionAboveTen={currentScheduleVersionAboveTen}
+        currentSchedule={currentSchedule}
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
@@ -407,7 +458,6 @@ export function VenueFirmwareList () {
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
-      rowSelection={{ type: 'checkbox' }}
       searchable={true}
       filterables={{
         version: versionFilterOptions,

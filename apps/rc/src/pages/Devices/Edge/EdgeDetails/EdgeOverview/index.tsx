@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
-import styled        from 'styled-components/macro'
 
-import { GridCol, GridRow, Tabs }  from '@acx-ui/components'
+import { GridRow, Tabs }           from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
@@ -15,7 +15,6 @@ import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
 import { MonitorTab }           from './MonitorTab'
 import { PortsTab }             from './PortsTab'
-import { wrapperStyle }         from './styledComponents'
 import { EdgeSubInterfacesTab } from './SubInterfacesTab'
 
 enum OverviewInfoType {
@@ -23,7 +22,7 @@ enum OverviewInfoType {
     PORTS = 'ports',
     SUB_INTERFACES = 'subInterfaces'
 }
-export const EdgeOverview = styled(({ className }:{ className?: string }) => {
+export const EdgeOverview = () => {
   const { $t } = useIntl()
   const { serialNumber, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
@@ -74,7 +73,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'mac',
       'duplex',
       'sort_idx',
-      'interface_name'
+      'interface_name',
+      'ip_mode'
     ],
     filters: { serialNumber: [serialNumber] },
     sortField: 'sortIdx',
@@ -121,8 +121,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   }].filter(i => i.value !== 'monitor' || isEdgeReady)
 
   return (
-    <GridRow className={className}>
-      <GridCol col={{ span: 24 }}>
+    <GridRow>
+      <Col span={24}>
         <EdgeInfoWidget
           currentEdge={currentEdge}
           edgePortsSetting={portStatusList}
@@ -130,10 +130,11 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           isPortListLoading={isPortListLoading}
           onClickWidget={handleClickWidget}
         />
-      </GridCol>
-      <GridCol col={{ span: 24 }}>
+      </Col>
+      <Col span={24}>
         <Tabs
-          type='card'
+          type='second'
+          scrollToTop={false}
           activeKey={currentTab}
           defaultActiveKey={activeSubTab || tabs[0].value}
           onChange={handleTabChange}
@@ -147,7 +148,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
             </Tabs.TabPane>
           ))}
         </Tabs>
-      </GridCol>
+      </Col>
     </GridRow>
   )
-})`${wrapperStyle}`
+}

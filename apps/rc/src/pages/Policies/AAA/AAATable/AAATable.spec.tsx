@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
+  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -27,21 +27,13 @@ const mockTableResult = {
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
     type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1811,
-      sharedSecret: 'xxxxxxxx'
-    }
+    primary: '35.195.204.77:1812'
   },
   {
     id: 'abcdeefwef-26a7-4d34-870f-b7f312fcfccb',
     name: 'Test AAA Server',
     type: 'AUTHENTICATION',
-    primary: {
-      ip: '1.1.1.1',
-      port: 1811,
-      sharedSecret: 'xxxxxxxx'
-    },
+    primary: '34.72.60.107:1811',
     networkIds: ['123', '456']
   }]
 }
@@ -73,7 +65,12 @@ describe('AAATable', () => {
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json({ ...mockTableResult }))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [],
+          totalCount: 0
+        })))
     )
   })
 
@@ -91,23 +88,7 @@ describe('AAATable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <AAATable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <AAATable />

@@ -1315,6 +1315,175 @@ export const venueData = {
   updatedDate: '2022-07-08T04:59:22.351+00:00'
 }
 
+export const ApLanPorts_T750SE = {
+  poeMode: 'Auto',
+  poeOut: false,
+  lanPorts: [
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '3',
+      enabled: true
+    }
+  ],
+  useVenueSettings: true
+}
+
+export const ApData_T750SE = {
+  apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
+  venueId: 'venue-id',
+  radio: {
+    apRadioParams24G: {
+      manualChannel: 0,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      }
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      channelBandwidth320MhzGroup: 'AUTO',
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      enableMulticastUplinkRateLimiting: false,
+      multicastUplinkRateLimiting: 1,
+      enableMulticastDownlinkRateLimiting: false,
+      multicastDownlinkRateLimiting: 1,
+      changeInterval: 33
+    },
+    useVenueSettings: true
+  },
+  name: 'T750SE',
+  softDeleted: false,
+  model: 'T750SE',
+  bssColoring: {
+    useVenueSettings: true
+  }
+}
+
+export const ApCap_T750SE = {
+  externalAntenna: {
+    enable24G: false,
+    enable50G: false,
+    gain24G: 8,
+    gain50G: 8,
+    supportDisable: true,
+    coupled: true
+  },
+  model: 'T750SE',
+  version: '7.0.0.103.390',
+  lanPorts: [
+    {
+      id: '1',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: true
+    },
+    {
+      id: '2',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    },
+    {
+      id: '3',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false
+    }
+  ],
+  allowDfsCountry: ['US', 'SG'],
+  allowCbandCountry: ['GB'],
+  lldpEnable: true,
+  lldpAdInterval: 30,
+  lldpHoldTime: 120,
+  lldpMgmtEnable: true,
+  ledOn: true,
+  isOutdoor: true,
+  has160MHzChannelBandwidth: true,
+  canSupportPoeOut: true,
+  canSupportPoeMode: true,
+  canSupportLacp: true,
+  requireOneEnabledTrunkPort: true,
+  poeModeCapabilities: [
+    'Auto',
+    '802.3at',
+    '802.3bt-Class_5',
+    '802.3bt-Class_6',
+    '802.3bt-Class_7'
+  ],
+  lanPortPictureDownloadUrl: 'https://fakeURL/7.0.0.103.390/t750se.jpg',
+  pictureDownloadUrl: 'https://fakeUrl/7.0.0.103.390/appearance-t750se.jpg',
+  canSupportCellular: false,
+  simCardPrimaryEnabled: true,
+  simCardPrimaryRoaming: true,
+  simCardSecondaryEnabled: true,
+  simCardSecondaryRoaming: true,
+  capabilityScore: 288,
+  supportTriRadio: false,
+  supportDual5gMode: false,
+  supportChannel144: true,
+  support11AX: true,
+  support11BE: false,
+  maxChannelization24G: 40,
+  maxChannelization5G: 160,
+  supportMesh: true
+}
+
 export const apDeviceRadio = {
   apRadioParams24G: {
     manualChannel: 0,
@@ -3038,5 +3207,76 @@ export const resultOfGetApSnmpAgentProfiles = [
     ],
     policyName: 'SNMP-2',
     id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]
+
+export const venueVersionList = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: [
+      'R750'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: [
+      'R610'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['R300', 'R500', 'R550']
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R500']
+      }
+    ]
   }
 ]

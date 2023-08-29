@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/icons'
 import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
 import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 import ApLocateDetail from './ApLocateDetail'
 
@@ -41,7 +42,7 @@ const defaultPayload = {
   page: 1
 }
 
-const renderSignal = (snr: number) => {
+export const renderSignal = (snr: number) => {
   if (snr <= 10) return <SignalBad height={21} />
 
   const value = Math.floor(snr / 10)
@@ -89,7 +90,7 @@ export function VenueRogueAps () {
         sorter: true,
         searchable: true,
         fixed: 'left',
-        render: (data, row) => {
+        render: (_, row) => {
           return <span>
             {row.rogueMac}
           </span>
@@ -101,7 +102,7 @@ export function VenueRogueAps () {
         dataIndex: 'category',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true,
-        render: (data, row) => {
+        render: (_, row) => {
           return <span>
             <Badge
               color={handleCategoryColor(row.category as RogueDeviceCategory)}
@@ -114,7 +115,10 @@ export function VenueRogueAps () {
         key: 'classificationPolicyName',
         title: intl.$t({ defaultMessage: 'Classification Rule' }),
         dataIndex: 'classificationPolicyName',
-        sorter: true
+        sorter: true,
+        render: (_, row) => {
+          return `${row.classificationPolicyName}/${row.classificationRuleName}`
+        }
       },
       {
         key: 'ssid',
@@ -141,7 +145,7 @@ export function VenueRogueAps () {
         dataIndex: 'closestAp.snr',
         sorter: true,
         align: 'center',
-        render: (data, row) => {
+        render: (_, row) => {
           return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
             <span>{row.closestAp_snr}</span>
             {renderSignal(row.closestAp_snr ?? 0)}
@@ -153,7 +157,14 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Closest AP' }),
         dataIndex: 'closestAp.apName',
         // filterable: true, // TODO: change to search or provide static list
-        sorter: true
+        sorter: true,
+        render: (_, row) => {
+          return row.closestAp.apName
+            ? <TenantLink to={`/devices/wifi/${row.closestAp.apSerialNumber}/details/overview`}>
+              {row.closestAp.apName}
+            </TenantLink>
+            : null
+        }
       },
       {
         key: 'numberOfDetectingAps',
@@ -169,7 +180,7 @@ export function VenueRogueAps () {
         dataIndex: 'lastUpdTime',
         sorter: true,
         defaultSortOrder: 'descend',
-        render: (data, row) => {
+        render: (_, row) => {
           return formatDate(new Date(Number(row.lastUpdTime) * 1000))
         }
       },
@@ -178,7 +189,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         align: 'center',
-        render: (data, row) => {
+        render: (_, row) => {
           return <ApLocateDetail row={row} />
         }
       }
@@ -214,7 +225,7 @@ export function VenueRogueAps () {
           pagination={tableQuery.pagination}
           onFilterChange={tableQuery.handleFilterChange}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
+          rowKey='rogueMac'
         />
       </Loader>
     )

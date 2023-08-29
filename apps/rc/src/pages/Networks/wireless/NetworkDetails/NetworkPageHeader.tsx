@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -19,55 +21,64 @@ function NetworkPageHeader ({
   selectedVenues?: string[]
 }) {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const network = useGetNetwork()
+  const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const [ disableConfigure, setDisableConfigure ] = useState(false)
+
+  useEffect(() => {
+    if ((supportOweTransition && !isLoading)) {
+      setDisableConfigure(networkData?.isOweMaster === false && 'owePairNetworkId' in networkData)
+    }
+  }, [networkData, isLoading, supportOweTransition])
+
   return (
     <PageHeader
-      title={network.data?.name || ''}
-      breadcrumb={isNavbarEnhanced ? [
+      title={networkData?.name || ''}
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
         { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
         { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
-      ] : [{ text: $t({ defaultMessage: 'Networks' }), link: '/networks' }]}
-      extra={filterByAccess([
+      ]}
+      extra={[
         ...(setSelectedVenues && selectedVenues)
           ? [
             <ActiveVenueFilter
               selectedVenues={selectedVenues}
               setSelectedVenues={setSelectedVenues}
-              key='hierarchy-filter'
             />
           ]
           : [],
         enableTimeFilter()
           ? <RangePicker
-            key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
           : <></>,
-        <Button
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/${networkId}/edit`
-            }, {
-              state: {
-                from: location
-              }
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ])}
+        ...filterByAccess([
+          <Button
+            type='primary'
+            hidden={disableConfigure}
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/${networkId}/edit`
+              }, {
+                state: {
+                  from: location
+                }
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ])
+      ]}
       footer={<NetworkTabs />}
     />
   )

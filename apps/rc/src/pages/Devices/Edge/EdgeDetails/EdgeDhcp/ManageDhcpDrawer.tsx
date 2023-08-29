@@ -97,10 +97,10 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
               }
             ]}
             noStyle
+            initialValue={null}
           >
             <Select
               style={{ width: '200px' }}
-              defaultValue={null}
               options={[
                 { label: $t({ defaultMessage: 'Select...' }), value: null },
                 ...(edgeDhcpOptions || [])
@@ -117,6 +117,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
       { isFetching: isEdgeDhcpDataFetching, isLoading: false }
     ]}>
       <Table
+        rowKey='id'
         type='form'
         columns={columns}
         dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
@@ -146,7 +147,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage DHCP for SmartEdge Service' })}
-      width='600'
+      width={600}
       visible={visible}
       onClose={handleClose}
       children={drawerContent}

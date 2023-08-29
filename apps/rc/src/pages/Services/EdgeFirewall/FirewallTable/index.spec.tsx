@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
@@ -56,8 +55,8 @@ describe('Firewall Table', () => {
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(2)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 No 1.0.0.100, 1.0.0.210' })
-    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 No --' })
+    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 Poor No 1.0.0.100, 1.0.0.210' })
+    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 -- No --' })
     const ddosInfo = await screen.findByTestId('ddos-info-1')
     await user.hover(ddosInfo)
     await screen.findByText('All: 220')
@@ -94,23 +93,7 @@ describe('Firewall Table', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <FirewallTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/firewall/list' }
-      }
-    )
-    expect(await screen.findByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.queryByText('Network Control')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <FirewallTable />

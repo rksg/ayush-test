@@ -52,10 +52,10 @@ export const NetworkTable = (props: NetworkTableProps) => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -65,9 +65,9 @@ export const NetworkTable = (props: NetworkTableProps) => {
       key: 'nwSubType',
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => (
+      render: (_, row) => (
         <NetworkType
-          networkType={data as NetworkTypeEnum}
+          networkType={row.nwSubType as NetworkTypeEnum}
           row={row}
         />
       )
@@ -77,7 +77,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
       key: 'venues',
       dataIndex: 'venues',
       sorter: true,
-      render: (data, row) => row.venues.count
+      render: (_, row) => row.venues.count
     }
   ]
 

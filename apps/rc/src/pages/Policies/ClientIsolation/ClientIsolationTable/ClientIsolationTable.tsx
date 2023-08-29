@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -33,7 +32,6 @@ export default function ClientIsolationTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteClientIsolationListMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery<ClientIsolationViewModel>({
     useQuery: useGetEnhancedClientIsolationListQuery,
@@ -77,13 +75,8 @@ export default function ClientIsolationTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Client Isolation' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
@@ -143,7 +136,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -151,7 +144,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -168,11 +161,11 @@ function useColumns () {
       dataIndex: 'clientEntries',
       align: 'center',
       sorter: true,
-      render: function (data) {
-        return data
+      render: function (_, { clientEntries }) {
+        return clientEntries
           ? <SimpleListTooltip
-            items={data as string[]}
-            displayText={(data as string[]).length}
+            items={clientEntries}
+            displayText={(clientEntries).length}
             title={$t({ defaultMessage: 'MAC Address' })}
           />
           : 0
@@ -186,7 +179,7 @@ function useColumns () {
       filterKey: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len

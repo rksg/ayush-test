@@ -1,6 +1,9 @@
 import { defineMessage } from 'react-intl'
 
-import { MappingType, json2keymap } from './util'
+import { configChanges } from '../__tests__/fixtures'
+
+import { MappingType, json2keymap, filterKPIData } from './util'
+
 
 describe('json2keymap', () => {
   it('should apply filter and build mapping with keys', () => {
@@ -39,5 +42,12 @@ describe('json2keymap', () => {
         'AP-value4': defineMessage({ defaultMessage: 'text3' }),
         'AP-value5': ''
       })
+  })
+})
+
+describe('filterKPIData', () => {
+  it('should return correct data', () => {
+    expect(filterKPIData(configChanges, []).length).toEqual(configChanges.length)
+    expect(filterKPIData(configChanges, ['clientThroughput']).length).toEqual(3)
   })
 })

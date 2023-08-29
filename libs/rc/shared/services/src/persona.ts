@@ -13,9 +13,9 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { basePersonaApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { basePersonaApi }                      from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
@@ -61,6 +61,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       transformResponse (result: NewTableResult<PersonaGroup>) {
         return transferToTableResult<PersonaGroup>(result)
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
@@ -70,6 +71,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
           ...req
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [
         { type: 'PersonaGroup', id: 'LIST' },
         { type: 'Persona', id: 'ID' }
@@ -132,6 +134,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     importPersonas: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.importPersonas, params, {
+          ...ignoreErrorModal,
           'Content-Type': undefined
         })
         return {
@@ -209,6 +212,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
           })
         })
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
@@ -244,7 +248,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params)
+        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload

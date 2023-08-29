@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -146,21 +145,7 @@ describe('Add edge firewall service', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<AddFirewall />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Firewall'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<AddFirewall />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }

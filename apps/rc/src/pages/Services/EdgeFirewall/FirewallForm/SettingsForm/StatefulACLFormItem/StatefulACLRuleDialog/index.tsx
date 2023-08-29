@@ -196,7 +196,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         >
           <TextArea
             rows={3}
-            maxLength={64}
+            maxLength={255}
             placeholder='Enter a short description, up to 255 characters'
           />
         </Form.Item>

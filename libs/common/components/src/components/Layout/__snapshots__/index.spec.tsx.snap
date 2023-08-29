@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
+    class="styledComponents__Wrapper-sc-iwostn-0 kSVGYX"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -363,7 +363,7 @@ exports[`Layout should render correctly 1`] = `
                   class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
                 >
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-11 iEmwpR"
+                    class="styledComponents__DropdownText-sc-iwostn-12 bUDjq"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -390,7 +390,7 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-2 dTPuAm"
+              class="styledComponents__Content-sc-iwostn-2 jwfqPy"
             >
               <div>
                 content
@@ -407,7 +407,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
+    class="styledComponents__Wrapper-sc-iwostn-0 kSVGYX"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -554,7 +554,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-2 dTPuAm"
+              class="styledComponents__Content-sc-iwostn-2 jwfqPy"
             >
               <div>
                 content

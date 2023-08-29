@@ -1,10 +1,3 @@
-export enum EdgeDhcpServiceStatusEnum {
-  GOOD = 'Good',
-  REQUIRES_ATTENTION = 'Requires Attention',
-  POOR = 'Poor',
-  UNKNOWN = 'Unknown'
-}
-
 export enum LeaseTimeUnit {
   DAYS = 'DAYS',
   HOURS = 'HOURS',

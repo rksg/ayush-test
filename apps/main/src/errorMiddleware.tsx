@@ -3,16 +3,16 @@ import React from 'react'
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
-import { getIntl, setUpIntl, IntlSetUpError }                  from '@acx-ui/utils'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                    from '@acx-ui/components'
+import { CatchErrorResponse }                                                     from '@acx-ui/rc/utils'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal } from '@acx-ui/utils'
 
 export type ErrorAction = {
   type: string,
   meta: {
     baseQueryMeta: {
-      response: {
-        status: number
-      }
+      response: Response,
+      request: Request
     },
     arg?: {
       endpointName: string
@@ -33,10 +33,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
-  'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
-  'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup',
-  'uploadZdConfig', 'importPersonas'
+  'clientInfo', 'detectApNeighbors'
 ]
 
 export const errorMessage = {
@@ -44,6 +41,18 @@ export const errorMessage = {
     title: defineMessage({ defaultMessage: 'Server Error' }),
     content: defineMessage({
       defaultMessage: 'An internal error has occurred. Please contact support.'
+    })
+  },
+  BAD_REQUEST: {
+    title: defineMessage({ defaultMessage: 'Bad Request' }),
+    content: defineMessage({
+      defaultMessage: 'Your request resulted in an error. Please contact Support.'
+    })
+  },
+  VALIDATION_ERROR: {
+    title: defineMessage({ defaultMessage: 'Validation Error' }),
+    content: defineMessage({
+      defaultMessage: 'An internal error has occurred. Please contact Support.'
     })
   },
   SESSION_EXPIRED: {
@@ -95,6 +104,7 @@ export const getErrorContent = (action: ErrorAction) => {
   const status = action.meta.baseQueryMeta?.response?.status
    ?? action.payload?.originalStatus
    ?? action.payload?.status
+  const request = action.meta.baseQueryMeta?.request
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
@@ -107,7 +117,7 @@ export const getErrorContent = (action: ErrorAction) => {
       if (errors?.error === 'API-KEY not present') {
         needLogout = true
       }
-      errorMsg = errorMessage.SERVER_ERROR
+      errorMsg = errorMessage.BAD_REQUEST
       break
     case 401:
     case 403:
@@ -136,7 +146,7 @@ export const getErrorContent = (action: ErrorAction) => {
       if (countryInvalid) {
         errorMsg = errorMessage.COUNTRY_INVALID
       } else {
-        errorMsg = errorMessage.SERVER_ERROR
+        errorMsg = errorMessage.VALIDATION_ERROR
       }
       break
     default:
@@ -144,13 +154,20 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.SERVER_ERROR
       break
   }
+  let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
+  if (errors && isShowApiError(request)) {
+    if (typeof errors === 'string') {
+      content = errors // Cannot use 'in' operator for string
+    }
+    else if ('errors' in errors) {
+      const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
+      content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+    }
+  }
 
   return {
     title: $t(errorMsg?.title),
-    content: <FormattedMessage
-      {...errorMsg?.content}
-      values={{ br: () => <br /> }}
-    />,
+    content,
     type,
     errors,
     callback,
@@ -184,12 +201,17 @@ export const showErrorModal = (details: {
   }
 }
 
+const shouldIgnoreErrorModal = (action?: ErrorAction) => {
+  const endpoint = action?.meta?.arg?.endpointName || ''
+  const request = action?.meta?.baseQueryMeta?.request
+  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+}
+
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
-  const endpoint = action?.meta?.arg?.endpointName || ''
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
-    if (!ignoreEndpointList.includes(endpoint)) {
+    if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {

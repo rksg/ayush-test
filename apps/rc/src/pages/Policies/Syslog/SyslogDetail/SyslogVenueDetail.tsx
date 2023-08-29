@@ -38,7 +38,7 @@ const SyslogVenueDetail = () => {
       searchable: true,
       sorter: true,
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },

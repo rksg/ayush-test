@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi } from '@acx-ui/rc/services'
+import { venueApi }              from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo
+  CommonUrlsInfo, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -270,6 +270,145 @@ const rogueAps = {
   ]
 }
 
+const apDetail = {
+  apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+  clientCount: 0,
+  indoorModel: false,
+  lastUpdated: '2022-07-05T08:29:15.484Z',
+  mac: '456789876554',
+  meshRole: 'DISABLED',
+  model: 'R650',
+  name: 'test ap',
+  position: {
+    floorplanId: 'db1837702c434871bf884ddefd628cfd',
+    xPercent: 61.72107,
+    yPercent: 55.714287
+  },
+  radio: {
+    apRadioParams24G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    apRadioParams50G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    useVenueSettings: true
+  },
+  serialNumber: '456789876554',
+  softDeleted: false,
+  state: 'InSetupPhase',
+  subState: 'NeverContactedCloud',
+  updatedDate: '2022-07-05T08:29:15.484+0000',
+  uptime_seconds: 0,
+  venueId: '908c47ee1cd445838c3bf71d4addccdf'
+}
+
+const apsList = {
+  fields: [
+    'isMeshEnable',
+    'apUpRssi',
+    'description',
+    'deviceStatus',
+    'meshRole',
+    'apStatusData.APSystem.uptime',
+    'uplink',
+    'deviceGroupId',
+    'deviceStatusSeverity',
+    'venueId',
+    'deviceGroupName',
+    'model',
+    'fwVersion',
+    'lastSeenTime',
+    'serialNumber',
+    'IP',
+    'apMac',
+    'lastUpdTime',
+    'extIp',
+    'tags',
+    'venueName',
+    'deviceModelType',
+    'name',
+    'hops',
+    'apStatusData.cellularInfo',
+    'apStatusData'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '121603200805',
+      lastUpdTime: '1.692248511124E12',
+      lastSeenTime: '2023-08-22T07:19:03.816Z',
+      name: '11-22-R710-FT-Access-2',
+      model: 'R710',
+      fwVersion: '6.2.2.103.160',
+      venueId: '9a572b2d00ca457eb93811d47ed1e5d1',
+      venueName: 'CRRM-Dev-Venue',
+      deviceStatus: '2_00_Operational',
+      deviceStatusSeverity: '2_Operational',
+      IP: '192.168.11.68',
+      extIp: '134.242.238.1',
+      apMac: 'F0:3E:90:36:D3:00',
+      apStatusData: {
+        APRadio: [
+          {
+            txPower: 'max',
+            channel: 7,
+            band: '2.4G',
+            Rssi: null,
+            operativeChannelBandwidth: '20',
+            radioId: 0
+          },
+          {
+            txPower: 'max',
+            channel: 149,
+            band: '5G',
+            Rssi: null,
+            operativeChannelBandwidth: '80',
+            radioId: 1
+          }
+        ],
+        APSystem: {
+          uptime: 857504,
+          ipType: 'dynamic',
+          netmask: '255.255.0.0',
+          gateway: '192.168.11.254',
+          primaryDnsServer: '8.8.8.8',
+          secondaryDnsServer: null,
+          secureBootEnabled: false
+        },
+        lanPortStatus: [
+          {
+            port: '0',
+            phyLink: 'Up 100Mbps half'
+          },
+          {
+            port: '1',
+            phyLink: 'Down  '
+          }
+        ]
+      },
+      meshRole: 'DISABLED',
+      deviceGroupId: '2b5af77bb9894f7faf10c7f2aa0e4a15',
+      tags: '',
+      deviceGroupName: '',
+      deviceModelType: 'Indoor',
+      healthStatus: 'Excellent'
+    }
+  ]
+}
+
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
     <Form>
@@ -278,7 +417,7 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
   </Provider>
 }
 
-describe.skip('RogueVenueTable', () => {
+describe('RogueVenueTable', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(venueApi.util.resetApiState())
@@ -293,8 +432,10 @@ describe.skip('RogueVenueTable', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
-      )
+        (_, res, ctx) => res(ctx.json(apsList))
+      ),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetail)))
     )
     render(
       <VenueRogueAps />
@@ -350,10 +491,12 @@ describe.skip('RogueVenueTable', () => {
     screen.getByText(/^25/i)
     screen.getByText(/^15/i)
 
-    await userEvent.click(await screen.findByTestId('VenueMarkerRed'))
-    await screen.findByText('Cancel')
+    await userEvent.click(await screen.findByTestId('VenueMarkerOrange'))
 
-    // await userEvent.click(await screen.findByText('Cancel'))
-    // FIXME: "Expect" is required here
+    await screen.findByText(/rogueap: 28:b3:71:1c:15:0c/i)
+
+    await userEvent.click(await screen.findByText('Cancel'))
+
+    expect(screen.queryByText(/rogueap: 28:b3:71:1c:15:0c/i)).not.toBeVisible()
   })
 })

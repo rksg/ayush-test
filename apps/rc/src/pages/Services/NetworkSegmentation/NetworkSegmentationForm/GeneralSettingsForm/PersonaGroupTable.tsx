@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                               from '@acx-ui/components'
+import { PersonaGroupLink }                                                        from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetPersonaGroupByIdQuery }                            from '@acx-ui/rc/services'
 import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
 
-import { PersonaGroupLink } from '../../../../Users/Persona/LinkHelper'
 
 interface PersonaGroupTableProps {
   personaGroupId?: string
@@ -73,7 +73,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
       dataIndex: 'personaCount'
     },
     {
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       key: 'dpskName',
       dataIndex: 'dpskName',
       render: (data, row) => {

@@ -8,14 +8,14 @@ import {
   Row,
   Select,
   Space } from 'antd'
-import { useWatch }               from 'antd/lib/form/Form'
-import { DefaultOptionType }      from 'antd/lib/select'
-import Transfer, { TransferItem } from 'antd/lib/transfer'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import { useWatch }          from 'antd/lib/form/Form'
+import { DefaultOptionType } from 'antd/lib/select'
+import { TransferItem }      from 'antd/lib/transfer'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                       from '@acx-ui/icons'
+import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip, Transfer } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                                 from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -216,6 +216,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         setLoading(false)
         onClose()
       } catch (err) {
+        setLoading(false)
         console.log(err) // eslint-disable-line no-console
       }
     } else {
@@ -351,9 +352,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       </Button>
       <Button
         key='okBtn'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}>
-        {isEditMode ? $t({ defaultMessage: 'Edit' }): $t({ defaultMessage: 'Add' })}
+        {isEditMode ? $t({ defaultMessage: 'Apply' }): $t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   ]
@@ -366,7 +367,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Button
         loading={loading}
         key='apply'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
@@ -484,7 +485,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             validator: () => validatePorts()
           }]}>
           <Transfer
-            operationStyle={{ margin: '0 20px' }}
             listStyle={{ width: 190, height: 316 }}
             showSearch
             showSelectAll={false}

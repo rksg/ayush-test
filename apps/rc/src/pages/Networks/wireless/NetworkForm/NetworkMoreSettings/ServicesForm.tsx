@@ -42,9 +42,12 @@ export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
 
+/**
+ * @deprecated
+ */
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
-  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,

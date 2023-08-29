@@ -15,6 +15,7 @@ import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
+import { AdvanceSettingContext }    from './WifiConfigTab/AdvancedTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
 import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
@@ -53,7 +54,10 @@ export interface RadioContext {
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
 
   isLoadBalancingDataChanged?: boolean,
-  updateLoadBalancing?: (() => void)
+  updateLoadBalancing?: ((callback?: () => void) => void)
+
+  isClientAdmissionControlDataChanged?: boolean,
+  updateClientAdmissionControl?: ((callback?: () => void) => void)
 }
 
 export const VenueEditContext = createContext({} as {
@@ -71,6 +75,10 @@ export const VenueEditContext = createContext({} as {
 
   editServerContextData: ServerSettingContext,
   setEditServerContextData: (data: ServerSettingContext) => void
+
+  editAdvancedContextData: AdvanceSettingContext,
+  setEditAdvancedContextData: (data: AdvanceSettingContext) => void
+
   previousPath: string
   setPreviousPath: (data: string) => void
 })
@@ -94,6 +102,10 @@ export function VenueEdit () {
     editRadioContextData, setEditRadioContextData
   ] = useState({} as RadioContext)
 
+  const [
+    editAdvancedContextData, setEditAdvancedContextData
+  ] = useState({} as AdvanceSettingContext)
+
   return (
     <VenueEditContext.Provider value={{
       editContextData,
@@ -106,6 +118,8 @@ export function VenueEdit () {
       setEditSecurityContextData,
       editServerContextData,
       setEditServerContextData,
+      editAdvancedContextData: editAdvancedContextData,
+      setEditAdvancedContextData: setEditAdvancedContextData,
       previousPath,
       setPreviousPath
     }}>
@@ -140,11 +154,13 @@ function processWifiTab (
   editNetworkingContextData: NetworkingSettingContext,
   editSecurityContextData: SecuritySettingContext,
   editServerContextData: ServerSettingContext,
-  editRadioContextData: RadioContext
+  editRadioContextData: RadioContext,
+  editAdvancedContextData: AdvanceSettingContext
 ){
   switch(editContextData?.unsavedTabKey){
     case 'settings':
-      editContextData?.updateChanges?.()
+      editAdvancedContextData?.updateAccessPointLED?.()
+      editAdvancedContextData?.updateBssColoring?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
@@ -166,6 +182,10 @@ function processWifiTab (
         editRadioContextData?.updateLoadBalancing?.()
       }
 
+      if (editRadioContextData.isClientAdmissionControlDataChanged) {
+        editRadioContextData?.updateClientAdmissionControl?.()
+      }
+
       break
     case 'security':
       editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
@@ -185,6 +205,7 @@ export function showUnsavedModal (
   editRadioContextData: RadioContext,
   editSecurityContextData: SecuritySettingContext,
   editServerContextData: ServerSettingContext,
+  editAdvancedContextData: AdvanceSettingContext,
   intl: IntlShape,
   callback?: () => void
 ) {
@@ -251,7 +272,8 @@ export function showUnsavedModal (
           editNetworkingContextData,
           editSecurityContextData,
           editServerContextData,
-          editRadioContextData
+          editRadioContextData,
+          editAdvancedContextData
         )
       }else{
         editContextData?.updateChanges?.()

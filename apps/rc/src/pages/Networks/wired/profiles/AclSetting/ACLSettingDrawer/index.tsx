@@ -124,7 +124,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       title: $t({ defaultMessage: 'Action' }),
       dataIndex: 'action',
       key: 'action',
-      width: 10
+      width: 70
     },
     ...(aclType === 'extended'
       ? [
@@ -140,7 +140,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       title: $t({ defaultMessage: 'Source Network' }),
       dataIndex: 'source',
       key: 'source',
-      width: 150
+      width: 130
     },
     ...(aclType === 'extended'
       ? [
@@ -148,7 +148,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           title: $t({ defaultMessage: 'Destination Network' }),
           dataIndex: 'destination',
           key: 'destination',
-          width: 180
+          width: 160
         },
         {
           title: $t({ defaultMessage: 'Source Port' }),
@@ -160,7 +160,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           title: $t({ defaultMessage: 'Destination Port' }),
           dataIndex: 'destinationPort',
           key: 'destinationPort',
-          width: 100
+          width: 140
         }
       ]
       : [])

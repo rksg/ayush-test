@@ -10,11 +10,13 @@ const story = {
 export default story
 
 const Template: ComponentStory<typeof Tabs> = (args: TabsProps) => (
-  <Tabs {...args}>
-    <Tabs.TabPane tab='Tab 1' key='tab1'>Tab 1 Content</Tabs.TabPane>
-    <Tabs.TabPane tab='Tab 2' key='tab2'>Tab 2 Content</Tabs.TabPane>
-    <Tabs.TabPane tab='Tab 3' key='tab3'>Tab 3 Content</Tabs.TabPane>
-  </Tabs>
+  <div style={{ height: 170 }}>
+    <Tabs {...args}>
+      <Tabs.TabPane tab='Tab 1' key='tab1'>Tab 1 Content</Tabs.TabPane>
+      <Tabs.TabPane tab='Tab 2' key='tab2'>Tab 2 Content</Tabs.TabPane>
+      <Tabs.TabPane tab='Tab 3' key='tab3'>Tab 3 Content</Tabs.TabPane>
+    </Tabs>
+  </div>
 )
 
 export const Default = Template.bind({})

@@ -66,32 +66,36 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       fixed: 'left',
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
-        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}&clientStatus=connected`}>{data || '--'}</TenantLink>
+      render: (_, row) => {
+        return <TenantLink
+          to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${row.hostname}&clientStatus=connected`}
+        >{row.hostname || '--'}</TenantLink>
       }
     },
     {
       key: 'osType',
+      width: 60,
       title: intl.$t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: true,
-      render: (data) => {
+      render: (_, { osType }) => {
         return <UI.IconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={osType}>
+            { getOsTypeIcon(osType) }
           </Tooltip>
         </UI.IconContainer>
       }
     },
     {
       key: 'healthCheckStatus',
+      width: 70,
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: true,
       filterMultiple: false,
       filterValueNullable: false,
       filterable: statusFilterOptions,
-      render: (data, row) => {
+      render: (_, row) => {
         return <Tooltip title={row.healthCheckStatus}>
           <Space>
             <ClientHealthIcon type={row.healthClass} />
@@ -105,8 +109,8 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'clientMac',
       sorter: true,
       disable: true,
-      render: (data) => {
-        const mac = data?.toString().toLowerCase() || undefined
+      render: (_, { clientMac }) => {
+        const mac = clientMac?.toLowerCase() || undefined
         return <Tooltip title={mac}>
           {mac || '--'}
         </Tooltip>
@@ -117,9 +121,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       sorter: true,
-      render: (data) => {
-        return <Tooltip title={data}>
-          {data || '--'}
+      render: (_, { ipAddress }) => {
+        return <Tooltip title={ipAddress}>
+          {ipAddress || '--'}
         </Tooltip>
       }
     },
@@ -128,9 +132,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Username' }),
       dataIndex: 'Username',
       sorter: true,
-      render: (data) => {
-        return <Tooltip title={data}>
-          {data || '--'}
+      render: (_, { Username }) => {
+        return <Tooltip title={Username}>
+          {Username || '--'}
         </Tooltip>
       }
     },
@@ -141,9 +145,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       filterKey: 'venueId',
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
-      render: (data: React.ReactNode, row: ClientList) => {
+      render: (_: React.ReactNode, row: ClientList) => {
         return (
-          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{row.venueName}</TenantLink>
         )
       }
     }]),
@@ -154,9 +158,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       filterKey: 'serialNumber',
       filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
-      render: (data, row) => {
+      render: (_, row) => {
         return (
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{row.apName}</TenantLink>
         )
       }
     },
@@ -165,7 +169,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if(!row.switchName){
           return '--'
         }else{
@@ -180,12 +184,12 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (!row.healthCheckStatus) {
-          return data
+          return row.ssid
         } else {
           return (
-            <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{row.ssid}</TenantLink>
           )
         }
       }
@@ -195,7 +199,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Time Connected' }),
       dataIndex: 'sessStartTime',
       sorter: true,
-      render: (data, row) => row.sessStartTimeString
+      render: (_, row) => row.sessStartTimeString
     },
     {
       key: 'clientVlan',
@@ -203,7 +207,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'clientVlan',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { clientVlan }) => clientVlan || '--'
     },
     {
       key: 'deviceTypeStr',
@@ -211,10 +215,10 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'deviceTypeStr',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => {
+      render: (_, { deviceTypeStr }) => {
         return <UI.IconContainer>
-          <Tooltip title={data}>
-            {getDeviceTypeIcon(data as string)}
+          <Tooltip title={deviceTypeStr}>
+            {getDeviceTypeIcon(deviceTypeStr)}
           </Tooltip>
         </UI.IconContainer>
       }
@@ -225,7 +229,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'modelName',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { modelName }) => modelName || '--'
     },
     {
       key: 'totalTraffic',
@@ -233,7 +237,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'totalTraffic',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { totalTraffic }) => totalTraffic || '--'
     },
     {
       key: 'trafficToClient',
@@ -241,7 +245,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'trafficToClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { trafficToClient }) => trafficToClient || '--'
     },
     {
       key: 'trafficFromClient',
@@ -249,7 +253,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'trafficFromClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { trafficFromClient }) => trafficFromClient || '--'
     },
     {
       key: 'receiveSignalStrength',
@@ -257,7 +261,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'receiveSignalStrength',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { receiveSignalStrength }) => receiveSignalStrength || '--'
     },
     {
       key: 'rssi',
@@ -265,7 +269,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'rssi',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { rssi }) => rssi || '--'
     },
     {
       key: 'radio.mode',
@@ -273,7 +277,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: ['radio', 'mode'],
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { radio }) => radio?.mode || '--'
     },
     {
       key: 'cpeMac',
@@ -281,7 +285,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'cpeMac',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { cpeMac }) => cpeMac || '--'
     },
     {
       key: 'authmethod',
@@ -289,7 +293,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'authmethod',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { authmethod }) => authmethod || '--'
     },
     {
       key: 'status',
@@ -297,7 +301,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'status',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data ?
+      render: (_, { status }) => status ?
         intl.$t({ defaultMessage: 'Authorized' }) :
         intl.$t({ defaultMessage: 'Unauthorized' })
     },
@@ -307,7 +311,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'encryptMethod',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { encryptMethod }) => encryptMethod || '--'
     },
     {
       key: 'packetsToClient',
@@ -315,7 +319,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'packetsToClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { packetsToClient }) => packetsToClient || '--'
     },
     {
       key: 'packetsFromClient',
@@ -323,7 +327,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'packetsFromClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { packetsFromClient }) => packetsFromClient || '--'
     },
     {
       key: 'packetsDropFrom',
@@ -331,7 +335,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'packetsDropFrom',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { packetsDropFrom }) => packetsDropFrom || '--'
     },
     {
       key: 'radio.channel',
@@ -339,15 +343,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: ['radio', 'channel'],
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => data || '--'
-    },
-    {
-      key: 'noiseFloor',
-      title: intl.$t({ defaultMessage: 'Noise Floor' }),
-      dataIndex: 'noiseFloor',
-      sorter: true,
-      show: !!showAllColumns,
-      render: (data) => data || '--'
+      render: (_, { radio }) => radio?.channel || '--'
     }
     // { // TODO: Waiting for TAG feature support
     //   key: 'tags',
@@ -367,8 +363,8 @@ export const defaultClientPayload = {
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
-    'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel','noiseFloor','cog','venueName',
-    'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
 export const ConnectedClientsTable = (props: {

@@ -2,7 +2,6 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
 import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
@@ -24,7 +23,6 @@ export default function VLANPoolTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
@@ -85,16 +83,13 @@ export default function VLANPoolTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           }
-        ] : [{
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}>
@@ -152,7 +147,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -160,7 +155,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -170,8 +165,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'vlanMembers',
       sorter: true,
-      render: (data) =>{
-        return data?.toString()
+      render: (_, { vlanMembers }) =>{
+        return vlanMembers?.toString()
       }
     },
     {
@@ -180,7 +175,7 @@ function useColumns () {
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,
-      render: (data, row) =>{
+      render: (__, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds
         const venueApGroups = row.venueApGroups

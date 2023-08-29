@@ -54,7 +54,7 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     const rows = await screen.findAllByRole('row', { name: /mock-persona/i })
     expect(rows.length).toBe(2)
     const cells = await within(rows[0] as HTMLTableRowElement).findAllByRole('cell')
-    expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('3000')
+    expect((cells[0] as HTMLTableCellElement).textContent).toBe('3000')
 
   })
 })

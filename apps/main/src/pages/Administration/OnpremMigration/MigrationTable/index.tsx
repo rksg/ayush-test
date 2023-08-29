@@ -114,7 +114,7 @@ const MigrationTable = () => {
       dataIndex: 'state',
       searchable: true,
       sorter: true,
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'
@@ -164,8 +164,9 @@ const MigrationTable = () => {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Migrations' }),
-          entityValue: rows.length === 1 ? rows[0].fileName : undefined,
+          entityName: rows.length === 1? $t({ defaultMessage: 'history' })
+            : $t({ defaultMessage: 'histories' }),
+          entityValue: rows.length === 1 ? 'history' : undefined,
           numOfEntities: rows.length,
           confirmationText: $t({ defaultMessage: 'Delete' })
         },

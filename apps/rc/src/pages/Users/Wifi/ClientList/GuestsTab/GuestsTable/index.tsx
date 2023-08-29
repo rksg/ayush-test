@@ -13,9 +13,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -33,11 +33,11 @@ import {
   FILTER,
   SEARCH
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { DateRange, getIntl  }                               from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                     from '@acx-ui/types'
+import { RolesEnum }                                          from '@acx-ui/types'
+import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
+import { DateRange, getIntl  }                                from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { GuestDateFilter }                   from '../../index'
@@ -209,7 +209,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'
@@ -228,17 +228,17 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row, __, highlightFn) =>
-        <Button
-          type='link'
-          size='small'
+      render: (_, row, __, highlightFn) =>
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a
+          // eslint-disable-next-line no-script-url
+          href='javascript: void(0)'
           onClick={() => {
             setCurrentGuest(row)
             setVisible(true)
           }}
-        >
-          {highlightFn(row.name as string)}
-        </Button>
+          children={highlightFn(row.name as string)}
+        />
     }, {
       key: 'mobilePhoneNumber',
       title: $t({ defaultMessage: 'Phone' }),
@@ -258,7 +258,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterable: guestTypeFilterOptions,
       filterMultiple: false,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderGuestType(row.guestType)
       }
     }, {
@@ -268,7 +268,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterKey: 'networkId',
       filterable: networkFilterOptions || true,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderAllowedNetwork(row)
       }
     }, {
@@ -280,7 +280,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterMultiple: false,
       filterable: showExpiredOptions || true,
       defaultFilteredValue: ['true'],
-      render: function (data, row) {
+      render: function (_, row) {
         return renderExpires(row)
       }
     }, {
@@ -288,9 +288,10 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'guestStatus',
       sorter: true,
-      render: function (data) {
-        return data === GuestStatusEnum.EXPIRED ?
-          <span style={{ color: cssStr('--acx-semantics-red-50') }}>{data}</span> : data
+      render: function (_, { guestStatus }) {
+        return guestStatus === GuestStatusEnum.EXPIRED
+          ? <span style={{ color: cssStr('--acx-semantics-red-50') }}>{guestStatus}</span>
+          : guestStatus
       }
     }
   ]
@@ -384,36 +385,24 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
-          key: 'addGuest',
+        actions={filterByAccess([{
+          key: 'POST:/guestUsers',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
-          key: 'addGuestNetwork',
+          key: 'POST:/networks',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
           disabled: !isServicesEnabled
         },
         {
-          key: 'importFromFile',
+          key: 'POST:/networks/{networkId}/guestUsers',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }].filter(((item)=> {
-          switch(item.key) {
-            case 'addGuest':
-              return hasRoles([RolesEnum.ADMINISTRATOR,
-                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
-            case 'addGuestNetwork':
-              return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
-            case 'importFromFile':
-              return hasRoles([RolesEnum.ADMINISTRATOR,
-                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
-            default:
-              return false
-          }
-        }))}
+        }])
+        }
       />
 
       <Drawer
@@ -433,7 +422,8 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         visible={drawerVisible}
         setVisible={setDrawerVisible}
       />
-      <ImportFileDrawer type='GuestPass'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.GuestPass}
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={250}

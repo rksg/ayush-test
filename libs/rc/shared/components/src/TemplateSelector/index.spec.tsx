@@ -20,7 +20,8 @@ import {
 import { mockedRegistration,
   mockedTemplates,
   mockedTemplateScope,
-  mockedTemplateScopeNoDefault } from './__tests__/fixtures'
+  mockedTemplateScopeNoDefault,
+  mockedTemplateScopeWithRegistration } from './__tests__/fixtures'
 
 import { TemplateSelector } from '.'
 
@@ -37,17 +38,13 @@ describe('TemplateSelector', () => {
   it('should render the selector with template scope default template', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeById.url,
+        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedTemplateScope }))
       ),
       rest.get(
         // Remove the query parameter to make MSW happy
         MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
-      ),
-      rest.get(
-        MsgTemplateUrls.getRegistrationById.url,
-        (req, res, ctx) => res(ctx.status(404))
       )
     )
 
@@ -91,17 +88,13 @@ describe('TemplateSelector', () => {
   it('should render the selector with registration template', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeById.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScope }))
+        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScopeWithRegistration }))
       ),
       rest.get(
         // Remove the query parameter to make MSW happy
         MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
-      ),
-      rest.get(
-        MsgTemplateUrls.getRegistrationById.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedRegistration }))
       )
     )
 
@@ -144,17 +137,13 @@ describe('TemplateSelector', () => {
   it('should render the selector with no selected template', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeById.url,
+        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedTemplateScopeNoDefault }))
       ),
       rest.get(
         // Remove the query parameter to make MSW happy
         MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
-      ),
-      rest.get(
-        MsgTemplateUrls.getRegistrationById.url,
-        (req, res, ctx) => res(ctx.status(404))
       )
     )
 

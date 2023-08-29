@@ -6,6 +6,7 @@ import {
   ApLanPortTypeEnum,
   ApModel,
   CapabilitiesApModel,
+  CapabilitiesLanPort,
   checkVlanMember,
   LanPort,
   VenueLanPorts,
@@ -13,12 +14,35 @@ import {
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
+
+export const ConvertPoeOutToFormData = (
+  lanPortsData: WifiApSetting | VenueLanPorts,
+  lanPortsCap: LanPort[] | CapabilitiesLanPort[]
+) => {
+  const newData = { ...lanPortsData }
+  const { poeOut, lanPorts = [] } = newData
+
+  if (poeOut === undefined) {
+    return undefined
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let poeOutObj: any = {}
+  for (let i=0; i<lanPorts.length; i++) {
+    if (lanPortsCap?.[i].isPoeOutPort) {
+      poeOutObj[i] = poeOut
+    }
+  }
+  return poeOutObj
+}
+
 export function LanPortSettings (props: {
   index: number,
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
   selectedModelCaps: ApModel | CapabilitiesApModel,
+  onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
@@ -30,6 +54,7 @@ export function LanPortSettings (props: {
     selectedModel,
     setSelectedPortCaps,
     selectedModelCaps,
+    onGUIChanged,
     isDhcpEnabled,
     readOnly,
     useVenueSettings
@@ -53,6 +78,12 @@ export function LanPortSettings (props: {
     )
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[index] as LanPort)
     form?.setFieldValue('lan', lanPorts)
+
+    onChangedByCustom('portType')
+  }
+
+  const onChangedByCustom = (fieldName: string) => {
+    onGUIChanged?.(fieldName)
   }
 
   return (<>
@@ -62,6 +93,7 @@ export function LanPortSettings (props: {
       valuePropName='checked'
       children={<Switch
         disabled={readOnly}
+        onChange={() => onChangedByCustom('poeOut')}
       />}
     />}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
@@ -91,6 +123,7 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || lan?.vni > 0
         }
+        onChange={() => onChangedByCustom('enabled')}
       />}
     />
     <Form.Item
@@ -141,7 +174,7 @@ export function LanPortSettings (props: {
           || lan?.vni > 0
         }
         onChange={(value) => {
-          if (lan?.type === ApLanPortTypeEnum.ACCESS) {
+          if (lan?.type !== ApLanPortTypeEnum.TRUNK) {
             const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
               index === idx ? {
                 ...lan,
@@ -150,6 +183,7 @@ export function LanPortSettings (props: {
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)
+            onChangedByCustom('untagId')
           }
         }}
       />}
@@ -174,6 +208,7 @@ export function LanPortSettings (props: {
           || lan?.type !== ApLanPortTypeEnum.GENERAL
           || lan?.vni > 0
         }
+        onChange={() => onChangedByCustom('vlanMembers')}
       />}
     />
     <Form.Item

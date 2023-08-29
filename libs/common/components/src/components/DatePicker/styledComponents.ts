@@ -11,7 +11,7 @@ type RangePickerWrapperProps = {
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div`
+const datePickerStyle = `
   .ant-picker-input {
     .ant-picker-clear {
       span[role=img] {
@@ -129,9 +129,14 @@ export const Wrapper = styled.div`
 `
 /* eslint-enable */
 
+export const Wrapper = styled.div`
+  ${datePickerStyle}
+`
+
+
 export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-ranges-width: 125px;
-  --acx-date-picker-left-padding: 22px;
+  --acx-date-picker-left-padding: 25px;
 
   > .ant-picker {
     &:not(.ant-picker-focused) {
@@ -156,8 +161,8 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     > .ant-picker-suffix {
       position: absolute;
-      left: 3px;
-      width: 18px;
+      left: 8px;
+      width: 16px;
     }
     .ant-picker-active-bar {
       background: var(--acx-accents-blue-50);
@@ -260,5 +265,66 @@ export const Buttons = styled(Space)`
   gap: var(--acx-modal-footer-small-button-space) !important;
   .ant-space-item {
     line-height: normal;
+  }
+`
+
+export const ApplyMsgWrapper = styled.div`
+  padding: 0 12px;
+  white-space: normal;
+`
+
+export const HiddenDateInput = styled.div`
+  cursor: pointer;
+  caret-color: transparent;
+
+  ${datePickerStyle}
+
+  .ant-picker-borderless {
+    > .ant-picker-input > input {
+      height: 0px;
+      width: 0px;
+      padding: 0px;
+      position: absolute;
+    }
+    border: 0px;
+    padding: 0px;
+  }
+  .ant-picker-panel {
+    .ant-picker-footer {
+      display: block;
+      border-top: 0px;
+    }
+    .ant-picker-footer-extra {
+      padding: 0px;
+    }
+  }
+`
+
+export const FooterWrapper = styled.div`
+  line-height: 20px;
+  font-size: 9.5px;
+  margin-top: 5px;
+  width: 280px;
+
+  button {
+    float: right;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+  }
+
+  .ant-divider.ant-divider-horizontal {
+    margin: 2px 0px;
+  }
+
+  ${TimePickerRow} {
+    height: auto;
+    padding-bottom: 10px;
+
+    .ant-picker-footer {
+      .ant-picker-ranges {
+        display: none;
+      }
+    }
   }
 `

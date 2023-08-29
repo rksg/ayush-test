@@ -37,6 +37,10 @@ export const LabelOfInput = styled.span`
     left: 80px;
     word-wrap: normal;
 `
+export const TabLable = styled.div`
+  display: flex;
+  justify-content: center;
+`
 
 export const RateLimitBlock = styled.div`
     display: flex;
@@ -55,6 +59,8 @@ export const RateLimitBlock = styled.div`
 
 const CustomSubtitle = styled(Subtitle).attrs({ level: 4 })`
   margin-block-end: 12px;
+  padding-top: 20px;
+  padding-bottom: 10px;
 `
 
 export { CustomSubtitle as Subtitle }

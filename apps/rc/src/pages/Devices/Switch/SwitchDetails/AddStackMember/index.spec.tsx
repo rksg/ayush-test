@@ -31,9 +31,6 @@ const editStackData = {
   enableStack: true,
   igmpSnooping: 'none',
   jumboMode: false,
-  softDeleted: false,
-  isPrimaryDeleted: false,
-  sendedHostname: true,
   dhcpClientEnabled: true,
   dhcpServerEnabled: false,
   rearModule: 'none'
@@ -75,8 +72,11 @@ describe('Add Stack Member Form', () => {
 
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
-    fireEvent.change(
-      await screen.findByTestId(/serialNumber1/), { target: { value: 'FEK4124R20X' } })
+    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R20X' } })
+    })
   })
   it('should render add and delete member field correctly', async () => {
     render(
@@ -91,14 +91,17 @@ describe('Add Stack Member Form', () => {
 
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
-    fireEvent.change(
-      await screen.findByTestId(/serialNumber1/), { target: { value: 'FEK4124R20X' } })
-    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
-    const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-    fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-    serialNumber2.focus()
+    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R20X' } })
+    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
+    const serialNumber2 = await screen.findByTestId(/serialNumber2/)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
+      serialNumber2.focus()
       serialNumber2.blur()
     })
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
@@ -118,10 +121,11 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    fireEvent.change(serialNumber1, { target: { value: 'FMG4124R20X' } })
-    serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      fireEvent.change(serialNumber1, { target: { value: 'FMG4124R20X' } })
+      serialNumber1.focus()
+      // eslint-disable-next-line testing-library/no-unnecessary-act
       serialNumber1.blur()
     })
 
@@ -144,10 +148,10 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    fireEvent.change(serialNumber1, { target: { value: 'aaa' } })
-    serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      fireEvent.change(serialNumber1, { target: { value: 'aaa' } })
+      serialNumber1.focus()
       serialNumber1.blur()
     })
 
@@ -167,21 +171,23 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
-    serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
+      serialNumber1.focus()
       serialNumber1.blur()
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-    fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-    serialNumber2.focus()
+
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
+      serialNumber2.focus()
       serialNumber2.blur()
     })
+
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     const msg = await screen

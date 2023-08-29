@@ -1,3 +1,4 @@
+import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
   useGetEdgeListQuery,
@@ -38,7 +39,8 @@ const getNetworkSegmentationPayload = {
     'venueInfos',
     'edgeInfos',
     'distributionSwitchInfos',
-    'accessSwitchInfos'
+    'accessSwitchInfos',
+    'edgeAlarmSummary'
   ]
 }
 const venueOptionsDefaultPayload = {
@@ -73,7 +75,6 @@ const NetworkSegmentationTable = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
@@ -134,7 +135,7 @@ const NetworkSegmentationTable = () => {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -142,7 +143,7 @@ const NetworkSegmentationTable = () => {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -154,7 +155,7 @@ const NetworkSegmentationTable = () => {
       sorter: true,
       filterable: venueOptions,
       filterKey: 'venueInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         const venueInfo = row.venueInfos[0]
         return (
           <TenantLink to={`/venues/${venueInfo?.venueId}/venue-details/overview`}>
@@ -170,7 +171,7 @@ const NetworkSegmentationTable = () => {
       sorter: true,
       filterable: edgeOptions,
       filterKey: 'edgeInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
           <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
@@ -186,7 +187,7 @@ const NetworkSegmentationTable = () => {
       align: 'center',
       filterable: networkOptions,
       filterKey: 'networkIds',
-      render: (data, row) => {
+      render: (_, row) => {
         return (row.networkIds?.length)
       }
     },
@@ -197,15 +198,21 @@ const NetworkSegmentationTable = () => {
       align: 'center',
       filterable: switchOptions,
       filterKey: 'distributionSwitchInfoIds',
-      render: (data, row) => {
+      render: (_, row) => {
         return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
       }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      sorter: true
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeInfos?.length)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
@@ -218,9 +225,15 @@ const NetworkSegmentationTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'version',
-      dataIndex: ['version'],
-      sorter: true
+      key: 'serviceVersion',
+      dataIndex: 'edgeInfos',
+      sorter: true,
+      render: (_, row) => {
+        const edgeInfo = row.edgeInfos[0]
+        return (
+          edgeInfo?.serviceVersion
+        )
+      }
     }
   ]
 
@@ -269,10 +282,8 @@ const NetworkSegmentationTable = () => {
           $t({ defaultMessage: 'Network Segmentation ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

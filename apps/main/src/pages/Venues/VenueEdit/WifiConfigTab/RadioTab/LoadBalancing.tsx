@@ -16,7 +16,7 @@ import { FieldLabel, RadioDescription } from '../styledComponents'
 
 const { useWatch } = Form
 
-export function LoadBalancing () {
+export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void }) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
@@ -37,12 +37,14 @@ export function LoadBalancing () {
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
+  const { setIsLoadOrBandBalaningEnabled } = props
   const getLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId } })
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 
   const betaStickyFlag = useIsTierAllowed(TierFeatures.BETA_CLB)
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
+  const clientAdmissionControlFlag = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportStickyClient = betaStickyFlag && stickyClientFlag
 
   const infoMessage = defineMessage({
@@ -96,6 +98,7 @@ export function LoadBalancing () {
     const loadBalancingData = getLoadBalancing?.data
     if (loadBalancingData) {
       form.setFieldsValue(loadBalancingData)
+      setIsLoadOrBandBalaningEnabled?.(loadBalancingData.enabled || loadBalancingData.bandBalancingEnabled)
     }
 
   }, [getLoadBalancing?.data])
@@ -114,13 +117,14 @@ export function LoadBalancing () {
     return `${value}%`
   }
 
-  const handleUpdateLoadBalancing = async () => {
+  const handleUpdateLoadBalancing = async (callback?: () => void) => {
     try {
       const payload = getLoadBalancingDataFromFields()
 
       await updateVenueLoadBalancing({
         params: { venueId },
-        payload
+        payload,
+        callback: callback
       }).unwrap()
 
     } catch (error) {
@@ -166,6 +170,8 @@ export function LoadBalancing () {
       isLoadBalancingDataChanged: true,
       updateLoadBalancing: handleUpdateLoadBalancing
     })
+
+    setIsLoadOrBandBalaningEnabled?.(form.getFieldValue('enabled') || form.getFieldValue('bandBalancingEnabled'))
   }
 
 
@@ -176,7 +182,17 @@ export function LoadBalancing () {
     <Row gutter={0}>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
-          {$t({ defaultMessage: 'Use Load Balancing' })}
+          <Space>
+            {$t({ defaultMessage: 'Use Load Balancing' })}
+            <Tooltip
+              title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
+                allowed to enable client admission control.` })}
+              placement='right'>
+              {clientAdmissionControlFlag &&
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+              }
+            </Tooltip>
+          </Space>
           <Form.Item
             name='enabled'
             valuePropName='checked'
@@ -321,7 +337,17 @@ export function LoadBalancing () {
     <Row gutter={0}>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
-          {$t({ defaultMessage: 'Band Balancing' })}
+          <Space>
+            {$t({ defaultMessage: 'Band Balancing' })}
+            <Tooltip
+              title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
+                allowed to enable client admission control.` })}
+              placement='right'>
+              {clientAdmissionControlFlag &&
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+              }
+            </Tooltip>
+          </Space>
           <Form.Item
             name='bandBalancingEnabled'
             valuePropName='checked'

@@ -1,3 +1,4 @@
+import { EdgeAlarmSummary } from '../..'
 export interface NetworkSegmentationGroup {
   id: string
   name: string
@@ -22,6 +23,7 @@ export interface NetworkSegmentationGroupViewData {
   accessSwitchInfos: AccessSwitch[]
   serviceStatus: string
   tunnelNumber: string
+  edgeAlarmSummary: EdgeAlarmSummary[]
 }
 
 export interface VenueInfo {
@@ -37,6 +39,7 @@ export interface EdgeInfo {
   devices: number
   dhcpInfoId: string
   dhcpPoolId: string
+  serviceVersion: string
 }
 
 export interface WebAuthTemplate {

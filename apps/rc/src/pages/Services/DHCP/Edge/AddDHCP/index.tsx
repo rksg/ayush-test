@@ -1,5 +1,4 @@
 import { Form }    from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -7,13 +6,19 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
-  EdgeDhcpSettingForm, EdgeDhcpSettingFormData
+  EdgeDhcpSettingForm
 } from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation }                                                              from '@acx-ui/rc/services'
-import { LeaseTimeType, ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
+import { useAddEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import {
+  ServiceOperation,
+  ServiceType,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  EdgeDhcpSettingFormData,
+  convertEdgeDHCPFormDataToApiPayload
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const AddDhcp = () => {
 
@@ -22,22 +27,12 @@ const AddDhcp = () => {
   const linkToServices = useTenantLink('/services')
   const [form] = Form.useForm()
   const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getServiceRoutePath(
     { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = _.cloneDeep(data)
-      if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
-        payload.leaseTime = -1 // -1 means infinite
-      }
-
-      // should not create service with id
-      payload.dhcpPools.forEach(item => item.id = '')
-      payload.dhcpOptions?.forEach(item => item.id = '')
-      payload.hosts?.forEach(item => item.id = '')
-
+      const payload = convertEdgeDHCPFormDataToApiPayload(data)
       await addEdgeDhcp({ payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
@@ -49,12 +44,10 @@ const AddDhcp = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
-        ] : [
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>

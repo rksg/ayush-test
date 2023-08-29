@@ -729,7 +729,7 @@ export function EditPortDrawer ({
       </Button>
       <Button loading={loading}
         key='apply'
-        type='secondary'
+        type='primary'
         disabled={disableSaveButton}
         onClick={isCloudPort ? onApply : applyForm}>
         {$t({ defaultMessage: 'Apply' })}

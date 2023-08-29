@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpUrls,
   EdgeUrlsInfo,
@@ -9,8 +8,8 @@ import {
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockEdgeList }      from '../../../../Devices/Edge/__tests__/fixtures'
 import { mockDhcpStatsData } from '../__tests__/fixtures'
@@ -69,22 +68,7 @@ describe('EdgeDhcpTable', () => {
     expect(row.length).toBe(4)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <DHCPTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <DHCPTable />
@@ -150,7 +134,7 @@ describe('EdgeDhcpTable', () => {
   //   expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   // })
 
-  it.skip('should delete selected row', async () => {
+  it('should delete selected row', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -162,7 +146,9 @@ describe('EdgeDhcpTable', () => {
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "TestDHCP-1"?')
+    const dialog = screen.queryByRole('dialog')
     await user.click(screen.getByRole('button', { name: 'Delete DHCP' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   // it('should delete selected row(multiple)', async () => {
@@ -179,10 +165,12 @@ describe('EdgeDhcpTable', () => {
   //   await user.click(within(row2).getByRole('checkbox'))
   //   await user.click(screen.getByRole('button', { name: 'Delete' }))
   //   await screen.findByText('Delete "2 DHCP"?')
+  //   const dialog = await screen.findByRole('dialog')
   //   await user.click(screen.getByRole('button', { name: 'Delete DHCP' }))
+  //   await waitFor(() => expect(dialog).not.toBeVisible())
   // })
 
-  it.skip('should show update modal (single)', async () => {
+  it('should show update modal (single)', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -193,10 +181,12 @@ describe('EdgeDhcpTable', () => {
     const row = await screen.findByRole('row', { name: /DHCP-1/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
-    await screen.findByText('Service Update')
+    const dialog = await screen.findByRole('dialog')
+    screen.getByText('Service Update')
     // eslint-disable-next-line max-len
     await screen.findByText('Are you sure you want to update this service to the latest version immediately?')
     await user.click(screen.getByRole('button', { name: 'Update' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   // it('should show update modal (multiple)', async () => {

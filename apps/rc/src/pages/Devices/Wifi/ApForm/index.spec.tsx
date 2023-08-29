@@ -39,7 +39,8 @@ const validCoordinates = [
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
 const venue = [
   {
@@ -213,20 +214,7 @@ describe('AP Form - Add', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><ApForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByRole('link', {
-      name: /access points/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><ApForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })

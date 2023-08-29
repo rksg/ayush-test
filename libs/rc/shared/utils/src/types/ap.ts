@@ -1,4 +1,4 @@
-import { APMeshRole }                                   from '../constants'
+import { APMeshRole, ApDeviceStatusEnum }               from '../constants'
 import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
 import { ApDeep }                                       from '../models/ApDeep'
 import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
@@ -19,6 +19,7 @@ export interface IpSettings {
 
 export interface APSystem extends IpSettings {
   uptime?: number
+  secureBootEnabled?: boolean
 }
 
 export interface APNetworkSettings extends IpSettings {
@@ -95,7 +96,9 @@ export interface APExtended extends AP {
   },
   name?: string,
   switchSerialNumber?: string,
-  switchId?: string
+  switchId?: string,
+  switchName?: string,
+  rogueCategory?: { [key: string]: number }
 }
 
 export interface CelluarInfo {
@@ -311,6 +314,7 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
+  support11AX?: boolean
 }
 
 export interface PingAp {
@@ -348,6 +352,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBssColoringSettings {
+  bssColoringEnabled: boolean,
   useVenueSettings: boolean
 }
 
@@ -412,7 +421,7 @@ export class ModelLanPort extends VenueLanPort {
 export interface WifiApSetting {
   useVenueSettings: boolean;
   externalAntenna?: ExternalAntenna;
-  poeOut?: boolean;
+  poeOut?: boolean | boolean[];
   poeMode?: string;
   lanPorts?: LanPort[];
   lan?: LanPort[];
@@ -484,4 +493,58 @@ export type MeshUplinkAp = {
   deviceStatus: string,
   healthStatus: string,
   neighbors: MeshApNeighbor[]
+}
+
+export interface ApRfNeighbor {
+  deviceName: string,
+  apMac: string,
+  status: ApDeviceStatusEnum,
+  model: string,
+  venueName: string,
+  ip: string,
+  channel24G: string | null,
+  channel5G: string | null,
+  channel6G: string | null,
+  snr24G: string | null,
+  snr5G: string | null,
+  snr6G: string | null
+}
+
+export interface ApLldpNeighbor {
+  neighborManaged: boolean,
+  lldpInterface: string | null,
+  lldpVia: string | null,
+  lldpRID: string | null,
+  lldpTime: string,
+  lldpChassisID: string | null,
+  lldpSysName: string | null,
+  lldpSysDesc: string | null,
+  lldpMgmtIP: string | null,
+  lldpCapability: string | null,
+  lldpPortID: string | null,
+  lldpPortDesc: string | null,
+  lldpMFS: string | null,
+  lldpPMDAutoNeg: string | null,
+  lldpAdv: string | null,
+  lldpMAUOperType: string | null,
+  lldpMDIPower: string | null,
+  lldpDeviceType: string | null,
+  lldpPowerPairs: string | null,
+  lldpClass: string | null,
+  lldpPowerType: string | null,
+  lldpPowerSource: string | null,
+  lldpPowerPriority: string | null,
+  lldpPDReqPowerVal: string | null,
+  lldpPSEAllocPowerVal: string | null,
+  lldpUPOE: string | null
+}
+
+export interface ApRfNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApRfNeighbor[]
+}
+
+export interface ApLldpNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApLldpNeighbor[]
 }

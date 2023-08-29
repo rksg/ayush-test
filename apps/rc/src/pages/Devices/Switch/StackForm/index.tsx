@@ -67,6 +67,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
@@ -96,7 +97,6 @@ export function StackForm () {
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -121,13 +121,14 @@ export function StackForm () {
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchViewModel[])
 
   const [activeRow, setActiveRow] = useState('1')
-  const [rowKey, setRowKey] = useState(3)
+  const [rowKey, setRowKey] = useState(2)
 
   const dataFetchedRef = useRef(false)
 
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
@@ -202,11 +203,11 @@ export function StackForm () {
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
           (item: { id: string; model: undefined }, index: number) => {
-            const key: string = (index + 1).toString()
+            const key: number = _.get(item, 'unitId') || (index + 1)
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
               formRef?.current?.setFieldValue('active', key)
-              setActiveRow(key)
+              setActiveRow(key.toString())
             }
             setVisibleNotification(true)
             return {
@@ -310,6 +311,13 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
+
     try {
       const payload = {
         name: values.name || '',
@@ -335,6 +343,12 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
     if (readOnly) {
       navigate({
         ...basePath,
@@ -451,7 +465,7 @@ export function StackForm () {
       key: 'sort',
       width: 60,
       show: editMode,
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
         )
@@ -460,9 +474,6 @@ export function StackForm () {
     {
       dataIndex: 'key',
       key: 'key',
-      render: (id, record, index) => {
-        return index + 1
-      },
       showSorterTooltip: false
     },
     {
@@ -470,7 +481,7 @@ export function StackForm () {
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: function (data, row, index) {
+      render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
           validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
@@ -507,8 +518,8 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Switch Model' }),
       dataIndex: 'model',
       key: 'model',
-      render: function (data: React.ReactNode) {
-        return <div>{data ? data : '--'}</div>
+      render: function (_: React.ReactNode, row: SwitchTable) {
+        return <div>{row.model ? row.model : '--'}</div>
       }
     }] : []),
     {
@@ -516,7 +527,7 @@ export function StackForm () {
       dataIndex: 'active',
       key: 'active',
       show: !editMode,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <Form.Item name={'active'}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
@@ -529,7 +540,7 @@ export function StackForm () {
     {
       key: 'action',
       dataIndex: 'action',
-      render: (data, row, index) => (
+      render: (_, row, index) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -640,15 +651,10 @@ export function StackForm () {
             name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber
           }) :
           $t({ defaultMessage: 'Add Switch Stack' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },
           { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Switches' }),
-            link: '/devices/switch'
-          }
         ]}
       />
       <StepsFormLegacy
@@ -816,9 +822,6 @@ export function StackForm () {
                   <>
                     <Form.Item name='id' hidden={true}><Input /></Form.Item>
                     <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
                     <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
                 }
