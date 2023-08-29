@@ -184,7 +184,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row.deepNetwork?.isOweMaster === false
+    return supportOweTransition && row?.isOweMaster === false
   }
 
   // TODO: Waiting for API support
