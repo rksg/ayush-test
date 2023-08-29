@@ -676,6 +676,11 @@ export interface VoiceVlanOption {
   voiceVlans: any[]
 }
 
+export interface VoiceVlanPort {
+  taggedPort: string
+  voiceVlan: string
+}
+
 export interface SwitchConfigurationProfile {
   acls: Acl[]
   id: string

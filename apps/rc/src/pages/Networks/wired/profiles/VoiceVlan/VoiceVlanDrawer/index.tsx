@@ -6,15 +6,16 @@ import {
   FormInstance,
   Input,
   InputNumber,
-  Select,
-  TableProps
+  Select
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, Tooltip, Table }                            from '@acx-ui/components'
+import { Drawer, Alert, Tooltip, Table, TableProps }                            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                        from '@acx-ui/icons'
-import { validateDuplicateVlanName, validateVlanName, Vlan, VoiceVlanOption } from '@acx-ui/rc/utils'
+import { validateDuplicateVlanName, validateVlanName, Vlan, VoiceVlanOption, VoiceVlanPort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
+import { VoiceVlanModal } from './VoiceVlanModal'
 
 export interface ACLSettingDrawerProps {
   modelData?: VoiceVlanOption
@@ -28,8 +29,12 @@ export interface ACLSettingDrawerProps {
 export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
   const { $t } = useIntl()
   const { modelData, setDefaultVlan, visible, setVisible, vlansList } = props
-  const [ tableData, setTableData ] = useState([] as { taggedPort: string; voiceVlan: string; }[])
+  const [tableData, setTableData] = useState([] as VoiceVlanPort[])
+  const [editPorts, setEditPorts] = useState([] as VoiceVlanPort[])
+  const [voiceVlanModalVisible, setVoiceVlanModalVisible] = useState(false)
+  const [selectedKeys, setSelectedKeys] = useState([] as string[])
   const [form] = Form.useForm<Vlan>()
+  
 
   useEffect(() => {
     if(modelData){
@@ -61,49 +66,79 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
     setVisible(false)
   }
 
-  const columns = [{
+  const columns: TableProps<VoiceVlanPort>['columns'] = [{
     title: $t({ defaultMessage: 'Tagged Ports' }),
     dataIndex: 'taggedPort',
     key: 'taggedPort',
   }, {
     title: $t({ defaultMessage: 'Voice VLAN' }),
     dataIndex: 'voiceVlan',
-    key: 'voiceVlan'
+    key: 'voiceVlan',
+    render: (_, row) => {
+      return row.voiceVlan || noDataDisplay
+    }
   }]
 
-  return (
-    <Drawer
-      title={$t({ defaultMessage: 'Set Voice VLAN ({model})' },  { model: modelData?.model })}
-      width={'400px'}
-      visible={visible}
-      onClose={onClose}
-      destroyOnClose={true}
-      children={
-        <Table
-          rowKey='name'
-          // rowActions={filterByAccess(rowActions)}
-          columns={columns}
-          dataSource={tableData}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-        />
+  const PortTable = () => {
+    const rowActions: TableProps<VoiceVlanPort>['rowActions'] = [
+      {
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          // setDrawerFormRule(selectedRows[0])
+          // setSelectedKeys(selectedRows.map(i => i.taggedPort))
+          setEditPorts(selectedRows)
+          setVoiceVlanModalVisible(true)
+        }
       }
-      footer={
-        <Drawer.FormFooter
-          buttonLabel={{
-            save: $t({ defaultMessage: 'Save' })
-          }}
-          onCancel={onClose}
-          onSave={async () => {
-            try {
-              await form.validateFields()
-              form.submit()
-              onClose()
-            } catch (error) {
-              if (error instanceof Error) throw error
-            }
-          }}
-        />
-      }
+    ]
+    return <Table
+      rowKey='taggedPort'
+      rowActions={filterByAccess(rowActions)}
+      columns={columns}
+      dataSource={tableData}
+      rowSelection={hasAccess() && { 
+        type: 'checkbox',
+        // selectedRowKeys: selectedKeys 
+      }}
     />
+  }
+
+  return (
+    <>
+      <Drawer
+        title={$t({ defaultMessage: 'Set Voice VLAN ({model})' },  { model: modelData?.model })}
+        width={'400px'}
+        visible={visible}
+        onClose={onClose}
+        destroyOnClose={true}
+        children={
+          <PortTable />
+        }
+        footer={
+          <Drawer.FormFooter
+            buttonLabel={{
+              save: $t({ defaultMessage: 'Save' })
+            }}
+            onCancel={onClose}
+            onSave={async () => {
+              try {
+                await form.validateFields()
+                form.submit()
+                onClose()
+              } catch (error) {
+                if (error instanceof Error) throw error
+              }
+            }}
+          />
+        }
+      />
+      <VoiceVlanModal
+        visible={voiceVlanModalVisible}
+        handleCancel={() => setVoiceVlanModalVisible(false)}
+        editPorts={editPorts}
+        tableData={tableData}
+        setTableData={setTableData}
+      />
+    </>
   )
 }

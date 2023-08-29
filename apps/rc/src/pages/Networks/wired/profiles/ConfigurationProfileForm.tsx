@@ -99,7 +99,11 @@ export function ConfigurationProfileForm () {
         })
       }
     })
-    const voiceVlanOptions = Object.keys(modelMap).map(model => ({
+    const voiceVlanOptions = Object.keys(modelMap)
+    .sort((a:string, b:string) => {
+      return (a > b) ? 1 : -1
+    })
+    .map(model => ({
       model,
       voiceVlans: modelMap[model]
     }))
@@ -121,11 +125,11 @@ export function ConfigurationProfileForm () {
     setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
     setArpInspection(arpInspectionValue.length > 0)
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
-    const voiceVlanOptions = generateVoiceVlanConfig(data.vlans as Vlan[])
+    const voiceVlanOptions = data.vlans && generateVoiceVlanConfig(data.vlans as Vlan[])
     setCurrentData({
       ...currentData,
       ...data,
-      voiceVlanOptions
+      ...(voiceVlanOptions ? {voiceVlanOptions} : {})
     })
 
     return true
