@@ -98,6 +98,8 @@ export type { updatePreferenceProps } from './usePreference'
 export { usePlacesAutocomplete } from './usePlacesAutocomplete'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
+export { MspSubscriptionUtilizationWidget }
+  from './SubscriptionUtilizationWidget/MspSubscriptionUtilizationWidget'
 export {
   StatefulACLRulesTable,
   useDefaultStatefulACLRulesColumns } from './EdgeFirewallTables/StatefulACLRulesTable'
