@@ -10,9 +10,11 @@ import {
   PageHeader,
   Subtitle,
   Table,
-  TableProps
+  TableProps,
+  Tabs
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
@@ -20,20 +22,25 @@ import {
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
+  useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { MspAssignmentSummary, MspEntitlementSummary }                                   from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   dateSort,
   defaultSort,
   EntitlementDeviceType,
+  EntitlementDeviceTypes,
   EntitlementUtil,
+  getEntitlementDeviceTypes,
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponent'
+import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
+import * as UI                       from './styledComponent'
 
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
@@ -49,35 +56,53 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 
 export function Subscriptions () {
   const { $t } = useIntl()
-  const [totalWifiCount, setTotalWifiCount] = useState(0)
-  const [usedWifiCount, setUsedWifiCount] = useState(0)
-  const [totalSwitchCount, setTotalSwitchCount] = useState(0)
-  const [usedSwitchCount, setUsedSwitchCount] = useState(0)
   const [showDialog, setShowDialog] = useState(false)
+  const [isAssignedActive, setActiveTab] = useState(false)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
 
   const { tenantId } = useParams()
+  const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
+    .filter(o => o.value.startsWith('MSP'))
 
   const [
     refreshEntitlement
   ] = useRefreshMspEntitlementMutation()
 
+  const getCourtesyTooltip = (total: number, courtesy: number) => {
+    const purchased = total-courtesy
+    return $t({ defaultMessage: 'purchased:{purchased}, courtesy:{courtesy}' },
+      { purchased, courtesy })
+  }
+
   const columns: TableProps<MspEntitlement>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'name',
-      key: 'name',
-      filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'deviceSubType',
-      key: 'deviceSubType',
-      render: function (_, row) {
-        if (row.deviceType === 'MSP_WIFI')
-          return EntitlementUtil.tempLicenseToString(row.isTrial)
-        return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Part Number' }),
+        dataIndex: 'sku',
+        key: 'sku',
+        sorter: { compare: sortProp('sku', defaultSort) }
       }
-    },
+    ]: [
+      {
+        title: $t({ defaultMessage: 'Subscription' }),
+        dataIndex: 'name',
+        key: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
+        filterable: true
+      },
+      {
+        title: $t({ defaultMessage: 'Type' }),
+        dataIndex: 'deviceSubType',
+        key: 'deviceSubType',
+        sorter: { compare: sortProp('deviceSubType', defaultSort) },
+        render: function (data: React.ReactNode, row: MspEntitlement) {
+          if (row.deviceType === EntitlementDeviceType.MSP_WIFI)
+            return EntitlementUtil.tempLicenseToString(row.isTrial)
+          return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+        }
+      }
+    ]),
     {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
@@ -166,6 +191,53 @@ export function Subscriptions () {
     }
   ]
 
+  const subscriptionUtilizationTransformer = (
+    deviceTypeList: EntitlementDeviceTypes,
+    assignedSummary: MspAssignmentSummary[],
+    data: MspEntitlementSummary[]) => {
+    const result = {} as { [key in EntitlementDeviceType]: {
+      total: number;
+      used: number;
+      assigned: number;
+      courtesy: number;
+      tooltip: string;
+    } }
+
+    deviceTypeList.forEach(item => {
+      const deviceType = item.value
+      const summaryData = data.filter(n => n.deviceType === deviceType)
+      const assignedData = assignedSummary.filter(n => n.deviceType === deviceType)
+      let quantity = 0
+      let used = 0
+      let courtesy = 0
+      let assigned = 0
+
+      // only display types that has data in summary
+      if (summaryData.length > 0 || assignedData.length > 0) {
+        summaryData.forEach(summary => {
+          quantity += summary.quantity + summary.courtesyQuantity
+          courtesy += summary.courtesyQuantity
+        })
+
+        assignedData.forEach(summary => {
+          assigned += summary.myAssignments || 0
+          used += summary.quantity
+        })
+
+        // including to display 0 quantity.
+        result[deviceType] = {
+          total: quantity,
+          used: used,
+          assigned: assigned,
+          courtesy: courtesy,
+          tooltip: getCourtesyTooltip(quantity, courtesy)
+        }
+      }
+    })
+
+    return result
+  }
+
   const SubscriptionUtilization = () => {
     const queryResults = useMspAssignmentSummaryQuery({
       params: useParams()
@@ -175,50 +247,57 @@ export function Subscriptions () {
         ...rest
       })
     })
+    const summaryResults = useMspEntitlementSummaryQuery({ params: useParams() })
+    const summaryData = subscriptionUtilizationTransformer(
+      subscriptionDeviceTypeList,
+      queryResults.data ?? [],
+      summaryResults.data ?? [])
+
     useEffect(() => {
       if (queryResults.data) {
-        const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-        let wifiQuantity = 0
-        let wifiUsed = 0
-        wifiData.forEach(summary => {
-          wifiQuantity += summary.quantity + summary.remainingDevices
-          wifiUsed += summary.quantity
-          setTotalWifiCount(wifiQuantity)
-          setUsedWifiCount(wifiUsed)
-        })
       }
-      if (queryResults.data) {
-        const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-        let switchQuantity = 0
-        let switchUsed = 0
-        switchData.forEach(summary => {
-          switchQuantity += summary.quantity + summary.remainingDevices
-          switchUsed += summary.quantity
-          setTotalSwitchCount(switchQuantity)
-          setUsedSwitchCount(switchUsed)
-        })
+      if (summaryResults.data) {
       }
-    })
+    }, [queryResults?.data, summaryResults.data])
 
     return (
       <>
-        <Subtitle level={4}>
+        <Subtitle level={4} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
-        <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
-          <SubscriptionUtilizationWidget
-            deviceType={EntitlementDeviceType.MSP_WIFI}
-            title={$t({ defaultMessage: 'Wi-Fi' })}
-            total={totalWifiCount}
-            used={usedWifiCount}
-          />
-          <SubscriptionUtilizationWidget
-            deviceType={EntitlementDeviceType.MSP_SWITCH}
-            title={$t({ defaultMessage: 'Switch' })}
-            total={totalSwitchCount}
-            used={usedSwitchCount}
-          />
-        </SpaceWrapper>
+
+        {isMspSelfAssignmentEnabled
+          ? <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+            {
+              subscriptionDeviceTypeList.map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <MspSubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  assigned={summary.assigned}
+                  used={summary.used}
+                  tooltip={summary.tooltip}
+                /> : ''
+              })
+            }
+          </SpaceWrapper>
+          : <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
+            {
+              subscriptionDeviceTypeList.map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <SubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  used={summary.used}
+                /> : ''
+              })
+            }
+          </SpaceWrapper>
+        }
       </>
     )
   }
@@ -256,18 +335,41 @@ export function Subscriptions () {
     )
   }
 
+  const onTabChange = (tab: string) => {
+    setActiveTab(tab === 'assignedSubscriptions')
+  }
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={
+        title={isMspSelfAssignmentEnabled
+          ? $t({ defaultMessage: 'Subscriptions' }) : $t({ defaultMessage: 'MSP Subscriptions' })}
+        extra={[
+          <MspTenantLink to='/msplicenses/assign'>
+            <Button
+              hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
+              type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
+          </MspTenantLink>,
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
-        }
+        ]}
       />
+      {isMspSelfAssignmentEnabled && <Tabs
+        defaultActiveKey='mspSubscriptions'
+        onChange={onTabChange}
+      >
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'MSP Subscriptions' })}
+          key='mspSubscriptions' />
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
+          key='assignedSubscriptions' />
+      </Tabs>}
+
       <SubscriptionUtilization />
-      <SubscriptionTable />
+      {(isAssignedActive && isMspSelfAssignmentEnabled)
+        ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
     </>
   )
 }

@@ -103,7 +103,11 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData)))
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      )
     )
   })
 

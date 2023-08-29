@@ -56,18 +56,7 @@ describe('Add switch form', () => {
     expect(await screen.findByText(/add switch/i)).toBeVisible()
   })
 
-  it('should render switch breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/switch/:action' }
-    })
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-  })
-
-  it('should render switch breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render switch breadcrumb correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
