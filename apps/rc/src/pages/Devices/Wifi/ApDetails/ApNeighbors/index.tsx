@@ -6,11 +6,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useApContext }           from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
-import ApLldpNeighbors from './ApLldpNeighbors'
-import ApRfNeighbors   from './ApRfNeighbors'
-
-
-type ApNeighborTypes = 'lldp' | 'rf'
+import ApLldpNeighbors     from './ApLldpNeighbors'
+import ApRfNeighbors       from './ApRfNeighbors'
+import { ApNeighborTypes } from './constants'
 
 const tabs : {
   key: ApNeighborTypes,

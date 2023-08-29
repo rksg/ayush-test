@@ -1,82 +1,100 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { showToast }                                                                    from '@acx-ui/components'
+import { useDetectApNeighborsMutation }                                                 from '@acx-ui/rc/services'
 import { ApErrorHandlingMessages, CatchErrorResponse, closePokeSocket, initPokeSocket } from '@acx-ui/rc/utils'
+import { getIntl }                                                                      from '@acx-ui/utils'
 
-let pokeSocket: SocketIOClient.Socket
-let socketTimeoutId: NodeJS.Timeout
-const socketTimeout = 10000
+import { ApNeighborTypes, DetectionStatus, defaultSocketTimeout } from './constants'
+import { errorTypeMapping }                                       from './contents'
 
-export enum DetectionStatus {
-  IDLE,
-  FETCHING,
-  TIMEOUT,
-  COMPLETEED
-}
-
-type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
-const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
-  'WIFI-10496': 'FIRMWARE_IS_NOT_SUPPORTED',
-  'WIFI-10497': 'IS_NOT_OPERATIONAL',
-  'WIFI-10216': 'IS_NOT_FOUND',
-  'WIFI-10498': 'NO_DETECTED_NEIGHBOR_DATA'
-}
-
-export function useApNeighbors (initRequestId: string, handler: () => void) {
+export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, handler: () => void) {
   const [ detectionStatus, setDetectionStatus ] = useState<DetectionStatus>(DetectionStatus.IDLE)
-  const [ requestId, setRequestId ] = useState(initRequestId)
   const { $t } = useIntl()
+  const [ detectApNeighbors ] = useDetectApNeighborsMutation()
+  const pokeSocketRef = useRef<SocketIOClient.Socket>()
+  const socketTimeoutIdRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     cleanUp()
 
-    if (!requestId) return
-
-    setDetectionStatus(DetectionStatus.FETCHING)
-
-    pokeSocket = initPokeSocket(requestId, () => {
-      setDetectionStatus(DetectionStatus.COMPLETEED)
-      clearTimeout(socketTimeoutId)
+    pokeSocketRef.current = initPokeSocket(getSocketSubscriptionId(type, serialNumber), () => {
+      setDetectionStatus(DetectionStatus.IDLE)
+      clearSocketTimeout()
       handler()
     })
-    socketTimeoutId = setTimeout(onSocketTimeout, socketTimeout)
+
+    doDetect()
 
     return cleanUp
-  }, [requestId])
+  }, [])
 
   const cleanUp = () => {
-    if (pokeSocket) closePokeSocket(pokeSocket)
-    if (socketTimeoutId) clearTimeout(socketTimeoutId)
-    setDetectionStatus(DetectionStatus.IDLE)
+    closeSocket()
+    clearSocketTimeout()
   }
 
-  const handleError = (error: CatchErrorResponse) => {
-    const code = error?.data?.errors?.[0]?.code
-    const isDefinedCode = code && errorTypeMapping[code]
-    const message: MessageDescriptor = isDefinedCode
-      ? ApErrorHandlingMessages[errorTypeMapping[code]]
-      : ApErrorHandlingMessages.ERROR_OCCURRED
-
-    showError($t(message, { action: $t({ defaultMessage: 'detecting' }) }))
+  const closeSocket = () => {
+    if (pokeSocketRef.current) closePokeSocket(pokeSocketRef.current)
   }
 
-  const showError = (errorMessage: string) => {
-    showToast({
-      type: 'error',
-      content: errorMessage
-    })
+  const setSocketTimeout = () => {
+    clearSocketTimeout()
+    socketTimeoutIdRef.current = setTimeout(onSocketTimeout, defaultSocketTimeout)
+  }
+
+  const clearSocketTimeout = () => {
+    if (socketTimeoutIdRef.current) clearTimeout(socketTimeoutIdRef.current)
   }
 
   const onSocketTimeout = () => {
     showError($t({ defaultMessage: 'The AP is not reachable' }))
-    setDetectionStatus(DetectionStatus.TIMEOUT)
+    setDetectionStatus(DetectionStatus.IDLE)
+  }
+
+  const doDetect = async () => {
+    setDetectionStatus(DetectionStatus.FETCHING)
+
+    try {
+      detectApNeighbors({
+        params: { serialNumber },
+        payload: { action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR' }
+      })
+
+      setSocketTimeout()
+    } catch (error) {
+      handleError(error as CatchErrorResponse)
+      clearSocketTimeout()
+      setDetectionStatus(DetectionStatus.IDLE)
+    }
   }
 
   return {
-    setRequestId,
     detectionStatus,
-    handleError
+    doDetect
   }
+}
+
+function getSocketSubscriptionId (type: ApNeighborTypes, serialNumber: string): string {
+  return `${serialNumber}-neighbor-${type}`
+}
+
+export const handleError = (error: CatchErrorResponse) => {
+  const { $t } = getIntl()
+  const code = error?.data?.errors?.[0]?.code
+  const isDefinedCode = code && errorTypeMapping[code]
+  const message: MessageDescriptor = isDefinedCode
+    ? ApErrorHandlingMessages[errorTypeMapping[code]]
+    : ApErrorHandlingMessages.ERROR_OCCURRED
+
+  showError($t(message, { action: $t({ defaultMessage: 'detecting' }) }))
+}
+
+const showError = (errorMessage: string) => {
+  showToast({
+    type: 'error',
+    content: errorMessage
+  })
 }
