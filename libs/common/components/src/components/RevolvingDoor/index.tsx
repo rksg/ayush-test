@@ -9,9 +9,9 @@ import { capitalize } from 'lodash'
 
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
-import { Divider } from '../Table/styledComponents'
+import { Button } from '@acx-ui/components'
 
-import { SeveritySpan } from './styledComponents'
+import * as UI from './styledComponents'
 
 const searchTree = (node, searchText) => {
   let results = []
@@ -348,13 +348,6 @@ export const TestComponent = () => {
     setBreadcrumb(breadcrumb.slice(0, index + 1))
   }
 
-  const onToggleCheck = (nodeId) => {
-    setCheckedNodes(prevCheckedNodes => ({
-      ...prevCheckedNodes,
-      [nodeId]: !prevCheckedNodes[nodeId]
-    }))
-  }
-
   const onBack = () => {
     if (breadcrumb.length > 1) {
       const newBreadcrumb = [...breadcrumb]
@@ -367,34 +360,40 @@ export const TestComponent = () => {
   const nodesToShow = searchText ? searchResults : (breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].children : [...rootNode])
 
   const menu = (
-    <Menu>
+    <UI.StyledMenu>
       <Menu.Item key='1'>
-        <List
+        <UI.StyledList
+        split = {false}
           header={<>
-            <span style={{ display: 'inline-block',
-              verticalAlign: 'middle' }}>
-              {breadcrumb.length > 1 && (
-                <>
-                  <ArrowChevronLeft onClick={onBack}
-                    style={{ display: 'inline-block',
-                      verticalAlign: 'middle' }}/>
-                  <span style={{ display: 'inline-block',
-                    verticalAlign: 'middle' }}>{capitalize(currentNode?.type
+            <UI.ListHeader onClick={onBack}>
+              {breadcrumb.length > 1 && 
+                  <UI.LeftArrow />
+              }
+              <UI.LeftArrowText hasLeftArrow = { !Boolean(breadcrumb.length > 1) }>
+                    {capitalize(currentNode?.type
                       ? `${currentNode.type}(${currentNode.name}) `
-                      : currentNode.name)}</span>
-                </>
-              )}
-            </span>
+                      : currentNode.name)}</UI.LeftArrowText>
+            </UI.ListHeader>
             {/* Breadcrumb */}
-            <Breadcrumb>
+            <UI.StyledBreadcrumb >
               {breadcrumb.map((node, index) => (
                 <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
-                  {capitalize(node?.type
+                  { (index) !== (breadcrumb.length - 1) ? capitalize(node?.type
                     ? `${node.type}(${node.name}) `
-                    : node.name)}
+                    : node.name) : ''}
                 </Breadcrumb.Item>
               ))}
-            </Breadcrumb></>}
+            </UI.StyledBreadcrumb></>}
+          footer={
+            <UI.ButtonDiv>
+              <Button size='small' onClick={()=>{}}>
+                {'Cancel'}
+              </Button>
+              <Button size='small' type='primary' onClick={()=>{}}>
+                {'Apply'}
+              </Button>
+            </UI.ButtonDiv>
+          }
           dataSource={nodesToShow}
           renderItem={childNode => {
             const isLeaf = childNode?.children?.length === 0 || !Boolean(childNode?.children)
@@ -404,34 +403,24 @@ export const TestComponent = () => {
                 onSelect(childNode)
               }
             }
-            return <List.Item key={childNode.name}
-            >
-              <span onClick={handleNodeClick}>
-                <input
-                  style={{ width: 20 }}
-                  type='checkbox'
-                  checked={!!checkedNodes[childNode.name]}
-                  onChange={() => onToggleCheck(childNode.id)}
-                />
+            return <UI.ListItem key={childNode.name}  onClick={handleNodeClick}>
+              <UI.ListItemSpan>
                 {capitalize(childNode?.type
                   ? `${childNode.type}(${childNode.name}) `
                   : childNode.name)}
-              </span>
+              </UI.ListItemSpan>
               <div style={{
                 verticalAlign: 'middle' }}>
-                { <SeveritySpan style={{
-                  verticalAlign: 'middle' }}> {1}</SeveritySpan> }
-                { !isLeaf && <ArrowChevronRight style={{
-                  verticalAlign: 'middle' }}/> }
+                { !isLeaf && <UI.RightArrow /> }
               </div>
 
-            </List.Item>
+            </UI.ListItem>
           }
           }
         />
 
       </Menu.Item>
-    </Menu>
+    </UI.StyledMenu>
   )
   return (
     <div>
@@ -455,4 +444,3 @@ export const TestComponent = () => {
     </div>
   )
 }
-
