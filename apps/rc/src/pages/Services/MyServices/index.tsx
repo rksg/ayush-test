@@ -33,7 +33,6 @@ export default function MyServices () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const services = [
@@ -117,9 +116,7 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        breadcrumb={isNavbarEnhanced ? [
-          { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>

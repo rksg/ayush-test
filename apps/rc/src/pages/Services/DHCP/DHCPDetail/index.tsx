@@ -2,7 +2,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetDHCPProfileQuery,
   useVenuesListQuery
@@ -18,8 +17,7 @@ import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
-import { PoolTable }               from '../DHCPForm/DHCPPool/PoolTable'
+import { PoolTable } from '../DHCPForm/DHCPPool/PoolTable'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
@@ -27,7 +25,6 @@ import DHCPOverview       from './DHCPOverview'
 export default function DHCPServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data } = useGetDHCPProfileQuery({ params })
   const venuesList = useVenuesListQuery({ params, payload: {
@@ -41,16 +38,11 @@ export default function DHCPServiceDetail () {
     <>
       <PageHeader
         title={data?.serviceName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DHCP' }),
-            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'DHCP Services' }),
             link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
           }
         ]}
@@ -61,8 +53,7 @@ export default function DHCPServiceDetail () {
             serviceId: params.serviceId!
           })}>
             <Button key='configure'
-              disabled={(venuesList.data && venuesList.data.data.length>0)
-                || data?.serviceName === DEFAULT_GUEST_DHCP_NAME}
+              disabled={(venuesList.data && venuesList.data.data.length>0)}
               type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

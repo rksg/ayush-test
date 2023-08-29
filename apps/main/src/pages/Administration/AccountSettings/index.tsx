@@ -51,6 +51,9 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
+  const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
+    && canMSPDelegation && !isMspEc
+
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params },
       { skip: !isIdmDecoupling || !isPrimeAdminUser || isDogfood })
@@ -99,7 +102,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && (
+        { showSsoSupport && (
           <>
             <Divider />
             <AuthServerFormItem
@@ -108,7 +111,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && !isDogfood && (
+        { showSsoSupport && (
           <>
             <Divider />
             <AppTokenFormItem

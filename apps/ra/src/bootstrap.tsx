@@ -2,21 +2,24 @@ import React from 'react'
 
 import { Root } from 'react-dom/client'
 
-import { UserProfileProvider } from '@acx-ui/analytics/utils'
+import { UserProfile, UserProfileProvider } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
+import { get }           from '@acx-ui/config'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 import { Provider }      from '@acx-ui/store'
 import {
+  renderPendo,
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG,
   LocaleProvider,
   setUpIntl
 } from '@acx-ui/utils'
+import type { PendoParameters } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -51,14 +54,39 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
+function pendoInitalization (user: UserProfile): PendoParameters {
+  const tenant = user.tenants.find(({ id }: { id: string }) => id === user.accountId)! // TODO use selected tenant
+  return {
+    visitor: {
+      id: user.userId,
+      full_name: `${user.firstName} ${user.lastName}`,
+      role: tenant.role,
+      region: get('MLISA_REGION'),
+      version: get('MLISA_VERSION'),
+      varTenantId: user.accountId,
+      support: tenant.support,
+      delegated: user.accountId !== tenant.id,
+      email: user.email
+    },
+    account: {
+      productName: 'RuckusAI',
+      id: tenant.id,
+      name: tenant.name,
+      isTrial: tenant.isTrial
+    }
+  }
+}
+
 export async function init (root: Root) {
+  const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
+  renderPendo(() => pendoInitalization(user))
   setUpIntl({ locale: 'en-US' })
   root.render(
     <React.StrictMode>
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-            <UserProfileProvider>
+            <UserProfileProvider profile={user}>
               <BrowserRouter>
                 <React.Suspense fallback={null}>
                   <AllRoutes />

@@ -64,7 +64,7 @@ export function SwitchTroubleshootingTab () {
       onChange={onTabChange}
       defaultActiveKey='ping'
       activeKey={activeSubTab}
-      type='card'
+      type='second'
     >
       <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
         <SwitchPingForm/>

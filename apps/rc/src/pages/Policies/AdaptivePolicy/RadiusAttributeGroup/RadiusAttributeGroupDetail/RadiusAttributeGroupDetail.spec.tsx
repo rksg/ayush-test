@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -64,22 +63,7 @@ describe('RadiusAttributeGroupDetail', () => {
     await screen.findByRole('row', { name: new RegExp('ap2') })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
-      route: { params, path }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'RADIUS Attribute Groups'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
       route: { params, path }
     })

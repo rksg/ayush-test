@@ -108,6 +108,24 @@ describe('Venues Form', () => {
 
     await userEvent.click(await screen.findByText('Add'))
   })
+
+  it('venue name not allow white space only', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/venues/add' }
+      })
+
+    const venueInput = await screen.findByLabelText('Venue Name')
+    fireEvent.change(venueInput, { target: { value: '  ' } })
+    fireEvent.blur(venueInput)
+
+    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+  })
+
   it('should call address parser', async () => {
     const { address } = await addressParser(autocompleteResult)
 

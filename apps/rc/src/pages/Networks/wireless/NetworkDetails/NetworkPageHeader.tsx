@@ -27,25 +27,24 @@ function NetworkPageHeader ({
   const basePath = useTenantLink('/networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   useEffect(() => {
     if ((supportOweTransition && !isLoading)) {
-      setDisableConfigure(networkData?.isOweMaster === false)
+      setDisableConfigure(networkData?.isOweMaster === false && 'owePairNetworkId' in networkData)
     }
   }, [networkData, isLoading, supportOweTransition])
 
   return (
     <PageHeader
       title={networkData?.name || ''}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
         { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
         { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
-      ] : [{ text: $t({ defaultMessage: 'Networks' }), link: '/networks' }]}
+      ]}
       extra={[
         ...(setSelectedVenues && selectedVenues)
           ? [

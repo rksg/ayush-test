@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { apApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -62,22 +61,7 @@ describe('ApPageHeader', () => {
     await userEvent.click(await screen.findByText('Reboot'))
   })
 
-  it('should render correct breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
-    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
-    expect(screen.getByRole('link', {
-      name: /access points/i
-    })).toBeTruthy()
-  })
-
-  it('should render correct breadcrumb when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render correct breadcrumb', async () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,

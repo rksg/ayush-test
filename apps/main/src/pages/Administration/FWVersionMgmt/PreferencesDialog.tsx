@@ -56,7 +56,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
     if (data && data.times) {
       setValueTimes([...data.times])
     }
-  }, [])
+  }, [data])
 
   useEffect(() => {
     if (preDownload) {
@@ -157,7 +157,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                       <div style={{ marginLeft: 8, paddingBottom: 8 }}>{valueTimes.join(', ')}</div>
                     </UI.PreferencesSection>
                     <UI.ChangeButton type='link' onClick={showSlotModal} block>
-                      Change
+                      {$t({ defaultMessage: 'Change' })}
                     </UI.ChangeButton>
                   </Radio>
                   <Radio value={ScheduleMode.Manually}>
