@@ -14,18 +14,18 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { DetectionStatus, defaultPagination } from './constants'
-import { handleError, useApNeighbors }        from './useApNeighbors'
+import { defaultPagination }           from './constants'
+import { handleError, useApNeighbors } from './useApNeighbors'
 
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const [ getApRfNeighbors, getApRfNeighborsStates ] = useLazyGetApRfNeighborsQuery()
-  const { doDetect, detectionStatus } = useApNeighbors('rf', serialNumber!, socketHandler)
+  const { doDetect, isDetecting } = useApNeighbors('rf', serialNumber!, socketHandler)
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
-    disabled: detectionStatus === DetectionStatus.FETCHING,
+    disabled: isDetecting,
     onClick: doDetect
   }]
 
@@ -38,7 +38,7 @@ export default function ApRfNeighbors () {
   }
 
   const isTableFetching = () => {
-    return getApRfNeighborsStates.isFetching || detectionStatus === DetectionStatus.FETCHING
+    return getApRfNeighborsStates.isFetching || isDetecting
   }
 
   return <Loader states={[{

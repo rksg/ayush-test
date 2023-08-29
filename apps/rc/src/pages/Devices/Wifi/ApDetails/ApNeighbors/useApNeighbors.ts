@@ -1,84 +1,91 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { MessageDescriptor, useIntl } from 'react-intl'
+import { v4 as uuidv4 }               from 'uuid'
 
 import { showToast }                                                                    from '@acx-ui/components'
 import { useDetectApNeighborsMutation }                                                 from '@acx-ui/rc/services'
 import { ApErrorHandlingMessages, CatchErrorResponse, closePokeSocket, initPokeSocket } from '@acx-ui/rc/utils'
 import { getIntl }                                                                      from '@acx-ui/utils'
 
-import { ApNeighborTypes, DetectionStatus, defaultSocketTimeout } from './constants'
-import { errorTypeMapping }                                       from './contents'
+import { ApNeighborTypes, defaultSocketTimeout } from './constants'
+import { errorTypeMapping }                      from './contents'
 
 export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, handler: () => void) {
-  const [ detectionStatus, setDetectionStatus ] = useState<DetectionStatus>(DetectionStatus.IDLE)
+  const [ isDetecting, setIsDetecting ] = useState(false)
   const { $t } = useIntl()
   const [ detectApNeighbors ] = useDetectApNeighborsMutation()
   const pokeSocketRef = useRef<SocketIOClient.Socket>()
-  const socketTimeoutIdRef = useRef<NodeJS.Timeout>()
+  const pokeSocketTimeoutIdRef = useRef<NodeJS.Timeout>()
+  const pokeSocketSubscriptionIdRef = useRef<string>(getSocketSubscriptionId(type, serialNumber))
 
   useEffect(() => {
-    cleanUp()
-
-    pokeSocketRef.current = initPokeSocket(getSocketSubscriptionId(type, serialNumber), () => {
-      setDetectionStatus(DetectionStatus.IDLE)
+    if (isDetecting) {
+      setSocketTimeout()
+    } else {
       clearSocketTimeout()
-      handler()
-    })
+    }
 
-    doDetect()
+    return clearSocketTimeout
+  }, [isDetecting])
 
-    return cleanUp
+  useEffect(() => {
+    if (!pokeSocketRef.current) {
+      pokeSocketRef.current = initPokeSocket(pokeSocketSubscriptionIdRef.current, () => {
+        setIsDetecting(false)
+        handler()
+      })
+    }
+
+    return closeSocket
   }, [])
 
-  const cleanUp = () => {
-    closeSocket()
-    clearSocketTimeout()
-  }
+  useEffect(() => {
+    doDetect()
+  }, [])
 
   const closeSocket = () => {
     if (pokeSocketRef.current) closePokeSocket(pokeSocketRef.current)
   }
 
   const setSocketTimeout = () => {
-    clearSocketTimeout()
-    socketTimeoutIdRef.current = setTimeout(onSocketTimeout, defaultSocketTimeout)
+    pokeSocketTimeoutIdRef.current = setTimeout(onSocketTimeout, defaultSocketTimeout)
   }
 
   const clearSocketTimeout = () => {
-    if (socketTimeoutIdRef.current) clearTimeout(socketTimeoutIdRef.current)
+    if (pokeSocketTimeoutIdRef.current) clearTimeout(pokeSocketTimeoutIdRef.current)
   }
 
   const onSocketTimeout = () => {
     showError($t({ defaultMessage: 'The AP is not reachable' }))
-    setDetectionStatus(DetectionStatus.IDLE)
+    setIsDetecting(false)
   }
 
   const doDetect = async () => {
-    setDetectionStatus(DetectionStatus.FETCHING)
+    setIsDetecting(true)
 
     try {
-      detectApNeighbors({
+      await detectApNeighbors({
         params: { serialNumber },
-        payload: { action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR' }
-      })
-
-      setSocketTimeout()
+        payload: {
+          action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR',
+          subscriptionId: pokeSocketSubscriptionIdRef.current
+        }
+      }).unwrap()
     } catch (error) {
       handleError(error as CatchErrorResponse)
-      clearSocketTimeout()
-      setDetectionStatus(DetectionStatus.IDLE)
+      setIsDetecting(false)
     }
   }
 
   return {
-    detectionStatus,
+    isDetecting,
     doDetect
   }
 }
 
 function getSocketSubscriptionId (type: ApNeighborTypes, serialNumber: string): string {
-  return `${serialNumber}-neighbor-${type}`
+  return `${serialNumber}-neighbor-${type}-${uuidv4()}`
 }
 
 export const handleError = (error: CatchErrorResponse) => {

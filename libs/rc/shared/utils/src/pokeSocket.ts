@@ -25,6 +25,5 @@ export const closePokeSocket = (socket: SocketIOClient.Socket) => {
   if (socket.disconnected) return
 
   socket.off('pokeEvent')
-  // socket.disconnect()
   socket.close()
 }

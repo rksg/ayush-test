@@ -14,10 +14,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { emtpyRenderer }                      from './ApRfNeighbors'
-import { DetectionStatus, defaultPagination } from './constants'
-import { lldpNeighborsFieldLabelMapping }     from './contents'
-import { handleError, useApNeighbors }        from './useApNeighbors'
+import { emtpyRenderer }                  from './ApRfNeighbors'
+import { defaultPagination }              from './constants'
+import { lldpNeighborsFieldLabelMapping } from './contents'
+import { handleError, useApNeighbors }    from './useApNeighbors'
 
 import type { LldpNeighborsDisplayFields } from './contents'
 
@@ -25,13 +25,13 @@ export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
-  const { doDetect, detectionStatus } = useApNeighbors('lldp', serialNumber!, socketHandler)
+  const { doDetect, isDetecting } = useApNeighbors('lldp', serialNumber!, socketHandler)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
-    disabled: detectionStatus === DetectionStatus.FETCHING,
+    disabled: isDetecting,
     onClick: doDetect
   }]
 
@@ -44,7 +44,7 @@ export default function ApLldpNeighbors () {
   }
 
   const isTableFetching = () => {
-    return getApLldpNeighborsStates.isFetching || detectionStatus === DetectionStatus.FETCHING
+    return getApLldpNeighborsStates.isFetching || isDetecting
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
