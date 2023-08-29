@@ -127,12 +127,8 @@ export const hierarchyQueryResult = {
   }
 }
 
-export const hierarchyQueryOuput = {
+export const fullHierarchyQueryOuput = {
   network: [
-    {
-      name: 'some-other system',
-      type: 'system'
-    },
     {
       name: 'test-system',
       type: 'system',
@@ -166,6 +162,49 @@ export const hierarchyQueryOuput = {
                 {
                   name: 'switchGroup 1',
                   type: 'switchGroup'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      name: 'some-other system',
+      type: 'system'
+    }
+  ]
+}
+
+export const apsOnlyHierarchyQueryOuput = {
+  network: [
+    {
+      name: 'test-system',
+      type: 'system',
+      children: {
+        zone: [
+          {
+            name: 'child under admin',
+            type: 'zone',
+            children: {
+              apGroup: [
+                {
+                  name: 'group 1',
+                  type: 'apGroup'
+                }
+              ]
+            }
+          }
+        ],
+        domain: [
+          {
+            name: 'second domain',
+            type: 'domain',
+            children: {
+              zone: [
+                {
+                  name: 'zone 1',
+                  type: 'zone'
                 }
               ]
             }
