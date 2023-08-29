@@ -9,33 +9,6 @@ import { DDoSRuleDialogProps } from '../DDoSRuleDialog'
 
 import { DDoSRateLimitConfigDrawer } from './'
 
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({
-    children,
-    showSearch, // remove and left unassigned to prevent warning
-    mode,
-    ...props
-  }: React.PropsWithChildren<{
-    showSearch: boolean,
-    mode: string,
-    onChange?: (value: string) => void }>) => {
-
-    return (<select {...props}
-      multiple={mode==='tags' || mode==='multiple'}
-      onChange={(e) => {
-        props.onChange?.(e.target.value)}
-      }>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      <option value={undefined}></option>
-      {children}
-    </select>)
-  }
-  Select.Option = 'option'
-  Select.OptGroup = 'optgroup'
-  return { ...components, Select }
-})
-
 const mockedSetFieldValue = jest.fn()
 const mockedGetFieldValue = jest.fn()
 const mockedGetRuleSubmitData = jest.fn()
@@ -70,8 +43,6 @@ describe('DDos rate limit config drawer', () => {
     mockedGetRuleSubmitData.mockReset()
     mockedGetFieldValue.mockReturnValue([])
   })
-
-
 
   it('should correctly edit rule and delete rule', async () => {
     const mockedData = [{

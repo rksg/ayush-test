@@ -45,6 +45,7 @@ jest.mock('../FirewallForm', () => ({
 describe('Add edge firewall service', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
+    mockedGetRuleSubmitData.mockReset()
 
     mockServer.use(
       rest.post(

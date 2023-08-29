@@ -65,7 +65,6 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const [editData, setEditData] = useState<StatefulAclRule>({} as StatefulAclRule)
   const direction = Form.useWatch('direction', form)
   const rules = Form.useWatch('rules', form)
-  // const formData = form.getFieldsValue(true)
   const defaultColumns = useDefaultStatefulACLRulesColumns()
 
   const onChangeDialogVisible = (checked: boolean) => {

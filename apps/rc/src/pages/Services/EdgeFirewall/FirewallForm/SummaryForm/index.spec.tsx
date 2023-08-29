@@ -13,25 +13,7 @@ import { mockFirewall }      from '../../__tests__/fixtures'
 
 import { SummaryForm } from './'
 
-const mockedSetFieldValue = jest.fn()
-const mockedGetFieldValue = jest.fn()
-
-// jest.mock('@acx-ui/components', () => ({
-//   ...jest.requireActual('@acx-ui/components'),
-//   useStepFormContext: () => ({
-//     form: {
-//       getFieldValue: mockedGetFieldValue.mockReturnValue(mockedDefaultValue),
-//       setFieldValue: mockedSetFieldValue
-//     }
-//   })
-// }))
-
 describe('Summary form', () => {
-  beforeEach(() => {
-    mockedGetFieldValue.mockReset()
-    mockedSetFieldValue.mockReset()
-  })
-
   it('should correctly display DDoS rule summary', async () => {
     const mockedData: FirewallFormModel = _.cloneDeep(mockFirewall)
     mockedData.ddosRateLimitingEnabled = true

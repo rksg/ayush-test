@@ -51,7 +51,7 @@ jest.mock('../FirewallForm', () => ({
 }))
 describe('Edit edge firewall service', () => {
   beforeEach(() => {
-    mockedFinished.mockClear()
+    mockedFinished.mockReset()
     mockedGetRuleSubmitData.mockReset()
     mockedGetFn.mockReset()
     mockedUpdateFn.mockReset()

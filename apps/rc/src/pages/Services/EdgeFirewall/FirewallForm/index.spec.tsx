@@ -43,32 +43,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedNavigate
 }))
 
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({
-    children,
-    showSearch, // remove and left unassigned to prevent warning
-    mode,
-    ...props
-  }: React.PropsWithChildren<{
-    showSearch: boolean,
-    mode: string,
-    onChange?: (value: string) => void }>) => {
-
-    return (<select {...props}
-      multiple={mode==='tags' || mode==='multiple'}
-      onChange={(e) => {
-        props.onChange?.(e.target.value)}
-      }>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      <option value={undefined}></option>
-      {children}
-    </select>)
-  }
-  Select.Option = 'option'
-  return { ...components, Select }
-})
-
 jest.mock('../FirewallForm/SettingsForm/StatefulACLFormItem/StatefulACLConfigDrawer', () => ({
   StatefulACLConfigDrawer: (props: {
     visible: boolean,

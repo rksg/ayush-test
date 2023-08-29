@@ -41,6 +41,7 @@ const { click, type, selectOptions, clear } = userEvent
 describe('DDoS rule dialog', () => {
   beforeEach(() => {
     mockedSubmit.mockClear()
+    mockedSetVisible.mockClear()
   })
 
   it('should correctly render', async () => {
