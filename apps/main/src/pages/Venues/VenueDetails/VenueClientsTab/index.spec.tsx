@@ -85,18 +85,6 @@ describe('VenueClientsTab', () => {
     })
   })
 
-  it('should render correct tab when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7'
-    }
-    render(<Provider><VenueClientsTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
-    })
-    expect(await screen.findByRole('tab', { name: 'Wi-Fi' })).toBeVisible()
-  })
-
   it('should render correct tab when beta flag is off', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     const params = {
