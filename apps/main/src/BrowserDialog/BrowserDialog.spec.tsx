@@ -7,7 +7,7 @@ import {
   UserProfile as UserProfileInterface
 } from '@acx-ui/user'
 
-import { BrowserDialog, LoadMessages, BrowserDialogProps } from './browser-dialog' // Replace with the actual path
+import { BrowserDialog, LoadMessages, BrowserDialogProps } from './BrowserDialog' // Replace with the actual path
 
 jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn(() => ({

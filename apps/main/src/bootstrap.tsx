@@ -29,7 +29,7 @@ import {
 import type { PendoParameters } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
-import { LoadMessages }    from './browser-dialog/browser-dialog'
+import { LoadMessages }    from './BrowserDialog/BrowserDialog'
 import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
