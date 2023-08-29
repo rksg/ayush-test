@@ -347,8 +347,11 @@ export function NetworkVenuesTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled) || systemNetwork){
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
           disabled = true
+        } else if (systemNetwork) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
           title = ''
         }
