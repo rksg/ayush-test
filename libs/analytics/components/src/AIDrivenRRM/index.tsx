@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter }               from '@acx-ui/analytics/utils'
 import { Loader, Card, NoData }          from '@acx-ui/components'
@@ -7,6 +6,7 @@ import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 
 import { EnhancedRecommendation, useRecommendationDetailsQuery } from '../Recommendations/RecommendationDetails/services'
 import { useRecommendationListQuery }                            from '../Recommendations/services'
+import { OptimizedIcon }                                         from '../Recommendations/styledComponents'
 import { getCrrmLinkText, getOptimized }                         from '../Recommendations/utils'
 
 import * as UI from './styledComponents'
@@ -40,37 +40,28 @@ function AIDrivenRRMWidget ({
   // eslint-disable-next-line max-len
   const subTitle = $t({ defaultMessage: 'AI-Driven RRM has been run on {total} {total, plural, one {zone} other {zones}} and already {totalOptimized}/{total} have been optimized.' }, { total, totalOptimized })
 
-  const items = detailedRecommendation?.map(recommendation => {
-    const { sliceValue, id } = recommendation
-    const optimized = getOptimized([recommendation]).isOptimized
-
-    return <UI.Detail key={id}>
-      <UI.FlexDiv>
-        <UI.OptimizedIcon value={optimized ? 0 : 1}/>
-        <TenantLink
-          to={`/recommendations/crrm/${id}`}
-          style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
-        >
-          <span>{sliceValue}</span>
-        </TenantLink>
-      </UI.FlexDiv>
-      <UI.Subtitle>{getCrrmLinkText(recommendation, $t, optimized)}</UI.Subtitle>
-    </UI.Detail>
-  })
-
   return <Loader states={[queryResults, codeQuery, detailsQuery]}>
-    <Card title={title} subTitle={noData ? '' : subTitle} onArrowClick={onArrowClick}>
-      <AutoSizer>
-        {({ width }) => (
-          noData
-            ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-            : <UI.Wrapper
-              style={{ width }}
-              children={items}
-            />
-        )}
-      </AutoSizer>
-    </Card>
+    <Card title={title} subTitle={noData ? '' : subTitle} onArrowClick={onArrowClick}>{
+      noData
+        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
+        : <UI.List
+          dataSource={detailedRecommendation}
+          renderItem={item => {
+            const recommendation = item as EnhancedRecommendation
+            const { sliceValue, id } = recommendation
+            const optimized = getOptimized([recommendation]).isOptimized
+            return <UI.List.Item key={id}>
+              <TenantLink to={`/recommendations/crrm/${id}`}>
+                <UI.List.Item.Meta
+                  avatar={<OptimizedIcon value={optimized ? 0 : 1} />}
+                  title={sliceValue}
+                  description={getCrrmLinkText(recommendation, $t, optimized)}
+                />
+              </TenantLink>
+            </UI.List.Item>
+          }}
+        />
+    }</Card>
   </Loader>
 }
 

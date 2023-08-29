@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
 
-import * as UI                        from '../AIDrivenRRM/styledComponents'
-import { useRecommendationListQuery } from '../Recommendations/services'
+import * as UI                                                   from '../AIDrivenRRM/styledComponents'
+import { useRecommendationListQuery, TransformedRecommendation } from '../Recommendations/services'
+import { PriorityIcon }                                          from '../Recommendations/styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -33,41 +33,35 @@ function AIOperationsWidget ({
   }
   const noData = data?.length === 0
 
-  const items = data?.slice(0,5).map(props => {
-    const { category, priority, updatedAt, id, summary, sliceValue } = props
-    return <UI.Detail key={id}>
-      <UI.FlexDiv>
-        <UI.PriorityIcon value={priority} />
-        <TenantLink
-          to={`/recommendations/aiOps/${id}`}
-          style={{ textDecoration: 'none', color: 'var(--acx-primary-black)' }}
-        >
-          <Tooltip
-            placement='top'
-            title={$t({ defaultMessage: '{summary} on {sliceValue}' }, { sliceValue, summary })}
-          >
-            {category}
-          </Tooltip>
-        </TenantLink>
-      </UI.FlexDiv>
-      <UI.Subtitle>{formatter(DateFormatEnum.DateFormat)(updatedAt)}</UI.Subtitle>
-    </UI.Detail>
-  })
-
-
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick}>
-      <AutoSizer>
-        {({ width }) => (
-          noData
-            ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-            : <UI.Wrapper
-              style={{ width }}
-              children={items}
-            />
-        )}
-      </AutoSizer>
-    </Card>
+    <Card title={title} onArrowClick={onArrowClick}>{
+      noData
+        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
+        : <UI.List
+          dataSource={data?.slice(0,5)}
+          renderItem={item => {
+            const recommendation = item as TransformedRecommendation
+            const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
+            return <UI.List.Item key={id}>
+              <TenantLink to={`/recommendations/aiOps/${id}`}>
+                <Tooltip
+                  placement='top'
+                  title={$t(
+                    { defaultMessage: '{summary} on {sliceValue}' },
+                    { sliceValue, summary }
+                  )}
+                >
+                  <UI.List.Item.Meta
+                    avatar={<PriorityIcon value={priority} />}
+                    title={category}
+                    description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
+                  />
+                </Tooltip>
+              </TenantLink>
+            </UI.List.Item>
+          }}
+        />
+    }</Card>
   </Loader>
 }
 

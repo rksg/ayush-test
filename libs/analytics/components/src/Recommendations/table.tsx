@@ -103,12 +103,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       width: 90,
       dataIndex: 'priorityLabel',
       key: 'priorityLabel',
-      render: (_, value) => {
-        return <UI.Priority>
-          <UI.PriorityIcon value={value.priority} />
-          <span>{value.priorityLabel}</span>
-        </UI.Priority>
-      },
+      render: (_, value) => <UI.PriorityIcon value={value.priority} text={value.priorityLabel} />,
       sorter: { compare: sortProp('priority', severitySort) },
       fixed: 'left',
       filterable: true

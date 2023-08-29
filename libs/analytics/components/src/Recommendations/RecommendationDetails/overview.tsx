@@ -7,10 +7,9 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { FlexDiv, OptimizedIcon }        from '../../AIDrivenRRM/styledComponents'
 import { DescriptionSection }            from '../../DescriptionSection'
 import { codes, statusTrailMsgs }        from '../config'
-import { Priority, PriorityIcon }        from '../styledComponents'
+import { PriorityIcon, OptimizedIcon }   from '../styledComponents'
 import { getOptimized, getCrrmLinkText } from '../utils'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
@@ -56,21 +55,15 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 
 const Icon = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
   const { priority } = details
-  return <Priority>
-    <PriorityIcon value={priority.order} />
-    <span>{$t(priority.label)}</span>
-  </Priority>
+  return <PriorityIcon value={priority.order} text={$t(priority.label)} />
 }
 
 const Optimized = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
   const optimized = getOptimized([details]).isOptimized
-  return <FlexDiv>
-    <OptimizedIcon value={optimized ? 0 : 1} />
-    <span style={{ paddingTop: 5 }}>{optimized
-      ? $t({ defaultMessage: 'Optimized' })
-      : $t({ defaultMessage: 'Non-optimized' })}
-    </span>
-  </FlexDiv>
+  const text = optimized
+    ? $t({ defaultMessage: 'Optimized' })
+    : $t({ defaultMessage: 'Non-optimized' })
+  return <OptimizedIcon value={optimized ? 0 : 1} text={text} />
 }
 
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {

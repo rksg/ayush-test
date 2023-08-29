@@ -1,62 +1,37 @@
-import { Badge as AntBadge } from 'antd'
-import styled                from 'styled-components'
+import { List as AntList } from 'antd'
+import styled              from 'styled-components'
 
-const colors = [
-  '--acx-semantics-yellow-30',
-  '--acx-semantics-yellow-60',
-  '--acx-semantics-red-60'
-]
+export const List = styled(AntList)``
 
-const optimizedColors = [
-  '--acx-semantics-green-60',
-  '--acx-semantics-red-60'
-]
-
-export const Wrapper = styled.div`
-  height: auto;
-  margin-block: 20px;
-`
-
-export const Detail = styled.div`
-  padding-bottom: 11px;
-  padding-top: 5px;
-  border-bottom: 1px solid var(--acx-neutrals-20);
-`
-
-export const Badge = styled(AntBadge)`
-  .ant-badge-status-dot {
-    width: 12px;
-    height: 12px;
+List.Item = styled(AntList.Item)`
+  border-bottom-color: var(--acx-neutrals-25);
+  padding: 10px 0;
+  a {
+    display: block;
+    flex: 1;
+    text-decoration: none;
   }
 `
 
-export const PriorityIcon = styled.span.attrs((props: { value: number }) => props)`
-  display: flex;
-  margin-right: 5px;
-  margin-top: 9px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(${props => colors[props.value]});
-`
+List.Item.Meta = styled(AntList.Item.Meta)`
+  align-items: center;
 
-export const OptimizedIcon = styled.span.attrs((props: { value: number }) => props)`
-  display: flex;
-  margin-right: 5px;
-  margin-top: 9px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(${props => optimizedColors[props.value]});
-`
+  .ant-list-item-meta-avatar {
+    margin-right: 0;
+    .ant-badge-status-dot { top: -1px; }
+  }
 
-export const Subtitle = styled.div`
-  padding-left: 15px;
-  font-size: var(--acx-body-6-font-size);
-  color: var(--acx-neutrals-50);
-  line-height: 1.1;
-`
+  .ant-list-item-meta-title {
+    font-weight: var(--acx-body-font-weight);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    margin-bottom: 0;
+  }
 
-export const FlexDiv = styled.div`
-  display: flex;
+  .ant-list-item-meta-description {
+    font-weight: var(--acx-body-font-weight);
+    font-size: var(--acx-body-6-font-size);
+    line-height: var(--acx-body-6-line-height);
+    color: var(--acx-neutrals-50);
+  }
 `

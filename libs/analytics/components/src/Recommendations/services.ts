@@ -6,7 +6,8 @@ import {
   nodeTypes,
   getFilterPayload,
   formattedPath,
-  productNames
+  productNames,
+  AnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
@@ -41,6 +42,17 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string
   path: []
+}
+export type TransformedRecommendation = Recommendation & {
+  scope: string
+  type: string
+  priority: number
+  priorityLabel: string
+  category: string
+  summary: string
+  status: string
+  statusTooltip: string
+  statusEnum: keyof typeof states
 }
 export interface MutationPayload {
   id: string
@@ -128,7 +140,7 @@ function transformResponse (recommendations: Recommendation[]) {
 }
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationList: build.query({
+    recommendationList: build.query<TransformedRecommendation[], AnalyticsFilter>({
       query: (payload) => ({
         document: gql`
         query ConfigRecommendation(
