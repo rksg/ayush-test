@@ -7,7 +7,8 @@ import {
   DidYouKnow,
   IncidentsCountBySeverities,
   NetworkHistory,
-  SLA
+  SLA,
+  ReportTile
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -44,7 +45,7 @@ export default function Dashboard () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters } = useDashboardFilter()
-  const { filters: analyticsFilter } = useAnalyticsFilter()
+  const { filters: analyticsFilter, path } = useAnalyticsFilter()
 
   const height = useMonitorHeight(536)
 
@@ -66,10 +67,10 @@ export default function Dashboard () {
         <Card title={$t({ defaultMessage: 'Network Filter' })} />
       </div>
       <div style={{ gridArea: 'b1' }}>
-        <Card title={$t({ defaultMessage: 'Stats' })} />
+        <ReportTile path={path} />
       </div>
       <div style={{ gridArea: 'b2' }}>
-        <NetworkHistory hideLegend filters={analyticsFilter} />
+        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
       </div>
       <div style={{ gridArea: 'b3' }}>
         <SLA filters={analyticsFilter}/>
