@@ -13,6 +13,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/switchPreference'
   },
+  getEdgeUpgradePreferences: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/edgePreference'
+  },
   updateUpgradePreferences: {
     method: 'put',
     url: '/upgradeConfig/preferences',
@@ -22,6 +26,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   updateSwitchUpgradePreferences: {
     method: 'put',
     url: '/api/upgrade/tenant/:tenantId/switchPreference'
+  },
+  updateEdgeUpgradePreferences: {
+    method: 'put',
+    url: '/api/upgrade/tenant/:tenantId/edgePreference'
   },
   getVenueVersionList: {
     method: 'get',
@@ -83,6 +91,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/switchFirmwares/schedules',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/schedule',
     newApi: true
+  },
+  skipEdgeUpgradeSchedules: {
+    method: 'delete',
+    url: '/venues/edgeFirmwares/schedules'
+  },
+  updateEdgeVenueSchedules: {
+    method: 'post',
+    url: '/venues/edgeFirmwares/schedules'
   },
   getSwitchLatestFirmwareList: {
     method: 'get',

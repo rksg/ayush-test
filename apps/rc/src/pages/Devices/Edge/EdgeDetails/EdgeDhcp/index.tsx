@@ -150,7 +150,7 @@ export const EdgeDhcp = () => {
         defaultActiveKey='pools'
         activeKey={activeSubTab}
         tabBarExtraContent={tabBarExtraContent}
-        type='card'
+        type='second'
       >
         {Object.keys(tabs)
           .map((key) =>

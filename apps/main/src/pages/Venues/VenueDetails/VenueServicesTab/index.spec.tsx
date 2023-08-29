@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }                           from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { Tabs }                                                from '@acx-ui/components'
+import { useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -45,7 +45,7 @@ jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
 }))
 
-const mockedGetEdgeListFn = jest.fn()
+
 
 describe('Venue service tab', () => {
   let params: { tenantId: string, venueId: string }
@@ -79,102 +79,103 @@ describe('Venue service tab', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
-    it('should not render firewall tab when there is no edge on venue', async () => {
-      mockedGetEdgeListFn.mockReset()
-
-      const mockNoEdgeList = {
+    describe('when there is no firewall and nsg data', () => {
+      const mockedGetEdgeListFn = jest.fn()
+      const mockedGetNsgListFn = jest.fn()
+      const mockNoData = {
         totalCount: 0,
         data: []
       }
-
-      mockServer.use(
-        rest.post(
-          EdgeUrlsInfo.getEdgeList.url,
-          (req, res, ctx) => {
-            mockedGetEdgeListFn()
-            return res(ctx.json(mockNoEdgeList))
-          }
+      beforeEach(() => {
+        mockServer.use(
+          rest.post(
+            EdgeUrlsInfo.getEdgeList.url,
+            (req, res, ctx) => {
+              mockedGetEdgeListFn()
+              return res(ctx.json(mockNoData))
+            }
+          ),
+          rest.post(
+            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            (req, res, ctx) => {
+              mockedGetNsgListFn()
+              return res(ctx.json(mockNoData))
+            }
+          )
         )
-      )
-
-      render(
-        <Provider>
-          <VenueServicesTab />
-        </Provider>, {
-          route: { params }
-        })
-
-      await waitFor(() => {
-        expect(mockedGetEdgeListFn).toBeCalled()
       })
 
-      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(7)
+      it('should not render firewall and nsg tab when there is no edge on venue', async () => {
+        render(
+          <Provider>
+            <VenueServicesTab />
+          </Provider>, {
+            route: { params }
+          })
+
+        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+
+        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
+      })
     })
 
-    it('should not render firewall tab when firewall service did not apply on edge', async () => {
-      mockedGetEdgeListFn.mockReset()
-
+    describe('when there is firewall and nsg data', () => {
+      const mockedGetEdgeListFn = jest.fn()
+      const mockedGetEdgeDhcpFn = jest.fn()
+      const mockedGetNsgListFn = jest.fn()
       const mockNoFWEdgeList = {
         totalCount: 0,
         data: [
           {
             serialNumber: '0000000001',
-            firewallId: ''
+            firewallId: '123'
           }
         ]
       }
-
-      mockServer.use(
-        rest.post(
-          EdgeUrlsInfo.getEdgeList.url,
-          (req, res, ctx) => {
-            mockedGetEdgeListFn()
-            return res(ctx.json(mockNoFWEdgeList))
-          }
+      const mockNsgList = {
+        totalCount: 1,
+        data: [{ id: 'testNsg' }]
+      }
+      beforeEach(() => {
+        mockServer.use(
+          rest.post(
+            EdgeUrlsInfo.getEdgeList.url,
+            (req, res, ctx) => {
+              mockedGetEdgeListFn()
+              return res(ctx.json(mockNoFWEdgeList))
+            }
+          ),
+          rest.post(
+            NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+            (req, res, ctx) => {
+              mockedGetNsgListFn()
+              return res(ctx.json(mockNsgList))
+            }
+          ),
+          rest.get(
+            EdgeDhcpUrls.getDhcpByEdgeId.url,
+            (req, res, ctx) => {
+              mockedGetEdgeDhcpFn()
+              return res(ctx.json({ id: 'testDhcp' }))
+            }
+          )
         )
-      )
-
-      render(
-        <Provider>
-          <VenueServicesTab />
-        </Provider>, {
-          route: { params }
-        })
-
-      await waitFor(() => {
-        expect(mockedGetEdgeListFn).toBeCalled()
       })
 
-      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(7)
-    })
+      it('should render all the tabs', async () => {
+        render(
+          <Provider>
+            <VenueServicesTab />
+          </Provider>, {
+            route: { params }
+          })
 
-    it('should correctly render', async () => {
-      mockedGetEdgeListFn.mockReset()
-      mockServer.use(
-        rest.post(
-          EdgeUrlsInfo.getEdgeList.url,
-          (req, res, ctx) => {
-            mockedGetEdgeListFn()
-            return res(ctx.json({
-              totalCount: 0,
-              data: []
-            }))
-          }
-        )
-      )
-      render(
-        <Provider>
-          <VenueServicesTab />
-        </Provider>, {
-          route: { params }
-        })
+        await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
+        await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
 
-      await waitFor(() => {
-        expect(mockedGetEdgeListFn).toBeCalled()
-      })
-
-      await waitFor(async () => {
-        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(7)
+        expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(8)
       })
     })
   })
