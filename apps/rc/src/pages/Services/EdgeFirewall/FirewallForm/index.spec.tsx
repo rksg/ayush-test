@@ -189,7 +189,7 @@ describe('firewall form', () => {
 
       expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
 
-      await click(actions.getByRole('button', { name: 'Finish' }))
+      await click(actions.getByRole('button', { name: 'Add' }))
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
           serviceName: 'Test 1',
@@ -234,7 +234,7 @@ describe('firewall form', () => {
 
       expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
 
-      await click(actions.getByRole('button', { name: 'Finish' }))
+      await click(actions.getByRole('button', { name: 'Add' }))
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
           serviceName: 'Test 1',
