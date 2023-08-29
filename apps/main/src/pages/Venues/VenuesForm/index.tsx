@@ -235,6 +235,14 @@ export function VenuesForm () {
       )
     }
 
+    if (address.country === address.city && address.city === address.addressLine) {
+      return Promise.reject(
+        intl.$t(
+          { defaultMessage: 'Make sure to include a city and country in the address' }
+        )
+      )
+    }
+
     if (isEdit && !_.isEmpty(value) && isSameValue && !isSameCountry) {
       return Promise.reject(
         intl.$t(
