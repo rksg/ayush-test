@@ -17,16 +17,6 @@ export const Wrapper = styled.div`
   margin-block: 20px;
 `
 
-export const TitleBadge = styled.span`
-  color: var(--acx-primary-white);
-  background-color: var(--acx-accents-orange-50);
-  border-radius: 15px;
-  padding-inline: 6px;
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-`
-
 export const Detail = styled.div`
   padding-bottom: 11px;
   padding-top: 5px;
