@@ -341,7 +341,7 @@ export const codes = {
   },
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 2.4 Ghz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 2.4 GHz radio' }),
     priority: priorities.high,
     valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -358,7 +358,7 @@ export const codes = {
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 5 Ghz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 5 GHz radio' }),
     priority: priorities.high,
     valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -375,7 +375,7 @@ export const codes = {
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 6 Ghz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 6 GHz radio' }),
     priority: priorities.high,
     valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
