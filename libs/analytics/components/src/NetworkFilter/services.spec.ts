@@ -157,31 +157,7 @@ describe('useHierarchyQuery', () => {
 
   it('should return correctly without incidents', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: {
-        network: {
-          apHierarchy: [
-            {
-              name: 'test-system',
-              type: 'system',
-              children: [
-                {
-                  name: '1||Administration Domain',
-                  type: 'domain',
-                  children: [
-                    {
-                      name: 'child under admin',
-                      type: 'zone'
-                    }
-                  ]
-                }, {
-                  name: '2||second domain',
-                  type: 'domain'
-                }
-              ]
-            }
-          ]
-        }
-      }
+      data: fixtures.hierarchyQueryResult
     })
 
     await store.dispatch(
@@ -198,35 +174,9 @@ describe('useHierarchyQuery', () => {
     )
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy())
     await waitFor(() => expect(result.current.isFetching).toBeFalsy())
-    await waitFor(() => expect(result.current.data).toStrictEqual({
-      network: {
-        switchHierarchy: undefined,
-        apHierarchy: [
-          {
-            name: 'test-system',
-            type: 'system',
-            children: [
-              {
-                name: 'second domain',
-                type: 'domain',
-                parentKey: [
-                  'test-system',
-                  'children'
-                ]
-              },
-              {
-                name: 'child under admin',
-                type: 'zone',
-                parentKey: [
-                  'test-system',
-                  'children'
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    }))
+    await waitFor(() => expect(result.current.data).toStrictEqual(
+      fixtures.hierarchyQueryOuput
+    ))
     unmount()
   })
 
@@ -251,7 +201,7 @@ describe('useHierarchyQuery', () => {
     await waitFor(() => expect(result.current.isSuccess).toBeTruthy())
     await waitFor(() => expect(result.current.isFetching).toBeFalsy())
     await waitFor(() => expect(result.current.data).toStrictEqual({
-      network: { apHierarchy: undefined, switchHierarchy: undefined } }))
+      network: [] }))
     unmount()
   })
 })

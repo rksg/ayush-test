@@ -1,5 +1,5 @@
-import { gql }  from 'graphql-request'
-import { omit } from 'lodash'
+import { gql }                                                            from 'graphql-request'
+import { chain, cloneDeep, findIndex, omit, groupBy, mergeWith, isArray } from 'lodash'
 
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { dataApi }                             from '@acx-ui/store'
@@ -24,7 +24,7 @@ interface Response {
     hierarchyNode: { children: Child[] }
   }
 }
-type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[], parentKey?: string[] }
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
 interface NetworkNode extends NetworkHierarchy<Child>{}
 interface HierarchyResponse {
   network: {
@@ -158,52 +158,36 @@ export const useHierarchyQuery = (
   const networkFilter = { ...filters, shouldQuerySwitch }
 
   const cleanHierarchyName = (name: string) => {
-    const transformDomain = name.match(/^[1-9]\|\|/)
-    const validDomains = !name.includes('Administration Domain')
-    if (transformDomain) {
+    const transformDomainName = name.match(/^[1-9]\|\|/)
+    const validDomains = !name.startsWith('1||Administration Domain')
+    if (transformDomainName) {
       const key = name.slice(3)
       return { key, validDomains }
     }
     return { key: name , validDomains }
   }
 
-  function appendNodeToStack (
-    elem: NetworkNode | NetworkHierarchy<Child>[] | undefined,
-    parentKey: string[] | undefined,
-    key: string,
-    stack: NetworkNode[]
-  ): NetworkNode {
-    const item = {
-      ...elem,
-      parentKey: parentKey
-        ? [...parentKey, key, 'children']
-        : [key, 'children']
-    }
-    stack.push(item! as NetworkNode)
-    return item as unknown as NetworkNode
-  }
 
   const traverseHierarchy = (origin: NetworkNode) => {
     const stack: NetworkNode[] = []
-    const root: NetworkNode = JSON.parse(JSON.stringify(origin))
+    const root: NetworkNode = cloneDeep(origin)
     stack.push(root)
+
     while (stack.length > 0) {
       let node = stack.pop() as NetworkNode
-      const { name, parentKey } = node
+      const { name } = node
       const { key } = cleanHierarchyName(name)
       let nameNode = { ...node, name: key }
       node = Object.assign(node, nameNode)
 
       if (node.children && node.children.length > 0) {
+        node.children = node.children.flat()
         const validChildren = node.children
           .map((child) => {
-            const typedChild = child as unknown as NetworkNode[]
-            if (typedChild.length && typedChild.length >= 0) {
-              return true
-            }
             const { name } = child
             return cleanHierarchyName(name).validDomains
           })
+
         const invalidIndex = validChildren.findIndex((val) => val === false)
         if (invalidIndex !== -1) {
           const invalidChild = node.children[invalidIndex]
@@ -214,39 +198,73 @@ export const useHierarchyQuery = (
           }
         }
 
-        function elemPushHelper (
-          elem: NetworkNode
-        ) {
-          let typedNodes = elem as unknown as NetworkNode[]
-          if (typedNodes.length > 0) {
-            typedNodes= typedNodes.map((val) => {
-              const item = appendNodeToStack(val, parentKey, key, stack)
-              return item
-            })
-            return typedNodes
-          }
-          const item = appendNodeToStack(elem, parentKey, key, stack)
-          return item
-        }
-
-        node.children = node.children.map(elemPushHelper).filter(Boolean) as NetworkNode[]
+        node.children.forEach((child) => stack.push(child))
       }
     }
     return root
+  }
+
+  const mergeApsAndSwitches = (apSystems: NetworkNode[], switchSystems: NetworkNode[]) => {
+    let systems: NetworkNode[] = cloneDeep(apSystems)
+    for (let sw of switchSystems) {
+      const { name, type, children } = sw
+      let index = findIndex(apSystems, (ap) => {
+        return ap.name === name && ap.type === type
+      })
+      if (index !== -1) {
+        const matchedSystem = apSystems[index]
+        if (matchedSystem.children && children) {
+          matchedSystem.children = [...matchedSystem.children, ...children]
+          systems.splice(index, 1, matchedSystem)
+        }
+      } else {
+        systems.push(sw)
+      }
+    }
+
+    const groupByHierarchyType = (node: NetworkNode) => {
+      let { children } = node
+      if (!children || children.length === 0) {
+        return node
+      }
+
+      const groupedNode = {
+        ...node,
+        children: groupBy(
+          children,
+          (child) => child.type)
+      }
+
+      if ('domain' in groupedNode.children) {
+        groupedNode.children['domain'] = chain(groupedNode.children['domain'])
+          .groupBy('name')
+          .map((o) => mergeWith({}, ...o,
+            (obj: NetworkNode[keyof NetworkNode], src: NetworkNode[keyof NetworkNode]) =>
+              isArray(obj)
+                ? (obj as Array<NetworkNode>).concat(src as Array<NetworkNode>)
+                : undefined
+          ))
+          .value()
+      }
+
+      Object.keys(groupedNode.children).forEach((key) => {
+        groupedNode.children[key] =
+          groupedNode.children[key].map(groupByHierarchyType) as unknown as NetworkNode[]
+      })
+      return groupedNode
+    }
+    return systems.map(groupByHierarchyType)
   }
 
   const hierarchyQuery = useNetworkHierarchyQuery(omit(networkFilter, 'path', 'filter'),
     {
       selectFromResult: ({ data, ...rest }) => {
         const { apHierarchy, switchHierarchy } = data?.network || {}
-        const aps = apHierarchy?.map(ap => traverseHierarchy(ap))
-        const switches = switchHierarchy?.map(sw => traverseHierarchy(sw))
+        const aps = apHierarchy?.map(ap => traverseHierarchy(ap)) || []
+        const switches = switchHierarchy?.map(sw => traverseHierarchy(sw)) || []
         return {
           ...rest,
-          data: { network: {
-            apHierarchy: aps,
-            switchHierarchy: switches
-          } } }
+          data: { network: mergeApsAndSwitches(aps, switches) } }
       }
     }
   )
