@@ -187,7 +187,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
           const MUST_SELECTED = 2
           const numberOfSelected = itemValues.filter(itemValue => itemValue).length
           if (numberOfSelected < MUST_SELECTED) {
-            return Promise.reject($t({ defaultMessage: 'At least 2 bands are selected' }))
+            return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
           }
 
           return Promise.resolve()}
