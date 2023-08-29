@@ -45,6 +45,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   } else {
     versionOptions = [...copyAvailableVersions]
   }
+  // first GA just support one firmware version
   // otherVersions = copyAvailableVersions.slice(1)
 
   // const otherOptions = otherVersions.map((version) => {
@@ -54,16 +55,13 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   //   }
   // })
 
-  const triggerSubmit = () => {
-    form.validateFields()
-      .then(() => {
-        if(selectMode === VersionsSelectMode.Radio) {
-          onSubmit(versionOptions[0].id || '')
-        } else {
-          onSubmit(selectedVersion)
-        }
-        onModalCancel()
-      })
+  const handleFinish = () => {
+    if(selectMode === VersionsSelectMode.Radio) {
+      onSubmit(versionOptions[0].id || '')
+    } else {
+      onSubmit(selectedVersion)
+    }
+    onModalCancel()
   }
 
   const onModalCancel = () => {
@@ -71,14 +69,13 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
     onCancel()
   }
 
-
   return (
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={visible}
       width={560}
       okText={$t({ defaultMessage: 'Run Update' })}
-      onOk={triggerSubmit}
+      onOk={() => form.submit()}
       onCancel={onModalCancel}
       okButtonProps={{
         disabled: selectMode === undefined ||
@@ -87,16 +84,16 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
     >
       <Form
         form={form}
-        name={'updateModalForm'}
+        onFinish={handleFinish}
       >
-        { versionOptions.length > 0 ?
+        { versionOptions.length > 0 &&
           <div>
             <Typography>
               { // eslint-disable-next-line max-len
                 $t({ defaultMessage: 'Choose which version to update the venue to:' })
               }
             </Typography>
-            <UI.TitleActive>Active Device</UI.TitleActive>
+            <UI.TitleActive>{$t({ defaultMessage: 'Active Device' })}</UI.TitleActive>
             <Form.Item
               name='selectMode'
               initialValue={VersionsSelectMode.Radio}
@@ -109,6 +106,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                     {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   {
+                    // first GA just support one firmware version
                     // otherVersions.length > 0 ?
                     //   <Radio value={VersionsSelectMode.Dropdown}>
                     //     <Form.Item name='selectedVersion'>
@@ -125,13 +123,18 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
               </Radio.Group>
             </Form.Item>
           </div>
-          : null
         }
         <UI.Section>
           <UI.Ul>
-            { // eslint-disable-next-line max-len
-              <UI.Li>Please note, during firmware update your network device(s) might reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
-            <UI.Li>You will be notified once the update process has finished.</UI.Li>
+            <UI.Li>
+              {
+                // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Please note, during firmware update your network device(s) might reboot, and service may be interrupted for up to 15 minutes.' })
+              }
+            </UI.Li>
+            <UI.Li>
+              {$t({ defaultMessage: 'You will be notified once the update process has finished.' })}
+            </UI.Li>
           </UI.Ul>
         </UI.Section>
       </Form>
