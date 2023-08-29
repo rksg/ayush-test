@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   Col,
@@ -15,11 +15,12 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetZdConfigurationQuery
+  useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
   MigrationActionTypes,
-  MigrationResultType
+  MigrationResultType,
+  ZdConfigurationType
 } from '@acx-ui/rc/utils'
 
 import MigrationContext from '../MigrationContext'
@@ -37,10 +38,12 @@ const ValidationForm = (props: ValidationFormProps) => {
     dispatch
   } = useContext(MigrationContext)
 
-  // eslint-disable-next-line max-len
-  const { data: validateResult } = useGetZdConfigurationQuery({ params: { ...params, id: taskId } })
-
-  useEffect(()=>{
+  const [getZdConfiguration] = useLazyGetZdConfigurationQuery()
+  const [validateResult, setValidateResult] = useState<ZdConfigurationType>()
+  const getValidateResult = async () => {
+    // eslint-disable-next-line max-len
+    const validateResult = await (getZdConfiguration({ params: { ...params, id: taskId } }).unwrap())
+    setValidateResult(validateResult)
     // eslint-disable-next-line max-len
     if (validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].state === 'Qualified') {
       dispatch({
@@ -50,7 +53,14 @@ const ValidationForm = (props: ValidationFormProps) => {
         }
       })
     }
-  },[validateResult])
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getValidateResult()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   const callbackfn = (item: MigrationResultType) => {
     return item.state === 'Valid'
@@ -85,7 +95,7 @@ const ValidationForm = (props: ValidationFormProps) => {
       title: $t({ defaultMessage: 'Status' }),
       key: 'state',
       dataIndex: 'state',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.state ?? '--'
       }
     },

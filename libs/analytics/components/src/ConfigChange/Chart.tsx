@@ -1,20 +1,52 @@
-import { memo } from 'react'
+import { Dispatch, SetStateAction, memo, useContext, useEffect } from 'react'
 
-import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
-import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
+import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
+import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
+import type { ConfigChange }               from '@acx-ui/components'
 
-import { useConfigChangeQuery } from './services'
+import { ConfigChangeContext, KPIFilterContext } from './context'
+import { useConfigChangeQuery }                  from './services'
+import { filterKPIData }                         from './Table/util'
 
-function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => void }){
-  const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
+function BasicChart (props: {
+  selected: ConfigChange | null,
+  onClick: (params: ConfigChange) => void,
+  chartZoom?: { start: number, end: number },
+  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+}){
+  const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
+  const {
+    timeRanges: [startDate, endDate],
+    setKpiTimeRanges,
+    dateRange
+  } = useContext(ConfigChangeContext)
+  const {
+    selected, onClick, chartZoom,
+    setChartZoom, setInitialZoom
+  } = props
+  const { path } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
-    ...getFilterPayload({ filter }),
-    start: startDate,
-    end: endDate
-  })
+    path,
+    start: startDate.toISOString(),
+    end: endDate.toISOString()
+  }, { selectFromResult: queryResults => ({
+    ...queryResults,
+    data: filterKPIData(queryResults.data ?? [], kpiFilter)
+  }) })
+
+  useEffect(() => {
+    setChartZoom?.({
+      start: startDate.valueOf(), end: endDate.valueOf()
+    })
+  }, [dateRange])
+
+  const onDotClick = (params: ConfigChange) => {
+    applyKpiFilter([])
+    onClick(params)
+  }
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>
@@ -22,14 +54,14 @@ function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => vo
         {({ width }) =>
           <ConfigChangeChart
             style={{ width }}
-            data={queryResults.data ?? []}
-            chartBoundary={[
-              moment(startDate).valueOf(),
-              moment(endDate).valueOf()
-            ]}
-            onBrushPositionsChange={props.onBrushPositionsChange}
-            // TODO: need to handle sync betweem chart and table
-            // onDotClick={(params) => console.log(params)}
+            data={queryResults.data}
+            chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
+            onDotClick={onDotClick}
+            selectedData={selected?.id}
+            onBrushPositionsChange={setKpiTimeRanges}
+            chartZoom={chartZoom}
+            setChartZoom={setChartZoom}
+            setInitialZoom={setInitialZoom}
           />}
       </AutoSizer>
     </Card>

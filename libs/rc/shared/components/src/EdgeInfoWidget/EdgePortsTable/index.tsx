@@ -14,14 +14,15 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       dataIndex: 'sortIdx',
       defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('sortIdx', defaultSort) },
-      render: (data) => {
-        return 'port' + data
+      render: (_, { sortIdx }) => {
+        return 'port' + sortIdx
       }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
       dataIndex: 'name',
+      width: 200,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -55,11 +56,21 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       sorter: { compare: sortProp('ip', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'IP Type' }),
+      key: 'ipMode',
+      dataIndex: 'ipMode',
+      sorter: { compare: sortProp('ipMode', defaultSort) },
+      render: (_, { ipMode }) => {
+        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
+          : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Speed' }),
       key: 'speedKbps',
       dataIndex: 'speedKbps',
       sorter: { compare: sortProp('speedKbps', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return formatter('networkSpeedFormat')(row.speedKbps)
       }
     }

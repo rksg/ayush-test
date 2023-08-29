@@ -55,7 +55,7 @@ const Ports = () => {
       content: <PortsGeneral data={portDataWithStatusIp} />
     },
     'sub-interface': {
-      title: $t({ defaultMessage: 'Sub-interface' }),
+      title: $t({ defaultMessage: 'Sub-Interface' }),
       content: <SubInterface data={portDataWithStatusIp} />
     }
   }
@@ -72,7 +72,7 @@ const Ports = () => {
       onChange={onTabChange}
       defaultActiveKey='ports-general'
       activeKey={activeSubTab}
-      type='card'
+      type='second'
     >
       {Object.keys(tabs)
         .map((key) =>

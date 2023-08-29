@@ -84,8 +84,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
     defaultSortOrder: 'ascend',
     sorter: true,
     fixed: 'left',
-    render: function (data) {
-      return `VE-${data}`
+    render: function (_, { veId }) {
+      return `VE-${veId}`
     }
   }, {
     key: 'vlanId',
@@ -223,6 +223,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
         tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
         onClick: () => {
           setIsEditMode(false)
+          setEditData({} as VeViewModel)
           setVisible(true) }
       }])}
     />

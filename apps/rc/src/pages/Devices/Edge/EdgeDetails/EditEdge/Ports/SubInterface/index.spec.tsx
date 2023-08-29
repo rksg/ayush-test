@@ -1,9 +1,10 @@
-import { act, renderHook, waitFor }                 from '@testing-library/react'
-import userEvent                                    from '@testing-library/user-event'
-import { rest }                                     from 'msw'
-import { IntlProvider }                             from 'react-intl'
-import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { act, renderHook, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                                               from '@testing-library/user-event'
+import { rest }                                                from 'msw'
+import { IntlProvider }                                        from 'react-intl'
+import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
@@ -49,6 +50,8 @@ const defaultContextData = {
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
@@ -119,13 +122,11 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
-    await act(async () => {
-      await user.click(await screen.findByRole('button', { name: 'Delete' }))
-    })
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2"?')
-    await act(async () => {
-      await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
-    })
+    const confirmDialog = await screen.findByRole('dialog')
+    await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it('should have edit dialog show up', async () => {
@@ -147,9 +148,7 @@ describe('EditEdge ports - sub-interface', () => {
     await screen.findAllByRole('columnheader')
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
-    await act(async () => {
-      await user.click(await screen.findByRole('button', { name: 'Edit' }))
-    })
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
     const dialog = await screen.findByTestId('subDialog')
     expect(within(dialog).queryByText('visible')).toBeValid()
     expect(within(dialog).queryByText('2')).toBeValid()
@@ -185,8 +184,8 @@ describe('EditEdge ports - sub-interface', () => {
 
     await screen.findAllByRole('columnheader')
     await userEvent.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    const dialog = await screen.findByTestId('subDialog')
-    expect(within(dialog).queryByText('visible')).toBeValid()
+    const addFormDialog = await screen.findByTestId('subDialog')
+    expect(within(addFormDialog).queryByText('visible')).toBeValid()
     act(() => {
       // eslint-disable-next-line max-len
       result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
@@ -195,6 +194,63 @@ describe('EditEdge ports - sub-interface', () => {
     await waitFor(async () => {
       expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBeValid()
     })
+  })
+
+  it('should be able to import by CSV', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.importSubInterfacesCSV.url,
+        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'sub-interfaces_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  })
+
+  it('should not display import from file when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const btn = screen.queryByRole('button', { name: 'Import from file' })
+    expect(btn).toBeNull()
   })
 })
 

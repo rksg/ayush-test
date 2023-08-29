@@ -20,14 +20,16 @@ export function TrustedPortsModal (props: {
 }) {
   const { $t } = useIntl()
   const { open, editRecord, onSave, onCancel } = props
-  const form = Form.useFormInstance()
+  const [form] = Form.useForm()
   const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
     useState<VlanTrustPortInterface>({ family: '', model: '', trustedPorts: [] })
 
   useEffect(()=>{
-    form.resetFields()
-    if (open && editRecord) {
+    if (form && open){
+      form.resetFields()
+    }
+    if (form && open && editRecord) {
       form.setFieldsValue(editRecord)
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
@@ -62,8 +64,9 @@ export function TrustedPortsModal (props: {
           }
           return false
         }}
+        form={form}
         buttonLabel={{ submit: editRecord ?
-          $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
+          $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm
           title={$t({ defaultMessage: 'Select Model' })}

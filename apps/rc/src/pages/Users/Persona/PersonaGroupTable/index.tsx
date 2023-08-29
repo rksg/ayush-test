@@ -7,6 +7,13 @@ import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                     from '@acx-ui/icons'
 import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  VenueLink
+} from '@acx-ui/rc/components'
+import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
   useGetDpskListQuery,
@@ -24,14 +31,7 @@ import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                   from '@acx-ui/user'
 
 import { PersonaGroupContext } from '..'
-import {
-  DpskPoolLink,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PersonaGroupLink,
-  VenueLink
-} from '../LinkHelper'
-import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
+import { PersonaGroupDrawer }  from '../PersonaGroupDrawer'
 
 const propertyConfigDefaultPayload = {
   sortField: 'venueName',
@@ -84,7 +84,8 @@ function useColumns (
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       key: 'propertyId',
@@ -101,7 +102,7 @@ function useColumns (
     },
     {
       key: 'dpskPoolId',
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       dataIndex: 'dpskPoolId',
       sorter: true,
       filterMultiple: false,

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
@@ -77,7 +77,6 @@ export function RogueAPDetectionTable () {
   const tenantBasePath: Path = useTenantLink('')
   const DEFAULT_PROFILE = 'Default profile'
   const [ deleteFn ] = useDelRoguePoliciesMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
@@ -144,16 +143,13 @@ export function RogueAPDetectionTable () {
             defaultMessage: 'Rogue AP Detection'
           })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           }
-        ] : [{
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>
@@ -223,7 +219,7 @@ function useColumns (venueIds: string[]) {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -231,7 +227,7 @@ function useColumns (venueIds: string[]) {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -256,7 +252,7 @@ function useColumns (venueIds: string[]) {
       filterable: venueFilterOptions,
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len

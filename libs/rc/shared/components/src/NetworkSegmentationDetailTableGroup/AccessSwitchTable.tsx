@@ -30,7 +30,7 @@ const EditTdButton = styled(Button).attrs({ type: 'link' })`
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { editHandler = ()=>{} } = props
+  const { editHandler } = props
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -38,6 +38,10 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   })
 
   const columns: TableProps<AccessSwitchTableDataType>['columns'] = React.useMemo(() => {
+    const EditBtn = (row: AccessSwitchTableDataType) => editHandler ?
+      <EditTdButton onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton> :
+      <span>-</span>
+
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Access Switch' }),
@@ -55,33 +59,31 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: 'distributionSwitchId',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => (row.distributionSwitchName)
+      render: (_, row) => (row.distributionSwitchName)
     }, {
       key: 'uplinkInfo',
       title: $t({ defaultMessage: 'Uplink Port' }),
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
-      render: (data, row) => {
-        return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` :
-          <EditTdButton
-            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
+      render: (_, row) => {
+        return row.uplinkInfo?.uplinkId
+          ? `${row.uplinkInfo.uplinkType} ${row.uplinkInfo.uplinkId}`
+          : EditBtn(row)
       }
     }, {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN ID' }),
       dataIndex: 'vlanId',
       sorter: true,
-      render: (data, row) => {
-        return row.vlanId ? data :
-          <EditTdButton
-            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
+      render: (_, row) => {
+        return row.vlanId ? row.vlanId : EditBtn(row)
       }
     }, {
       key: 'templateId',
       title: $t({ defaultMessage: 'Net Seg Auth Page' }),
       dataIndex: 'templateId',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         let displayText = ''
         if (row.webAuthPageType === 'USER_DEFINED') {
           displayText = $t({ defaultMessage: 'custom' })

@@ -9,7 +9,6 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   RogueApConstant,
@@ -34,20 +33,17 @@ export const RogueAPDetectionDetailView = () => {
   const [policyName, setPolicyName] = useState('' as string)
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
-        ] : [
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
         extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([

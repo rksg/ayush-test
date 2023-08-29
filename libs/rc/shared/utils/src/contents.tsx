@@ -24,6 +24,20 @@ export enum SecurityOptionsDescription {
   /* eslint-enable */
 }
 
+export enum WisprSecurityEnum {
+  NONE = 'Select...',
+  PSK = 'Pre-Share Key (PSK)',
+  OWE = 'OWE encryption'
+}
+
+export enum WisprSecurityOptionsDescription {
+  /* eslint-disable max-len */
+  NONE = '',
+  PSK = 'Require users to enter a passphrase to connect',
+  OWE = 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
+  /* eslint-enable */
+}
+
 export enum SecurityOptionsPassphraseLabel {
   WPA2Personal = 'Passphrase',
   WPA3 = 'SAE Passphrase',
@@ -86,6 +100,12 @@ export const WifiNetworkMessages = {
   ENABLE_MAC_AUTH_TOOLTIP: defineMessage({
     defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
   }),
+  ENABLE_OWE_TOOLTIP: defineMessage({
+    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network.'
+  }),
+  ENABLE_OWE_TRANSITION_TOOLTIP: defineMessage({
+    defaultMessage: 'For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode.'
+  }),
   NETWORK_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'By default, will be used as the network SSID as well. Length is limited to 2-32 characters (depending on the language you use)'
   }),
@@ -118,6 +138,12 @@ export const WifiNetworkMessages = {
 }
 
 export const WifiTroubleshootingMessages = {
+  Target_Host_IP_TOOLTIP: defineMessage({
+    defaultMessage: 'The target host or IP address must be a valid IP address or domain name'
+  })
+}
+
+export const EdgeTroubleshootingMessages = {
   Target_Host_IP_TOOLTIP: defineMessage({
     defaultMessage: 'The target host or IP address must be a valid IP address or domain name'
   })

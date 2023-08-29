@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
 import { useDeletePortalMutation, useGetEnhancedPortalProfileListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                                           from '@acx-ui/rc/services'
@@ -39,7 +38,6 @@ export default function PortalTable () {
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   const [portalId, setPortalId]=useState('')
   const [newDemo, setNewDemo]=useState({} as Demo)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
@@ -108,7 +106,7 @@ export default function PortalTable () {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -125,7 +123,7 @@ export default function PortalTable () {
       key: 'language',
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
-      render: (data, row) =>{
+      render: (_, row) =>{
         return getLanguage((row.content?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
       }
     },
@@ -134,7 +132,7 @@ export default function PortalTable () {
       title: intl.$t({ defaultMessage: 'Preview' }),
       dataIndex: 'demo',
       align: 'center',
-      render: (data, row) =>{
+      render: (_, row) =>{
         return (<div aria-label={row.id}
           onClick={async (e)=>{
             const demoValue = { ...row.content }
@@ -166,7 +164,7 @@ export default function PortalTable () {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkNameMap,
-      render: (data,row) =>{
+      render: (_,row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
@@ -182,16 +180,13 @@ export default function PortalTable () {
           // eslint-disable-next-line max-len
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
           {
             text: intl.$t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true)
           }
-        ] : [{
-          text: intl.$t({ defaultMessage: 'My Services' }),
-          link: getServiceListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}>

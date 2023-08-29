@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -12,8 +11,8 @@ import {
   PolicyType,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedNetworkOptions, mockedNsgOptions, mockedTunnelProfileViewData } from '../__tests__/fixtures'
 
@@ -31,6 +30,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
+const mockedSingleDeleteApi = jest.fn()
+const mockedBulkDeleteApi = jest.fn()
 
 describe('TunnelProfileList', () => {
   let params: { tenantId: string }
@@ -58,11 +59,17 @@ describe('TunnelProfileList', () => {
       ),
       rest.delete(
         TunnelProfileUrls.batchDeleteTunnelProfile.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedBulkDeleteApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.delete(
         TunnelProfileUrls.deleteTunnelProfile.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedSingleDeleteApi()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -78,22 +85,7 @@ describe('TunnelProfileList', () => {
     expect(row.length).toBe(2)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <TunnelProfileTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <TunnelProfileTable />
@@ -170,8 +162,15 @@ describe('TunnelProfileList', () => {
     const row = await screen.findByRole('row', { name: /tunnelProfile1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "tunnelProfile1"?')
-    await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Delete "tunnelProfile1"?')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await waitFor(() => {
+      expect(mockedSingleDeleteApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('should delete selected row - multiple', async () => {
@@ -186,8 +185,15 @@ describe('TunnelProfileList', () => {
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 Policy"?')
-    await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Delete "2 Policy"?')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await waitFor(() => {
+      expect(mockedBulkDeleteApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('edit button will remove when select Default Tunnel Profile', async () => {

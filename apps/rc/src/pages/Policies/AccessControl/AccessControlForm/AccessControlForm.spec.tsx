@@ -1,10 +1,9 @@
 import React from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -38,6 +37,19 @@ jest.mock('antd', () => {
 
   return { ...antd, Select }
 })
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
 
 describe('AccessControlForm Component', () => {
   beforeEach(async () => {
@@ -74,9 +86,7 @@ describe('AccessControlForm Component', () => {
   it('Render AccessControlForm component successfully', async () => {
     render(
       <Provider>
-        <Form>
-          <AccessControlForm editMode={false}/>
-        </Form>
+        <AccessControlForm editMode={false}/>
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -95,33 +105,10 @@ describe('AccessControlForm Component', () => {
     }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <Form>
-          <AccessControlForm editMode={false}/>
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1' }
-        }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Access Control'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(
-      <Provider>
-        <Form>
-          <AccessControlForm editMode={false}/>
-        </Form>
+        <AccessControlForm editMode={false}/>
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -140,9 +127,7 @@ describe('AccessControlForm Component', () => {
   it('Render AccessControlForm component successfully (create)', async () => {
     render(
       <Provider>
-        <Form>
-          <AccessControlForm editMode={false}/>
-        </Form>
+        <AccessControlForm editMode={false}/>
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1' }
@@ -159,7 +144,7 @@ describe('AccessControlForm Component', () => {
     await userEvent.click((await screen.findAllByRole('switch'))[1])
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
     await userEvent.click((await screen.findAllByRole('switch'))[0])
@@ -167,7 +152,7 @@ describe('AccessControlForm Component', () => {
     await userEvent.click((await screen.findAllByRole('switch'))[1])
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
     await screen.findByRole('option', { name: 'layer2policy1' })
@@ -178,7 +163,7 @@ describe('AccessControlForm Component', () => {
     )
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
 
   })
@@ -186,9 +171,7 @@ describe('AccessControlForm Component', () => {
   it('Render AccessControlForm component with editMode successfully', async () => {
     render(
       <Provider>
-        <Form>
-          <AccessControlForm editMode={true}/>
-        </Form>
+        <AccessControlForm editMode={true}/>
       </Provider>, {
         route: {
           params: { tenantId: 'tenantId1', policyId: 'c9c0667abfe74ab7803999a793fd2bbe' }
@@ -213,7 +196,7 @@ describe('AccessControlForm Component', () => {
     }), 'acl-test-modify')
 
     await userEvent.click(screen.getByRole('button', {
-      name: 'Finish'
+      name: 'Add'
     }))
   })
 })

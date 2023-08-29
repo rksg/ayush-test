@@ -2,7 +2,6 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
@@ -205,26 +204,7 @@ describe('SnmpAgentForm', () => {
     // await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <SnmpAgentForm editMode={false}/>
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: createPath }
-      })
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'SNMP Agent'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <SnmpAgentForm editMode={false}/>
@@ -268,7 +248,7 @@ describe('SnmpAgentForm', () => {
     expect(header).toBeInTheDocument()
 
     // Policy name can't empty
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Profile Name')
 
     // Policy name can't be duplicate
@@ -276,7 +256,7 @@ describe('SnmpAgentForm', () => {
     await userEvent.type(inputElem, 'www')
     expect(inputElem).toHaveAttribute('value', 'www')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText(/already exists/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
@@ -303,7 +283,7 @@ describe('SnmpAgentForm', () => {
     expect(inputElem).toHaveAttribute('value', 'SNMP-test')
 
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText(/At least one SNMPv2 agent or SNMPv3 agent/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))

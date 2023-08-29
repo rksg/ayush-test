@@ -22,7 +22,8 @@ import {
 } from '@acx-ui/icons'
 import {
   CsvSize,
-  ImportFileDrawer
+  ImportFileDrawer,
+  ImportFileDrawerType
 }      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
@@ -36,7 +37,8 @@ import {
   useUpdatePropertyUnitMutation,
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
-  useLazyGetConnectionMeteringByIdQuery
+  useLazyGetConnectionMeteringByIdQuery,
+  useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -116,6 +118,10 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const PropertyUnitStatusOptions = [
+    { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
+    { key: PropertyUnitStatus.DISABLED, value: $t({ defaultMessage: 'Suspended' }) }
+  ]
   const { venueId, tenantId } = useParams()
   const enabled = (status: string) => status === PropertyUnitStatus.ENABLED
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
@@ -137,6 +143,7 @@ export function VenuePropertyTab () {
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
 
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -331,8 +338,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Suspend' }),
       visible: (selectedRows => {
-        const activateCount = selectedRows.filter(row => enabled(row.status)).length
-        return activateCount > 0 && activateCount === selectedRows.length
+        const activeCount = selectedRows.filter(row => enabled(row.status)).length
+        return activeCount > 0 && activeCount === selectedRows.length
       }),
       onClick: (items, clearSelection) => {
         showActionModal({
@@ -390,6 +397,7 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
+        setDrawerState({ isEdit: false, visible: false })
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -418,8 +426,10 @@ export function VenuePropertyTab () {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
+      filterMultiple: false,
+      filterable: PropertyUnitStatusOptions,
       render: (_, row) => row.status === PropertyUnitStatus.ENABLED
-        ? $t({ defaultMessage: 'Activate' }) : $t({ defaultMessage: 'Suspended' })
+        ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',
@@ -499,13 +509,17 @@ export function VenuePropertyTab () {
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = queryUnitList.payload
-    const currentSearchString = payload.filters?.name ?? ''
 
-    if (currentSearchString === customSearch.searchString) return
+    const customPayload = {
+      filters: {
+        name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
+        status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
+      }
+    }
 
     queryUnitList.setPayload({
       ...payload,
-      filters: { name: customSearch.searchString !== '' ? customSearch.searchString : undefined }
+      ...customPayload
     })
   }
 
@@ -533,12 +547,13 @@ export function VenuePropertyTab () {
           onClick: downloadUnit
         }}
       />
-      {venueId &&
+      {venueId && drawerState.visible &&
         <PropertyUnitDrawer
+          visible={true}
           venueId={venueId}
+          countryCode={venueData?.address?.countryCode}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
-          visible={drawerState.visible}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
         />
       }
@@ -546,11 +561,11 @@ export function VenuePropertyTab () {
         title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        type='PropertyUnit'
-        acceptType={['xlsx']}
+        type={ImportFileDrawerType.PropertyUnit}
+        acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        templateLink='assets/templates/units_import_template.xlsx'
+        templateLink='assets/templates/units_import_template.csv'
         importRequest={importUnits}
         formDataName={'unitImports'}
         onClose={() => setUploadCsvDrawerVisible(false)}

@@ -3,7 +3,6 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -28,30 +27,26 @@ const defaultPayload = {
 
 export default function AccessControlTable () {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload
   })
 
-  return (
+  return (<>
     <PageHeader
       title={
         $t({
           defaultMessage: 'Access Control'
         })
       }
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }
-      ] : [{
-        text: $t({ defaultMessage: 'Policies & Profiles' }),
-        link: getPolicyListRoutePath(true)
-      }]}
+      ]}
       extra={filterByAccess([
         <TenantLink
           to={getPolicyRoutePath({
@@ -65,8 +60,9 @@ export default function AccessControlTable () {
           </Button>
         </TenantLink>
       ])}
-      footer={<AccessControlTabs />}
+
     />
-  )
+    <AccessControlTabs />
+  </>)
 }
 

@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { ArrowUpOutlined, ArrowDownOutlined }                                              from '@ant-design/icons'
 import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Typography } from 'antd'
 import { useWatch }                                                                        from 'antd/lib/form/Form'
 import _                                                                                   from 'lodash'
 import moment                                                                              from 'moment-timezone'
-import { useIntl }                                                                         from 'react-intl'
+import { FormattedMessage, useIntl }                                                       from 'react-intl'
 import styled                                                                              from 'styled-components'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, Subtitle, Tooltip } from '@acx-ui/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip, DatePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
 import {
@@ -43,7 +43,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
-
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
   font-size: 12px;
@@ -140,15 +139,28 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
 }
 
 
-function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
+function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEdit: boolean })
 {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = props
+  const { data, isEdit } = props
   const [modalVisible, setModalVisible] = useState(false)
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const shouldScrollDown = useRef<boolean>(!isEdit)
+
+  useEffect(()=> {
+    if (shouldScrollDown.current && profileId && bottomRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [profileId])
+
+  useEffect(()=> {
+    setProfileMap(new Map(data.map((p) => [p.id, p])))
+  }, [data])
+
 
   return (
     <>
@@ -164,7 +176,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                   {$t({ defaultMessage: 'Data Usage Metering' })}
                   <Tooltip.Question
                     // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering policy' })}
+                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering profile' })}
                     placement='top'
                   />
                 </>
@@ -176,6 +188,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 options={Array.from(profileMap,
                   (entry) => ({ label: entry[1].name, value: entry[0] }))}
+                onChange={()=> {shouldScrollDown.current = true}}
               />
             </Form.Item>
           </Col>
@@ -189,7 +202,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
             </Button>
           </Col>
         </Row>
-        {profileId &&
+        {profileId && profileMap.has(profileId) &&
         <>
           <Row>
             <Col span={24}>
@@ -209,11 +222,11 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 initialValue={form.getFieldValue('expirationDate')}
               >
                 <DatePicker
-                  format={'YYYY/MM/DD'}
                   style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
               </Form.Item>
+              <div ref={bottomRef}></div>
             </Col>
           </Row>
         </>}
@@ -299,10 +312,9 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
 
   return (
     <>
-      <Form.Item
-        hidden
-        name={'apName'}
-      />
+      <Form.Item noStyle name={'apName'}>
+        <Input type='hidden'/>
+      </Form.Item>
       <Form.Item
         label={$t({ defaultMessage: 'Select AP' })}
         name={'accessAp'}
@@ -321,20 +333,24 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
         name={'ports'}
         label={$t(
           { defaultMessage: 'Select LAN Ports for ({model})' },
-          { model: selectedModel?.model ?? noDataDisplay }
+          { model: accessAp ? selectedModel?.model ?? noDataDisplay : noDataDisplay }
         )}
         rules={[
           { required: !!accessAp, message: $t({ defaultMessage: 'Please select the LAN ports' }) }
         ]}
       >
-        {selectedModel.lanPorts &&
+        {accessAp && selectedModel.lanPorts &&
           <Checkbox.Group >
             <Space direction={'vertical'}>
               {
                 selectedModel?.lanPorts.map((port, index) =>
                   <Checkbox
                     key={index}
-                    value={port.portId ?? index}
+                    value={
+                      port?.portId
+                        ? parseInt(port.portId, 10)
+                        : index
+                    }
                     // disabled={port.type === 'TRUNK'}
                   >
                     {`LAN${port.portId}`}
@@ -353,8 +369,9 @@ export interface PropertyUnitDrawerProps {
   isEdit: boolean,
   visible: boolean,
   onClose: () => void,
-  venueId: string
+  venueId: string,
   unitId?: string,
+  countryCode?: string
 }
 
 interface QosSetting {
@@ -364,11 +381,12 @@ interface QosSetting {
 
 export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { $t } = useIntl()
-  const { isEdit, visible, onClose, venueId, unitId } = props
+  const { isEdit, visible, onClose, venueId, unitId, countryCode } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [rawFormValues, setRawFormValues]
     = useState<PropertyUnitFormFields>({} as PropertyUnitFormFields)
-  const [withNsg, setWithNsg] = useState(false)
+  const [isReady, setIsReady] = useState(!isEdit) // Control the Drawer rendering state
+  const [withNsg, setWithNsg] = useState(true)
   const [connectionMeteringList, setConnectionMeteringList] = useState<ConnectionMetering[]>([])
   const [qosSetting, setQosSetting] = useState<QosSetting>()
   // VLAN fields state
@@ -379,11 +397,10 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
   )
 
+
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [enableGuestUnit, setEnableGuestUnit]
-    = useState<boolean|undefined>(false)
-  const [personaGroupId, setPersonaGroupId]
-    = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
+  const [enableGuestUnit, setEnableGuestUnit] = useState<boolean>(true)
+  const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
 
   const [getUnitList] = useLazyGetPropertyUnitListQuery()
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
@@ -405,7 +422,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
       const groupId = propertyConfigsQuery.data.personaGroupId
       setPersonaGroupId(groupId)
-      setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
+      setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed ?? false)
 
       getPersonaGroupById({ params: { groupId } })
         .then(result => setWithNsg(!!result.data?.nsgId))
@@ -415,22 +432,29 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   useEffect(() => {
     // // eslint-disable-next-line no-console
     // console.log('reset0 :: ', visible && unitId && venueId && personaGroupId)
-    if (visible && unitId && venueId && personaGroupId) {
+    if (unitId && venueId && personaGroupId) {
       form.resetFields()
+      setIsReady(false)
+
       getUnitById({ params: { venueId, unitId } })
         .then(result => {
           if (result.data) {
             const { personaId, guestPersonaId } = result.data
-            combinePersonaInfo(personaId, guestPersonaId, result.data)
+            combinePersonaInfo(result.data, personaId, guestPersonaId)
           }
         })
         .catch(() => {
           errorCloseDrawer()
         })
     }
-  }, [visible, unitId, personaGroupId])
+  }, [unitId, personaGroupId])
 
-  const combinePersonaInfo = (personaId?: string, guestPersonaId?: string, data?: PropertyUnit) => {
+  const combinePersonaInfo = (
+    unitData: PropertyUnit,
+    personaId?: string,
+    guestPersonaId?: string
+  ) => {
+    let unitFormFields: PropertyUnitFormFields = unitData
     let personaPromise, guestPromise
 
     if (personaId) {
@@ -443,47 +467,58 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     Promise.all([personaPromise, guestPromise])
       .then(([personaResult, guestResult]) => {
-        form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           const {
             vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
           } = personaResult.data as Persona
+
           if (withNsg) {
+            // Assume that a Persona only allow to bind with one AP
             const apName = ethernetPorts?.[0]?.name
             const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
             const ports = ethernetPorts?.map(p => p.portIndex)
 
-            form.setFieldValue('apName', apName)
-            form.setFieldValue('accessAp', accessAp)
-            form.setFieldValue('ports', ports?.map(i => i.toString()))
-            form.setFieldValue('vxlan', vni ?? noDataDisplay)
+            unitFormFields = {
+              ...unitFormFields,
+              apName,
+              accessAp,
+              ports,
+              vxlan: vni
+            }
           }
 
           if (isConnectionMeteringEnabled) {
-            form.setFieldValue('meteringProfileId', meteringProfileId)
-            form.setFieldValue('expirationDate', expirationDate ?
-              moment(expirationDate) : undefined)
+            unitFormFields = {
+              ...unitFormFields,
+              meteringProfileId,
+              expirationDate: expirationDate ? moment(expirationDate) : undefined
+            }
             setQosSetting({
               profileId: meteringProfileId,
               expirationDate: expirationDate ? moment(expirationDate): undefined
             })
           }
 
-          form.setFieldValue(['unitPersona', 'vlan'], vlan)
-          form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
+          unitFormFields = {
+            ...unitFormFields,
+            unitPersona: { vlan, dpskPassphrase }
+          }
         }
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
 
-          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
-          // if no timeout would not render exactly
-          setTimeout(() => {
-            form.setFieldValue(['guestPersona', 'vlan'], vlan)
-            setRawFormValues(form.getFieldsValue)
-          }, 10)
-          form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
+          unitFormFields = {
+            ...unitFormFields,
+            enableGuestVlan: personaResult?.data?.vlan !== vlan,
+            guestPersona: { vlan, dpskPassphrase }
+          }
         }
+
+        setIsReady(true)
+
+        form.setFieldsValue(unitFormFields)
+        setRawFormValues(unitFormFields)
       })
   }
 
@@ -685,6 +720,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             name='propertyUnitForm'
             form={form}
             layout={'vertical'}
+            scrollToFirstError={true}
           >
             <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
             <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
@@ -699,18 +735,51 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               children={<Input />}
               rules={[
                 { required: true },
+                // UnitName(235) -> PersonaName(255)
+                // ex. Rule = GUEST_{UnitName}-{timestamp} or UNIT_{UnitName}-{timestamp}
+                { max: 235 },
                 { validator: (_, value) => nameValidator(value) }
               ]}
             />
             <Form.Item
               name={['unitPersona', 'dpskPassphrase']}
-              label={$t({ defaultMessage: 'DPSK Passphrase' })}
+              label={
+                <>
+                  { $t({ defaultMessage: 'DPSK Passphrase' }) }
+                  <Tooltip.Question
+                    placement='bottom'
+                    title={<FormattedMessage
+                    // eslint-disable-next-line max-len
+                      defaultMessage={'If empty, passphrase will be generated by the system. Valid range 8-63'}
+                    />}
+                  />
+                </>
+              }
+              rules={[
+                { min: 8 },
+                { max: 63 }
+              ]}
               children={<Input />}
             />
             {enableGuestUnit &&
               <Form.Item
                 name={['guestPersona', 'dpskPassphrase']}
-                label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
+                label={
+                  <>
+                    { $t({ defaultMessage: 'Guest DPSK Passphrase' }) }
+                    <Tooltip.Question
+                      placement='bottom'
+                      title={<FormattedMessage
+                      // eslint-disable-next-line max-len
+                        defaultMessage={'If empty, passphrase will be generated by the system. Valid range 8-63'}
+                      />}
+                    />
+                  </>
+                }
+                rules={[
+                  { min: 8 },
+                  { max: 63 }
+                ]}
                 children={<Input />}
               />
             }
@@ -736,6 +805,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   style={{ marginBottom: '10px' }}
                   name={'enableGuestVlan'}
                   valuePropName={'checked'}
+                  initialValue={true}
                   children={<Switch />}
                 />
               </StepsForm.FieldLabel>
@@ -761,14 +831,18 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               name={['resident', 'name']}
               label={$t({ defaultMessage: 'Resident Name' })}
               rules={[
-                { required: true }
+                { required: true },
+                { max: 255 }
               ]}
               children={<Input />}
             />
             <Form.Item
               name={['resident', 'email']}
               label={$t({ defaultMessage: 'Resident\'s Email' })}
-              rules={[{ validator: (_, value) => emailRegExp(value) }]}
+              rules={[
+                { max: 255 },
+                { validator: (_, value) => emailRegExp(value) }
+              ]}
               children={<Input />}
             />
             <Form.Item
@@ -777,16 +851,20 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               rules={[
                 { validator: (_, value) => phoneRegExp(value) }
               ]}
-              children={<PhoneInput
-                name={['resident', 'phoneNumber']}
-                callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
-                onTop={false}
-              />}
+              children={
+                isReady &&
+                <PhoneInput
+                  name={['resident', 'phoneNumber']}
+                  callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
+                  onTop={false}
+                  defaultCountryCode={countryCode}
+                />}
               validateFirst
             />
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
+                isEdit
               />
             }
           </Form>
@@ -795,7 +873,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       footer={<Drawer.FormFooter
         buttonLabel={{
           save: isEdit
-            ? $t({ defaultMessage: 'Save' })
+            ? $t({ defaultMessage: 'Apply' })
             : $t({ defaultMessage: 'Add' })
         }}
         onSave={onSave}

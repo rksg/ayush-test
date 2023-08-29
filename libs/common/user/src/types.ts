@@ -66,6 +66,7 @@ export interface UserProfile {
   email: string
   initials?: string
   fullName: string
+  preferredLanguage?: string
 }
 
 export type GuestErrorRes = {
@@ -143,4 +144,9 @@ export interface MfaAuthApp {
 export interface CommonResult {
   requestId: string
   response?:{}
+}
+
+export interface BetaStatus {
+  enabled?: string,
+  startDate?: string
 }

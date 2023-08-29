@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -38,6 +38,38 @@ export const dhcpResponse = {
   leaseTimeMinutes: 1,
   id: 'UNPERSISTED-DEFAULT-PROFILE-ID'
 }
+
+const macRegistrationList = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
 describe('NetworkForm', () => {
 
   beforeEach(() => {
@@ -77,7 +109,13 @@ describe('NetworkForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the' }))
-        })
+        }),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationList))
+      ),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
@@ -106,23 +144,10 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    render(<Provider><NetworkForm /></Provider>, {
-      route: { params }
-    })
-    expect(screen.getByRole('link', {
-      name: /networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     render(<Provider><NetworkForm /></Provider>, {
@@ -192,7 +217,7 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   })
   it.skip('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -225,7 +250,7 @@ describe('NetworkForm', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByTitle('create Portal test'))
     await userEvent.click(screen.getByText('Next'))
 
@@ -233,7 +258,7 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   }, 20000)
 
   it.skip('should create captive portal without redirect url successfully', async () => {
@@ -266,7 +291,7 @@ describe('NetworkForm', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test2')
     await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByTitle('create Portal test2'))
     await userEvent.click(screen.getByText('Next'))
 
@@ -274,6 +299,6 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Add'))
   }, 20000)
 })

@@ -5,7 +5,7 @@ import {
   Provider,
   videoCallQoeApi as api,
   store,
-  videoCallQoeURL
+  r1VideoCallQoeURL
 } from '@acx-ui/store'
 import {
   mockGraphqlMutation,
@@ -31,7 +31,7 @@ describe('VideoCallQoeForm', () => {
   beforeEach(() => {
     mockedNavigate.mockReset()
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
+    mockGraphqlQuery(r1VideoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
   })
 
   it('should render breadcrumb', async () => {
@@ -42,17 +42,6 @@ describe('VideoCallQoeForm', () => {
     })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('Network Assurance')).toBeVisible()
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-  })
-
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<VideoCallQoeForm />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
-    })
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
     expect(await screen.findByText('Video Call QoE')).toBeVisible()
   })
 
@@ -70,8 +59,8 @@ describe('VideoCallQoeForm', () => {
     }), 'Test 1')
 
     // Navigate to Step 2
-    mockGraphqlMutation(videoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
-    await click(await screen.findByText(/add/i))
+    mockGraphqlMutation(r1VideoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
+    await click(await screen.findByRole('button', { name: 'Create' }))
     expect(await screen.findByRole('heading', { name: /test call details/i })).toBeVisible()
 
     expect((await screen.findAllByRole('link')).at(1))

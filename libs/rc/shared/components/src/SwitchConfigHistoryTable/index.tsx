@@ -94,9 +94,9 @@ export function SwitchConfigHistoryTable (props: {
       sorter: true,
       defaultSortOrder: 'descend',
       disable: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return <Button type='link' size='small' onClick={() => {showModal(row)}}>
-          {data}
+          {row.startTime}
         </Button>
       }
     }, {
@@ -116,7 +116,7 @@ export function SwitchConfigHistoryTable (props: {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'dispatchStatus',
       sorter: !isVenueLevel,
-      render: (data, row) => isVenueLevel ? getStatusBar(row) : data
+      render: (_, row) => isVenueLevel ? getStatusBar(row) : row.dispatchStatus
     }]
 
     return columns.filter(c => isVenueLevel || !c.key.includes('numberOfSwitches'))
@@ -198,7 +198,7 @@ export function SwitchConfigHistoryTable (props: {
       onCancel={handleCancel}
       destroyOnClose={true}
       width={1000}
-      footer={<Button key='back' type='secondary' onClick={handleCancel}>
+      footer={<Button key='back' type='primary' onClick={handleCancel}>
         {$t({ defaultMessage: 'Close' })}
       </Button>
       }

@@ -1,53 +1,64 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
-  useGetLatestFirmwareListQuery
+  useGetAvailableABFListQuery
 } from '@acx-ui/rc/services'
-import {
-  firmwareTypeTrans,
-  FirmwareVersion,
-  FirmwareVenueVersion,
-  FirmwareCategory
-} from '@acx-ui/rc/utils'
+import { ABFVersion, FirmwareCategory } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import { FirmwareBanner }   from '../../FirmwareBanner'
+import { compareVersions }  from '../../FirmwareUtils'
+import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  const versions = getReleaseFirmware(latestReleaseVersions)
-  const firmware = versions[0]
-
-  const transform = firmwareTypeTrans($t)
+  const { latestActiveVersions } = useGetAvailableABFListQuery({}, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        latestActiveVersions: data
+          ? data
+            .filter(abfVersion => abfVersion.abf === 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+          : []
+      }
+    }
+  })
+  const firmware = getRecommendedFirmware(latestActiveVersions)[0]
+  const { latestEolVersionByABFs } = useApEolFirmware()
 
   if (!firmware) return null
+
+  const versionInfo = [
+    {
+      label: $t({ defaultMessage: 'For Active Device:' }),
+      firmware: {
+        version: firmware.name,
+        category: firmware.category,
+        releaseDate: firmware.releaseDate ?? firmware.createdDate
+      }
+    },
+    ...(latestEolVersionByABFs.map(item => ({
+      label: $t({ defaultMessage: 'For Legacy Device:' }),
+      firmware: {
+        version: item.name,
+        category: item.category,
+        releaseDate: item.releaseDate
+      }
+    })))
+  ]
+
   return (
-    <div>
-      <UI.BannerVersion>
-        <span>{$t({ defaultMessage: 'Latest Version:' })} </span>
-        <UI.BannerVersionName>{ firmware?.name }</UI.BannerVersionName>
-      </UI.BannerVersion>
-      <UI.BannerVersion>
-        <span>{transform(firmware?.category, 'type')} </span>
-        <span>({transform(firmware?.category, 'subType')})</span>
-        <span> - </span>
-        <UI.BannerVersionName>
-          {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
-        </UI.BannerVersionName>
-      </UI.BannerVersion>
-    </div>
+    <FirmwareBanner data={versionInfo} />
   )
 }
 
 export default VersionBanner
 
-const categoryIsReleaseFunc = ((lv : FirmwareVersion | FirmwareVenueVersion) =>
-  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
-
-function getReleaseFirmware (firmwareVersions: FirmwareVersion[] = []): FirmwareVersion[] {
-  return firmwareVersions.filter(categoryIsReleaseFunc)
+function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []):
+(ABFVersion & { createdDate: string })[] {
+  return firmwareVersions.filter((abf: ABFVersion) => {
+    // eslint-disable-next-line max-len
+    return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
+  }) as (ABFVersion & { createdDate: string })[] // createdDate is for legacy usage
 }

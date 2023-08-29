@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -114,22 +113,10 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   }, 30000)
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><CliProfileForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
-    })
-
-    expect(screen.getByRole('link', {
-      name: /wired networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><CliProfileForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
     })
@@ -223,7 +210,7 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     // TODO
     // await screen.findByText('Server Error')

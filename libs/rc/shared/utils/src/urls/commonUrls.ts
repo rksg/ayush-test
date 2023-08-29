@@ -295,6 +295,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
     newApi: true
   },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateBssColoring: {
+    method: 'put',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
   getVenueLanPorts: {
     method: 'get',
     url: '/venues/:venueId/lanPortSettings',
@@ -353,6 +363,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/rogueApSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    newApi: true
+  },
+  getRogueApLocation: {
+    method: 'get',
+    url: '/venues/:venueId/rogueLocations?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/location?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
     newApi: true
   },
   getOldVenueRogueAp: {

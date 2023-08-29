@@ -8,7 +8,6 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useDeleteResidentPortalsMutation,
   useGetQueriableResidentPortalsQuery } from '@acx-ui/rc/services'
 import {
@@ -28,7 +27,6 @@ export default function ResidentPortalTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteResidentPortals ] = useDeleteResidentPortalsMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetQueriableResidentPortalsQuery,
@@ -84,7 +82,7 @@ export default function ResidentPortalTable () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -92,7 +90,7 @@ export default function ResidentPortalTable () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {highlightFn(data as string)}
+            {highlightFn(row.name)}
           </TenantLink>
         )
       }
@@ -124,15 +122,12 @@ export default function ResidentPortalTable () {
           intl.$t({ defaultMessage: 'Resident Portals ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
           {
             text: intl.$t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true) }
-        ] : [{
-          text: intl.$t({ defaultMessage: 'My Services' }),
-          link: getServiceListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={

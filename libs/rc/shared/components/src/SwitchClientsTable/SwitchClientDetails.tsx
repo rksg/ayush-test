@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
-import { exportCSV, getOsTypeIcon, SwitchClient, SWITCH_CLIENT_TYPE }           from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                       from '@acx-ui/user'
-import { getCurrentDate }                                                       from '@acx-ui/utils'
+import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                          from '@acx-ui/rc/services'
+import { exportCSV, getOsTypeIcon, getClientIpAddr, SwitchClient, SWITCH_CLIENT_TYPE } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                       from '@acx-ui/react-router-dom'
+import { getCurrentDate }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -21,7 +20,7 @@ export function SwitchClientDetails () {
   const { $t } = useIntl()
   const params = useParams()
   const [isManaged, setIsManaged] = useState(false)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const [clientDetails, setClientDetails] = useState({} as SwitchClient)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const { data, isLoading } = useGetSwitchClientDetailsQuery({ params })
 
@@ -45,10 +44,24 @@ export function SwitchClientDetails () {
     if(data?.clientType === SWITCH_CLIENT_TYPE.AP){
       isManagedRuckusAP(data?.clientMac)
     }
+    if (data) {
+      const ip = getClientIpAddr(data)
+      setClientDetails({
+        clientIpAddr: ip !== '--' ? ip : '',
+        transformedPort: ` ${data?.switchPort} `,
+        ...data,
+        clientName: data?.dhcpClientHostName || data?.clientName,
+        clientType: data?.dhcpClientDeviceTypeName || data?.clientType
+      } as SwitchClient)
+    }
   }, [data])
 
   const exportClientToCSV = () => {
-    const ClientCSVIgnoreProperty = ['switchId', 'venueId', 'id', 'switchSerialNumber']
+    const ClientCSVIgnoreProperty = [
+      'switchId', 'venueId', 'id', 'switchSerialNumber',
+      'clientIpv4Addr', 'clientIpv6Addr', 'switchPort',
+      'dhcpClientHostName', 'dhcpClientDeviceTypeName'
+    ]
     const ClientCSVNamingMapping: Map<string, string> = new Map<string, string>([
       ['clientMac', $t({ defaultMessage: 'Mac Address' })],
       (isDhcpClientsEnabled
@@ -63,13 +76,13 @@ export function SwitchClientDetails () {
       ['vlanName', $t({ defaultMessage: 'Vlan' })],
       ['switchSerialNumber', $t({ defaultMessage: 'Switch Serial Number' })],
       ['clientDesc', $t({ defaultMessage: 'Description' })],
-      ['clientIpv4Addr', $t({ defaultMessage: 'IP Address' })],
-      ['switchPort', $t({ defaultMessage: 'Port' })]
+      ['clientIpAddr', $t({ defaultMessage: 'IP Address' })],
+      ['transformedPort', $t({ defaultMessage: 'Port' })]
     ])
 
     const nowTime = getCurrentDate('YYYYMMDDHHMMSS')
     const filename = 'Client Details - ' +
-      data?.clientMac.replace(/:/gi, '') +
+    clientDetails?.clientMac.replace(/:/gi, '') +
       ' - ' + nowTime +
       '.csv'
 
@@ -77,7 +90,9 @@ export function SwitchClientDetails () {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exportClient: any = Object()
     const statusLabel = $t({ defaultMessage: 'Status' })
-    Object.assign(exportClient, { [statusLabel]: $t({ defaultMessage: 'Connected' }), ...data })
+    Object.assign(exportClient, {
+      [statusLabel]: $t({ defaultMessage: 'Connected' }), ...clientDetails
+    })
     for (const key of ClientCSVIgnoreProperty) {
       delete exportClient[key]
     }
@@ -87,7 +102,7 @@ export function SwitchClientDetails () {
   }
 
   const getDeviceType = (data?: SwitchClient) => {
-    const deviceType = data?.dhcpClientDeviceTypeName || data?.clientType
+    const deviceType = data?.clientType
     return deviceType === SWITCH_CLIENT_TYPE.AP ?
       (data?.isRuckusAP ?
         $t({ defaultMessage: 'RUCKUS AP' }) :
@@ -100,35 +115,37 @@ export function SwitchClientDetails () {
   const clientData: Client[] = [
     {
       title: $t({ defaultMessage: 'Mac Address' }),
-      value: data?.clientMac && data?.isRuckusAP && isManaged ?
+      value: clientDetails?.clientMac && clientDetails?.isRuckusAP && isManaged ?
         <TenantLink
-          to={`/devices/switch/${data?.switchId}/${data?.switchSerialNumber}/details/overview`}
-        >{data?.switchName}</TenantLink> : <span>{data?.clientMac}</span>
+        // eslint-disable-next-line max-len
+          to={`/devices/switch/${clientDetails?.switchId}/${clientDetails?.switchSerialNumber}/details/overview`}
+        >{clientDetails?.switchName}</TenantLink> : <span>{clientDetails?.clientMac}</span>
     },
     ...(isDhcpClientsEnabled ? [{
       title: <span>
         {$t({ defaultMessage: 'OS' })}
       </span>,
       value: <UI.OsType>
-        { !!data?.dhcpClientOsVendorName && getOsTypeIcon(data?.dhcpClientOsVendorName) }
-        { data?.dhcpClientOsVendorName || '--' }
+        { !!clientDetails?.dhcpClientOsVendorName
+        && getOsTypeIcon(clientDetails?.dhcpClientOsVendorName) }
+        { clientDetails?.dhcpClientOsVendorName || '--' }
       </UI.OsType>
     }] : []),
     {
       title: $t({ defaultMessage: 'Device Type' }),
-      value: getDeviceType(data)
+      value: getDeviceType(clientDetails)
     },
     {
       title: <span>
         {$t({ defaultMessage: 'Description' })}
       </span>,
-      value: <span>{data?.clientDesc || 'N/A'}</span>
+      value: <span>{clientDetails?.clientDesc || '--'}</span>
     },
     ...(isDhcpClientsEnabled ? [{
       title: <span>
         {$t({ defaultMessage: 'Model Name' })}
       </span>,
-      value: <span>{data?.dhcpClientModelName || '--'}</span>
+      value: <span>{clientDetails?.dhcpClientModelName || '--'}</span>
     }] : [])
   ]
 
@@ -137,16 +154,17 @@ export function SwitchClientDetails () {
       title: <span>
         {$t({ defaultMessage: 'IP Address' })}
       </span>,
-      value: <span>{data?.clientIpv4Addr || '--'}</span>
+      value: <span>{getClientIpAddr(clientDetails)}</span>
     }] : []),
     {
       title: <span>
         {$t({ defaultMessage: 'Switch' })}
       </span>,
       value: <span><TenantLink
-        to={`/devices/switch/${data?.switchId}/${data?.switchSerialNumber}/details/overview`}
+      // eslint-disable-next-line max-len
+        to={`/devices/switch/${clientDetails?.switchId}/${clientDetails?.switchSerialNumber}/details/overview`}
       >
-        {data?.switchName}
+        {clientDetails?.switchName}
       </TenantLink>
       </span>
     },
@@ -154,21 +172,21 @@ export function SwitchClientDetails () {
       title: <span>
         {$t({ defaultMessage: 'Port' })}
       </span>,
-      value: <span>{data?.switchPort}</span>
+      value: <span>{clientDetails?.switchPort}</span>
     },
     {
       title: <span>
         {$t({ defaultMessage: 'Venue' })}
       </span>,
-      value: <TenantLink to={`/venues/${data?.venueId}/venue-details/overview`}>
-        {data?.venueName}</TenantLink>
+      value: <TenantLink to={`/venues/${clientDetails?.venueId}/venue-details/overview`}>
+        {clientDetails?.venueName}</TenantLink>
     },
     {
       title: <span>
         {$t({ defaultMessage: 'VLAN' })}
       </span>,
-      value: <span>{data?.vlanName}
-        {data?.clientVlan && ` (VLAN-ID: ${data?.clientVlan})` }
+      value: <span>{clientDetails?.vlanName}
+        {clientDetails?.clientVlan && ` (VLAN-ID: ${clientDetails?.clientVlan})` }
       </span>
     }
   ]
@@ -176,16 +194,19 @@ export function SwitchClientDetails () {
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={data?.clientName}
-        breadcrumb={isNavbarEnhanced ? [
+        title={clientDetails?.clientName}
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Clients' }) },
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
-        ] : [{ text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }]}
-        extra={filterByAccess([
-          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
+        ]}
+        extra={
+          <Button
+            type='link'
+            onClick={exportClientToCSV}
+          >
             {$t({ defaultMessage: 'Download Information' })}</Button>
-        ])}
+        }
       />
 
       <GridRow>

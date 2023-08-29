@@ -96,9 +96,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       defaultSortOrder: 'ascend',
       width: 400,
-      render: function (data, row) {
+      render: function (_, row) {
         return (
-          venueNameColTpl(data as string, row.meshRole, row.serialNumber, intl)
+          venueNameColTpl(row.name!, row.meshRole, row.serialNumber, intl)
         )
       }
     },
@@ -108,11 +108,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       dataIndex: 'apUpRssi',
       sorter: false,
       width: 160,
-      render: function (data, row) {
+      render: function (_, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
             <div>
-              {data && <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>}
+              {row.apUpRssi && <span style={{ paddingRight: '30px' }}>
+                <SignalDownIcon />{row.apDownRssi}
+              </span>}
               {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
           )
@@ -147,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Connected clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (row.clients && typeof row.clients === 'object') {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
@@ -161,8 +163,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Hop Count' }),
       dataIndex: 'hops',
       align: 'center',
-      render: function (data) {
-        return data || 0
+      render: function (_, { hops }) {
+        return hops || 0
       }
     }
   ]
@@ -217,15 +219,6 @@ export function VenueWifi () {
 
   return (
     <IconThirdTab>
-      <Tabs.TabPane key='overview'
-        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
-          <LineChartOutline />
-        </Tooltip>}>
-        <EmbeddedReport
-          reportName={ReportType.ACCESS_POINT}
-          rlsClause={`"zoneName" in ('${params?.venueId}')`}
-        />
-      </Tabs.TabPane>
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
@@ -244,6 +237,15 @@ export function VenueWifi () {
         </Tooltip>}>
         <VenueMeshApsTable />
       </Tabs.TabPane>}
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
+        <EmbeddedReport
+          reportName={ReportType.ACCESS_POINT}
+          rlsClause={`"zoneName" in ('${params?.venueId}')`}
+        />
+      </Tabs.TabPane>
     </IconThirdTab>
   )
 }

@@ -49,6 +49,13 @@ export interface UpdateScheduleRequest {
   switchVersionAboveTen?: string
 }
 
+export interface EdgeUpdateScheduleRequest {
+  date?: string;
+  time?: string;
+  version?: string
+  venueIds?: string[] | null
+}
+
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
   firmwareVersion?: string;
@@ -58,7 +65,8 @@ export interface UpdateNowRequest {
 export enum FirmwareCategory {
   RECOMMENDED = 'RECOMMENDED',
   CRITICAL = 'CRITICAL',
-  BETA = 'BETA'
+  BETA = 'BETA',
+  REGULAR = 'REGULAR'
 }
 
 export enum UpdateAdvice {
@@ -70,6 +78,7 @@ export enum FirmwareType {
   AP_FIRMWARE_UPGRADE = 'AP_FIRMWARE_UPGRADE',
   DP_FIRMWARE_UPGRADE = 'DP_FIRMWARE_UPGRADE',
   SWITCH_FIRMWARE_UPGRADE = 'SWITCH_FIRMWARE_UPGRADE',
+  EDGE_FIRMWARE_UPGRADE = 'EDGE_FIRMWARE_UPGRADE',
 }
 
 export interface VenueUpdateAdvice {
@@ -209,6 +218,9 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }, {
       type: $t({ defaultMessage: 'Beta' }),
       value: FirmwareCategory.BETA
+    }, {
+      type: $t({ defaultMessage: 'Release' }),
+      value: FirmwareCategory.REGULAR
     }
   ]
 
@@ -227,7 +239,7 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
         return category.subType
       }
       default: {
-        return category.type + (category.subType? ' - ' + category.subType : '')
+        return category.type + (category.subType ? ' - ' + category.subType : '')
       }
     }
   }

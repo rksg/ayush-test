@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }            from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
@@ -150,7 +150,7 @@ export function MacRegistrationsTab () {
       key: 'status',
       dataIndex: 'revoked',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         if (row.revoked) {
           return $t({ defaultMessage: 'Revoked' })
         }
@@ -178,7 +178,7 @@ export function MacRegistrationsTab () {
       key: 'registrationDate',
       dataIndex: 'createdDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return toDateTimeString(row.createdDate)
       }
     },
@@ -187,7 +187,7 @@ export function MacRegistrationsTab () {
       key: 'expirationDate',
       dataIndex: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
           $t({ defaultMessage: 'Never Expire' })
       }
@@ -218,7 +218,8 @@ export function MacRegistrationsTab () {
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
       />
-      <ImportFileDrawer type='DPSK'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.DPSK}
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}

@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -42,22 +42,22 @@ function useColumns (
       fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
-      render: function (data, row, _, highlightFn) {
+      render: function (_, row, __, highlightFn) {
         return (
           <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-            {searchable ? highlightFn(row.name) : data}</TenantLink>
+            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
+      width: Infinity,
       key: 'country',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
-      width: 120,
-      render: function (data, row) {
+      render: function (_, row) {
         return `${row.country}, ${row.city}`
       }
     },
@@ -100,7 +100,7 @@ function useColumns (
       dataIndex: 'aggregatedApStatus',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: function (data, row) {
+      render: function (_, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
@@ -120,11 +120,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients`}
-            children={data ? data : 0}
+            children={row.clients ? row.clients : 0}
           />
         )
       }
@@ -136,11 +136,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/switch`}
-            children={data ? data : 0}
+            children={row.switches ? row.switches : 0}
           />
         )
       }
@@ -152,11 +152,11 @@ function useColumns (
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients/switch`}
-            children={data ? data : 0}
+            children={row.switchClients ? row.switchClients : 0}
           />
         )
       }
@@ -166,11 +166,11 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices/edge`}
-            children={data ? data : 0}
+            children={row.edges ? row.edges : 0}
           />
         )
       }
@@ -291,7 +291,6 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
@@ -316,10 +315,7 @@ export function VenuesTable () {
   return (
     <>
       <PageHeader
-        title={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
-          : $t({ defaultMessage: 'Venues' })
-        }
+        title={$t({ defaultMessage: 'Venues ({count})' }, { count })}
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

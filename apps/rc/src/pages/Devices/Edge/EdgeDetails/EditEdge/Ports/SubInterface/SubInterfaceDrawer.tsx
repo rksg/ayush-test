@@ -4,10 +4,10 @@ import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Alert, Drawer }                                                                                 from '@acx-ui/components'
-import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                   from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                            from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                                             from '@acx-ui/components'
+import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                                               from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, generalSubnetMskRegExp, multicastIpAddressRegExp, networkWifiIpRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                                                        from '@acx-ui/utils'
 
 interface StaticRoutesDrawerProps {
   mac: string
@@ -125,9 +125,11 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
             <Form.Item
               name='ip'
               label={$t({ defaultMessage: 'IP Address' })}
+              validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) },
+                { validator: (_, value) => multicastIpAddressRegExp(value, true) }
               ]}
               children={<Input />}
             />
@@ -136,7 +138,7 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
               label={$t({ defaultMessage: 'Subnet Mask' })}
               rules={[
                 { required: true },
-                { validator: (_, value) => subnetMaskIpRegExp(value) }
+                { validator: (_, value) => generalSubnetMskRegExp(value) }
               ]}
               children={<Input />}
             />

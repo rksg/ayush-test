@@ -9,7 +9,7 @@ import {
 }                        from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand
+  CaretDownSolid
 } from '@acx-ui/icons'
 import {
   useGetMspEcProfileQuery
@@ -31,9 +31,8 @@ export default function RegionButton () {
   useEffect(()=>{
     if(userProfile && mspEcProfileData){
       const isMspEc = mspUtils.isMspEc(mspEcProfileData)
-      if((userProfile.support || userProfile.dogfood || userProfile.var)
-      && userProfile.tenantId === userProfile.varTenantId
-      && !isMspEc && userProfile.allowedRegions.length > 1){
+      if(userProfile.tenantId === userProfile.varTenantId
+      && !isMspEc && userProfile.allowedRegions?.length > 1){
         setRegionEnable(true)
       }
     }
@@ -72,7 +71,7 @@ export default function RegionButton () {
     ? <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
       <LayoutUI.Icon children={<WorldSolid />} />
       {selectedKeys}
-      <LayoutUI.Icon children={<ArrowExpand />} />
+      <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
     </LayoutUI.DropdownText>}</Dropdown>
     : null
 }

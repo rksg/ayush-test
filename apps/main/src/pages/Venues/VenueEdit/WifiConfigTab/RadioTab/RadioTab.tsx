@@ -1,17 +1,19 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
-import { ExternalAntennaSection } from './ExternalAntennaSection'
-import { LoadBalancing }          from './LoadBalancing'
-import { RadioSettings }          from './RadioSettings'
+import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
+import { ExternalAntennaSection }         from './ExternalAntennaSection'
+import { LoadBalancing }                  from './LoadBalancing'
+import { RadioSettings }                  from './RadioSettings'
 
 export function RadioTab () {
   const { $t } = useIntl()
@@ -25,15 +27,21 @@ export function RadioTab () {
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+
+  const [isLoadOrBandBalaningEnabled, setIsLoadOrBandBalaningEnabled] = useState<boolean>(false)
   const basePath = useTenantLink('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
+  const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
 
+  const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
+  const clientAdmissionControlTitle = $t({ defaultMessage: 'Client Admission Control' })
+
   const anchorItems = [{
-    title: wifiSettingTitle,
+    title: wifiSettingLink,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='radio-settings'>
@@ -43,6 +51,36 @@ export function RadioTab () {
       </>
     )
   },
+  ...(supportLoadBalancing? [{
+    title: loadBalancingTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='load-balancing'>
+          { loadBalancingTitle }
+        </StepsFormLegacy.SectionTitle>
+        <LoadBalancing setIsLoadOrBandBalaningEnabled={setIsLoadOrBandBalaningEnabled} />
+      </>
+    )
+  }] : []),
+  ...(supoortClientAdmissionControl? [{
+    title: clientAdmissionControlTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-admission-control'>
+          { clientAdmissionControlTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+              'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ height: '18px', marginBottom: -3 }}
+            />
+          </Tooltip>
+        </StepsFormLegacy.SectionTitle>
+        <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
+      </>
+    )
+  }]: []),
   {
     title: externalTitle,
     content: (
@@ -55,23 +93,14 @@ export function RadioTab () {
     )
   }]
 
-  if (supportLoadBalancing) {
-    anchorItems.push({
-      title: loadBalancingTitle,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='load-balancing'>
-            { loadBalancingTitle }
-          </StepsFormLegacy.SectionTitle>
-          <LoadBalancing />
-        </>
-      )
-    })
-  }
-
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      const { apModels, radioData, isLoadBalancingDataChanged } = editRadioContextData || {}
+      const {
+        apModels,
+        radioData,
+        isLoadBalancingDataChanged,
+        isClientAdmissionControlDataChanged
+      } = editRadioContextData || {}
 
       if (apModels) {
         const extPayload = getExternalAntennaPayload(apModels)
@@ -80,21 +109,48 @@ export function RadioTab () {
       if (radioData) {
         await editRadioContextData.updateWifiRadio?.(radioData)
       }
-      if (isLoadBalancingDataChanged) {
-        await editRadioContextData.updateLoadBalancing?.()
+
+      // ACX-38403: Load or band balancing and client admission control cannot be updated simultaneously.
+      if (isLoadBalancingDataChanged && isClientAdmissionControlDataChanged) {
+        // The disable operation should be updated before the enable operation.
+        if (isLoadOrBandBalaningEnabled) {
+          await editRadioContextData.updateClientAdmissionControl?.(
+            editRadioContextData.updateLoadBalancing
+          )
+        } else {
+          await editRadioContextData.updateLoadBalancing?.(
+            editRadioContextData.updateClientAdmissionControl
+          )
+        }
+      } else {
+        if (isLoadBalancingDataChanged) {
+          await editRadioContextData.updateLoadBalancing?.()
+        }
+        if (isClientAdmissionControlDataChanged) {
+          await editRadioContextData.updateClientAdmissionControl?.()
+        }
       }
 
-      if (apModels || radioData || isLoadBalancingDataChanged) {
+      if (
+        apModels ||
+        radioData ||
+        isLoadBalancingDataChanged ||
+        isClientAdmissionControlDataChanged) {
         setEditContextData({
           ...editContextData,
           unsavedTabKey: 'radio',
           isDirty: false
         })
 
-        setEditRadioContextData({
+        const newRadioContextData = {
           ...editRadioContextData,
-          isLoadBalancingDataChanged: false
-        })
+          isLoadBalancingDataChanged: false,
+          isClientAdmissionControlDataChanged: false
+        }
+        delete newRadioContextData.apModels
+        delete newRadioContextData.radioData
+
+        setEditRadioContextData(newRadioContextData)
       }
 
       if (redirect) {
@@ -117,7 +173,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} offsetTop={275} />
+        <AnchorLayout items={anchorItems} offsetTop={56} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

@@ -61,8 +61,6 @@ export const OptionDrawer = (props: OptionDrawerProps) => {
     onFinish={onSubmit}
     initialValues={initOptionData}
   >
-    <Form.Item name='id' hidden />
-
     <Row>
       <Col span={14}>
         <Form.Item
@@ -81,12 +79,8 @@ export const OptionDrawer = (props: OptionDrawerProps) => {
               options={dhcpOptionDropdownOptions}
               onChange={onOptionChange}
             />
+
           }
-        />
-        <Form.Item
-          name='optionName'
-          children={<Input />}
-          hidden
         />
         <Form.Item
           name='optionValue'

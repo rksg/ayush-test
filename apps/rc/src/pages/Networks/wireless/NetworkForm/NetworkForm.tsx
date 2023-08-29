@@ -10,7 +10,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useGetNetworkQuery,
@@ -106,7 +105,6 @@ export default function NetworkForm (props:{
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
@@ -140,7 +138,13 @@ export default function NetworkForm (props:{
   const { data } = useGetNetworkQuery({ params })
 
   useEffect(() => {
-    if(data && saveState.name === ''){
+    if(saveState){
+      saveContextRef.current = saveState
+    }
+  }, [saveState])
+
+  useEffect(() => {
+    if(data){
       let name = data.name
       if (cloneMode) {
         name = data.name + ' - copy'
@@ -160,11 +164,7 @@ export default function NetworkForm (props:{
         enableAccountingService: (data.accountingRadius||
           data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
-
-    if(saveState){
-      saveContextRef.current = saveState
-    }
-  }, [data, saveState])
+  }, [data])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -417,7 +417,8 @@ export default function NetworkForm (props:{
     try {
       const dataConnection = handleUserConnection(saveState)
       const saveData = handleGuestMoreSetting(dataConnection)
-      const payload = updateClientIsolationAllowlist(_.omit(saveData, 'id')) // omit id to handle clone
+      const payload = updateClientIsolationAllowlist(
+        _.omit(saveData, ['id', 'networkSecurity', 'enableOwe', 'pskProtocol'])) // omit id to handle clone
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
@@ -464,11 +465,20 @@ export default function NetworkForm (props:{
           [
             'accountingRadius',
             'enableAccountingService',
-            'accountingRadiusId'
+            'accountingRadiusId',
+            'enableOwe',
+            'networkSecurity',
+            'pskProtocol'
           ]
         )
       }else{
-        saveContextRef.current = { ...saveState, ...dataMore }
+        saveContextRef.current = _.omit({ ...saveState, ...dataMore },
+          [
+            'enableOwe',
+            'networkSecurity',
+            'pskProtocol'
+          ]
+        )
       }
     }
   }
@@ -494,12 +504,10 @@ export default function NetworkForm (props:{
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
           { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
           { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
-        ] : [
-          { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />}
       {(!editMode || cloneMode) &&

@@ -54,14 +54,6 @@ export function NetworkingTab () {
       <LanPorts />
     </>
   }, {
-    title: $t({ defaultMessage: 'Cellular Options' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='cellular-options'>
-        { $t({ defaultMessage: 'Cellular Options' }) }
-      </StepsFormLegacy.SectionTitle>
-      <CellularOptionsForm />
-    </>
-  }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>
@@ -69,44 +61,45 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <MeshNetwork />
     </>
-  // }, {
-  //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
-  //   content: 'Client Isolation Allowlist Content'
-  }]
-
-  if (supportDirectedMulticast) {
-    items.push({
-      title: $t({ defaultMessage: 'Directed Multicast' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='directed-multicast'>
-          {<Space align='baseline'>
-            { $t({ defaultMessage: 'Directed Multicast' }) }
-            <Tooltip
-              title={$t( directedMulticastInfo )}
-              placement='right'>
-              <Button type='text'
-                style={{ height: '18px', width: '18px' }}
-                icon={
-                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
-              />
-            </Tooltip>
-          </Space>
-          }
-        </StepsFormLegacy.SectionTitle>
-        <DirectedMulticast />
-      </> })
-  }
-
-  if (supportRadiusOptions) {
-    items.push({
-      title: $t({ defaultMessage: 'RADIUS Options' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='radius-options'>
-          { $t({ defaultMessage: 'RADIUS Options' }) }
-        </StepsFormLegacy.SectionTitle>
-        <RadiusOptions />
-      </> })
-  }
+  },
+  ...(supportDirectedMulticast? [{
+    title: $t({ defaultMessage: 'Directed Multicast' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='directed-multicast'>
+        {<Space align='baseline'>
+          { $t({ defaultMessage: 'Directed Multicast' }) }
+          <Tooltip
+            title={$t( directedMulticastInfo )}
+            placement='right'>
+            <Button type='text'
+              style={{ height: '18px', width: '18px' }}
+              icon={
+                <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+            />
+          </Tooltip>
+        </Space>
+        }
+      </StepsFormLegacy.SectionTitle>
+      <DirectedMulticast />
+    </> }] : []),
+  {
+    title: $t({ defaultMessage: 'Cellular Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='cellular-options'>
+        { $t({ defaultMessage: 'Cellular Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <CellularOptionsForm />
+    </>
+  },
+  ...(supportRadiusOptions? [{
+    title: $t({ defaultMessage: 'RADIUS Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='radius-options'>
+        { $t({ defaultMessage: 'RADIUS Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <RadiusOptions />
+    </> }] : []
+  )]
 
   const handleUpdateAllSettings = async () => {
     try {
@@ -148,7 +141,7 @@ export function NetworkingTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={items} offsetTop={275} />
+        <AnchorLayout items={items} offsetTop={56} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

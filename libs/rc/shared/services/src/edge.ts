@@ -3,6 +3,8 @@ import {
 } from '@acx-ui/components'
 import {
   CommonResult,
+  PingEdge,
+  TraceRouteEdge,
   EdgeDnsServers,
   EdgeGeneralSetting,
   EdgePortConfig,
@@ -31,9 +33,9 @@ import {
   EdgesTopResources,
   EdgePasswordDetail
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }       from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeApi }                         from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export type EdgesExportPayload = {
   filters: Filter
@@ -44,7 +46,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge)
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, undefined, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -98,13 +102,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
+        if (payload) { //delete multiple rows
           const req = createHttpRequest(EdgeUrlsInfo.deleteEdges)
           return {
             ...req,
             body: payload
           }
-        }else{ //delete single row
+        } else { //delete single row
           const req = createHttpRequest(EdgeUrlsInfo.deleteEdge, params)
           return {
             ...req
@@ -138,7 +142,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params)
+        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req
         }
@@ -199,6 +205,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           page: response.page,
           totalCount: response.totalCount
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SUB_INTERFACE' }]))
+          })
+        })
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
@@ -329,6 +345,24 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
     }),
+    pingEdge: build.mutation<PingEdge, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.pingEdge, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    traceRouteEdge: build.mutation<TraceRouteEdge, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.traceRouteEdge, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     downloadEdgesCSV: build.mutation<Blob, EdgesExportPayload>({
       query: (payload) => {
         const req = createHttpRequest(EdgeUrlsInfo.downloadSwitchsCSV,
@@ -364,14 +398,14 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       }
     }),
     getEdgeResourceUtilization: build.query<EdgeResourceUtilizationData,
-    RequestPayload<EdgeTimeSeriesPayload>>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(EdgeUrlsInfo.getEdgeResourceUtilization, params),
-          body: payload
+      RequestPayload<EdgeTimeSeriesPayload>>({
+        query: ({ params, payload }) => {
+          return {
+            ...createHttpRequest(EdgeUrlsInfo.getEdgeResourceUtilization, params),
+            body: payload
+          }
         }
-      }
-    }),
+      }),
     // eslint-disable-next-line max-len
     getEdgePortTraffic: build.query<EdgeAllPortTrafficData, RequestPayload<EdgeTimeSeriesPayload>>({
       query: ({ params, payload }) => {
@@ -402,25 +436,25 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       }
     }),
     getEdgesTopTraffic: build.query<EdgesTopTraffic,
-    RequestPayload<EdgeTimeSeriesPayload>>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getEdgesTopTraffic)
-        return {
-          ...req,
-          body: payload
+      RequestPayload<EdgeTimeSeriesPayload>>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeUrlsInfo.getEdgesTopTraffic)
+          return {
+            ...req,
+            body: payload
+          }
         }
-      }
-    }),
+      }),
     getEdgesTopResources: build.query<EdgesTopResources,
-    RequestPayload<EdgeTimeSeriesPayload>>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getEdgesTopResources)
-        return {
-          ...req,
-          body: payload
+      RequestPayload<EdgeTimeSeriesPayload>>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeUrlsInfo.getEdgesTopResources)
+          return {
+            ...req,
+            body: payload
+          }
         }
-      }
-    }),
+      }),
     deleteEdgeServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.deleteService, params)
@@ -439,6 +473,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+    }),
+    importSubInterfacesCSV: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.importSubInterfacesCSV, params, {
+          ...ignoreErrorModal,
+          'Content-Type': undefined
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -460,6 +506,8 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
 export const {
   useAddEdgeMutation,
   useGetEdgeQuery,
+  usePingEdgeMutation,
+  useTraceRouteEdgeMutation,
   useUpdateEdgeMutation,
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
@@ -493,5 +541,6 @@ export const {
   useGetEdgesTopTrafficQuery,
   useGetEdgesTopResourcesQuery,
   useDeleteEdgeServicesMutation,
-  useGetEdgePasswordDetailQuery
+  useGetEdgePasswordDetailQuery,
+  useImportSubInterfacesCSVMutation
 } = edgeApi

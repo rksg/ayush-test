@@ -148,7 +148,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: (_data, row) => {
+      render: (_, row) => {
         const isDisabled = isDefaultRule(row)
         return <DragIconWrapper
           disabled={isDisabled}
@@ -319,7 +319,7 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
         >
           <TextArea
             rows={3}
-            maxLength={64}
+            maxLength={255}
             placeholder='Enter a short description, up to 255 characters'
           />
         </Form.Item>

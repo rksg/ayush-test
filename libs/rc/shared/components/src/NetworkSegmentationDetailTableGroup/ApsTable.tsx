@@ -4,7 +4,7 @@ import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   APExtended,
   APExtendedGrouped,
-  ApExtraParams,
+  ApExtraParams, arraySizeSort, defaultSort, sortProp,
   TableQuery
 } from '@acx-ui/rc/utils'
 
@@ -33,23 +33,28 @@ export const ApsTable = (props: ApTableProps) => {
       title: $t({ defaultMessage: 'AP Name' }),
       key: 'name',
       dataIndex: 'name',
+      sorter: { compare: sortProp('name', defaultSort) },
+      defaultSortOrder: 'ascend',
       fixed: 'left' as const
     },
     {
       title: $t({ defaultMessage: 'Model' }),
       key: 'model',
-      dataIndex: 'model'
+      dataIndex: 'model',
+      sorter: { compare: sortProp('model', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       key: 'apMac',
-      dataIndex: 'apMac'
+      dataIndex: 'apMac',
+      sorter: { compare: sortProp('apMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Available Ports' }),
       key: 'ports',
       dataIndex: 'apStatusData.lanPortStatus',
-      render: (node, row) => {
+      sorter: { compare: sortProp('apStatusData.lanPortStatus', arraySizeSort) },
+      render: (_, row) => {
         return row?.apStatusData?.lanPortStatus?.length
       }
     },
@@ -57,7 +62,8 @@ export const ApsTable = (props: ApTableProps) => {
       title: $t({ defaultMessage: 'VxLAN PMTU Value' }),
       key: 'vxlanMtu',
       dataIndex: 'apStatusData.vxlanStatus.vxlanMtu',
-      render: (node, row) => {
+      sorter: { compare: sortProp('apStatusData.vxlanStatus.vxlanMtu', defaultSort) },
+      render: (_, row) => {
         return row?.apStatusData?.vxlanStatus?.vxlanMtu
       }
     }

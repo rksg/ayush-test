@@ -8,6 +8,7 @@ import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/servi
 import {
   getOsTypeIcon,
   getDeviceTypeIcon,
+  getClientIpAddr,
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
@@ -25,8 +26,9 @@ export const defaultSwitchClientPayload = {
     'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
-    'switchName', 'venueName' ,'cog','id','switchPortFormatted',
-    'dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+    'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
+    'dhcpClientOsVendorName', 'dhcpClientHostName',
+    'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -71,8 +73,10 @@ export function ClientsTable (props: {
       defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
-      render: (data, row) => {
-        return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
+      render: (_, row) => {
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{
+          row?.dhcpClientHostName || row?.clientName || row?.clientMac || '--'
+        }</TenantLink>
       }
     }, {
       key: 'dhcpClientOsVendorName',
@@ -80,10 +84,10 @@ export function ClientsTable (props: {
       dataIndex: 'dhcpClientOsVendorName',
       align: 'center',
       sorter: true,
-      render: (data) => {
+      render: (_, { dhcpClientOsVendorName }) => {
         return <UI.IconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={dhcpClientOsVendorName}>
+            { getOsTypeIcon(dhcpClientOsVendorName as string) }
           </Tooltip>
         </UI.IconContainer>
       }
@@ -94,25 +98,23 @@ export function ClientsTable (props: {
       sorter: true,
       disable: true,
       searchable: searchable,
-      render: (data) => {
-        return data || '--'
+      render: (_, { clientMac }) => {
+        return clientMac || '--'
       }
     }, {
       key: 'clientIpv4Addr',
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'clientIpv4Addr',
       sorter: true,
-      render: (data) => {
-        return data || '--'
-      }
+      render: (_, row) => getClientIpAddr(row)
     }, {
       key: 'clientDesc',
       title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'clientDesc',
       sorter: true,
       searchable: searchable,
-      render: (data) => {
-        return data || '--'
+      render: (_, { clientDesc }) => {
+        return clientDesc || '--'
       }
     },
     ...(params.switchId || params.venueId ? [] : [{
@@ -123,8 +125,8 @@ export function ClientsTable (props: {
       searchable: searchable,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data: React.ReactNode, row: SwitchClient) => {
-        const name = data ? data : '--'
+      render: (_: React.ReactNode, row: SwitchClient) => {
+        const name = row.venueName ? row.venueName : '--'
         // eslint-disable-next-line max-len
         return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
       }
@@ -137,10 +139,10 @@ export function ClientsTable (props: {
       searchable: searchable,
       filterKey: 'switchId',
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
-      render: (data: React.ReactNode, row: SwitchClient) => {
-        const name = data ? data : '--'
+      render: (_: React.ReactNode, row: SwitchClient) => {
+        const name = row.switchName ? row.switchName : '--'
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
-        return (row.switchId && data) ?
+        return (row.switchId && row.switchName) ?
           <TenantLink to={link}>{name}</TenantLink> :
           <span>{name}</span>
       }
@@ -150,7 +152,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Port' }),
       dataIndex: 'switchPortFormatted',
       sorter: true,
-      render: (data, row) => row['switchPort']
+      render: (_, row) => row['switchPort']
     }, {
       key: 'vlanName',
       title: intl.$t({ defaultMessage: 'VLAN' }),
@@ -158,9 +160,10 @@ export function ClientsTable (props: {
       sorter: true,
       align: 'center',
       searchable: searchable,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.vlanName === 'DEFAULT-VLAN'
-          ? `${data} (${intl.$t({ defaultMessage: 'Default VLAN' })})` : (data ?? '--')
+          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
+          : (row.clientVlan ?? '--')
       }
     }, {
       key: 'clientType',
@@ -169,7 +172,7 @@ export function ClientsTable (props: {
       sorter: true,
       align: 'center',
       searchable: searchable,
-      render: (data, row) => {
+      render: (_, row) => {
         const type = row?.dhcpClientDeviceTypeName || row?.clientType
         const convertType = (type: string) => {
           switch(type){
@@ -196,8 +199,8 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Model Name' }),
       dataIndex: 'dhcpClientModelName',
       sorter: true,
-      render: (data) => {
-        return data || '--'
+      render: (_, { dhcpClientModelName }) => {
+        return dhcpClientModelName || '--'
       }
     }]
 

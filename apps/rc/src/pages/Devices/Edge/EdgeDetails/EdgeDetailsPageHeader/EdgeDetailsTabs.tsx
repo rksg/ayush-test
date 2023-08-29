@@ -6,13 +6,14 @@ import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const EdgeDetailsTabs = () => {
+const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgePingTraceRouteReady = useIsSplitOn(Features.EDGES_PING_TRACEROUTE_TOGGLE)
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -22,7 +23,7 @@ const EdgeDetailsTabs = () => {
   }
   const { servicesCount = 0 } = useGetEdgeServiceListQuery({
     payload: {
-      fields: ['id'],
+      fields: ['serviceId'],
       filters: { edgeId: [serialNumber] }
     }
   }, {
@@ -32,15 +33,13 @@ const EdgeDetailsTabs = () => {
     })
   })
 
-  // const { currentEdge } = props
-  // const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
-
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      {/* { currentEdgeOperational &&
+      {
+        isEdgePingTraceRouteReady && props.isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
-          key='troubleshooting' />} */}
+          key='troubleshooting' />}
       {
         isEdgeReady &&
         <Tabs.TabPane

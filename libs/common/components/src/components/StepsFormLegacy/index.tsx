@@ -69,7 +69,7 @@ export function StepsFormLegacy <FormValue = any> (
   const buttonLabel = {
     ...{
       next: $t({ defaultMessage: 'Next' }),
-      submit: $t({ defaultMessage: 'Finish' }),
+      submit: editMode ? $t({ defaultMessage: 'Finish' }) : $t({ defaultMessage: 'Add' }),
       pre: $t({ defaultMessage: 'Back' }),
       cancel: $t({ defaultMessage: 'Cancel' })
     },
@@ -135,7 +135,7 @@ export function StepsFormLegacy <FormValue = any> (
         const submitButton = <Button
           {...submit.props}
           key={submitKey}
-          type='secondary'
+          type='primary'
           children={buttonLabel[submitKey]}
         />
 

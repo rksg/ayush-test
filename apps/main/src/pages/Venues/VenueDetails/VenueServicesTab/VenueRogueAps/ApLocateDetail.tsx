@@ -5,9 +5,12 @@ import { useIntl }                 from 'react-intl'
 import { useParams }               from 'react-router-dom'
 
 import { Alert, Button, Card, Descriptions, Modal } from '@acx-ui/components'
-import { VenueMarkerGrey, VenueMarkerRed }          from '@acx-ui/icons'
+import { VenueMarkerGrey, VenueMarkerOrange }       from '@acx-ui/icons'
 import { ApFloorplan }                              from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery }   from '@acx-ui/rc/services'
+import {
+  useApDetailsQuery,
+  useApViewModelQuery
+} from '@acx-ui/rc/services'
 import {
   NetworkDevice,
   NetworkDevicePosition,
@@ -36,7 +39,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   const { data: currentAP }
     = useApViewModelQuery({
       payload: apViewModelPayload
-    })
+    }, { skip: !row.closestAp.apSerialNumber })
   const { data: apDetails }
     = useApDetailsQuery({
       params: {
@@ -77,7 +80,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   return (
     <>
       { row.locatable ? <Button style={{ borderStyle: 'none' }} onClick={showModal}>
-        <VenueMarkerRed />
+        <VenueMarkerOrange strokeWidth={0} />
       </Button> : <Button style={{ borderStyle: 'none' }} ><Tooltip
         title={$t({
           // eslint-disable-next-line max-len
@@ -115,11 +118,14 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
         </Descriptions>
         <Divider />
         <Card>
-          <ApFloorplan
+          { apDetails?.venueId ? <ApFloorplan
             activeDevice={currentApDevice}
             venueId={apDetails?.venueId as string}
             apPosition={apDetails?.position as NetworkDevicePosition}
-          />
+            rogueApMac={row.rogueMac}
+            rogueCategory={row.category}
+            numLocatingAps={row.numberOfDetectingAps}
+          /> : null }
           {/* eslint-disable-next-line max-len */}
           <Alert message={$t({ defaultMessage: 'Note: Rogue AP placement is intended as an approximation, many factors can affect the output of this visualization.' })} type='warning' showIcon />
         </Card>

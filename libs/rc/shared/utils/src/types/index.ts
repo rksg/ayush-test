@@ -71,6 +71,11 @@ export interface Network {
   vlanPool?: { name: string }
   activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
+  children?: Network[]
+  dsaeOnboardNetwork?: Network
+  securityProtocol?: string
+  isOnBoarded?: boolean
+  isOweMaster?: boolean
 }
 
 export interface NetworkDetail {
@@ -90,6 +95,7 @@ export interface NetworkDetail {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
   }
+  isOweMaster?: boolean
 }
 
 export interface Venue {
@@ -116,7 +122,7 @@ export interface Venue {
   // aps ??
   switches?: number
   operationalSwitches?: number
-  // switchClients ??
+  switchClients?: number
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
@@ -126,6 +132,8 @@ export interface Venue {
   vlanPoolId?: string
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
+  clients?: number
+  edges?: number
 }
 
 export interface AlarmBase {
@@ -484,4 +492,13 @@ export interface SwitchClient {
   dhcpClientOsVendorName?: string
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
+  dhcpClientHostName?: string
+}
+
+export interface QosMapRule {
+  enabled: boolean
+  priority: number
+  dscpLow: number
+  dscpHigh: number
+  dscpExceptionValues: number[]
 }

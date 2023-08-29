@@ -101,17 +101,6 @@ describe('ServiceGuardForm', () => {
     expect(await screen.findByText('Service Validation')).toBeVisible()
   })
 
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<ServiceGuardForm />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id' } }
-    })
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
-    expect(await screen.findByText('Service Validation')).toBeVisible()
-  })
-
   it('works correctly for create flow', async () => {
     render(<ServiceGuardForm />, {
       wrapper: Provider,
@@ -158,7 +147,7 @@ describe('ServiceGuardForm', () => {
       data: { createServiceGuardSpec: expected }
     })
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Create' }))
 
     expect(await screen.findByText('Service Validation test created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()

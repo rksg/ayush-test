@@ -2,14 +2,13 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps, SummaryCard }                                                                              from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                        from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight }                                                                                                                        from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                           from '@acx-ui/rc/services'
 import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                                         from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                                                from '@acx-ui/user'
-
-import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
 import * as UI from './styledComponents'
 
@@ -17,15 +16,17 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const getDhcpStatsPayload = {
     fields: [
+      'id',
       'serviceName',
       'dhcpRelay',
       'dhcpPoolNum',
-      'leaseTime'
+      'leaseTime',
+      'edgeAlarmSummary',
+      'edgeNum'
     ],
     filters: { id: [params.serviceId] }
   }
@@ -41,9 +42,14 @@ const EdgeDHCPDetail = () => {
     ],
     filters: { dhcpId: [params.serviceId] }
   }
-  const { data: dhcpStats, isLoading: isDhcpStatsLoading } = useGetDhcpStatsQuery({
+  const { dhcpStats, isLoading: isDhcpStatsLoading } = useGetDhcpStatsQuery({
     params,
     payload: getDhcpStatsPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => ({
+      dhcpStats: data?.data?.[0],
+      isLoading
+    })
   })
   const { data: dhcpUeSummaryStats, isLoading: isDhcpUeSummaryStatsLoading } =
   useGetDhcpUeSummaryStatsQuery({
@@ -61,7 +67,7 @@ const EdgeDHCPDetail = () => {
       sorter: { compare: sortProp('edgeName', defaultSort) },
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
             {row.edgeName}
@@ -73,7 +79,7 @@ const EdgeDHCPDetail = () => {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venueId',
       dataIndex: 'venueId',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {row.venueName}
@@ -83,11 +89,15 @@ const EdgeDHCPDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      key: 'health',
-      dataIndex: 'health'
-      // render (data, row) {
-      //   return <EdgeDhcpServiceStatusLight data={row.health} />
-      // }
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      render: (data, row) => {
+        if(!dhcpStats) return '--'
+        const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.find(
+          item => item.edgeId.toLocaleLowerCase() === row.edgeId?.toLocaleLowerCase()
+        )
+        return <EdgeServiceStatusLight data={targetAlarmSummary ? [targetAlarmSummary] : []} />
+      }
     },
     {
       title: $t({ defaultMessage: '# of successful allocations' }),
@@ -125,42 +135,35 @@ const EdgeDHCPDetail = () => {
   const dhcpInfo = [
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: <EdgeDhcpServiceStatusLight
-        data={dhcpStats?.data && dhcpStats?.data[0]?.health}
-      />
+      content: dhcpStats &&
+      (dhcpStats.edgeNum ?? 0) ?
+        <EdgeServiceStatusLight data={dhcpStats?.edgeAlarmSummary} /> :
+        '--'
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
-      content: dhcpStats?.data &&
-        (dhcpStats?.data[0]?.dhcpRelay === 'true' ?
+      content: dhcpStats &&
+        (dhcpStats?.dhcpRelay === 'true' ?
           $t({ defaultMessage: 'ON' }) :
           $t({ defaultMessage: 'OFF' }))
     },
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
-      content: dhcpStats?.data && dhcpStats?.data[0]?.dhcpPoolNum
+      content: dhcpStats && dhcpStats?.dhcpPoolNum
     },
     {
       title: $t({ defaultMessage: 'Lease Time' }),
-      content: dhcpStats?.data && (dhcpStats?.data[0]?.leaseTime)
+      content: dhcpStats && (dhcpStats?.leaseTime)
     }
   ]
 
   return (
     <>
       <PageHeader
-        title={dhcpStats && dhcpStats.data[0]?.serviceName}
-        breadcrumb={isNavbarEnhanced ? [
+        title={dhcpStats && dhcpStats?.serviceName}
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({
@@ -181,7 +184,7 @@ const EdgeDHCPDetail = () => {
         ])}
       />
       <Loader states={[
-        { isFetching: isDhcpStatsLoading && isDhcpUeSummaryStatsLoading, isLoading: false }
+        { isFetching: isDhcpStatsLoading || isDhcpUeSummaryStatsLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
           <SummaryCard data={dhcpInfo} />

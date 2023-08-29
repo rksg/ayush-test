@@ -10,8 +10,8 @@ import {
   Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }          from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegListMutation,
@@ -42,7 +42,6 @@ export default function MacRegistrationListsTable () {
   const [policySetMap, setPolicySetMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
@@ -109,7 +108,7 @@ export default function MacRegistrationListsTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (data, row, _, highlightFn) {
+        render: function (_, row, __, highlightFn) {
           return (
             <TenantLink
               to={getPolicyDetailsLink({
@@ -118,7 +117,7 @@ export default function MacRegistrationListsTable () {
                 policyId: row.id!,
                 activeTab: MacRegistrationDetailsTabKey.OVERVIEW
               })}
-            >{highlightFn(data as string)}</TenantLink>
+            >{highlightFn(row.name)}</TenantLink>
           )
         }
       },
@@ -127,7 +126,7 @@ export default function MacRegistrationListsTable () {
         key: 'expirationType',
         dataIndex: 'expirationType',
         sorter: true,
-        render: function (data, row) {
+        render: function (_, row) {
           return returnExpirationString(row)
         }
       },
@@ -137,7 +136,7 @@ export default function MacRegistrationListsTable () {
         dataIndex: 'defaultAccess',
         show: policyEnabled,
         sorter: true,
-        render: function (data:ReactNode, row:MacRegistrationPool) {
+        render: function (_:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? row.defaultAccess: ''
         }
       },
@@ -147,7 +146,7 @@ export default function MacRegistrationListsTable () {
         dataIndex: 'policySetId',
         show: policyEnabled,
         sorter: true,
-        render: function (data:ReactNode, row:MacRegistrationPool) {
+        render: function (_:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }
       },
@@ -156,7 +155,7 @@ export default function MacRegistrationListsTable () {
         key: 'registrationCount',
         dataIndex: 'registrationCount',
         align: 'center',
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={getPolicyDetailsLink({
@@ -174,7 +173,7 @@ export default function MacRegistrationListsTable () {
         key: 'venueCount',
         dataIndex: 'venueCount',
         align: 'center',
-        render: function (data, row) {
+        render: function (_, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
             const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
@@ -240,14 +239,11 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true) }
-        ] : [{
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccess([
           <TenantLink

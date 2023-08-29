@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
 
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
@@ -26,6 +26,7 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
@@ -44,7 +45,7 @@ const useTabs = () : Tab[] => {
   return [
     healthTab,
     serviceGuardTab,
-    ...(useIsSplitOn(Features.VIDEO_CALL_QOE) ? [videoCallQoeTab] : [])
+    ...(get('IS_MLISA_SA') || videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 
@@ -68,7 +69,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

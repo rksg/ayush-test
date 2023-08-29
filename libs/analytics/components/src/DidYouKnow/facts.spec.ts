@@ -206,7 +206,7 @@ describe('Facts data format', () => {
         'The average session duration last week was <b>46 m 37 s</b>.'
       ]
     ] }
-    const { result } = renderHook(() => getFactsData(input , useIntl()))
+    const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
   })
 
@@ -308,7 +308,7 @@ describe('Facts data format', () => {
       ]
     ]
     }
-    const { result } = renderHook(() => getFactsData(input , useIntl()))
+    const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
   })
   it('should return key if the key is not found in facts list', () => {
@@ -331,7 +331,7 @@ describe('Facts data format', () => {
         ]
       ]
     }
-    const { result } = renderHook(() => getFactsData(input , useIntl()))
+    const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
   })
 })

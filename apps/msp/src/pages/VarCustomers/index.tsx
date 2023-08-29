@@ -34,10 +34,10 @@ import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
 
-const transformApUtilization = (row: VarCustomer) => {
+const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
   if (row.entitlements) {
     const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+      en.entitlementDeviceType === deviceType)
     if (entitlement.length > 0) {
       const apEntitlement = entitlement[0]
       const quantity = parseInt(apEntitlement.quantity, 10)
@@ -82,7 +82,7 @@ export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -95,7 +95,7 @@ export function VarCustomers () {
     const onAcceptInvite = (row: VarCustomer) => {
       return <>
         <Button onClick={() => handleAccept(row)}
-          type='secondary'
+          type='primary'
         >{$t({ defaultMessage: 'Accept' })}</Button>
         <Button onClick={() => handleReject(row)}
           style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Reject' })}</Button>
@@ -150,7 +150,7 @@ export function VarCustomers () {
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
-        render: function (data, row) {
+        render: function (_, row) {
           return onAcceptInvite(row)
         }
       }
@@ -212,9 +212,9 @@ export function VarCustomers () {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(tenantName)}</Link>
         )
       }
     },
@@ -222,44 +222,66 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Account Email' }),
       dataIndex: 'tenantEmail',
       key: 'tenantEmail',
+      searchable: true,
       sorter: true
     },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'apEntitlement.quantity',
-      align: 'center',
-      key: 'apEntitlement.quantity',
-      sorter: true,
-      render: function (data, row) {
-        return row.wifiLicenses ? row.wifiLicenses : 0
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.apswLicenses || 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return transformApUtilization(row, EntitlementNetworkDeviceType.APSW)
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      align: 'center',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      render: function (data, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchEntitlement',
-      align: 'center',
-      key: 'switchEntitlement',
-      sorter: true,
-      render: function (data, row) {
-        return row.switchLicenses ? row.switchLicenses : 0
-      }
-    },
+    ] : [
+
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'apEntitlement.quantity',
+        // align: 'center',
+        key: 'apEntitlement.quantity',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.wifiLicenses ? row.wifiLicenses : 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
+        dataIndex: 'wifiLicensesUtilization',
+        // align: 'center',
+        key: 'wifiLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return transformApUtilization(row, EntitlementNetworkDeviceType.WIFI)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchEntitlement',
+        // align: 'center',
+        key: 'switchEntitlement',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.switchLicenses ? row.switchLicenses : 0
+        }
+      }]),
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformNextExpirationDate(row)
       }
     }
@@ -291,6 +313,10 @@ export function VarCustomers () {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
       defaultPayload: varCustomerPayload,
+      sorter: {
+        sortField: 'tenantName',
+        sortOrder: 'ASC'
+      },
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
       }
@@ -311,15 +337,13 @@ export function VarCustomers () {
     )
   }
 
-  const title = userProfile?.support
+  const title = userProfile?.support || userProfile?.dogfood
     ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>
       <PageHeader
         title={title}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

@@ -9,7 +9,7 @@ import {
   Loader,
   TableColumn
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -46,7 +46,6 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -88,16 +87,13 @@ export default function DpskTable () {
   ]
 
   const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
-    ? (isNavbarEnhanced ? [
+    ? [
       { text: intl.$t({ defaultMessage: 'Network Control' }) },
       {
         text: intl.$t({ defaultMessage: 'My Services' }),
         link: getServiceListRoutePath(true)
       }
-    ] : [{
-      text: intl.$t({ defaultMessage: 'My Services' }),
-      link: getServiceListRoutePath(true)
-    }])
+    ]
     : []
 
   const title = !hasRoles(RolesEnum.DPSK_ADMIN)
@@ -174,7 +170,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -183,7 +179,7 @@ function useColumns () {
               serviceId: row.id!,
               activeTab: DpskDetailsTabKey.OVERVIEW
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -195,11 +191,11 @@ function useColumns () {
       sorter: true,
       filterKey: 'passphraseFormat',
       filterable: passphraseFormatOptions,
-      render: function (data) {
+      render: function (_, { passphraseFormat }) {
         return transformDpskNetwork(
           intl,
           DpskNetworkType.FORMAT,
-          data as string
+          passphraseFormat
         )
       }
     },
@@ -214,7 +210,7 @@ function useColumns () {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformAdvancedDpskExpirationText(
           intl,
           {
@@ -230,7 +226,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         if (!row.networkIds || row.networkIds.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)

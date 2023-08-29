@@ -32,7 +32,8 @@ import { AccountType }           from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
-  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' })
+  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  APSW: defineMessage({ defaultMessage: 'Device' })
 }
 
 const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) => {
@@ -162,7 +163,7 @@ export function DeviceInventory () {
       filterable: Object.entries(deviceTypeMapping)
         .map(([key, value])=>({ key, value: $t(value) })),
       key: 'deviceType',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceTypeString(row, intl)
       }
     },
@@ -191,7 +192,7 @@ export function DeviceInventory () {
       dataIndex: 'deviceStatus',
       sorter: true,
       key: 'deviceStatus',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformDeviceOperStatus(row, intl)
       }
     },

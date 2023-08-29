@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AccessControlUrls, CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -19,15 +18,15 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  aclList,
+  aclList, applicationDetail, avcApp, avcCat,
   deviceDetailResponse, devicePolicyListResponse,
   enhancedAccessControlList,
   enhancedApplicationPolicyListResponse,
   enhancedDevicePolicyListResponse,
   enhancedLayer2PolicyListResponse,
   enhancedLayer3PolicyListResponse,
-  layer2PolicyListResponse, layer2Response,
-  networkListResponse
+  layer2PolicyListResponse, layer2Response, layer3PolicyListResponse, layer3Response,
+  networkListResponse, queryApplication
 } from '../__tests__/fixtures'
 
 import AccessControlTable from './AccessControlTable'
@@ -56,7 +55,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe.skip('AccessControlTable', () => {
+describe('AccessControlTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
@@ -109,6 +108,11 @@ describe.skip('AccessControlTable', () => {
         (_, res, ctx) => res(
           ctx.json(layer2PolicyListResponse)
         )
+      ),rest.get(
+        AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(layer3PolicyListResponse)
+        )
       ), rest.get(
         AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(
@@ -118,6 +122,31 @@ describe.skip('AccessControlTable', () => {
         AccessControlUrls.getL2AclPolicy.url,
         (_, res, ctx) => res(
           ctx.json(layer2Response)
+        )
+      ), rest.get(
+        AccessControlUrls.getL3AclPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(layer3Response)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationDetail)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
         )
       )
     )
@@ -137,23 +166,7 @@ describe.skip('AccessControlTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <AccessControlTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <AccessControlTable />

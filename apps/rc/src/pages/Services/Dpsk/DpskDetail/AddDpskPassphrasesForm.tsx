@@ -21,6 +21,7 @@ import {
   emailRegExp,
   ExpirationDateEntity,
   ExpirationMode,
+  MacRegistrationFilterRegExp,
   NewDpskPassphrase,
   phoneRegExp,
   unlimitedNumberOfDeviceLabel,
@@ -106,7 +107,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
 
   return (
     <Form layout='vertical' form={form}>
-      <Form.Item name='id' noStyle>
+      <Form.Item name='id' initialValue='' noStyle>
         <Input type='hidden' />
       </Form.Item>
       <Form.Item
@@ -252,6 +253,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
               />
             </>
           }
+          rules={[
+            { validator: (_, value) => MacRegistrationFilterRegExp(value) }
+          ]}
           name='mac'
           children={<Input />}
         />
@@ -318,7 +322,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             />
           }
         />
-        <Form.Item name='revocationReason' hidden={true}/>
+        <Form.Item name='revocationReason' initialValue='' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
       </>}
     </Form>
   )

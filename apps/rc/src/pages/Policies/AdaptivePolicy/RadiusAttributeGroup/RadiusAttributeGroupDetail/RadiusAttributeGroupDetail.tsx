@@ -5,7 +5,6 @@ import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -30,7 +29,6 @@ export default function RadiusAttributeGroupDetail () {
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
@@ -74,9 +72,9 @@ export default function RadiusAttributeGroupDetail () {
   }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
-    return attributes?.map((attribute) => {
+    return attributes?.map((attribute, idx) => {
       return (
-        <Col span={6} key={attribute.attributeName}>
+        <Col span={6} key={'attribute_' + idx}>
           <Form.Item
             label={attribute.attributeName}>
             <Paragraph>{attribute.attributeValue}</Paragraph>
@@ -94,14 +92,14 @@ export default function RadiusAttributeGroupDetail () {
         title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
-        render: function (data, row) {
+        render: function (_, row) {
           return (
             <TenantLink
               to={getAdaptivePolicyDetailLink({
                 oper: PolicyOperation.DETAIL,
                 policyId: row.id!,
                 templateId: templateList.get(row.policyType) ?? ''
-              })}>{data}</TenantLink>
+              })}>{row.name}</TenantLink>
           )
         }
       },
@@ -130,7 +128,7 @@ export default function RadiusAttributeGroupDetail () {
     <>
       <PageHeader
         title={data?.name || ''}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -139,15 +137,7 @@ export default function RadiusAttributeGroupDetail () {
           {
             text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
             link: tablePath }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-            link: tablePath
-          }]}
+        ]}
         extra={[
           <TenantLink
             key='edit'

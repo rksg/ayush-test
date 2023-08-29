@@ -4,9 +4,9 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                  from '@acx-ui/icons'
-import { OSIconContainer }                                               from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { OSIconContainer }                                                          from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -21,6 +21,7 @@ import {
   getOsTypeIcon,
   Persona,
   PersonaDevice,
+  PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -37,12 +38,13 @@ const defaultPayload = {
 }
 
 export function PersonaDevicesTable (props: {
+  disableAddButton?: boolean
   persona?: Persona,
   dpskPoolId?: string
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { persona, dpskPoolId } = props
+  const { persona, dpskPoolId, disableAddButton = false } = props
   const [modelVisible, setModelVisible] = useState(false)
   const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
@@ -147,11 +149,10 @@ export function PersonaDevicesTable (props: {
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
     return dpskDevices
-      .filter(d => d.online)
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected).toISOString(),
+        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
@@ -189,10 +190,10 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'os',
       align: 'center',
       title: $t({ defaultMessage: 'OS' }),
-      render: (data) => {
+      render: (_, { os }) => {
         return <OSIconContainer>
-          <Tooltip title={data}>
-            { getOsTypeIcon(data as string) }
+          <Tooltip title={os}>
+            { getOsTypeIcon(os as string) }
           </Tooltip>
         </OSIconContainer>
       },
@@ -209,7 +210,8 @@ export function PersonaDevicesTable (props: {
       key: 'hasDpskRegistered',
       dataIndex: 'hasDpskRegistered',
       title: $t({ defaultMessage: 'DPSK' }),
-      render: data => data && <SuccessSolid/>,
+      align: 'center',
+      render: (_, { hasDpskRegistered }) => hasDpskRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasDpskRegistered', defaultSort) }
     },
     {
@@ -217,16 +219,16 @@ export function PersonaDevicesTable (props: {
       dataIndex: 'hasMacRegistered',
       title: $t({ defaultMessage: 'MAC Registration' }),
       align: 'center',
-      render: data => data && <SuccessSolid/>,
+      render: (_, { hasMacRegistered }) => hasMacRegistered && <SuccessSolid/>,
       sorter: { compare: sortProp('hasMacRegistered', defaultSort) }
     },
     {
       key: 'lastSeenAt',
       dataIndex: 'lastSeenAt',
       title: $t({ defaultMessage: 'Last Seen Time' }),
-      render: (data) => {
-        return data
-          ? moment(data as string).format('YYYY/MM/DD HH:mm A')
+      render: (_, { lastSeenAt }) => {
+        return lastSeenAt
+          ? moment(lastSeenAt!).format('YYYY/MM/DD HH:mm A')
           : noDataDisplay
       },
       sorter: { compare: sortProp('lastSeenAt', dateSort) }
@@ -261,7 +263,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: disableAddButton
     }
   ]
 
@@ -274,10 +277,37 @@ export function PersonaDevicesTable (props: {
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
     }).unwrap()
-      .then()
+      .then(() => handleModalCancel())
       .catch(error => {
-        console.log(error) // eslint-disable-line no-console
+        handleAddDevicesError(error)
       })
+  }
+
+  const handleAddDevicesError = (error: PersonaErrorResponse) => {
+    if (error.status && error.status === 400) {
+      const subError = error.data.subErrors && error.data.subErrors.at(0)?.message
+
+      showToast({
+        type: 'error',
+        content: undefined,
+        extraContent: (error.data.message
+            ?? error.data.debugMessage
+            ?? $t({ defaultMessage: 'An error occurred' })
+        ) + (subError ? (' - ' + subError) : '')
+      })
+    } else {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({
+          defaultMessage: 'The following information was reported for the error you encountered.'
+        }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: error
+        }
+      })
+    }
   }
 
   return (

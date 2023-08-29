@@ -11,7 +11,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeFirewallMutation,
   useGetEdgeFirewallViewDataListQuery,
@@ -48,7 +48,6 @@ const FirewallTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeFirewallViewDataListQuery,
     defaultPayload: {},
@@ -84,7 +83,7 @@ const FirewallTable = () => {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
@@ -93,7 +92,7 @@ const FirewallTable = () => {
               serviceId: row.id!
             })}
           >
-            {data}
+            {row.firewallName}
           </TenantLink>
         )
       }
@@ -104,7 +103,7 @@ const FirewallTable = () => {
       dataIndex: 'ddosEnabled',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.ddosEnabled
           ? <Tooltip
             placement='bottom'
@@ -142,7 +141,7 @@ const FirewallTable = () => {
       dataIndex: 'statefulAclEnabled',
       align: 'center',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           row.statefulAclEnabled
             ? row.statefulAcls?.map((item) => (
@@ -161,7 +160,7 @@ const FirewallTable = () => {
       dataIndex: 'edgeIds',
       align: 'center',
       filterable: edgeOptions,
-      render: (data, row) => {
+      render: (__, row) => {
         return (row.edgeIds && row.edgeIds.length)
           ? <Tooltip
             placement='bottom'
@@ -180,9 +179,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Health' }),
-      key: 'health',
-      dataIndex: 'health',
-      align: 'center'
+      key: 'edgeAlarmSummary',
+      dataIndex: 'edgeAlarmSummary',
+      align: 'center',
+      render: (data, row) =>
+        (row?.edgeIds?.length)
+          ? <Row justify='center'>
+            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+          </Row>
+          : '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
@@ -195,8 +200,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion'
+      key: 'serviceVersions',
+      dataIndex: 'serviceVersions',
+      render: (__, row) => {
+        return (
+          (row.serviceVersions && Object.keys(row.serviceVersions).length)
+            ? _.uniq(Object.values(row.serviceVersions)).join(', ')
+            : '--'
+        )
+      }
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
@@ -258,24 +270,14 @@ const FirewallTable = () => {
           { defaultMessage: 'Firewall ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={
-          isNavbarEnhanced
-            ? [
-              { text: $t({ defaultMessage: 'Network Control' }) },
-              {
-                text: $t({ defaultMessage: 'My Services' }),
-                link: getServiceListRoutePath(true)
-              }
-            ]
-            : [
-              {
-                text: $t({ defaultMessage: 'My Services' }),
-                link: getServiceListRoutePath(true)
-              }
-            ]
-        }
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'My Services' }),
+            link: getServiceListRoutePath(true)
+          }
+        ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getServiceRoutePath({
               type: ServiceType.EDGE_FIREWALL,

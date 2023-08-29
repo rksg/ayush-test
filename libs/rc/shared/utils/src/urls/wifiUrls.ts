@@ -407,6 +407,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApBssColoring: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    newApi: true
+  },
+  updateApBssColoring: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    newApi: true
+  },
   getApCustomization: {
     method: 'get',
     url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
@@ -467,6 +477,41 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/venues/:venueId/loadBalancingSettings',
     newApi: true
   },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateVenueBssColoring: {
+    method: 'put',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  getVenueClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateVenueClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
+    newApi: true
+  },
+  getApClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateApClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  deleteApClientAdmissionControl: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/aps/:serialNumber/networkSettings',
@@ -498,6 +543,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getMeshUplinkAPs: {
     method: 'post',
     url: '/aps/neighbors/query',
+    newApi: true
+  },
+  getApRfNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/rfNeighbors',
+    newApi: true
+  },
+  getApLldpNeighbors: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/lldpNeighbors',
+    newApi: true
+  },
+  detectApNeighbors: {
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber/neighbors',
     newApi: true
   }
 }

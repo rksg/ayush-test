@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Divider, Form, Row } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { Button, Drawer, StepsFormLegacy, Subtitle } from '@acx-ui/components'
@@ -17,12 +18,13 @@ interface SelectDhcpPoolDrawerProps {
   dhcpId?: string
   pools?: EdgeDhcpPool[]
   data?: string
+  isRelayOn: boolean
 }
 
 export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, selectPool, pools, data } = props
+  const { visible, setVisible, selectPool, pools, data, isRelayOn } = props
   const [poolDrawerVisible, setPoolDrawerVisible] = useState(false)
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [formRef] = Form.useForm()
@@ -105,8 +107,19 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const addPool = async (data: EdgeDhcpPool) => {
     const pathParams = { id: props.dhcpId }
-    const payload = { dhcpPools: [...(pools || []), data] }
-    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    const payload = _.cloneDeep({ dhcpPools: [...(pools || []), data] })
+
+    // should not create service with UI used id
+    payload.dhcpPools.forEach(item => {
+      if (item.id.startsWith('_NEW_')) item.id = ''
+    })
+
+    await patchEdgeDhcpService({ params: pathParams, payload })
+      .unwrap()
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.log(err)
+      })
   }
 
   return (
@@ -116,6 +129,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         setVisible={setPoolDrawerVisible}
         onAddOrEdit={addPool}
         allPool={pools}
+        isRelayOn={isRelayOn}
       />
       <Drawer
         width={475}

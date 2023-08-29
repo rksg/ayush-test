@@ -18,8 +18,9 @@ export const withDottedUnderline = `
     display: block;
   }
 `
-export const UnderlinedSpan = styled.span`
+export const UnderlinedSpan = styled.span<{ $statusEnum?: string }>`
   ${withDottedUnderline}
+  ${props => props.$statusEnum === 'applywarning' && 'color: var(--acx-semantics-red-50);'}
 `
 
 export const Priority = styled.div`
@@ -67,5 +68,13 @@ styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
 
   .ant-radio-inner {
     background-color: var(--acx-primary-white);
+  }
+
+  .ant-table-body {
+    overflow: unset !important;
+  }
+  
+  .ant-table-cell-ellipsis.actions-column {
+    overflow: unset !important;
   }
 `

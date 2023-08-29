@@ -188,6 +188,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    syncSwitchesData: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     retryFirmwareUpdate: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
@@ -825,8 +834,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const payload = {
             fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
               'clientName','clientDesc','clientType','switchPort','vlanName',
-              'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr',
-              'dhcpClientOsVendorName', 'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+              'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr', 'clientIpv6Addr',
+              'dhcpClientOsVendorName', 'dhcpClientHostName',
+              'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
             filters: {
               id: [_.get(params, 'clientId')]
             }
@@ -1321,6 +1331,7 @@ export const {
   useLazyGetStackMemberListQuery,
   useRebootSwitchMutation,
   useSyncDataMutation,
+  useSyncSwitchesDataMutation,
   useRetryFirmwareUpdateMutation,
   useLazyGetJwtTokenQuery,
   useGetJwtTokenQuery,

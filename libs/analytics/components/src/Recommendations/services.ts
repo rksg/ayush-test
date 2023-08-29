@@ -5,7 +5,8 @@ import { defineMessage } from 'react-intl'
 import {
   nodeTypes,
   getFilterPayload,
-  formattedPath
+  formattedPath,
+  productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
@@ -30,6 +31,7 @@ export type Recommendation = {
   id: string
   code: string
   status: string
+  statusEnum: keyof typeof states
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -46,14 +48,27 @@ export interface MutationPayload {
 }
 
 export interface MutationResponse {
-  data: {
-    toggleMute: {
-      success: boolean
-      errorMsg: string
-      errorCode: string
-    }
+  toggleMute: {
+    success: boolean
+    errorMsg: string
+    errorCode: string
   }
 }
+
+interface SchedulePayload {
+  id: string
+  scheduledAt: string
+}
+
+interface ScheduleResponse {
+  schedule: {
+    errorCode: string;
+    errorMsg: string;
+    success: boolean;
+  }
+}
+
+
 const radioConfigMap = {
   radio24g: '2.4 GHz',
   radio5g: '5 GHz',
@@ -82,6 +97,7 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
   }
   const stateConfig = states[state as keyof typeof states]
   return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
+    ...productNames,
     count: metadata.error?.details?.length || 1,
     errorMessage: errorMessage,
     updatedAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.updatedAt),
@@ -105,7 +121,8 @@ function transformResponse (recommendations: Recommendation[]) {
       category: $t(codes[code as keyof typeof codes].category),
       summary: $t(codes[code as keyof typeof codes].summary),
       status: $t(states[status as keyof typeof states].text),
-      statusTooltip: getStatusTooltip(code, status, { ...metadata, updatedAt })
+      statusTooltip: getStatusTooltip(code, status, { ...metadata, updatedAt }),
+      statusEnum: status as keyof typeof states
     }
   })
 }
@@ -164,8 +181,58 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: MutationResponse) => response,
-      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
-    })
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    }),
+    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation MutateRecommendation(
+            $id: String,
+            $scheduledAt: DateTime
+          ) {
+            schedule(id: $id, scheduledAt: $scheduledAt) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          scheduledAt: payload.scheduledAt
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    }),
+    cancelRecommendation: build
+      .mutation<ScheduleResponse, { id: string }>({
+        query: (payload) => ({
+          document: gql`
+          mutation MutateRecommendation(
+            $id: String
+          ) {
+            cancel(id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+          variables: {
+            id: payload.id
+          }
+        }),
+        invalidatesTags: [
+          { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+          { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+        ]
+      })
   })
 })
 
@@ -173,4 +240,9 @@ export interface Response<Recommendation> {
   recommendations: Recommendation[]
 }
 
-export const { useRecommendationListQuery, useMuteRecommendationMutation } = api
+export const {
+  useRecommendationListQuery,
+  useMuteRecommendationMutation,
+  useScheduleRecommendationMutation,
+  useCancelRecommendationMutation
+} = api

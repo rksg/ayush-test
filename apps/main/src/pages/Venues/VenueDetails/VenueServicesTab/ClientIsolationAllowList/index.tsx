@@ -29,12 +29,12 @@ export default function ClientIsolationAllowList () {
       key: 'name',
       sorter: true,
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.CLIENT_ISOLATION,
           oper: PolicyOperation.DETAIL,
           policyId: row.id
-        })}>{data}</TenantLink>
+        })}>{row.name}</TenantLink>
       }
     },
     {

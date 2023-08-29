@@ -142,6 +142,28 @@ export interface NetworkDevice {
   meshRole?: APMeshRole;
 }
 
+export interface RogueApLocation {
+  category: string,
+  classificationPolicyName: string,
+  classificationRuleName: string,
+  detectingNodes: DetectingNode[],
+  floorPlanId: string,
+  rogueMac: string,
+  ssid: string,
+  xPercent?: number,
+  yPercent?: number
+}
+
+export interface DetectingNode {
+  apMac: string,
+  floorPlanId: string,
+  name: string,
+  serialNumber: string,
+  snr: number,
+  xPercent: number,
+  yPercent: number
+}
+
 export interface RogueApInfo {
 	deviceColor: string;
     rogueSnrClass?: string;
@@ -216,6 +238,10 @@ export interface VenueLed {
 	model: string,
 	key?: string,
 	manual?: boolean
+}
+
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
 }
 
 export interface VenueApModels {
@@ -371,7 +397,8 @@ export interface Vlan {
 	vlanName?: string,
   untaggedPorts?: string,
   taggedPorts?: string,
-  title?: string
+  title?: string,
+  key?: number
 }
 
 export interface ConfigurationProfile {
@@ -654,7 +681,9 @@ export interface LocalUser {
   username: string,
   password: string,
   authPort: number,
-  purpose: string
+  purpose: string,
+	switchCountInVenue?: number,
+	syncedPasswordSwitchCount?: number
 }
 
 export interface VenueDirectedMulticast {
@@ -686,6 +715,10 @@ export interface VenueLoadBalancing {
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum
+}
+
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
 }
 
 export interface Node {

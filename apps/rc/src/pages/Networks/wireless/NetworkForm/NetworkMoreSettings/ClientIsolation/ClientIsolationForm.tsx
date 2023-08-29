@@ -20,10 +20,14 @@ enum IsolatePacketsTypeEnum {
   UNICAST_MULTICAST = 'UNICAST_MULTICAST',
 }
 
-export default function ClientIsolationForm () {
+export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
+  const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+
+  const { labelWidth='250px' } = props
+
   // eslint-disable-next-line max-len
   const clientIsolationEnabled = useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
   // eslint-disable-next-line max-len
@@ -32,23 +36,30 @@ export default function ClientIsolationForm () {
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
   const enableVxLan = hasVxLanTunnelProfile(data)
 
+  const onClientIsolationEnabledChanged = (checked: boolean) => {
+    if(!checked){
+      form.setFieldValue(
+        ['wlan','advancedCustomization','clientIsolationOptions', 'packetsType'], undefined)
+    }
+  }
+
   return (<>
-    <UI.FieldLabel width='125px'>
-      {$t({ defaultMessage: 'Client Isolation:' })}
+    <UI.FieldLabel width={labelWidth}>
+      {$t({ defaultMessage: 'Client Isolation' })}
 
       <Form.Item
         name={['wlan','advancedCustomization','clientIsolation']}
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
-        children={<Switch disabled={enableVxLan}/>}
+        children={<Switch disabled={enableVxLan} onChange={onClientIsolationEnabledChanged}/>}
       />
     </UI.FieldLabel>
 
     {clientIsolationEnabled &&
     <>
       <Form.Item
-        label={$t({ defaultMessage: 'Isolate Packets:' })}
+        label={$t({ defaultMessage: 'Isolate Packets' })}
         name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
         initialValue={IsolatePacketsTypeEnum.UNICAST}
       >
@@ -65,8 +76,8 @@ export default function ClientIsolationForm () {
           </Option>
         </Select>
       </Form.Item>
-      <UI.FieldLabel width='230px'>
-        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP' })}
         <Form.Item
           name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
           style={{ marginBottom: '10px' }}
@@ -74,8 +85,8 @@ export default function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      {isPoliciesEnabled ? <UI.FieldLabel width='230px'>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
+      {isPoliciesEnabled ? <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
           style={{ marginBottom: '10px' }}

@@ -16,6 +16,7 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -61,7 +62,10 @@ const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
 describe('NetworkSegmentation - GeneralSettingsForm', () => {
   let params: { tenantId: string, serviceId: string }
+  const mockedGetNetworkDeepList = jest.fn()
+
   beforeEach(() => {
+    mockedGetNetworkDeepList.mockReset()
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -78,11 +82,15 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.status(200))
+        (req, res, ctx) => {
+          mockedGetNetworkDeepList()
+          return res(ctx.status(200))
+        }
       ),
       rest.post(
         TunnelProfileUrls.createTunnelProfile.url,
         (req, res, ctx) => res(ctx.status(202))
+
       ),
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -111,6 +119,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
+
+    // wait for api all responded because `GetNetworkDeepList` will trigger multiple requests
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
     await user.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile' }),
       await screen.findByRole('option', { name: 'Default' })
@@ -121,7 +134,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Step3 - Wireless network will be not block by empty list', async () => {
@@ -140,8 +154,14 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
+
+    // wait for api all responded because `GetNetworkDeepList` will trigger multiple requests
+    await waitFor(() => {
+      expect(mockedGetNetworkDeepList).toBeCalled()
+    })
     await screen.findByRole('checkbox', { name: 'Network 1' })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Add tunnel profile', async () => {
@@ -155,7 +175,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[0])
     const tunnelDialog = await screen.findByRole('dialog')
     const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Policy Name' })
     await user.type(policyNameField, 'TestTunnel')
@@ -174,7 +195,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[0])
     const tunnelDialog = await screen.findByRole('dialog')
     await user.click(within(tunnelDialog).getByRole('button', { name: 'Cancel' }))
   })

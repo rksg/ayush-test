@@ -27,7 +27,7 @@ export function VenueDevicesTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='card'>
+      type='second'>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi'>
         <div style={{ height: '100%', flex: 1, minHeight: '50vh' }}>
           <AutoSizer>
