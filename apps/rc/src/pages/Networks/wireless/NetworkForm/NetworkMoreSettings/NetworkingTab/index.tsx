@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl, defineMessage }                         from 'react-intl'
@@ -21,6 +21,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
   const { wlanData } = props
+  const form = Form.useFormInstance()
+
 
   const labelWidth = '250px'
 
@@ -54,6 +56,13 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience'])
   ]
+
+  useEffect(() => {
+    if(enableAirtimeDecongestion === true) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold'], false)
+      form.setFieldValue(['wlan','advancedCustomization','joinRSSIThreshold'], undefined)
+    }
+  }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
 
   let networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
