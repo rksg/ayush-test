@@ -74,8 +74,8 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
-              index !== 0 && <Chevron key={`chevron-${index}`}>{'>'}</Chevron>,
-              <Li key={index}>{name}</Li>
+              index !== 0 && <Chevron key={`ap-chevron-${index}`}>{'>'}</Chevron>,
+              <Li key={`ap-li-${index}`}>{name}</Li>
             ])}
           </Ul>
         </Tooltip>
@@ -215,8 +215,8 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
-              index !== 0 && <Chevron key={`chevron-${index}`}>{'>'}</Chevron>,
-              <Li key={index}>{name}</Li>
+              index !== 0 && <Chevron key={`network-chevron-${index}`}>{'>'}</Chevron>,
+              <Li key={`network-li-${index}`}>{name}</Li>
             ])}
           </Ul>
         </Tooltip>

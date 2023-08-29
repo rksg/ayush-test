@@ -121,6 +121,17 @@ function formattedNodeName (
 
 export function formattedPath (path: NetworkPath, sliceValue: string) {
   const { $t } = getIntl()
+
+  if (path.length === 1 && path[0].type === 'network') {
+    return $t(
+      {
+        defaultMessage: '{nodeName}',
+        description: 'FormattedPath: Uses to show path node name'
+      },
+      { nodeName: path[0].name }
+    )
+  }
+
   return path
     .filter(node => node.type !== 'network')
     .map(node => ({
