@@ -42,10 +42,10 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
 
   return (
     <Row>
-      <Col span={14}>
+      <Col span={24}>
         <Form.Item
           name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
+          label={$t({ defaultMessage: 'Profile Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -68,17 +68,17 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           name='mtuType'
           label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
           extra={
-            <Space size={1}>
+            <div style={{ marginTop: 5 }}>
               <UI.InfoIcon />
               {
                 // eslint-disable-next-line max-len
                 $t({ defaultMessage: 'Please check Ethernet MTU on AP, Tunnel MTU gets applied only if its less than Ethernet MTU' })
               }
-            </Space>
+            </div>
           }
           children={
             <Radio.Group disabled={isDefaultTunnelProfile}>
-              <Space direction='vertical' size={40}>
+              <Space direction='vertical'>
                 <Radio value={MtuTypeEnum.AUTO}>
                   {$t({ defaultMessage: 'Auto' })}
                 </Radio>
@@ -96,9 +96,15 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
                             {
                               required: mtuType === MtuTypeEnum.MANUAL,
                               message: 'Please enter MTU size'
+                            },
+                            {
+                              type: 'number',
+                              min: 68,
+                              max: 1450
                             }
                           ]}
                           children={<InputNumber />}
+                          validateFirst
                           noStyle
                         />
                         <div>bytes</div>
@@ -121,27 +127,31 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           />
         </StepsFormLegacy.FieldLabel>
       </Col>
-      <Col span={5}>
-        <Form.Item
-          name='ageTimeMinutes'
-          label={$t({ defaultMessage: 'Idle Period' })}
-          initialValue={20}
-          rules={[
-            { required: true },
-            { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
-          ]}
-          validateFirst
-          children={<InputNumber disabled={isDefaultTunnelProfile}/>}
-        />
-      </Col>
-      <Col span={5}>
-        <Form.Item
-          name='ageTimeUnit'
-          label={<div></div>}
-          initialValue={'minutes'}
-        >
-          <Select options={ageTimeOptions} disabled={isDefaultTunnelProfile}/>
-        </Form.Item>
+      <Col span={24}>
+        <Space>
+          <Form.Item
+            name='ageTimeMinutes'
+            label={$t({ defaultMessage: 'Idle Period' })}
+            initialValue={20}
+            rules={[
+              { required: true },
+              { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
+            ]}
+            validateFirst
+            children={<InputNumber disabled={isDefaultTunnelProfile}/>}
+          />
+          <Form.Item
+            name='ageTimeUnit'
+            label={<div></div>}
+            initialValue={'minutes'}
+            children={
+              <Select
+                options={ageTimeOptions}
+                disabled={isDefaultTunnelProfile}
+              />
+            }
+          />
+        </Space>
       </Col>
     </Row>
   )
