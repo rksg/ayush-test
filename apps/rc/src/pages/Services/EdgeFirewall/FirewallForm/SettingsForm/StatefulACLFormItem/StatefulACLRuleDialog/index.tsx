@@ -155,7 +155,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
   const footer = <Drawer.FormFooter
     buttonLabel={({
       addAnother: $t({ defaultMessage: 'Add another rule' }),
-      save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+      save: editMode ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     showAddAnother={!editMode}
     onCancel={handleClose}

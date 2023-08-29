@@ -118,7 +118,7 @@ describe('Stateful ACL rule dialog', () => {
     await type(within(destination).getByPlaceholderText('Mask'), '255.255.255.0')
 
     // submit
-    await click(screen.getByRole('button', { name: 'Save' }))
+    await click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(mockedSubmit).toBeCalledWith({
       priority: 1,
