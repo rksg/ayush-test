@@ -1,11 +1,14 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
+  mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 
@@ -45,6 +48,12 @@ describe('AddNetworkSegmentation', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
     }
+    mockServer.use(
+      rest.post(
+        NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
+        (req, res, ctx) => res(ctx.status(202))
+      )
+    )
   })
 
   it('should create networkSegmentation successfully', async () => {
@@ -70,24 +79,15 @@ describe('AddNetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await screen.findByTestId('SummaryForm')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/services/list`,
+      search: ''
+    }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<AddNetworkSegmentation />, {
-      wrapper: Provider,
-      route: { params, path: createNsgPath }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Services'
-    })).toBeVisible()
-    await screen.findByTestId('GeneralSettingsForm')
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<AddNetworkSegmentation />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }

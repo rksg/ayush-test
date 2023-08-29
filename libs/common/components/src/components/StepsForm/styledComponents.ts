@@ -154,7 +154,7 @@ export const ActionsContainer = styled.div`
   bottom: 0;
   padding: var(--acx-steps-form-actions-vertical-space) 0;
   background-color: var(--acx-neutrals-10);
-  z-index: 3;
+  z-index: 5;
   &::before {
     content: '';
     position: absolute;

@@ -154,7 +154,7 @@ export const checkVlanOptions = (
 ) => {
   if (init?.voice) {
     const voiceVlan = init?.voice.toString()
-    if (init?.untagged === voiceVlan && untaggedVlan !== voiceVlan) {
+    if (init?.untagged === voiceVlan && String(untaggedVlan) !== voiceVlan) {
       vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
       if (init?.isDefaultVlan) {
         vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')

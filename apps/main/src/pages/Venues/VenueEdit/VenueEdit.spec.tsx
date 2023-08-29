@@ -21,8 +21,6 @@ import {
 
 import { VenueEdit } from './index'
 
-window.scrollTo = jest.fn()
-
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))

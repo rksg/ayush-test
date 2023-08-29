@@ -58,7 +58,7 @@ describe('HealthDrillDown', () => {
     expect(await screen.findByText('Connection Failures')).toBeVisible()
   })
   it('should render Average Time To Connect chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockTtcDrillDown })
+    mockGraphqlQuery(dataApiURL, 'TTCDrilldown', { data: mockTtcDrillDown })
     render(
       <Provider>
         <HealthDrillDown

@@ -37,7 +37,8 @@ import {
   useUpdatePropertyUnitMutation,
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
-  useLazyGetConnectionMeteringByIdQuery
+  useLazyGetConnectionMeteringByIdQuery,
+  useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -143,6 +144,7 @@ export function VenuePropertyTab () {
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
 
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -550,6 +552,7 @@ export function VenuePropertyTab () {
         <PropertyUnitDrawer
           visible={true}
           venueId={venueId}
+          countryCode={venueData?.address?.countryCode}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
