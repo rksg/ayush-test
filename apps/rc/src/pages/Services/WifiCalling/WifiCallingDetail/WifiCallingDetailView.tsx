@@ -9,7 +9,6 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -31,7 +30,6 @@ const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [networkIds, setNetworkIds] = useState([] as string[])
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { data } = useGetWifiCallingServiceQuery({
     params: params
   })
@@ -48,19 +46,15 @@ const WifiCallingDetailView = () => {
     }}>
       <PageHeader
         title={data?.serviceName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Wi-Fi Calling' }),
-            // eslint-disable-next-line max-len
-            link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Services' }),
-            // eslint-disable-next-line max-len
-            link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
+            link: getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.LIST
+            })
           }
         ]}
         extra={filterByAccess([

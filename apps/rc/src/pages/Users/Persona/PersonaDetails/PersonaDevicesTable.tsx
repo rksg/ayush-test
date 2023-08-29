@@ -4,9 +4,9 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                  from '@acx-ui/icons'
-import { OSIconContainer }                                               from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { OSIconContainer }                                                          from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -21,6 +21,7 @@ import {
   getOsTypeIcon,
   Persona,
   PersonaDevice,
+  PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -278,8 +279,35 @@ export function PersonaDevicesTable (props: {
     }).unwrap()
       .then(() => handleModalCancel())
       .catch(error => {
-        console.log(error) // eslint-disable-line no-console
+        handleAddDevicesError(error)
       })
+  }
+
+  const handleAddDevicesError = (error: PersonaErrorResponse) => {
+    if (error.status && error.status === 400) {
+      const subError = error.data.subErrors && error.data.subErrors.at(0)?.message
+
+      showToast({
+        type: 'error',
+        content: undefined,
+        extraContent: (error.data.message
+            ?? error.data.debugMessage
+            ?? $t({ defaultMessage: 'An error occurred' })
+        ) + (subError ? (' - ' + subError) : '')
+      })
+    } else {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({
+          defaultMessage: 'The following information was reported for the error you encountered.'
+        }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: error
+        }
+      })
+    }
   }
 
   return (

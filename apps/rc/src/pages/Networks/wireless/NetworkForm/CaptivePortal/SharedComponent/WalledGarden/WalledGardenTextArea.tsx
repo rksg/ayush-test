@@ -135,22 +135,19 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
   // Effect to control the textarea since it won't reset when user click back and change protal type
   useEffect(() => {
     if (editMode || cloneMode) {
-      dispatch(statesCollection.useExistState)
+      form.setFieldsValue(statesCollection.useExistState.fieldsValue)
       return
     }
     if (enableDefaultWalledGarden) {
-      dispatch(statesCollection.useDefaultState)
+      form.setFieldsValue(statesCollection.useDefaultState.fieldsValue)
       return
     }
     else {
-      dispatch(statesCollection.initialState)
+      form.setFieldsValue(statesCollection.initialState.fieldsValue)
       return
     }
   },[])
 
-  if (!isRenderNeed) {
-    return null
-  }
   /**
    * The reason why here we have to Form.item is because
    * I want to try stay the same as the old code.
@@ -158,7 +155,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * and no sigcanificant change to the submit/validate logic in NetworkForm.tsx
    * The walledGardensString attribute will be deleted before submit
    */
-  return (<>
+  return (isRenderNeed ? <>
     <Form.Item
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
@@ -233,5 +230,5 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         <Input.TextArea data-testid='walled-garden-hidden-textarea'/>
       }
     />
-  </>)
+  </> : null)
 }
