@@ -38,8 +38,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-window.scrollTo = jest.fn()
-
 describe('SwitchAAATab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
