@@ -18,7 +18,7 @@ export const RecommendationDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = 'recommendations/aiOps'
+  const link = 'analytics/recommendations/aiOps'
   const codeQuery = useRecommendationDetailsQuery([{ id }], { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     codeQuery.data!,
@@ -53,7 +53,6 @@ export const RecommendationDetails = () => {
       <GridCol col={{ span: 8 }}>
         <Kpis details={details} />
       </GridCol>
-    </GridRow>
-    }
+    </GridRow>}
   </Loader>
 }

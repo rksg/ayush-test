@@ -23,9 +23,7 @@ function AIOperationsWidget ({
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
   const queryResults = useRecommendationListQuery(filters)
-  const data = queryResults?.data?.filter((row) =>
-    (false === row.code.includes('crrm'))
-  )
+  const data = queryResults?.data?.filter((row) => !row.code.includes('crrm'))
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
     icon: <UI.TitleBadge
