@@ -5,11 +5,12 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }            from '@acx-ui/components'
-import { Vlan, VoiceVlanOption, VoiceVlanPort } from '@acx-ui/rc/utils'
+import { Vlan, VoiceVlanModalData, VoiceVlanOption, VoiceVlanPort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }            from '@acx-ui/user'
 import { noDataDisplay }                        from '@acx-ui/utils'
 
 import { VoiceVlanModal } from './VoiceVlanModal'
+import _ from 'lodash'
 
 export interface ACLSettingDrawerProps {
   modelData?: VoiceVlanOption
@@ -17,27 +18,32 @@ export interface ACLSettingDrawerProps {
   setVisible: (v: boolean) => void
 }
 
+interface PortVlanMap {
+  [key:string]: string[]
+}
+
 export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
   const { $t } = useIntl()
   const { modelData, visible, setVisible } = props
   const [tableData, setTableData] = useState<VoiceVlanPort[]>([])
-  const [editPorts, setEditPorts] = useState<VoiceVlanPort[]>([])
+  const [editPorts, setEditPorts] = useState({} as VoiceVlanModalData)
+  const [portVlanMap, setPortVlanMap] = useState<PortVlanMap>({})
   const [voiceVlanModalVisible, setVoiceVlanModalVisible] = useState(false)
   const [form] = Form.useForm<Vlan>()
 
   useEffect(() => {
     if(modelData){
-      const portsMap:{ [key:string]:string[] } = {}
+      const portVlans:PortVlanMap = {}
       modelData.voiceVlans.forEach(vlan => {
         vlan.taggedPorts.forEach((port:string) => {
-          if(!portsMap[port]){
-            portsMap[port] = [String(vlan.vlanId)]
+          if(!portVlans[port]){
+            portVlans[port] = [String(vlan.vlanId)]
           }else {
-            portsMap[port].push(String(vlan.vlanId))
+            portVlans[port].push(String(vlan.vlanId))
           }
         })
       })
-      const portList = Object.keys(portsMap).sort((a:string, b:string) => {
+      const portList = Object.keys(portVlans).sort((a:string, b:string) => {
         if(a.split('/')[2] && b.split('/')[2]) {
           return Number(a.split('/')[2]) - Number(b.split('/')[2])
         }
@@ -47,6 +53,7 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
         taggedPort: port,
         voiceVlan: ''
       }))
+      setPortVlanMap(portVlans)
       setTableData(tmpdata)
     }
   }, [modelData])
@@ -56,7 +63,25 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
   }
 
   const onEdit = (selectedRows: VoiceVlanPort[]) => {
-    setEditPorts(selectedRows)
+    const portsCopy = [...selectedRows]
+    let vlanOptions: string[] = []
+    Object.keys(portVlanMap).forEach(key => {
+      portsCopy.forEach(port => {
+        if(key == port.taggedPort) {
+          if(!vlanOptions.length){
+            vlanOptions = [ ...portVlanMap[key]]
+          }else {
+            vlanOptions = _.intersection(vlanOptions, portVlanMap[key])
+          }
+        }
+      })
+    })
+    const ports = selectedRows.map(i => i.taggedPort)
+    setEditPorts({
+      ports,
+      vlanOptions: vlanOptions,
+      voiceVlanValue: ''
+    })
     setVoiceVlanModalVisible(true)
   }
 

@@ -1,26 +1,39 @@
-import { Form, Input } from 'antd'
+import { Col, Form, Input, Row, Select } from 'antd'
 
 import { Modal }         from '@acx-ui/components'
-import { VoiceVlanPort } from '@acx-ui/rc/utils'
+import { VoiceVlanModalData, VoiceVlanPort } from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
+import { useEffect, useState } from 'react'
+import { DefaultOptionType } from 'antd/lib/select'
 
 export function VoiceVlanModal (props:{
   visible: boolean,
   handleCancel: () => void
-  editPorts: VoiceVlanPort[]
+  editPorts: VoiceVlanModalData
   tableData: VoiceVlanPort[]
   setTableData: React.Dispatch<React.SetStateAction<VoiceVlanPort[]>>
 }) {
   const { $t } = getIntl()
   const { visible, handleCancel, tableData, setTableData, editPorts } = props
   const [form] = Form.useForm()
+  const [vlanOptions, setVlanOptions] = useState<DefaultOptionType[]>([])
+
+  useEffect(() => {
+    if(editPorts){
+      const vlans = editPorts?.vlanOptions?.map(i => ({
+        label:$t( { defaultMessage: 'VLAN-ID: {vlan}' }, { vlan: i }),
+        value: i
+      }))
+      setVlanOptions(vlans || [])
+    }
+  }, [editPorts])
 
   const onOk = () => {
     form.submit()
   }
 
   const onFinish = async (value: { voiceVlan:string }) => {
-    const currentPort = editPorts[0]?.taggedPort
+    const currentPort = editPorts.ports[0]
     const currentTableCopy = [...tableData]
     currentTableCopy.forEach(item => {
       if(item.taggedPort == currentPort){
@@ -38,19 +51,26 @@ export function VoiceVlanModal (props:{
     onOk={onOk}
     onCancel={handleCancel}
   >
-    <Form
-      form={form}
-      onFinish={onFinish}
-      layout='vertical'
-      validateTrigger='onBlur'
-    >
-      <Form.Item
-        label={$t({ defaultMessage: 'Voice VLAN' })}
-        name='voiceVlan'
-        initialValue={''}
-        validateFirst
-        children={<Input />}
-      />
-    </Form>
+    <Row gutter={24}>
+      <Col span={12}>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          layout='vertical'
+          validateTrigger='onBlur'
+        >
+          <Form.Item
+            label={$t({ defaultMessage: 'Voice VLAN' })}
+            name='voiceVlan'
+            initialValue={''}
+            validateFirst
+            children={<Select
+              options={vlanOptions}
+              placeholder={$t({ defaultMessage: 'Select...' })}
+            />}
+          />
+        </Form>
+      </Col>
+    </Row>
   </Modal>
 }

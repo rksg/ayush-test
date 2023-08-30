@@ -671,14 +671,26 @@ export interface TrustedPort {
   trustedPortType: TrustedPortTypeEnum
 }
 
+export interface VoiceVlanModalData {
+  ports: string[]
+  vlanOptions: string[]
+  voiceVlanValue: string
+}
+
+export interface TaggedVlanPorts {
+  vlanId: string
+  taggedPorts: string[]
+}
+
 export interface VoiceVlanOption {
   model: string
-  voiceVlans: any[]
+  voiceVlans: TaggedVlanPorts[]
 }
 
 export interface VoiceVlanPort {
   taggedPort: string
   voiceVlan: string
+  vlanOptions?: string[]
 }
 
 export interface SwitchConfigurationProfile {
