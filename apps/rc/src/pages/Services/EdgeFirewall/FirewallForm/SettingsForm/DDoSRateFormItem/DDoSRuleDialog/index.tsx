@@ -19,6 +19,10 @@ export const getDDoSAttackTypes = ($t: IntlShape['$t'])
     }))
 }
 
+const isAllSelected = (rules: DdosRateLimitingRule[] | undefined) => {
+  return _.findIndex(rules, { ddosAttackType: DdosAttackType.ALL }) !== -1
+}
+
 export interface DDoSRuleDialogProps {
   className?: string;
   visible: boolean;
@@ -34,13 +38,16 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
   const [form] = Form.useForm()
   const drawerForm = Form.useFormInstance()
   const attackTypes = getDDoSAttackTypes($t)
+  const rules = drawerForm.getFieldValue('rules')
+  const ddosAttackType = Form.useWatch('ddosAttackType', form)
+  const allSelected = isAllSelected(rules)
 
   const handleSubmit = () => {
     const data = form.getFieldsValue()
     const addAnotherRuleChecked = form.getFieldValue('addAnotherRuleChecked')
     onSubmit(data, editMode)
 
-    if (addAnotherRuleChecked) {
+    if (addAnotherRuleChecked && !editMode) {
       form.resetFields()
     } else {
       handleClose()
@@ -53,14 +60,13 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
   }
 
   const isCreatedRuleType = (type: DdosAttackType) => {
-    const existingRules = drawerForm.getFieldValue('rules') ?? []
-    const isAllSelected = _.findIndex(existingRules, { ddosAttackType: DdosAttackType.ALL }) !== -1
+    if (!rules) return false
 
-    return isAllSelected
-      ? isAllSelected
+    return allSelected
+      ? allSelected
       : type === DdosAttackType.ALL
-        ? existingRules.length
-        : _.findIndex(existingRules, { ddosAttackType: type }) !== -1
+        ? rules.length
+        : _.findIndex(rules, { ddosAttackType: type }) !== -1
   }
 
   const footer = <Drawer.FormFooter
@@ -69,6 +75,10 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
       save: editMode ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     showAddAnother={!editMode}
+    showAddAnotherProps={allSelected || ddosAttackType === DdosAttackType.ALL
+      ? { disabled: true }
+      : undefined
+    }
     onCancel={handleClose}
     onSave={async (addAnotherRuleChecked: boolean) => {
       form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
