@@ -199,9 +199,7 @@ export function VenueFirmwareList () {
           cancelText: $t({ defaultMessage: 'Cancel' }),
           onOk () {
             skipSchedule({
-              payload: {
-                venueIds: selectedRows.map((row) => row.id)
-              }
+              payload: selectedRows.map((row) => row.id)
             }).then(clearSelection)
           },
           onCancel () {}
@@ -217,7 +215,7 @@ export function VenueFirmwareList () {
   const handleUpdateModalSubmit = async (data: string) => {
     const payload = {
       venueIds: venueIds,
-      firmwareVersion: data
+      version: data
     }
     try {
       await updateNow({ payload }).unwrap()
