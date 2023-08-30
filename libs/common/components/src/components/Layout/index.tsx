@@ -12,8 +12,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }                                           from '@acx-ui/config'
-import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { get as getEnv }                                                 from '@acx-ui/config'
+import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH, Link } from '@acx-ui/react-router-dom'
 
 import modifyVars from '../../theme/modify-vars'
 
@@ -31,6 +31,7 @@ type SideNavProps = {
   activeIcon?: React.FC
   inactiveIcon?: React.FC
   isActiveCheck?: IsActiveCheck | RegExp
+  isOpenInTab?: boolean
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
@@ -127,12 +128,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       ...rest,
       className: Boolean(isActive) ? 'menu-active' : undefined,
       key: key,
-      label: uri
-        ? <TenantNavLink
+      label: Boolean(item.isOpenInTab)
+        ? <Link to={`/analytics${uri}`} target='blank' rel='noreferrer onopener'>{content}</Link>
+        : (uri ? <TenantNavLink
           to={uri}
           tenantType={tenantType}
           data-label={item.label}>{content}</TenantNavLink>
-        : content,
+          : content),
       ...(isSubMenuType(item) && {
         popupClassName: item.children?.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',

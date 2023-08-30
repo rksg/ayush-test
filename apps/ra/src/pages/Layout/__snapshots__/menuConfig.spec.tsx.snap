@@ -1,0 +1,965 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useMenuConfig should not return Schedules 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "uri": "/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "uri": "/admin/onboarded",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "uri": "/admin/users",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "uri": "/admin/labels",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "uri": "/admin/resourceGroups",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "uri": "/admin/support",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "uri": "/admin/license",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "uri": "/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should not return analytics related menu 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "uri": "/admin/onboarded",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "uri": "/admin/users",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "uri": "/admin/labels",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "uri": "/admin/resourceGroups",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "uri": "/admin/support",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "uri": "/admin/license",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "uri": "/admin/schedules",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should not return config recommendation, Service Validation & videoCallQoe 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "uri": "/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "uri": "/admin/onboarded",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "uri": "/admin/users",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "uri": "/admin/labels",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "uri": "/admin/resourceGroups",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "uri": "/admin/support",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "uri": "/admin/license",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "uri": "/admin/schedules",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "uri": "/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should return an array of menu items based on user permissions 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "uri": "/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "uri": "/admin/onboarded",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "uri": "/admin/users",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "uri": "/admin/labels",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "uri": "/admin/resourceGroups",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "uri": "/admin/support",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "uri": "/admin/license",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "uri": "/admin/schedules",
+          },
+          Object {
+            "isOpenInTab": true,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "uri": "/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should return only admin schedules array for empty/no user permission 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;

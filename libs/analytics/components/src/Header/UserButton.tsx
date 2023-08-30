@@ -6,16 +6,15 @@ import {
   Tenant,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI }                from '@acx-ui/components'
-import { AccountCircleSolid }      from '@acx-ui/icons'
-import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { LayoutUI }           from '@acx-ui/components'
+import { AccountCircleSolid } from '@acx-ui/icons'
+import { Link }               from '@acx-ui/react-router-dom'
 
-import { LogOut } from './styledComponents'
+import { LogOut, UserNameButton } from './styledComponents'
 
 export const UserButton = () => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const location = useLocation()
 
   const currentAccountPermissions = userProfile?.tenants?.filter(
     // Hardcoded to current account for now
@@ -42,9 +41,9 @@ export const UserButton = () => {
             {
               key: 'my-profile',
               label: (
-                <TenantLink state={{ from: location.pathname }} to='/userprofile/'>
+                <Link to='/analytics/profile/settings' target='blank' rel='noreferrer onopener'>
                   {$t({ defaultMessage: 'My Profile' })}{' '}
-                </TenantLink>
+                </Link>
               )
             }
           ]
@@ -52,9 +51,9 @@ export const UserButton = () => {
         {
           key: 'accounts',
           label: (
-            <TenantLink state={{ from: location.pathname }} to='/accounts/'>
+            <Link to='/analytics/profile/tenants' target='blank' rel='noreferrer onopener'>
               {$t({ defaultMessage: 'Accounts' })}{' '}
-            </TenantLink>
+            </Link>
           )
         },
         { type: 'divider' },
@@ -77,7 +76,13 @@ export const UserButton = () => {
       trigger={['click']}
       placement='bottomLeft'
     >
-      <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+      {
+        userProfile.firstName && userProfile.lastName
+          ? <UserNameButton>
+            {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
+          </UserNameButton>
+          : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+      }
     </Dropdown>
   )
 }
