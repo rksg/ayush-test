@@ -196,8 +196,7 @@ export const ConvertNonVARMSPButton = () => {
   }, [params, getTenantInfo, getDelegationInfo, canInitCheck])
 
   const canInit = canInitCheck()
-  const displayConvertBtn = canInit && tenantInfo.tenantType
-                              && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
+  const displayConvertBtn = canInit && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
                               && !isLoadingMSPEC
 
   return displayConvertBtn
