@@ -38,33 +38,40 @@ const mockPermissions = {
 }
 describe('UserButton', () => {
   it('should render button with user profile', async () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
-
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        firstName: 'firstName',
+        lastName: 'lastName',
         tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions
-          },
-          {
-            id: 'accountId2',
-            permissions: []
-          }
+          { id: 'accountId', permissions: mockPermissions },
+          { id: 'accountId2', permissions: [] }
         ]
       }
     }
+    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     render(
       <Provider>
-        <UserProfileContext.Provider value={{ data: mockUserProfile } as UserProfileContextProps}>
+        <UserProfileContext.Provider
+          value={{ data: mockUserProfile } as unknown as UserProfileContextProps}>
           <UserButton />
         </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
-    expect(screen.getByRole('button')).toHaveTextContent('')
+    expect(screen.getByRole('button')).toHaveTextContent('FL')
+
+    await userEvent.click(screen.getByRole('button'))
+    const links = screen.getAllByRole('link')
+    expect(links[0]).toHaveTextContent('My Profile')
+    expect(links[0]).toHaveAttribute('href', '/analytics/profile/settings')
+    expect(links[0]).toHaveAttribute('rel', 'noreferrer onopener')
+    expect(links[0]).toHaveAttribute('target', 'blank')
+    expect(links[1]).toHaveTextContent('Accounts')
+    expect(links[1]).toHaveAttribute('href', '/analytics/profile/tenants')
+    expect(links[1]).toHaveAttribute('rel', 'noreferrer onopener')
+    expect(links[1]).toHaveAttribute('target', 'blank')
   })
 
   it('should handle logout', async () => {
@@ -74,14 +81,8 @@ describe('UserButton', () => {
       data: {
         accountId: 'accountId',
         tenants: [
-          {
-            id: 'accountId',
-            permissions: { ...mockPermissions, 'view-analytics': false }
-          },
-          {
-            id: 'accountId2',
-            permissions: []
-          }
+          { id: 'accountId', permissions: { ...mockPermissions, 'view-analytics': false } },
+          { id: 'accountId2', permissions: [] }
         ]
       }
     }
@@ -94,7 +95,8 @@ describe('UserButton', () => {
     })
     render(
       <Provider>
-        <UserProfileContext.Provider value={{ data: mockUserProfile } as UserProfileContextProps}>
+        <UserProfileContext.Provider
+          value={{ data: mockUserProfile } as unknown as UserProfileContextProps}>
           <UserButton />
         </UserProfileContext.Provider>
       </Provider>,
