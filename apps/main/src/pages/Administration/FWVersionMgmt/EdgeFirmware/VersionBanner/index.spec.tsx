@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
+import { FirmwareUrlsInfo }           from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -13,7 +13,7 @@ describe('Edge firmware version banner', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        EdgeUrlsInfo.getLatestEdgeFirmware.url,
+        FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
         (req, res, ctx) => res(ctx.json(latestReleaseVersions))
       )
     )

@@ -66,7 +66,7 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
   const footer = <Drawer.FormFooter
     buttonLabel={({
       addAnother: $t({ defaultMessage: 'Add another rule' }),
-      save: $t({ defaultMessage: 'Add' })
+      save: editMode ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     showAddAnother={!editMode}
     onCancel={handleClose}
