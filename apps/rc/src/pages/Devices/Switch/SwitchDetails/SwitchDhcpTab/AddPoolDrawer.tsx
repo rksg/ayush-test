@@ -54,7 +54,6 @@ export function AddPoolDrawer (props: {
   }, [form, props.visible, props.editPoolId, params.tenantId])
 
   const onSaveOption = (values: SwitchDhcpOption) => {
-    trimIfNeeded(values)
     const newList = dhcpOptionList || []
     if (!selected) { // Add
       setDhcpOptionList(newList.concat(values))
@@ -69,12 +68,6 @@ export function AddPoolDrawer (props: {
     }
     setSelected(undefined)
     setOpenModal(false)
-  }
-
-  const trimIfNeeded = (values: SwitchDhcpOption) => {
-    if (values.type === 'IP') {
-      values.value = values.value.trim()
-    }
   }
 
   const handleFormFinish = (values: SwitchDhcp) => {
@@ -152,7 +145,10 @@ export function AddPoolDrawer (props: {
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
           rules={[{ required: true }, { type: 'string', min: 1, max: 127 }]}
-          children={<Input />}
+          children={<Input
+            onChange={({ target }) => {
+              form.setFieldValue('poolName', target.value.toLowerCase())
+            }} />}
         />
         <Form.Item
           name='subnetAddress'

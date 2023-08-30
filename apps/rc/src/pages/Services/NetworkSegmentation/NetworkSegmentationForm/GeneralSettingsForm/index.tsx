@@ -8,7 +8,6 @@ import { Alert, StepsForm, Tooltip, useStepFormContext }                   from 
 import { useGetPropertyConfigsQuery, useGetQueriablePropertyConfigsQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 import * as UI                              from '../styledComponents'
 
 import { PersonaGroupTable }            from './PersonaGroupTable'
@@ -29,7 +28,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
-  const venueId = useWatch('venueId', form)
+  const venueId = Form.useWatch('venueId', form)
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
     payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
