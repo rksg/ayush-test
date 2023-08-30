@@ -94,7 +94,7 @@ export const apKeyMap = [
   { id: 90, value: 'initialState.ccmAp.common.subscription_report.stats_type', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 91, value: 'initialState.ccmAp.common.subscription_report.report_interval', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 92, value: 'initialState.ccmAp.common.subscription_report.dest_module', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 93, value: 'initialState.ccmAp.common.bss_coloring.bss_coloring_enabled', text: defineMessage({ defaultMessage: 'BSS Coloring' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 93, value: 'initialState.ccmAp.common.bss_coloring.bss_coloring_enabled', text: defineMessage({ defaultMessage: 'Enable BSS Coloring' }), textAlto: defineMessage({ defaultMessage: 'Enable BSS Coloring' }), enumType: '', incidents: {}, kpis: {} },
   { id: 94, value: 'initialState.ccmAp.radio24g.radio.adj_threshold', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 95, value: 'initialState.ccmAp.radio24g.radio.bg_scan', text: defineMessage({ defaultMessage: 'Background Scan (2.4 GHz)' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 96, value: 'initialState.ccmAp.radio24g.radio.bg_scan_timer', text: defineMessage({ defaultMessage: 'Background Scan Timer ( 2.4 GHz )' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
@@ -455,6 +455,6 @@ export const apKeyMap = [
   { id: 451, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_port', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 452, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_protocol', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmSyslog.Protocol', incidents: {}, kpis: {} },
   { id: 453, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_server_ip', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 454, value: 'initialState.ccmAP.management_identifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure venue change)' }), enumType: '', incidents: {}, kpis: {} },
-  { id: 455, value: 'initialState.ccmAP.management_identifiers.map_entries.apGroupName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure AP Group change)' }), enumType: '', incidents: {}, kpis: {} }
+  { id: 454, value: 'initialState.ccmAp.management_identifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure venue change)' }), enumType: '', incidents: {}, kpis: {} },
+  { id: 455, value: 'initialState.ccmAp.management_identifiers.map_entries.apGroupName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure AP Group change)' }), enumType: '', incidents: {}, kpis: {} }
 ]

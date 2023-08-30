@@ -2,11 +2,11 @@ import userEvent             from '@testing-library/user-event'
 import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
-import { EdgeUrlsInfo, FirmwareUrlsInfo }              from '@acx-ui/rc/utils'
+import { FirmwareUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { availableVersions, latestReleaseVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
+import { availableVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
 
 import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
 
@@ -38,19 +38,15 @@ describe('Edge venue firmware list', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        EdgeUrlsInfo.getLatestEdgeFirmware.url,
-        (req, res, ctx) => res(ctx.json(latestReleaseVersions))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getVenueEdgeFirmwareList.url,
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (req, res, ctx) => res(ctx.json(venueFirmwareList))
       ),
       rest.get(
-        EdgeUrlsInfo.getAvailableEdgeFirmwareVersions.url,
+        FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
         (req, res, ctx) => res(ctx.json(availableVersions))
       ),
-      rest.post(
-        EdgeUrlsInfo.updateEdgeFirmware.url,
+      rest.patch(
+        FirmwareUrlsInfo.updateEdgeFirmware.url,
         (req, res, ctx) => {
           mockedUpdateNow()
           return res(ctx.status(202))
