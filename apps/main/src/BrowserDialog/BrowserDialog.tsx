@@ -41,7 +41,15 @@ export async function BrowserDialog ( broswerLang: LangKey, props: BrowserDialog
   const { $t } = intl
   const bLangDisplay = browserLangDisplay.of(bLang)
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
-    await updateUserProfile({ payload: data, params: { tenantId } })
+    try {
+      await updateUserProfile({
+        payload: data,
+        params: { tenantId }
+      }).unwrap()
+      setDialogOpen(false)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
     localStorage.setItem('browserLang', broswerLang)
     localStorage.setItem('isBrowserDialog', 'true')
   }
@@ -104,9 +112,12 @@ export function LoadMessages (userProfile: UserProfileInterface): LangKey {
       setDialogOpen: () => isOpen
     }
     const BDConfirm = BrowserDialog(supportedBrowserLang as LangKey, bDialogProps)
-    BDConfirm.then(data => {
-      return data?.preferredLanguage as LangKey
-    })
+    if (BDConfirm) {
+      BDConfirm.then(data => {
+        bDialogProps.setDialogOpen(false)
+        return data?.preferredLanguage as LangKey
+      })
+    }
   }
   return userProfile?.preferredLanguage as LangKey
 }
