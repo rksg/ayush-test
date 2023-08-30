@@ -7,7 +7,7 @@ import { ApErrorHandlingMessages, CatchErrorResponse, closeCcdSocket, initCcdSoc
 
 let ccdSocket: SocketIOClient.Socket
 let socketTimeoutId: NodeJS.Timeout
-const socketTimeout = 30000
+const socketTimeout = 10000
 
 export enum DetectionStatus {
   IDLE,
@@ -33,7 +33,7 @@ export function useCcd (initRequestId: string, handler: (msg: string) => void) {
     if (!requestId) return
 
     setDetectionStatus(DetectionStatus.FETCHING)
-
+    //console.log('Open CCD socket')
     ccdSocket = initCcdSocket(requestId, (msg: string) => {
       setDetectionStatus(DetectionStatus.COMPLETEED)
       clearTimeout(socketTimeoutId)
@@ -48,6 +48,7 @@ export function useCcd (initRequestId: string, handler: (msg: string) => void) {
     if (ccdSocket) closeCcdSocket(ccdSocket)
     if (socketTimeoutId) clearTimeout(socketTimeoutId)
     setDetectionStatus(DetectionStatus.IDLE)
+    //console.log('Close CCD socket')
   }
 
   const handleError = (error: CatchErrorResponse) => {

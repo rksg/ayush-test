@@ -31,3 +31,10 @@ export const Button = styled(AntButton)`
     }
   }
 `
+
+export const CcdResultContainer = styled.div`
+  height: auto;
+  display: grid;
+  grid-template-columns: 200px auto;
+  padding: 10px;
+`

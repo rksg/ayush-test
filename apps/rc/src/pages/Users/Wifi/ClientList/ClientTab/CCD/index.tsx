@@ -1,18 +1,18 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import { Form, Input, Select, Space } from 'antd'
-import { DefaultOptionType }          from 'antd/lib/select'
-import { useIntl }                    from 'react-intl'
-import { useParams }                  from 'react-router-dom'
+import { Divider, Form, Input, Select, Space } from 'antd'
+import { DefaultOptionType }                   from 'antd/lib/select'
+import { useIntl }                             from 'react-intl'
+import { useParams }                           from 'react-router-dom'
 
-import { Tooltip }                                                           from '@acx-ui/components'
-import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid }                from '@acx-ui/icons'
-import { useGetCcdSupportVenuesQuery, useRunCcdMutation }                    from '@acx-ui/rc/services'
-import { CatchErrorResponse, ConvertToStandardMacAddress, MacAddressRegExp } from '@acx-ui/rc/utils'
+import { Tooltip }                                            from '@acx-ui/components'
+import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid } from '@acx-ui/icons'
+import { useGetCcdSupportVenuesQuery }                        from '@acx-ui/rc/services'
+import { ConvertToStandardMacAddress, MacAddressRegExp }      from '@acx-ui/rc/utils'
 
-import ApGroupSelecterDrawer       from './ApGroupSelecterDrawer'
-import { Button }                  from './styledComponents'
-import { useCcd, DetectionStatus } from './useCcd'
+import ApGroupSelecterDrawer                     from './ApGroupSelecterDrawer'
+import { CcdResultViewer, CcdResultViewerProps } from './CcdResultViewer'
+import { Button, CcdResultContainer }            from './styledComponents'
 
 
 const defaultPayload = {
@@ -22,8 +22,6 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-
-
 export function ClientConnectionDiagnosis () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -31,11 +29,12 @@ export function ClientConnectionDiagnosis () {
   const clientMac = Form.useWatch('client', form)
   const venueId = Form.useWatch('venue', form)
 
-  const { setRequestId, detectionStatus, handleError } = useCcd('', socketHandler)
+
+  //const { setRequestId, detectionStatus, handleError } = useCcd('', socketHandler)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useGetCcdSupportVenuesQuery({ params: { tenantId }, payload: defaultPayload })
-  const [ diagnosisClientConnection, { isLoading: isDetecting } ] = useRunCcdMutation()
+  //const [ diagnosisClientConnection, { isLoading: isDetecting } ] = useRunCcdMutation()
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [showSelectApsDraw, setShowSelectApsDraw] = useState(false)
@@ -45,6 +44,7 @@ export function ClientConnectionDiagnosis () {
   const [selectedApsTooltip, setSelectedApsTooltip] = useState<string| ReactNode>()
   const [isTracing, setIsTracing] = useState(false)
   const [isValid, setIsValid] = useState(false)
+  const [viewerStatus, setViewerStatus] = useState<CcdResultViewerProps>({})
 
   useEffect(()=> {
     if (!isVenuesListLoading) {
@@ -82,41 +82,19 @@ export function ClientConnectionDiagnosis () {
     const wantToStart = !isTracing
     setIsTracing(!isTracing)
 
+    const state = wantToStart? 'START' : 'STOP'
     const payload = {
-      state: wantToStart? 'START' : 'STOP',
+      state,
       clientMac: ConvertToStandardMacAddress(clientMac),
       ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
     }
 
-    try {
-      const result = await diagnosisClientConnection({
-        params: { venueId },
-        payload: payload
-      }).unwrap()
-
-      if (wantToStart) {
-        setRequestId(result.requestId)
-      } else {
-        setRequestId('') // close socket when stop
-      }
-    } catch (error) {
-      setRequestId('')
-      handleError(error as CatchErrorResponse)
-    }
-
-  }
-
-  async function socketHandler (msg: string) {
-    const data = JSON.parse(msg)
-    const m = JSON.parse(data.message)
-    console.log('socketHandler: ', m)
-    /*
-    try {
-
-    } catch (error) {
-      handleError(error as CatchErrorResponse)
-    }
-    */
+    setViewerStatus({
+      ...viewerStatus,
+      state,
+      venueId,
+      payload
+    })
   }
 
   const handleClear = () => {
@@ -124,6 +102,12 @@ export function ClientConnectionDiagnosis () {
     setSelectedAps(undefined)
     setIsValid(false)
     form.resetFields()
+    setViewerStatus({
+      ...viewerStatus,
+      state: 'CLEAR',
+      venueId: undefined,
+      payload: undefined
+    })
   }
 
   const handleFieldsChange = () => {
@@ -228,5 +212,18 @@ export function ClientConnectionDiagnosis () {
           }/>
       </Space>
     </Form>
+    <Divider
+      style={{
+        borderColor: 'var(--acx-neutrals-30)',
+        margin: '20px 20px 5px 20px' }}
+    />
+    <CcdResultContainer>
+      <div style={{ width: '150px', height: '500px' }}>
+        {$t({ defaultMessage: 'Connecting Access Point' })}
+      </div>
+      <div style={{ border: '1px solid var(--acx-neutrals-30)' }}>
+        <CcdResultViewer {...viewerStatus}/>
+      </div>
+    </CcdResultContainer>
   </>)
 }
