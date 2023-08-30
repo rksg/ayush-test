@@ -99,7 +99,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 8 }}>
+      <GridCol col={{ span: 24 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
@@ -250,8 +250,6 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               children={<PasswordInput />}
             /></Fieldset>}
         </Space>
-      </GridCol>
-      <GridCol col={{ span: 14 }}>
       </GridCol>
     </GridRow>
   )
