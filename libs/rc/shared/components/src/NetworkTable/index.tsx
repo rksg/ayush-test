@@ -40,9 +40,8 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
         break
       case WlanSecurityEnum.OWETransition:
-        if (oweTransFlag && oweMaster === false) {
-          _securityProtocol = intl.$t({ defaultMessage: 'OWE' })
-        }
+        _securityProtocol = oweTransFlag && oweMaster === false ?
+          intl.$t({ defaultMessage: 'OWE' }) : ''
         break
     }
     return _securityProtocol
