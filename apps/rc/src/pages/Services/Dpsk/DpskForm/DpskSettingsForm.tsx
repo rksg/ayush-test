@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -25,7 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { MAX_DEVICES_PER_PASSPHRASE } from '../constants'
+import { NEW_MAX_DEVICES_PER_PASSPHRASE, OLD_MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
   defaultAccessLabelMapping,
   passphraseFormatDescription
@@ -143,6 +143,11 @@ function CloudpathFormItems () {
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const policySetId = Form.useWatch<string>('policySetId', form)
+  const dpskDeviceCountLimitToggle =
+    useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
+  const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
+    ? NEW_MAX_DEVICES_PER_PASSPHRASE
+    : OLD_MAX_DEVICES_PER_PASSPHRASE
 
   const { policySetOptions } = useAdaptivePolicySetListQuery(
     { payload: { page: 1, pageSize: '2147483647' } },

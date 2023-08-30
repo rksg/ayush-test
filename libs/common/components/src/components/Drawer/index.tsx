@@ -10,6 +10,8 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
+import type { CheckboxProps } from 'antd/lib/checkbox'
+
 interface DrawerHeaderProps {
   title: string,
   icon?: React.ReactNode,
@@ -83,6 +85,7 @@ export const Drawer = (props: DrawerProps) => {
 
 interface FormFooterProps {
   showAddAnother?: boolean
+  showAddAnotherProps?: CheckboxProps
   showSaveButton?: boolean
   onCancel: () => void
   onSave?: (checked: boolean) => Promise<void>
@@ -98,6 +101,7 @@ const FormFooter = (props: FormFooterProps) => {
   const [ loading, setLoading ] = useState(false)
   const {
     showAddAnother = false,
+    showAddAnotherProps,
     showSaveButton = true,
     onCancel,
     onSave
@@ -118,6 +122,7 @@ const FormFooter = (props: FormFooterProps) => {
           onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
           checked={checked}
           children={buttonLabel.addAnother}
+          {...showAddAnotherProps}
         />}
       </div>
       <div>
