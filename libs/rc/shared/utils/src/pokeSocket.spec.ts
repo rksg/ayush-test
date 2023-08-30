@@ -5,8 +5,8 @@ import { closePokeSocket, initPokeSocket } from './pokeSocket'
 const mockedSocket = {
   on: jest.fn(),
   off: jest.fn(),
-  disconnect: jest.fn(),
-  disconnected: false
+  disconnected: false,
+  close: jest.fn()
 }
 
 jest.mock('./initialSocket', () => ({
@@ -29,6 +29,6 @@ describe('pokeSocket', () => {
     closePokeSocket(socket)
 
     expect(mockedSocket.off).toHaveBeenCalledTimes(1)
-    expect(mockedSocket.disconnect).toHaveBeenCalledTimes(1)
+    expect(mockedSocket.close).toHaveBeenCalledTimes(1)
   })
 })

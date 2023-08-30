@@ -185,6 +185,18 @@ export const ApErrorHandlingMessages = {
   }),
   ERROR_OCCURRED: defineMessage({
     defaultMessage: 'Error occurred while {action} AP'
+  }),
+  FIRMWARE_IS_NOT_SUPPORTED: defineMessage({
+    defaultMessage: 'The version of AP firmware is not supported'
+  }),
+  IS_NOT_OPERATIONAL: defineMessage({
+    defaultMessage: 'The AP is not operational'
+  }),
+  IS_NOT_FOUND: defineMessage({
+    defaultMessage: 'The AP is not found'
+  }),
+  NO_DETECTED_NEIGHBOR_DATA: defineMessage({
+    defaultMessage: 'No detected neighbor data'
   })
 }
 
