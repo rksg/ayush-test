@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
-
 import { Dropdown, Menu, Input } from 'antd'
 import {
   Breadcrumb
@@ -44,17 +42,16 @@ interface Props {
 }
 const ListItemComponent: React.FC<Props> = ({ node, onClick }) => {
   const isLeaf = node?.children?.length === 0 || !Boolean(node?.children);
-
   return (
     <UI.ListItem key={`${node?.type}-${node.name}`} onClick={() => onClick(node)}>
       <UI.ListItemSpan>{`${node.type ? `${node.type}(` : ''}${node.name}${
         node.type ? ')' : ''
       }`}</UI.ListItemSpan>
-      <div style={{ verticalAlign: 'middle' }}>{!isLeaf && <UI.RightArrow />}</div>
+      <div>{!isLeaf && <UI.RightArrow />}</div>
     </UI.ListItem>
   );
 };
-export const TestComponent = () => {
+export const RevolvingDoor = () => {
   const rootNode: Node = {
     id: '1',
     name: 'Network',
@@ -350,9 +347,9 @@ export const TestComponent = () => {
   const dropDownHeader = (
     <>
       <UI.ListHeader onClick={onBack}>
-        {breadcrumb.length > 1 && <UI.LeftArrow />}
-        <UI.LeftArrowText hasLeftArrow={!Boolean(breadcrumb.length > 1)}>
-          {searchText
+        {breadcrumb.length > 1 && !searchText && <UI.LeftArrow />}
+        <UI.LeftArrowText hasLeftArrow={!Boolean(breadcrumb.length > 1 && !searchText ) }>
+          { searchText
             ? 'Search Results'
             : capitalize(
                 currentNode?.type ? `${currentNode.type}(${currentNode.name}) ` : currentNode.name
@@ -360,7 +357,7 @@ export const TestComponent = () => {
         </UI.LeftArrowText>
       </UI.ListHeader>
       <UI.StyledBreadcrumb>
-        {breadcrumb.map((node, index) => (
+        {!searchText && breadcrumb.map((node, index) => (
           <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
             {index !== breadcrumb.length - 1
               ? capitalize(node?.type ? `${node.type}(${node.name}) ` : node.name)
