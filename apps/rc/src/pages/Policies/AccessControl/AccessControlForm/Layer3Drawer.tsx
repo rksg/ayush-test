@@ -365,7 +365,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
       <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
-      { (protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
+      { (access !== 'BLOCK' && protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
         {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
       </span> }
     </div>
