@@ -266,21 +266,12 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   ]
 
   useEffect(() => {
-    const setWifi6 = () => {
-      form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], wifi7Enabled)
-    }
-
-    const disableMlo = () => {
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    }
-
-
     if (!isUndefined(wifi7Enabled)) {
-      setWifi6()
+      form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], wifi7Enabled)
     }
     // disable the mlo when wifi7 is disabled
     if (!wifi7Enabled) {
-      disableMlo()
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [wifi7Enabled])
 
