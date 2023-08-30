@@ -1,11 +1,8 @@
 import { Form, Input } from 'antd'
-import moment          from 'moment-timezone'
 
-import { Modal }                      from '@acx-ui/components'
-import { useAddConfigBackupMutation } from '@acx-ui/rc/services'
-import { excludeQuoteRegExp, VoiceVlanPort }         from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
-import { getIntl }                    from '@acx-ui/utils'
+import { Modal }         from '@acx-ui/components'
+import { VoiceVlanPort } from '@acx-ui/rc/utils'
+import { getIntl }       from '@acx-ui/utils'
 
 export function VoiceVlanModal (props:{
   visible: boolean,

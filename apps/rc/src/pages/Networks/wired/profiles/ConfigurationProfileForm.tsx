@@ -100,13 +100,13 @@ export function ConfigurationProfileForm () {
       }
     })
     const voiceVlanOptions = Object.keys(modelMap)
-    .sort((a:string, b:string) => {
-      return (a > b) ? 1 : -1
-    })
-    .map(model => ({
-      model,
-      voiceVlans: modelMap[model]
-    }))
+      .sort((a:string, b:string) => {
+        return (a > b) ? 1 : -1
+      })
+      .map(model => ({
+        model,
+        voiceVlans: modelMap[model]
+      }))
     console.log('voiceVlanOptions: ', voiceVlanOptions)
     return voiceVlanOptions
   }
@@ -129,7 +129,7 @@ export function ConfigurationProfileForm () {
     setCurrentData({
       ...currentData,
       ...data,
-      ...(voiceVlanOptions ? {voiceVlanOptions} : {})
+      ...(voiceVlanOptions ? { voiceVlanOptions } : {})
     })
 
     return true
