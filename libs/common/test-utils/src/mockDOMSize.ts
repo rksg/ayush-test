@@ -1,6 +1,4 @@
 export function mockDOMSize (width: number, height: number) {
-  window.innerWidth = width
-  window.innerHeight = height
   const props = Object.entries({
     offsetWidth: { value: width },
     clientWidth: { value: width },

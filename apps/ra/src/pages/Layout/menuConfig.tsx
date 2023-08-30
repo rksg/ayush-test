@@ -8,9 +8,7 @@ import {
   PERMISSION_MANAGE_SERVICE_GUARD,
   PERMISSION_MANAGE_MLISA,
   PERMISSION_MANAGE_CALL_MANAGER,
-  PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
-  PERMISSION_MANAGE_LABEL,
-  PERMISSION_FRANCHISOR
+  PERMISSION_MANAGE_CONFIG_RECOMMENDATION
 } from '@acx-ui/analytics/utils'
 import { LayoutProps }  from '@acx-ui/components'
 import {
@@ -26,13 +24,11 @@ import {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const tenant = userProfile?.tenants?.filter(
-    // Hardcoded to current account for now
-    (tenant : Tenant) => tenant.id === userProfile?.accountId
-  )[0]
-  const currentAccountPermissions = tenant?.permissions
-  const currentAccountSetting = tenant?.settings
 
+  const currentAccountPermissions = userProfile?.tenants?.filter(
+    // Hardcoded to current account for now
+    (tenent : Tenant) => tenent.id === userProfile?.accountId
+  )[0].permissions
   const hasViewAnalyticsPermissions = currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION]
@@ -42,9 +38,6 @@ export function useMenuConfig () {
     currentAccountPermissions?.[PERMISSION_MANAGE_CALL_MANAGER]
   const hasManageMlisaPermission = currentAccountPermissions?.[PERMISSION_MANAGE_MLISA]
   const hasViewDataExplorerPermission = currentAccountPermissions?.[PERMISSION_VIEW_DATA_EXPLORER]
-  const hasManageLabelPermission = currentAccountPermissions?.[PERMISSION_MANAGE_LABEL]
-
-  const hasFranchisorSetting = currentAccountSetting?.[PERMISSION_FRANCHISOR]
 
   const config: LayoutProps['menuConfig'] = [
     ...(hasViewAnalyticsPermissions
@@ -150,51 +143,40 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
             ...(hasManageMlisaPermission
-              ? [{
-                uri: '/admin/onboarded',
-                label: $t({ defaultMessage: 'Onboarded Systems' }),
-                isOpenInTab: true
-              },
-              {
-                uri: '/admin/users',
-                label: $t({ defaultMessage: 'Users' }),
-                isOpenInTab: true
-              }] : []),
-            ...(hasManageLabelPermission
-              ? [{
-                uri: '/admin/labels',
-                label: $t({ defaultMessage: 'Labels' }),
-                isOpenInTab: true
-              }] : []),
-            ...(hasManageMlisaPermission
               ? [
                 {
+                  uri: '/admin/onboardedSystems',
+                  label: $t({ defaultMessage: 'Onboarded Systems' })
+                },
+                {
+                  uri: '/admin/users',
+                  label: $t({ defaultMessage: 'Users' })
+                },
+                {
                   uri: '/admin/resourceGroups',
-                  label: $t({ defaultMessage: 'Resource Groups' }),
-                  isOpenInTab: true
+                  label: $t({ defaultMessage: 'Resource Groups' })
                 },
                 {
                   uri: '/admin/support',
-                  label: $t({ defaultMessage: 'Support' }),
-                  isOpenInTab: true
+                  label: $t({ defaultMessage: 'Support' })
                 },
                 {
                   uri: '/admin/license',
-                  label: $t({ defaultMessage: 'Licenses' }),
-                  isOpenInTab: true
-                }] : []),
-            ...(hasFranchisorSetting
-              ? [{
-                uri: '/admin/schedules',
-                label: $t({ defaultMessage: 'Schedules' }),
-                isOpenInTab: true
-              }] : []),
-            ...(hasViewAnalyticsPermissions && hasManageMlisaPermission
-              ? [{
-                uri: '/admin/webhooks',
-                label: $t({ defaultMessage: 'Webhooks' }),
-                isOpenInTab: true
-              }] : [])
+                  label: $t({ defaultMessage: 'Licenses' })
+                }]: []),
+
+            {
+              uri: '/admin/schedules',
+              label: $t({ defaultMessage: 'Schedules' })
+            },
+            ...(hasViewAnalyticsPermissions
+              ? [
+                {
+                  uri: '/admin/webhooks',
+                  label: $t({ defaultMessage: 'Webhooks' })
+                }
+              ]
+              : [])
           ]
         }
       ]

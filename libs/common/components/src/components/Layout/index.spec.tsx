@@ -174,30 +174,4 @@ describe('Layout', () => {
     })
     await waitFor(() => screen.findByText('Hey, you are missing the bigger picture'))
   })
-  it('show render correctly when isOpenTab = true', () => {
-    get.mockReturnValue('true')
-    const config = [
-      {
-        uri: '/dashboard',
-        label: 'Dashboard',
-        inactiveIcon: SpeedIndicatorOutlined,
-        activeIcon: SpeedIndicatorSolid,
-        isOpenInTab: true
-      }
-    ]
-    const { asFragment } = render(<Layout
-      logo={<div />}
-      menuConfig={config}
-      leftHeaderContent={<div>Left header</div>}
-      rightHeaderContent={<div>Right header</div>}
-      content={<div>content</div>}
-    />, {
-      route: {
-        path: '/analytics/next/dashboard',
-        params: { page: 'dashboard' },
-        wrapRoutes: false
-      }
-    })
-    expect(asFragment()).toMatchSnapshot()
-  })
 })

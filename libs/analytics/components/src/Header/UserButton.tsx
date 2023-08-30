@@ -6,15 +6,16 @@ import {
   Tenant,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI }           from '@acx-ui/components'
-import { AccountCircleSolid } from '@acx-ui/icons'
-import { Link }               from '@acx-ui/react-router-dom'
+import { LayoutUI }                from '@acx-ui/components'
+import { AccountCircleSolid }      from '@acx-ui/icons'
+import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 
-import { LogOut, UserNameButton } from './styledComponents'
+import { LogOut } from './styledComponents'
 
 export const UserButton = () => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
+  const location = useLocation()
 
   const currentAccountPermissions = userProfile?.tenants?.filter(
     // Hardcoded to current account for now
@@ -41,9 +42,9 @@ export const UserButton = () => {
             {
               key: 'my-profile',
               label: (
-                <Link to='/analytics/profile/settings' target='blank' rel='noreferrer onopener'>
+                <TenantLink state={{ from: location.pathname }} to='/userprofile/'>
                   {$t({ defaultMessage: 'My Profile' })}{' '}
-                </Link>
+                </TenantLink>
               )
             }
           ]
@@ -51,9 +52,9 @@ export const UserButton = () => {
         {
           key: 'accounts',
           label: (
-            <Link to='/analytics/profile/tenants' target='blank' rel='noreferrer onopener'>
+            <TenantLink state={{ from: location.pathname }} to='/accounts/'>
               {$t({ defaultMessage: 'Accounts' })}{' '}
-            </Link>
+            </TenantLink>
           )
         },
         { type: 'divider' },
@@ -76,13 +77,7 @@ export const UserButton = () => {
       trigger={['click']}
       placement='bottomLeft'
     >
-      {
-        userProfile.firstName && userProfile.lastName
-          ? <UserNameButton>
-            {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
-          </UserNameButton>
-          : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
-      }
+      <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
     </Dropdown>
   )
 }
