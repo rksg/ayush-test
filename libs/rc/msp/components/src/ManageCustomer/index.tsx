@@ -62,7 +62,8 @@ import {
   EntitlementUtil,
   useTableQuery,
   EntitlementDeviceType,
-  EntitlementDeviceSubType
+  EntitlementDeviceSubType,
+  whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -1223,7 +1224,10 @@ export function ManageCustomer () {
             name='name'
             label={intl.$t({ defaultMessage: 'Customer Name' })}
             style={{ width: '300px' }}
-            rules={[{ required: true }]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => whitespaceOnlyRegExp(value) }
+            ]}
             validateFirst
             hasFeedback
             children={<Input />}
@@ -1275,7 +1279,10 @@ export function ManageCustomer () {
               name='name'
               label={intl.$t({ defaultMessage: 'Customer Name' })}
               style={{ width: '300px' }}
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                { validator: (_, value) => whitespaceOnlyRegExp(value) }
+              ]}
               validateFirst
               hasFeedback
               children={<Input />}
