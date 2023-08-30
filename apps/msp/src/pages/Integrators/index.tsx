@@ -61,7 +61,6 @@ export function Integrators () {
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
@@ -156,6 +155,8 @@ export function Integrators () {
   ]
 
   const IntegratorssTable = () => {
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
@@ -174,7 +175,6 @@ export function Integrators () {
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
           const type = selectedRows[0].tenantType
           navigate({
             ...basePath,
@@ -185,7 +185,7 @@ export function Integrators () {
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
+          setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
         }
       },
@@ -222,6 +222,11 @@ export function Integrators () {
           rowKey='id'
           rowSelection={hasAccess() && { type: 'radio' }}
         />
+        {modalVisible && <ResendInviteModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          tenantId={selTenantId}
+        />}
       </Loader>
     )
   }
@@ -259,11 +264,6 @@ export function Integrators () {
         setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
-      />}
-      {modalVisible && <ResendInviteModal
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        tenantId={tenantId}
       />}
     </>
   )
