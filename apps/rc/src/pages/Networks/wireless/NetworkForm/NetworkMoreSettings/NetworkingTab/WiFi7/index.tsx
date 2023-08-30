@@ -266,18 +266,22 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   ]
 
   useEffect(() => {
-    const setWifi6 = () =>
+    const setWifi6 = () => {
       form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], wifi7Enabled)
-
-    const disableMlo = () => {
-      if (!wifi7Enabled) {
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      }
     }
 
-    setWifi6()
+    const disableMlo = () => {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+
+
+    if (!isUndefined(wifi7Enabled)) {
+      setWifi6()
+    }
     // disable the mlo when wifi7 is disabled
-    disableMlo()
+    if (!wifi7Enabled) {
+      disableMlo()
+    }
   }, [wifi7Enabled])
 
 
@@ -310,6 +314,11 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
             children={<Switch />}
           />
         </UI.FieldLabel>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'wifi6Enabled']}
+          initialValue={initWifi7Enabled}
+          hidden
+        />
         {!wifi7Enabled && (
           <div
             data-testid='Description'
@@ -343,7 +352,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
                   valuePropName='checked'
                   style={{ marginBottom: '15px', width: '300px' }}
                   initialValue={initMloEnabled}
-                  children={<Switch />}
+                  children={<Switch disabled={!wifi7Enabled} />}
                 />
               </UI.FieldLabel>
       }
