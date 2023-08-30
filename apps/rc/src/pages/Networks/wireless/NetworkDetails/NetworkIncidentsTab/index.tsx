@@ -13,10 +13,8 @@ export function NetworkIncidentsTab () {
     ...dateFilter,
     filter: { ssids }
   } as AnalyticsFilter
-  const systemCreatedNetwork = network?.data?.isOweMaster === false &&
-                               'owePairNetworkId' in network?.data
 
   return <Loader states={[network]}>
-    <IncidentTabContent filters={filters} systemNetwork={systemCreatedNetwork} disableGraphs/>
+    <IncidentTabContent filters={filters} disableGraphs/>
   </Loader>
 }

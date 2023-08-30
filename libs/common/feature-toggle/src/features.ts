@@ -96,7 +96,10 @@ export enum Features {
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
-  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle'
+  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
+  WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
+  // eslint-disable-next-line max-len
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
