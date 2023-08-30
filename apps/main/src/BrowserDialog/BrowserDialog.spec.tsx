@@ -1,18 +1,13 @@
-// import { render, fireEvent, screen } from '@testing-library/react'
-import { act } from 'react-dom/test-utils'
-import { rest }  from 'msw'
+import { rest } from 'msw'
+import { act }  from 'react-dom/test-utils'
+
 import { showActionModal }              from '@acx-ui/components'
+import { mockServer }                   from '@acx-ui/test-utils'
 import {
   useUpdateUserProfileMutation,
   UserProfile as UserProfileInterface
 } from '@acx-ui/user'
-import { UserUrlsInfo }                                       from '@acx-ui/user'
-import {
-  mockServer,
-  render,
-  screen,
-  waitFor
-} from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import { BrowserDialog, LoadMessages, BrowserDialogProps } from './BrowserDialog' // Replace with the actual path
 
