@@ -46,7 +46,7 @@ const ListItemComponent: React.FC<Props> = ({ node, onClick }) => {
   const isLeaf = node?.children?.length === 0 || !Boolean(node?.children);
 
   return (
-    <UI.ListItem key={`${node?.type}-${node.name}`} onClick={() => !isLeaf && onClick(node)}>
+    <UI.ListItem key={`${node?.type}-${node.name}`} onClick={() => onClick(node)}>
       <UI.ListItemSpan>{`${node.type ? `${node.type}(` : ''}${node.name}${
         node.type ? ')' : ''
       }`}</UI.ListItemSpan>
@@ -294,10 +294,17 @@ export const TestComponent = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [searchResults, setSearchResults] = useState<Node[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
-
-  const handleVisibleChange = (flag: boolean) => {
-    setVisible(flag);
-  };
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const onCancel = () => {
+    setSearchText('');
+    setVisible(false);
+    setSelectedNode(null)
+    setBreadcrumb([rootNode])
+  }
+  const onApply = () => {
+    setVisible(false);
+    setBreadcrumb([rootNode])
+  }
 
   useEffect(() => {
     if (searchText) {
@@ -308,13 +315,19 @@ export const TestComponent = () => {
     }
   }, [searchText]);
   const onSelect = (node: Node) => {
+    const isLeaf = node?.children?.length === 0 || !Boolean(node?.children);
+    setSelectedNode(node)
+    setSearchResults([]);
+    setSearchText('');
+    if (isLeaf) {
+      return;
+    }
     if (node.path) {
       setBreadcrumb(node.path);
     } else {
       setBreadcrumb([...breadcrumb, node]);
     }
-    setSearchResults([]);
-    setSearchText('');
+
   };
 
   const onBreadcrumbClick = (index: number) => {
@@ -359,10 +372,10 @@ export const TestComponent = () => {
   );
   const dropDownFooter = (
     <UI.ButtonDiv>
-      <Button size="small" onClick={() => {}}>
+      <Button size="small" onClick={onCancel}>
         {'Cancel'}
       </Button>
-      <Button size="small" type="primary" onClick={() => {}}>
+      <Button size="small" type="primary" onClick={onApply}>
         {'Apply'}
       </Button>
     </UI.ButtonDiv>
@@ -381,12 +394,13 @@ export const TestComponent = () => {
     </UI.StyledMenu>
   );
   return (
-    <Dropdown overlay={dropDownList} visible={true} onVisibleChange={handleVisibleChange}>
+    <Dropdown overlay={dropDownList} visible={visible}>
       <Input
         placeholder="Search..."
-        onClick={() => setVisible(!visible)}
+        onClick={() => setVisible(true)}
         style={{ cursor: 'pointer' }}
         onChange={(e) => setSearchText(e.target.value)}
+        value={searchText}
       />
     </Dropdown>
   );
