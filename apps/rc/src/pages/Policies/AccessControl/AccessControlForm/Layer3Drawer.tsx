@@ -344,7 +344,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const NetworkColumnComponent = (props: { network: Layer3NetworkCol, row: Layer3Rule }) => {
     const { network, row } = props
-    const { protocol } = row
+    const { access, protocol } = row
 
     let ipString = RuleSourceType.ANY as string
     if (network.type === RuleSourceType.SUBNET) {
