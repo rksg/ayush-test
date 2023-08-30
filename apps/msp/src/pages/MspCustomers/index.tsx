@@ -116,15 +116,13 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const MAX_ALLOWED_SELECTED_EC = 200
 
-  const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
-  const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -151,6 +149,15 @@ export function MspCustomers () {
     else if (data?.mspIntegratorAdminCount)
       return data.mspIntegratorAdminCount
     return isIntegrator ? 0 : data.mspAdminCount
+  }
+
+  const transformAdminCountHeader = () => {
+    const type = tenantDetailsData.data?.tenantType
+    return type === AccountType.MSP_INSTALLER
+      ? $t({ defaultMessage: 'Installer Admin Count' })
+      : (type === AccountType.MSP_INTEGRATOR
+        ? $t({ defaultMessage: 'Integrator Admin Count' })
+        : $t({ defaultMessage: 'MSP Admin Count' }))
   }
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
@@ -295,7 +302,7 @@ export function MspCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'MSP Admin Count' }),
+      title: transformAdminCountHeader(),
       dataIndex: 'mspAdminCount',
       align: 'center',
       key: 'mspAdminCount',
@@ -455,6 +462,10 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selTenantId, setSelTenantId] = useState('')
+    const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
+    const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -463,7 +474,6 @@ export function MspCustomers () {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       }
     })
-
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
@@ -471,7 +481,6 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
           navigate({
             ...basePath,
@@ -482,7 +491,8 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length >= 2)
+          const len = selectedRows.length
+          return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -496,7 +506,7 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
+          setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
         }
       },
@@ -593,6 +603,17 @@ export function MspCustomers () {
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
+        {modalVisible && <ResendInviteModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          tenantId={selTenantId}
+        />}
+        {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
+          visible={drawerAssignEcMspAdminsVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerAssignEcMspAdminsVisible}
+          setSelected={() => {}}
+        />}
       </Loader>
     )
   }
@@ -672,11 +693,6 @@ export function MspCustomers () {
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && !isIntegrator && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
-      {modalVisible && <ResendInviteModal
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        tenantId={ecTenantId}
-      />}
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}
         setVisible={setDrawerAdminVisible}
@@ -688,12 +704,6 @@ export function MspCustomers () {
         tenantId={ecTenantId}
         tenantType={tenantType}
         setVisible={setDrawerIntegratorVisible}
-        setSelected={() => {}}
-      />}
-      {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
-        visible={drawerAssignEcMspAdminsVisible}
-        tenantIds={selEcTenantIds}
-        setVisible={setDrawerAssignEcMspAdminsVisible}
         setSelected={() => {}}
       />}
     </>

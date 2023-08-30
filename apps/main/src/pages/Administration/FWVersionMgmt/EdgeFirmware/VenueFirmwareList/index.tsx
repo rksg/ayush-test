@@ -15,7 +15,7 @@ import {
   useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
   useSkipEdgeUpgradeSchedulesMutation,
-  useUpdateEdgeFirmwareMutation,
+  useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeUpgradePreferencesMutation,
   useUpdateEdgeVenueSchedulesMutation
 } from '@acx-ui/rc/services'
@@ -83,7 +83,7 @@ export function VenueFirmwareList () {
       }
     }
   })
-  const [updateNow] = useUpdateEdgeFirmwareMutation()
+  const [updateNow] = useUpdateEdgeFirmwareNowMutation()
   const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
