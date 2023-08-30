@@ -127,7 +127,7 @@ export function StackForm () {
   const dataFetchedRef = useRef(false)
 
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
-
+  const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
   const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
@@ -526,7 +526,7 @@ export function StackForm () {
           }</Form.Item>)
       }
     },
-    ...(isStackSwitches ? [{
+    ...(isStackSwitches && enableSwitchStackNameDisplayFlag ? [{
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'name',
       width: 180,
