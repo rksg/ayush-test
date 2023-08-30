@@ -108,6 +108,10 @@ export const hierarchyQueryResult = {
         type: 'system',
         children: [
           {
+            name: '1||Administration Domain',
+            type: 'domain'
+          },
+          {
             name: '2||second domain',
             type: 'domain',
             children: [
