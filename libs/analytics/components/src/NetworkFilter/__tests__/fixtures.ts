@@ -66,3 +66,141 @@ export const recentNetworkFilterResult = {
   type: 'network',
   path: defaultNetworkPath
 }
+
+export const hierarchyQueryResult = {
+  network: {
+    apHierarchy: [
+      {
+        name: 'test-system',
+        type: 'system',
+        children: [
+          {
+            name: '1||Administration Domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'child under admin',
+                type: 'zone',
+                children: [
+                  {
+                    name: 'group 1',
+                    type: 'apGroup'
+                  }
+                ]
+              }
+            ]
+          }, {
+            name: '2||second domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'zone 1',
+                type: 'zone'
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    switchHierarchy: [
+      {
+        name: 'test-system',
+        type: 'system',
+        children: [
+          {
+            name: '1||Administration Domain',
+            type: 'domain'
+          },
+          {
+            name: '2||second domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 1',
+                type: 'switchGroup'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'some-other system',
+        type: 'system'
+      }
+    ]
+  }
+}
+
+export const fullHierarchyQueryOuput = {
+  type: 'network',
+  name: 'Network',
+  children: [
+    {
+      name: 'test-system',
+      type: 'system',
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
+            },
+            {
+              name: 'switchGroup 1',
+              type: 'switchGroup'
+            }
+          ]
+        },
+        {
+          name: 'child under admin',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'some-other system',
+      type: 'system'
+    }
+  ]
+}
+
+export const apsOnlyHierarchyQueryOuput = {
+  type: 'network',
+  name: 'Network',
+  children: [
+    {
+      name: 'test-system',
+      type: 'system',
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
+            }
+          ]
+        },
+        {
+          name: 'child under admin',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
