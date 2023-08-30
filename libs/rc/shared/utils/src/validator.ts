@@ -163,14 +163,6 @@ export function hasGraveAccentAndDollarSign (value: string) {
   return Promise.resolve()
 }
 
-export function hasGraveAccent (value: string) {
-  const { $t } = getIntl()
-  if (value.includes('`')) {
-    return Promise.reject($t(validationMessages.hasGraveAccent))
-  }
-  return Promise.resolve()
-}
-
 export function passphraseRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp('^[!-_a-~]((?!\\$\\()[ !-_a-~]){6,61}[!-_a-~]$|^[A-Fa-f0-9]{64}$')
