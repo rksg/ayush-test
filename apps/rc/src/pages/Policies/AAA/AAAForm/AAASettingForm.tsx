@@ -16,7 +16,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 type AAASettingFormProps = {
   edit: boolean,
   saveState: AAAPolicyType,
-  type?: string
+  type?: string,
+  networkView?: boolean
 }
 
 const AAASettingForm = (props: AAASettingFormProps) => {
@@ -99,7 +100,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 24 }}>
+      <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
@@ -250,6 +251,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               children={<PasswordInput />}
             /></Fieldset>}
         </Space>
+      </GridCol>
+      <GridCol col={props.networkView ? { span: 0 } :{ span: 14 }}>
       </GridCol>
     </GridRow>
   )
