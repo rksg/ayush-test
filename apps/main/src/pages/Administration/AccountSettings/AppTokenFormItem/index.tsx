@@ -97,16 +97,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Client ID' }),
         dataIndex: 'clientID',
-        align: 'center',
         key: 'clientID',
-        width: 235,
+        width: 275,
         render: function (_, row) {
           return <div>
             <Input
               readOnly
               bordered={false}
               value={row.clientID}
-              style={{ overflow: 'hidden', width: '190px' }}
+              style={{ paddingLeft: '0px', overflow: 'scroll', width: '270px' }}
             />
             <Button
               ghost
@@ -122,15 +121,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Shared Secret' }),
         dataIndex: 'clientSecret',
-        align: 'center',
         key: 'clientSecret',
-        width: 235,
+        width: 275,
         render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
               readOnly
               bordered={false}
               value={row.clientSecret}
+              style={{ paddingLeft: '0px', overflow: 'visible', width: '270px' }}
             />
             <Button
               ghost
