@@ -1,11 +1,18 @@
 // import { render, fireEvent, screen } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
-
+import { rest }  from 'msw'
 import { showActionModal }              from '@acx-ui/components'
 import {
   useUpdateUserProfileMutation,
   UserProfile as UserProfileInterface
 } from '@acx-ui/user'
+import { UserUrlsInfo }                                       from '@acx-ui/user'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import { BrowserDialog, LoadMessages, BrowserDialogProps } from './BrowserDialog' // Replace with the actual path
 
@@ -24,9 +31,17 @@ const params = { tenantId: 'tenant-id' }
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUpdateUserProfileMutation: jest.fn(() =>
-    ({ data: { preferredLanguage: 'en-US' }, params: params }))
+  useUserProfileContext: () => ({ data: { preferredLanguage: 'en-US' } })
 }))
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUpdateUserProfileMutation: jest.fn(() =>
+    ({ data: mockUserProfile, params: params }))
+}))
+
+const mockedUpdateUserProfileFn = jest.fn()
+
 jest.mock('@acx-ui/components', () => ({
   showActionModal: jest.fn()
 }))
@@ -40,6 +55,21 @@ const setDialogOpen = jest.fn()
 describe('BrowserDialog', () => {
   beforeEach(() => {
     jest.mocked(mockUseUpdateUserProfileMutation).mockReturnValue({ data: mockUserProfile })
+
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.updateUserProfile.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockUserProfile))
+        }
+      ),
+      rest.put(
+        UserUrlsInfo.updateUserProfile.url,
+        (req, res, ctx) => {
+          mockedUpdateUserProfileFn(req.body)
+          return res(ctx.json({}))
+        }
+      ))
   })
 
   it.skip('should show action modal and handle confirm button click', async () => {
@@ -60,12 +90,10 @@ describe('BrowserDialog', () => {
     expect(require('@acx-ui/components').showActionModal).toHaveBeenCalled()
     const modalProps = require('@acx-ui/components').showActionModal.mock.calls[0][0]
 
-    // Simulate clicking the "Change to" button
     await act(async () => {
       modalProps.customContent.buttons[1].handler()
     })
 
-    // Assert functions were called
     expect(updateUserProfile).toHaveBeenCalledWith({
       dateFormat: 'mockDateFormat',
       detailLevel: 'mockDetailLevel',
