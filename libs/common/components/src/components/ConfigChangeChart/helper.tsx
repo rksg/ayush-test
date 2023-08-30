@@ -34,7 +34,10 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setLegend: Dispatch<SetStateAction<Record<string, boolean>>>,
+  setSelectedData: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setPagination: (params: { current: number, pageSize: number }) => void
 }
 
 type ChartRowMappingType = { key: string, label: string, color: string }

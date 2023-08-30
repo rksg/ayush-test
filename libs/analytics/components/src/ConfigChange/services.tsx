@@ -47,7 +47,6 @@ export const api = dataApi.injectEndpoints({
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges
           .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
-          .map((value, id)=>({ ...value, id }))
     }),
     configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },

@@ -22,6 +22,7 @@ export function useConfigChange () {
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
+  const [legend, setLegend] = useState<Record<string, boolean>>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
@@ -51,6 +52,22 @@ export function useConfigChange () {
     setSelected(params)
     setChartZoom(initialZoom)
   }
+
+  const reverse = {
+    zone: 'Zone',
+    ap: 'AP',
+    apGroup: 'AP Group',
+    wlan: 'WLAN',
+    wlanGroup: 'WLAN Group'
+  }
+
+  const convertedLegend: Record<string, boolean> = {}
+
+  for (const [newKey, oldKey] of Object.entries(reverse)) {
+    convertedLegend[newKey] = legend[oldKey]
+  }
+
+  const legendList = Object.keys(convertedLegend).filter(key => convertedLegend[key])
 
   const headerExtra = [
     <NetworkFilter
@@ -83,6 +100,10 @@ export function useConfigChange () {
           chartZoom={chartZoom}
           setChartZoom={setChartZoom}
           setInitialZoom={setInitialZoom}
+          setLegend={setLegend}
+          legend={legendList}
+          setSelectedData={setSelected}
+          setPagination={setPagination}
         />
       </GridCol>
       <GridCol col={{ span: 8 }}><KPIs/></GridCol>
@@ -93,6 +114,7 @@ export function useConfigChange () {
           pagination={pagination}
           setPagination={setPagination}
           dotSelect={dotSelect}
+          legend={legendList}
         />
       </GridCol>
     </GridRow>

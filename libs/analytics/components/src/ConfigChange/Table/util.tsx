@@ -82,7 +82,8 @@ const configChangekpiMap = [
   return configMap
 }, {} as Record<string, string[]>)
 
-export const filterKPIData = (data: ConfigChange[], kpiKeys: string[]) =>
-  data.filter(row => kpiKeys.length
+export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: string[]) =>
+  data.filter(row => legend.includes(row.type)).map(
+    (value, id)=>({ ...value, id })).filter(row => kpiKeys.length
     ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
     : true)

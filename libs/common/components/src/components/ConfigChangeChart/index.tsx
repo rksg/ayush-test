@@ -39,6 +39,9 @@ export function ConfigChangeChart ({
   chartZoom,
   setChartZoom,
   setInitialZoom,
+  setLegend,
+  setSelectedData,
+  setPagination,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -63,6 +66,15 @@ export function ConfigChangeChart ({
       selected[label as string] = true
       return selected
     }, {} as Record<string, boolean>))
+
+  useEffect(() => {
+    setLegend(selectedLegend)
+    setSelectedData(null)
+    setPagination({
+      current: 1,
+      pageSize: 10
+    })
+  }, [selectedLegend])
 
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
