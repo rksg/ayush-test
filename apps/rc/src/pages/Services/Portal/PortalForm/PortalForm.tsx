@@ -82,6 +82,7 @@ export const PortalForm = (props:{
         'Content-Type': ''
       } }).then(()=>{
         fileId = res.fileId
+        console.log(res)
       })
     })
     return fileId
@@ -100,16 +101,21 @@ export const PortalForm = (props:{
         bgImage: data?.content?.bgImage&&data?.content?.bgImage.indexOf('https://storage')>=0?
           data?.content?.bgImage?.split('/')[6].split('?')[0]: ''
       } }
+      console.log(portalData)
       if(portalData.bgFile){
+        console.log('bgFile')
         payload.content.bgImage = await updateFileId(portalData.bgFile)
       }
       if(portalData.logoFile){
+        console.log('logFile')
         payload.content.logo = await updateFileId(portalData.logoFile)
       }
       if(portalData.photoFile){
+        console.log('photoFile')
         payload.content.photo = await updateFileId(portalData.photoFile)
       }
       if(portalData.poweredFile){
+        console.log('poweredFile')
         payload.content.poweredImg = await updateFileId(portalData.poweredFile)
       }
 
@@ -168,6 +174,7 @@ export const PortalForm = (props:{
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
           onFinish={async (data) => {
+            console.log(data)
             if((data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId?.trim())||
               (data.content.componentDisplay.termsConditions&&!
               data.content.termsCondition?.trim())){
