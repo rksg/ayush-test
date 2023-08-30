@@ -84,6 +84,6 @@ const configChangekpiMap = [
 
 export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: string[]) =>
   data.filter(row => legend.includes(row.type)).map(
-    (value, id)=>({ ...value, id })).filter(row => kpiKeys.length
+    (value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
     ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
     : true)

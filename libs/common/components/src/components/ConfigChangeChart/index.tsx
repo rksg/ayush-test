@@ -55,10 +55,10 @@ export function ConfigChangeChart ({
     xAxisHeight, brushWidth, symbolSize
   } = chartLayoutConfig
 
-  const [selected, setSelected] = useState<number|undefined>(selectedData)
+  const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
 
   useEffect(() => {
-    setSelected(selectedData)
+    setSelected(selectedData?.filterId)
   }, [selectedData])
 
   const [selectedLegend, setSelectedLegend] = useState(
@@ -69,12 +69,15 @@ export function ConfigChangeChart ({
 
   useEffect(() => {
     setLegend(selectedLegend)
-    setSelectedData(null)
+    const selectedConfig = data.filter(i => i.id === selectedData?.id)
+    const selectedType = chartRowMapping.filter(
+      ({ key }) => key === selectedConfig[0]?.type)[0]?.label
+    if (selectedLegend[selectedType] === false) { setSelectedData(null) }
     setPagination({
-      current: 1,
+      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / 10),
       pageSize: 10
     })
-  }, [selectedLegend])
+  }, [selectedLegend, data.length])
 
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)

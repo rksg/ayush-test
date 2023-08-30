@@ -61,7 +61,7 @@ function BasicChart (props: {
             data={queryResults.data}
             chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
             onDotClick={onDotClick}
-            selectedData={selected?.id}
+            selectedData={selected!}
             onBrushPositionsChange={setKpiTimeRanges}
             chartZoom={chartZoom}
             setChartZoom={setChartZoom}

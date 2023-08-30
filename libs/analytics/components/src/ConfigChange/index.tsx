@@ -45,7 +45,7 @@ export function useConfigChange () {
     setDotSelect(selected?.id ?? null)
     setPagination((prevPagination) => ({
       ...prevPagination,
-      current: Math.ceil((params.id! + 1) / prevPagination.pageSize)
+      current: Math.ceil((params.filterId! + 1) / prevPagination.pageSize)
     }))
   }
   const onRowClick = (params: ConfigChangeType) => {

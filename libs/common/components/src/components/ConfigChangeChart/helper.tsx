@@ -16,6 +16,7 @@ import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export type ConfigChange = {
   id?: number
+  filterId?: number
   timestamp: string
   type: string
   name: string
@@ -29,7 +30,7 @@ type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: number,
+  selectedData?: ConfigChange,
   onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
