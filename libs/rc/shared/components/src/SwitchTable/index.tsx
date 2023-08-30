@@ -47,7 +47,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess,getShowWithoutRbacCheckKey }         from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
