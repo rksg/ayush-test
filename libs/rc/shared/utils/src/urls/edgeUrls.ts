@@ -114,30 +114,6 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/subInterfaces/query',
     newApi: true
   },
-  getLatestEdgeFirmware: {
-    method: 'get',
-    url: '/edges/upgrade/version/latest',
-    oldUrl: '/api/edges/upgrade/version/latest',
-    newApi: true
-  },
-  getVenueEdgeFirmwareList: {
-    method: 'get',
-    url: '/edges/upgrade/venue',
-    oldUrl: '/api/edges/upgrade/venue',
-    newApi: true
-  },
-  getAvailableEdgeFirmwareVersions: {
-    method: 'get',
-    url: '/edges/upgrade/version',
-    oldUrl: '/api/edges/upgrade/version',
-    newApi: true
-  },
-  updateEdgeFirmware: {
-    method: 'post',
-    url: '/edges/upgrade/updateNow',
-    oldUrl: '/api/edges/upgrade/updateNow',
-    newApi: true
-  },
   reboot: {
     method: 'post',
     url: '/edges/:serialNumber/reboot',
