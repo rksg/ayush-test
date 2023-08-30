@@ -135,7 +135,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   ,[props.data])
 
   const qosStats = useGetQosStatsQuery( { payload: statsPayload }, {
-    pollingInterval: 30 * 1000
+    pollingInterval: 60 * 1000
   })
 
   useEffect(()=> {
