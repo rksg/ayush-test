@@ -215,7 +215,7 @@ export function VenueFirmwareList () {
   const handleUpdateModalSubmit = async (data: string) => {
     const payload = {
       venueIds: venueIds,
-      firmwareVersion: data
+      version: data
     }
     try {
       await updateNow({ payload }).unwrap()
