@@ -23,8 +23,8 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
-  function getDpskSecurityProtocol (securityProtocol: WlanSecurityEnum) {
+function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
+  function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
       case WlanSecurityEnum.WPA2Personal:
@@ -35,6 +35,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         break
       case WlanSecurityEnum.WPA23Mixed:
         _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        break
+      case WlanSecurityEnum.OWE:
+        _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
+        break
+      case WlanSecurityEnum.OWETransition:
+        _securityProtocol = oweTransFlag && oweMaster === false ?
+          intl.$t({ defaultMessage: 'OWE' }) : ''
         break
     }
     return _securityProtocol
@@ -154,7 +161,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       dataIndex: 'securityProtocol',
       sorter: false,
       render: (data, row) =>
-        getDpskSecurityProtocol(row?.securityProtocol as WlanSecurityEnum) || noDataDisplay
+        getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
+        noDataDisplay
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
@@ -199,7 +207,9 @@ export const defaultNetworkPayload = {
     'captiveType',
     'id',
     'securityProtocol',
-    'dsaeOnboardNetwork'
+    'dsaeOnboardNetwork',
+    'isOweMaster',
+    'owePairNetworkId'
   ],
   page: 1,
   pageSize: 2048
@@ -349,7 +359,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     ]}>
       <Table
         settingsId='network-table'
-        columns={getCols(intl)}
+        columns={getCols(intl, supportOweTransition)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

@@ -22,5 +22,5 @@ export * from './ipCalculatorUtilsService'
 export * from './pokeSocket'
 export * from './ccdSocket'
 export * from './macAddressUtils'
-
+export * from './networkUtils'
 
