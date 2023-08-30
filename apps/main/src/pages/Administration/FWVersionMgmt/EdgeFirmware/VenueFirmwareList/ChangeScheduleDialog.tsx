@@ -41,7 +41,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setDisableSave(shouldDisabled)
   }, [selectedVersion, selectedDate, selectedTime])
 
-  const startDate = dayjs().endOf('day')
+  const startDate = dayjs(Date.now()).endOf('day')
   const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   // Can not select days before today and today
