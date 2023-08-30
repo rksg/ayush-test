@@ -15,7 +15,7 @@ import {
   useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
   useSkipEdgeUpgradeSchedulesMutation,
-  useUpdateEdgeFirmwareMutation,
+  useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeUpgradePreferencesMutation,
   useUpdateEdgeVenueSchedulesMutation
 } from '@acx-ui/rc/services'
@@ -83,7 +83,7 @@ export function VenueFirmwareList () {
       }
     }
   })
-  const [updateNow] = useUpdateEdgeFirmwareMutation()
+  const [updateNow] = useUpdateEdgeFirmwareNowMutation()
   const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
@@ -199,9 +199,7 @@ export function VenueFirmwareList () {
           cancelText: $t({ defaultMessage: 'Cancel' }),
           onOk () {
             skipSchedule({
-              payload: {
-                venueIds: selectedRows.map((row) => row.id)
-              }
+              payload: selectedRows.map((row) => row.id)
             }).then(clearSelection)
           },
           onCancel () {}
@@ -217,7 +215,7 @@ export function VenueFirmwareList () {
   const handleUpdateModalSubmit = async (data: string) => {
     const payload = {
       venueIds: venueIds,
-      firmwareVersion: data
+      version: data
     }
     try {
       await updateNow({ payload }).unwrap()

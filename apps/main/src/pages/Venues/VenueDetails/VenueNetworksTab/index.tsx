@@ -184,7 +184,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row.deepNetwork?.isOweMaster === false
+    return supportOweTransition && row?.isOweMaster === false
   }
 
   // TODO: Waiting for API support
@@ -249,8 +249,11 @@ export function VenueNetworksTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
-        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')) || isSystemCreatedNetwork(row)){
+        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
+        } else if (isSystemCreatedNetwork(row)) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
           title = ''
         }
