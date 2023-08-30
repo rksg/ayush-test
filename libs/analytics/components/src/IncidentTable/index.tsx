@@ -115,8 +115,8 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
   </TenantLink>
 }
 
-export function IncidentTable ({ filters, systemNetwork }: {
-   filters: IncidentFilter, systemNetwork?: boolean }) {
+export function IncidentTable ({ filters }: {
+   filters: IncidentFilter }) {
   const intl = useIntl()
   const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
@@ -269,7 +269,7 @@ export function IncidentTable ({ filters, systemNetwork }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={!systemNetwork && {
+        rowSelection={{
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
