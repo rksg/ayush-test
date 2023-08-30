@@ -7,6 +7,4 @@ path {
   fill: var(--acx-neutrals-50);
   stroke: var(--acx-primary-white) !important;
 }
-display: inline-block;
-vertical-align: text-top;
 `

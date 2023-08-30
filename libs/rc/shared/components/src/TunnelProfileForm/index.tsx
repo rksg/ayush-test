@@ -42,7 +42,7 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
 
   return (
     <Row>
-      <Col span={24}>
+      <Col span={14}>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Profile Name' })}
@@ -68,13 +68,13 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
           name='mtuType'
           label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
           extra={
-            <div style={{ marginTop: 5 }}>
+            <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
               <UI.InfoIcon />
               {
                 // eslint-disable-next-line max-len
                 $t({ defaultMessage: 'Please check Ethernet MTU on AP, Tunnel MTU gets applied only if its less than Ethernet MTU' })
               }
-            </div>
+            </Space>
           }
           children={
             <Radio.Group disabled={isDefaultTunnelProfile}>
