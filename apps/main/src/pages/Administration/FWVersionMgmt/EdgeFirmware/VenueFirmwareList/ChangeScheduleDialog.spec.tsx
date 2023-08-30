@@ -44,7 +44,7 @@ describe('Edge firmware update now dialog', () => {
     await waitFor(() => expect(mockedCancelFn).toBeCalledTimes(1))
   })
 
-  it.skip('should submit successfully', async () => {
+  it('should submit successfully', async () => {
     render(
       <ChangeScheduleDialog
         onCancel={mockedCancelFn}
