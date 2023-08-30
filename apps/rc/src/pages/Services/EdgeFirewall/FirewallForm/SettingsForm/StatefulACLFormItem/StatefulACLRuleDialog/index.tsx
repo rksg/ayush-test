@@ -140,7 +140,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
     const priority = form.getFieldValue('priority')
     onSubmit({ ...data, priority } as StatefulAclRule, editMode)
 
-    if (addAnotherRuleChecked) {
+    if (addAnotherRuleChecked && !editMode) {
       form.resetFields()
     } else {
       handleClose()

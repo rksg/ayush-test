@@ -130,7 +130,7 @@ describe('DDoS rule dialog', () => {
     expect(screen.queryByRole('combobox', { name: 'DDoS Attack Type' })).toHaveValue('')
   })
 
-  it('should disabled all options after `All` is created', async () => {
+  it('should disabled all options and `Add another rule` after `All` is created', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('rules', [{
@@ -152,5 +152,24 @@ describe('DDoS rule dialog', () => {
 
     const disabledOpts = screen.getAllByRole('option', { name: 'this rule is already created.' })
     expect(disabledOpts.length).toBe(5)
+    expect(screen.getByRole('checkbox', { name: 'Add another rule' })).toBeDisabled()
+  })
+
+  it('should disabled `Add another rule` after `All` is selected', async () => {
+    render(<Form>
+      <DDoSRuleDialog
+        visible={true}
+        setVisible={mockedSetVisible}
+        onSubmit={mockedSubmit}
+        editMode={false}
+        editData={{} as DdosRateLimitingRule}
+      />
+    </Form>)
+
+    await screen.findByText('Add DDoS Rule')
+    await selectOptions(
+      await screen.findByRole('combobox', { name: 'DDoS Attack Type' }),
+      'All')
+    expect(screen.getByRole('checkbox', { name: 'Add another rule' })).toBeDisabled()
   })
 })
