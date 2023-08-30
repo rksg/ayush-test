@@ -13,8 +13,8 @@ import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer }   from './ApRfNeig
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  initPokeSocket: (requestId: string, handler: () => void) => {
-    return mockedInitPokeSocketFn(requestId, handler)
+  initPokeSocket: (subscriptionId: string, handler: () => void) => {
+    return mockedInitPokeSocketFn(subscriptionId, handler)
   },
   closePokeSocket: () => jest.fn()
 }))
