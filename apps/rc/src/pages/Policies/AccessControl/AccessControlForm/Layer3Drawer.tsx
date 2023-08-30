@@ -250,7 +250,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (contentForm && layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+    if (contentForm && layer3PolicyInfo &&
+      (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('description', layer3PolicyInfo.description)
       contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
