@@ -10,7 +10,6 @@ import { capitalize } from 'lodash'
 import { Button } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
-import { boolean } from '@storybook/addon-knobs'
 
 interface Node {
   id?: string;
@@ -39,6 +38,22 @@ const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] =
   return results;
 };
 
+interface Props {
+  node: Node;
+  onClick: (node: Node) => void;
+}
+const ListItemComponent: React.FC<Props> = ({ node, onClick }) => {
+  const isLeaf = node?.children?.length === 0 || !Boolean(node?.children);
+
+  return (
+    <UI.ListItem key={`${node?.type}-${node.name}`} onClick={() => !isLeaf && onClick(node)}>
+      <UI.ListItemSpan>{`${node.type ? `${node.type}(` : ''}${node.name}${
+        node.type ? ')' : ''
+      }`}</UI.ListItemSpan>
+      <div style={{ verticalAlign: 'middle' }}>{!isLeaf && <UI.RightArrow />}</div>
+    </UI.ListItem>
+  );
+};
 export const TestComponent = () => {
   const rootNode: Node = {
     id: '1',
@@ -138,12 +153,12 @@ export const TestComponent = () => {
                     name: 'EASTBLOCK',
                     type: 'switchGroup',
                     children: [
-                        {
-                          name: 'ICX7450-32ZP Router',
-                          type: 'switch',
-                          mac: '60:9C:9F:1D:D3:30',
-                        },
-                      ],
+                      {
+                        name: 'ICX7450-32ZP Router',
+                        type: 'switch',
+                        mac: '60:9C:9F:1D:D3:30',
+                      },
+                    ],
                   },
                   {
                     name: 'WESTBLOCK',
@@ -281,8 +296,8 @@ export const TestComponent = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const handleVisibleChange = (flag: boolean) => {
-    setVisible(flag)
-  }
+    setVisible(flag);
+  };
 
   useEffect(() => {
     if (searchText) {
@@ -297,11 +312,10 @@ export const TestComponent = () => {
       setBreadcrumb(node.path);
     } else {
       setBreadcrumb([...breadcrumb, node]);
-    }    
-    setSearchResults([])
-  setSearchText('')
-
-  }
+    }
+    setSearchResults([]);
+    setSearchText('');
+  };
 
   const onBreadcrumbClick = (index: number) => {
     setBreadcrumb(breadcrumb.slice(0, index + 1));
@@ -309,85 +323,71 @@ export const TestComponent = () => {
 
   const onBack = () => {
     if (breadcrumb.length > 1) {
-      const newBreadcrumb = [...breadcrumb]
-      newBreadcrumb.pop()
-      setBreadcrumb(newBreadcrumb)
+      const newBreadcrumb = [...breadcrumb];
+      newBreadcrumb.pop();
+      setBreadcrumb(newBreadcrumb);
     }
-  }
-  const currentNode = breadcrumb[breadcrumb.length - 1]
-  const nodesToShow = searchText ? searchResults  : (breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].children : [...rootNode])
-  console.log(nodesToShow)
-  const menu = (
+  };
+  const currentNode = breadcrumb[breadcrumb.length - 1];
+  const nodesToShow = searchText
+    ? searchResults
+    : breadcrumb.length > 0
+    ? breadcrumb[breadcrumb.length - 1].children
+    : [];
+  const dropDownHeader = (
+    <>
+      <UI.ListHeader onClick={onBack}>
+        {breadcrumb.length > 1 && <UI.LeftArrow />}
+        <UI.LeftArrowText hasLeftArrow={!Boolean(breadcrumb.length > 1)}>
+          {searchText
+            ? 'Search Results'
+            : capitalize(
+                currentNode?.type ? `${currentNode.type}(${currentNode.name}) ` : currentNode.name
+              )}
+        </UI.LeftArrowText>
+      </UI.ListHeader>
+      <UI.StyledBreadcrumb>
+        {breadcrumb.map((node, index) => (
+          <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
+            {index !== breadcrumb.length - 1
+              ? capitalize(node?.type ? `${node.type}(${node.name}) ` : node.name)
+              : ''}
+          </Breadcrumb.Item>
+        ))}
+      </UI.StyledBreadcrumb>
+    </>
+  );
+  const dropDownFooter = (
+    <UI.ButtonDiv>
+      <Button size="small" onClick={() => {}}>
+        {'Cancel'}
+      </Button>
+      <Button size="small" type="primary" onClick={() => {}}>
+        {'Apply'}
+      </Button>
+    </UI.ButtonDiv>
+  );
+  const dropDownList = (
     <UI.StyledMenu>
-      <Menu.Item key='1'>
+      <Menu.Item key="1">
         <UI.StyledList
-        split = {false}
-          header={<>
-            <UI.ListHeader onClick={onBack}>
-              {breadcrumb.length > 1 && 
-                  <UI.LeftArrow />
-              }
-              <UI.LeftArrowText hasLeftArrow = { !Boolean(breadcrumb.length > 1) }>
-                    {searchText ? 'Search Results' :  capitalize(currentNode?.type
-                      ? `${currentNode.type}(${currentNode.name}) `
-                      : currentNode.name)}</UI.LeftArrowText>
-            </UI.ListHeader>
-            <UI.StyledBreadcrumb >
-              {breadcrumb.map((node, index) => (
-                <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
-                  { (index) !== (breadcrumb.length - 1) ? capitalize(node?.type
-                    ? `${node.type}(${node.name}) `
-                    : node.name) : ''}
-                </Breadcrumb.Item>
-              ))}
-            </UI.StyledBreadcrumb></>}
-          footer={
-            <UI.ButtonDiv>
-              <Button size='small' onClick={()=>{}}>
-                {'Cancel'}
-              </Button>
-              <Button size='small' type='primary' onClick={()=>{}}>
-                {'Apply'}
-              </Button>
-            </UI.ButtonDiv>
-          }
+          split={false}
+          header={dropDownHeader}
+          footer={dropDownFooter}
           dataSource={nodesToShow as Node[]}
-          renderItem={(childNode) => {
-            const node = childNode as Node
-            const isLeaf = node?.children?.length === 0 || !Boolean(node?.children)
-
-            const handleNodeClick = () => {
-              if (!isLeaf) {
-                onSelect(node as Node)
-              }
-            }
-            return <UI.ListItem key={`${node?.type}-${node.name}-${node?.path?.length}-${node?.children?.length}`}  onClick={handleNodeClick}>
-              <UI.ListItemSpan>
-                {capitalize(node?.type
-                  ? `${node.type}(${node.name}) `
-                  : node.name)}
-              </UI.ListItemSpan>
-              <div style={{
-                verticalAlign: 'middle' }}>
-                { !isLeaf && <UI.RightArrow /> }
-              </div>
-
-            </UI.ListItem>
-          }
-          }
+          renderItem={(node) => <ListItemComponent node={node as Node} onClick={onSelect} />}
         />
-
       </Menu.Item>
     </UI.StyledMenu>
-  )
+  );
   return (
-      <Dropdown overlay={menu} visible={true} onVisibleChange={handleVisibleChange}>
-        <Input
-          placeholder='Search...'
-          onClick={() => setVisible(!visible)}
-          style={{ cursor: 'pointer' }}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-      </Dropdown>
-  )
-}
+    <Dropdown overlay={dropDownList} visible={true} onVisibleChange={handleVisibleChange}>
+      <Input
+        placeholder="Search..."
+        onClick={() => setVisible(!visible)}
+        style={{ cursor: 'pointer' }}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+    </Dropdown>
+  );
+};
