@@ -2,8 +2,6 @@ import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 import { DateRange }         from '@acx-ui/utils'
 
-import * as incidentServices from '../IncidentTable/services'
-
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
 
@@ -88,7 +86,6 @@ describe('recentNetworkFilter', () => {
   })
 })
 
-
 describe('useNetworkHierarchyQuery', () => {
   const props = {
     startDate: '2023-08-16T00:00:00+08:00',
@@ -100,7 +97,6 @@ describe('useNetworkHierarchyQuery', () => {
 
   afterEach(() => {
     store.dispatch(api.util.resetApiState())
-    store.dispatch(incidentServices.api.util.resetApiState())
   })
 
   it('should return correct data for api endpoint', async () => {
@@ -140,7 +136,6 @@ describe('useNetworkHierarchyQuery', () => {
 
   it('should handle error for hierarchy', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: undefined,
       error: new Error('something went wrong!')
     })
 
@@ -151,5 +146,23 @@ describe('useNetworkHierarchyQuery', () => {
     expect(status).toBe('rejected')
     expect(data).toStrictEqual(undefined)
     expect(error).toBeTruthy()
+  })
+
+  it('should handle undefined network', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: { network: undefined }
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.networkHierarchy.initiate(props)
+    )
+
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual({
+      name: 'Network',
+      type: 'network',
+      children: []
+    })
+    expect(error).toBeUndefined()
   })
 })

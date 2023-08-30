@@ -132,46 +132,38 @@ export const hierarchyQueryResult = {
 }
 
 export const fullHierarchyQueryOuput = {
-  network: [
+  type: 'network',
+  name: 'Network',
+  children: [
     {
       name: 'test-system',
       type: 'system',
-      children: {
-        zone: [
-          {
-            name: 'child under admin',
-            type: 'zone',
-            children: {
-              apGroup: [
-                {
-                  name: 'group 1',
-                  type: 'apGroup'
-                }
-              ]
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
+            },
+            {
+              name: 'switchGroup 1',
+              type: 'switchGroup'
             }
-          }
-        ],
-        domain: [
-          {
-            name: 'second domain',
-            type: 'domain',
-            children: {
-              zone: [
-                {
-                  name: 'zone 1',
-                  type: 'zone'
-                }
-              ],
-              switchGroup: [
-                {
-                  name: 'switchGroup 1',
-                  type: 'switchGroup'
-                }
-              ]
+          ]
+        },
+        {
+          name: 'child under admin',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
             }
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       name: 'some-other system',
@@ -181,40 +173,34 @@ export const fullHierarchyQueryOuput = {
 }
 
 export const apsOnlyHierarchyQueryOuput = {
-  network: [
+  type: 'network',
+  name: 'Network',
+  children: [
     {
       name: 'test-system',
       type: 'system',
-      children: {
-        zone: [
-          {
-            name: 'child under admin',
-            type: 'zone',
-            children: {
-              apGroup: [
-                {
-                  name: 'group 1',
-                  type: 'apGroup'
-                }
-              ]
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
             }
-          }
-        ],
-        domain: [
-          {
-            name: 'second domain',
-            type: 'domain',
-            children: {
-              zone: [
-                {
-                  name: 'zone 1',
-                  type: 'zone'
-                }
-              ]
+          ]
+        },
+        {
+          name: 'child under admin',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
             }
-          }
-        ]
-      }
+          ]
+        }
+      ]
     }
   ]
 }
