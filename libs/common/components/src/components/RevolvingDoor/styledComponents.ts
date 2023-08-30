@@ -99,6 +99,8 @@ export const StyledMenu = styled(Menu)`
   padding-left: 0px;
   padding-right: 0px;
   padding-top: 4px;
+  max-height: 400px;
+  overflow: auto;
   &:hover {
     background-color: #fff !important;
     cursor: default;  }

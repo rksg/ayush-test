@@ -1,34 +1,46 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 
 
-import { Dropdown, Menu, List, Input } from 'antd'
+import { Dropdown, Menu, Input } from 'antd'
 import {
   Breadcrumb
 } from 'antd'
 import { capitalize } from 'lodash'
 
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
-
 import { Button } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
+import { boolean } from '@storybook/addon-knobs'
 
-const searchTree = (node, searchText) => {
-  let results = []
-  if (node?.name?.toLowerCase().includes(searchText?.toLowerCase())) {
-    results.push(node)
-  }
-  if (Array.isArray(node.children)) {
-    for (const child of node.children) {
-      results = results.concat(searchTree(child, searchText))
-    }
-  }
-
-  return results
+interface Node {
+  id?: string;
+  name: string;
+  type?: string;
+  mac?: string;
+  P1?: number;
+  P2?: number;
+  P3?: number;
+  P4?: number;
+  children?: Node[];
+  path?: Node[];
 }
 
+const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
+  let results: Node[] = [];
+  if (node?.name?.toLowerCase().includes(searchText.toLowerCase())) {
+    results.push({ ...node, path: [...path, node] });
+  }
+
+  if (Array.isArray(node.children)) {
+    for (const child of node.children) {
+      results = results.concat(searchTree(child, searchText, [...path, node]));
+    }
+  }
+  return results;
+};
+
 export const TestComponent = () => {
-  const rootNode = {
+  const rootNode: Node = {
     id: '1',
     name: 'Network',
     children: [
@@ -36,69 +48,6 @@ export const TestComponent = () => {
         id: '2',
         name: 'APs',
         children: [
-          {
-            name: 'Alphanet-BDC',
-            type: 'system',
-            P1: 0,
-            P2: 0,
-            P3: 0,
-            P4: 1,
-            children: [
-              {
-                name: 'Administration Domain',
-                type: 'domain',
-                P1: 0,
-                P2: 0,
-                P3: 0,
-                P4: 1,
-                children: [
-                  {
-                    name: 'AlphaNet_5_1',
-                    type: 'zone',
-                    children: [
-                      {
-                        name: 'default',
-                        type: 'apGroup',
-                        children: [
-                          {
-                            name: 'W_04',
-                            type: 'ap',
-                            mac: '0C:F4:D5:13:3A:F0'
-                          },
-                          {
-                            name: 'E-02-BKP',
-                            type: 'ap',
-                            mac: '0C:F4:D5:18:40:30'
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    name: 'Default Zone',
-                    type: 'zone',
-                    P1: 0,
-                    P2: 0,
-                    P3: 0,
-                    P4: 1,
-                    children: [
-                      {
-                        name: 'default',
-                        type: 'apGroup',
-                        children: [
-                          {
-                            name: 'W-04',
-                            type: 'ap',
-                            mac: '0C:F4:D5:13:3A:F0'
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
           {
             name: 'BDC-Mini-Density',
             P1: 0,
@@ -122,22 +71,27 @@ export const TestComponent = () => {
                           {
                             name: 'R550-Solution-2',
                             type: 'ap',
-                            mac: '00:E6:3A:1E:5C:60'
+                            mac: '00:E6:3A:1E:5C:60',
                           },
                           {
                             name: 'R750-Solution-1',
                             type: 'ap',
-                            mac: '28:B3:71:2B:D8:30'
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                            mac: '28:B3:71:2B:D8:30',
+                          },
+                          {
+                            name: 'R750-Solution-2',
+                            type: 'ap',
+                            mac: '28:B3:71:2B:D8:34',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
       {
         id: '3',
@@ -166,27 +120,30 @@ export const TestComponent = () => {
                       {
                         name: 'ICX8200-C08ZP Router',
                         type: 'switch',
-                        mac: '94:B3:4F:2F:7D:0A'
+                        mac: '94:B3:4F:2F:7D:0A',
+                      },
+                      {
+                        name: 'ICX8200-C08ZP Router2',
+                        type: 'switch',
+                        mac: '94:B3:4F:2F:7D:0L',
                       },
                       {
                         name: 'ICX8200-48ZP2 Router',
                         type: 'switch',
-                        mac: '94:B3:4F:2F:C6:4E'
-                      }
-                    ]
+                        mac: '94:B3:4F:2F:C6:4E',
+                      },
+                    ],
                   },
                   {
                     name: 'EASTBLOCK',
                     type: 'switchGroup',
                     children: [
-                      [
                         {
                           name: 'ICX7450-32ZP Router',
                           type: 'switch',
-                          mac: '60:9C:9F:1D:D3:30'
-                        }
-                      ]
-                    ]
+                          mac: '60:9C:9F:1D:D3:30',
+                        },
+                      ],
                   },
                   {
                     name: 'WESTBLOCK',
@@ -195,13 +152,13 @@ export const TestComponent = () => {
                       {
                         name: 'ICX7150-C12 Router',
                         type: 'switch',
-                        mac: '58:FB:96:0B:12:CA'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+                        mac: '58:FB:96:0B:12:CA',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           {
             name: 'ICXM-Scale',
@@ -218,9 +175,9 @@ export const TestComponent = () => {
                       {
                         name: 'Access-Wired',
                         type: 'switch',
-                        mac: '78:A6:E1:1C:83:24'
-                      }
-                    ]
+                        mac: '78:A6:E1:1C:83:24',
+                      },
+                    ],
                   },
                   {
                     name: 'Managed Switches',
@@ -229,9 +186,9 @@ export const TestComponent = () => {
                       {
                         name: 'NET35XX-CORE',
                         type: 'switch',
-                        mac: '60:9C:9F:22:E8:80'
-                      }
-                    ]
+                        mac: '60:9C:9F:22:E8:80',
+                      },
+                    ],
                   },
                   {
                     name: 'NET37XX',
@@ -240,9 +197,9 @@ export const TestComponent = () => {
                       {
                         name: 'NET37XX-CORE',
                         type: 'switch',
-                        mac: '8C:7A:15:3C:DC:28'
-                      }
-                    ]
+                        mac: '8C:7A:15:3C:DC:28',
+                      },
+                    ],
                   },
                   {
                     name: 'OLT-Commscope',
@@ -251,18 +208,18 @@ export const TestComponent = () => {
                       {
                         name: 'OLT-Access-ONU1',
                         type: 'switch',
-                        mac: '60:9C:9F:FE:5B:78'
+                        mac: '60:9C:9F:FE:5B:78',
                       },
                       {
                         name: 'OLT-7550-Distribution',
                         type: 'switch',
-                        mac: '8C:7A:15:3C:CA:1C'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+                        mac: '8C:7A:15:3C:CA:1C',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           {
             name: 'density-vsze-cluster',
@@ -295,58 +252,60 @@ export const TestComponent = () => {
                         P1: 1,
                         P2: 0,
                         P3: 0,
-                        P4: 0
+                        P4: 0,
                       },
                       {
                         name: 'east-icxstack-density',
                         type: 'switch',
-                        mac: '60:9C:9F:FE:56:42'
+                        mac: '60:9C:9F:FE:56:42',
                       },
                       {
                         name: 'density-main-switch',
                         type: 'switch',
-                        mac: '60:9C:9F:FE:64:14'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                        mac: '60:9C:9F:FE:64:14',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
 
-  const [breadcrumb, setBreadcrumb] = useState([rootNode])
-  const [checkedNodes, setCheckedNodes] = useState({})
-  const [searchText, setSearchText] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [visible, setVisible] = useState(false)
-  const inputRef = useRef(null)
+  const [breadcrumb, setBreadcrumb] = useState<Node[]>([rootNode]);
+  const [searchText, setSearchText] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<Node[]>([]);
+  const [visible, setVisible] = useState<boolean>(false);
 
-  const handleVisibleChange = flag => {
+  const handleVisibleChange = (flag: boolean) => {
     setVisible(flag)
   }
 
   useEffect(() => {
     if (searchText) {
-      let results = []
-      for (const node of [...rootNode]) {
-        results = results.concat(searchTree(node, searchText))
-      }
-      setSearchResults(results)
+      const results = searchTree(rootNode, searchText);
+      setSearchResults(results);
     } else {
-      setSearchResults([])
+      setSearchResults([]);
     }
-  }, [searchText])
-  const onSelect = (node) => {
-    setBreadcrumb([...breadcrumb, node])
+  }, [searchText]);
+  const onSelect = (node: Node) => {
+    if (node.path) {
+      setBreadcrumb(node.path);
+    } else {
+      setBreadcrumb([...breadcrumb, node]);
+    }    
+    setSearchResults([])
+  setSearchText('')
+
   }
 
-  const onBreadcrumbClick = (index) => {
-    setBreadcrumb(breadcrumb.slice(0, index + 1))
-  }
+  const onBreadcrumbClick = (index: number) => {
+    setBreadcrumb(breadcrumb.slice(0, index + 1));
+  };
 
   const onBack = () => {
     if (breadcrumb.length > 1) {
@@ -355,10 +314,9 @@ export const TestComponent = () => {
       setBreadcrumb(newBreadcrumb)
     }
   }
-
   const currentNode = breadcrumb[breadcrumb.length - 1]
-  const nodesToShow = searchText ? searchResults : (breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].children : [...rootNode])
-
+  const nodesToShow = searchText ? searchResults  : (breadcrumb.length > 0 ? breadcrumb[breadcrumb.length - 1].children : [...rootNode])
+  console.log(nodesToShow)
   const menu = (
     <UI.StyledMenu>
       <Menu.Item key='1'>
@@ -370,11 +328,10 @@ export const TestComponent = () => {
                   <UI.LeftArrow />
               }
               <UI.LeftArrowText hasLeftArrow = { !Boolean(breadcrumb.length > 1) }>
-                    {capitalize(currentNode?.type
+                    {searchText ? 'Search Results' :  capitalize(currentNode?.type
                       ? `${currentNode.type}(${currentNode.name}) `
                       : currentNode.name)}</UI.LeftArrowText>
             </UI.ListHeader>
-            {/* Breadcrumb */}
             <UI.StyledBreadcrumb >
               {breadcrumb.map((node, index) => (
                 <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
@@ -394,20 +351,21 @@ export const TestComponent = () => {
               </Button>
             </UI.ButtonDiv>
           }
-          dataSource={nodesToShow}
-          renderItem={childNode => {
-            const isLeaf = childNode?.children?.length === 0 || !Boolean(childNode?.children)
+          dataSource={nodesToShow as Node[]}
+          renderItem={(childNode) => {
+            const node = childNode as Node
+            const isLeaf = node?.children?.length === 0 || !Boolean(node?.children)
 
             const handleNodeClick = () => {
               if (!isLeaf) {
-                onSelect(childNode)
+                onSelect(node as Node)
               }
             }
-            return <UI.ListItem key={childNode.name}  onClick={handleNodeClick}>
+            return <UI.ListItem key={`${node?.type}-${node.name}-${node?.path?.length}-${node?.children?.length}`}  onClick={handleNodeClick}>
               <UI.ListItemSpan>
-                {capitalize(childNode?.type
-                  ? `${childNode.type}(${childNode.name}) `
-                  : childNode.name)}
+                {capitalize(node?.type
+                  ? `${node.type}(${node.name}) `
+                  : node.name)}
               </UI.ListItemSpan>
               <div style={{
                 verticalAlign: 'middle' }}>
@@ -423,24 +381,13 @@ export const TestComponent = () => {
     </UI.StyledMenu>
   )
   return (
-    <div>
-      {/* Search Box */}
-      {/* <div>
-        <input
-          type='text'
-          placeholder='Search...'
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-      </div> */}
       <Dropdown overlay={menu} visible={true} onVisibleChange={handleVisibleChange}>
         <Input
           placeholder='Search...'
-          ref={inputRef}
           onClick={() => setVisible(!visible)}
           style={{ cursor: 'pointer' }}
+          onChange={(e) => setSearchText(e.target.value)}
         />
       </Dropdown>
-    </div>
   )
 }
