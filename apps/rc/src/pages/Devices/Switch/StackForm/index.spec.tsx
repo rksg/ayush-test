@@ -31,6 +31,7 @@ import {
 } from '../SwitchForm/__tests__/fixtures'
 
 import { StackForm } from '.'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -209,6 +210,7 @@ describe('Switch Stack Form - Add', () => {
   })
 
   it('should handle add stack by stack switches', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }

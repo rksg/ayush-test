@@ -463,22 +463,24 @@ export function StackForm () {
   }
 
   const DragHandle = SortableHandle(() =>
-    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
+    <Drag style={{
+      cursor: 'grab', color: '#6e6e6e',
+      marginBottom: '5px', verticalAlign: 'middle'
+    }} />
   )
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {
       dataIndex: 'sort',
       key: 'sort',
-      width: 60,
+      width: 50,
       show: editMode,
       render: (_, row) => {
         return (
           <div data-testid={`${row.key}_Icon`}
             style={{
               textAlign: 'center',
-              verticalAlign: 'middle',
-              paddingTop: '10px'
+              verticalAlign: 'middle'
             }}><DragHandle /></div>
         )
       }
@@ -492,7 +494,7 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'id',
       key: 'id',
-      width: 200,
+      width: 155,
       render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
@@ -710,7 +712,7 @@ export function StackForm () {
             ]}
           >
             <Row gutter={20}>
-              <Col span={12}>
+              <Col span={enableSwitchStackNameDisplayFlag ? 12 : 8}>
 
                 <Tabs onChange={onTabChange}
                   activeKey={currentTab}
