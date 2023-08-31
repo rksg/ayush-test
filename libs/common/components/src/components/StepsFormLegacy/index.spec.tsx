@@ -30,8 +30,7 @@ describe('StepsFormLegacy', () => {
     const onFinish = jest.fn()
     render(<CustomForm onFinish={onFinish} />)
 
-    expect(screen.getAllByRole('button').length).toEqual(3)
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+    expect(screen.getAllByRole('button').length).toEqual(2)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
