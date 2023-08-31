@@ -143,5 +143,53 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/preferences',
     oldUrl: '/api/tenant/:tenantId/preferences',
     newApi: true
+  },
+  getLatestEdgeFirmware: {
+    method: 'get',
+    url: '/edgeFirmwares?latest=true',
+    oldUrl: '/edgeFirmwares?latest=true',
+    newApi: true
+  },
+  getVenueEdgeFirmwareList: {
+    method: 'get',
+    url: '/venues/edgeFirmwares/releases',
+    oldUrl: '/venues/edgeFirmwares/releases',
+    newApi: true
+  },
+  getAvailableEdgeFirmwareVersions: {
+    method: 'get',
+    url: '/edgeFirmwares',
+    oldUrl: '/edgeFirmwares',
+    newApi: true
+  },
+  updateEdgeFirmware: {
+    method: 'PATCH',
+    url: '/venues/edgeFirmwares/releases',
+    oldUrl: '/venues/edgeFirmwares/releases',
+    newApi: true
+  },
+  getEdgeUpgradePreferences: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/edgePreference',
+    oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
+    newApi: true
+  },
+  updateEdgeUpgradePreferences: {
+    method: 'put',
+    url: '/api/upgrade/tenant/:tenantId/edgePreference',
+    oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
+    newApi: true
+  },
+  skipEdgeUpgradeSchedules: {
+    method: 'delete',
+    url: '/venues/edgeFirmwares/releases',
+    oldUrl: '/venues/edgeFirmwares/releases',
+    newApi: true
+  },
+  updateEdgeVenueSchedules: {
+    method: 'post',
+    url: '/venues/edgeFirmwares/releases',
+    oldUrl: '/venues/edgeFirmwares/releases',
+    newApi: true
   }
 }

@@ -7,6 +7,7 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 import { getSeriesData, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
+  Card as NormalCard,
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
@@ -20,13 +21,14 @@ import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
 interface NetworkHistoryWidgetComponentProps {
-  hideTitle?: boolean;
-  hideLegend?: boolean;
-  type?: CardTypes;
-  filters: IncidentFilter;
-  hideIncidents?: boolean;
-  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void },
+  hideTitle?: boolean
+  hideLegend?: boolean
+  type?: CardTypes
+  filters: IncidentFilter
+  hideIncidents?: boolean
+  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
   apCount?: number
+  historicalIcon?: boolean
 }
 
 export const NetworkHistory = forwardRef<
@@ -38,9 +40,10 @@ export const NetworkHistory = forwardRef<
     hideLegend,
     type = 'default',
     filters,
-    hideIncidents=false,
+    hideIncidents = false,
     brush,
-    apCount
+    apCount,
+    historicalIcon = true
   } = props
   const { $t } = useIntl()
   let seriesMapping = [
@@ -65,10 +68,11 @@ export const NetworkHistory = forwardRef<
       ...rest
     })
   })
+  const Card = historicalIcon ? HistoricalCard : NormalCard
   const title = hideTitle ? undefined : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={title} type={type}>
+      <Card title={title} type={type}>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
@@ -83,7 +87,7 @@ export const NetworkHistory = forwardRef<
               : <NoData/>
           )}
         </AutoSizer>
-      </HistoricalCard>
+      </Card>
     </Loader>
   )
 })
