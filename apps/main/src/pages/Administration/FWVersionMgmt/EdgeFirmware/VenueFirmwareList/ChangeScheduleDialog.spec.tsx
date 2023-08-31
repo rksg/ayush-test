@@ -11,7 +11,11 @@ import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 const mockedCancelFn = jest.fn()
 const mockedSubmitFn = jest.fn()
 
-describe('Edge firmware update now dialog', () => {
+jest.spyOn(Date, 'now').mockImplementation(() => {
+  return new Date('2023-01-20T12:33:37.101+00:00').getTime()
+})
+
+describe('Edge firmware schedule update dialog', () => {
 
   it('should render successfully', async () => {
     render(

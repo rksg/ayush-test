@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                  from '@acx-ui/components'
-import { APStatus }                                                   from '@acx-ui/rc/components'
-import { useLazyGetApRfNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }    from '@acx-ui/components'
+import { APStatus }                     from '@acx-ui/rc/components'
+import { useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
-  ApRfNeighborsResponse,
   CatchErrorResponse,
   SortResult,
   defaultSort,
@@ -17,33 +14,14 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { DetectionStatus, useApNeighbors } from './useApNeighbors'
+import { defaultPagination }           from './constants'
+import { handleError, useApNeighbors } from './useApNeighbors'
 
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
-  const [ getApRfNeighbors, { isLoading: isLoadingApRfNeighbors }] = useLazyGetApRfNeighborsQuery()
-  const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
-  const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
-  const [ tableData, setTableData ] = useState<ApRfNeighborsResponse>()
-
-  useEffect(() => {
-    doDetect()
-  }, [])
-
-  const doDetect = async () => {
-    try {
-      const result = await detectApNeighbors({
-        params: { serialNumber },
-        payload: { action: 'DETECT_RF_NEIGHBOR' }
-      }).unwrap()
-
-      setRequestId(result.requestId)
-    } catch (error) {
-      setRequestId('')
-      handleError(error as CatchErrorResponse)
-    }
-  }
+  const [ getApRfNeighbors, getApRfNeighborsStates ] = useLazyGetApRfNeighborsQuery()
+  const { doDetect, isDetecting } = useApNeighbors('rf', serialNumber!, socketHandler)
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
@@ -51,25 +29,28 @@ export default function ApRfNeighbors () {
     onClick: doDetect
   }]
 
-  async function socketHandler () {
+  function socketHandler () {
     try {
-      const data = await getApRfNeighbors({ params: { serialNumber } }).unwrap()
-      setTableData(data)
+      getApRfNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
       handleError(error as CatchErrorResponse)
     }
   }
 
-  const isTableLoading = (): boolean => {
-    return isLoadingApRfNeighbors || detectionStatus === DetectionStatus.FETCHING
+  const isTableFetching = () => {
+    return getApRfNeighborsStates.isFetching || isDetecting
   }
 
-  return <Loader states={[{ isLoading: isTableLoading() }]}>
+  return <Loader states={[{
+    isLoading: getApRfNeighborsStates.isLoading,
+    isFetching: isTableFetching()
+  }]}>
     <Table
       settingsId='ap-rf-neighbors-table'
       rowKey='apMac'
       columns={getColumns()}
-      dataSource={tableData?.neighbors ?? []}
+      dataSource={getApRfNeighborsStates.data?.neighbors ?? []}
+      pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />
   </Loader>
