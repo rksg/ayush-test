@@ -1,6 +1,7 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
+import { showToast }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                  from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, isDelegationMode }     from '@acx-ui/rc/utils'
@@ -18,7 +19,8 @@ jest.spyOn(Date, 'now').mockImplementation(() => {
 jest.spyOn(window, 'open').mockImplementation(mockedWindowOpen)
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />)
+  StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />),
+  showToast: jest.fn()
 }))
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
@@ -84,9 +86,10 @@ describe('Subscriptions', () => {
   })
 
   it('should render correctly', async () => {
+    const mockedShowToast = jest.fn()
     jest.mocked(isDelegationMode).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
-
+    jest.mocked(showToast).mockImplementation(mockedShowToast)
     render(
       <Provider>
         <Subscriptions />
@@ -108,8 +111,11 @@ describe('Subscriptions', () => {
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
-    await waitFor(async () => {
-      expect(await screen.findByText('Successfully refreshed.')).toBeVisible()
+    await waitFor(() => {
+      expect(mockedShowToast).toBeCalledWith({
+        type: 'success',
+        content: 'Successfully refreshed.'
+      })
     })
   })
 
