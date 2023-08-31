@@ -28,10 +28,6 @@ function ClientDetailTabs () {
         tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Timeline' })}
-        key='timeline'
-      />
     </Tabs>
   )
 }
