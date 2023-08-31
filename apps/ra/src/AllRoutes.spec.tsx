@@ -35,7 +35,7 @@ describe('AllRoutes', () => {
   it('should render config change correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/configChange' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
+    expect(await screen.findByTestId('NetworkAssurance')).toBeVisible()
   })
   it('should render health page correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/health' }, wrapper: Provider })
