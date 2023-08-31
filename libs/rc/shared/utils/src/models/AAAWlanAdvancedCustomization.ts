@@ -290,9 +290,9 @@ export class AAAWlanAdvancedCustomization {
 
     this.multiLinkOperationEnabled = false
 
-    this.qosMirroringEnabled = true
+    this.qosMirroringEnabled = undefined
 
-    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
+    this.qosMirroringScope = undefined
 
     this.qosMapSetEnabled = false
 
