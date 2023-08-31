@@ -2,6 +2,7 @@ import userEvent             from '@testing-library/user-event'
 import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { FirmwareUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -32,6 +33,8 @@ const mockedUpdateNow = jest.fn()
 const mockedUpdatePreference = jest.fn()
 const mockedUpdateSchedule = jest.fn()
 const mockedSkipUpdate = jest.fn()
+
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Edge venue firmware list', () => {
   let params: { tenantId: string }
