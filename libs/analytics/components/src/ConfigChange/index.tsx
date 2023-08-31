@@ -22,7 +22,7 @@ export function useConfigChange () {
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
-  const [legend, setLegend] = useState<Record<string, boolean> | undefined>({})
+  const [legend, setLegend] = useState<Record<string, boolean>>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
