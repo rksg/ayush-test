@@ -20,11 +20,19 @@ export function VoiceVlanModal (props:{
 
   useEffect(() => {
     if(editPorts){
+      const initialOption = [{
+        label: $t({ defaultMessage: 'Not Set' }),
+        value: ''
+      }]
       const vlans = editPorts?.vlanOptions?.map(i => ({
-        label:$t( { defaultMessage: 'VLAN-ID: {vlan}' }, { vlan: i }),
+        label: $t( { defaultMessage: 'VLAN-ID: {id}' }, { id: i }),
         value: i
       }))
-      setVlanOptions(vlans || [])
+      const vlanOptions = vlans ? [...initialOption, ...vlans] : initialOption
+      setVlanOptions(vlanOptions)
+      form.setFieldsValue({
+        voiceVlan: editPorts.voiceVlanValue,
+      })
     }
   }, [editPorts])
 
@@ -33,12 +41,13 @@ export function VoiceVlanModal (props:{
   }
 
   const onFinish = async (value: { voiceVlan:string }) => {
-    const currentPort = editPorts.ports[0]
     const currentTableCopy = [...tableData]
     currentTableCopy.forEach(item => {
-      if(item.taggedPort == currentPort){
-        item.voiceVlan = value.voiceVlan
-      }
+      editPorts.ports.forEach(port => {
+        if(item.taggedPort == port){
+          item.voiceVlan = value.voiceVlan
+        }
+      })
     })
     setTableData(currentTableCopy)
     handleCancel()
@@ -62,7 +71,6 @@ export function VoiceVlanModal (props:{
           <Form.Item
             label={$t({ defaultMessage: 'Voice VLAN' })}
             name='voiceVlan'
-            initialValue={''}
             validateFirst
             children={<Select
               options={vlanOptions}

@@ -34,3 +34,12 @@ export const FormLabel = styled.div`
     padding-bottom: 0;
   }
 `
+
+export const FormChildren = styled.div`
+  .ant-form-item-control-input {
+    min-height: auto;
+  }
+  .ant-form-item-control-input-content div{
+    margin-top: 3px
+  }
+`

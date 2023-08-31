@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }            from '@acx-ui/components'
+import { Button, Drawer, Table, TableProps }            from '@acx-ui/components'
 import { Vlan, VoiceVlanModalData, VoiceVlanOption, VoiceVlanPort } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }            from '@acx-ui/user'
-import { noDataDisplay }                        from '@acx-ui/utils'
+import { noDataDisplay, TABLE_DEFAULT_PAGE_SIZE }                        from '@acx-ui/utils'
 
 import { VoiceVlanModal } from './VoiceVlanModal'
 import _ from 'lodash'
@@ -32,9 +32,9 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
   const [form] = Form.useForm<Vlan>()
 
   useEffect(() => {
-    if(modelData){
+    if(modelData && visible){
       const portVlans:PortVlanMap = {}
-      modelData.voiceVlans.forEach(vlan => {
+      modelData.taggedVlans.forEach(vlan => {
         vlan.taggedPorts.forEach((port:string) => {
           if(!portVlans[port]){
             portVlans[port] = [String(vlan.vlanId)]
@@ -56,7 +56,7 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
       setPortVlanMap(portVlans)
       setTableData(tmpdata)
     }
-  }, [modelData])
+  }, [modelData, visible])
 
   const onClose = () => {
     setVisible(false)
@@ -77,12 +77,39 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
       })
     })
     const ports = selectedRows.map(i => i.taggedPort)
+    let voiceVlanValue = selectedRows[0].voiceVlan
+    if(selectedRows.length) {
+      if(selectedRows.find(row => row.voiceVlan !== voiceVlanValue) !== undefined) {
+        voiceVlanValue = '' // multiple voice VLANs
+      }
+    }
     setEditPorts({
       ports,
       vlanOptions: vlanOptions,
-      voiceVlanValue: ''
+      voiceVlanValue: voiceVlanValue
     })
     setVoiceVlanModalVisible(true)
+  }
+
+  const onSave = () => {
+    const voiceVlanPortMap:{[key:string]: string[]} = {}
+    tableData.forEach(row => {
+      if(row.voiceVlan) {
+        if(voiceVlanPortMap[row.voiceVlan]) {
+          voiceVlanPortMap[row.voiceVlan].push(row.taggedPort)
+        }else{
+          voiceVlanPortMap[row.voiceVlan] = [row.taggedPort]
+        }
+      }
+    })
+    const voiceVlanConfig: any = [] 
+    Object.keys(voiceVlanPortMap).forEach(key=> {
+      voiceVlanConfig.push({
+        vlanId: key,
+        taggedPorts: voiceVlanPortMap[key]
+      })
+    })
+    console.log('voiceVlanConfig: ', voiceVlanConfig)
   }
 
   return (
@@ -97,21 +124,20 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
           <PortTable onEdit={onEdit} tableData={tableData}/>
         }
         footer={
-          <Drawer.FormFooter
-            buttonLabel={{
-              save: $t({ defaultMessage: 'Save' })
-            }}
-            onCancel={onClose}
-            onSave={async () => {
-              try {
-                await form.validateFields()
-                form.submit()
-                onClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
+          <>
+          <div/>
+          <div>
+            <Button onClick={onClose}>
+              {$t({ defaultMessage: 'Cancel' })}
+            </Button>
+            <Button
+              onClick={onSave}
+              type='primary'
+            >
+              {$t({ defaultMessage: 'Save' })}
+            </Button>
+          </div>
+          </>
         }
       />
       <VoiceVlanModal
@@ -153,6 +179,9 @@ const PortTable = (props: { onEdit: (selectedRows: VoiceVlanPort[]) => void, tab
     rowActions={filterByAccess(rowActions)}
     columns={columns}
     dataSource={tableData}
+    pagination={{
+      pageSize: TABLE_DEFAULT_PAGE_SIZE // fix: the initial page size is 20 here
+    }}
     rowSelection={hasAccess() && {
       type: 'checkbox'
     }}

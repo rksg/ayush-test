@@ -684,6 +684,11 @@ export interface TaggedVlanPorts {
 
 export interface VoiceVlanOption {
   model: string
+  taggedVlans: TaggedVlanPorts[]
+}
+
+export interface VoiceVlanConfig {
+  model: string
   voiceVlans: TaggedVlanPorts[]
 }
 
@@ -703,6 +708,7 @@ export interface SwitchConfigurationProfile {
   description: string
   trustedPorts: TrustedPort[]
   voiceVlanOptions: VoiceVlanOption[]
+  voiceVlanConfigs: VoiceVlanConfig[]
 }
 
 export interface AclStandardRule {
