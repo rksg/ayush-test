@@ -99,7 +99,8 @@ export enum Features {
   MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
   // eslint-disable-next-line max-len
-  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit'
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
+  EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
