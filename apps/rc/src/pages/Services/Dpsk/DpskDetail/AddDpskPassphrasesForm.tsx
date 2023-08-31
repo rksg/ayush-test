@@ -13,7 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
 import { Tooltip, PasswordInput }                                         from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector, PhoneInput, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import { useGetDpskPassphraseQuery, useGetDpskQuery }                     from '@acx-ui/rc/services'
 import {
@@ -28,7 +28,7 @@ import {
   validateVlanId
 } from '@acx-ui/rc/utils'
 
-import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
+import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'
@@ -52,6 +52,12 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const dpskDeviceCountLimitToggle =
+    useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
+
+  const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
+    ? NEW_MAX_DEVICES_PER_PASSPHRASE
+    : OLD_MAX_DEVICES_PER_PASSPHRASE
   const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
     { params: { ...params, passphraseId: editMode.passphraseId, ...dpskNewConfigFlowParams } },
     { skip: !editMode.isEdit }
