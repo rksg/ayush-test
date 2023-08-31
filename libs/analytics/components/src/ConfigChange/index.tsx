@@ -30,7 +30,6 @@ export function useConfigChange () {
     pageSize: 10
   })
   const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last7Days)
-  const legendList = Object.keys(legend!).filter(key => legend![key])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     setPagination({
@@ -86,7 +85,7 @@ export function useConfigChange () {
           setChartZoom={setChartZoom}
           setInitialZoom={setInitialZoom}
           setLegend={setLegend}
-          legend={legendList}
+          legend={legend}
           setSelectedData={setSelected}
           setPagination={setPagination}
         />
@@ -99,7 +98,7 @@ export function useConfigChange () {
           pagination={pagination}
           setPagination={setPagination}
           dotSelect={dotSelect}
-          legend={legendList}
+          legend={legend}
         />
       </GridCol>
     </GridRow>

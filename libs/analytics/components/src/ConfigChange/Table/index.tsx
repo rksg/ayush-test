@@ -28,13 +28,14 @@ export function Table (props: {
   pagination: { current: number, pageSize: number },
   setPagination: (params: { current: number, pageSize: number }) => void,
   dotSelect: number | null,
-  legend?: string[]
+  legend?: Record<string, boolean> | undefined
 }) {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
   const { path } = useAnalyticsFilter()
   const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
+  const legendList = Object.keys(legend!).filter(key => legend![key])
 
   const queryResults = useConfigChangeQuery({
     path,
@@ -42,7 +43,7 @@ export function Table (props: {
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legend)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
   }) })
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [

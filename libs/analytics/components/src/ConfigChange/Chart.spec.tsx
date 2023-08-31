@@ -28,7 +28,7 @@ jest.mock('@acx-ui/components', () => {
 
 describe('Chart', () => {
   const handleClick = jest.fn()
-  const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
+  const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })

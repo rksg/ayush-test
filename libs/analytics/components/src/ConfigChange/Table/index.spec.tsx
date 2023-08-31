@@ -19,7 +19,7 @@ describe('Table', () => {
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
-  const legend = ['AP', 'AP Group', 'Venue', 'WLAN', 'WLAN Group']
+  const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
@@ -89,7 +89,13 @@ describe('Table', () => {
   })
 
   it('should render table with legend filtered', async () => {
-    const filteredLegend = ['AP Group', 'Venue', 'WLAN Group']
+    const filteredLegend = {
+      'AP': false,
+      'AP Group': true,
+      'Venue': true,
+      'WLAN': false,
+      'WLAN Group': true
+    }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
