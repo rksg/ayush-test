@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export enum Features {
   DATA_PLANE = 'dataPlane',
   AP_GPS = 'ap-gps-toggle',
@@ -98,7 +99,8 @@ export enum Features {
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
-  SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle'
+  SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
