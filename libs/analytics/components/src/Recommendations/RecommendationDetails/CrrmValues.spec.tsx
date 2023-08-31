@@ -20,7 +20,7 @@ describe('Recommendation Overview', () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Recommendation Details')).toBeVisible()
-    expect(await screen.findByText('ChannelFly and 80 MHz for 2.4 GHz with static AP Power'))
+    expect(await screen.findByText('ChannelFly and 80 MHz for 2.4 GHz with static AP Tx Power'))
       .toBeVisible()
   })
 })

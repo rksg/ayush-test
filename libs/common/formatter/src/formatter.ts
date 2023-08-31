@@ -226,7 +226,7 @@ const crrmText = (value: CrrmTextType) => {
       const radio = formats.radioFormat(config.radio)
       const autoCellSizing = config.autoCellSizing === 'true'
         ? 'Auto Cell Sizing on'
-        : 'static AP Power'
+        : 'static AP Tx Power'
       return {
         mode: channelMode,
         width: channelWidth,

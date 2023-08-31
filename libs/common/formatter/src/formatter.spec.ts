@@ -388,7 +388,7 @@ describe('formatter', () => {
         radio: '2.4',
         channelWidth: '_AUTO',
         channelMode: 'BACKGROUND_SCANNING'
-      }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Power')
+      }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Tx Power')
       expect(formatter('crrmFormat')([{
         radio: '5.0',
         channelWidth: '_80MHZ',
@@ -500,15 +500,15 @@ describe('formatter', () => {
       ]
 
       // eslint-disable-next-line max-len
-      expect(formatter('crrmFormat')(config5gDual)).toBe('Background scanning and 20 MHz for 5 GHz with static AP Power, Background scanning and 80+80 MHz for lower 5 GHz with Auto Cell Sizing on, Background scanning and 160 MHz for upper 5 GHz with static AP Power')
+      expect(formatter('crrmFormat')(config5gDual)).toBe('Background scanning and 20 MHz for 5 GHz with static AP Tx Power, Background scanning and 80+80 MHz for lower 5 GHz with Auto Cell Sizing on, Background scanning and 160 MHz for upper 5 GHz with static AP Tx Power')
       // eslint-disable-next-line max-len
       expect(formatter('crrmFormat')(config5gDualAllSame)).toBe('ChannelFly and Auto for 5 GHz, lower 5 GHz, and upper 5 GHz with Auto Cell Sizing on')
       // eslint-disable-next-line max-len
-      expect(formatter('crrmFormat')(config5gDualNormalDiff)).toBe('ChannelFly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower 5 GHz and upper 5 GHz with static AP Power')
+      expect(formatter('crrmFormat')(config5gDualNormalDiff)).toBe('ChannelFly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower 5 GHz and upper 5 GHz with static AP Tx Power')
       // eslint-disable-next-line max-len
-      expect(formatter('crrmFormat')(config5gDualLowerDiff)).toBe('Background scanning and 20 MHz for 5 GHz and upper 5 GHz with Auto Cell Sizing on, ChannelFly and 40 MHz for lower 5 GHz with static AP Power')
+      expect(formatter('crrmFormat')(config5gDualLowerDiff)).toBe('Background scanning and 20 MHz for 5 GHz and upper 5 GHz with Auto Cell Sizing on, ChannelFly and 40 MHz for lower 5 GHz with static AP Tx Power')
       // eslint-disable-next-line max-len
-      expect(formatter('crrmFormat')(config5gDualUpperDiff)).toBe('Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on')
+      expect(formatter('crrmFormat')(config5gDualUpperDiff)).toBe('Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Tx Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on')
     })
     it('returns txPower texts', () => {
       expect(formatter('crrmFormat')({})).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx power') // eslint-disable-line max-len
