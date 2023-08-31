@@ -10,10 +10,9 @@ import { NetworkHistory }     from '../NetworkHistory'
 
 export const IncidentTabContent = (props: {
   filters?: AnalyticsFilter,
-  disableGraphs?: boolean,
-  systemNetwork?: boolean
+  disableGraphs?: boolean
 }) => {
-  const { filters: widgetFilters, disableGraphs, systemNetwork } = props
+  const { filters: widgetFilters, disableGraphs } = props
   const { filters } = useAnalyticsFilter()
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   return (
@@ -27,7 +26,7 @@ export const IncidentTabContent = (props: {
         </GridCol>
       </>}
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <IncidentTable filters={incidentsPageFilters} systemNetwork={systemNetwork} />
+        <IncidentTable filters={incidentsPageFilters} />
       </GridCol>
     </GridRow>
   )

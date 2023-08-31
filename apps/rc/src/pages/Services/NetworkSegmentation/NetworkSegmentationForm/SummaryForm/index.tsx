@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Row }            from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -6,9 +6,9 @@ import styled                        from 'styled-components'
 
 import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 import { AccessSwitchTable, AccessSwitchTableDataType }   from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch }               from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 import { DistributionSwitchTable }          from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                         from '../GeneralSettingsForm/styledComponents'
 
@@ -22,17 +22,19 @@ export const SummaryForm = () => {
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
-  const nsgName = useWatch('name', form)
-  const venueName = useWatch('venueName', form)
-  const edgeName = useWatch('edgeName', form)
-  const segments = useWatch('segments', form)
-  const devices = useWatch('devices', form)
-  const dhcpName = useWatch('dhcpName', form)
-  const poolName = useWatch('poolName', form)
-  const tunnelProfileName = useWatch('tunnelProfileName', form)
-  const networkNames = useWatch('networkNames', form)
-  const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
-  const accessSwitchInfos = useWatch('accessSwitchInfos', form)
+  const nsgName = form.getFieldValue('name')
+  const venueName = form.getFieldValue('venueName')
+  const edgeName = form.getFieldValue('edgeName')
+  const segments = form.getFieldValue('segments')
+  const devices = form.getFieldValue('devices')
+  const dhcpName = form.getFieldValue('dhcpName')
+  const poolName = form.getFieldValue('poolName')
+  const tunnelProfileName = form.getFieldValue('tunnelProfileName')
+  const networkNames = form.getFieldValue('networkNames') as string[]
+  const distributionSwitchInfos = form.getFieldValue(
+    'distributionSwitchInfos'
+  ) as DistributionSwitch[]
+  const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
 
   const alertMsg = <FormattedMessage
     defaultMessage={

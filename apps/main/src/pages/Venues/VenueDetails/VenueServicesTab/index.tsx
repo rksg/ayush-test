@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tabs }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useGetEdgeListQuery }                      from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType }      from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType }                                                      from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -41,60 +41,89 @@ export function VenueServicesTab () {
       })
     }
   )
+  const { hasEdgeDhcp, isEdgeDhcpLoading } = useGetDhcpByEdgeIdQuery(
+    { params: { edgeId: edgeData?.serialNumber } },
+    {
+      skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
+      selectFromResult: ({ data, isLoading }) => ({
+        hasEdgeDhcp: !!data?.id,
+        isEdgeDhcpLoading: isLoading
+      })
+    })
+  const {
+    hasNsg, isGetNsgLoading
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { venueInfoIds: [venueId] }
+    }
+  }, {
+    skip: !!!venueId || !isEdgeEnabled,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        hasNsg: data?.data[0]?.id,
+        isGetNsgLoading: isLoading
+      }
+    }
+  })
 
   const isAppliedFirewall = !_.isEmpty(edgeData?.firewallId)
 
   return (
-    <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
-      <Tabs.TabPane key={ServiceType.DHCP}
-        tab={$t({ defaultMessage: 'DHCP' })}>
-        <Tabs type='third'>
-          <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
-            key={'wifi'}>
-            <DHCPInstance/>
-          </Tabs.TabPane>
-          {
-            isEdgeEnabled &&
-              <Tabs.TabPane tab={$t({ defaultMessage: 'SmartEdge' })}
-                key={'smartEdge'}>
-                <EdgeDhcpTab/>
-              </Tabs.TabPane>
-          }
-        </Tabs>
-      </Tabs.TabPane>
-      {
-        (isEdgeEnabled && isEdgeReady) &&
+    <Loader states={[{ isLoading: isEdgeLoading || isEdgeDhcpLoading || isGetNsgLoading }]}>
+      <Tabs type='second' defaultActiveKey={ServiceType.DHCP}>
+        <Tabs.TabPane key={ServiceType.DHCP}
+          tab={$t({ defaultMessage: 'DHCP' })}>
+          <Tabs type='third'>
+            <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
+              key={'wifi'}>
+              <DHCPInstance/>
+            </Tabs.TabPane>
+            {
+              isEdgeEnabled &&
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'SmartEdge' })}
+              key={'smartEdge'}
+              disabled={!hasEdgeDhcp}
+            >
+              <EdgeDhcpTab/>
+            </Tabs.TabPane>
+            }
+          </Tabs>
+        </Tabs.TabPane>
+        {
+          isEdgeEnabled && isEdgeReady && hasNsg &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Network Segmentation' })}
             key={ServiceType.NETWORK_SEGMENTATION}
           >
             <NetworkSegmentation />
           </Tabs.TabPane>
-      }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
-        <MdnsProxyInstances />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Client Isolation Allowlist' })}
-        key={PolicyType.CLIENT_ISOLATION}
-      >
-        <ClientIsolationAllowList />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Rogue APs' })}
-        key={PolicyType.ROGUE_AP_DETECTION}
-      >
-        <VenueRogueAps />
-      </Tabs.TabPane>
-      {
-        isEdgeEnabled && isAppliedFirewall && !isEdgeLoading && isEdgeReady &&
+        }
+        <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
+          <MdnsProxyInstances />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Client Isolation Allowlist' })}
+          key={PolicyType.CLIENT_ISOLATION}
+        >
+          <ClientIsolationAllowList />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Rogue APs' })}
+          key={PolicyType.ROGUE_AP_DETECTION}
+        >
+          <VenueRogueAps />
+        </Tabs.TabPane>
+        {
+          isEdgeEnabled && isAppliedFirewall && !isEdgeLoading && isEdgeReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}
           >
             <EdgeFirewall edgeData={edgeData as EdgeStatus}/>
           </Tabs.TabPane>
-      }
-    </Tabs>
+        }
+      </Tabs>
+    </Loader>
   )
 }
