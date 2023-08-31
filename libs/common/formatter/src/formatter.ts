@@ -215,7 +215,7 @@ type CrrmTextType = { txPowerAPCount: number }
   | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: string }>
 
 const crrmText = (value: CrrmTextType) => {
-  const { $t } = getIntl()
+  const { $t, formatList } = getIntl()
   const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
   const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
   const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
@@ -240,7 +240,7 @@ const crrmText = (value: CrrmTextType) => {
     const result = Object.values(groupByData)
     return result
     // eslint-disable-next-line max-len
-      .map(config => `${config[0].mode} and ${config[0].width} for ${config.map(item => item.radio).join(', ').replace(/, ([^,]*)$/, ' and $1')} with ${config[0].autoCellSizing}`)
+      .map(config => `${config[0].mode} and ${config[0].width} for ${formatList(config.map(item => item.radio), { type: 'conjunction' })} with ${config[0].autoCellSizing}`)
       .join(', ')
   } else {
     const { txPowerAPCount } = value

@@ -502,7 +502,7 @@ describe('formatter', () => {
       // eslint-disable-next-line max-len
       expect(formatter('crrmFormat')(config5gDual)).toBe('Background scanning and 20 MHz for 5 GHz with static AP Power, Background scanning and 80+80 MHz for lower 5 GHz with Auto Cell Sizing on, Background scanning and 160 MHz for upper 5 GHz with static AP Power')
       // eslint-disable-next-line max-len
-      expect(formatter('crrmFormat')(config5gDualAllSame)).toBe('ChannelFly and Auto for 5 GHz, lower 5 GHz and upper 5 GHz with Auto Cell Sizing on')
+      expect(formatter('crrmFormat')(config5gDualAllSame)).toBe('ChannelFly and Auto for 5 GHz, lower 5 GHz, and upper 5 GHz with Auto Cell Sizing on')
       // eslint-disable-next-line max-len
       expect(formatter('crrmFormat')(config5gDualNormalDiff)).toBe('ChannelFly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower 5 GHz and upper 5 GHz with static AP Power')
       // eslint-disable-next-line max-len
