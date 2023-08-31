@@ -5,7 +5,7 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import { ClientDetails } from '.'
+import ClientDetails from '.'
 
 jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),

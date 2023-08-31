@@ -10,13 +10,13 @@ import {
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import { ClientDetails } from './pages/ClientDetails'
-import ConfigChange      from './pages/ConfigChange'
-import IncidentDetails   from './pages/IncidentDetails'
-import Incidents         from './pages/Incidents'
-import Layout            from './pages/Layout'
-import Recommendations   from './pages/Recommendations'
-import SearchResults     from './pages/SearchResults'
+import ClientDetails   from './pages/ClientDetails'
+import ConfigChange    from './pages/ConfigChange'
+import IncidentDetails from './pages/IncidentDetails'
+import Incidents       from './pages/Incidents'
+import Layout          from './pages/Layout'
+import Recommendations from './pages/Recommendations'
+import SearchResults   from './pages/SearchResults'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))

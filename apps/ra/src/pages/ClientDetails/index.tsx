@@ -9,7 +9,7 @@ const tabs = {
   timeline: () => <div>timeline</div>
 }
 
-export const ClientDetails = () => {
+const ClientDetails = () => {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>
@@ -17,3 +17,5 @@ export const ClientDetails = () => {
     { Tab && <Tab />}
   </>
 }
+
+export default ClientDetails
