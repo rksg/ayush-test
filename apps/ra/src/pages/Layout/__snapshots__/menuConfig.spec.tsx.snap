@@ -102,6 +102,7 @@ Array [
             "uri": "/videoCallQoe",
           },
           Object {
+            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
@@ -475,6 +476,7 @@ Array [
             "uri": "/configChange",
           },
           Object {
+            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
@@ -754,6 +756,7 @@ Array [
             "uri": "/videoCallQoe",
           },
           Object {
+            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,

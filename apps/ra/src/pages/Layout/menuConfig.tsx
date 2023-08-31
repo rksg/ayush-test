@@ -116,7 +116,8 @@ export function useMenuConfig () {
                   : []),
                 {
                   uri: '/occupancy',
-                  label: $t({ defaultMessage: 'Occupancy' })
+                  label: $t({ defaultMessage: 'Occupancy' }),
+                  isOpenInTab: true
                 }
               ]
             }
