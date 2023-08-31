@@ -1,18 +1,21 @@
-import { rest } from 'msw'
+import  userEvent from '@testing-library/user-event'
+import { rest }   from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                             from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                  from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo, isDelegationMode }     from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within  } from '@acx-ui/test-utils'
 
 import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
 
 import Subscriptions from '.'
 
+const mockedWindowOpen = jest.fn()
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
 })
+jest.spyOn(window, 'open').mockImplementation(mockedWindowOpen)
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />)
@@ -101,9 +104,10 @@ describe('Subscriptions', () => {
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
-    fireEvent.click(licenseManagementButton)
+    await userEvent.click(licenseManagementButton)
+    expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    fireEvent.click(refreshButton)
+    await userEvent.click(refreshButton)
     await waitFor(async () => {
       expect(await screen.findByText('Successfully refreshed.')).toBeVisible()
     })
@@ -140,15 +144,11 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    fireEvent.click(refreshButton)
+    await userEvent.click(refreshButton)
     // FIXME: might need to fix when general error handler behavior changed.
     await waitFor(() => {
       expect(spyConsole).toBeCalled()
     })
-    // TODO
-    // await waitFor(async () => {
-    //   expect(await screen.findByText('Failed, please try again later.')).toBeVisible()
-    // })
   })
 
   it('should display empty string when subscription type is not mapped', async () => {
