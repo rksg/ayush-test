@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { DatePicker, Form, Radio, Space, Typography } from 'antd'
 import { useForm }                                    from 'antd/lib/form/Form'
 import dayjs                                          from 'dayjs'
+import moment                                         from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 
 import {
@@ -49,7 +50,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }
 
   const handleFinish = (value: EdgeUpdateScheduleRequest) => {
-    onSubmit(value)
+    const result = {
+      ...value,
+      date: moment(value.date).format('yyyy-MM-DD')
+    }
+    onSubmit(result)
     onModalCancel()
   }
 

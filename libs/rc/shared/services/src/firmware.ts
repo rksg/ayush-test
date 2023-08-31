@@ -389,5 +389,6 @@ export const {
   useGetEdgeUpgradePreferencesQuery,
   useUpdateEdgeUpgradePreferencesMutation,
   useSkipEdgeUpgradeSchedulesMutation,
-  useUpdateEdgeVenueSchedulesMutation
+  useUpdateEdgeVenueSchedulesMutation,
+  useLazyGetVenueEdgeFirmwareListQuery
 } = firmwareApi
