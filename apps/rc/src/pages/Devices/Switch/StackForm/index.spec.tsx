@@ -5,6 +5,7 @@ import { debounce }   from 'lodash'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -31,7 +32,6 @@ import {
 } from '../SwitchForm/__tests__/fixtures'
 
 import { StackForm } from '.'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
