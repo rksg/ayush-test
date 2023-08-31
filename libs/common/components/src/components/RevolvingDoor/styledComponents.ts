@@ -11,7 +11,6 @@ export type SeveritySpanProps = {
 }
 
 export const ButtonDiv = styled.div`
-  margin-bottom: -28px;
   background-color: var(--acx-neutrals-10);
   text-align: right;
   display: flex;
@@ -80,27 +79,45 @@ export const ListItemSpan = styled.span`
   text-overflow: ellipsis;
   width: 180px;
 `
-export const ListItem = styled(List.Item)`
+export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
   height: 54px;
   padding-left: 20px;
   padding-right: 16px;
+  background-color:  ${(props) => props.isSelected ? 'var(--acx-accents-orange-20)' : 'white'};
   &:hover {
     cursor: pointer;
     background-color: var(--acx-accents-orange-20);
   }
+  &:active {
+    background-color: var(--acx-accents-orange-20);
+  }
 `
 export const StyledList = styled(List)`
+  max-height: 400px;
+  overflow: auto;
   .ant-list-header {
-    padding : 0px !important;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    padding-bottom: 0px;
+  }
+  .ant-list-items {
+    min-height: 200px;
+  }
+  .ant-list-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    z-index: 1;
+    padding-bottom: 0px;
   }
 `
 export const StyledMenu = styled(Menu)`
-.ant-dropdown-menu-item {
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 4px;
-  max-height: 400px;
-  overflow: auto;
+  padding-bottom: 0px !important;
+  user-select: none;
+  .ant-dropdown-menu-item {
+  padding : 0;
   &:hover {
     background-color: #fff !important;
     cursor: default;  }
