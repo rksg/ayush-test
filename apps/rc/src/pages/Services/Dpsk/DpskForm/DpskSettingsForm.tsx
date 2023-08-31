@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl'
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
 import {
-  ExpirationDateSelector
+  ExpirationDateSelector, useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
 import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery } from '@acx-ui/rc/services'
 import {
@@ -39,11 +39,12 @@ export default function DpskSettingsForm () {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ dpskList ] = useLazyGetDpskListQuery()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({}).unwrap()).data
+    const list = (await dpskList({ params: dpskNewConfigFlowParams }).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))

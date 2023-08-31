@@ -6,6 +6,7 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
+import { useDpskNewConfigFlowParams }               from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseDevicesMutation,
   useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
@@ -41,15 +42,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const [form] = Form.useForm()
 
   const macAddress = useWatch<string>('macAddress', form)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const { data: devicesData } = useGetDpskPassphraseDevicesQuery({
     params: {
       ...params,
-      passphraseId: passphraseInfo.id
+      passphraseId: passphraseInfo.id,
+      ...dpskNewConfigFlowParams
     }
   })
 
-  const { data } = useGetDpskQuery({ params: params })
+  const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
 
   useEffect(() => {
     if (data?.networkIds?.length) {
@@ -139,7 +142,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
         await deleteDevicesData({
           params: {
             ...params,
-            passphraseId: passphraseInfo.id
+            passphraseId: passphraseInfo.id,
+            ...dpskNewConfigFlowParams
           },
           payload: {
             id: passphraseInfo.id,
@@ -168,7 +172,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       await updateDevicesData({
         params: {
           ...params,
-          passphraseId: passphraseInfo.id
+          passphraseId: passphraseInfo.id,
+          ...dpskNewConfigFlowParams
         },
         payload: {
           id: passphraseInfo.id,

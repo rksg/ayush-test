@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }               from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '@acx-ui/rc/components'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }                                           from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                                                            from '@acx-ui/feature-toggle'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -71,6 +71,7 @@ function PersonaGroupDetails () {
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
@@ -88,7 +89,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })

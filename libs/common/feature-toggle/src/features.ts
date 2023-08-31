@@ -97,7 +97,8 @@ export enum Features {
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
-  WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle'
+  WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
+  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-config-flow-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

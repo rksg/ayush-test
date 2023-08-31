@@ -12,10 +12,10 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                     from '@acx-ui/components'
-import { Features, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
-import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
+import { Tooltip, PasswordInput }                                         from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector, PhoneInput, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { useGetDpskPassphraseQuery, useGetDpskQuery }                     from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   emailRegExp,
@@ -51,11 +51,14 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
-    { params: ({ ...params, passphraseId: editMode.passphraseId }) },
+    { params: { ...params, passphraseId: editMode.passphraseId, ...dpskNewConfigFlowParams } },
     { skip: !editMode.isEdit }
   )
-  const { poolDeviceCount } = useGetDpskQuery({ params }, {
+  const { poolDeviceCount } = useGetDpskQuery({
+    params: { ...params, ...dpskNewConfigFlowParams }
+  }, {
     skip: !isCloudpathEnabled,
     selectFromResult ({ data }) {
       return {
