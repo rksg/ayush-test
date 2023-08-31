@@ -57,7 +57,7 @@ export default function AnalyticsRoutes () {
       </Route>}
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
-          element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index
