@@ -43,8 +43,8 @@ export const ConvertNonVARMSPButton = () => {
   const params = useParams()
   const navigate = useNavigate()
   const userProfileCtx = useUserProfileContext()
-  const [tenantInfo, setTenantInfo] = useState<TenantDetails>({} as TenantDetails)
-  const [delegationInfo, setDelegationInfo] = useState<Delegation[]>([] as Delegation[])
+  const [tenantInfo, setTenantInfo] = useState<TenantDetails|undefined>(undefined)
+  const [delegationInfo, setDelegationInfo] = useState<Delegation[]|undefined>(undefined)
 
   const { data: mspEcProfileData, isLoading: isLoadingMSPEC } = useGetMspEcProfileQuery({ params })
   const [getTenantInfo] = useLazyGetTenantDetailsQuery()
@@ -196,7 +196,8 @@ export const ConvertNonVARMSPButton = () => {
   }, [params, getTenantInfo, getDelegationInfo, canInitCheck])
 
   const canInit = canInitCheck()
-  const displayConvertBtn = canInit && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
+  const displayConvertBtn = canInit && tenantInfo && delegationInfo
+                               && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
                               && !isLoadingMSPEC
 
   return displayConvertBtn
