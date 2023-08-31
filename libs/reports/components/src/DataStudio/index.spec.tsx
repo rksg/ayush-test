@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import * as config                     from '@acx-ui/config'
 import {  ReportUrlsInfo, reportsApi } from '@acx-ui/reports/services'
 import type { UrlInfo }                from '@acx-ui/reports/services'
 import { Provider }                    from '@acx-ui/store'
@@ -18,6 +19,9 @@ jest.mock('@acx-ui/utils', () => ({
   isMSP: jest.fn()
 }))
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 describe('DataStudio', () => {
   beforeEach(() => {
     mockServer.use(
@@ -29,10 +33,11 @@ describe('DataStudio', () => {
   })
   afterEach(() => {
     store.dispatch(reportsApi.util.resetApiState())
+    get.mockReturnValue('')
   })
 
   const params = { tenantId: 'tenant-id' }
-  it('should render the data studio', async () => {
+  it('should render the data studio for ALTO', async () => {
     render(<Provider>
       <DataStudio/>
     </Provider>, { route: { params } })
@@ -46,12 +51,40 @@ describe('DataStudio', () => {
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
   })
-  it('should get the correct hostname for dev env', async () => {
-    const oldEnv = process.env
-    process.env = { NODE_ENV: 'development' }
-    expect(getHostName(window.location.origin)).toBe('https://dev.ruckus.cloud')
-    process.env = oldEnv
+
+  it('should render the data studio for MLISA SA', async () => {
+    get.mockReturnValue('true')
+    render(<Provider>
+      <DataStudio/>
+    </Provider>, { route: { params } })
+
+    expect(screen.getByTestId('data-studio')).toBeInTheDocument()
+
+    await waitFor(()=>{
+      expect(screen.getByTitle('data-studio')).toBeVisible()
+    })
+
+    const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
   })
+
+  describe('dev env', () => {
+    it('should get the correct hostname for dev env', async () => {
+      const oldEnv = process.env
+      process.env = { NODE_ENV: 'development' }
+      expect(getHostName(window.location.origin)).toBe('https://dev.ruckus.cloud')
+      process.env = oldEnv
+    })
+    it('should get the correct hostname for MLISA mode in dev env', async () => {
+      const oldEnv = process.env
+      process.env = { NODE_ENV: 'development' }
+      get.mockReturnValue('true')
+      expect(getHostName(window.location.origin)).toBe('https://staging.mlisa.io')
+      process.env = oldEnv
+    })
+  })
+
+
   it('should get the correct hostname for prod and non MSP env', async () => {
     const oldEnv = process.env
     process.env = { NODE_ENV: 'production' }
