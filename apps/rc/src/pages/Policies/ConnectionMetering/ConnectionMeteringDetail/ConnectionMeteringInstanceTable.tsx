@@ -130,11 +130,12 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   }
 
   const statsPayload = useMemo(() => {
-    return [props.data.map(persona => ({ field: 'personaId', value: persona.id }))] }
+    return props.data.map(persona => ([{ field: 'personaId', value: persona.id }]))
+  }
   ,[props.data])
 
   const qosStats = useGetQosStatsQuery( { payload: statsPayload }, {
-    pollingInterval: 30 * 1000
+    pollingInterval: 60 * 1000
   })
 
   useEffect(()=> {

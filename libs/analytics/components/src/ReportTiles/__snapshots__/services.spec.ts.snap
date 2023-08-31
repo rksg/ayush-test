@@ -1,0 +1,278 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`genNetworkSummaryInfoQuery should return correct data 1`] = `
+Object {
+  "document": "
+  query NetworkInfo($path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime)
+  {
+    network(start: $startDate, end: $endDate) {
+      node: hierarchyNode(path:$path) {
+        type
+        name
+        apCount
+clientCount
+totalTraffic
+totalApplicationCount
+totalActiveWlanCount
+      }
+    }
+  }
+",
+  "variables": Object {
+    "endDate": "2018-11-22T17:46:25+08:00",
+    "path": Array [
+      Object {
+        "name": "Network",
+        "type": "network",
+      },
+    ],
+    "startDate": "2018-11-15T17:46:25+08:00",
+  },
+}
+`;
+
+exports[`genNetworkSummaryInfoQuery should return correct data when query ap 1`] = `
+Object {
+  "document": "
+  query NetworkInfo($startDate: DateTime, $endDate: DateTime, $mac: String)
+  {
+    network(start: $startDate, end: $endDate) {
+      node: ap(mac: $mac) {
+        type: __typename
+        name
+        clientCount
+totalTraffic
+totalApplicationCount
+totalActiveWlanCount
+      }
+    }
+  }
+",
+  "variables": Object {
+    "endDate": "2018-11-22T17:46:25+08:00",
+    "mac": "58:B6:33:14:E6:80",
+    "startDate": "2018-11-15T17:46:25+08:00",
+  },
+}
+`;
+
+exports[`genNetworkSummaryInfoQuery should return default for for incorrect type 1`] = `
+Object {
+  "document": "
+  query NetworkInfo($path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime)
+  {
+    network(start: $startDate, end: $endDate) {
+      node: hierarchyNode(path:$path) {
+        type
+        name
+        type
+clientCount
+apCount
+      }
+    }
+  }
+",
+  "variables": Object {
+    "endDate": "2018-11-22T17:46:25+08:00",
+    "path": Array [
+      Object {
+        "name": "Network",
+        "type": "network",
+      },
+      Object {
+        "name": "VectorFi",
+        "type": "system",
+      },
+      Object {
+        "name": "Grace Christian University",
+        "type": "domain",
+      },
+      Object {
+        "name": "Grace Christian University",
+        "type": "zone",
+      },
+      Object {
+        "name": "default",
+        "type": "apGroup",
+      },
+      Object {
+        "name": "58:B6:33:14:E6:80",
+        "type": "incorrect",
+      },
+    ],
+    "startDate": "2018-11-15T17:46:25+08:00",
+  },
+}
+`;
+
+exports[`genNetworkSummaryInfoQuery should return switch data 1`] = `
+Object {
+  "document": "
+  query NetworkInfo(
+    $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime, $mac: String
+  )
+  {
+    network(start: $startDate, end: $endDate) {
+      node: switch(mac: $mac, path: $path) {
+        type
+        name
+        portCount
+connectedWiredDevices
+poeUtilization
+switchTotalTraffic
+      }
+    }
+  }
+",
+  "variables": Object {
+    "endDate": "2018-11-22T17:46:25+08:00",
+    "mac": "s1",
+    "path": Array [
+      Object {
+        "name": "Network",
+        "type": "network",
+      },
+      Object {
+        "name": "s1",
+        "type": "system",
+      },
+      Object {
+        "name": "d1",
+        "type": "domain",
+      },
+      Object {
+        "name": "sg1",
+        "type": "switchGroup",
+      },
+      Object {
+        "name": "s1",
+        "type": "switch",
+      },
+    ],
+    "startDate": "2018-11-15T17:46:25+08:00",
+  },
+}
+`;
+
+exports[`genNetworkSummaryInfoQuery shouuld return switch group data 1`] = `
+Object {
+  "document": "
+  query NetworkInfo($path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime)
+  {
+    network(start: $startDate, end: $endDate) {
+      node: hierarchyNode(path:$path) {
+        type
+        name
+        switchCount
+portCount
+connectedWiredDevices
+poeUtilization
+switchTotalTraffic
+      }
+    }
+  }
+",
+  "variables": Object {
+    "endDate": "2018-11-22T17:46:25+08:00",
+    "path": Array [
+      Object {
+        "name": "Network",
+        "type": "network",
+      },
+      Object {
+        "name": "s1",
+        "type": "system",
+      },
+      Object {
+        "name": "d1",
+        "type": "domain",
+      },
+      Object {
+        "name": "sg1",
+        "type": "switchGroup",
+      },
+    ],
+    "startDate": "2018-11-15T17:46:25+08:00",
+  },
+}
+`;
+
+exports[`useNetworkSummaryInfoQuery should return correct data 1`] = `
+Array [
+  Object {
+    "format": [Function],
+    "key": "apCount",
+    "text": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "AP Count",
+        },
+      ],
+      "id": "7228EU",
+    },
+    "url": "/reports/aps",
+    "value": 9519,
+  },
+  Object {
+    "format": [Function],
+    "key": "clientCount",
+    "text": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Unique Clients",
+        },
+      ],
+      "id": "ujZ7yy",
+    },
+    "url": "/reports/clients",
+    "value": 813,
+  },
+  Object {
+    "format": [Function],
+    "key": "totalTraffic",
+    "text": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Traffic",
+        },
+      ],
+      "id": "ZDpTud",
+    },
+    "url": "/reports/wireless",
+    "value": 3010266608026,
+  },
+  Object {
+    "format": [Function],
+    "key": "totalApplicationCount",
+    "text": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Applications",
+        },
+      ],
+      "id": "DqD1yK",
+    },
+    "url": "/reports/applications",
+    "value": 1524.1930833375095,
+  },
+  Object {
+    "format": [Function],
+    "key": "totalActiveWlanCount",
+    "text": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Active WLANs",
+        },
+      ],
+      "id": "dBv6PU",
+    },
+    "url": "/reports/wlans",
+    "value": null,
+  },
+]
+`;

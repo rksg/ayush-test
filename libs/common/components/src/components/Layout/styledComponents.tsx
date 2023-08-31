@@ -363,6 +363,13 @@ export const Content = styled.div`
     background-color: var(--acx-primary-white);
     z-index: 6;
   }
+
+  > .ant-alert {
+    position: sticky;
+    top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
+    z-index: 6;
+    box-shadow: var(--acx-primary-white) 0px 5px 0 15px;
+  }
 `
 
 export const ResponsiveContent = styled.div`

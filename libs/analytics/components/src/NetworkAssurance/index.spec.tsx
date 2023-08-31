@@ -39,6 +39,14 @@ jest.mock('../VideoCallQoe', () => ({
   })
 }))
 
+jest.mock('../ConfigChange', () => ({
+  ...jest.requireActual('../ConfigChange'),
+  useConfigChange: () => ({
+    headerExtra: [<div data-testid='HeaderExtra' />],
+    component: <div data-testid='ConfigChange' />
+  })
+}))
+
 describe('NetworkAssurance', () => {
   it('should render health', async () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
@@ -82,5 +90,24 @@ describe('NetworkAssurance', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/analytics/videoCallQoe', hash: '', search: ''
     }))
+  })
+  it('should render config change', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
+    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
+    expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
+  })
+  it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
+
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
   })
 })

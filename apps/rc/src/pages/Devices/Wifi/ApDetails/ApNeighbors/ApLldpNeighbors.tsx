@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps }       from '@acx-ui/components'
-import { useLazyGetApLldpNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { useLazyGetApLldpNeighborsQuery }                         from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
-  ApLldpNeighborsResponse,
   CatchErrorResponse,
   defaultSort,
   sortProp,
@@ -15,40 +14,20 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { emtpyRenderer }                   from './ApRfNeighbors'
-import { lldpNeighborsFieldLabelMapping }  from './contents'
-import { DetectionStatus, useApNeighbors } from './useApNeighbors'
+import { emtpyRenderer }                  from './ApRfNeighbors'
+import { defaultPagination }              from './constants'
+import { lldpNeighborsFieldLabelMapping } from './contents'
+import { handleError, useApNeighbors }    from './useApNeighbors'
 
 import type { LldpNeighborsDisplayFields } from './contents'
 
 export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
-  // eslint-disable-next-line max-len
-  const [ getApLldpNeighbors, { isLoading: isLoadingApLldpNeighbors }] = useLazyGetApLldpNeighborsQuery()
-  const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
-  const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
-  const [ tableData, setTableData ] = useState<ApLldpNeighborsResponse>()
+  const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
+  const { doDetect, isDetecting } = useApNeighbors('lldp', serialNumber!, socketHandler)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
-
-  useEffect(() => {
-    doDetect()
-  }, [])
-
-  const doDetect = async () => {
-    try {
-      const result = await detectApNeighbors({
-        params: { serialNumber },
-        payload: { action: 'DETECT_LLDP_NEIGHBOR' }
-      }).unwrap()
-
-      setRequestId(result.requestId)
-    } catch (error) {
-      setRequestId('')
-      handleError(error as CatchErrorResponse)
-    }
-  }
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
@@ -56,29 +35,32 @@ export default function ApLldpNeighbors () {
     onClick: doDetect
   }]
 
-  async function socketHandler () {
+  function socketHandler () {
     try {
-      const data = await getApLldpNeighbors({ params: { serialNumber } }).unwrap()
-      setTableData(data)
+      getApLldpNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
       handleError(error as CatchErrorResponse)
     }
   }
 
-  const isTableLoading = (): boolean => {
-    return isLoadingApLldpNeighbors || detectionStatus === DetectionStatus.FETCHING
+  const isTableFetching = () => {
+    return getApLldpNeighborsStates.isFetching || isDetecting
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
     return record.lldpTime + (record.lldpPortID ?? '') + (record.lldpChassisID ?? '')
   }
 
-  return <Loader states={[{ isLoading: isTableLoading() }]}>
+  return <Loader states={[{
+    isLoading: getApLldpNeighborsStates.isLoading,
+    isFetching: isTableFetching()
+  }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
       rowKey={getRowKey}
       columns={useColumns(setDetailsDrawerVisible, setSelectedApLldpNeighbor)}
-      dataSource={tableData?.neighbors ?? []}
+      dataSource={getApLldpNeighborsStates.data?.neighbors ?? []}
+      pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />
     <ApLldpNeighborDetailsDrawer

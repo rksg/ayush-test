@@ -6,7 +6,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+      class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5177,7 +5177,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+      class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -9968,7 +9968,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+      class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -11571,7 +11571,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+      class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"

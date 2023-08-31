@@ -194,7 +194,9 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Administrators' }),
-            entityValue: rows.length === 1 ? rows[0].fullName : undefined,
+            entityValue: rows.length === 1
+              ? rows[0].fullName !== ' ' ? rows[0].fullName : rows[0].email
+              : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
