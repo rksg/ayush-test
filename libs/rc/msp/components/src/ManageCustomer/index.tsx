@@ -421,20 +421,29 @@ export function ManageCustomer () {
         ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
       const quantitySwitch = _.isString(ecFormData.switchLicense)
         ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-      const assignLicense = trialSelected
-        ? { trialAction: AssignActionEnum.ACTIVATE }
-        : { assignments: [{
-          quantity: quantityWifi,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_WIFI
-        },
-        {
-          quantity: quantitySwitch,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SWITCH
-        }] }
+      const quantityApsw = _.isString(ecFormData.apswLicense)
+        ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+      const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
+        : isDeviceAgnosticEnabled
+          ? { assignments: [{
+            quantity: quantityWifi,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_WIFI
+          },
+          {
+            quantity: quantitySwitch,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_SWITCH
+          }] }
+          : { assignments: [{
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          }] }
+
       const delegations= [] as MspEcDelegatedAdmins[]
       mspAdmins.forEach((admin: MspAdministrator) => {
         delegations.push({
@@ -515,6 +524,16 @@ export function ManageCustomer () {
           isTrial: false,
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
+        if (isDeviceAgnosticEnabled) {
+          const quantityApsw = _.isString(ecFormData.apswLicense)
+            ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+          licAssignment.push({
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
       } else {
         if (_.isString(ecFormData.wifiLicense) || needUpdateLicense) {
           const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
@@ -541,6 +560,21 @@ export function ManageCustomer () {
             deviceSubtype: EntitlementDeviceSubType.ICX,
             deviceType: EntitlementDeviceType.MSP_SWITCH
           })
+        }
+
+        if (isDeviceAgnosticEnabled ) {
+          if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
+            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const quantityApsw = _.isString(ecFormData.apswLicense)
+              ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+            const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+            licAssignment.push({
+              quantity: quantityApsw,
+              assignmentId: apswAssignId,
+              action: actionApsw,
+              deviceType: EntitlementDeviceType.MSP_APSW
+            })
+          }
         }
       }
 
