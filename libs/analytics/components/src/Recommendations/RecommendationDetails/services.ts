@@ -6,7 +6,7 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { states, codes, Priorities, StatusTrail } from '../config'
+import { StateType, codes, IconValue, StatusTrail } from '../config'
 
 
 type RecommendationsDetailsPayload = {
@@ -23,7 +23,7 @@ export type RecommendationKpi = Record<string, {
 export type RecommendationDetails = {
   id: string;
   code: keyof typeof codes;
-  status: keyof typeof states;
+  status: StateType;
   isMuted: boolean;
   appliedTime: string;
   originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
@@ -37,7 +37,7 @@ export type RecommendationDetails = {
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
-  priority: Priorities;
+  priority: IconValue;
   summary: MessageDescriptor;
   category: MessageDescriptor;
   pathTooltip: string;

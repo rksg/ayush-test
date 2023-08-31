@@ -3,7 +3,7 @@ import styled                from 'styled-components'
 
 import { Table, TableProps } from '@acx-ui/components'
 
-import { RecommendationRow } from './table'
+import { RecommendationListItem } from './services'
 
 export const colors = [
   '--acx-semantics-yellow-30',
@@ -42,7 +42,7 @@ export const OptimizedIcon = styled(AntBadge)
   .attrs((props: IconProps) => ({ color: `var(${optimizedColors[props.value]})` }))<IconProps>``
 
 export const RecommendationTableWrapper =
-styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
+styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
   --recommendation-table-muted-row-font-color: var(--acx-neutrals-40);
   --recommendation-table-muted-row-background-color: var(--acx-neutrals-20);
 

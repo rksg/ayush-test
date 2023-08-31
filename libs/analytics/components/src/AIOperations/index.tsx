@@ -22,8 +22,8 @@ function AIOperationsWidget ({
 }: AIOperationsProps) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
-  const queryResults = useRecommendationListQuery(filters)
-  const data = queryResults?.data?.filter((row) => !row.code.includes('crrm'))
+  const queryResults = useRecommendationListQuery({ ...filters, crrm: false })
+  const data = queryResults?.data
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
     icon: <ColorPill
@@ -52,7 +52,7 @@ function AIOperationsWidget ({
                   )}
                 >
                   <UI.List.Item.Meta
-                    avatar={<PriorityIcon value={priority} />}
+                    avatar={<PriorityIcon value={priority.order} />}
                     title={category}
                     description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
                   />

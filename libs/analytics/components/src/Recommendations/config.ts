@@ -4,11 +4,16 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { compareVersion } from '@acx-ui/analytics/utils'
 import { formatter }      from '@acx-ui/formatter'
 
-export type Priorities = { order: number, label: MessageDescriptor }
+export type IconValue = { order: number, label: MessageDescriptor }
 
-export type StatusTrail = Array<{ status: Lowercase<keyof typeof states>, createdAt?: string }>
+export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
-const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
+export const rrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+}
+
+const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
@@ -17,7 +22,7 @@ const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
-  priority: Priorities
+  priority: IconValue
 }
 
 type RecommendationKPIConfig = {
@@ -40,7 +45,7 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: keyof typeof states, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
 }
 
 const categories = {
@@ -121,6 +126,8 @@ export const states = {
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
   }
 }
+
+export type StateType = keyof typeof states
 
 export const codes = {
   'c-bgscan24g-enable': {
@@ -319,7 +326,7 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: keyof typeof states, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -422,6 +429,6 @@ export const codes = {
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as keyof typeof states] = val.text
+  acc[key as StateType] = val.text
   return acc
-}, {} as Record<keyof typeof states, MessageDescriptor>)
+}, {} as Record<StateType, MessageDescriptor>)

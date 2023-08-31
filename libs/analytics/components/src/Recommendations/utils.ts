@@ -1,15 +1,17 @@
 import { getIntl } from '@acx-ui/utils'
 
-import { CrrmListItem } from '../Recommendations/services'
+import { StateType, rrmStates } from './config'
+import { CrrmListItem }         from './services'
 
-export const isOptimized = (recommendation: CrrmListItem) => {
+export const getOptimizedState = (state: StateType) => {
   const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-  return optimizedStates.includes(recommendation.status)
+  return optimizedStates.includes(state)
+    ? rrmStates.optimized
+    : rrmStates.nonOptimized
 }
 
 export const getCrrmLinkText = (recommendation: CrrmListItem) => {
   const { $t } = getIntl()
-  const optimized = isOptimized(recommendation)
   const { appliedOnce, status, kpi_number_of_interfering_links } = recommendation
   const applied = appliedOnce && status !== 'reverted'
   const before = applied
@@ -31,5 +33,6 @@ export const getCrrmLinkText = (recommendation: CrrmListItem) => {
     description: 'Translation string - interfering, link, links, can be optimized to'
   }, { before, after })
 
-  return optimized ? optimizedText : nonOptimizedText
+  const optimizedState = getOptimizedState(status)
+  return optimizedState === rrmStates.optimized ? optimizedText : nonOptimizedText
 }

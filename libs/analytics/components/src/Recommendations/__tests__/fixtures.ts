@@ -1,10 +1,12 @@
-import { StatusTrail } from '../config'
+import { NetworkPath } from '@acx-ui/utils'
+
+import { StatusTrail, StateType } from '../config'
 
 export const crrmListResult = {
   recommendations: [
     {
       id: '1',
-      status: 'applied',
+      status: 'applied' as StateType,
       sliceValue: 'zone-1',
       kpi_number_of_interfering_links: {
         current: 0,
@@ -18,7 +20,7 @@ export const crrmListResult = {
     },
     {
       id: '2',
-      status: 'reverted',
+      status: 'reverted' as StateType,
       sliceValue: 'zone-2',
       kpi_number_of_interfering_links: {
         current: 5,
@@ -29,11 +31,11 @@ export const crrmListResult = {
         { status: 'new' },
         { status: 'applied' },
         { status: 'revert' }
-      ]
+      ] as StatusTrail
     },
     {
       id: '3',
-      status: 'new',
+      status: 'new' as StateType,
       sliceValue: 'Deeps Place',
       kpi_number_of_interfering_links: {
         current: 2,
@@ -42,7 +44,7 @@ export const crrmListResult = {
       },
       statusTrail: [
         { status: 'new' }
-      ]
+      ] as StatusTrail
     }
   ]
 }
@@ -59,10 +61,12 @@ export const recommendationListResult = {
       sliceValue: 'zone-1',
       metadata: {},
       isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ]
+      ] as NetworkPath
     },
     {
       id: '2',
@@ -83,10 +87,12 @@ export const recommendationListResult = {
         }
       },
       isMuted: false,
+      mutedBy: '',
+      mutedAt: null,
       path: [
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
-      ]
+      ] as NetworkPath
     },
     {
       id: '3',
@@ -98,8 +104,8 @@ export const recommendationListResult = {
       sliceValue: 'Deeps Place',
       metadata: {},
       isMuted: true,
-      mutedBy: '',
-      mutedAt: null,
+      mutedBy: 'a',
+      mutedAt: '2023-08-31T13:30:42.671Z',
       path: [
         {
           type: 'system',
@@ -113,7 +119,7 @@ export const recommendationListResult = {
           type: 'zone',
           name: 'Deeps Place'
         }
-      ]
+      ] as NetworkPath
     }
   ]
 }

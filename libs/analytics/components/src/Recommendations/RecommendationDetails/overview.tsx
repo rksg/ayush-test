@@ -1,16 +1,17 @@
 import { useState } from 'react'
 
-import moment                 from 'moment-timezone'
-import { IntlShape, useIntl } from 'react-intl'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
+import { truthy }                                       from '@acx-ui/utils'
 
-import { DescriptionSection }           from '../../DescriptionSection'
-import { codes, statusTrailMsgs }       from '../config'
-import { PriorityIcon, OptimizedIcon }  from '../styledComponents'
-import { isOptimized, getCrrmLinkText } from '../utils'
+import { DescriptionSection }                 from '../../DescriptionSection'
+import { codes, statusTrailMsgs }             from '../config'
+import { PriorityIcon, OptimizedIcon }        from '../styledComponents'
+import { getOptimizedState, getCrrmLinkText } from '../utils'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -53,46 +54,47 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   />
 }
 
-const Icon = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
-  const { priority } = details
-  return <PriorityIcon value={priority.order} text={$t(priority.label)} />
-}
-
-const Optimized = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
-  const optimized = isOptimized(details)
-  const text = optimized
-    ? $t({ defaultMessage: 'Optimized' })
-    : $t({ defaultMessage: 'Non-optimized' })
-  return <OptimizedIcon value={optimized ? 0 : 1} text={text} />
-}
-
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { statusTrail, category, sliceValue, status, code, id } = details
+  const { statusTrail, category, sliceValue, status, code, id, priority } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
+  const optimizedState = getOptimizedState(status)
   const isRrm = code.includes('crrm')
 
   const fields = [
-    ...(isRrm
-      ? [{ label: $t({ defaultMessage: 'Zone RRM' }), children: Optimized(details, $t) }]
-      : [{ label: $t({ defaultMessage: 'Priority' }), children: Icon(details, $t) }]),
-    { label: $t({ defaultMessage: 'Date' }),
-      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
-    ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
-    ...(isRrm ? [] : [{
+    (isRrm && {
+      label: get('IS_MLISA_SA')
+        ? $t({ defaultMessage: 'Zone RRM' })
+        : $t({ defaultMessage: 'Venue RRM' }),
+      children: <OptimizedIcon value={optimizedState.order} text={$t(optimizedState.label)} />
+    }),
+    (!isRrm && {
+      label: $t({ defaultMessage: 'Priority' }),
+      children: <PriorityIcon value={priority.order} text={$t(priority.label)} />
+    }),
+    {
+      label: $t({ defaultMessage: 'Date' }),
+      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt))
+    },
+    (!isRrm && {
+      label: $t({ defaultMessage: 'Category' }),
+      children: $t(category)
+    }),
+    (!isRrm && {
       label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
       children: sliceValue
-    }]),
-    ...(isRrm
-      ? [{
-        label: $t({ defaultMessage: 'Summary' }),
-        children: getCrrmLinkText(details)
-      }]
-      : []),
-    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
-  ]
+    }),
+    (isRrm && {
+      label: $t({ defaultMessage: 'Summary' }),
+      children: getCrrmLinkText(details)
+    }),
+    {
+      label: $t({ defaultMessage: 'Status' }),
+      children: $t(statusTrailMsgs[status])
+    }
+  ].filter(truthy)
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
   const impactedApsQuery = useGetApsQuery({ id, search: '' }, { skip: !hasAp })

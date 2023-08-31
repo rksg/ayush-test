@@ -9,17 +9,17 @@ import {
   productNames,
   AnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { recommendationApi }         from '@acx-ui/store'
-import { NodeType, getIntl }         from '@acx-ui/utils'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { recommendationApi }              from '@acx-ui/store'
+import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
 
-import { states, codes, StatusTrail }   from './config'
-import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { states, codes, StatusTrail, IconValue, StateType } from './config'
+import { kpiHelper, RecommendationKpi }                     from './RecommendationDetails/services'
 
 
 export type CrrmListItem = {
   id: string
-  status: string
+  status: StateType
   sliceValue: string
   statusTrail: StatusTrail
   appliedOnce?: boolean
@@ -28,8 +28,7 @@ export type CrrmListItem = {
 export type Recommendation = {
   id: string
   code: string
-  status: string
-  statusEnum: keyof typeof states
+  status: string | StateType
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -37,20 +36,19 @@ export type Recommendation = {
   metadata: {}
   isMuted: boolean
   mutedBy: string
-  mutedAt: string
-  path: []
+  mutedAt: string | null
+  path: NetworkPath
 }
 
 export type RecommendationListItem = Recommendation & {
   scope: string
   type: string
-  priority: number
-  priorityLabel: string
+  priority: IconValue
   category: string
   summary: string
   status: string
   statusTooltip: string
-  statusEnum: keyof typeof states
+  statusEnum: StateType
 }
 
 export interface MutationPayload {
@@ -97,7 +95,7 @@ const radioConfigMap = {
   radio5gLower: 'Lower 5 GHz',
   radio5gUpper: 'Upper 5 GHz'
 }
-const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
+const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) => {
   const { $t } = getIntl()
   let errorMessage = metadata.error?.message
   let tooltipKey = 'tooltip'
@@ -116,7 +114,7 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
   if (code.startsWith('c-crrm') && state === 'applied') {
     tooltipKey = 'tooltipCCR'
   }
-  const stateConfig = states[state as keyof typeof states]
+  const stateConfig = states[state]
   return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
     ...productNames,
     count: metadata.error?.details?.length || 1,
@@ -140,26 +138,28 @@ function transformRecommendationList (recommendations: Recommendation[]): Recomm
   const { $t } = getIntl()
   return recommendations.map(recommendation => {
     const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
-    const { order, label } = codes[code as keyof typeof codes].priority
+    const statusEnum = status as StateType
     return {
       ...recommendation,
       scope: formattedPath(path, sliceValue),
       type: nodeTypes(sliceType as NodeType),
-      priority: order,
-      priorityLabel: $t(label),
+      priority: codes[code as keyof typeof codes].priority,
       category: $t(codes[code as keyof typeof codes].category),
       summary: $t(codes[code as keyof typeof codes].summary),
-      status: $t(states[status as keyof typeof states].text),
-      statusTooltip: getStatusTooltip(code, status, { ...metadata, updatedAt }),
-      statusEnum: status as keyof typeof states
+      status: $t(states[statusEnum].text),
+      statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
+      statusEnum
     }
   })
 }
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    crrmList: build.query<CrrmListItem[], AnalyticsFilter & { n: number }>({
-      // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
+    crrmList: build.query<
+      CrrmListItem[],
+      AnalyticsFilter & { n: number }
+    >({
       query: (payload) => ({
+        // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
           $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
@@ -185,13 +185,16 @@ export const api = recommendationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
-    recommendationList: build.query<RecommendationListItem[], AnalyticsFilter>({
+    recommendationList: build.query<
+      RecommendationListItem[],
+      AnalyticsFilter & { crrm?: boolean }
+    >({
       query: (payload) => ({
         document: gql`
         query RecommendationList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
         ) {
-          recommendations(start: $start, end: $end, path: $path) {
+          recommendations(start: $start, end: $end, path: $path, crrm: $crrm) {
             id
             code
             status
@@ -213,6 +216,7 @@ export const api = recommendationApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
+          crrm: payload.crrm,
           ...getFilterPayload(payload)
         }
       }),

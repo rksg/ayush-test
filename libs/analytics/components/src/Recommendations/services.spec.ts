@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+import { defineMessage } from 'react-intl'
 
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
@@ -68,8 +69,7 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        priority: 2,
-        priorityLabel: 'High',
+        priority: { order: 2, label: defineMessage({ defaultMessage: 'High' }) },
         category: 'AI-Driven Cloud RRM',
         summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
         status: 'Applied',
@@ -81,8 +81,7 @@ describe('Recommendation services', () => {
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
-        priority: 1,
-        priorityLabel: 'Medium',
+        priority: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
         category: 'Wi-Fi Client Experience',
         summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
         status: 'Revert Failed',
@@ -95,8 +94,7 @@ describe('Recommendation services', () => {
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
         type: 'Venue',
-        priority: 0,
-        priorityLabel: 'Low',
+        priority: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
         category: 'Wi-Fi Client Experience',
         summary: 'Enable band balancing',
         status: 'New',

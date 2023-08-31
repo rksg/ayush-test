@@ -4,9 +4,9 @@ import { AnalyticsFilter }               from '@acx-ui/analytics/utils'
 import { Loader, Card, NoData }          from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 
-import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
-import { OptimizedIcon }                  from '../Recommendations/styledComponents'
-import { getCrrmLinkText, isOptimized }   from '../Recommendations/utils'
+import { CrrmListItem, useCrrmListQuery }     from '../Recommendations/services'
+import { OptimizedIcon }                      from '../Recommendations/styledComponents'
+import { getCrrmLinkText, getOptimizedState } from '../Recommendations/utils'
 
 import * as UI from './styledComponents'
 
@@ -34,12 +34,12 @@ function AIDrivenRRMWidget ({
           dataSource={data}
           renderItem={item => {
             const recommendation = item as CrrmListItem
-            const { sliceValue, id } = recommendation
-            const optimized = isOptimized(recommendation)
+            const { sliceValue, id, status } = recommendation
+            const optimizedState = getOptimizedState(status)
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/crrm/${id}`}>
                 <UI.List.Item.Meta
-                  avatar={<OptimizedIcon value={optimized ? 0 : 1} />}
+                  avatar={<OptimizedIcon value={optimizedState.order} />}
                   title={sliceValue}
                   description={getCrrmLinkText(recommendation)}
                 />

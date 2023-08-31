@@ -1,20 +1,22 @@
-import { crrmListResult }    from './__tests__/fixtures'
-import { transformCrrmList } from './services'
+import { crrmListResult }                  from './__tests__/fixtures'
+import { rrmStates }                       from './config'
+import { transformCrrmList, CrrmListItem } from './services'
 import {
-  isOptimized,
+  getOptimizedState,
   getCrrmLinkText
 } from './utils'
 
 describe('Recommendations utils', () => {
-  const recommendations = transformCrrmList(crrmListResult.recommendations)
+  const recommendations = transformCrrmList(
+    crrmListResult.recommendations as unknown as CrrmListItem[])
 
-  describe('isOptimized', () => {
-    it('returns true if state is one where it is optimized', () => {
-      expect(isOptimized(recommendations[0])).toBe(true)
+  describe('getOptimizedState', () => {
+    it('returns optimized state', () => {
+      expect(getOptimizedState(recommendations[0].status)).toEqual(rrmStates.optimized)
     })
 
-    it('returns false if state is one where it is not optimized', () => {
-      expect(isOptimized(recommendations[1])).toBe(false)
+    it('returns non optimized state', () => {
+      expect(getOptimizedState(recommendations[1].status)).toEqual(rrmStates.nonOptimized)
     })
   })
 

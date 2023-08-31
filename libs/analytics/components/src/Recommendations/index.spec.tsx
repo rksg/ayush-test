@@ -50,6 +50,7 @@ describe('RecommendationTabContent', () => {
     mockGet.mockClear()
     mockedUseMuteRecommendationMutation.mockClear()
   })
+
   it('should render loader', () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [] }
@@ -58,50 +59,84 @@ describe('RecommendationTabContent', () => {
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
-  it('should render table for R1', async () => {
+  it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: recommendationListResult
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(false) // get('IS_MLISA) => false
+    mockGet.mockReturnValue(false) // get('IS_MLISA_SA') => false
     render(<RecommendationTabContent/>, {
-      route: {
-        params: { activeTab: 'crrm' }
-      },
+      route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    await screen.findAllByText('High')
-    expect(screen.getAllByText('High')).toHaveLength(1)
-    expect(screen.getByText('Venue')).toHaveTextContent('Venue')
+    const text = await screen.findAllByText('Optimized')
+    expect(text).toHaveLength(1)
+    expect(screen.getByText('Venue')).toBeVisible()
   })
-  it('should render table for RA SA', async () => {
+
+  it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: recommendationListResult
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(true) // get('IS_MLISA) => true
+    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    const text = await screen.findAllByText('Optimized')
+    expect(text).toHaveLength(1)
+    expect(screen.getByText('Zone')).toBeVisible()
+  })
+
+  it('should render aiops table for R1', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm')) }
+    })
+    mockGet.mockReturnValue(false) // get('IS_MLISA_SA') => false
     render(<RecommendationTabContent />, {
-      route: {
-        params: { activeTab: 'aiOps' }
-      },
+      route: { params: { activeTab: 'aiOps' } },
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    await screen.findAllByText('Medium')
-    expect(screen.getAllByText('Medium')).toHaveLength(1)
-    expect(screen.getByText('Zone')).toHaveTextContent('Zone')
+    const text = await screen.findAllByText('Medium')
+    expect(text).toHaveLength(1)
+    expect(screen.getByText('Venue')).toBeVisible()
   })
-  it('should render muted recommendations & reset correctly', async () => {
-    const { recommendations } = recommendationListResult
-    const [ muted, unmuted ] = recommendations
-    muted.isMuted = true
+
+  it('should render aiops table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: { recommendations: [muted, unmuted] }
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm')) }
+    })
+    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    render(<RecommendationTabContent />, {
+      route: { params: { activeTab: 'aiOps' } },
+      wrapper: Provider
     })
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    const text = await screen.findAllByText('Medium')
+    expect(text).toHaveLength(1)
+    expect(screen.getByText('Zone')).toBeVisible()
+  })
+
+  it('should render muted recommendations & reset correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm')) }
+    })
+    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
         path: '/analytics/next/recommendations/aiOps',
@@ -121,7 +156,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(1)
+    expect(afterShowMuted).toHaveLength(2)
 
     // check the action says unmute:
     await userEvent.click(afterShowMuted[0])
@@ -134,20 +169,19 @@ describe('RecommendationTabContent', () => {
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(afterReset).toHaveLength(1)
-
   })
 
   it('should mute recommendation correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: recommendationListResult
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(true)
+    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
     mockedMuteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
         toggleMute: { success: true, errorCode: '', errorMsg: '' }
       })
     }))
-
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
         path: '/analytics/next/recommendations/aiOps',
@@ -155,8 +189,6 @@ describe('RecommendationTabContent', () => {
         wrapRoutes: false
       }
     })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const selectRecommendation = await screen.findAllByRole(
       'radio',
