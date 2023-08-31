@@ -16,10 +16,10 @@ function BasicChart (props: {
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  legend: string[],
-  setLegend: Dispatch<SetStateAction<Record<string, boolean>>>,
-  setSelectedData: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
-  setPagination: (params: { current: number, pageSize: number }) => void
+  legend?: string[],
+  setLegend?: Dispatch<SetStateAction<Record<string, boolean> | undefined>>,
+  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setPagination?: (params: { current: number, pageSize: number }) => void
 }){
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const {

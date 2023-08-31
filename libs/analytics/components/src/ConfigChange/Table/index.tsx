@@ -28,7 +28,7 @@ export function Table (props: {
   pagination: { current: number, pageSize: number },
   setPagination: (params: { current: number, pageSize: number }) => void,
   dotSelect: number | null,
-  legend: string[]
+  legend?: string[]
 }) {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)

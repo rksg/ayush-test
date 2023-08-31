@@ -1,8 +1,8 @@
 import { Map }               from 'immutable'
 import { MessageDescriptor } from 'react-intl'
 
-import { ConfigChange } from '@acx-ui/components'
-import { get }          from '@acx-ui/config'
+import { ConfigChange, getConfigChangeEntityTypeMapping } from '@acx-ui/components'
+import { get }                                            from '@acx-ui/config'
 
 import { apGroupKeyMap }             from './mapping/apGroupKeyMap'
 import { apKeyMap }                  from './mapping/apKeyMap'
@@ -82,8 +82,10 @@ const configChangekpiMap = [
   return configMap
 }, {} as Record<string, string[]>)
 
-export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: string[]) =>
-  data.filter(row => legend.includes(row.type)).map(
-    (value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
-    ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
-    : true)
+export const filterData = (data: ConfigChange[], kpiKeys: string[], legend?: string[]) => {
+  return data.filter(row => legend?.includes(
+    getConfigChangeEntityTypeMapping().filter(i => i.key === row.type)[0].label))
+    .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
+      ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
+      : true)
+}

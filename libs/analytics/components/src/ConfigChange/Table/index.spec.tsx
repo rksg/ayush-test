@@ -19,6 +19,7 @@ describe('Table', () => {
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
+  const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
@@ -29,6 +30,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
@@ -44,6 +46,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -65,6 +68,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -94,6 +98,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -106,6 +111,7 @@ describe('Table', () => {
     expect(handleClick).toHaveBeenCalledWith({
       children: undefined,
       id: 0,
+      filterId: 0,
       key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
       name: '94:B3:4F:3D:21:80',
       newValues: ['480'],
@@ -125,6 +131,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -154,6 +161,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -180,6 +188,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])

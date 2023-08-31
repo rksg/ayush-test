@@ -22,7 +22,7 @@ export function useConfigChange () {
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
-  const [legend, setLegend] = useState<Record<string, boolean>>({})
+  const [legend, setLegend] = useState<Record<string, boolean> | undefined>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
@@ -30,6 +30,7 @@ export function useConfigChange () {
     pageSize: 10
   })
   const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last7Days)
+  const legendList = Object.keys(legend!).filter(key => legend![key])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     setPagination({
@@ -52,22 +53,6 @@ export function useConfigChange () {
     setSelected(params)
     setChartZoom(initialZoom)
   }
-
-  const reverse = {
-    zone: 'Zone',
-    ap: 'AP',
-    apGroup: 'AP Group',
-    wlan: 'WLAN',
-    wlanGroup: 'WLAN Group'
-  }
-
-  const convertedLegend: Record<string, boolean> = {}
-
-  for (const [newKey, oldKey] of Object.entries(reverse)) {
-    convertedLegend[newKey] = legend[oldKey]
-  }
-
-  const legendList = Object.keys(convertedLegend).filter(key => convertedLegend[key])
 
   const headerExtra = [
     <NetworkFilter
