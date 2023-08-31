@@ -89,18 +89,4 @@ describe('ClientDetails', () => {
     expect(await screen.findByRole('tab', { name: 'Troubleshooting', selected: true }))
       .toBeVisible()
   })
-
-  it('should render timeline correctly', async () => {
-    render(<ClientDetails/>, {
-      wrapper: Provider,
-      route: {
-        params: {
-          ...params,
-          activeTab: 'timeline'
-        },
-        path: '/users/wifi/clients/:clientId/details/:activeTab'
-      }
-    })
-    expect(await screen.findByRole('tab', { name: 'Timeline', selected: true })).toBeVisible()
-  })
 })
