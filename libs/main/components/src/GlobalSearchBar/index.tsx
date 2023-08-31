@@ -4,13 +4,14 @@ import { useIntl } from 'react-intl'
 
 import { LayoutUI }                                           from '@acx-ui/components'
 import { SearchOutlined, Close }                              from '@acx-ui/icons'
-import { HeaderContext }                                      from '@acx-ui/main/components'
 import { useNavigate, useParams, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
 import { fixedEncodeURIComponent }                            from '@acx-ui/utils'
 
+import { HeaderContext } from '../HeaderContext'
+
 import * as UI from './styledComponents'
 
-function SearchBar () {
+export function GlobalSearchBar () {
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname, key } = useLocation()
@@ -81,4 +82,3 @@ function SearchBar () {
       data-testid='search-button'
     />
 }
-export default SearchBar
