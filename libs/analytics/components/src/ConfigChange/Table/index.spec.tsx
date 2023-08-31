@@ -19,7 +19,7 @@ describe('Table', () => {
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
-  const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
+  const legend = ['AP', 'AP Group', 'Venue', 'WLAN', 'WLAN Group']
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
@@ -86,6 +86,31 @@ describe('Table', () => {
     expect(await screen.findByText('Enabled')).toBeVisible()
 
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
+  })
+
+  it('should render table with legend filtered', async () => {
+    const filteredLegend = ['AP Group', 'Venue', 'WLAN Group']
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+        legend={filteredLegend}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const body = within(tbody)
+    expect(await screen.findByRole('table')).toBeVisible()
+    expect(await body.findAllByRole('row')).toHaveLength(4)
+    expect(screen.queryByText('AP')).toBeNull()
+    expect(screen.queryByText('WLAN')).toBeNull()
   })
 
   it('should handle click correctly', async () => {

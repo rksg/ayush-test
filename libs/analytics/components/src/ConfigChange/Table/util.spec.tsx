@@ -47,8 +47,14 @@ describe('json2keymap', () => {
 
 describe('filterData', () => {
   it('should return correct data', () => {
-    const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
+    const legend = ['AP', 'AP Group', 'Venue', 'WLAN', 'WLAN Group']
     expect(filterData(configChanges, [], legend).length).toEqual(configChanges.length)
     expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(3)
+  })
+  it('should filter out legend', () => {
+    const noAPLegend = ['AP Group', 'Venue', 'WLAN', 'WLAN Group']
+    const noVenueLegend = ['AP', 'AP Group', 'WLAN', 'WLAN Group']
+    expect(filterData(configChanges, [], noAPLegend).length).toEqual(6)
+    expect(filterData(configChanges, [], noVenueLegend).length).toEqual(5)
   })
 })
