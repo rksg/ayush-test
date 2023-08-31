@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { fireEvent, waitForElementToBeRemoved, within } from '@testing-library/react'
-import { rest }                                         from 'msw'
+import { waitForElementToBeRemoved, within } from '@testing-library/react'
+import  userEvent                            from '@testing-library/user-event'
+import { rest }                              from 'msw'
 
 import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
@@ -107,7 +108,10 @@ jest.mock('react-router-dom', () => ({
 
 describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
-    mockedTenantFn.mockReset()
+    mockedTenantFn.mockClear()
+    mockedMSPEcProfileFn.mockClear()
+    mockedSaveFn.mockClear()
+    mockedUsedNavigate.mockClear()
 
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
 
@@ -167,11 +171,11 @@ describe('Convert NonVAR MSP Button', () => {
       expect(mockedTenantFn).toBeCalled()
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
-    fireEvent.click(btn)
+    await userEvent.click(btn)
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
-    fireEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
         params: `/api/tenant/${params.tenantId}/admin-settings/ui/COMMON`,
@@ -213,11 +217,11 @@ describe('Convert NonVAR MSP Button', () => {
       expect(mockedTenantFn).toBeCalled()
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
-    fireEvent.click(btn)
+    await userEvent.click(btn)
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
-    fireEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
         params: `/api/tenant/${params.tenantId}/admin-settings/ui/COMMON`,
@@ -237,7 +241,7 @@ describe('Convert NonVAR MSP Button', () => {
   })
 
   it('should blocked when account is delegated to others', async () => {
-    let mockedFn = jest.fn()
+    const mockedFn = jest.fn()
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
@@ -263,12 +267,11 @@ describe('Convert NonVAR MSP Button', () => {
       expect(mockedFn).toBeCalled()
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
-    fireEvent.click(btn)
+    await userEvent.click(btn)
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Operation not allowed')
-    // eslint-disable-next-line testing-library/no-node-access
-    const targetDialog = screen.getByText('Operation not allowed').closest('.ant-modal-root') as HTMLDivElement
-    fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+    await waitForElementToBeRemoved(dialog)
   })
 
   it('should handle no MSP licenses detected', async () => {
@@ -298,24 +301,24 @@ describe('Convert NonVAR MSP Button', () => {
       expect(mockedTenantFn).toBeCalledWith()
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
-    fireEvent.click(btn)
+    await userEvent.click(btn)
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('No MSP Licenses Detected')).toBeVisible()
     })
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('No MSP Licenses Detected').closest('.ant-modal-root') as HTMLDivElement
-    fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    await userEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
+    await waitForElementToBeRemoved(targetDialog)
+    expect(dialog).not.toBeInTheDocument()
   })
 
   it('should handle convert failed error', async () => {
-    let mockedFn = jest.fn()
     mockServer.use(
       rest.post(
         AdministrationUrlsInfo.convertNonVARToMSP.url,
         (req, res, ctx) => {
-          mockedFn()
           return res(ctx.status(500))
         }
       )
@@ -336,15 +339,17 @@ describe('Convert NonVAR MSP Button', () => {
       expect(mockedTenantFn).toBeCalledWith()
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
-    fireEvent.click(btn)
+    await userEvent.click(btn)
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('Server Error')).toBeVisible()
     })
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('Server Error').closest('.ant-modal-root') as HTMLDivElement
-    fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    await userEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
+    await waitForElementToBeRemoved(targetDialog)
+    expect(dialog).not.toBeInTheDocument()
   })
 
   describe('Should not render convert nonVAR MSP button', () => {
