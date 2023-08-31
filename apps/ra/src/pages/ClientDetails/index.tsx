@@ -5,8 +5,7 @@ import { ClientDetailPageHeader } from './ClientDetailPageHeader'
 const tabs = {
   overview: () => <div>overview</div>,
   troubleshooting: () => <div>troubleshooting</div>,
-  reports: () => <div>reports</div>,
-  timeline: () => <div>timeline</div>
+  reports: () => <div>reports</div>
 }
 
 const ClientDetails = () => {
