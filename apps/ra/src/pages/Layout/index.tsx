@@ -8,6 +8,7 @@ import {
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   // HelpButton,
+  GlobalSearchBar,
   HeaderContext
 } from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
@@ -15,7 +16,6 @@ import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
 import { useMenuConfig } from './menuConfig'
-// import SearchBar         from './SearchBar'
 
 function Layout () {
   const params = useParams()
@@ -31,7 +31,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          {/*<SearchBar />*/}
+          <GlobalSearchBar />
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
