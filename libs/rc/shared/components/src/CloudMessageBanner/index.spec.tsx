@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import { FirmwareUrlsInfo }           from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { render, screen, mockServer } from '@acx-ui/test-utils'
@@ -15,6 +16,8 @@ import {
 } from './__tests__/fixtures'
 
 import { CloudMessageBanner } from '.'
+
+jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('cloud Message Banner', () => {
   const route = {
