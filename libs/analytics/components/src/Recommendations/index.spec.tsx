@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/test-utils'
 import { setUpIntl } from '@acx-ui/utils'
 
-import { apiResult }                          from './__tests__/fixtures'
+import { recommendationListResult }           from './__tests__/fixtures'
 import { api, useMuteRecommendationMutation } from './services'
 
 import { RecommendationTabContent } from './index'
@@ -51,7 +51,7 @@ describe('RecommendationTabContent', () => {
     mockedUseMuteRecommendationMutation.mockClear()
   })
   it('should render loader', () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [] }
     })
     render(<Router><Provider><RecommendationTabContent /></Provider></Router>)
@@ -59,8 +59,8 @@ describe('RecommendationTabContent', () => {
   })
 
   it('should render table for R1', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: apiResult
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: recommendationListResult
     })
     mockGet.mockReturnValue(false) // get('IS_MLISA) => false
     render(<RecommendationTabContent/>, {
@@ -77,8 +77,8 @@ describe('RecommendationTabContent', () => {
     expect(screen.getByText('Venue')).toHaveTextContent('Venue')
   })
   it('should render table for RA SA', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: apiResult
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: recommendationListResult
     })
     mockGet.mockReturnValue(true) // get('IS_MLISA) => true
     render(<RecommendationTabContent />, {
@@ -95,10 +95,10 @@ describe('RecommendationTabContent', () => {
     expect(screen.getByText('Zone')).toHaveTextContent('Zone')
   })
   it('should render muted recommendations & reset correctly', async () => {
-    const { recommendations } = apiResult
+    const { recommendations } = recommendationListResult
     const [ muted, unmuted ] = recommendations
     muted.isMuted = true
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [muted, unmuted] }
     })
 
@@ -138,8 +138,8 @@ describe('RecommendationTabContent', () => {
   })
 
   it('should mute recommendation correctly', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: apiResult
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: recommendationListResult
     })
     mockGet.mockReturnValue(true)
     mockedMuteRecommendation.mockImplementation(() => ({

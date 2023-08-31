@@ -8,10 +8,8 @@ import {
 }                    from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { api as recommendationDetailsApi } from '../Recommendations/RecommendationDetails/services'
-import { api as recommendationListApi }    from '../Recommendations/services'
-
-import { expectedData, expectedDetailData } from './__tests__/fixtures'
+import { crrmListResult } from '../Recommendations/__tests__/fixtures'
+import { api }            from '../Recommendations/services'
 
 import { AIDrivenRRM } from '.'
 
@@ -23,53 +21,33 @@ const filters : IncidentFilter = {
 }
 
 describe('AIDrivenRRM dashboard', () => {
-  beforeEach(() => store.dispatch(recommendationListApi.util.resetApiState()))
-  beforeEach(() => store.dispatch(recommendationDetailsApi.util.resetApiState()))
+  beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('renders recommendation', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: expectedData
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: crrmListResult
     })
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: expectedDetailData
-    })
-
-    const payload = [
-      { id: '1', code: 'c-crrm-channel5g-auto' },
-      { id: '2', code: 'c-crrm-channel24g-auto' },
-      { id: '3', code: 'c-crrm-channel6g-auto' }
-    ]
-    const { status, data, error } = await store.dispatch(
-      recommendationDetailsApi.endpoints.recommendationDetails.initiate(payload)
-    )
-    expect(status).toBe('fulfilled')
-    expect(error).toBeUndefined()
-    expect(data).toBeDefined()
-
     render(<AIDrivenRRM filters={filters} />, {
       route: true,
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await new Promise((r)=>{setTimeout(r, 1000)}) // wait for second recommendationDetailsQuery
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
-    expect(await screen.findByText(
-      'AI-Driven RRM has been run on 3 zones and already 1/3 have been optimized.')).toBeVisible()
     expect(await screen.findByText('zone-1')).toBeVisible()
+    expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
     expect(await screen.findByText('zone-2')).toBeVisible()
+    expect(await screen.findByText('5 interfering links can be optimized to 2')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
+    expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
   })
 
   it('handles no data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: {
         recommendations: []
       }
-    })
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: []
     })
     render(<AIDrivenRRM filters={filters} />, {
       route: true,

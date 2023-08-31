@@ -6,18 +6,18 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { states, codes, Priorities  } from '../config'
+import { states, codes, Priorities, StatusTrail } from '../config'
 
 
 type RecommendationsDetailsPayload = {
   id: string;
   code?: string;
-}[]
+}
 
-type RecommendationKpi = Record<string, {
+export type RecommendationKpi = Record<string, {
   current: number | number[];
   previous: number | null;
-  projected: number | null
+  projected: number | null;
 }>
 
 export type RecommendationDetails = {
@@ -33,7 +33,7 @@ export type RecommendationDetails = {
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
-  statusTrail: Array<{ status: Lowercase<keyof typeof states>, createdAt: string }>;
+  statusTrail: StatusTrail;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -87,7 +87,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } as EnhancedRecommendation
 }
 
-const kpiHelper = ({ code }: { code?: string }) => {
+export const kpiHelper = ({ code }: { code?: string }) => {
   if (!code) return ''
   const data = codes[code]
   return get(data, ['kpis'])
@@ -104,25 +104,26 @@ const kpiHelper = ({ code }: { code?: string }) => {
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationDetails: build.query<EnhancedRecommendation[], RecommendationsDetailsPayload>({
+    recommendationDetails: build.query<EnhancedRecommendation, RecommendationsDetailsPayload>({
       query: (payload) => ({
         document: gql`
-          query ConfigRecommendationDetails {
-            ${payload?.map(({ id, code }, index) =>`
-              recommendation${index}: recommendation(id: \"${id}\") {
-                id code status appliedTime isMuted
-                originalValue currentValue recommendedValue metadata
-                sliceType sliceValue
-                path { type name }
-                statusTrail { status createdAt }
-                ${kpiHelper({ code })}
-              }
-            `).join('\n')}
+          query ConfigRecommendationDetails($id: String) {
+            recommendation(id: $id) {
+              id code status appliedTime isMuted
+              originalValue currentValue recommendedValue metadata
+              sliceType sliceValue
+              path { type name }
+              statusTrail { status createdAt }
+              ${kpiHelper(payload)}
+            }
           }
-        `
+        `,
+        variables: {
+          id: payload.id
+        }
       }),
-      transformResponse: (response: Record<string, RecommendationDetails> ) =>
-        Object.values(response).map(details => transformDetailsResponse(details)),
+      transformResponse: (response: { recommendation: RecommendationDetails }) =>
+        transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     }),
     getAps: build.query<RecommendationAp[], RecommendationApPayload>({

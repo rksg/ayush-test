@@ -1,4 +1,53 @@
-export const apiResult = {
+import { StatusTrail } from '../config'
+
+export const crrmListResult = {
+  recommendations: [
+    {
+      id: '1',
+      status: 'applied',
+      sliceValue: 'zone-1',
+      kpi_number_of_interfering_links: {
+        current: 0,
+        previous: 3,
+        projected: null
+      },
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applied' }
+      ] as StatusTrail
+    },
+    {
+      id: '2',
+      status: 'reverted',
+      sliceValue: 'zone-2',
+      kpi_number_of_interfering_links: {
+        current: 5,
+        previous: null,
+        projected: 2
+      },
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applied' },
+        { status: 'revert' }
+      ]
+    },
+    {
+      id: '3',
+      status: 'new',
+      sliceValue: 'Deeps Place',
+      kpi_number_of_interfering_links: {
+        current: 2,
+        previous: null,
+        projected: 0
+      },
+      statusTrail: [
+        { status: 'new' }
+      ]
+    }
+  ]
+}
+
+export const recommendationListResult = {
   recommendations: [
     {
       id: '1',

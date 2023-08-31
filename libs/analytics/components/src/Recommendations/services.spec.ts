@@ -9,8 +9,13 @@ import {
   NetworkPath
 } from '@acx-ui/utils'
 
-import { apiResult }                                                                                              from './__tests__/fixtures'
-import { api, useCancelRecommendationMutation, useMuteRecommendationMutation, useScheduleRecommendationMutation } from './services'
+import { crrmListResult, recommendationListResult } from './__tests__/fixtures'
+import {
+  api,
+  useCancelRecommendationMutation,
+  useMuteRecommendationMutation,
+  useScheduleRecommendationMutation
+} from './services'
 
 describe('Recommendation services', () => {
   const props = {
@@ -21,103 +26,6 @@ describe('Recommendation services', () => {
     filter: {}
   } as const
 
-
-  const expectedResult = [
-    {
-      id: '1',
-      code: 'c-crrm-channel5g-auto',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:05:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-1',
-      metadata: {},
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz611' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ],
-      category: 'AI-Driven Cloud RRM',
-      priority: 2,
-      priorityLabel: 'High',
-      scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-      status: 'Applied',
-      statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
-      summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
-      type: 'Venue',
-      statusEnum: 'applied'
-    }, {
-      id: '2',
-      code: 'c-txpower-same',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:06:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-2',
-      metadata: {
-        error: {
-          details: [{
-            apName: 'AP',
-            apMac: 'MAC',
-            configKey: 'radio5g',
-            message: 'unknown error'
-          }]
-        }
-      },
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz6' },
-        { type: 'zone', name: 'EDU' }
-      ],
-      category: 'Wi-Fi Client Experience',
-      priority: 1,
-      priorityLabel: 'Medium',
-      scope: `vsz6 (SZ Cluster)
-> EDU (Venue)`,
-      status: 'Revert Failed',
-      statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
-      summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
-      type: 'Venue',
-      statusEnum: 'revertfailed'
-    },
-    {
-      category: 'Wi-Fi Client Experience',
-      code: 'c-bandbalancing-enable',
-      createdAt: '2023-06-12T07:05:14.900Z',
-      id: '3',
-      isMuted: true,
-      metadata: {},
-      mutedAt: null,
-      mutedBy: '',
-      path: [
-        {
-          name: 'vsz34',
-          type: 'system'
-        },
-        {
-          name: '27-US-CA-D27-Peat-home',
-          type: 'domain'
-        },
-        {
-          name: 'Deeps Place',
-          type: 'zone'
-        }
-      ],
-      priority: 0,
-      priorityLabel: 'Low',
-      scope: `vsz34 (SZ Cluster)
-> 27-US-CA-D27-Peat-home (Domain)
-> Deeps Place (Venue)`,
-      sliceType: 'zone',
-      sliceValue: 'Deeps Place',
-      status: 'New',
-      statusTooltip: 'Schedule a day and time to apply this recommendation.',
-      summary: 'Enable band balancing',
-      type: 'Venue',
-      updatedAt: '2023-07-06T06:05:21.004Z',
-      statusEnum: 'new'
-    }
-  ]
-
   beforeEach(() => {
     setUpIntl({
       locale: 'en-US',
@@ -126,23 +34,84 @@ describe('Recommendation services', () => {
     store.dispatch(api.util.resetApiState())
   })
 
-  it('should return correct data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: apiResult
+  it('should return crrm list', async () => {
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: crrmListResult
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.crrmList.initiate({ ...props, n: 5 })
+    )
+
+    const expectedResult = [
+      { ...crrmListResult.recommendations[0], appliedOnce: true },
+      { ...crrmListResult.recommendations[1], appliedOnce: true },
+      { ...crrmListResult.recommendations[2], appliedOnce: false }
+    ]
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('should return recommendation list', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: recommendationListResult
     })
 
     const { status, data, error } = await store.dispatch(
       api.endpoints.recommendationList.initiate(props)
     )
 
+    const expectedResult = [
+      {
+        ...recommendationListResult.recommendations[0],
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: 2,
+        priorityLabel: 'High',
+        category: 'AI-Driven Cloud RRM',
+        summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
+        status: 'Applied',
+        statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
+        statusEnum: 'applied'
+      },
+      {
+        ...recommendationListResult.recommendations[1],
+        scope: `vsz6 (SZ Cluster)
+> EDU (Venue)`,
+        type: 'Venue',
+        priority: 1,
+        priorityLabel: 'Medium',
+        category: 'Wi-Fi Client Experience',
+        summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
+        status: 'Revert Failed',
+        statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
+        statusEnum: 'revertfailed'
+      },
+      {
+        ...recommendationListResult.recommendations[2],
+        scope: `vsz34 (SZ Cluster)
+> 27-US-CA-D27-Peat-home (Domain)
+> Deeps Place (Venue)`,
+        type: 'Venue',
+        priority: 0,
+        priorityLabel: 'Low',
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable band balancing',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      }
+    ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)
   })
 
-  it('should mutate correct data', async () => {
+  it('should mute correctly', async () => {
     const resp = { toggleMute: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'MuteRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useMuteRecommendationMutation(),
@@ -156,9 +125,9 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
-  it('should mutate apply correctly', async () => {
+  it('should schedule correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useScheduleRecommendationMutation(),
@@ -172,9 +141,9 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
-  it('should mutate cancel correctly', async () => {
+  it('should cancel correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useCancelRecommendationMutation(),

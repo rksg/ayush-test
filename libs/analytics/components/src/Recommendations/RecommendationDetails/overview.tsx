@@ -7,10 +7,10 @@ import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection }            from '../../DescriptionSection'
-import { codes, statusTrailMsgs }        from '../config'
-import { PriorityIcon, OptimizedIcon }   from '../styledComponents'
-import { getOptimized, getCrrmLinkText } from '../utils'
+import { DescriptionSection }           from '../../DescriptionSection'
+import { codes, statusTrailMsgs }       from '../config'
+import { PriorityIcon, OptimizedIcon }  from '../styledComponents'
+import { isOptimized, getCrrmLinkText } from '../utils'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
@@ -59,7 +59,7 @@ const Icon = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
 }
 
 const Optimized = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
-  const optimized = getOptimized([details]).isOptimized
+  const optimized = isOptimized(details)
   const text = optimized
     ? $t({ defaultMessage: 'Optimized' })
     : $t({ defaultMessage: 'Non-optimized' })
@@ -73,7 +73,6 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
-  const optimized = getOptimized([details]).isOptimized
 
   const fields = [
     ...(isRrm
@@ -89,7 +88,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     ...(isRrm
       ? [{
         label: $t({ defaultMessage: 'Summary' }),
-        children: getCrrmLinkText(details, $t, optimized)
+        children: getCrrmLinkText(details)
       }]
       : []),
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }

@@ -25,7 +25,7 @@ describe('AIOperations dashboard', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('renders recommendation', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: expectedData
     })
     render(<AIOperations filters={filters} />, {
@@ -44,7 +44,7 @@ describe('AIOperations dashboard', () => {
   })
 
   it('handles no data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: {
         recommendations: []
       }

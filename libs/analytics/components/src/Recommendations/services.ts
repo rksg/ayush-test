@@ -13,21 +13,18 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
 import { NodeType, getIntl }         from '@acx-ui/utils'
 
-import { states, codes } from './config'
+import { states, codes, StatusTrail }   from './config'
+import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
-type Metadata = {
-  error?: {
-    message?: string
-    details?: {
-      apName: string
-      apMac: string
-      message: string
-      configKey: string
-    }[]
-  },
-  scheduledAt?: string
-  updatedAt?: string
-}
+
+export type CrrmListItem = {
+  id: string
+  status: string
+  sliceValue: string
+  statusTrail: StatusTrail
+  appliedOnce?: boolean
+} & Partial<RecommendationKpi>
+
 export type Recommendation = {
   id: string
   code: string
@@ -43,7 +40,8 @@ export type Recommendation = {
   mutedAt: string
   path: []
 }
-export type TransformedRecommendation = Recommendation & {
+
+export type RecommendationListItem = Recommendation & {
   scope: string
   type: string
   priority: number
@@ -54,11 +52,11 @@ export type TransformedRecommendation = Recommendation & {
   statusTooltip: string
   statusEnum: keyof typeof states
 }
+
 export interface MutationPayload {
   id: string
   mute: boolean
 }
-
 export interface MutationResponse {
   toggleMute: {
     success: boolean
@@ -71,7 +69,6 @@ interface SchedulePayload {
   id: string
   scheduledAt: string
 }
-
 interface ScheduleResponse {
   schedule: {
     errorCode: string;
@@ -80,7 +77,19 @@ interface ScheduleResponse {
   }
 }
 
-
+type Metadata = {
+  error?: {
+    message?: string
+    details?: {
+      apName: string
+      apMac: string
+      message: string
+      configKey: string
+    }[]
+  },
+  scheduledAt?: string
+  updatedAt?: string
+}
 const radioConfigMap = {
   radio24g: '2.4 GHz',
   radio5g: '5 GHz',
@@ -119,7 +128,15 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
     )
   })
 }
-function transformResponse (recommendations: Recommendation[]) {
+export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
+  return recommendations.map(recommendation => {
+    const statusTrail: StatusTrail = recommendation.statusTrail
+    return {
+      ...recommendation,
+      appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied')) }
+  }) as CrrmListItem[]
+}
+function transformRecommendationList (recommendations: Recommendation[]): RecommendationListItem[] {
   const { $t } = getIntl()
   return recommendations.map(recommendation => {
     const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
@@ -140,10 +157,38 @@ function transformResponse (recommendations: Recommendation[]) {
 }
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationList: build.query<TransformedRecommendation[], AnalyticsFilter>({
+    crrmList: build.query<CrrmListItem[], AnalyticsFilter & { n: number }>({
+      // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
       query: (payload) => ({
         document: gql`
-        query ConfigRecommendation(
+        query CrrmList(
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+        ) {
+          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
+            id
+            status
+            sliceValue
+            ${kpiHelper({ code: 'c-crrm-channel24g-auto' })}
+            statusTrail { status }
+          }
+        }
+        `,
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate,
+          n: payload.n,
+          ...getFilterPayload(payload)
+        }
+      }),
+      transformResponse: (response: Response<CrrmListItem>) => {
+        return transformCrrmList(response.recommendations)
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    recommendationList: build.query<RecommendationListItem[], AnalyticsFilter>({
+      query: (payload) => ({
+        document: gql`
+        query RecommendationList(
           $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
         ) {
           recommendations(start: $start, end: $end, path: $path) {
@@ -172,14 +217,14 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<Recommendation>) => {
-        return transformResponse(response.recommendations)
+        return transformRecommendationList(response.recommendations)
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
     muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
       query: (payload) => ({
         document: gql`
-          mutation MutateRecommendation($id: String, $mute: Boolean) {
+          mutation MuteRecommendation($id: String, $mute: Boolean) {
             toggleMute(id: $id, mute: $mute) {
               success
               errorMsg
@@ -192,7 +237,6 @@ export const api = recommendationApi.injectEndpoints({
           mute: payload.mute
         }
       }),
-      transformResponse: (response: MutationResponse) => response,
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
@@ -201,7 +245,7 @@ export const api = recommendationApi.injectEndpoints({
     scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
       query: (payload) => ({
         document: gql`
-          mutation MutateRecommendation(
+          mutation ScheduleRecommendation(
             $id: String,
             $scheduledAt: DateTime
           ) {
@@ -222,29 +266,28 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    cancelRecommendation: build
-      .mutation<ScheduleResponse, { id: string }>({
-        query: (payload) => ({
-          document: gql`
-          mutation MutateRecommendation(
-            $id: String
-          ) {
-            cancel(id: $id) {
-              success
-              errorMsg
-              errorCode
-            }
+    cancelRecommendation: build.mutation<ScheduleResponse, { id: string }>({
+      query: (payload) => ({
+        document: gql`
+        mutation CancelRecommendation(
+          $id: String
+        ) {
+          cancel(id: $id) {
+            success
+            errorMsg
+            errorCode
           }
-        `,
-          variables: {
-            id: payload.id
-          }
-        }),
-        invalidatesTags: [
-          { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
-          { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
-        ]
-      })
+        }
+      `,
+        variables: {
+          id: payload.id
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    })
   })
 })
 
@@ -253,6 +296,7 @@ export interface Response<Recommendation> {
 }
 
 export const {
+  useCrrmListQuery,
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,

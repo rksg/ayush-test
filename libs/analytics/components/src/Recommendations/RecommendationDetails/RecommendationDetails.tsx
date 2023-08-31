@@ -19,11 +19,11 @@ export const RecommendationDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'analytics/recommendations/aiOps'
-  const codeQuery = useRecommendationDetailsQuery([{ id }], { skip: !Boolean(id) })
+  const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
-    codeQuery.data!,
-    { skip: codeQuery.data ? !Boolean(codeQuery.data?.[0].code) : true })
-  const details = detailsQuery.data?.[0]
+    { ...(codeQuery.data!) },
+    { skip: !Boolean(codeQuery.data?.code) })
+  const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
       title={$t(details.summary)}
@@ -39,7 +39,7 @@ export const RecommendationDetails = () => {
         type: $t(aiOps)
       }} />]}
     />}
-    {details && <GridRow>
+    <GridRow>
       <GridCol col={{ span: 3 }}>
         <FixedAutoSizer>
           {({ width }) => (<div style={{ width }}>
@@ -53,6 +53,6 @@ export const RecommendationDetails = () => {
       <GridCol col={{ span: 8 }}>
         <Kpis details={details} />
       </GridCol>
-    </GridRow>}
+    </GridRow>
   </Loader>
 }

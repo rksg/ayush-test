@@ -5,9 +5,9 @@ import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
 
-import * as UI                                                   from '../AIDrivenRRM/styledComponents'
-import { useRecommendationListQuery, TransformedRecommendation } from '../Recommendations/services'
-import { PriorityIcon }                                          from '../Recommendations/styledComponents'
+import * as UI                                                from '../AIDrivenRRM/styledComponents'
+import { useRecommendationListQuery, RecommendationListItem } from '../Recommendations/services'
+import { PriorityIcon }                                       from '../Recommendations/styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -40,7 +40,7 @@ function AIOperationsWidget ({
         : <UI.List
           dataSource={data?.slice(0,5)}
           renderItem={item => {
-            const recommendation = item as TransformedRecommendation
+            const recommendation = item as RecommendationListItem
             const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/aiOps/${id}`}>

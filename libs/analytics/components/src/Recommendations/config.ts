@@ -6,6 +6,8 @@ import { formatter }      from '@acx-ui/formatter'
 
 export type Priorities = { order: number, label: MessageDescriptor }
 
+export type StatusTrail = Array<{ status: Lowercase<keyof typeof states>, createdAt?: string }>
+
 const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
