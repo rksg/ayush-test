@@ -246,6 +246,8 @@ const crrmText = (value: CrrmTextType) => {
 }
 
 export const formats = {
+  countFormatRound: (value: number, { $t }: IntlShape) =>
+    $t(countFormat, { value: value < 1000 ? Math.round(value) : value }),
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number) => calendarFormat(number),

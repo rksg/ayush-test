@@ -294,6 +294,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.l3AclPolicyId = null
   }
 
+  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication') &&
+      !get(data, 'wlan.macAddressAuthentication')) {
+    (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
+  }
+
   if (!get(data, 'accessControlProfileEnable')) {
     advancedCustomization.accessControlProfileId = null
     advancedCustomization.accessControlEnable = false

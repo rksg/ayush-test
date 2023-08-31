@@ -269,7 +269,7 @@ test('should navigate to analytics/configChange', () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
+  expect(screen.getByTestId('networkAssurance')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {

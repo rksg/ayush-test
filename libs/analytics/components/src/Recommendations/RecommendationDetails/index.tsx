@@ -19,7 +19,7 @@ export const RecommendationDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = '/analytics/recommendations/aiOps'
+  const link = 'analytics/recommendations/aiOps'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },

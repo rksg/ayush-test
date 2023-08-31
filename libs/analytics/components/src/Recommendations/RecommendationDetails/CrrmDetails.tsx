@@ -21,7 +21,7 @@ export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = '/analytics/recommendations/crrm'
+  const link = 'analytics/recommendations/crrm'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },
