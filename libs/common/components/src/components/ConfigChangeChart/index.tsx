@@ -72,7 +72,8 @@ export function ConfigChangeChart ({
     const selectedConfig = data.filter(i => i.id === selectedData?.id)
     const selectedType = chartRowMapping.filter(
       ({ key }) => key === selectedConfig[0]?.type)[0]?.label
-    if (selectedLegend[selectedType] === false) { setSelectedData?.(null) }
+
+    selectedLegend[selectedType] === false && setSelectedData?.(null)
     setPagination?.({
       current: Math.ceil((selectedConfig[0]?.filterId! + 1) / 10),
       pageSize: 10

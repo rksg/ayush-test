@@ -48,6 +48,7 @@ describe('Chart', () => {
       <Chart
         selected={null}
         onClick={handleClick}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -68,6 +69,7 @@ describe('Chart', () => {
       <Chart
         selected={selected}
         onClick={handleClick}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -93,6 +95,7 @@ describe('Chart', () => {
         <Chart
           selected={null}
           onClick={handleClick}
+          legend={legend}
         />
       </KPIFilterContext.Provider>
     </ConfigChangeContext.Provider>, { wrapper: Provider, route: {} })
