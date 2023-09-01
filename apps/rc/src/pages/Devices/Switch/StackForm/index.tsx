@@ -488,7 +488,8 @@ export function StackForm () {
     {
       dataIndex: 'key',
       key: 'key',
-      showSorterTooltip: false
+      showSorterTooltip: false,
+      show: editMode
     },
     {
       title: $t({ defaultMessage: 'Serial Number' }),

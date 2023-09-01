@@ -826,7 +826,7 @@ export function ManageCustomer () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
+            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
