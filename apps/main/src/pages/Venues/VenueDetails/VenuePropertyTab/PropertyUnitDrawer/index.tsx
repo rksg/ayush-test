@@ -39,7 +39,8 @@ import {
   VenueLanPorts,
   BillingCycleType,
   ConnectionMetering,
-  PropertyDpskSetting
+  PropertyDpskSetting,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
@@ -629,12 +630,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       dpsks: [
         {
           type: PropertyDpskType.UNIT,
-          passphrase: unitPersona?.dpskPassphrase,
+          passphrase: unitPersona?.dpskPassphrase === ''
+            ? undefined : unitPersona?.dpskPassphrase,
           vlan: unitPersona?.vlan
         },
         {
           type: PropertyDpskType.GUEST,
-          passphrase: guestPersona?.dpskPassphrase,
+          passphrase: guestPersona?.dpskPassphrase === ''
+            ? undefined : guestPersona?.dpskPassphrase,
           vlan: guestPersona?.vlan
         }
       ],
@@ -757,7 +760,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               }
               rules={[
                 { min: 8 },
-                { max: 63 }
+                { max: 63 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />
@@ -778,7 +782,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 }
                 rules={[
                   { min: 8 },
-                  { max: 63 }
+                  { max: 63 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) }
                 ]}
                 children={<Input />}
               />
