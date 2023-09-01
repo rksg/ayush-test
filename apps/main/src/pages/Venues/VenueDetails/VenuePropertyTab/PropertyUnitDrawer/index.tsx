@@ -741,6 +741,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 // UnitName(235) -> PersonaName(255)
                 // ex. Rule = GUEST_{UnitName}-{timestamp} or UNIT_{UnitName}-{timestamp}
                 { max: 235 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) },
                 { validator: (_, value) => nameValidator(value) }
               ]}
             />
@@ -837,7 +838,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Resident Name' })}
               rules={[
                 { required: true },
-                { max: 255 }
+                { max: 255 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />
