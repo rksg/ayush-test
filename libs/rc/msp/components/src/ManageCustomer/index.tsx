@@ -426,6 +426,12 @@ export function ManageCustomer () {
       const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
         : isDeviceAgnosticEnabled
           ? { assignments: [{
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          }] }
+          : { assignments: [{
             quantity: quantityWifi,
             action: AssignActionEnum.ADD,
             isTrial: false,
@@ -436,12 +442,6 @@ export function ManageCustomer () {
             action: AssignActionEnum.ADD,
             isTrial: false,
             deviceType: EntitlementDeviceType.MSP_SWITCH
-          }] }
-          : { assignments: [{
-            quantity: quantityApsw,
-            action: AssignActionEnum.ADD,
-            isTrial: false,
-            deviceType: EntitlementDeviceType.MSP_APSW
           }] }
 
       const delegations= [] as MspEcDelegatedAdmins[]
