@@ -187,7 +187,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
         { validator: () => {
           const MUST_SELECTED = 2
           const numberOfSelected = options.map(option => option.value)
-            .filter(value => value)
+            .filter(value => value === true)
             .length
           if (numberOfSelected < MUST_SELECTED) {
             return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
