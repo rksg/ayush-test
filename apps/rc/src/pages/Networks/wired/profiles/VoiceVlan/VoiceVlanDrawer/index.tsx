@@ -11,6 +11,7 @@ import { noDataDisplay, TABLE_DEFAULT_PAGE_SIZE }                        from '@
 
 import { VoiceVlanModal } from './VoiceVlanModal'
 import _ from 'lodash'
+import { DefaultOptionType } from 'antd/lib/select'
 
 export interface ACLSettingDrawerProps {
   modelData?: VoiceVlanOption
@@ -64,18 +65,54 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
 
   const onEdit = (selectedRows: VoiceVlanPort[]) => {
     const portsCopy = [...selectedRows]
-    let vlanOptions: string[] = []
+    let vlans: string[] = []
+    let intersection: string[] = []
+    let union: string[] = []
     Object.keys(portVlanMap).forEach(key => {
       portsCopy.forEach(port => {
         if(key == port.taggedPort) {
-          if(!vlanOptions.length){
-            vlanOptions = [ ...portVlanMap[key]]
+          if(!vlans.length){
+            vlans = [ ...portVlanMap[key]]
+            union = [ ...portVlanMap[key]]
+            intersection = [ ...portVlanMap[key]]
           }else {
-            vlanOptions = _.intersection(vlanOptions, portVlanMap[key])
+            union = _.union(union, portVlanMap[key])
+            intersection = _.intersection(intersection, portVlanMap[key])
           }
         }
       })
     })
+
+    let vlansOption:DefaultOptionType[] = []
+    if(selectedRows.length === 1) {
+      vlansOption = vlans.map(i => ({
+        label: $t( { defaultMessage: 'VLAN-ID: {id}' }, { id: i }),
+        value: i
+      }))
+    }else{
+      union.forEach(u => {
+        if(intersection.indexOf(u) !== -1) {
+          vlansOption.push({
+            label: $t( { defaultMessage: 'VLAN-ID: {id}' }, { id: u }),
+            value: u
+          })
+        } else {
+          vlansOption.push({
+            label: $t( { defaultMessage: 'VLAN-ID: {id} (Disjoint set of VLAN)' }, { id: u }),
+            value: u,
+            disabled: true
+          })
+        }
+      })
+    }
+
+    const initialOption = [{
+      label: $t({ defaultMessage: 'Not Set' }),
+      value: ''
+    }]
+    vlansOption.sort((a, b) => Number(a.value) - Number(b.value))
+    const vlanOptions = vlansOption ? [...initialOption, ...vlansOption] : initialOption
+
     const ports = selectedRows.map(i => i.taggedPort)
     let voiceVlanValue = selectedRows[0].voiceVlan
     if(selectedRows.length) {

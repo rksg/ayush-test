@@ -7,6 +7,7 @@ import { ProfileTypeEnum }                               from './../constants'
 import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 
 import { GridDataRow } from './'
+import { DefaultOptionType } from 'antd/lib/select'
 
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
 
@@ -673,7 +674,7 @@ export interface TrustedPort {
 
 export interface VoiceVlanModalData {
   ports: string[]
-  vlanOptions: string[]
+  vlanOptions: DefaultOptionType[]
   voiceVlanValue: string
 }
 

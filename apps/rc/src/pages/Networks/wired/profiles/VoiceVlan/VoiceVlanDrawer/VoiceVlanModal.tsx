@@ -20,16 +20,7 @@ export function VoiceVlanModal (props:{
 
   useEffect(() => {
     if(editPorts){
-      const initialOption = [{
-        label: $t({ defaultMessage: 'Not Set' }),
-        value: ''
-      }]
-      const vlans = editPorts?.vlanOptions?.map(i => ({
-        label: $t( { defaultMessage: 'VLAN-ID: {id}' }, { id: i }),
-        value: i
-      }))
-      const vlanOptions = vlans ? [...initialOption, ...vlans] : initialOption
-      setVlanOptions(vlanOptions)
+      setVlanOptions(editPorts.vlanOptions)
       form.setFieldsValue({
         voiceVlan: editPorts.voiceVlanValue,
       })
