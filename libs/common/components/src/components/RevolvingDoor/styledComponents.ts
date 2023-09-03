@@ -1,7 +1,8 @@
 import {
   Breadcrumb,
   List,
-  Menu
+  Menu,
+  Input
 } from 'antd'
 import styled, { css } from 'styled-components/macro'
 
@@ -86,7 +87,7 @@ export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
   background-color:  ${(props) => props.isSelected ? 'var(--acx-accents-orange-20)' : 'white'};
   &:hover {
     cursor: pointer;
-    background-color: var(--acx-accents-orange-20);
+    background-color: var(--acx-accents-orange-10);
   }
   &:active {
     background-color: var(--acx-accents-orange-20);
@@ -123,4 +124,9 @@ export const StyledMenu = styled(Menu)`
     cursor: default;  }
 }
 }
+`
+export const StyledInput = styled(Input)`
+  cursor: 'pointer';
+  border-color: var(--acx-primary-black);
+  color: var(--acx-primary-black);
 `

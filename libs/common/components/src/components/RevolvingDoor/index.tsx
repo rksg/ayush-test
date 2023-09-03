@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
-import { Dropdown, Menu, Input } from 'antd'
+import { Dropdown, Menu } from 'antd'
 import {
   Breadcrumb
 } from 'antd'
@@ -17,6 +17,7 @@ interface Node {
   mac?: string;
   children?: Node[];
   path?: Node[];
+  defaultSelected?: boolean;
 }
 
 const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
@@ -30,6 +31,24 @@ const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] =
     }
   }
   return results
+}
+const findMatchingNode = (
+  node: Node,
+  targetNode: Node | null | undefined,
+  path: Node[] = []
+): Node | null => {
+  if (targetNode && node.name === targetNode.name && node.type === targetNode.type) {
+    return { ...node, path: [...path, node] }
+  }
+  if (Array.isArray(node.children)) {
+    for (const child of node.children) {
+      const result = findMatchingNode(child, targetNode, [...path, node])
+      if (result) {
+        return result
+      }
+    }
+  }
+  return null
 }
 
 interface Props {
@@ -52,25 +71,51 @@ const ListItemComponent: React.FC<Props> = ({ node, onClick, selectedNode }) => 
     </UI.ListItem>
   )
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const RevolvingDoor = (data: any) => {
-  const rootNode = data?.data
-  const [breadcrumb, setBreadcrumb] = useState<Node[]>([rootNode])
+interface RevolvingDoorProps {
+  data: Node;
+  setNetworkPath: Function;
+  defaultSelectedNode?: Node | null;
+}export const RevolvingDoor = (props: RevolvingDoorProps) => {
+  const rootNode = props?.data
+  const matchingNode = findMatchingNode(
+    rootNode,
+    (
+      props?.defaultSelectedNode as unknown as Node[]
+    )?.[(props.defaultSelectedNode as unknown as Node[]).length - 1 ])
+  const ref = useRef(null)
+
+  const [breadcrumb, setBreadcrumb] = useState<Node[]>(
+    matchingNode?.path ? matchingNode.path : [rootNode]
+  )
+  const [selectedNode, setSelectedNode] = useState<Node | null>(
+    matchingNode ? matchingNode : null
+  )
   const [searchText, setSearchText] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+
   const onCancel = () => {
     setSearchText('')
     setVisible(false)
-    setSelectedNode(null)
-    setBreadcrumb([rootNode])
   }
   const onApply = () => {
     setVisible(false)
-    setBreadcrumb([rootNode])
+    const selectedNodePath = breadcrumb.map((node) => ({ name: node.name, type: node.type }))
+    props.setNetworkPath(selectedNodePath, selectedNodePath)
+  }
+  const handleClickOutside = (event: MouseEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (!(ref?.current as any)?.contains(event.target)) {
+      setVisible(false)
+    }
   }
 
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
   useEffect(() => {
     if (searchText) {
       const results = searchTree(rootNode, searchText)
@@ -152,7 +197,7 @@ export const RevolvingDoor = (data: any) => {
     </UI.ButtonDiv>
   )
   const dropDownList = (
-    <UI.StyledMenu>
+    <UI.StyledMenu >
       <Menu.Item key='1'>
         <UI.StyledList
           split={false}
@@ -167,14 +212,17 @@ export const RevolvingDoor = (data: any) => {
     </UI.StyledMenu>
   )
   return (
-    <Dropdown overlay={dropDownList} visible={visible}>
-      <Input
-        placeholder='Search...'
-        onClick={() => setVisible(true)}
-        style={{ cursor: 'pointer' }}
-        onChange={(e) => setSearchText(e.target.value)}
-        value={searchText}
-      />
-    </Dropdown>
+    <div ref={ref}>
+      <Dropdown
+        overlay={dropDownList}
+        visible={visible}>
+        <UI.StyledInput
+          placeholder='Search...'
+          onClick={() => setVisible(true)}
+          onChange={(e) => setSearchText(e.target.value)}
+          value={searchText ? searchText : breadcrumb.map(node => node.name).join(' > ')}
+        />
+      </Dropdown>
+    </div>
   )
 }
