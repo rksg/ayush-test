@@ -400,6 +400,17 @@ export function ManageIntegrator () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          licAssignment.push({
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         customer.licenses = { assignments: licAssignment }
       }
@@ -458,7 +469,19 @@ export function ManageIntegrator () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
-
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantityApsw,
+            assignmentId: apswAssignId,
+            action: actionApsw,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         let assignLicense = {
           subscription_start_date: today,
@@ -921,16 +944,24 @@ export function ManageIntegrator () {
           <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
         </Form.Item>
 
-        <Form.Item
-          label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+        {!isDeviceAgnosticEnabled && <div>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+          >
+            <Paragraph>{formData.wifiLicense}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+          >
+            <Paragraph>{formData.switchLicense}</Paragraph>
+          </Form.Item>
+        </div>}
+        {isDeviceAgnosticEnabled && <Form.Item
+          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
-          <Paragraph>{formData.wifiLicense}</Paragraph>
-        </Form.Item>
-        <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
-        >
-          <Paragraph>{formData.switchLicense}</Paragraph>
-        </Form.Item>
+          <Paragraph>{formData.apswLicense}</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
