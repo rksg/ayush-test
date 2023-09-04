@@ -2,12 +2,13 @@ import '@testing-library/jest-dom'
 import { useState } from 'react'
 
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { HeaderContext }             from '@acx-ui/main/components'
 import { useLocation }               from '@acx-ui/react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import SearchBar from './SearchBar'
+import { HeaderContext } from '../HeaderContext'
+
+import { GlobalSearchBar } from './index'
 
 const mockedUsedNavigate = jest.fn()
 
@@ -28,7 +29,7 @@ function SearchBarMock (props: SearchProps) {
   return (
     <HeaderContext.Provider value={{
       searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-      <SearchBar />
+      <GlobalSearchBar />
     </HeaderContext.Provider>
   )
 }

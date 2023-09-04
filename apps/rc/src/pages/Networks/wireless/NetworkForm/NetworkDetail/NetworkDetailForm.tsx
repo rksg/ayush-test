@@ -60,7 +60,7 @@ export function NetworkDetailForm () {
   const networkListPayload = {
     searchString: '',
     fields: ['name', 'id'],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'dsaeOnboardNetwork.name'],
     filters: {},
     pageSize: 10000
   }
