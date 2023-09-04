@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { CreateDpskPassphrasesFormFields, DpskUrls, NewDpskBaseUrlWithId } from '@acx-ui/rc/utils'
 import { Provider }                                                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor }                 from '@acx-ui/test-utils'
@@ -45,8 +44,6 @@ describe('AddDpskPassphrasesForm', () => {
       const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
       return form
     })
-
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(
       <Provider>
