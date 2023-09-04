@@ -4,7 +4,6 @@ import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { dataApi }                             from '@acx-ui/store'
 import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
-
 type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
 
@@ -128,10 +127,7 @@ export const api = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
       transformResponse: (response: Response) => response.network.hierarchyNode.children
     }),
-    networkHierarchy: build.query<
-      NetworkNode,
-      Omit<NetworkHierarchyFilter, 'filter'>
-    >({
+    networkHierarchy: build.query<NetworkNode, Omit<NetworkHierarchyFilter, 'filter'>>({
       query: payload => ({
         document: gql`
           query Network($start: DateTime, $end: DateTime) {
