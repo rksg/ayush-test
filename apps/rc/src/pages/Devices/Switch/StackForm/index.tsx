@@ -495,7 +495,7 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'id',
       key: 'id',
-      width: 155,
+      width: 200,
       render: function (_, row, index) {
         return (<Form.Item
           name={`serialNumber${row.key}`}
