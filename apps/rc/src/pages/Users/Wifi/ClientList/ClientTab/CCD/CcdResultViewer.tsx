@@ -9,11 +9,11 @@ import { useIntl } from 'react-intl'
 import { useRunCcdMutation }  from '@acx-ui/rc/services'
 import { CatchErrorResponse } from '@acx-ui/rc/utils'
 
-import { CcdEndPoints, CcdEndPointRectX, CcdResultMessage, CcdStatus, CcdMsg } from './contents'
-import { useCcd }                                                              from './useCcd'
+import { CcdEndPoints, CcdEndPointRectX, CcdDataMessage, CcdStatus, CcdMsg } from './contents'
+import { useCcd }                                                            from './useCcd'
 
 
-const msgWidth = 200
+const msgWidth = 220
 const columnWidth = 24
 const initColumnHeight = 400
 const rectArrowWidth = 56
@@ -21,6 +21,8 @@ const rectArrowHeight = 10
 const initRowY = 30
 const rowHeight = 40
 const rowSeperatorHeight = 0
+const infoRectWidth = 70
+const infoRectHeight = 15
 
 let rowX = 10
 let rowY = 30
@@ -34,7 +36,10 @@ export interface CcdResultViewerProps {
     state: string,
     clientMac: string,
     aps?: string[]
-  }
+  },
+  currentViewAp?: string,
+  currentCcdAp?: string,
+  updateCcdAp?: (apMac: string) => void
 }
 
 export function CcdResultViewer (props: CcdResultViewerProps) {
@@ -42,9 +47,9 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
   const graphRef = useRef<SVGSVGElement>(null)
   const endPointXsRef = useRef<CcdEndPointRectX[]>([])
 
-  const { state, venueId, payload } = props
+  const { state, venueId, payload, currentViewAp, currentCcdAp, updateCcdAp } = props
 
-  const { setRequestId, handleError } = useCcd('', socketHandler)
+  const { setRequestId, handleError } = useCcd(socketHandler)
 
   const [ diagnosisClientConnection ] = useRunCcdMutation()
 
@@ -84,6 +89,7 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
         //console.log('Action is CLEAR')
         hasInitSvg = false
         select(graphRef.current).selectAll('*').remove()
+        updateCcdAp?.('')
       }
     }
 
@@ -93,19 +99,40 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
   async function socketHandler (msg: string) {
     const data = JSON.parse(msg)
     //console.log('data: ', data)
-    const m = JSON.parse(data.message)
+    const m = data?.message && JSON.parse(data.message)
     //console.log('msg: ', m)
 
-    const messageData = m.dataMessage
+    const messageData = m?.dataMessage || {}
     const { apMac, messageId } = messageData
 
+    if (isEmpty(apMac)) {
+      return
+    }
 
-    if (messageId !== 1 && !isEmpty(apMac) ) {
+    if (messageId !== 1 ) {
       //console.log('megData: ', messageData)
+      const mac = apMac.toUpperCase()
+      //console.log('apMac: ', mac)
+      //console.log('currentCcdAp:', currentCcdAp)
+      //console.log('currentViewAp:', currentViewAp)
+
+      if (mac !== currentCcdAp) {
+        updateCcdAp?.(mac)
+      }
+
+      if (mac !== currentViewAp) {
+        if (hasInitSvg) {
+          hasInitSvg = false
+          select(graphRef.current).selectAll('*').remove()
+        }
+        return
+      }
+
       if (!hasInitSvg) {
         initSvg(messageData)
         hasInitSvg = true
       }
+
       const hasDraw = drawProcessToRow(messageData)
 
       if (hasDraw) {
@@ -117,10 +144,12 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
           adjustmentHeight(newHeight)
         }
       }
-    }
+    } /*else {
+      console.log('probeData: ', messageData)
+    }*/
   }
 
-  const initSvg = (data: CcdResultMessage) => {
+  const initSvg = (data: CcdDataMessage) => {
     select(graphRef.current).selectAll('*').remove()
     d3.select(graphRef.current).append('g')
 
@@ -130,12 +159,16 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
     drawEndPoints(data)
   }
 
+  const getSvg = () => {
+    return d3.select(graphRef.current)
+  }
+
   const getContainerGroup = () => {
-    const svg = d3.select(graphRef.current)
+    const svg = getSvg()
     return svg && svg.select('g')
   }
 
-  const drawEndPoints = (data: CcdResultMessage) => {
+  const drawEndPoints = (data: CcdDataMessage) => {
     const containerGroup = getContainerGroup()
     let group,
       rectangle,
@@ -186,7 +219,7 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
     columnHeight = value
 
     const rectY = 10
-    const svg = d3.select(graphRef.current)
+    const svg = getSvg()
     const containerGroup = svg.select('g')
     const endPointRects = containerGroup.selectAll('.endpoint')
     endPointRects.attr('height', columnHeight)
@@ -203,12 +236,10 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       return t
     })
 
-
-
     svg.attr('height', columnHeight)
   }
 
-  const drawProcessToRow = (data: CcdResultMessage) => {
+  const drawProcessToRow = (data: CcdDataMessage) => {
     const { messageId, statusCode, sourceServerType, destinationServerType } = data
     const containerGroup = getContainerGroup()
 
@@ -234,14 +265,16 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       return false
     }
 
-    let tailX: number, headX: number
+    let tailX: number, headX: number, infoRectX: number
 
     if (srcX.x1 < destX.x1) {
       tailX = srcX.x2
       headX = destX.x1
+      infoRectX = tailX - 5 - infoRectWidth
     } else {
       tailX = srcX.x1
       headX = destX.x2
+      infoRectX = tailX + 5
     }
 
     const group = containerGroup.append('g') as any
@@ -255,16 +288,72 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       rectArrow.attr('fill', statusArrowColor)
     }
 
+    const info = getInfo(data)
+    if (info) {
+      const infoRectDisplayText = (statusCode === CcdStatus.SUCCESS)? 'Info'
+        : (statusCode === CcdStatus.FAIL)? 'Fail' : 'Warning'
+      const infoRectColor = (statusCode === CcdStatus.SUCCESS)? '#74D7C7' : statusTextColor
+      const infoRectY = rowY + 13
+      const infoRect = drawRectangle(group, infoRectX, infoRectY,
+        infoRectWidth, infoRectHeight, 5, 5 )
+      infoRect.attr('fill', infoRectColor)
+      infoRect.append('title').text(info)
+
+      const infoRectTextY = rectArrowY + rectArrowHeight / 2
+      const infoRectText = group.append('text')
+        .attr('x', infoRectX + 5)
+        .attr('y', infoRectTextY)
+        .attr('dy', '.35em')
+        .text(infoRectDisplayText)
+      infoRectText.attr('fill', 'white')
+        .append('title').text(info)
+        //.attr('data-qtip', info)
+        //.style('font-size', '14px')
+
+      const infoIcon = group.append('text')
+        .attr('x', infoRectX + 50)
+        .attr('y', infoRectTextY)
+        .attr('dy', '.4em')
+        .text('\u24D8')
+
+      infoIcon.attr('fill', 'white')
+        //.attr('data-qtip', info)
+        .style('font-weight', 'bold')
+        .append('title').text(info)
+    }
+
     return true
+  }
+
+  const getInfo = (data: CcdDataMessage) => {
+    const { info, protocol } = data
+    let infoList = []
+
+    if (info) {
+      infoList.push(`Info: ${info}`)
+    }
+
+    if(protocol) {
+      infoList.push(`Protocol: ${protocol}`)
+    }
+
+    return (infoList.length === 0) ? ''
+      : infoList.join('<br/>').replace(/[;|,]/g, '<br/>')
   }
 
   const drawRectangle = (svg: d3.Selection<SVGElement, {}, HTMLElement, any>,
     x: number, y: number,
-    width: number, height: number) => {
+    width: number, height: number,
+    rx?: number, ry?: number) => {
 
-    return svg.append('rect')
+    const rect = svg.append('rect')
       .attr('x', x).attr('y', y)
       .attr('width', width).attr('height', height)
+
+    if (rx) rect.attr('rx', rx)
+    if (ry) rect.attr('ry', ry)
+
+    return rect
   }
 
   const drawRectangleArrow = (svg: d3.Selection<SVGElement, {}, HTMLElement, any>,
@@ -331,6 +420,8 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
 
 
   return (
-    <svg ref={graphRef} width='100%' height='100%'/>
+    <div style={{ borderLeft: '1px solid var(--acx-neutrals-30)' }}>
+      <svg ref={graphRef} width='100%' height='100%'/>
+    </div>
   )
 }

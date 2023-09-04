@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Tree, TreeProps } from 'antd'
 import { DataNode }        from 'antd/lib/tree'
+import { includes }        from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
@@ -9,10 +10,13 @@ import { Drawer }             from '@acx-ui/components'
 import { useLazyApListQuery } from '@acx-ui/rc/services'
 import { APExtendedGrouped }  from '@acx-ui/rc/utils'
 
+import { ApInfo } from './contents'
+
 type ApGroupSelecterDrawerProps = {
   visible: boolean,
   venueId?: string,
-  updateSelectAps: (aps: string[], apGroups:string[]) => void
+  updateSelectAps: (aps: string[], apGroups:string[]) => void,
+  updateSelectApsInfo: (apsInfo: ApInfo[]) => void,
   onCancel: () => void
 }
 /*
@@ -60,7 +64,7 @@ const fakeData = [
         venueName: 'joe-test',
         deviceStatus: '1_09_Offline',
         IP: '192.168.5.103',
-        apMac: '58:FB:96:1A:18:40',
+        apMac: 'E0:10:7F:23:DA:B0',
         apStatusData: {
           APRadio: [
             {
@@ -146,21 +150,21 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
 
-  const { visible, venueId, updateSelectAps } = props
+  const { visible, venueId, updateSelectAps, updateSelectApsInfo } = props
 
   const [ getApsByApGroup ] = useLazyApListQuery()
 
   const selectedKeysRef = useRef<string[]>()
   const apGroupMapRef = useRef<Map<string, string>>()
+  const apListRef = useRef<ApInfo[]>()
 
   const [ apsTreeData, setApsTreeData] = useState<DataNode[]>([])
-
-
 
   useEffect(() => {
     if (venueId) {
       const converteToTreeData = (apGroupData?: APExtendedGrouped[]) => {
         if (apGroupData) {
+          const apList: ApInfo[] = []
           const apGroupMap = new Map()
           const treeData = apGroupData.map(data => {
             const { deviceGroupName, deviceGroupId, members, aps } = data
@@ -169,7 +173,8 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
             apGroupMap.set(deviceGroupId, groupName)
 
             const childrenTreeData = aps?.map(ap => {
-              const { name, apMac, serialNumber } = ap
+              const { name, apMac, serialNumber, model } = ap
+              apList.push({ name, apMac, serialNumber, model })
               return {
                 title: `${name} (${apMac})`,
                 key: `${deviceGroupId}-${serialNumber}`
@@ -184,6 +189,7 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
           })
 
           apGroupMapRef.current = apGroupMap
+          apListRef.current = apList
 
           return treeData
         }
@@ -192,15 +198,17 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
 
       const createAPGroupTreeData = async (venueId: string) => {
         const payload = {
-          fields: ['name', 'apMac', 'serialNumber', 'deviceGroupName', 'deviceStatus', 'venueId' ],
+          fields: [
+            'name', 'apMac', 'serialNumber', 'deviceGroupName',
+            'deviceStatus', 'venueId', 'model' ],
           filters: {
             venueId: [venueId],
             deviceStatusSeverity: ['2_Operational']
           },
           groupBy: 'deviceGroupName',
           groupByFields: [
-            'name', 'apMac', 'serialNumber',
-            'deviceGroupName', 'deviceStatus', 'venueId' ],
+            'name', 'apMac', 'serialNumber', 'deviceGroupName',
+            'deviceStatus', 'venueId', 'model' ],
           page: 1,
           pageSize: 10000,
           sortField: 'name',
@@ -271,7 +279,15 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
                 }
               }
 
+              let selectApsInfo: ApInfo[] = []
+              const apsInfo = apListRef.current
+              if (apsInfo) {
+                selectApsInfo = apsInfo?.filter((apInfo) => (
+                  includes(selectedAps, apInfo.serialNumber)))
+              }
+
               updateSelectAps(selectedAps, selectedApGroups)
+              updateSelectApsInfo(selectApsInfo)
               props.onCancel()
             } catch (error) {
               if (error instanceof Error) throw error

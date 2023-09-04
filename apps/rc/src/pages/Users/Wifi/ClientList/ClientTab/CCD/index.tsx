@@ -11,7 +11,9 @@ import { useGetCcdSupportVenuesQuery }                        from '@acx-ui/rc/s
 import { ConvertToStandardMacAddress, MacAddressRegExp }      from '@acx-ui/rc/utils'
 
 import ApGroupSelecterDrawer                     from './ApGroupSelecterDrawer'
+import { ApInfoCards }                           from './ApInfoCards'
 import { CcdResultViewer, CcdResultViewerProps } from './CcdResultViewer'
+import { ApInfo }                                from './contents'
 import { Button, CcdResultContainer }            from './styledComponents'
 
 
@@ -29,12 +31,8 @@ export function ClientConnectionDiagnosis () {
   const clientMac = Form.useWatch('client', form)
   const venueId = Form.useWatch('venue', form)
 
-
-  //const { setRequestId, detectionStatus, handleError } = useCcd('', socketHandler)
-
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useGetCcdSupportVenuesQuery({ params: { tenantId }, payload: defaultPayload })
-  //const [ diagnosisClientConnection, { isLoading: isDetecting } ] = useRunCcdMutation()
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [showSelectApsDraw, setShowSelectApsDraw] = useState(false)
@@ -45,6 +43,10 @@ export function ClientConnectionDiagnosis () {
   const [isTracing, setIsTracing] = useState(false)
   const [isValid, setIsValid] = useState(false)
   const [viewerStatus, setViewerStatus] = useState<CcdResultViewerProps>({})
+
+  const [selectedApsInfo, setSelectedApsInfo] = useState<ApInfo[]>()
+  const [currentViewApMac, setCurrentViewApMac] = useState<string>('')
+  const [currentCcdApMac, setCurrentCcdApMac] = useState<string>('')
 
   useEffect(()=> {
     if (!isVenuesListLoading) {
@@ -63,6 +65,13 @@ export function ClientConnectionDiagnosis () {
     setShowSelectApsDraw(true)
   }
 
+  const handleVenueChanged = () => {
+    setSelectedApsDisplayText(undefined)
+    setSelectedAps(undefined)
+    setSelectedApsInfo(undefined)
+    setCurrentViewApMac('')
+  }
+
   const handleSelectAps = (selectAps: string[], selectApGroups: string[]) => {
     let displayText = selectApGroups.join(', ')
     let tooltip
@@ -76,6 +85,13 @@ export function ClientConnectionDiagnosis () {
     setSelectedApsDisplayText(displayText)
     setSelectedApsTooltip(tooltip)
     setSelectedAps(selectAps)
+  }
+
+  const handleSelectedApsInfo = (apsInfo: ApInfo[]) => {
+    const apInfoList = apsInfo || []
+    const curViewAp = apInfoList[0]?.apMac?.toUpperCase() || ''
+    setSelectedApsInfo(apInfoList)
+    setCurrentViewApMac(curViewAp)
   }
 
   const handleSwitchDiagnosis = async () => {
@@ -100,6 +116,9 @@ export function ClientConnectionDiagnosis () {
   const handleClear = () => {
     setSelectedApsDisplayText(undefined)
     setSelectedAps(undefined)
+    setSelectedApsInfo(undefined)
+    setCurrentViewApMac('')
+
     setIsValid(false)
     form.resetFields()
     setViewerStatus({
@@ -112,6 +131,7 @@ export function ClientConnectionDiagnosis () {
 
   const handleFieldsChange = () => {
     const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
+
     setIsValid(clientMac && !hasErrors)
   }
 
@@ -120,6 +140,7 @@ export function ClientConnectionDiagnosis () {
       visible={showSelectApsDraw}
       venueId={venueId}
       updateSelectAps={(aps: string[], apGroups: string[]) => handleSelectAps(aps, apGroups)}
+      updateSelectApsInfo={(apsInfo: ApInfo[]) => handleSelectedApsInfo(apsInfo)}
       onCancel={() => setShowSelectApsDraw(false)}
     />
     <Form form={form}
@@ -152,10 +173,11 @@ export function ClientConnectionDiagnosis () {
             disabled={isTracing}
             placeholder={$t({ defaultMessage: 'Select...' })}
             style={{ width: '250px' }}
+            onChange={handleVenueChanged}
           />}
         />
 
-        <Form.Item
+        <Form.Item required
           label={$t({ defaultMessage: 'APs' })}
           name='ap'
           labelCol={{ span: 24 }}
@@ -185,7 +207,7 @@ export function ClientConnectionDiagnosis () {
               type='text'
               icon={!isTracing? <PlaySolid2 /> : <StopSolid />}
               style={{ width: '200px', paddingTop: '10px' }}
-              disabled={showSelectApsDraw || !venueId || !isValid}
+              disabled={showSelectApsDraw || !venueId || !isValid || (!selectedAps?.length)}
               onClick={handleSwitchDiagnosis}
             >
               {!isTracing
@@ -217,13 +239,22 @@ export function ClientConnectionDiagnosis () {
         borderColor: 'var(--acx-neutrals-30)',
         margin: '20px 20px 5px 20px' }}
     />
+    {selectedApsInfo &&
     <CcdResultContainer>
-      <div style={{ width: '150px', height: '500px' }}>
-        {$t({ defaultMessage: 'Connecting Access Point' })}
+      <div style={{ width: '250px' }}>
+        <ApInfoCards
+          apInfos={selectedApsInfo}
+          selectedApMac={currentViewApMac}
+          setSelectedApMac={(apMac: string) => setCurrentViewApMac(apMac)}
+          ccdApMac={currentCcdApMac}
+        />
       </div>
-      <div style={{ border: '1px solid var(--acx-neutrals-30)' }}>
-        <CcdResultViewer {...viewerStatus}/>
+      <div >
+        <CcdResultViewer {...viewerStatus}
+          currentViewAp={currentViewApMac}
+          updateCcdAp={(apMac: string) => setCurrentCcdApMac(apMac)}/>
       </div>
     </CcdResultContainer>
+    }
   </>)
 }

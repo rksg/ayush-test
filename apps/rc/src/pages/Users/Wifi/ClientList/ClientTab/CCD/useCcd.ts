@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { showToast }                                                                  from '@acx-ui/components'
 import { ApErrorHandlingMessages, CatchErrorResponse, closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
 
-let ccdSocket: SocketIOClient.Socket
-let socketTimeoutId: NodeJS.Timeout
+
 const socketTimeout = 10000
 
-export enum DetectionStatus {
-  IDLE,
-  FETCHING,
-  TIMEOUT,
-  COMPLETEED
-}
 
 type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
 const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
@@ -22,33 +15,52 @@ const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
 }
 
 
-export function useCcd (initRequestId: string, handler: (msg: string) => void) {
-  const [ detectionStatus, setDetectionStatus ] = useState<DetectionStatus>(DetectionStatus.IDLE)
-  const [ requestId, setRequestId ] = useState(initRequestId)
+export function useCcd (handler: (msg: string) => void) {
   const { $t } = useIntl()
+  const [ requestId, setRequestId ] = useState<string>()
+
+  const ccdSocketRef = useRef<SocketIOClient.Socket>()
+  const ccdSocketTimeoutIdRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     cleanUp()
 
-    if (!requestId) return
-
-    setDetectionStatus(DetectionStatus.FETCHING)
-    //console.log('Open CCD socket')
-    ccdSocket = initCcdSocket(requestId, (msg: string) => {
-      setDetectionStatus(DetectionStatus.COMPLETEED)
-      clearTimeout(socketTimeoutId)
-      handler(msg)
-    })
-    socketTimeoutId = setTimeout(onSocketTimeout, socketTimeout)
+    if (requestId) {
+      //console.log('Open CCD socket: ', requestId)
+      ccdSocketRef.current = initCcdSocket(requestId, (msg: string) => {
+        clearSocketTimeout()
+        handler(msg)
+      })
+      setSocketTimeout()
+    }
 
     return cleanUp
   }, [requestId])
 
   const cleanUp = () => {
-    if (ccdSocket) closeCcdSocket(ccdSocket)
-    if (socketTimeoutId) clearTimeout(socketTimeoutId)
-    setDetectionStatus(DetectionStatus.IDLE)
-    //console.log('Close CCD socket')
+    clearSocketTimeout()
+    closeSocket()
+  }
+
+  const closeSocket = () => {
+    if (ccdSocketRef.current) {
+      //console.log('Close CCD socket')
+      closeCcdSocket(ccdSocketRef.current)
+      ccdSocketRef.current = undefined
+    }
+  }
+
+  const setSocketTimeout = () => {
+    //console.log('setSocketTimeout')
+    ccdSocketTimeoutIdRef.current = setTimeout(onSocketTimeout, socketTimeout)
+  }
+
+  const clearSocketTimeout = () => {
+    if (ccdSocketTimeoutIdRef.current) {
+      //console.log('clearSocketTimeout')
+      clearTimeout(ccdSocketTimeoutIdRef.current)
+      ccdSocketTimeoutIdRef.current = undefined
+    }
   }
 
   const handleError = (error: CatchErrorResponse) => {
@@ -70,13 +82,11 @@ export function useCcd (initRequestId: string, handler: (msg: string) => void) {
 
   const onSocketTimeout = () => {
     showError($t({ defaultMessage: 'The socket timeout' }))
-    setDetectionStatus(DetectionStatus.TIMEOUT)
   }
 
   return {
     requestId,
     setRequestId,
-    detectionStatus,
     handleError
   }
 }

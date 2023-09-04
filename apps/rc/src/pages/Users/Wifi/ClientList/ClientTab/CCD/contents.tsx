@@ -1,17 +1,48 @@
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
+export interface ApInfo {
+  name?: string
+  apMac?: string
+  model?: string
+  serialNumber?: string
+  ssid?: string
+  radio?: string
+}
+
 export interface CcdEndPointRectX {
     id: number,
     x1: number,
     x2: number
 }
 
-export interface CcdResultMessage {
-  apMac: string,
-  messageId: number,
-  statusCode: number,
-  sourceServerType: number,
+export interface CcdDataMessage {
+  clientMac: string
+  messageId: number
+  reportingModule: number
+  sourceServerType: number
+  sourceServerId: string
+  sourceServerName?: string
+  sourceModule: number
   destinationServerType: number
+  destinationServerId: string
+  destinationServerName?: string
+  destinationModule: number
+  apMac?: string
+  statusCode: number
+  protocol?: string
+  info?: string
+  radioBand?: number
+  ssid?: string
+  bidirection?: boolean
+  reasonCode?: number
+  probe?: {
+    airtimeUtilization: number,
+    capacity: number,
+    channel: number,
+    connectionFailure: number,
+    latency: number,
+    rssi: number
+  }
 }
 
 export const CcdEndPoints = [
