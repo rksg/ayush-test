@@ -12,7 +12,6 @@ import {
   useDateFilter,
   useEncodedParameter
 } from '@acx-ui/utils'
-const isMLISA = get('IS_MLISA_SA')
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
@@ -22,7 +21,7 @@ export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
-
+  const isMLISA = get('IS_MLISA_SA')
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()
@@ -60,6 +59,7 @@ export const getFilterPayload = (
 }
 
 export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
+  const isMLISA = get('IS_MLISA_SA')
   const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
   if(isMLISA) {
     if(path.length === 0)

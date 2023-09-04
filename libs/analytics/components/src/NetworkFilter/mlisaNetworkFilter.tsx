@@ -3,7 +3,7 @@ import { RevolvingDoor, Loader } from '@acx-ui/components'
 
 import { useNetworkHierarchyQuery } from './services'
 
-export const AnalyticsNetworkFilter = () => {
+export const MlisaNetworkFilter = () => {
   const { setNetworkPath, filters, path } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQuerySwitch: true }
   const networkHierarchyQuery = useNetworkHierarchyQuery(networkFilter)
