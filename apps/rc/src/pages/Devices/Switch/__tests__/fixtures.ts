@@ -145,7 +145,7 @@ export const staticRoutes = [
 ]
 
 export const standaloneSwitches = [{
-  id: 'FEK3224R07X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R07X'
+  id: 'FEK3224R07X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R07X', name: 'FEK3224R07X_name'
 }, {
-  id: 'FEK3224R08X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R08X'
+  id: 'FEK3224R08X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R08X', name: 'FEK3224R08X_name'
 }]
