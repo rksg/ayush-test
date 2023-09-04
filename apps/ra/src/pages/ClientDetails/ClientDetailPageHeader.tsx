@@ -1,16 +1,29 @@
 import { Space }   from 'antd'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
-  DatePicker,
-  PageHeader
+  PageHeader,
+  RangePicker
 } from '@acx-ui/components'
 import {
   useParams,
   useSearchParams
 } from '@acx-ui/react-router-dom'
+import { useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
+
+function DatePicker () {
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
+  return <RangePicker
+    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+    onDateApply={setDateFilter as CallableFunction}
+    showTimePicker
+    selectionType={range}
+  />
+}
 
 export const ClientDetailPageHeader = () => {
   const { $t } = useIntl()
