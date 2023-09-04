@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { DatePicker, Form, Radio, Space, Typography } from 'antd'
 import { useForm }                                    from 'antd/lib/form/Form'
 import dayjs                                          from 'dayjs'
+import moment                                         from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 
 import {
@@ -41,7 +42,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setDisableSave(shouldDisabled)
   }, [selectedVersion, selectedDate, selectedTime])
 
-  const startDate = dayjs().endOf('day')
+  const startDate = dayjs(Date.now()).endOf('day')
   const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   // Can not select days before today and today
@@ -49,7 +50,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }
 
   const handleFinish = (value: EdgeUpdateScheduleRequest) => {
-    onSubmit(value)
+    const result = {
+      ...value,
+      date: moment(value.date).format('yyyy-MM-DD')
+    }
+    onSubmit(result)
     onModalCancel()
   }
 

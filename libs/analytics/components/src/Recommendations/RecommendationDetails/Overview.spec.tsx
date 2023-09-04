@@ -8,7 +8,7 @@ import {
   mockedRecommendationApFirmware,
   mockedRecommendationClientLoad
 } from './__tests__/fixtures'
-import { Overview }                 from './overview'
+import { Overview }                 from './Overview'
 import { transformDetailsResponse } from './services'
 
 const mockGet = get as jest.Mock
@@ -17,6 +17,9 @@ jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),
   get: jest.fn()
 }))
+
+jest.mock('./Graph/DownloadRRMComparison', () =>
+  ({ DownloadRRMComparison: () => <div data-testid='download-button' /> }))
 
 describe('Recommendation Overview', () => {
   beforeEach(() => mockGet.mockClear())
@@ -110,6 +113,7 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Scheduled')).toBeVisible()
     expect(await screen.findByText('Date')).toBeVisible()
     expect(await screen.findByText('06/26/2023 06:04')).toBeVisible()
+    expect(await screen.findByTestId('download-button')).toBeVisible()
   })
 
   it('should render correctly for low priority (client load)', async () => {
