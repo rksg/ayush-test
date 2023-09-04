@@ -79,7 +79,7 @@ export const hierarchyQueryResult = {
             type: 'domain',
             children: [
               {
-                name: 'child under admin',
+                name: 'somenames',
                 type: 'zone',
                 children: [
                   {
@@ -90,7 +90,7 @@ export const hierarchyQueryResult = {
               }
             ]
           }, {
-            name: '2||second domain',
+            name: '2||somenames',
             type: 'domain',
             children: [
               {
@@ -109,10 +109,16 @@ export const hierarchyQueryResult = {
         children: [
           {
             name: '1||Administration Domain',
-            type: 'domain'
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 0',
+                type: 'switchGroup'
+              }
+            ]
           },
           {
-            name: '2||second domain',
+            name: '2||somenames',
             type: 'domain',
             children: [
               {
@@ -124,8 +130,20 @@ export const hierarchyQueryResult = {
         ]
       },
       {
-        name: 'some-other system',
-        type: 'system'
+        name: 'test-system2',
+        type: 'system',
+        children: [
+          {
+            name: '2||second domain',
+            type: 'domain',
+            children: [
+              {
+                name: 'switchGroup 1',
+                type: 'switchGroup'
+              }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -140,7 +158,17 @@ export const fullHierarchyQueryOuput = {
       type: 'system',
       children: [
         {
-          name: 'second domain',
+          name: 'somenames',
+          type: 'zone',
+          children: [
+            {
+              name: 'group 1',
+              type: 'apGroup'
+            }
+          ]
+        },
+        {
+          name: 'somenames',
           type: 'domain',
           children: [
             {
@@ -154,20 +182,26 @@ export const fullHierarchyQueryOuput = {
           ]
         },
         {
-          name: 'child under admin',
-          type: 'zone',
-          children: [
-            {
-              name: 'group 1',
-              type: 'apGroup'
-            }
-          ]
+          name: 'switchGroup 0',
+          type: 'switchGroup'
         }
       ]
     },
     {
-      name: 'some-other system',
-      type: 'system'
+      name: 'test-system2',
+      type: 'system',
+      children: [
+        {
+          name: 'second domain',
+          type: 'domain',
+          children: [
+            {
+              name: 'switchGroup 1',
+              type: 'switchGroup'
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -181,22 +215,22 @@ export const apsOnlyHierarchyQueryOuput = {
       type: 'system',
       children: [
         {
-          name: 'second domain',
-          type: 'domain',
-          children: [
-            {
-              name: 'zone 1',
-              type: 'zone'
-            }
-          ]
-        },
-        {
-          name: 'child under admin',
+          name: 'somenames',
           type: 'zone',
           children: [
             {
               name: 'group 1',
               type: 'apGroup'
+            }
+          ]
+        },
+        {
+          name: 'somenames',
+          type: 'domain',
+          children: [
+            {
+              name: 'zone 1',
+              type: 'zone'
             }
           ]
         }
