@@ -1,10 +1,16 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Table, TableProps }                                                              from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListByQueryQuery }                                    from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists, defaultSort, OperatorType, sortProp } from '@acx-ui/rc/utils'
-import { useParams }                                                                      from '@acx-ui/react-router-dom'
+import { Table, TableProps }                           from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListByQueryQuery } from '@acx-ui/rc/services'
+import {
+  AttributeAssignment,
+  checkObjectNotExists,
+  defaultSort,
+  OperatorType,
+  sortProp, trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
@@ -93,7 +99,8 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
         rules={[
           { required: true },
           { validator: (_, value) => nameValidator(value) },
-          { max: 255 }
+          { max: 255 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         validateFirst
         hasFeedback

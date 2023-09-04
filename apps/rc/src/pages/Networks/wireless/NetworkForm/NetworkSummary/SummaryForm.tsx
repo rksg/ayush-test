@@ -4,11 +4,11 @@ import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }                                           from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
-import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { StepsFormLegacy, Subtitle }                                                             from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }                                               from '@acx-ui/rc/services'
+import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useParams }                                                                             from '@acx-ui/react-router-dom'
 
 import { captiveTypes, networkTypes } from '../contentsMap'
 
@@ -92,9 +92,10 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
-          {summaryData.type !== NetworkTypeEnum.PSK&&summaryData.type !== NetworkTypeEnum.AAA&&
-            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL&&
-          <Form.Item
+          {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL
+            && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
+          && <Form.Item
             label={$t({ defaultMessage: 'Use RADIUS Server:' })}
             children={
               summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
