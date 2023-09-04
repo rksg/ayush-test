@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react'
 
-// import { QuestionCircleOutlined } from '@ant-design/icons'
 import {
   Form,
-  // Radio,
-  // Row,
-  // Col,
   Space,
-  // Select,
   Input
-  // Tooltip
 } from 'antd'
-// import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Modal, showActionModal, Tooltip } from '@acx-ui/components'
 import {
   useAddAdminMutation,
-  // useGetRegisteredUsersListQuery,
   useGetTenantAuthenticationsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -65,7 +57,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  // const userType = Form.useWatch('userType', form)
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
@@ -73,16 +64,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const tenantAuthenticationData =
     useGetTenantAuthenticationsQuery({ params })
-
-  // const {
-  //   data: registerUsersList,
-  //   isLoading: isRegisterUsersListLoading
-  // } = useGetRegisteredUsersListQuery({ params })
-
-  // const isRegisteredUser = (email: string): boolean => {
-  //   if (!registerUsersList) return false
-  //   return Boolean(_.find(registerUsersList, { email }))
-  // }
 
   const handleSubmitFailed = (error: CommonErrorsResult<CatchErrorDetails>) => {
     const errData = error.data.errors
@@ -118,23 +99,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const handleSubmit = async () => {
     const formValues = form.getFieldsValue(true)
-    // const { userType } = formValues
-
-    // check duplicate with UI cached data if choose "invite new"
-    // if (userType === 'new') {
-    //   const isExistedUser = isRegisteredUser(newEmail)
-
-    //   if (isExistedUser) {
-    //     showActionModal({
-    //       type: 'error',
-    //       title: $t({ defaultMessage: 'Admin could not be added' }),
-    //       // eslint-disable-next-line max-len
-    //       content: $t({ defaultMessage: 'The email address belongs to a registered user in this account. Please select him using the "Registered User" option' })
-    //     })
-
-    //     return
-    //   }
-    // }
 
     try {
       const payload = {
@@ -153,17 +117,12 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         }
       }
 
-      // if (userType === 'new') {
       payload.email = formValues.newEmail
       if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
         payload.firstName = formValues.firstName ?? ''
       }
-      // } else {
-      //   payload.email = formValues.email
-      //   payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
-      // }
 
       await addAdmin({ params, payload }).unwrap()
       handleCancel()
@@ -179,9 +138,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   }
 
   useEffect(() => {
-    // if (form && registerUsersList) {
-    //   form.setFieldValue('userType', registerUsersList.length > 0 ? 'existing' : 'new')
-    // }
     if (tenantAuthenticationData) {
       const ssoData = tenantAuthenticationData.data?.filter(n =>
         n.authenticationType === TenantAuthenticationType.saml)
@@ -191,13 +147,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
       }
     }
   }, [form])
-
-  // const registerUsersSelectOpts = registerUsersList ? registerUsersList.map((item) => ({
-  //   label: item.email,
-  //   value: item.email
-  // })): []
-
-  // const isNoExistingUser = registerUsersSelectOpts.length === 0
 
   return (
     <Modal

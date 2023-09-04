@@ -51,14 +51,6 @@ const mockedMSPCustomers = {
   }]
 }
 
-const mockedRegisteredUsers = [{
-  externalId: '0032h00000LUqco111',
-  email: 'a123@email.com'
-},{
-  externalId: '0032h00000LUqco222',
-  email: 'b123@email.com'
-}]
-
 const mockedCloseDialog = jest.fn()
 const mockedAddAdminFn = jest.fn()
 describe('Add administrator dialog component', () => {
@@ -100,13 +92,6 @@ describe('Add administrator dialog component', () => {
         route: { params }
       })
 
-    // const radio = await screen.findByRole('radio', { name: /Invite new user/i })
-    // await userEvent.click(radio)
-
-    // const selector = await screen.findAllByRole('combobox')
-    // const mailSelector = selector.filter(o => o.id === 'email')[0]
-    // expect(mailSelector).toBeDisabled()
-
     const emailInput = await screen.findByPlaceholderText('Enter email address')
     await userEvent.type(emailInput, 'c123@email.com')
 
@@ -137,12 +122,6 @@ describe('Add administrator dialog component', () => {
         route: { params }
       })
 
-    // const radio = await screen.findByRole('radio', { name: /Invite new user/i })
-    // await userEvent.click(radio)
-
-    // const selector = await screen.findAllByRole('combobox')
-    // const mailSelector = selector.filter(o => o.id === 'email')[0]
-    // expect(mailSelector).toBeDisabled()
     const emailInput = await screen.findByPlaceholderText('Enter email address')
     await userEvent.type(emailInput, 'c123@email.com')
     await userEvent.click(await screen.findByRole('combobox', { name: 'Role' }))
@@ -173,12 +152,6 @@ describe('Add administrator dialog component', () => {
         route: { params }
       })
 
-    // const radio = await screen.findByRole('radio', { name: /Invite new user/i })
-    // await userEvent.click(radio)
-
-    // const selector = await screen.findAllByRole('combobox')
-    // const mailSelector = selector.filter(o => o.id === 'email')[0]
-    // expect(mailSelector).toBeDisabled()
     const emailInput = await screen.findByPlaceholderText('Enter email address')
     await userEvent.type(emailInput, 'c123@email.com')
     await userEvent.click(await screen.findByRole('combobox', { name: 'Role' }))
@@ -196,103 +169,6 @@ describe('Add administrator dialog component', () => {
         delegatedECs: ['2242a683a7594d7896385cfef1fe1234']
       })
     })
-  })
-
-  xit('should non MSP EC and non MSP submit correctly', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getRegisteredUsersList.url,
-        (req, res, ctx) => res(ctx.json(mockedRegisteredUsers))
-      )
-    )
-
-    render(
-      <Provider>
-        <AddAdministratorDialog
-          visible={true}
-          setVisible={mockedCloseDialog}
-          isMspEc={false}
-          isOnboardedMsp={false}
-          currentUserDetailLevel='debug'
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    const radio = await screen.findByRole('radio', { name: /Registered user/i })
-    await userEvent.click(radio)
-
-    const selector = await screen.findAllByRole('combobox')
-    const mailSelector = selector.filter(o => o.id === 'email')[0]
-    await userEvent.click(mailSelector)
-    const opts = await screen.findAllByText('b123@email.com')
-    const target = opts.filter(o => o.className.includes('ant-select-item-option-content'))
-    expect(target.length).toBe(1)
-    await userEvent.click(target[0])
-
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Role' }))
-    await userEvent.click(await screen.findByText( 'Prime Admin' ))
-    await userEvent.click(await screen.findByText('Send Invitation'))
-    await waitFor(() => {
-      expect(mockedAddAdminFn).toBeCalledWith({
-        email: 'b123@email.com',
-        externalId: '0032h00000LUqco222',
-        role: 'PRIME_ADMIN',
-        detailLevel: 'debug'
-      })
-    })
-  })
-
-  xit('should check with local data correctly', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getRegisteredUsersList.url,
-        (req, res, ctx) => res(ctx.json(mockedRegisteredUsers))
-      )
-    )
-
-    render(
-      <Provider>
-        <AddAdministratorDialog
-          visible={true}
-          setVisible={mockedCloseDialog}
-          isMspEc={false}
-          isOnboardedMsp={false}
-          currentUserDetailLevel='debug'
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await userEvent.click(await screen.findByRole('radio', { name: /Registered user/i }))
-    await userEvent.click(await screen.findByRole('radio', { name: /Invite new user/i }))
-    const emailInput = await screen.findByPlaceholderText('Enter email address')
-    await userEvent.type(emailInput, 'b123@email.com')
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Role' }))
-    await userEvent.click(await screen.findByText( 'Prime Admin' ))
-    await userEvent.click(await screen.findByText('Send Invitation'))
-    await waitFor(async () => {
-      expect(await screen.findByText(/The email address belongs to a registered user in this account./i)).toBeVisible()
-    })
-  })
-
-
-  xit('should not MSP EC user be able to create by registered user', async () => {
-    render(
-      <Provider>
-        <AddAdministratorDialog
-          visible={true}
-          setVisible={mockedCloseDialog}
-          isMspEc={true}
-          isOnboardedMsp={false}
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByRole('radio', { name: /Invite new user/i })
-    const radioRegisteredUser = screen.queryByRole('radio', { name: /Registered user/i })
-    expect(radioRegisteredUser).not.toBeInTheDocument()
   })
 
   it('should correctly display MSP EC admin invited error message', async () => {
