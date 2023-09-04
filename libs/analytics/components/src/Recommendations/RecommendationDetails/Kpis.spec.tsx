@@ -9,18 +9,13 @@ import {
   mockedRecommendationClientLoad,
   mockedRecommendationPowerMonitoring
 } from './__tests__/fixtures'
-import { Kpis }                                            from './kpis'
+import { Kpis }                                            from './Kpis'
 import { RecommendationDetails, transformDetailsResponse } from './services'
-
-jest.mock('./statusTrail', () => ({
-  StatusTrail: () => <div data-testid='statustrail'>Status Trail</div>
-}))
 
 describe('Recommendation Kpis', () => {
   it('should render correctly for power', async () => {
     const powerDetails = transformDetailsResponse(mockedRecommendationPower)
     render(<Kpis details={powerDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
     expect(await screen.findByText('2.21%')).toBeVisible()
   })
@@ -28,7 +23,6 @@ describe('Recommendation Kpis', () => {
   it('should render correctly for client load', async () => {
     const clientLoadDetails = transformDetailsResponse(mockedRecommendationClientLoad)
     render(<Kpis details={clientLoadDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('Average AP Unique Clients')).toBeVisible()
     expect(await screen.findByText('10')).toBeVisible()
     expect(await screen.findByText('Max AP Unique Clients')).toBeVisible()
@@ -45,7 +39,6 @@ describe('Recommendation Kpis', () => {
       }
     } as unknown as RecommendationDetails)
     render(<Kpis details={clientLoadDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
     expect(await screen.findByText('20%')).toBeVisible()
     expect(await screen.findByText('-35%')).toBeVisible()
@@ -61,7 +54,6 @@ describe('Recommendation Kpis', () => {
       }
     } as unknown as RecommendationDetails)
     render(<Kpis details={clientLoadDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
     expect(await screen.findByText('55%')).toBeVisible()
     expect(await screen.findByText('+35%')).toBeVisible()
@@ -77,7 +69,6 @@ describe('Recommendation Kpis', () => {
       }
     } as unknown as RecommendationDetails)
     render(<Kpis details={clientLoadDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
     expect(await screen.findByText('55%')).toBeVisible()
   })
@@ -92,7 +83,6 @@ describe('Recommendation Kpis', () => {
       }
     } as unknown as RecommendationDetails)
     render(<Kpis details={firmwareDetails} />)
-    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
     expect(await screen.findByText('APs on Latest Firmware Version')).toBeVisible()
     expect(await screen.findByText('=')).toBeVisible()
     const infoIcons = await screen.findAllByTestId('InformationSolid')

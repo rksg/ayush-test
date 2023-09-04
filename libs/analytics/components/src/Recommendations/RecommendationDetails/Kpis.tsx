@@ -11,7 +11,6 @@ import { noDataDisplay }             from '@acx-ui/utils'
 import { codes } from '../config'
 
 import { EnhancedRecommendation } from './services'
-import { StatusTrail }            from './statusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,
@@ -111,6 +110,5 @@ export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
     {(!monitoring && !kpis.length) && <KpiCard>
       {$t({ defaultMessage: 'No performance indicators' })}
     </KpiCard>}
-    <StatusTrail details={details}/>
   </>
 }
