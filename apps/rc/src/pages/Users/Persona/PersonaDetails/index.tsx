@@ -158,6 +158,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
+          showNoData={true}
           name={dpskPoolData?.name}
           dpskPoolId={dpskPoolData?.id}
         />
@@ -184,6 +185,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
       <MacRegistrationPoolLink
+        showNoData={true}
         name={macPoolData?.name}
         macRegistrationPoolId={personaGroupData?.macRegistrationPoolId}
       />
@@ -192,6 +194,7 @@ function PersonaDetails () {
       ? [{ label: $t({ defaultMessage: 'Unit' }),
         value:
         <PropertyUnitLink
+          showNoData={true}
           {...unitData}
         />
       }] : []
@@ -217,6 +220,7 @@ function PersonaDetails () {
       value:
       personaGroupData?.nsgId
         && <NetworkSegmentationLink
+          showNoData={true}
           name={nsgData?.name}
           nsgId={personaGroupData?.nsgId}
         />
