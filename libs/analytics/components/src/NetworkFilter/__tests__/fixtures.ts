@@ -79,7 +79,7 @@ export const hierarchyQueryResult = {
             type: 'domain',
             children: [
               {
-                name: 'child under admin',
+                name: 'somenames',
                 type: 'zone',
                 children: [
                   {
@@ -90,7 +90,7 @@ export const hierarchyQueryResult = {
               }
             ]
           }, {
-            name: '2||second domain',
+            name: '2||somenames',
             type: 'domain',
             children: [
               {
@@ -118,7 +118,7 @@ export const hierarchyQueryResult = {
             ]
           },
           {
-            name: '2||second domain',
+            name: '2||somenames',
             type: 'domain',
             children: [
               {
@@ -158,7 +158,7 @@ export const fullHierarchyQueryOuput = {
       type: 'system',
       children: [
         {
-          name: 'child under admin',
+          name: 'somenames',
           type: 'zone',
           children: [
             {
@@ -168,7 +168,7 @@ export const fullHierarchyQueryOuput = {
           ]
         },
         {
-          name: 'second domain',
+          name: 'somenames',
           type: 'domain',
           children: [
             {
@@ -215,7 +215,7 @@ export const apsOnlyHierarchyQueryOuput = {
       type: 'system',
       children: [
         {
-          name: 'child under admin',
+          name: 'somenames',
           type: 'zone',
           children: [
             {
@@ -225,7 +225,7 @@ export const apsOnlyHierarchyQueryOuput = {
           ]
         },
         {
-          name: 'second domain',
+          name: 'somenames',
           type: 'domain',
           children: [
             {

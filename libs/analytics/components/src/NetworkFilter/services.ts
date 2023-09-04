@@ -33,10 +33,11 @@ interface HierarchyResponse {
 
 const mergeNodes = (children: NetworkNode[]): NetworkNode[] => {
   return Object.values(children.reduce((nodes, node) => {
-    if (nodes[node.name]) {
-      nodes[node.name].children!.push(...node.children!)
+    const key = node.type + node.name
+    if (nodes[key]) {
+      nodes[key].children!.push(...node.children!)
     } else {
-      nodes[node.name] = node
+      nodes[key] = node
     }
     return nodes
   }, {} as { [key: string]: NetworkNode }))
