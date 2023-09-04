@@ -100,7 +100,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   NetworkAssurance: () => <div data-testid='networkAssurance' />,
   ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
   ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>,
-  RecommendationDetails: () => <div data-testid='RecommendationDetails'/>
+  RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
+  CrrmDetails: () => <div data-testid='CrrmDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -210,6 +211,15 @@ test('should navigate to analytics/recommendations/aiOps/:id', () => {
     }
   })
   expect(screen.getByTestId('RecommendationDetails')).toBeVisible()
+})
+test('should navigate to analytics/recommendations/crrm/:id', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/crrm/id',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
 })
 test('should navigate to analytics/health page', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(false)
