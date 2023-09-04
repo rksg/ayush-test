@@ -13,6 +13,7 @@ import * as UI from './styledComponents'
 import type { CheckboxProps } from 'antd/lib/checkbox'
 
 interface DrawerHeaderProps {
+  drawerType?: UI.DrawerTypes,
   title: string,
   icon?: React.ReactNode,
   subTitle?: string,
@@ -67,20 +68,23 @@ export function useCloseOutsideClick (
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, ...rest } = props
+  const { title, icon, subTitle, onBackClick, drawerType = UI.DrawerTypes.Default, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
   useCloseOutsideClick(onClose, props.footer, Boolean(props.visible))
-  return <UI.Drawer
-    {...rest}
-    title={<Header {...headerProps}/>}
-    placement='right'
-    mask={false}
-    maskStyle={{ background: 'none' }}
-    maskClosable={false}
-    width={props.width || '336px'}
-    closeIcon={<CloseSymbol />}
-  />
+  return <>
+    <UI.Drawer
+      {...rest}
+      title={<Header {...headerProps}/>}
+      placement='right'
+      mask={false}
+      maskStyle={{ background: 'none' }}
+      maskClosable={false}
+      width={props.width || '336px'}
+      closeIcon={<CloseSymbol />}
+    />
+    <UI.DrawerStyle $type={drawerType}/>
+  </>
 }
 
 interface FormFooterProps {
