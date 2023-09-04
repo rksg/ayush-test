@@ -640,7 +640,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'DpskPassphrase', id: 'LIST' },
+        { type: 'DpskPassphrase', id: 'DETAIL' }
+      ]
     }),
     getEnhancedDpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
       query: ({ params, payload }) => {

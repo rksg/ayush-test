@@ -2,13 +2,16 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { CreateDpskPassphrasesFormFields, NewDpskBaseUrlWithId } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }                from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { CreateDpskPassphrasesFormFields, DpskUrls, NewDpskBaseUrlWithId } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                 from '@acx-ui/test-utils'
 
-import { mockedCloudpathDpsk } from './__tests__/fixtures'
-import AddDpskPassphrasesForm  from './AddDpskPassphrasesForm'
+import {
+  mockedCloudpathDpsk,
+  mockedDpskPassphraseMultipleDevices
+} from './__tests__/fixtures'
+import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
 
 describe('AddDpskPassphrasesForm', () => {
@@ -58,5 +61,38 @@ describe('AddDpskPassphrasesForm', () => {
 
     await userEvent.type(macField, 'aabbccddeeff ')
     expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
+  it('should disallow decreasing the number of devices when editing', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphrase.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseMultipleDevices }))
+      )
+    )
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
+      return form
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm
+          form={formRef.current}
+          editMode={{ isEdit: true, passphraseId: '123456' }}
+        />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    const numberOfDevicesElem = (await screen.findAllByRole('spinbutton'))[1]
+    const existingNumberOfDevices = mockedDpskPassphraseMultipleDevices.numberOfDevices
+    await userEvent.clear(numberOfDevicesElem)
+    await userEvent.type(numberOfDevicesElem, (existingNumberOfDevices - 1).toString())
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(screen.queryByRole('alert')).toHaveTextContent(`Please enter a number equal to or greater than the existing value: ${existingNumberOfDevices}`)
+    })
   })
 })

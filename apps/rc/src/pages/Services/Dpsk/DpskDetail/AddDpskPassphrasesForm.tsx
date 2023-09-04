@@ -9,6 +9,7 @@ import {
   RadioChangeEvent,
   Space
 } from 'antd'
+import { Rule }                      from 'antd/lib/form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
@@ -183,7 +184,18 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                           { max: MAX_DEVICES_PER_PASSPHRASE }
                         )
                       }
-                    ]}
+                    ].concat(editMode.isEdit && serverData?.numberOfDevices
+                      ? [{
+                        type: 'number',
+                        min: serverData.numberOfDevices,
+                        max: MAX_DEVICES_PER_PASSPHRASE,
+                        message: $t(
+                          // eslint-disable-next-line max-len
+                          { defaultMessage: 'Please enter a number equal to or greater than the existing value: {min}' },
+                          { min: serverData.numberOfDevices }
+                        )
+                      }]
+                      : []) as Rule[]}
                     children={<InputNumber />}
                   />
                 }
