@@ -8,14 +8,16 @@ export const MlisaNetworkFilter = () => {
   const networkFilter = { ...filters, shouldQuerySwitch: true }
   const networkHierarchyQuery = useNetworkHierarchyQuery(networkFilter)
   return (
-    <Loader states={[networkHierarchyQuery]}>
-      {networkHierarchyQuery?.data && (
-        <RevolvingDoor
-          data={networkHierarchyQuery.data}
-          setNetworkPath={setNetworkPath}
-          defaultSelectedNode={path}
-        />
-      )}
-    </Loader>
+    <div style={{ width: 200 }}>
+      <Loader states={[networkHierarchyQuery]}>
+        {networkHierarchyQuery?.data && (
+          <RevolvingDoor
+            data={networkHierarchyQuery.data}
+            setNetworkPath={setNetworkPath}
+            defaultSelectedNode={path}
+          />
+        )}
+      </Loader>
+    </div>
   )
 }
