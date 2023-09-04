@@ -1,12 +1,10 @@
-import { useContext, useState, useEffect, Key } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form, Space } from 'antd'
-import _                         from 'lodash'
 
 import { StepsFormLegacy, Button } from '@acx-ui/components'
 import {
   TaggedVlanPorts,
-  Vlan,
   VoiceVlanConfig,
   VoiceVlanOption
 } from '@acx-ui/rc/utils'
@@ -21,7 +19,7 @@ import { VoiceVlanDrawer } from './VoiceVlanDrawer'
 export function VoiceVlan () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ voiceVlanOptions, setVoiceVlanOptions ] = useState<VoiceVlanOption[]>([])
   const [ voiceVlanConfigs, setVoiceVlanConfigs ] = useState<VoiceVlanConfig[]>([])
   const [ modelVlanOptions, setModelVlanOptions ] = useState<VoiceVlanOption>()
@@ -45,18 +43,19 @@ export function VoiceVlan () {
       }
     })
     setVoiceVlanConfigs(tmp)
+    form.setFieldValue('voiceVlanConfigs', tmp)
   }
 
   const generateVoiceVlanDisplay = (config: VoiceVlanConfig) => {
     if(config.voiceVlans.length){
-     return <>
-     {
-       config.voiceVlans.map(vlan => <div>
-         {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
-         <span style={{paddingLeft: '5px'}}>({vlan.taggedPorts.join(', ')})</span>
-         </div>)
-     }
-     </>
+      return <>
+        {
+          config.voiceVlans.map(vlan => <div>
+            {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
+            <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
+          </div>)
+        }
+      </>
     }
     return noDataDisplay
   }
@@ -73,7 +72,7 @@ export function VoiceVlan () {
         <Col span={10}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'Voice VLAN' })} />
           {
-            voiceVlanConfigs.map((item:any) => <div key={item.model}>
+            voiceVlanConfigs.map((item:VoiceVlanConfig) => <div key={item.model}>
               <StepsFormLegacy.SectionTitle style={{ width: '800px', margin: '25px 0 12px 0' }}>
                 {item.model}
               </StepsFormLegacy.SectionTitle>
@@ -99,7 +98,6 @@ export function VoiceVlan () {
               </UI.FormChildren>
             </div>)
           }
-
         </Col>
       </Row>
       <VoiceVlanDrawer

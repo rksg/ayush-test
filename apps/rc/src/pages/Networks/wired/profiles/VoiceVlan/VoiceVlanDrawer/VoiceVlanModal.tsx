@@ -1,10 +1,13 @@
-import { Col, Form, Input, Row, Select } from 'antd'
+import { useEffect, useState } from 'react'
+
+import { Col, Form, Row, Select } from 'antd'
+import { DefaultOptionType }      from 'antd/lib/select'
 
 import { Modal }         from '@acx-ui/components'
-import { VoiceVlanModalData, VoiceVlanPort } from '@acx-ui/rc/utils'
+import { VoiceVlanPort } from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
-import { useEffect, useState } from 'react'
-import { DefaultOptionType } from 'antd/lib/select'
+
+import { VoiceVlanModalData } from '.'
 
 export function VoiceVlanModal (props:{
   visible: boolean,
@@ -22,7 +25,7 @@ export function VoiceVlanModal (props:{
     if(editPorts){
       setVlanOptions(editPorts.vlanOptions)
       form.setFieldsValue({
-        voiceVlan: editPorts.voiceVlanValue,
+        voiceVlan: editPorts.voiceVlanValue
       })
     }
   }, [editPorts])

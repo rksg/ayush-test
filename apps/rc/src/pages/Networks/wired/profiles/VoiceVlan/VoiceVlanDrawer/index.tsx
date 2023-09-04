@@ -1,42 +1,43 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, Table, TableProps }            from '@acx-ui/components'
-import { Vlan, VoiceVlanModalData, VoiceVlanOption, VoiceVlanPort, TaggedVlanPorts, VoiceVlanConfig } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }            from '@acx-ui/user'
-import { noDataDisplay, TABLE_DEFAULT_PAGE_SIZE }                        from '@acx-ui/utils'
+import { Button, Drawer, Table, TableProps }                                from '@acx-ui/components'
+import { VoiceVlanOption, VoiceVlanPort, TaggedVlanPorts, VoiceVlanConfig } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                        from '@acx-ui/user'
+import { noDataDisplay, TABLE_DEFAULT_PAGE_SIZE }                           from '@acx-ui/utils'
 
 import { VoiceVlanModal } from './VoiceVlanModal'
-import _ from 'lodash'
-import { DefaultOptionType } from 'antd/lib/select'
 
-export interface ACLSettingDrawerProps {
+export interface VoiceVlanModalData {
+  ports: string[]
+  vlanOptions: DefaultOptionType[]
+  voiceVlanValue: string
+}
+interface VoiceVlanDrawerProps {
   modelVlanOptions?: VoiceVlanOption
   modelVlanConfigs?: VoiceVlanConfig
   visible: boolean
   setVisible: (v: boolean) => void
   updateVoiceVlanConfigs: (model: string, voiceVlans: TaggedVlanPorts[]) => void
 }
-
 interface PortVlanMap {
   [key:string]: string[]
 }
-
 interface PortVoiceVlanMap {
   [key:string]: string
 }
 
-export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
+export function VoiceVlanDrawer (props: VoiceVlanDrawerProps) {
   const { $t } = useIntl()
   const { modelVlanOptions, modelVlanConfigs, visible, setVisible, updateVoiceVlanConfigs } = props
   const [tableData, setTableData] = useState<VoiceVlanPort[]>([])
   const [editPorts, setEditPorts] = useState({} as VoiceVlanModalData)
   const [portVlanMap, setPortVlanMap] = useState<PortVlanMap>({})
   const [voiceVlanModalVisible, setVoiceVlanModalVisible] = useState(false)
-  const [form] = Form.useForm<Vlan>()
 
   useEffect(() => {
     if(modelVlanOptions && visible){
@@ -54,7 +55,7 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
       modelVlanConfigs?.voiceVlans.forEach(config => {
         config.taggedPorts.forEach((port:string) => {
           portVoiceVlanMap[port] = String(config.vlanId)
-      })})
+        })})
       const portList = Object.keys(portVlans).sort((a:string, b:string) => {
         if(a.split('/')[2] && b.split('/')[2]) {
           return Number(a.split('/')[2]) - Number(b.split('/')[2])
@@ -140,7 +141,7 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
   }
 
   const onSave = () => {
-    const voiceVlanPortMap:{[key:string]: string[]} = {}
+    const voiceVlanPortMap:{ [key:string]: string[] } = {}
     tableData.forEach(row => {
       if(row.voiceVlan) {
         if(voiceVlanPortMap[row.voiceVlan]) {
@@ -150,7 +151,7 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
         }
       }
     })
-    const voiceVlans: any = [] 
+    const voiceVlans: TaggedVlanPorts[] = []
     Object.keys(voiceVlanPortMap).forEach(key=> {
       voiceVlans.push({
         vlanId: key,
@@ -176,18 +177,18 @@ export function VoiceVlanDrawer (props: ACLSettingDrawerProps) {
         }
         footer={
           <>
-          <div/>
-          <div>
-            <Button onClick={onClose}>
-              {$t({ defaultMessage: 'Cancel' })}
-            </Button>
-            <Button
-              onClick={onSave}
-              type='primary'
-            >
-              {$t({ defaultMessage: 'Set' })}
-            </Button>
-          </div>
+            <div/>
+            <div>
+              <Button onClick={onClose}>
+                {$t({ defaultMessage: 'Cancel' })}
+              </Button>
+              <Button
+                onClick={onSave}
+                type='primary'
+              >
+                {$t({ defaultMessage: 'Set' })}
+              </Button>
+            </div>
           </>
         }
       />

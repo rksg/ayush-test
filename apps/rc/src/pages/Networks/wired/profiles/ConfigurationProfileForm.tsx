@@ -10,8 +10,8 @@ import {
   useUpdateSwitchConfigProfileMutation,
   useGetSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, SwitchModel, Vlan, VoiceVlanConfig, VoiceVlanOption } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
+import { SwitchConfigurationProfile, SwitchModel, TaggedVlanPorts, Vlan, VoiceVlanConfig, VoiceVlanOption } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                            from '@acx-ui/react-router-dom'
 
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
@@ -74,24 +74,23 @@ export function ConfigurationProfileForm () {
       ...currentData,
       ...data
     })
-
     return true
   }
 
   const generateVoiceVlanOptions = (vlans: Vlan[]) => {
-    const modelMap:{ [key:string]: any[] } = {}
+    const modelMap:{ [key:string]: TaggedVlanPorts[] } = {}
     vlans.forEach((vlan: Vlan) => {
       if(vlan.switchFamilyModels) {
         vlan.switchFamilyModels.forEach((model: SwitchModel) => {
           if(model.taggedPorts?.length){
             if(modelMap[model.model]) {
               modelMap[model.model].push({
-                vlanId: vlan.vlanId,
+                vlanId: String(vlan.vlanId),
                 taggedPorts: model.taggedPorts.split(',')
               })
             } else {
               modelMap[model.model] = [{
-                vlanId: vlan.vlanId,
+                vlanId: String(vlan.vlanId),
                 taggedPorts: model.taggedPorts.split(',')
               }]
             }
@@ -112,7 +111,9 @@ export function ConfigurationProfileForm () {
 
   const generateVoiceVlanConfig = (options?: VoiceVlanOption[], prevConfig?: VoiceVlanConfig[]) => {
     if(options) {
-      const initVoiceVlanConfigs:VoiceVlanConfig[] = options && options.map(i => ({model: i.model, voiceVlans: [] }))
+      const initVoiceVlanConfigs:VoiceVlanConfig[] = options && options
+        .map(i => ({ model: i.model, voiceVlans: [] }))
+
       if(prevConfig){
         initVoiceVlanConfigs.forEach((i, index) => {
           prevConfig.forEach(p => {
@@ -122,7 +123,8 @@ export function ConfigurationProfileForm () {
                 p.voiceVlans.forEach(pVlan=>{
                   validVlans.forEach(o => {
                     if(o.vlanId == pVlan.vlanId){
-                      const ports = pVlan.taggedPorts.filter(port => o.taggedPorts.indexOf(port)!==-1)
+                      const ports = pVlan.taggedPorts
+                        .filter(port => o.taggedPorts.indexOf(port)!==-1)
                       if(ports.length) {
                         i.voiceVlans.push({
                           vlanId: pVlan.vlanId,
@@ -157,50 +159,7 @@ export function ConfigurationProfileForm () {
     setArpInspection(arpInspectionValue.length > 0)
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
     const voiceVlanOptions = data.vlans && generateVoiceVlanOptions(data.vlans as Vlan[])
-    
-    const oriVoiceVlanConfigs = [
-    {
-      model: "ICX7150-24",
-      voiceVlans: [{
-        vlanId: "4", 
-        taggedPorts: [
-            "1/1/9",
-        ]
-      }]
-    },
-    {
-      model: "ICX7550-48",
-      voiceVlans: [
-        {
-          vlanId: "2", 
-          taggedPorts: ["1/1/8"]
-        },
-        {
-          vlanId: "3", 
-          taggedPorts: ["1/1/2"]
-        },
-        {
-          vlanId: "4", 
-          taggedPorts: ["1/1/2"]
-        },
-        {
-          vlanId: "5", 
-          taggedPorts: ["1/1/2"]
-        }
-      ]
-    },
-    {
-      model: "ICX7550-48P",
-      voiceVlans: [{
-        vlanId: "3", 
-        taggedPorts: [
-            "1/1/5",
-            "1/1/7"
-        ]
-      }]
-    }
-  ]
-    const voiceVlanConfigs = generateVoiceVlanConfig(voiceVlanOptions, oriVoiceVlanConfigs)
+    const voiceVlanConfigs = generateVoiceVlanConfig(voiceVlanOptions, currentData.voiceVlanConfigs)
     setCurrentData({
       ...currentData,
       ...data,
@@ -234,6 +193,12 @@ export function ConfigurationProfileForm () {
       } else {
         data.trustedPorts = []
       }
+    }
+    if(data.voiceVlanOptions) {
+      delete data.voiceVlanOptions
+    }
+    if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
+      delete data.voiceVlanConfigs
     }
     return data
   }
