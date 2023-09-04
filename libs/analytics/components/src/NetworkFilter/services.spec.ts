@@ -147,22 +147,4 @@ describe('useNetworkHierarchyQuery', () => {
     expect(data).toStrictEqual(undefined)
     expect(error).toBeTruthy()
   })
-
-  it('should handle undefined network', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', {
-      data: { network: undefined }
-    })
-
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.networkHierarchy.initiate(props)
-    )
-
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual({
-      name: 'Network',
-      type: 'network',
-      children: []
-    })
-    expect(error).toBeUndefined()
-  })
 })

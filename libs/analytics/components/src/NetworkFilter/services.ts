@@ -1,9 +1,8 @@
-import { gql }                                                 from 'graphql-request'
-import { chain, cloneDeep, groupBy, mergeWith, isArray, some } from 'lodash'
+import { gql } from 'graphql-request'
 
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { dataApi }                             from '@acx-ui/store'
-import { NetworkPath, NodeType, PathNode }     from '@acx-ui/utils'
+import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
@@ -31,6 +30,17 @@ interface HierarchyResponse {
     apHierarchy: NetworkNode[]
     switchHierarchy: NetworkNode[]
   }
+}
+
+const mergeNodes = (children: NetworkNode[]): NetworkNode[] => {
+  return Object.values(children.reduce((nodes, node) => {
+    if (nodes[node.name]) {
+      nodes[node.name].children!.push(...node.children!)
+    } else {
+      nodes[node.name] = node
+    }
+    return nodes
+  }, {} as { [key: string]: NetworkNode }))
 }
 
 export const api = dataApi.injectEndpoints({
@@ -137,12 +147,21 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_HIERARCHY' }],
-      transformResponse: (response: HierarchyResponse) => {
-        const { apHierarchy, switchHierarchy } = response.network || {}
-        const aps = apHierarchy?.map(ap => cleanDomainsTraversal(ap)) || []
-        const switches = switchHierarchy?.map(sw => cleanDomainsTraversal(sw)) || []
-        return mergeApsAndSwitches(aps, switches)
-      }
+      transformResponse: ({ network: { apHierarchy, switchHierarchy } }: HierarchyResponse) => ({
+        name: 'Network',
+        type: 'network',
+        children: mergeNodes(apHierarchy.concat((switchHierarchy || [])))
+          .map((system: NetworkNode): NetworkNode => ({
+            ...system,
+            children: mergeNodes(system.children!.reduce(
+              (nodes, node) => nodes.concat(node.name === '1||Administration Domain'
+                ? node.children!
+                : [{ ...node, name: node.name.slice(3) }]
+              ),
+              [] as NetworkNode[]
+            ))
+          }))
+      } as NetworkNode)
     })
   })
 })
@@ -152,101 +171,3 @@ export const {
   useRecentNetworkFilterQuery,
   useNetworkHierarchyQuery
 } = api
-
-const cleanHierarchyName = (name: string) => {
-  const transformDomainName = name.match(/^[1-9]\|\|/)
-  if (transformDomainName) {
-    return name.slice(3)
-  }
-  return name
-}
-
-const cleanDomainsTraversal = (origin: NetworkNode) => {
-  const stack: NetworkNode[] = []
-  const root: NetworkNode = cloneDeep(origin)
-  stack.push(root)
-
-  while (stack.length > 0) {
-    let node = stack.pop() as NetworkNode
-    const { name } = node
-    const cleanName = cleanHierarchyName(name)
-    let nameNode = { ...node, name: cleanName }
-    node = Object.assign(node, nameNode)
-
-    if (isArray(node.children)) {
-      // explode any nested children
-      node.children = node.children.flat()
-      // explode children of administration domains to parent's level
-      const administrationIndex = node.children.findIndex(({ name }) =>
-        name.startsWith('1||Administration Domain'))
-      if (administrationIndex !== -1) {
-        const { children: adminChildren } = node.children[administrationIndex]
-        node.children.splice(administrationIndex, 1)
-        if (adminChildren) {
-          node.children = [...node.children, ...adminChildren]
-        }
-      }
-      node.children.forEach((child) => stack.push(child))
-    }
-  }
-  return root
-}
-
-const filterDuplicatesByType = (node: NetworkNode): NetworkNode => {
-  let { children } = node
-  if (!children || children.length === 0) {
-    return node
-  }
-  const groupedChildren = groupBy(
-    children,
-    (child) => child.type)
-  const nodeTypesWithDuplicates: NodeType[] = ['system', 'domain']
-  const checkDuplicates = some(Object.keys(groupedChildren).map((type) =>
-    nodeTypesWithDuplicates.includes(type as NodeType)))
-
-  if (!checkDuplicates) {
-    return {
-      ...node,
-      children: children.map(filterDuplicatesByType)
-    }
-  }
-
-  // to merge duplicated systems & domains nodes
-  for (let nodeType of nodeTypesWithDuplicates) {
-    if (nodeType in groupedChildren) {
-      // adapted from https://stackoverflow.com/a/47576800
-      groupedChildren[nodeType] = chain(groupedChildren[nodeType])
-        .groupBy('name')
-        .map((o) => mergeWith({}, ...o,
-          (obj: NetworkNode[keyof NetworkNode], src: NetworkNode[keyof NetworkNode]) =>
-            isArray(obj)
-              ? (obj as NetworkNode[]).concat(src as NetworkNode[])
-              : undefined
-        ))
-        .value()
-    }
-  }
-  let finalChildren: NetworkNode[] = []
-  Object.keys(groupedChildren).forEach((key) => {
-    finalChildren = [...finalChildren, ...groupedChildren[key]]
-  })
-  const cleanedChildren = finalChildren.map(filterDuplicatesByType)
-
-  return {
-    ...node,
-    children: cleanedChildren
-  }
-}
-
-const mergeApsAndSwitches = (
-  apSystems: NetworkNode[],
-  switchSystems: NetworkNode[]
-) => {
-  let systems: NetworkNode[] = apSystems.concat(switchSystems)
-  const temp = {
-    name: 'Network',
-    type: 'network',
-    children: systems
-  } as NetworkNode
-  return filterDuplicatesByType(temp)
-}
