@@ -713,7 +713,7 @@ export function StackForm () {
             ]}
           >
             <Row gutter={20}>
-              <Col span={enableSwitchStackNameDisplayFlag ? 12 : 8}>
+              <Col span={(isStackSwitches && enableSwitchStackNameDisplayFlag) ? 12 : 10}>
 
                 <Tabs onChange={onTabChange}
                   activeKey={currentTab}
