@@ -5,6 +5,7 @@ import _                         from 'lodash'
 
 import { StepsFormLegacy, Button } from '@acx-ui/components'
 import {
+  TaggedVlanPorts,
   Vlan,
   VoiceVlanConfig,
   VoiceVlanOption
@@ -23,7 +24,8 @@ export function VoiceVlan () {
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [ voiceVlanOptions, setVoiceVlanOptions ] = useState<VoiceVlanOption[]>([])
   const [ voiceVlanConfigs, setVoiceVlanConfigs ] = useState<VoiceVlanConfig[]>([])
-  const [ drawerModelData, setDrawerModelData ] = useState<VoiceVlanOption>()
+  const [ modelVlanOptions, setModelVlanOptions ] = useState<VoiceVlanOption>()
+  const [ modelVlanConfigs, setModelVlanConfigs ] = useState<VoiceVlanConfig>()
   const [ voiceVlanDrawerVisible, setVoiceVlanDrawerVisible ] = useState(false)
 
   useEffect(() => {
@@ -35,12 +37,14 @@ export function VoiceVlan () {
     }
   }, [currentData])
 
-  const handleSetDefaultVlan = (data: Vlan) => {
-    // const vlans = form.getFieldValue('vlans') || []
-    // form.setFieldValue('vlans',
-    //   [...vlans.filter((item: { vlanName: string }) => item.vlanName !== 'DEFAULT-VLAN'), data])
-    // setDefaultVlan(data)
-    // return true
+  const updateVoiceVlanConfigs = (model: string, voiceVlans: TaggedVlanPorts[]) => {
+    const tmp = JSON.parse(JSON.stringify(voiceVlanConfigs))
+    tmp.forEach((config:VoiceVlanConfig) => {
+      if(config.model === model) {
+        config.voiceVlans = voiceVlans
+      }
+    })
+    setVoiceVlanConfigs(tmp)
   }
 
   const generateVoiceVlanDisplay = (config: VoiceVlanConfig) => {
@@ -58,7 +62,8 @@ export function VoiceVlan () {
   }
 
   const onSetVoiceVlan = (config: VoiceVlanConfig) => {
-    setDrawerModelData(voiceVlanOptions.find(option => option.model == config.model))
+    setModelVlanOptions(voiceVlanOptions.find(option => option.model == config.model))
+    setModelVlanConfigs(voiceVlanConfigs.find(option => option.model == config.model))
     setVoiceVlanDrawerVisible(true)
   }
 
@@ -100,7 +105,9 @@ export function VoiceVlan () {
       <VoiceVlanDrawer
         visible={voiceVlanDrawerVisible}
         setVisible={setVoiceVlanDrawerVisible}
-        modelData={drawerModelData}
+        modelVlanOptions={modelVlanOptions}
+        modelVlanConfigs={modelVlanConfigs}
+        updateVoiceVlanConfigs={updateVoiceVlanConfigs}
       />
     </>
   )
