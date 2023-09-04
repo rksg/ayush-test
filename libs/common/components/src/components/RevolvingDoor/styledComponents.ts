@@ -55,7 +55,14 @@ export const LeftArrowText = styled.span<{ hasLeftArrow: boolean }>`
   text-overflow: ellipsis;
   width: 180px;
   padding-left: ${(props) => props.hasLeftArrow ? '8px' : '0px'};
-
+  &:hover {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    width: auto; 
+    position: relative;
+    z-index: 1; 
+  }
 `
 export const StyledBreadcrumb = styled(Breadcrumb)`
   overflow-wrap: break-word;
@@ -79,6 +86,14 @@ export const ListItemSpan = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   width: 180px;
+  &:hover {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    width: auto; 
+    position: relative;
+    z-index: 1;
+  }
 `
 export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
   height: 54px;
@@ -95,7 +110,6 @@ export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
 `
 export const StyledList = styled(List)`
   max-height: 400px;
-  overflow: auto;
   .ant-list-header {
     position: sticky;
     top: 0;
@@ -105,6 +119,8 @@ export const StyledList = styled(List)`
   }
   .ant-list-items {
     min-height: 200px;
+    max-height: 300px;
+    overflow: auto;
   }
   .ant-list-footer {
     position: sticky;
@@ -129,4 +145,10 @@ export const StyledInput = styled(Input)`
   cursor: 'pointer';
   border-color: var(--acx-primary-black);
   color: var(--acx-primary-black);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const DropdownWrapper = styled.div`
 `
