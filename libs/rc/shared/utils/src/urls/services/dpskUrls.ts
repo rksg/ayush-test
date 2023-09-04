@@ -132,5 +132,20 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
     oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
     newApi: true
+  },
+  getNewFlowPassphraseDevices: {
+    method: 'get',
+    url: '/v2' + NewDpskPassphraseDevices,
+    newApi: true
+  },
+  updateNewFlowPassphraseDevices: {
+    method: 'post',
+    url: '/v2' + NewDpskPassphraseDevices,
+    newApi: true
+  },
+  deleteNewFlowPassphraseDevices: {
+    method: 'delete',
+    url: '/v2' + NewDpskPassphraseDevices,
+    newApi: true
   }
 }
