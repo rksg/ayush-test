@@ -277,7 +277,7 @@ export function VarCustomers () {
         }
       }]),
     {
-      title: $t({ defaultMessage: 'Next License Expiration' }),
+      title: $t({ defaultMessage: 'Next Subscription Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
