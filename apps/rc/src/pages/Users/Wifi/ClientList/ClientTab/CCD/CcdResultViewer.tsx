@@ -58,7 +58,6 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
 
       if (state === 'START') {
         //console.log('Action is STARTING')
-
         try {
           const result = await diagnosisClientConnection({
             params: { venueId },

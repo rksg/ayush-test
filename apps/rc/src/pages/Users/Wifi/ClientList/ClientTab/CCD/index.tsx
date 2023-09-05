@@ -239,7 +239,7 @@ export function ClientConnectionDiagnosis () {
         borderColor: 'var(--acx-neutrals-30)',
         margin: '20px 20px 5px 20px' }}
     />
-    {selectedApsInfo &&
+    {(selectedApsInfo && selectedApsInfo.length > 0)&&
     <CcdResultContainer>
       <div style={{ width: '250px' }}>
         <ApInfoCards

@@ -8,9 +8,6 @@ import { Subtitle } from '@acx-ui/components'
 import { ApInfo }                                          from './contents'
 import { ApInfoRadioExtendInfo, WarningTriangleSolidIcon } from './styledComponents'
 
-
-
-
 export interface ApInfoCradsProps {
   apInfos: ApInfo[],
   selectedApMac: string,
@@ -24,26 +21,13 @@ export function ApInfoCards (props: ApInfoCradsProps) {
   const { apInfos, selectedApMac, setSelectedApMac, ccdApMac } = props
 
   const [ apInfoList, setApInfoList ] = useState<ApInfo[]>([])
-  //const [ selectedAp, setSelectedAp ] = useState<string>()
-
   useEffect(() => {
     if (Array.isArray(apInfos)) {
       setApInfoList(apInfos)
     }
   }, [apInfos])
 
-  /*
-  useEffect(() => {
-    if (selectedApMac !== undefined) {
-      setSelectedAp(selectedApMac.toUpperCase())
-    }
-
-  }, [selectedApMac])
-  */
-
   const onChange = (e: RadioChangeEvent) => {
-    //console.log('radio checked', e.target.value)
-
     setSelectedApMac(e.target.value)
   }
 
