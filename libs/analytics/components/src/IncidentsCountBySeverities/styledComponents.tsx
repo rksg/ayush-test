@@ -1,15 +1,5 @@
 import styled from 'styled-components'
 
-export const TitleBadge = styled.span`
-  color: var(--acx-primary-white);
-  background-color: var(--acx-accents-orange-50);
-  border-radius: 15px;
-  padding-inline: 6px;
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-`
-
 export const Count = styled.span`
   font-size: var(--acx-headline-2-font-size);
   line-height: var(--acx-headline-2-line-height);

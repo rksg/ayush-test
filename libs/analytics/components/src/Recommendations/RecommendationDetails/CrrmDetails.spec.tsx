@@ -1,3 +1,5 @@
+import { pick } from 'lodash'
+
 import { recommendationUrl, Provider }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -20,6 +22,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('CrrmDetails', () => {
   it('renders correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+      data: {
+        recommendation: pick(mockedRecommendationCRRM, ['id', 'code'])
+      }
+    })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationCRRM

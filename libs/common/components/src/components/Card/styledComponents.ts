@@ -101,6 +101,7 @@ export const SubTitle = styled.div`
   line-height: var(--acx-body-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-body-font-weight);
+  white-space: normal;
 `
 
 export const LinkButton = styled(Button).attrs({ size: 'small' })`
