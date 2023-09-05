@@ -105,6 +105,12 @@ describe('formatter', () => {
     expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')
     expect(formatter('ratioFormat')([2, 2])).toBe('2 / 2')
   })
+  it('bandwidthFormat', () => {
+    expect(formatter('bandwidthFormat')(20)).toBe('20 MHz')
+    expect(formatter('bandwidthFormat')(40)).toBe('40 MHz')
+    expect(formatter('bandwidthFormat')(80)).toBe('80 MHz')
+    expect(formatter('bandwidthFormat')(160)).toBe('160 MHz')
+  })
   describe('txFormat', () => {
     it('should return same value if not in txpowerMapping', () => {
       expect(formatter('txFormat')('MIN')).toBe('MIN')
@@ -387,14 +393,15 @@ describe('formatter', () => {
       expect(formatter('crrmFormat')([{
         radio: '2.4',
         channelWidth: '_AUTO',
-        channelMode: 'BACKGROUND_SCANNING'
+        channelMode: 'BACKGROUND_SCANNING',
+        autoCellSizing: 'false'
       }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Power')
       expect(formatter('crrmFormat')([{
-        radio: '5.0',
+        radio: '5',
         channelWidth: '_80MHZ',
         channelMode: 'CHANNEL_FLY',
-        autoCellSizing: true
-      }])).toMatch('ChannelFly and 80 MHz for 5.0 GHz with Auto Cell Sizing on')
+        autoCellSizing: 'true'
+      }])).toMatch('ChannelFly and 80 MHz for 5 GHz with Auto Cell Sizing on')
     })
     it('returns txPower texts', () => {
       expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len

@@ -3,14 +3,15 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { get }                                          from '@acx-ui/config'
-import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
+import { Drawer, Loader, SearchBar, Table, TableProps, recommendationBandMapping } from '@acx-ui/components'
+import { get }                                                                     from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
 
 import { DescriptionSection }     from '../../DescriptionSection'
 import { codes, statusTrailMsgs } from '../config'
 import { Priority, PriorityIcon } from '../styledComponents'
 
+import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
@@ -110,5 +111,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       onClose={() => setVisible(false)}
       visible={visible}
     />}
+    { Object.keys(recommendationBandMapping).includes(details.code as string) &&
+      <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })}/>}
   </Loader>
 }

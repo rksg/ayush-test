@@ -14,11 +14,12 @@ interface ManageDhcpDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   inUseService: string | null
+  hasNsg?: boolean
 }
 
 const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
 
-  const { visible, setVisible } = props
+  const { visible, setVisible, hasNsg } = props
   const { $t } = useIntl()
   const [form] = useForm()
   const dhcpId = useWatch('dhcpId', form)
@@ -106,6 +107,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
                 ...(edgeDhcpOptions || [])
               ]}
               loading={isEdgeDhcpDataFetching}
+              disabled={hasNsg}
             />
           </Form.Item>
           {/* TODO Add button not ready for test */}
