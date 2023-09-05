@@ -7,7 +7,6 @@ import * as helpers from './helpers'
 
 import { RevolvingDoor, Node } from '.'
 
-// Mock searchTree and findMatchingNode
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
   searchTree: jest.fn(),
@@ -99,9 +98,9 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('child1'))
+    fireEvent.click(await screen.findByText('Child1'))
 
-    expect(await screen.findByText('child3')).toBeInTheDocument()
+    expect(await screen.findByText('Child3')).toBeInTheDocument()
   })
 
   it('should handle onBreadcrumbClick correctly', async () => {
@@ -112,7 +111,7 @@ describe('RevolvingDoor', () => {
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Root'))
-    fireEvent.click(await screen.findByText('child1'))
+    fireEvent.click(await screen.findByText('Child1'))
     fireEvent.click(await screen.findByText('Root'))
     expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
   })
@@ -124,7 +123,7 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('child1'))
+    fireEvent.click(await screen.findByText('Child1'))
     fireEvent.click(await screen.findByText('Child1'))
     expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
   })

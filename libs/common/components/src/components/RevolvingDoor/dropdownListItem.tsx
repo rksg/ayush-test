@@ -1,6 +1,7 @@
 import React from 'react'
 
-import * as UI from './styledComponents'
+import { customCapitalize } from './helpers'
+import * as UI              from './styledComponents'
 
 import { Node } from '.'
 
@@ -18,7 +19,7 @@ export const ListItemComponent: React.FC<Props> = ({ node, onClick, isSelected =
       onClick={() => onClick(node)}
       isSelected={isSelected}>
       <UI.ListItemSpan key={`${node?.type}-${node.name}`}>
-        {`${node.type ? `${node.type}(` : ''}${node.name}${node.type ? ')' : ''}`}
+        {customCapitalize(node)}
       </UI.ListItemSpan>
       <div>{!isLeaf && <UI.RightArrow />}</div>
     </UI.ListItem>

@@ -1,5 +1,3 @@
-import { capitalize } from 'lodash'
-
 import { Node } from './'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
@@ -38,8 +36,11 @@ export const customCapitalize = (node?: Node | null ) => {
   const { type, name } = node
 
   if (type && type.toLowerCase() !== 'network') {
-    return capitalize(`${type}(${name})`)
+    return capitalizeFirstLetter(`${type}(${name})`)
   } else {
-    return capitalize(name)
+    return capitalizeFirstLetter(name)
   }
+}
+const capitalizeFirstLetter = (str : string) => {
+  return str?.charAt?.(0)?.toUpperCase() + str?.slice(1)
 }
