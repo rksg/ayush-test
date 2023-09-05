@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { UserButton } from '@acx-ui/analytics/components'
+import { HelpButton, UserButton } from '@acx-ui/analytics/components'
+import { useUserProfileContext }  from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
-  // HelpButton,
   GlobalSearchBar,
   HeaderContext
 } from '@acx-ui/main/components'
@@ -19,7 +19,9 @@ import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const params = useParams()
-  const companyName = 'companyName'
+  const { data: userProfile } = useUserProfileContext()
+  const companyName = userProfile?.tenants
+    .find(tenant => tenant.id === userProfile?.accountId)?.name
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
@@ -35,7 +37,7 @@ function Layout () {
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        {/*<HelpButton/>*/}
+        <HelpButton/>
         <UserButton/>
       </>}
     />
