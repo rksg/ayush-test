@@ -4,10 +4,25 @@ import { useContext, useEffect, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Descriptions, Drawer, showActionModal, Tooltip }                                                                                                                                                  from '@acx-ui/components'
-import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchPortlistQuery, useLazySwitchRearViewQuery }                                                                                      from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
+import { Button, Descriptions, Drawer, showActionModal, Tooltip } from '@acx-ui/components'
+import { useAcknowledgeSwitchMutation,
+  useDeleteStackMemberMutation,
+  useLazySwitchPortlistQuery,
+  useLazySwitchRearViewQuery }                                                                                      from '@acx-ui/rc/services'
+import { getPoeUsage,
+  getSwitchModel,
+  getSwitchPortLabel,
+  isEmpty,
+  StackMember,
+  SwitchFrontView
+  , SwitchModelInfo,
+  SwitchRearViewUISlot,
+  SwitchSlot,
+  SwitchStatusEnum,
+  SwitchViewModel,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  transformSwitchUnitStatus } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -119,8 +134,10 @@ export function Unit (props:{
     powerSlots: 0
   })
 
-  const [ switchRearView ] = useLazySwitchRearViewQuery()
-  const [ switchPortlist ] = useLazySwitchPortlistQuery()
+  const [switchRearView] = useLazySwitchRearViewQuery()
+  const [switchPortlist, { requestId: switchPortRequestId }] = useLazySwitchPortlistQuery({
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+  })
   const { tenantId, switchId } = useParams()
 
 
@@ -137,7 +154,7 @@ export function Unit (props:{
         getOfflineSwitchPort(unitData.model as string)
       }
     }
-  }, [member])
+  }, [member, switchPortRequestId])
 
   const getUnitSwitchModel = (switchMember: StackMember) => {
     return !isEmpty(switchMember.model) ? switchMember.model : getSwitchModel(switchMember.serialNumber)
