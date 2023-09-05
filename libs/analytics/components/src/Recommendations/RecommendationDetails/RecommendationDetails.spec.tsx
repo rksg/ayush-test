@@ -1,21 +1,15 @@
+import { pick } from 'lodash'
+
 import { recommendationUrl, Provider }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedRecommendationFirmware } from './__tests__/fixtures'
+import { RecommendationDetails }        from './RecommendationDetails'
 
-import { RecommendationDetails } from '.'
-
-jest.mock('./overview', () => ({
-  Overview: () => <div data-testid='overview'>Overview</div>
-}))
-
-jest.mock('./kpis', () => ({
-  Kpis: () => <div data-testid='kpis'>Kpis</div>
-}))
-
-jest.mock('./values', () => ({
-  Values: () => <div data-testid='values'>Values</div>
-}))
+jest.mock('./Overview', () => ({ Overview: () => <div data-testid='Overview' /> }))
+jest.mock('./Kpis', () => ({ Kpis: () => <div data-testid='Kpis' /> }))
+jest.mock('./StatusTrail', () => ({ StatusTrail: () => <div data-testid='StatusTrail' /> }))
+jest.mock('./Values', () => ({ Values: () => <div data-testid='Values' /> }))
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -26,15 +20,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('RecommendationDetails', () => {
   it('renders correctly', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
       data: {
-        recommendation: mockedRecommendationFirmware
+        recommendation: pick(mockedRecommendationFirmware, ['id', 'code'])
       }
     })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: {
-        recommendation: mockedRecommendationFirmware
-      }
+      data: { recommendation: mockedRecommendationFirmware }
     })
     render(<RecommendationDetails />, {
       route: {
@@ -42,9 +34,10 @@ describe('RecommendationDetails', () => {
       },
       wrapper: Provider
     })
-    expect(await screen.findByTestId('overview')).toBeVisible()
-    expect(await screen.findByTestId('kpis')).toBeVisible()
-    expect(await screen.findByTestId('values')).toBeVisible()
+    expect(await screen.findByTestId('Overview')).toBeVisible()
+    expect(await screen.findByTestId('Kpis')).toBeVisible()
+    expect(await screen.findByTestId('StatusTrail')).toBeVisible()
+    expect(await screen.findByTestId('Values')).toBeVisible()
     await waitFor(async () => {
       expect(await screen.findByText('Zone firmware upgrade')).toBeVisible()
     })

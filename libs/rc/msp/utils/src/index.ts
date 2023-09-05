@@ -1,4 +1,5 @@
 import {
+  DelegationEntitlementRecord,
   MspEcProfile,
   MspProfile
 } from './types'
@@ -26,8 +27,45 @@ export const MSPUtils = () => {
     return false
   }
 
+  const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[]) => {
+    let installedDevices = 0
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      const consumed = parseInt(entitlement.consumed, 10)
+      installedDevices += consumed
+    })
+    return installedDevices
+  }
+
+  const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[]) => {
+    let assignedDevices = 0
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      const quantity = parseInt(entitlement.quantity, 10)
+      assignedDevices += quantity
+    })
+    return assignedDevices
+  }
+
+  const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
+    let consumed = 0
+    let quantity = 0
+    entitlements?.forEach((entitlement:DelegationEntitlementRecord) => {
+      consumed += parseInt(entitlement.consumed, 10)
+      quantity += parseInt(entitlement.quantity, 10)
+    })
+    if (quantity > 0) {
+      const value =
+      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
+      return value
+    } else {
+      return '0%'
+    }
+  }
+
   return {
     isMspEc,
-    isOnboardedMsp
+    isOnboardedMsp,
+    transformInstalledDevice,
+    transformDeviceEntitlement,
+    transformDeviceUtilization
   }
 }

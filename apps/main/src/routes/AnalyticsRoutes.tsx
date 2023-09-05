@@ -14,7 +14,8 @@ import {
   ServiceGuardSpecGuard,
   ServiceGuardTestGuard,
   VideoCallQoeForm,
-  VideoCallQoeDetails
+  VideoCallQoeDetails,
+  CrrmDetails
 }                                                   from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -53,7 +54,8 @@ export default function AnalyticsRoutes () {
       {canUseAnltAdv && recommendationsEnabled &&
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>}
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'

@@ -2,7 +2,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { mockedRecommendationCRRM }                        from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
-import { StatusTrail }                                     from './statusTrail'
+import { StatusTrail }                                     from './StatusTrail'
 
 describe('RecommendationDetails Status Trail', () => {
   it('should render correctly with valid data', async () => {
