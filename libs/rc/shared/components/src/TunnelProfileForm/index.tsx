@@ -1,9 +1,9 @@
 import { Col, Form, Input, InputNumber, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                          from 'react-intl'
 
-import { StepsFormLegacy }                                     from '@acx-ui/components'
-import { MtuTypeEnum, TunnelProfile, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
-import { getIntl }                                             from '@acx-ui/utils'
+import { StepsFormLegacy }                                                  from '@acx-ui/components'
+import { AgeTimeUnit, MtuTypeEnum, TunnelProfile, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { getIntl }                                                          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -17,7 +17,8 @@ export const sessionMapping: { [key: string]: number } = {
 
 async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   const { $t } = getIntl()
-  if (value < (ageTimeUnit === 'minutes' ? 5 : 1) || value > sessionMapping[ageTimeUnit]) {
+  if (value < (ageTimeUnit === AgeTimeUnit.MINUTES ? 5 : 1) ||
+        value > sessionMapping[ageTimeUnit]) {
     return Promise.reject($t({
       defaultMessage: 'Value must between 5-10080 minutes or 1-7 days or 1 week'
     }))
@@ -30,15 +31,20 @@ export interface TunnelProfileFormType extends TunnelProfile {
 }
 
 export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) => {
+  const form = Form.useFormInstance()
   const isDefaultTunnelProfile = !!props.isDefaultTunnelProfile
-  const ageTimeUnit = useWatch<string>('ageTimeUnit')
+  const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
   const { $t } = useIntl()
   const ageTimeOptions = [
-    { label: $t({ defaultMessage: 'Minute(s)' }), value: 'minutes' },
-    { label: $t({ defaultMessage: 'Day(s)' }), value: 'days' },
-    { label: $t({ defaultMessage: 'Week' }), value: 'week' }
+    { label: $t({ defaultMessage: 'Minute(s)' }), value: AgeTimeUnit.MINUTES },
+    { label: $t({ defaultMessage: 'Day(s)' }), value: AgeTimeUnit.DAYS },
+    { label: $t({ defaultMessage: 'Week' }), value: AgeTimeUnit.WEEK }
   ]
+
+  const handelAgeTimeUnitChange = () => {
+    form.validateFields(['ageTimeMinutes'])
+  }
 
   return (
     <Row>
@@ -107,7 +113,7 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
                           validateFirst
                           noStyle
                         />
-                        <div>bytes</div>
+                        <div>{$t({ defaultMessage: 'bytes' })}</div>
                       </Space>
                     }
                   </Space>
@@ -128,30 +134,37 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
         </StepsFormLegacy.FieldLabel>
       </Col>
       <Col span={24}>
-        <Space>
-          <Form.Item
-            name='ageTimeMinutes'
-            label={$t({ defaultMessage: 'Idle Period' })}
-            initialValue={20}
-            rules={[
-              { required: true },
-              { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
-            ]}
-            validateFirst
-            children={<InputNumber disabled={isDefaultTunnelProfile}/>}
-          />
-          <Form.Item
-            name='ageTimeUnit'
-            label={<div></div>}
-            initialValue={'minutes'}
-            children={
-              <Select
-                options={ageTimeOptions}
-                disabled={isDefaultTunnelProfile}
-              />
-            }
-          />
-        </Space>
+        <Form.Item
+          label={$t({ defaultMessage: 'Idle Period' })}
+        >
+          <Space>
+            <Form.Item
+              name='ageTimeMinutes'
+              initialValue={20}
+              rules={[
+                { required: true },
+                { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
+              ]}
+              children={<InputNumber disabled={isDefaultTunnelProfile}/>}
+              validateFirst
+              noStyle
+              hasFeedback
+            />
+            <Form.Item
+              name='ageTimeUnit'
+              initialValue={'minutes'}
+              children={
+                <Select
+                  options={ageTimeOptions}
+                  disabled={isDefaultTunnelProfile}
+                  onChange={handelAgeTimeUnitChange}
+                />
+              }
+              noStyle
+            />
+          </Space>
+        </Form.Item>
+
       </Col>
     </Row>
   )

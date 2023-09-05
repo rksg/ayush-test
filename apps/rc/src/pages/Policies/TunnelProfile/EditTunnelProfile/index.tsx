@@ -18,6 +18,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { ageTimeUnitConversion } from '../util'
+
 const EditTunnelProfile = () => {
 
   const { $t } = useIntl()
@@ -45,16 +47,9 @@ const EditTunnelProfile = () => {
     form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
 
     const ageTime = tunnelProfileData?.ageTimeMinutes || 20
-    if (ageTime % 10080 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 10080)
-      form.setFieldValue('ageTimeUnit', 'week')
-    } else if (ageTime % 1440 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 1440)
-      form.setFieldValue('ageTimeUnit', 'days')
-    } else {
-      form.setFieldValue('ageTimeMinutes', ageTime)
-      form.setFieldValue('ageTimeUnit', 'minutes')
-    }
+    const result = ageTimeUnitConversion(ageTime)
+    form.setFieldValue('ageTimeMinutes', result?.value)
+    form.setFieldValue('ageTimeUnit', result?.unit)
   }, [form, tunnelProfileData])
 
   const handleUpdateTunnelProfile = async (data: TunnelProfileFormType) => {
