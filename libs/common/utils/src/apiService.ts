@@ -60,11 +60,11 @@ export const showApiError = {
 }
 
 export const isIgnoreErrorModal = (request?: Request) => {
-  return request ? request.headers.get('Build-In-Error-Modal') === 'ignore' : false
+  return request?.headers ? request.headers.get('Build-In-Error-Modal') === 'ignore' : false
 }
 
 export const isShowApiError = (request?: Request) => {
-  return request ? request.headers.get('Build-In-Error-Modal') === 'showApiError' : false
+  return request?.headers ? request.headers.get('Build-In-Error-Modal') === 'showApiError' : false
 }
 
 export const createHttpRequest = (

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { ToastProps }                                       from '@acx-ui/components'
-import { CatchErrorResponse, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor }         from '@acx-ui/test-utils'
+import { ToastProps }                               from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
@@ -13,8 +13,8 @@ import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer }   from './ApRfNeig
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  initPokeSocket: (requestId: string, handler: () => void) => {
-    return mockedInitPokeSocketFn(requestId, handler)
+  initPokeSocket: (subscriptionId: string, handler: () => void) => {
+    return mockedInitPokeSocketFn(subscriptionId, handler)
   },
   closePokeSocket: () => jest.fn()
 }))
@@ -110,17 +110,14 @@ describe('ApRfNeighbors', () => {
   })
 
   it('should handle error correctly', async () => {
-    const mockedError: CatchErrorResponse = {
-      data: {
-        errors: [
-          {
-            code: 'WIFI-99999',
-            message: 'error occurs'
-          }
-        ],
-        requestId: 'REQUEST_ID'
-      },
-      status: 400
+    const mockedError = {
+      errors: [
+        {
+          code: 'WIFI-10496',
+          message: 'error occurs'
+        }
+      ],
+      requestId: 'REQUEST_ID'
     }
 
     mockServer.use(
@@ -137,7 +134,7 @@ describe('ApRfNeighbors', () => {
 
     await waitFor(() => {
       expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-        content: 'Error occurred while detecting AP',
+        content: 'The version of AP firmware is not supported',
         type: 'error'
       }))
     })
