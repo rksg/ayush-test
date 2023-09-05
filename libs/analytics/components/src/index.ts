@@ -1,5 +1,7 @@
 export * from './DescriptionSection'
 export { AnalyticsTabs } from './AnalyticsTabs'
+export { AIDrivenRRM } from './AIDrivenRRM'
+export { AIOperations } from './AIOperations'
 export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
 export { ClientTroubleshooting } from './ClientTroubleshooting'
 export { ConnectedClientsOverTime } from './ConnectedClientsOverTime'
@@ -46,9 +48,11 @@ export { AIAnalytics, AIAnalyticsTabEnum } from './AIAnalytics'
 export { useConfigChange } from './ConfigChange'
 export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
-export { RecommendationDetails } from './Recommendations/RecommendationDetails'
+export {
+  RecommendationDetails,
+  CrrmDetails
+} from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
-export { CrrmDetails } from './Recommendations/RecommendationDetails/CrrmDetails'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
 export { ServiceGuardForm } from './ServiceGuard/ServiceGuardForm'
 export * from './ServiceGuard/types'

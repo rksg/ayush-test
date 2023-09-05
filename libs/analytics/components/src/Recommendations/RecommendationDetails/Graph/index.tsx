@@ -12,9 +12,12 @@ import {
   Loader,
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
+  recommendationBandMapping,
   bandwidthMapping
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+
+import { EnhancedRecommendation } from '../services'
 
 import { DownloadRRMComparison }                                                   from './DownloadRRMComparison'
 import { Legend }                                                                  from './Legend'
@@ -22,7 +25,9 @@ import { useCRRMQuery }                                                         
 import { Wrapper, GraphWrapper, DrawerGraphWrapper, ClickableWrapper, Monitoring } from './styledComponents'
 
 function useGraph (
-  graphs: ProcessedCloudRRMGraph[], monitoring: Record<string, string>|null, legend: string[]
+  graphs: ProcessedCloudRRMGraph[],
+  monitoring: EnhancedRecommendation['monitoring'],
+  legend: string[]
 ) {
   const { $t } = useIntl()
 
@@ -58,18 +63,18 @@ function useGraph (
     : null
 }
 
-export const CloudRRMGraph = () => {
+export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
-  const { recommendation, queryResult } = useCRRMQuery()
-
+  const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
+  const queryResult = useCRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
 
   return <Wrapper>
     <ClickableWrapper onClick={showDrawer}/>
-    <Loader states={[recommendation, queryResult]}>
+    <Loader states={[queryResult]}>
       <Card
         type='no-border'
         title={title}
@@ -78,23 +83,23 @@ export const CloudRRMGraph = () => {
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
-          useGraph(queryResult.data, recommendation.data.monitoring, [])
+          useGraph(queryResult.data, details.monitoring!, [])
         }</GraphWrapper>} />
+      <Drawer
+        drawerType={DrawerTypes.FullHeight}
+        width={'90vw'}
+        title={title}
+        visible={visible}
+        onClose={closeDrawer}
+        children={
+          <DrawerGraphWrapper>
+            {useGraph(
+              queryResult.data,
+              details.monitoring,
+              bandwidthMapping[band])}
+            <DownloadRRMComparison details={details}/>
+          </DrawerGraphWrapper>
+        }/>
     </Loader>
-    <Drawer
-      drawerType={DrawerTypes.FullHeight}
-      width={'90vw'}
-      title={title}
-      visible={visible}
-      onClose={closeDrawer}
-      children={
-        <DrawerGraphWrapper>
-          {useGraph(
-            queryResult.data,
-            recommendation.data.monitoring,
-            bandwidthMapping[recommendation.data?.band])}
-          <DownloadRRMComparison />
-        </DrawerGraphWrapper>
-      }/>
   </Wrapper>
 }
