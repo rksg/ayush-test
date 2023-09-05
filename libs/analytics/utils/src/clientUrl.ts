@@ -5,27 +5,30 @@ export const getClientUrlWithHostname = (
   period?: string,
   tab='overview'
 ) => {
-  let mac: string, hostname: string
+  let mac: string
+  const searchParams: string[] = []
+
   if (Array.isArray(rawMac)) {
     mac = rawMac?.[0]?.toLocaleLowerCase()
   } else {
-    mac = rawMac
+    mac = rawMac.toLocaleLowerCase()
   }
 
   if (Array.isArray(rawHostname)) {
-    hostname = `hostname=${rawHostname.filter(h => h !== mac).join(', ')}`
-  } else if (rawHostname) {
-    hostname = rawHostname
-  } else {
-    hostname = ''
+    searchParams.push(`hostname=${rawHostname
+      .filter(h => h.toLocaleLowerCase() !== mac)
+      .join(', ')}`)
+  } else if (typeof rawHostname === 'string') {
+    searchParams.push(`hostname=${rawHostname}`)
   }
 
-  const baseLink = `users/wifi/clients/${mac}/details/${tab}`
-  const searchParams = [hostname]
+  let baseLink = `users/wifi/clients/${mac}/details/${tab}`
 
   if (period) {
-    searchParams.filter(Boolean).push(`period=${period}`)
+    searchParams.push(`period=${period}`)
   }
 
-  return baseLink + '?' + searchParams.join('&')
+  return searchParams.length > 0
+    ? baseLink + '?' + searchParams.join('&')
+    : baseLink
 }
