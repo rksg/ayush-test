@@ -56,7 +56,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
-  it('should return only admin schedules array for empty/no user permission', () => {
+  it('should return nothing for empty/no user permission', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
     const mockUserProfile = {
       data: {
@@ -79,7 +79,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return analytics related menu', () => {
+  it('should not return Analytics-related menu items', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
@@ -106,7 +106,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return config recommendation, Service Validation & videoCallQoe', () => {
+  it('should not return Config Change, Service Validation & Video Call QoE', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
@@ -135,15 +135,20 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return Schedules', () => {
+  it('should not return Administration-related menu items', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockPermissions = {
+      ...defaultMockPermissions,
+      'manage-mlisa': false,
+      'manage-label': false
+    }
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
         tenants: [
           {
             id: 'accountId',
-            permissions: defaultMockPermissions,
+            permissions: mockPermissions,
             settings: { franchisor: false }
           },
           {

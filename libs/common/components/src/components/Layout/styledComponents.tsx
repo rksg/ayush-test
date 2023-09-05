@@ -117,8 +117,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
-          &:last-child { margin-top: auto; }
-          &:only-child { margin-top: unset; }
+          &.menu-admin-item { margin-top: auto; }
         }
         .ant-menu-item {
           height: 48px;
@@ -152,9 +151,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               display: none;
             }`)}
           }
-          &:last-child {
-            margin-top: auto;
-          }
+          &.menu-admin-item { margin-top: auto; }
         }
         > div:first-child, .ant-layout-sider {
           flex: 0 0 var(--acx-sider-width) !important;

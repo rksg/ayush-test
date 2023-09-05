@@ -31,6 +31,7 @@ type SideNavProps = {
   activeIcon?: React.FC
   inactiveIcon?: React.FC
   isActiveCheck?: IsActiveCheck | RegExp
+  adminItem?: boolean
   isOpenInTab?: boolean
 }
 
@@ -124,10 +125,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
       {item.label}
     </>
+    const className = []
+    if (Boolean(isActive)) className.push('menu-active')
+    if (Boolean(item.adminItem)) className.push('menu-admin-item')
     return {
       ...rest,
-      className: Boolean(isActive) ? 'menu-active' : undefined,
-      key: key,
+      className: className.join(' ') || undefined,
+      key,
       label: Boolean(item.isOpenInTab)
         ? <Link to={`/analytics${uri}`} target='blank' rel='noreferrer onopener'>{content}</Link>
         : (uri ? <TenantNavLink
