@@ -101,3 +101,13 @@ export const ContentDivider = styled(AntDivider).attrs({ type: 'horizontal' })`
   background: var(--acx-neutrals-20);
   margin: 16px 0px 28px !important
 `
+
+export const PortStatus = styled.div`
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  margin-bottom: 30px;
+  .profile{
+    font-weight: var(--acx-body-font-weight); 
+    margin-left: 4px;
+  }
+`

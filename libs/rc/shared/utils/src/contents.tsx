@@ -227,6 +227,9 @@ export const EditPortMessages = {
   }),
   PORT_SPEED_TOOLTIP: defineMessage({
     defaultMessage: 'Not support on this port'
+  }),
+  TAGGED_VLAN_VOICE_TOOLTIP: defineMessage({
+    defaultMessage: 'The port needs to be a tagged member of the VLAN  in order to use it as a Voice VLAN.'
   })
 }
 
