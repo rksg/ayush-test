@@ -2,12 +2,12 @@ import React, { useMemo, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                        from '@acx-ui/analytics/utils'
-import type { Incident }                          from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table, SearchBar  }      from '@acx-ui/components'
-import type { TableColumn, ColumnType }           from '@acx-ui/components'
-import { TenantLink }                             from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
+import { aggregateDataBy, getClientUrlWithHostname } from '@acx-ui/analytics/utils'
+import type { Incident }                             from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, SearchBar  }         from '@acx-ui/components'
+import type { TableColumn, ColumnType }              from '@acx-ui/components'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange }    from '@acx-ui/utils'
 
 import {
   ImpactedAP,
@@ -96,7 +96,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       tooltip: tooltips.hostname,
       render: (_, { mac, hostname }) =>
         <TenantLink
-          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
+          to={getClientUrlWithHostname(mac, hostname, period, 'troubleshooting')}
         >{hostname}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),

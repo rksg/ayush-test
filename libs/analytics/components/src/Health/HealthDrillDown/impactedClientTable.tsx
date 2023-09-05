@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy, getClientUrlWithHostname } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
@@ -76,8 +76,8 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'mac',
       key: 'mac',
-      render: (_, { mac }) => (
-        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/overview`}>
+      render: (_, { mac, hostname }) => (
+        <TenantLink to={getClientUrlWithHostname(mac, hostname)}>
           {mac}
         </TenantLink>
       ),
