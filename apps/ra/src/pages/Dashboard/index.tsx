@@ -8,7 +8,9 @@ import {
   IncidentsCountBySeverities,
   NetworkHistory,
   SLA,
-  ReportTile
+  ReportTile,
+  AIDrivenRRM,
+  AIOperations
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -79,13 +81,13 @@ export default function Dashboard () {
         <IncidentsCountBySeverities filters={filters} />
       </div>
       <div style={{ gridArea: 'c2' }}>
-        <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
+        <AIDrivenRRM filters={filters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
       </div>
       <div style={{ gridArea: 'd2' }}>
-        <Card title={$t({ defaultMessage: 'AI Operations' })} />
+        <AIOperations filters={filters} />
       </div>
     </UI.Grid>
   </>
