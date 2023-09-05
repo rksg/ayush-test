@@ -12,6 +12,6 @@ display: block;
 `
 
 export const Description = styled.span`
-color: var(--acx-neutrals-50);
+color: var(--acx-neutrals-60);
 font-size: var(--acx-body-4-font-size);
 `

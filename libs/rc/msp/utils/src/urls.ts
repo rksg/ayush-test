@@ -85,24 +85,24 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
     newApi: true
   },
-  // addMspAssignment: {
-  //   method: 'post',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-  //   newApi: true
-  // },
-  // revokeMspAssignment: {
-  //   method: 'post',
-  //   url: '/assignments/{mspAssignmentId}',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/{mspAssignmentId}/revoke',
-  //   newApi: false
-  // },
-  // mspAssignmentBulkOperation: {
-  //   method: 'post',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation',
-  //   newApi: false
-  // },
+  addMspAssignment: {
+    method: 'post',
+    url: '/assignments',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+    newApi: true
+  },
+  updateMspAssignment: {
+    method: 'PATCH',
+    url: '/assignments',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+    newApi: true
+  },
+  deleteMspAssignment: {
+    method: 'delete',
+    url: '/assignments',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+    newApi: true
+  },
   resendEcInvitation: {
     method: 'post',
     url: '/mspCustomers/:mspEcTenantId/invitations',

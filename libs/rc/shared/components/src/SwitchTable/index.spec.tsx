@@ -234,18 +234,22 @@ describe('SwitchTable', () => {
     const row = await screen.findByRole('row', { name: /FEK3224R0AG/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
 
+    await screen.findByText(/1 selected/)
     const matchButton = await screen.findByRole('button', { name: 'Match Admin Password to Venue' })
     expect(matchButton).toBeVisible()
     expect(matchButton).toBeDisabled()
 
     const row1 = await screen.findByRole('row', { name: /FEK3224R1AG/i })
     await userEvent.click(await within(row1).findByRole('checkbox'))
+
+    await screen.findByText(/2 selected/)
     expect(matchButton).not.toBeDisabled()
 
     await userEvent.click(matchButton)
     await screen.findByText(/The switch admin password will be set same as the venue setting/)
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: 'Match Password' }))
-
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should clicks add switch correctly', async () => {

@@ -19,4 +19,6 @@ export * from './administration'
 export * from './entitlement'
 export * from './pdfGeneratorService'
 export * from './ipCalculatorUtilsService'
+export * from './pokeSocket'
+export * from './networkUtils'
 

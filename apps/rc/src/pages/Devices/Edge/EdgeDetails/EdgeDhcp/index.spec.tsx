@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
+import { EdgeDhcpUrls, EdgeUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
-import { mockEdgeDhcpHostStats }                       from '../../__tests__/fixtures'
+import { mockDhcpPoolStatsData, mockEdgeDhcpData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { mockEdgeDhcpHostStats }                                         from '../../__tests__/fixtures'
 
 import { EdgeDhcp } from '.'
 
@@ -48,6 +48,16 @@ describe('Edge DHCP no initial data', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })
@@ -96,6 +106,16 @@ describe('Edge DHCP', () => {
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })

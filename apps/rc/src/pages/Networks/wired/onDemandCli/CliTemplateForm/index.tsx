@@ -10,7 +10,6 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetCliTemplateQuery,
   useAddCliTemplateMutation,
@@ -52,7 +51,6 @@ export default function CliTemplateForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks/wired/onDemandCli')
   const editMode = params.action === 'edit'
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [form] = Form.useForm()
   const [addCliTemplate] = useAddCliTemplateMutation()
@@ -118,15 +116,13 @@ export default function CliTemplateForm () {
         title={editMode
           ? $t({ defaultMessage: 'Edit CLI Template' })
           : $t({ defaultMessage: 'Add CLI Template' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
           {
             text: $t({ defaultMessage: 'On-Demand CLI Configuration' }),
             link: '/networks/wired/onDemandCli'
           }
-        ] : [
-          { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/onDemandCli' }
         ]}
       />
 

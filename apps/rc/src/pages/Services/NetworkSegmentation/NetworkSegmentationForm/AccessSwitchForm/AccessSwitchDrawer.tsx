@@ -63,16 +63,14 @@ export function AccessSwitchDrawer (props: {
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
 
   const { vlanList } = useGetSwitchVlanQuery({
-    params: { tenantId, switchId }, payload: {
-      page: 1, pageSize: 4096, sortField: 'vlanId', sortOrder: 'ASC'
-    }
+    params: { tenantId, switchId }
   }, {
     skip: isMultipleEdit || !switchId,
     selectFromResult: ({ data }) => ({
       vlanList: [
         ...(data?.switchVlan || []),
         ...(data?.profileVlan || [])
-      ].map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId }))
+      ].map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId })).sort((a,b) => (a.value-b.value))
     })
   })
   const { portList } = useSwitchPortlistQuery({

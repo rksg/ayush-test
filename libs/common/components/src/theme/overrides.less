@@ -63,6 +63,9 @@
 
     &:not(.ant-btn-icon-only):not(.ant-btn-link) {
       padding: 4px 12px;
+      // to override https://github.com/ant-design/ant-design/blob/7251397f1764085b4cd7859daa4bee2c5507509c/components/button/style/index.less#L276-L277
+      line-height: 1.33;
+      padding-top: 4px !important;
       &:not(.ant-btn-sm):not(.ant-btn-lg) {
         min-height: 32px;
         height: fit-content;
@@ -123,7 +126,7 @@
       border: 0;
     }
 
-    &[disabled] {
+    &[disabled], &.ant-btn-disabled {
       &.ant-btn-default {
         color: var(--acx-neutrals-40);
         background-color: transparent;
@@ -364,6 +367,7 @@
     }
     &.ant-input-affix-wrapper-readonly {
       width: fit-content;
+      padding: 0 11px;
     }
   }
 

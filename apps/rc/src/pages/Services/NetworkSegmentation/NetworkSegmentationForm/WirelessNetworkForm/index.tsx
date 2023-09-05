@@ -9,10 +9,9 @@ import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
 import { Loader, StepsForm, useStepFormContext }                                                                      from '@acx-ui/components'
-import { useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 
 import * as UI                from './styledComponents'
 import { TunnelProfileModal } from './TunnelProfileModal'
@@ -40,7 +39,8 @@ export const WirelessNetworkForm = () => {
   const [unusedNetworkOptions, setUnusedNetworkOptions] =
   useState<{ label: string; value: string; }[]|undefined>(undefined)
   const [isFilterNetworksLoading, setIsFilterNetworksLoading] = useState(true)
-  const venueId = useWatch('venueId', form)
+  const venueId = form.getFieldValue('venueId')
+  const venueName = form.getFieldValue('venueName')
 
   const { tunnelProfileList , isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
@@ -168,6 +168,13 @@ export const WirelessNetworkForm = () => {
                           <Checkbox value={item.value} children={item.label} key={item.value} />
                         ))
                       }
+                      <UI.Description>
+                        {
+                          !unusedNetworkOptions?.length &&
+                            $t({ defaultMessage: 'No networks activated on Venue ({venueName})' },
+                              { venueName: venueName })
+                        }
+                      </UI.Description>
                     </Space>
                   </Checkbox.Group>
                 }

@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
 import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { mockServer, render, screen }            from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import {
@@ -19,6 +20,12 @@ import {
 import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathForm } from './CloudpathForm'
+
+jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
+  ...jest.requireActual('../NetworkMoreSettings/NetworkMoreSettingsForm'),
+  __esModule: true,
+  NetworkMoreSettingsForm: () => <div data-testid='NetworkMoreSettingsFormTestId'></div>
+}))
 
 describe('CaptiveNetworkForm-Cloudpath', () => {
   beforeEach(() => {
@@ -54,23 +61,33 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should test WISPr network successfully', async () => {
+  it('should test Cloudpath Captive portal network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: false, cloneMode: true, data: { ...cloudPathDataNone.wlan }
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+
+    expect(await screen.findByRole('checkbox', {
+      name: /use mac authentication during reconnection/i
+    })).toBeChecked()
   })
-  it('should create WISPr network successfully', async () => {
+  it('should render Cloudpath Captive portal network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
-    const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
-    fireEvent.change(walledGarden, { target: { value: '' } })
-    fireEvent.blur(walledGarden)
+    expect(await screen.findByRole('checkbox', {
+      name: /use mac authentication during reconnection/i
+    })).toBeChecked()
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /enrollment workflow url/i
+    }), 'http://workflow.com')
+
+    await userEvent.click(await screen.findByText('Add'))
   })
 })

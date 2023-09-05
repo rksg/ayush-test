@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
@@ -73,6 +73,10 @@ async function showUnsavedChangesModal (tabKey: string, action: string) {
 
 let dialog = null
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
+}))
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -353,19 +357,7 @@ describe('ApEdit', () => {
       await fireEvent.click(await screen.findByRole('button', { name: 'My-Venue' }))
     })
 
-    it('should render breadcrumb correctly when feature flag is off', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NAVBAR_ENHANCEMENT)
-      render(<Provider><ApEdit /></Provider>, {
-        route: { params },
-        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
-      })
-      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-      expect(screen.getByRole('link', {
-        name: /access points/i
-      })).toBeTruthy()
-    })
-
-    it('should render breadcrumb correctly when feature flag is on', async () => {
+    it('should render breadcrumb correctly', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'

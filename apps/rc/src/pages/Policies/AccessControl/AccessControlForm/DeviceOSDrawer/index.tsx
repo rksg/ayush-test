@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
@@ -125,10 +126,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [
     accessStatus,
     policyName,
+    description,
     devicePolicyId
   ] = [
     useWatch<string>('deviceDefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'devicePolicyId'])
   ]
 
@@ -183,6 +186,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   useEffect(() => {
     if (devicePolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
+      contentForm.setFieldValue('description', devicePolicyInfo.description)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
         ruleName: deviceRule.name,
@@ -292,6 +296,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     contentForm.setFieldValue('deviceDefaultAccess', undefined)
     setDeviceOSRuleList([])
   }
@@ -389,7 +394,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           vlan: rule.access !== AccessStatus.BLOCK ? rule.details.vlan : null
         }
       })],
-      description: null
+      description: description
     }
 
     return {
@@ -480,6 +485,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
+    />
+    <DrawerFormItem
+      name='description'
+      label={$t({ defaultMessage: 'Description' })}
+      rules={[
+        { max: 255 }
+      ]}
+      children={<TextArea disabled={isViewMode()} />}
     />
     <DrawerFormItem
       name='deviceDefaultAccess'

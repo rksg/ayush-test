@@ -62,7 +62,8 @@ import {
   VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP,
-  VenueClientAdmissionControl
+  VenueClientAdmissionControl,
+  RogueApLocation
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -700,6 +701,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getRogueApLocation: build.query<RogueApLocation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRogueApLocation, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
@@ -901,7 +910,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response &&
+              requestArgs.callback &&
+              msg.useCase === 'UpdateVenueLoadBalancing'
+            && ((msg.steps?.find((step) => {
+              return step.id === 'UpdateVenueLoadBalancing'
+            })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)()
+            }
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
+          }
+        })
+      }
     }),
     getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
       query: ({ params }) => {
@@ -1192,7 +1219,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
+      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response &&
+              requestArgs.callback &&
+              msg.useCase === 'UpdateVenueClientAdmissionControlSettings' &&
+              ((msg.steps?.find((step) => {
+                return step.id === 'UpdateVenueClientAdmissionControlSettings'
+              })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)()
+            }
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
+          }
+        })
+      }
     })
   })
 })
@@ -1243,6 +1288,7 @@ export const {
   useBulkDeleteAAAServerMutation,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
+  useGetRogueApLocationQuery,
   useGetVenueRogueApQuery,
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
@@ -1303,5 +1349,6 @@ export const {
   useGetVenueRadiusOptionsQuery,
   useUpdateVenueRadiusOptionsMutation,
   useGetVenueClientAdmissionControlQuery,
+  useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation
 } = venueApi

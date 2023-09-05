@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo, Key } from 'react'
+import { useMemo, Key, isValidElement } from 'react'
 
 import { Select }    from 'antd'
 import _             from 'lodash'
@@ -103,7 +103,8 @@ export function useGroupBy<RecordType> (
               if (searchable) {
                 return highlightFn(_.get(record, dataIndex))
               }
-              return dom
+
+              return isValidElement(dom) ? dom : null
             }
           }
           return {

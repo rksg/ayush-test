@@ -38,7 +38,8 @@ import {
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
-  SchedulingModalState
+  SchedulingModalState,
+  IsWPA3Security
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -74,7 +75,9 @@ const defaultPayload = {
     'latitude',
     'longitude',
     'mesh',
-    'status'
+    'status',
+    'isOweMaster',
+    'owePairNetworkId'
   ]
 }
 
@@ -150,7 +153,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
         }
       })
       setTableData(data)
@@ -168,7 +171,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = network?.wlan && network?.wlan.wlanSecurity === 'WPA3'
+    const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -218,7 +221,7 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = network?.wlan && network?.wlan.wlanSecurity === 'WPA3'
+      const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
       if (triBandRadioFeatureFlag && isWPA3security) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
@@ -344,8 +347,11 @@ export function NetworkVenuesTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled) || systemNetwork){
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
           disabled = true
+        } else if (systemNetwork) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
           title = ''
         }

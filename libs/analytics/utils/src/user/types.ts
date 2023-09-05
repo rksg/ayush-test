@@ -5,7 +5,7 @@ export type UserProfile = {
   email: string
   accountId: string
   userId: string
-  invitations: []
+  invitations: Tenant[]
   tenants: Tenant[]
 }
 

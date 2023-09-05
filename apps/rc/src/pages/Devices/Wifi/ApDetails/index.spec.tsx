@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { apApi }                                        from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
@@ -41,6 +42,10 @@ jest.mock('./ApOverviewTab/ApPhoto', () => ({
 jest.mock('./ApOverviewTab/ApProperties', () => ({
   ...jest.requireActual('./ApOverviewTab/ApProperties'),
   ApProperties: () => <div data-testid='ApProperties' />
+}))
+
+jest.mock('./ApNeighbors', () => ({
+  ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -102,7 +107,11 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData)))
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      )
     )
   })
 
@@ -218,6 +227,21 @@ describe('ApDetails', () => {
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Timeline')
     await screen.findByTestId('rc-ActivityTable')
+  })
+
+  it('should navigate to neighbors tab correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_EDA_NEIGHBORS_TOGGLE)
+
+    const params = {
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
+      activeTab: 'neighbors'
+    }
+    render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
+    })
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Neighbors')
   })
 
   it('should not navigate to non-existent tab', async () => {

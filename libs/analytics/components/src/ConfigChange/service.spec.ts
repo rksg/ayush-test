@@ -12,7 +12,6 @@ describe('useConfigChangeQuery', () => {
   it('should return correct data', async () => {
     const param = {
       path: [{ type: 'network' as const, name: 'Network' }],
-      filter: {},
       start: '2023-04-01T16:00:00+08:00',
       end: '2023-04-30T16:00:00+08:00'
     }
@@ -27,7 +26,6 @@ describe('useConfigChangeQuery', () => {
   it('should return empty data', async () => {
     const param = {
       path: [{ type: 'network' as const, name: 'Network' }],
-      filter: {},
       start: '2023-05-01T16:00:00+08:00',
       end: '2023-05-30T16:00:00+08:00'
     }

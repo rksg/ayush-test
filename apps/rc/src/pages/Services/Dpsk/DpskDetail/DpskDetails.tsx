@@ -2,7 +2,7 @@ import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
 import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -29,7 +29,7 @@ export default function DpskDetails () {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
     params: { tenantId, serviceId },
-    payload: { filters: {}, page: 1, pageSize: 20000 }
+    payload: { filters: {}, page: 1, pageSize: 75000 }
   }, {
     selectFromResult: ({ data }) => {
       return {
@@ -39,7 +39,6 @@ export default function DpskDetails () {
       }
     }
   })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
@@ -72,16 +71,11 @@ export default function DpskDetails () {
     <>
       <PageHeader
         title={dpskDetail?.name}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DPSK' }),
-            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Services' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
