@@ -68,7 +68,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   ]
 
   const stickyClientSteeringInfoMessage = defineMessage({
-    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP, and will disable SmartRoam feature on AP'
+    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP, and will disable SmartRoam feature on AP. This is only supported by AP firmware version 6.2.2+'
   })
 
   const steeringModes = [
