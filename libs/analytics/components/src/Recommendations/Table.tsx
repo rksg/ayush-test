@@ -6,7 +6,6 @@ import { useIntl, defineMessage } from 'react-intl'
 import {
   defaultSort,
   dateSort,
-  severitySort,
   sortProp,
   IncidentFilter
 } from '@acx-ui/analytics/utils'
@@ -19,7 +18,7 @@ import { noDataDisplay }               from '@acx-ui/utils'
 import { RecommendationActions }  from './RecommendationActions'
 import {
   useRecommendationListQuery,
-  Recommendation,
+  RecommendationListItem,
   useMuteRecommendationMutation
 } from './services'
 import * as UI from './styledComponents'
@@ -27,56 +26,47 @@ import * as UI from './styledComponents'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
-export interface RecommendationRow extends Recommendation {
-  priority: number
-  priorityLabel: string
-  category: string
-  summary: string
-  type: string
-  scope: string
-  statusTooltip: string
-}
-
-const DateLink = ({ value }: { value: RecommendationRow }) => {
+const DateLink = ({ value }: { value: RecommendationListItem }) => {
   const { activeTab } = useParams()
   return <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
 
-const disableMuteStatus: Array<RecommendationRow['statusEnum']> = [
+const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
   'applyscheduled',
   'applyscheduleinprogress',
   'revertscheduled',
   'revertscheduleinprogress'
 ]
 
+export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
+  const stateA = itemA.crrmOptimizedState!
+  const stateB = itemB.crrmOptimizedState!
+  return defaultSort(stateA.order, stateB.order)
+}
+
 export function RecommendationTable ({ filters, showCrrm }:
   { filters: IncidentFilter, showCrrm?: boolean }) {
   const intl = useIntl()
   const { $t } = intl
 
-  const queryResults = useRecommendationListQuery(filters)
+  const queryResults = useRecommendationListQuery({ ...filters, crrm: showCrrm })
 
-  const scopeType = get('IS_MLISA_SA')
-    ? $t({ defaultMessage: 'Zone' })
-    : $t({ defaultMessage: 'Venue' })
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
 
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     isMuted: boolean,
-    statusEnum: RecommendationRow['statusEnum']
+    statusEnum: RecommendationListItem['statusEnum']
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
 
-  const data = queryResults?.data?.filter((row) =>
-    (showCrrm === row.code.includes('crrm')) && (showMuted || !row.isMuted)
-  )
+  const data = queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
 
-  const rowActions: TableProps<Recommendation>['rowActions'] = [
+  const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
       label: $t(selectedRecommendation?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
@@ -97,24 +87,38 @@ export function RecommendationTable ({ filters, showCrrm }:
     setSelectedRowData([])
   }, [queryResults.data])
 
-  const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
-    {
-      title: $t(defineMessage({ defaultMessage: 'Priority' })),
+  const columns: TableProps<RecommendationListItem>['columns'] = useMemo(() => [
+    ...(showCrrm ? [{
+      title: get('IS_MLISA_SA')
+        ? $t({ defaultMessage: 'Zone RRM' })
+        : $t({ defaultMessage: 'Venue RRM' }),
       width: 90,
-      dataIndex: 'priorityLabel',
-      key: 'priorityLabel',
-      render: (_, value) => {
-        return <UI.Priority>
-          <UI.PriorityIcon value={value.priority} />
-          <span>{value.priorityLabel}</span>
-        </UI.Priority>
+      dataIndex: 'optimizedState',
+      key: 'optimizedState',
+      render: (_, { crrmOptimizedState }) => {
+        return <UI.OptimizedIcon
+          value={crrmOptimizedState!.order}
+          text={$t(crrmOptimizedState!.label)}
+        />
       },
-      sorter: { compare: sortProp('priority', severitySort) },
+      sorter: { compare: crrmStateSort },
       fixed: 'left',
       filterable: true
-    },
+    }] : [{
+      title: $t({ defaultMessage: 'Priority' }),
+      width: 90,
+      dataIndex: ['priority', 'order'],
+      key: 'priorityOrder',
+      render: (_, value) => <UI.PriorityIcon
+        value={value.priority.order}
+        text={$t(value.priority.label)}
+      />,
+      sorter: { compare: sortProp('priority.order', defaultSort) },
+      fixed: 'left',
+      filterable: true
+    }]) as TableProps<RecommendationListItem>['columns'],
     {
-      title: $t(defineMessage({ defaultMessage: 'Date' })),
+      title: $t({ defaultMessage: 'Date' }),
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
@@ -125,7 +129,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       fixed: 'left'
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'Summary' })),
+      title: $t({ defaultMessage: 'Summary' }),
       width: 250,
       dataIndex: 'summary',
       key: 'summary',
@@ -134,16 +138,18 @@ export function RecommendationTable ({ filters, showCrrm }:
       searchable: true
     },
     ...(showCrrm ? [] : [{
-      title: $t(defineMessage({ defaultMessage: 'Category' })),
+      title: $t({ defaultMessage: 'Category' }),
       width: 130,
       dataIndex: 'category',
       key: 'category',
       sorter: { compare: sortProp('category', defaultSort) },
       fixed: 'left',
       filterable: true
-    }] as TableProps<RecommendationRow>['columns']),
+    }]) as TableProps<RecommendationListItem>['columns'],
     {
-      title: scopeType,
+      title: get('IS_MLISA_SA')
+        ? $t({ defaultMessage: 'Zone' })
+        : $t({ defaultMessage: 'Venue' }),
       width: 150,
       dataIndex: 'sliceValue',
       key: 'sliceValue',
@@ -156,7 +162,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       searchable: true
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'Status' })),
+      title: $t({ defaultMessage: 'Status' }),
       width: 90,
       dataIndex: 'status',
       key: 'status',
@@ -169,7 +175,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       filterable: true
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'Actions' })),
+      title: $t({ defaultMessage: 'Actions' }),
       key: 'id',
       dataIndex: 'id',
       width: 80,
@@ -186,7 +192,7 @@ export function RecommendationTable ({ filters, showCrrm }:
         settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
         dataSource={data}
-        columns={ColumnHeaders}
+        columns={columns}
         rowActions={rowActions}
         rowSelection={{
           type: 'radio',

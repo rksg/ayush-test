@@ -3,14 +3,16 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { get }                                          from '@acx-ui/config'
-import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
+import { Drawer, Loader, SearchBar, Table, TableProps, recommendationBandMapping } from '@acx-ui/components'
+import { get }                                                                     from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
+import { truthy }                                                                  from '@acx-ui/utils'
 
-import { DescriptionSection }     from '../../DescriptionSection'
-import { codes, statusTrailMsgs } from '../config'
-import { Priority, PriorityIcon } from '../styledComponents'
+import { DescriptionSection }          from '../../DescriptionSection'
+import { codes, statusTrailMsgs }      from '../config'
+import { PriorityIcon, OptimizedIcon } from '../styledComponents'
 
+import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
@@ -55,38 +57,56 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { priority, statusTrail, category, sliceValue, status, code, id } = details
+  const {
+    statusTrail,
+    category,
+    sliceValue,
+    status,
+    code,
+    id,
+    priority,
+    crrmOptimizedState,
+    crrmInterferingLinksText
+  } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
-  const applied = details.appliedOnce && status !== 'reverted'
-  const before = applied
-    ? details.kpi_number_of_interfering_links?.previous
-    : details.kpi_number_of_interfering_links?.current
-  const after = applied
-    ? details.kpi_number_of_interfering_links?.current
-    : details.kpi_number_of_interfering_links?.projected || 0
-  const crrmText = $t({
-    defaultMessage:
-      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}',
-    description: 'Translation string - interfering, link, links, can be optimised to'
-  }, { before, after })
-  const Icon = () => <Priority>
-    <PriorityIcon value={priority.order} />
-    <span>{$t(priority.label)}</span>
-  </Priority>
+
   const fields = [
-    { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
-    { label: $t({ defaultMessage: 'Date' }),
-      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
-    ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
-    ...(isRrm ? [] : [{
+    (isRrm && {
+      label: get('IS_MLISA_SA')
+        ? $t({ defaultMessage: 'Zone RRM' })
+        : $t({ defaultMessage: 'Venue RRM' }),
+      children: <OptimizedIcon
+        value={crrmOptimizedState!.order}
+        text={$t(crrmOptimizedState!.label)}
+      />
+    }),
+    (!isRrm && {
+      label: $t({ defaultMessage: 'Priority' }),
+      children: <PriorityIcon value={priority.order} text={$t(priority.label)} />
+    }),
+    {
+      label: $t({ defaultMessage: 'Date' }),
+      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt))
+    },
+    (!isRrm && {
+      label: $t({ defaultMessage: 'Category' }),
+      children: $t(category)
+    }),
+    (!isRrm && {
       label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
       children: sliceValue
-    }]),
-    ...(isRrm ? [{ label: $t({ defaultMessage: 'Summary' }), children: crrmText }] : []),
-    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
-  ]
+    }),
+    (isRrm && {
+      label: $t({ defaultMessage: 'Summary' }),
+      children: crrmInterferingLinksText
+    }),
+    {
+      label: $t({ defaultMessage: 'Status' }),
+      children: $t(statusTrailMsgs[status])
+    }
+  ].filter(truthy)
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
   const impactedApsQuery = useGetApsQuery({ id, search: '' }, { skip: !hasAp })
@@ -110,5 +130,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       onClose={() => setVisible(false)}
       visible={visible}
     />}
+    { Object.keys(recommendationBandMapping).includes(details.code as string) &&
+      <DownloadRRMComparison details={details} title={$t({ defaultMessage: 'RRM comparison' })}/>}
   </Loader>
 }

@@ -176,7 +176,7 @@ export default function ActivityButton () {
   ]
   return <>
     <Badge
-      overflowCount={9}
+      overflowCount={999}
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid
         icon={<ClockSolid />}
