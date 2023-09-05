@@ -1,16 +1,15 @@
-import { Menu, Dropdown } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Menu }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import {
   useUserProfileContext,
   Tenant,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI }           from '@acx-ui/components'
+import { LayoutUI, Dropdown } from '@acx-ui/components'
 import { AccountCircleSolid } from '@acx-ui/icons'
 import { NewTabLink }         from '@acx-ui/react-router-dom'
 
-import { LogOut, UserNameButton } from './styledComponents'
 
 export const UserButton = () => {
   const { $t } = useIntl()
@@ -53,28 +52,20 @@ export const UserButton = () => {
         { type: 'divider' },
         {
           key: 'logout',
-          label: <div style={{ display: 'flex', alignItems: 'center' }}>
-            <LogOut />
-            <span>{$t({ defaultMessage: 'Log out' })} </span>
-          </div>
+          label: <Dropdown.MenuItemWithIcon>
+            <LayoutUI.LogOutIcon />
+            {$t({ defaultMessage: 'Log out' })}
+          </Dropdown.MenuItemWithIcon>
         }
       ]}
     />
   )
 
-  return (
-    <Dropdown
-      overlay={menuHeaderDropdown}
-      trigger={['click']}
-      placement='bottomLeft'
-    >
-      {
-        userProfile.firstName && userProfile.lastName
-          ? <UserNameButton>
-            {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
-          </UserNameButton>
-          : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
-      }
-    </Dropdown>
-  )
+  return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft' >{() =>
+    userProfile.firstName && userProfile.lastName
+      ? <LayoutUI.UserNameButton>
+        {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
+      </LayoutUI.UserNameButton>
+      : <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+  }</Dropdown>
 }

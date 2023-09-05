@@ -1,12 +1,10 @@
-import { Menu, Dropdown } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Menu }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { LayoutUI }                from '@acx-ui/components'
+import { LayoutUI, Dropdown }      from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { NewTabLink }              from '@acx-ui/react-router-dom'
-
-import { ButtonWrapper } from './styledComponents'
 
 export const HelpButton = () => {
   const { $t } = useIntl()
@@ -59,13 +57,7 @@ export const HelpButton = () => {
     />
   )
 
-  return (<ButtonWrapper>
-    <Dropdown
-      overlay={menuHeaderDropdown}
-      trigger={['click']}
-      placement='bottomLeft'
-      children={<LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />}
-    />
-  </ButtonWrapper>
-  )
+  return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>{() =>
+    <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+  }</Dropdown>
 }

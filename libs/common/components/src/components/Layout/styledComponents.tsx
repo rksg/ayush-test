@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
+import { ArrowChevronLeft, ArrowChevronRight, LogOut } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
 
@@ -428,6 +428,17 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
     }
   }
 `
+const ButtonSolid = styled(Button)`
+  > svg {
+    stroke: var(--acx-neutrals-70);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  &:hover, &:focus {
+    > svg {
+      stroke: var(--acx-accents-orange-55);
+    }
+  }
+`
 export const LayoutUI = {
   Icon: styled.span`
     > svg {
@@ -459,17 +470,7 @@ export const LayoutUI = {
       stroke: var(--acx-primary-white);
     }
   `,
-  ButtonSolid: styled(Button)`
-    > svg {
-      stroke: var(--acx-neutrals-70);
-      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-    }
-    &:hover, &:focus {
-      > svg {
-        stroke: var(--acx-accents-orange-55);
-      }
-    }
-  `,
+  ButtonSolid,
   Divider: styled(AntDivider).attrs({ type: 'vertical' })`
     border-right: 1px solid var(--acx-neutrals-70);
     height: 32px;
@@ -491,5 +492,19 @@ export const LayoutUI = {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  `,
+  UserNameButton: styled(ButtonSolid)`
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: var(--acx-headline-5-font-weight-bold);
+    font-family: var(--acx-accent-brand-font);
+    font-size: var(--acx-headline-5-font-size);
+  `,
+  LogOutIcon: styled(LogOut)`
+    width: 16px;
+    height: 16px;
   `
 }
