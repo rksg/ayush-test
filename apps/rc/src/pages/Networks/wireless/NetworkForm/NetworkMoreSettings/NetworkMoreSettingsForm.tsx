@@ -97,7 +97,8 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
-  const isSupportQosMap = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
+  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
+  const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
 
   const [currentTab, setCurrentTab] = useState('vlan')
 
@@ -119,7 +120,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       display: defineMessage({ defaultMessage: 'Networking' }),
       style: { width: '38px' }
     },
-    ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL || isSupportQosMap)? [ {
+    ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL || qosMapSetFlag || qosMirroringFlag)? [ {
       key: 'advanced',
       display: defineMessage({ defaultMessage: 'Advanced' }),
       style: { width: '37px' }

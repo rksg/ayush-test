@@ -5,15 +5,13 @@ import { useIntl } from 'react-intl'
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from './services'
-import { StatusTrail }            from './statusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,
-  Title,
   CrrmValuesText,
   ValueDetails
 } from './styledComponents'
-import { getRecommendationsText, getValues } from './values'
+import { getRecommendationsText, getValues } from './Values'
 
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
@@ -21,7 +19,7 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     appliedOnce, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const recommendationText = getRecommendationsText(details, $t)
+  const recommendationText = getRecommendationsText(details)
 
   const fields = [
     {
@@ -38,32 +36,22 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
     }
   ]
 
-  return <GridRow>
-    <GridCol col={{ span: 16 }}>
-      <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
-      <DetailsWrapper>
-        <Card type='solid-bg'>
-          <GridRow>
-            {fields
-              .filter(({ value }) => value !== null)
-              .map(({ label, value }, ind) => <Fragment key={ind}>
-                <GridCol col={{ span: 8 }}>{label}</GridCol>
-                <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
-              </Fragment>)}
-          </GridRow>
-          <CrrmValuesText>
-            {recommendationText.actionText}
-          </CrrmValuesText>
-        </Card>
-      </DetailsWrapper>
-      <div style={{ paddingTop: 50 }}>Crrm Graph</div>
-    </GridCol>
-    <GridCol col={{ span: 8 }}>
-      <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
-      {recommendationText.reasonText}
-      <Title>{$t({ defaultMessage: 'Potential trade-off' })}</Title>
-      {recommendationText.tradeoffText}
-      <StatusTrail details={details}/>
-    </GridCol>
-  </GridRow>
+  return <>
+    <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
+    <DetailsWrapper>
+      <Card type='solid-bg'>
+        <GridRow>
+          {fields
+            .filter(({ value }) => value !== null)
+            .map(({ label, value }, ind) => <Fragment key={ind}>
+              <GridCol col={{ span: 8 }}>{label}</GridCol>
+              <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
+            </Fragment>)}
+        </GridRow>
+        <CrrmValuesText>
+          {recommendationText.actionText}
+        </CrrmValuesText>
+      </Card>
+    </DetailsWrapper>
+  </>
 }

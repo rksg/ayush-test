@@ -475,6 +475,13 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             ]))
           })
         })
+      },
+      transformResponse: (result: Entitlement[]) => {
+        result.forEach(item => {
+          item.effectiveDate = new Date(item.effectiveDate).toISOString()
+          item.expirationDate = new Date(item.expirationDate).toISOString()
+        })
+        return result
       }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({

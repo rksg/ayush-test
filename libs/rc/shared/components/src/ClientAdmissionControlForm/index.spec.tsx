@@ -7,7 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum } from '.'
+import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum, ClientAdmissionControlLevelEnum } from '.'
 
 describe('ClientAdmissionControlForm component', () => {
   afterEach(() => cleanup())
@@ -25,12 +25,13 @@ describe('ClientAdmissionControlForm component', () => {
   }
 
   it('should render correctly', async () => {
-    const type = defaultProps.type
+    const props = { ...defaultProps, level: ClientAdmissionControlLevelEnum.AP_LEVEL }
+    const type = props.type
     render(<Provider>
       <Form>
         <ClientAdmissionControlForm
-          key={type}
-          {...defaultProps}
+          key={props.type+props.level}
+          {...props}
         />
       </Form>
     </Provider>)
@@ -44,12 +45,16 @@ describe('ClientAdmissionControlForm component', () => {
   })
 
   it('should hide switch button when readOnly is true', async () => {
-    const props = { ...defaultProps, readOnly: true }
+    const props = {
+      ...defaultProps,
+      readOnly: true,
+      level: ClientAdmissionControlLevelEnum.AP_LEVEL
+    }
     const type = defaultProps.type
     render(<Provider>
       <Form>
         <ClientAdmissionControlForm
-          key={type}
+          key={props.type+props.level}
           {...props}
         />
       </Form>
@@ -63,7 +68,11 @@ describe('ClientAdmissionControlForm component', () => {
   })
 
   it('should grayed out switch button when isMutuallyExclusive is true', async () => {
-    const props = { ...defaultProps, isMutuallyExclusive: true }
+    const props = {
+      ...defaultProps,
+      isMutuallyExclusive: true,
+      level: ClientAdmissionControlLevelEnum.VENUE_LEVEL
+    }
     const type = props.type
     render(<Provider>
       <Form>
