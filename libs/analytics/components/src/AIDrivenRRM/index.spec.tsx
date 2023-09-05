@@ -38,7 +38,7 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('zone-1')).toBeVisible()
     expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
     expect(await screen.findByText('zone-2')).toBeVisible()
-    expect(await screen.findByText('5 interfering links can be optimized to 2')).toBeVisible()
+    expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
     expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
   })
