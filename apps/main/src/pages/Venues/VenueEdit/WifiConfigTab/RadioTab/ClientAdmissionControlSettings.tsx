@@ -4,8 +4,12 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader }                                                                               from '@acx-ui/components'
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum }                           from '@acx-ui/rc/components'
+import { Loader }                   from '@acx-ui/components'
+import {
+  ClientAdmissionControlForm,
+  ClientAdmissionControlTypeEnum,
+  ClientAdmissionControlLevelEnum
+} from '@acx-ui/rc/components'
 import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl }                                                          from '@acx-ui/rc/utils'
 
@@ -123,7 +127,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
     isFetching: isUpdatingClientAdmissionControl
   }]}>
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_24G}
+      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_24G}
       readOnly={false}
       isEnabled={enable24G}
@@ -135,7 +140,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       onFormDataChanged={onFormDataChanged}
     />
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_5G}
+      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_5G}
       readOnly={false}
       isEnabled={enable50G}
