@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useConfigChangeQuery should return correct data 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+W07-R760-West-FACP,5C:DF:89:0B:FB:40,2.4 GHz,128,149,80 MHz,80 MHz,Full,Full
+W10-R760-Doberman,5C:DF:89:0B:FE:E0,2.4 GHz,120,36,80 MHz,80 MHz,Full,Full
+"
+`;
