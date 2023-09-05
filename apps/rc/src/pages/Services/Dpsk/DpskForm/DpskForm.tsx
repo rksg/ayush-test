@@ -109,6 +109,11 @@ export default function DpskForm (props: DpskFormProps) {
           formRef={formRef}
           onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
           onFinish={saveData}
+          buttonLabel={{
+            submit: editMode
+              ? $t({ defaultMessage: 'Apply' })
+              : $t({ defaultMessage: 'Add' })
+          }}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'
