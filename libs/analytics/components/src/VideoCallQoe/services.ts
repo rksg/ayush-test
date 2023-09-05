@@ -202,7 +202,7 @@ export function useDuplicateNameValidator () {
 
 export const clientSearchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
-    seachClients: build.query<Client[], RequestPayload>({
+    searchClients: build.query<Client[], RequestPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
@@ -230,5 +230,5 @@ export const clientSearchApi = dataApiSearch.injectEndpoints({
   })
 })
 export const {
-  useSeachClientsQuery
+  useSearchClientsQuery
 } = clientSearchApi

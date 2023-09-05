@@ -46,7 +46,7 @@ const getAccessActionColor = (type: AccessAction) => {
       // orange
       return cssStr('--acx-accents-orange-50')
     default:
-      return ''
+      return cssStr('--acx-neutrals-50')
   }
 }
 
@@ -106,9 +106,9 @@ export function portNumberOrRangeCheck (value: string) {
   }
 }
 
-
 export interface StatefulACLRuleDialogProps {
   className?: string;
+  direction: ACLDirection;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   editMode: boolean;
@@ -119,6 +119,7 @@ export interface StatefulACLRuleDialogProps {
 export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) => {
   const {
     className,
+    direction,
     visible,
     setVisible,
     editMode,
@@ -126,11 +127,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
     onSubmit
   } = props
   const { $t } = useIntl()
-  const drawerForm = Form.useFormInstance()
   const [form] = Form.useForm()
   const protocolTypes = getProtocolTypes($t)
   const addressTypes = getAddressTypes($t)
-  const direction = Form.useWatch('direction', drawerForm)
   const accessActs = getAccessActions($t).filter(
     (o) => direction === ACLDirection.OUTBOUND
             || (direction === ACLDirection.INBOUND && o.value !== AccessAction.INSPECT))
@@ -141,7 +140,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
     const priority = form.getFieldValue('priority')
     onSubmit({ ...data, priority } as StatefulAclRule, editMode)
 
-    if (addAnotherRuleChecked) {
+    if (addAnotherRuleChecked && !editMode) {
       form.resetFields()
     } else {
       handleClose()
@@ -156,7 +155,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
   const footer = <Drawer.FormFooter
     buttonLabel={({
       addAnother: $t({ defaultMessage: 'Add another rule' }),
-      save: $t({ defaultMessage: 'Add' })
+      save: editMode ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     showAddAnother={!editMode}
     onCancel={handleClose}

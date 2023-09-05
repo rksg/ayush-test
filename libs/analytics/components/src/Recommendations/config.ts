@@ -197,6 +197,33 @@ export const codes = {
       deltaSign: '-'
     }]
   },
+  'c-bgscan-3rd-radio-timer': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Background scan timer on 6(5) GHz radio' }),
+    priority: priorities.low,
+    valueFormatter: formatter('durationFormat'),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6(5) GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: '6(5) GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
+    kpis: [{
+      key: 'avg-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
   'c-dfschannels-enable': {
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Enable DFS channels' }),
@@ -348,7 +375,7 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -382,7 +409,7 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),

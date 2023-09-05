@@ -28,7 +28,6 @@ export function ConfigurationProfileForm () {
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
   const [form] = Form.useForm()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
@@ -242,15 +241,13 @@ export function ConfigurationProfileForm () {
         title={editMode
           ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
           : $t({ defaultMessage: 'Add Switch Configuration Profile' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
           {
             text: $t({ defaultMessage: 'Configuration Profiles' }),
             link: '/networks/wired/profiles'
           }
-        ] : [
-          { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/profiles' }
         ]}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>

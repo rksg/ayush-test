@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export enum Features {
   DATA_PLANE = 'dataPlane',
   AP_GPS = 'ap-gps-toggle',
@@ -54,7 +55,6 @@ export enum Features {
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   SWITCH_BREAKOUT_PORT = 'switch-breakout-port',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
-  NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
@@ -95,7 +95,14 @@ export enum Features {
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
-  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle'
+  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
+  WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
+  DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
+  WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
+  SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
+  DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
+  EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { switchApi }                  from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -42,7 +41,7 @@ describe('Wired', () => {
       route: { params, path: '/:tenantId/networks/wired/:activeTab' }
     })
 
-    expect(await screen.findByText('Configuration Profiles')).toBeVisible()
+    expect(await screen.findByText('Configuration Profiles (0)')).toBeVisible()
   })
 
   it('should render onDemandCli correctly', async () => {
@@ -54,36 +53,19 @@ describe('Wired', () => {
       route: { params, path: '/:tenantId/networks/wired/:activeTab' }
     })
 
-    expect(await screen.findByText('On-Demand CLI Configuration')).toBeVisible()
-  })
-
-  it('should render breadcrumb and title correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      tenantId: 'tenant-id',
-      activeTab: 'profiles'
-    }
-    render(<Provider><Wired /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
-    })
-
-    expect(await screen.findByText('Wired Networks')).toBeVisible()
-    expect(screen.queryByText('Wired')).toBeNull()
-  })
-
-  it('should render breadcrumb and title correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const params = {
-      tenantId: 'tenant-id',
-      activeTab: 'profiles'
-    }
-    render(<Provider><Wired /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
-    })
-
-    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
-    expect(await screen.findByText('Configuration Profiles (0)')).toBeVisible()
     expect(await screen.findByText('On-Demand CLI Configuration (0)')).toBeVisible()
+  })
+
+  it('should render breadcrumb and title correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      activeTab: 'profiles'
+    }
+    render(<Provider><Wired /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
+    })
+
     expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
   })
 })

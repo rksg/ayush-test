@@ -68,6 +68,7 @@ function SettingsForm () {
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
+  const dpskWlanSecurity = useWatch('dpskWlanSecurity')
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
     form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
@@ -79,6 +80,10 @@ function SettingsForm () {
   },[data])
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const securityDescription = <> { $t({ defaultMessage: 'WPA3/WPA2 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA3/WPA2 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
+
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -88,6 +93,7 @@ function SettingsForm () {
             label={$t({ defaultMessage: 'Security Protocol' })}
             name='dpskWlanSecurity'
             initialValue={WlanSecurityEnum.WPA2Personal}
+            extra={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed ? securityDescription : null}
           >
             <Select>
               <Option value={WlanSecurityEnum.WPA2Personal}>
@@ -111,7 +117,12 @@ function SettingsForm () {
                 <Radio value={false} disabled={editMode}>
                   { $t({ defaultMessage: 'Use the DPSK Service' }) }
                 </Radio>
-                <Radio value={true} disabled={editMode||disableAAA}>
+                <Radio
+                  value={true}
+                  disabled={
+                    (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
+                    || editMode
+                    || disableAAA}>
                   { $t({ defaultMessage: 'Use RADIUS Server' }) }
                 </Radio>
               </Space>

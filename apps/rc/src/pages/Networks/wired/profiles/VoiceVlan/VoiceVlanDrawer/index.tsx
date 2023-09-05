@@ -231,6 +231,7 @@ const PortTable = (props: { onEdit: (selectedRows: VoiceVlanPort[]) => void, tab
     rowActions={filterByAccess(rowActions)}
     columns={columns}
     dataSource={tableData}
+    getAllPagesData={() => tableData}
     pagination={{
       pageSize: TABLE_DEFAULT_PAGE_SIZE // fix: the initial page size is 20 here
     }}

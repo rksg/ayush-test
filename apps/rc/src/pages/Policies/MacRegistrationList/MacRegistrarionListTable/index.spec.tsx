@@ -122,24 +122,7 @@ describe.skip('MacRegistrationListsTable', () => {
     fireEvent.click(within(row).getByRole('radio'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><MacRegistrationListsTable /></Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
-    })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><MacRegistrationListsTable /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

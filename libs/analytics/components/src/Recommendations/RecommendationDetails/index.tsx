@@ -6,11 +6,12 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { Kpis }                          from './kpis'
+import { Kpis }                          from './Kpis'
 import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './overview'
+import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
-import { Values }                        from './values'
+import { StatusTrail }                   from './StatusTrail'
+import { Values }                        from './Values'
 
 const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
 
@@ -18,7 +19,7 @@ export const RecommendationDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = 'recommendations/aiOps'
+  const link = 'analytics/recommendations/aiOps'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },
@@ -40,18 +41,19 @@ export const RecommendationDetails = () => {
       }} />]}
     />}
     <GridRow>
-      <GridCol col={{ span: 3 }}>
+      <GridCol col={{ span: 4 }}>
         <FixedAutoSizer>
           {({ width }) => (<div style={{ width }}>
             <Overview details={details} />
           </div>)}
         </FixedAutoSizer>
       </GridCol>
-      <GridCol col={{ span: 13 }}>
+      <GridCol col={{ span: 12 }}>
         <Values details={details}/>
       </GridCol>
       <GridCol col={{ span: 8 }}>
         <Kpis details={details} />
+        <StatusTrail details={details}/>
       </GridCol>
     </GridRow>
   </Loader>

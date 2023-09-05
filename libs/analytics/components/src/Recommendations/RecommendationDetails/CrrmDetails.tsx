@@ -8,9 +8,12 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
 import { CrrmValues }                    from './CrrmValues'
+import { CrrmValuesExtra }               from './CrrmValuesExtra'
+import { CloudRRMGraph }                 from './Graph'
 import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './overview'
+import { Overview }                      from './Overview'
 import { useRecommendationDetailsQuery } from './services'
+import { StatusTrail }                   from './StatusTrail'
 
 const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
@@ -18,7 +21,7 @@ export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const link = 'recommendations/crrm'
+  const link = 'analytics/recommendations/crrm'
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...(codeQuery.data!) },
@@ -40,15 +43,20 @@ export const CrrmDetails = () => {
       }} />]}
     />}
     <GridRow>
-      <GridCol col={{ span: 3 }}>
+      <GridCol col={{ span: 4 }}>
         <FixedAutoSizer>
           {({ width }) => (<div style={{ width }}>
             <Overview details={details} />
           </div>)}
         </FixedAutoSizer>
       </GridCol>
-      <GridCol col={{ span: 21 }}>
+      <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
+        <CloudRRMGraph/>
+      </GridCol>
+      <GridCol col={{ span: 6 }}>
+        <CrrmValuesExtra details={details}/>
+        <StatusTrail details={details}/>
       </GridCol>
     </GridRow>
   </Loader>

@@ -60,7 +60,7 @@ export function NetworkDetailForm () {
   const networkListPayload = {
     searchString: '',
     fields: ['name', 'id'],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'dsaeOnboardNetwork.name'],
     filters: {},
     pageSize: 10000
   }
@@ -198,7 +198,9 @@ export function NetworkDetailForm () {
                 message: intl.$t({ defaultMessage: 'The SSID must be at least 2 characters' }) },
               { max: 32,
                 message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
-              { validator: (_, value) => ssidValidator(value) }
+              { validator: (_, value) => ssidValidator(value) },
+              { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
+              { validator: (_, value) => apNameRegExp(value) }
             ]}
             validateFirst
             hasFeedback
