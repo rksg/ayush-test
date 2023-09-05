@@ -64,14 +64,16 @@ describe('UserButton', () => {
 
     await userEvent.click(screen.getByRole('button'))
     const links = screen.getAllByRole('link')
-    expect(links[0]).toHaveTextContent('My Profile')
-    expect(links[0]).toHaveAttribute('href', '/analytics/profile/settings')
-    expect(links[0]).toHaveAttribute('rel', 'noreferrer onopener')
-    expect(links[0]).toHaveAttribute('target', 'blank')
-    expect(links[1]).toHaveTextContent('Accounts')
-    expect(links[1]).toHaveAttribute('href', '/analytics/profile/tenants')
-    expect(links[1]).toHaveAttribute('rel', 'noreferrer onopener')
-    expect(links[1]).toHaveAttribute('target', 'blank')
+    const items = [
+      { text: 'My Profile', href: '/analytics/profile/settings' },
+      { text: 'Accounts', href: '/analytics/profile/tenants' }
+    ]
+    items.forEach((item, i) => {
+      expect(links[i]).toHaveTextContent(item.text)
+      expect(links[i]).toHaveAttribute('href', item.href)
+      expect(links[i]).toHaveAttribute('rel', 'noreferrer noopener')
+      expect(links[i]).toHaveAttribute('target', '_blank')
+    })
   })
 
   it('should handle logout', async () => {

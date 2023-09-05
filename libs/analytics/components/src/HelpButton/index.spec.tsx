@@ -1,75 +1,41 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import * as config        from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { HelpButton } from './'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 describe('HelpButton', () => {
-  beforeEach(() => jest.resetModules())
+  beforeEach(() => {
+    get.mockReturnValue('https://documentation.com')
+  })
   it('should render properly', async () => {
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    expect(await screen.findByRole('menuitem', { name: 'Documentation' })).toBeInTheDocument()
-    expect(await screen.findByRole('menuitem', { name: 'How-To Videos' })).toBeInTheDocument()
-    expect(await screen.findByRole('menuitem', { name: 'License Information' })).toBeInTheDocument()
-    expect(await screen.findByRole('menuitem', { name: 'Contact Support' })).toBeInTheDocument()
-    expect(await screen.findByRole('menuitem', { name: 'Open a case' })).toBeInTheDocument()
-    expect(await screen.findByRole('menuitem', { name: 'Privacy' })).toBeInTheDocument()
-  })
-  it('should open new window for Documentation', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'Documentation' }))
-    expect(spy).toBeCalledWith(undefined, '_blank')
-  })
-  it('should open new window for How-To Videos', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'How-To Videos' }))
-    expect(spy).toBeCalledWith(
-      'https://www.youtube.com/playlist?list=PLySwoo7u9-KKF7o-kkNIgCWneuT0RTmJi', '_blank')
-  })
-  it('should open new window for License Information', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'License Information' }))
-    expect(spy).toBeCalledWith(
-      'http://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html',
-      '_blank'
+    render(
+      <Provider><HelpButton /></Provider>,
+      { route: { params: { tenantId: 'tenant-id' } } }
     )
-  })
-  it('should open new window for Contact Support', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'Contact Support' }))
-    expect(spy).toBeCalledWith('https://support.ruckuswireless.com/contact-us', '_blank')
-  })
-  it('should open new window for Open a case', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'Open a case' }))
-    expect(spy).toBeCalledWith('https://support.ruckuswireless.com/cases/new', '_blank')
-  })
-  it('should open new window for Privacy', async () => {
-    const spy = jest.spyOn(window, 'open')
-    render(<Provider><HelpButton /></Provider>,
-      { route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(screen.getByRole('button'))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'Privacy' }))
-    expect(spy).toBeCalledWith('https://support.ruckuswireless.com/ruckus-cloud-privacy-policy',
-      '_blank')
+    const links = screen.getAllByRole('link')
+    const items = [
+      { text: 'Documentation', href: 'https://documentation.com' },
+      // eslint-disable-next-line max-len
+      { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJ4kZxhfoArNQfFDGWhwSJm' },
+      // eslint-disable-next-line max-len
+      { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html' },
+      { text: 'Contact Support', href: 'https://support.ruckuswireless.com/contact-us' },
+      { text: 'Open a Case', href: 'https://support.ruckuswireless.com/cases/new' },
+      { text: 'Privacy', href: 'https://support.ruckuswireless.com/ruckus-cloud-privacy-policy' }
+    ]
+    items.forEach((item, i) => {
+      expect(links[i]).toHaveTextContent(item.text)
+      expect(links[i]).toHaveAttribute('href', item.href)
+      expect(links[i]).toHaveAttribute('rel', 'noreferrer noopener')
+      expect(links[i]).toHaveAttribute('target', '_blank')
+    })
   })
 })

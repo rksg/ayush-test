@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { LayoutUI }           from '@acx-ui/components'
 import { AccountCircleSolid } from '@acx-ui/icons'
-import { Link }               from '@acx-ui/react-router-dom'
+import { NewTabLink }         from '@acx-ui/react-router-dom'
 
 import { LogOut, UserNameButton } from './styledComponents'
 
@@ -36,35 +36,27 @@ export const UserButton = () => {
         }
       }}
       items={[
-        ...(hasViewAnalyticsPermissions
-          ? [
-            {
-              key: 'my-profile',
-              label: (
-                <Link to='/analytics/profile/settings' target='blank' rel='noreferrer onopener'>
-                  {$t({ defaultMessage: 'My Profile' })}{' '}
-                </Link>
-              )
-            }
-          ]
-          : []),
+        ...(hasViewAnalyticsPermissions ? [
+          {
+            key: 'my-profile',
+            label: <NewTabLink to='/analytics/profile/settings'>
+              {$t({ defaultMessage: 'My Profile' })}
+            </NewTabLink>
+          }
+        ] : []),
         {
           key: 'accounts',
-          label: (
-            <Link to='/analytics/profile/tenants' target='blank' rel='noreferrer onopener'>
-              {$t({ defaultMessage: 'Accounts' })}{' '}
-            </Link>
-          )
+          label: <NewTabLink to='/analytics/profile/tenants'>
+            {$t({ defaultMessage: 'Accounts' })}
+          </NewTabLink>
         },
         { type: 'divider' },
         {
           key: 'logout',
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <LogOut />
-              <span>{$t({ defaultMessage: 'Log out' })} </span>
-            </div>
-          )
+          label: <div style={{ display: 'flex', alignItems: 'center' }}>
+            <LogOut />
+            <span>{$t({ defaultMessage: 'Log out' })} </span>
+          </div>
         }
       ]}
     />

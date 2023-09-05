@@ -601,7 +601,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child menu-active"
+                  class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
                   tabindex="-1"
@@ -611,14 +611,14 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                   >
                     <a
                       href="/analytics/dashboard"
-                      rel="noreferrer onopener"
-                      target="blank"
+                      rel="noreferrer noopener"
+                      target="_blank"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
-                          data-testid="SpeedIndicatorSolid"
+                          data-testid="SpeedIndicatorOutlined"
                         />
                       </span>
                       Dashboard

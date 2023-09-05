@@ -110,7 +110,7 @@ export function useMenuConfig () {
                 }
               ] : []),
               {
-                uri: '/occupancy',
+                uri: '/analytics/occupancy',
                 label: $t({ defaultMessage: 'Occupancy' }),
                 openNewTab: true
               }
@@ -149,50 +149,50 @@ export function useMenuConfig () {
               children: [
                 ...(hasManageMlisaPermission ? [
                   {
-                    uri: '/admin/onboarded',
+                    uri: '/analytics/admin/onboarded',
                     label: $t({ defaultMessage: 'Onboarded Systems' }),
                     openNewTab: true
                   },
                   {
-                    uri: '/admin/users',
+                    uri: '/analytics/admin/users',
                     label: $t({ defaultMessage: 'Users' }),
                     openNewTab: true
                   }
                 ] : []),
                 ...(hasManageLabelPermission ? [
                   {
-                    uri: '/admin/labels',
+                    uri: '/analytics/admin/labels',
                     label: $t({ defaultMessage: 'Labels' }),
                     openNewTab: true
                   }
                 ] : []),
                 ...(hasManageMlisaPermission ? [
                   {
-                    uri: '/admin/resourceGroups',
+                    uri: '/analytics/admin/resourceGroups',
                     label: $t({ defaultMessage: 'Resource Groups' }),
                     openNewTab: true
                   },
                   {
-                    uri: '/admin/support',
+                    uri: '/analytics/admin/support',
                     label: $t({ defaultMessage: 'Support' }),
                     openNewTab: true
                   },
                   {
-                    uri: '/admin/license',
+                    uri: '/analytics/admin/license',
                     label: $t({ defaultMessage: 'Licenses' }),
                     openNewTab: true
                   }
                 ] : []),
                 ...(hasFranchisorSetting ? [
                   {
-                    uri: '/admin/schedules',
+                    uri: '/analytics/admin/schedules',
                     label: $t({ defaultMessage: 'Schedules' }),
                     openNewTab: true
                   }
                 ] : []),
                 ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
                   {
-                    uri: '/admin/webhooks',
+                    uri: '/analytics/admin/webhooks',
                     label: $t({ defaultMessage: 'Webhooks' }),
                     openNewTab: true
                   }

@@ -148,7 +148,7 @@ describe('Layout', () => {
     get.mockReturnValue('true')
     const config = [
       {
-        uri: '/dashboard',
+        uri: '/analytics/dashboard',
         label: 'Dashboard',
         inactiveIcon: SpeedIndicatorOutlined,
         activeIcon: SpeedIndicatorSolid,

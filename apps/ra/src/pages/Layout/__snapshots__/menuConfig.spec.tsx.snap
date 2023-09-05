@@ -109,7 +109,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/occupancy",
+            "uri": "/analytics/occupancy",
           },
         ],
         "label": Array [
@@ -226,7 +226,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/onboarded",
+            "uri": "/analytics/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -236,7 +236,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/users",
+            "uri": "/analytics/admin/users",
           },
           Object {
             "label": Array [
@@ -246,7 +246,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/labels",
+            "uri": "/analytics/admin/labels",
           },
           Object {
             "label": Array [
@@ -256,7 +256,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/resourceGroups",
+            "uri": "/analytics/admin/resourceGroups",
           },
           Object {
             "label": Array [
@@ -266,7 +266,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/support",
+            "uri": "/analytics/admin/support",
           },
           Object {
             "label": Array [
@@ -276,7 +276,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/license",
+            "uri": "/analytics/admin/license",
           },
           Object {
             "label": Array [
@@ -286,7 +286,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/schedules",
+            "uri": "/analytics/admin/schedules",
           },
         ],
         "label": Array [
@@ -385,7 +385,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/occupancy",
+            "uri": "/analytics/occupancy",
           },
         ],
         "label": Array [
@@ -461,7 +461,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/onboarded",
+            "uri": "/analytics/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -471,7 +471,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/users",
+            "uri": "/analytics/admin/users",
           },
           Object {
             "label": Array [
@@ -481,7 +481,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/labels",
+            "uri": "/analytics/admin/labels",
           },
           Object {
             "label": Array [
@@ -491,7 +491,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/resourceGroups",
+            "uri": "/analytics/admin/resourceGroups",
           },
           Object {
             "label": Array [
@@ -501,7 +501,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/support",
+            "uri": "/analytics/admin/support",
           },
           Object {
             "label": Array [
@@ -511,7 +511,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/license",
+            "uri": "/analytics/admin/license",
           },
           Object {
             "label": Array [
@@ -521,7 +521,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/schedules",
+            "uri": "/analytics/admin/schedules",
           },
           Object {
             "label": Array [
@@ -531,7 +531,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/webhooks",
+            "uri": "/analytics/admin/webhooks",
           },
         ],
         "label": Array [
@@ -666,7 +666,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/occupancy",
+            "uri": "/analytics/occupancy",
           },
         ],
         "label": Array [
@@ -742,7 +742,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/onboarded",
+            "uri": "/analytics/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -752,7 +752,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/users",
+            "uri": "/analytics/admin/users",
           },
           Object {
             "label": Array [
@@ -762,7 +762,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/labels",
+            "uri": "/analytics/admin/labels",
           },
           Object {
             "label": Array [
@@ -772,7 +772,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/resourceGroups",
+            "uri": "/analytics/admin/resourceGroups",
           },
           Object {
             "label": Array [
@@ -782,7 +782,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/support",
+            "uri": "/analytics/admin/support",
           },
           Object {
             "label": Array [
@@ -792,7 +792,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/license",
+            "uri": "/analytics/admin/license",
           },
           Object {
             "label": Array [
@@ -802,7 +802,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/schedules",
+            "uri": "/analytics/admin/schedules",
           },
           Object {
             "label": Array [
@@ -812,7 +812,7 @@ Array [
               },
             ],
             "openNewTab": true,
-            "uri": "/admin/webhooks",
+            "uri": "/analytics/admin/webhooks",
           },
         ],
         "label": Array [
