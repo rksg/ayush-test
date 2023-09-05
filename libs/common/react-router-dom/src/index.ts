@@ -1,4 +1,5 @@
 export * from 'react-router-dom'
+export * from './NewTabLink'
 export * from './RootRoutes'
 export * from './useTenantLink'
 export * from './TenantLink'
