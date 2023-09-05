@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { SearchOutlined, CaretDownSolid, CloseSymbol } from '@acx-ui/icons'
+import { SearchOutlined, CloseSymbol } from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
 import { searchTree, findMatchingNode } from './helpers'
