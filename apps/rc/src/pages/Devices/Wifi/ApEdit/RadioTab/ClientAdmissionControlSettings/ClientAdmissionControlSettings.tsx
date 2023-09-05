@@ -6,8 +6,12 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { Loader }                                                     from '@acx-ui/components'
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum } from '@acx-ui/rc/components'
+import { Loader }                   from '@acx-ui/components'
+import {
+  ClientAdmissionControlForm,
+  ClientAdmissionControlTypeEnum,
+  ClientAdmissionControlLevelEnum
+} from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetVenueClientAdmissionControlQuery,
@@ -179,7 +183,8 @@ export function ClientAdmissionControlSettings () {
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_24G}
+      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_24G}
       readOnly={isUseVenueSettings}
       isEnabled={enable24G}
@@ -192,7 +197,8 @@ export function ClientAdmissionControlSettings () {
     />
     <br/>
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_5G}
+      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_5G}
       readOnly={isUseVenueSettings}
       isEnabled={enable50G}

@@ -279,10 +279,6 @@ export class PskWlanAdvancedCustomization {
 
     this.multiLinkOperationEnabled = false
 
-    this.qosMirroringEnabled = true
-
-    this.qosMirroringScope = 'MSCS_REQUESTS_ONLY'
-
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
