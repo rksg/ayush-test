@@ -40,7 +40,7 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
            Do not proceed unless the switch has minimum FW version running or is manually upgraded.
         </div>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi styledComponents__LinkButton-sc-1yoazt9-7 ilzxrp"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LinkButton-sc-1yoazt9-7 ilzxrp"
           type="button"
         >
           <span>

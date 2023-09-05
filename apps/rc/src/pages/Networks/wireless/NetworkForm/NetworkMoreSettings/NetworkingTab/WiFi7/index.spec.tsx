@@ -1,5 +1,6 @@
-import { within } from '@testing-library/react'
-import { Form }   from 'antd'
+import { userEvent } from '@storybook/testing-library'
+import { within }    from '@testing-library/react'
+import { Form }      from 'antd'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -363,6 +364,48 @@ describe('CheckboxGroup', () => {
     expect(checkboxElement[2]).toBeDisabled()
 
     fireEvent.click(checkboxElement[0])
+    expect(checkboxElement[2]).not.toBeDisabled()
+  })
+  it('should show error msg when selected less than two', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3
+      }
+    } as NetworkSaveData
+
+    render(
+      <Provider>
+        <Form>
+          <WiFi7 wlanData={mockWlanData} />
+        </Form>
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElements = screen.getAllByRole('switch')
+    expect(switchElements[0]).toBeChecked()
+    expect(switchElements[1]).not.toBeChecked()
+    fireEvent.click(switchElements[1])
+    expect(switchElements[0]).toBeChecked()
+    expect(switchElements[1]).toBeChecked()
+
+    const checkboxElement = screen.getAllByRole('checkbox')
+    expect(checkboxElement.length).toBe(3)
+    expect(checkboxElement[0]).toBeChecked()
+    expect(checkboxElement[1]).toBeChecked()
+    expect(checkboxElement[2]).not.toBeChecked()
+    expect(checkboxElement[2]).toBeDisabled()
+
+    await userEvent.click(checkboxElement[0])
+    expect(await screen.findByText('Please select two radios')).toBeVisible()
+    expect(checkboxElement[0]).not.toBeChecked()
+    expect(checkboxElement[1]).toBeChecked()
+    expect(checkboxElement[2]).not.toBeChecked()
     expect(checkboxElement[2]).not.toBeDisabled()
   })
 })
