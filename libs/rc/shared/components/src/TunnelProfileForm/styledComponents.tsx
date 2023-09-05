@@ -7,6 +7,4 @@ path {
   fill: var(--acx-neutrals-50);
   stroke: var(--acx-primary-white) !important;
 }
-margin-left: 0px !important;
-display: block;
 `

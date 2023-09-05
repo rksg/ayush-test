@@ -15,6 +15,8 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
 
+import { ageTimeUnitConversion } from '../util'
+
 import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
@@ -49,19 +51,26 @@ const TunnelProfileDetail = () => {
     // },
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
-      content: () => (
-        MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
-          $t({ defaultMessage: 'Auto' }) :
-          `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
-      )
+      content: MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
+        $t({ defaultMessage: 'Auto' }) :
+        `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
     },
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
-      content: () => (
-        tunnelProfileData.forceFragmentation ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' })
-      )
+      content: tunnelProfileData.forceFragmentation ?
+        $t({ defaultMessage: 'ON' }) :
+        $t({ defaultMessage: 'OFF' })
+    },
+    {
+      title: $t({ defaultMessage: 'Idle Period' }),
+      content: () => {
+        if(!tunnelProfileData.ageTimeMinutes) return
+        const result = ageTimeUnitConversion(tunnelProfileData.ageTimeMinutes)
+        return $t({ defaultMessage: '{value} {unit}' }, {
+          value: result?.value,
+          unit: result?.unit
+        })
+      }
     }
   ]
 
