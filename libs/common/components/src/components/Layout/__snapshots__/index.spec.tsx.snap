@@ -563,7 +563,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Layout should render correctly when isOpenTab = true 1`] = `
+exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-iwostn-0 hDSVsy"

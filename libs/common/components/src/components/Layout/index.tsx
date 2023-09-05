@@ -32,7 +32,7 @@ type SideNavProps = {
   inactiveIcon?: React.FC
   isActiveCheck?: IsActiveCheck | RegExp
   adminItem?: boolean
-  isOpenInTab?: boolean
+  openNewTab?: boolean
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
@@ -132,7 +132,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       ...rest,
       className: className.join(' ') || undefined,
       key,
-      label: Boolean(item.isOpenInTab)
+      label: Boolean(item.openNewTab)
         ? <Link to={`/analytics${uri}`} target='blank' rel='noreferrer onopener'>{content}</Link>
         : (uri ? <TenantNavLink
           to={uri}

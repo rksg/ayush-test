@@ -102,13 +102,13 @@ Array [
             "uri": "/videoCallQoe",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Occupancy",
               },
             ],
+            "openNewTab": true,
             "uri": "/occupancy",
           },
         ],
@@ -219,73 +219,73 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Onboarded Systems",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/onboarded",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Users",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/users",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Labels",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/labels",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Resource Groups",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/resourceGroups",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Support",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/support",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Licenses",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/license",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Schedules",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/schedules",
           },
         ],
@@ -378,13 +378,13 @@ Array [
             "uri": "/configChange",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Occupancy",
               },
             ],
+            "openNewTab": true,
             "uri": "/occupancy",
           },
         ],
@@ -454,83 +454,83 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Onboarded Systems",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/onboarded",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Users",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/users",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Labels",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/labels",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Resource Groups",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/resourceGroups",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Support",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/support",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Licenses",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/license",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Schedules",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/schedules",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Webhooks",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/webhooks",
           },
         ],
@@ -659,13 +659,13 @@ Array [
             "uri": "/videoCallQoe",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Occupancy",
               },
             ],
+            "openNewTab": true,
             "uri": "/occupancy",
           },
         ],
@@ -735,83 +735,83 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Onboarded Systems",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/onboarded",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Users",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/users",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Labels",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/labels",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Resource Groups",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/resourceGroups",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Support",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/support",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Licenses",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/license",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Schedules",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/schedules",
           },
           Object {
-            "isOpenInTab": true,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Webhooks",
               },
             ],
+            "openNewTab": true,
             "uri": "/admin/webhooks",
           },
         ],

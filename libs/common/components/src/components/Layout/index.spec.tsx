@@ -144,7 +144,7 @@ describe('Layout', () => {
     })
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly when isOpenTab = true', () => {
+  it('should render correctly when openNewTab = true', () => {
     get.mockReturnValue('true')
     const config = [
       {
@@ -152,7 +152,7 @@ describe('Layout', () => {
         label: 'Dashboard',
         inactiveIcon: SpeedIndicatorOutlined,
         activeIcon: SpeedIndicatorSolid,
-        isOpenInTab: true
+        openNewTab: true
       }
     ]
     const { asFragment } = render(<Layout
