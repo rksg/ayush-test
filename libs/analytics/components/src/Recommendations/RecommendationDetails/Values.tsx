@@ -1,11 +1,11 @@
 import { Fragment } from 'react'
 
-import { chain, snakeCase }   from 'lodash'
-import { IntlShape, useIntl } from 'react-intl'
+import { chain, snakeCase } from 'lodash'
+import { useIntl }          from 'react-intl'
 
 import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
-import { NodeType }                        from '@acx-ui/utils'
+import { NodeType, getIntl }               from '@acx-ui/utils'
 
 import { codes } from '../config'
 
@@ -73,7 +73,8 @@ export const translateMetadataValue = (value: string) => {
   }
 }
 
-export const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
+export const getRecommendationsText = (details: EnhancedRecommendation) => {
+  const { $t } = getIntl()
   const {
     path,
     sliceType,
@@ -130,7 +131,7 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
   const secondValue = applied ? current : recommended
-  const recommendationText = getRecommendationsText(details, $t)
+  const recommendationText = getRecommendationsText(details)
   const tooltipText = typeof tooltipContent === 'string'
     ? tooltipContent
     : typeof tooltipContent === 'undefined'

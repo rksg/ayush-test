@@ -439,6 +439,52 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   }
 } as unknown as RecommendationDetails
 
+export const mockedCRRMGraphs = {
+  graph: {
+    current: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 128 ],
+          channelWidth: [ 80 ],
+          txPower: [ '_FULL' ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 120 ],
+          channelWidth: [ 80],
+          txPower: [ '_FULL' ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+    },
+    projected: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 149 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 36 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: null
+    },
+    previous: null
+  }
+}
+
 export const mockedRecommendationFirmware = {
   id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
   code: 'i-zonefirmware-upgrade',

@@ -56,14 +56,14 @@ function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
       <div><ArrowDownOutlined /></div>
       <div>
         <Info>
-          {downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}
+          {downloadRate ? downloadRate + 'Mbps' : $t({ defaultMessage: 'Unlimited' })}
         </Info>
       </div>
     </div>
     <div style={{ display: 'flex', marginLeft: '4px' }}>
       <div><ArrowUpOutlined /></div>
       <div>
-        <Info>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
+        <Info>{uploadRate ? uploadRate + 'Mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
       </div>
     </div>
   </div>)
@@ -119,7 +119,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
           <Info>{$t({ defaultMessage: 'MaxData:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
-          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
+          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'MB' :
             $t({ defaultMessage: 'Unlimited' })}</Info>
         </div>
       </div>

@@ -76,11 +76,7 @@ export function useMenuConfig () {
                       label: $t({ defaultMessage: 'AI Operations' })
                     }
                   ]
-                  : []),
-                {
-                  uri: '/configChange',
-                  label: $t({ defaultMessage: 'Config Change' })
-                }
+                  : [])
               ]
             },
             {
@@ -99,6 +95,10 @@ export function useMenuConfig () {
                     }
                   ]
                   : []),
+                {
+                  uri: '/configChange',
+                  label: $t({ defaultMessage: 'Config Change' })
+                },
                 ...(hasManageCallManagerPermissions
                   ? [
                     {
