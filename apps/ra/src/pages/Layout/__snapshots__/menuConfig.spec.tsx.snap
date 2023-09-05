@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useMenuConfig should not return Administration-related menu items 1`] = `
+exports[`useMenuConfig should not return Administration menu item 1`] = `
 Array [
   Object {
     "activeIcon": Object {
@@ -165,6 +165,769 @@ Array [
       Object {
         "type": 0,
         "value": "Business Insights",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should not return Administration-related menu items for franchisor setting 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/onboarded",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/users",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/labels",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/resourceGroups",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/support",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/license",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should not return Administration-related menu items for manage-label 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/onboarded",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/users",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/resourceGroups",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/support",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/license",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
+
+exports[`useMenuConfig should not return Administration-related menu items for manage-mlisa 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/labels",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
       },
     ],
   },
@@ -838,4 +1601,283 @@ Array [
 ]
 `;
 
-exports[`useMenuConfig should return nothing for empty/no user permission 1`] = `Array []`;
+exports[`useMenuConfig should return nothing for empty/no user permission 1`] = `
+Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Dashboard",
+      },
+    ],
+    "uri": "/dashboard",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Incidents",
+              },
+            ],
+            "uri": "/incidents",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI-Driven RRM",
+              },
+            ],
+            "uri": "/recommendations/crrm",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "AI Operations",
+              },
+            ],
+            "uri": "/recommendations/aiOps",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "AI Analytics",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Health",
+              },
+            ],
+            "uri": "/health",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Service Validation",
+              },
+            ],
+            "uri": "/serviceValidation",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Config Change",
+              },
+            ],
+            "uri": "/configChange",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Video Call QoE",
+              },
+            ],
+            "uri": "/videoCallQoe",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Occupancy",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/occupancy",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Network Assurance",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Data Studio",
+          },
+        ],
+        "uri": "/dataStudio",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Reports",
+          },
+        ],
+        "uri": "/reports",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Onboarded Systems",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/onboarded",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Users",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/users",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Labels",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/labels",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Resource Groups",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/resourceGroups",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Support",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/support",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Licenses",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/license",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Webhooks",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/webhooks",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
+]
+`;
