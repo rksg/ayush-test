@@ -228,15 +228,16 @@ export default function DpskPassphraseManagement () {
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
+        setManageDevicesVisible(false)
       }
     },
     {
       label: $t({ defaultMessage: 'Manage Devices' }),
-      // eslint-disable-next-line max-len
       visible: (selectedRows: NewDpskPassphrase[]) => allowManageDevices(selectedRows),
       onClick: ([selectedRow]) => {
         setManagePassphraseInfo(selectedRow)
         setManageDevicesVisible(true)
+        setAddPassphrasesDrawerVisible(false)
       }
     },
     {
