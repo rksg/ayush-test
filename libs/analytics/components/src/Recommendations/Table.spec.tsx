@@ -1,6 +1,6 @@
 import { crrmStates }             from './config'
 import { RecommendationListItem } from './services'
-import { crrmStateSort }          from './table'
+import { crrmStateSort }          from './Table'
 
 describe('crrmStateSort', () => {
   it('sorts by optimized state', () => {
