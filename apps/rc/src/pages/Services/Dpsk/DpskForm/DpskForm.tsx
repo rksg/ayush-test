@@ -3,13 +3,13 @@ import { useRef, useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-
 import {
   Loader,
   PageHeader,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { useDpskNewConfigFlowParams }                                    from '@acx-ui/rc/components'
 import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskFormFields,
@@ -44,13 +44,14 @@ export default function DpskForm (props: DpskFormProps) {
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
 
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
   const {
     data: dataFromServer,
     isLoading,
     isFetching
-  } = useGetDpskQuery({ params }, { skip: !editMode })
+  } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } }, { skip: !editMode })
   const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
@@ -70,9 +71,15 @@ export default function DpskForm (props: DpskFormProps) {
 
     try {
       if (editMode) {
-        result = await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
+        result = await updateDpsk({
+          params: { ...params, ...dpskNewConfigFlowParams },
+          payload: _.omit(dpskSaveData, 'id')
+        }).unwrap()
       } else {
-        result = await createDpsk({ payload: dpskSaveData }).unwrap()
+        result = await createDpsk({
+          params: dpskNewConfigFlowParams,
+          payload: dpskSaveData
+        }).unwrap()
       }
 
       modalMode ? modalCallBack?.(result) : navigate(linkToServices, { replace: true })
