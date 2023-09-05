@@ -12558,7 +12558,7 @@ exports[`Topology should render correctly 1`] = `
                     style="margin-right: 8px;"
                   >
                     <button
-                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-evZas fBelZT"
+                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-evZas fBelZT"
                       style="padding: 0px;"
                       type="button"
                     >

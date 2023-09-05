@@ -8,11 +8,13 @@ import {
   IncidentsCountBySeverities,
   NetworkHistory,
   SLA,
-  ReportTile
+  ReportTile,
+  MlisaNetworkFilter,
+  AIDrivenRRM,
+  AIOperations
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
   PageHeader,
   RangePicker,
   cssNumber,
@@ -53,19 +55,19 @@ export default function Dashboard () {
     <PageHeader
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
+        <>
+          <MlisaNetworkFilter />
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        </>
       ]}
     />
     <UI.Grid style={{ height }}>
-      <div style={{ gridArea: 'a1' }}>
-        <Card title={$t({ defaultMessage: 'Network Filter' })} />
-      </div>
       <div style={{ gridArea: 'b1' }}>
         <ReportTile path={path} />
       </div>
@@ -79,13 +81,13 @@ export default function Dashboard () {
         <IncidentsCountBySeverities filters={filters} />
       </div>
       <div style={{ gridArea: 'c2' }}>
-        <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
+        <AIDrivenRRM filters={filters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
       </div>
       <div style={{ gridArea: 'd2' }}>
-        <Card title={$t({ defaultMessage: 'AI Operations' })} />
+        <AIOperations filters={filters} />
       </div>
     </UI.Grid>
   </>

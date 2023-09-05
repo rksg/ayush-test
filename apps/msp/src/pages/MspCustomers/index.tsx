@@ -31,7 +31,8 @@ import {
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
-  MspEc
+  MspEc,
+  MSPUtils
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -132,6 +133,7 @@ export function MspCustomers () {
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
+  const mspUtils = MSPUtils()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -376,11 +378,20 @@ export function MspCustomers () {
     ...(isDeviceAgnosticEnabled ? [
       {
         title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicenseInstalled',
+        key: 'apswLicenseInstalled',
+        sorter: true,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return row.apswLicenses || 0
+          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
         }
       },
       {
@@ -389,7 +400,7 @@ export function MspCustomers () {
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return transformUtilization(row, EntitlementNetworkDeviceType.APSW)
+          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
         }
       }
     ] : [
