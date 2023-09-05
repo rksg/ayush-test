@@ -24,7 +24,8 @@ import {
   getSymbol,
   getChartLayoutConfig,
   tooltipFormatter,
-  getTooltipCoordinate
+  getTooltipCoordinate,
+  useLegendTableFilter
 } from './helper'
 import { ResetButton, ChartWrapper } from './styledComponents'
 
@@ -67,21 +68,10 @@ export function ConfigChangeChart ({
       return selected
     }, {} as Record<string, boolean>))
 
-  useEffect(() => {
-    setLegend?.(selectedLegend)
-    const selectedConfig = data.filter(i => i.id === selectedData?.id)
-    const selectedType = chartRowMapping.filter(
-      ({ key }) => key === selectedConfig[0]?.type)[0]?.label
-
-    selectedLegend[selectedType] === false && setSelectedData?.(null)
-    setPagination?.({
-      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / 10),
-      pageSize: 10
-    })
-  }, [selectedLegend, data.length])
-
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
+  useLegendTableFilter(
+    selectedLegend, data, selectedData, setLegend, setSelectedData, setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =

@@ -405,6 +405,29 @@ export function useLegendSelectChanged (
   }, [eChartsRef, onLegendChangedCallback])
 }
 
+export function useLegendTableFilter (
+  selectedLegend: Record<string, boolean>,
+  data: ConfigChange[],
+  selectedData?: ConfigChange,
+  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setPagination?: (params: { current: number, pageSize: number }) => void
+){
+  useEffect(() => {
+    const chartRowMapping = getConfigChangeEntityTypeMapping()
+    setLegend?.(selectedLegend)
+    const selectedConfig = data.filter(i => i.id === selectedData?.id)
+    const selectedType = chartRowMapping.filter(
+      ({ key }) => key === selectedConfig[0]?.type)[0]?.label
+
+    selectedLegend[selectedType] === false && setSelectedData?.(null)
+    setPagination?.({
+      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / 10),
+      pageSize: 10
+    })
+  }, [selectedLegend, data.length])
+}
+
 export const useBoundaryChange = (
   eChartsRef: RefObject<ReactECharts>,
   chartLayoutConfig: Record<string, number>,
