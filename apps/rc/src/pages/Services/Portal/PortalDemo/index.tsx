@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -19,10 +19,6 @@ import PortalComponents         from './PortalComponents'
 import PortalLanguageSettings   from './PortalLanguageSettings'
 import PortalViewContent        from './PortalViewContent'
 import PortalViewContentPreview from './PortalViewContentPreview'
-
-
-
-
 
 type PortalDemoProps = {
   networkSocial?: { [key:string]:boolean },
@@ -159,17 +155,20 @@ export default function PortalDemo ({
             style={{ flex: '0 0 513px', textAlign: 'right', paddingRight: 5 }}>
             {!isPreview&&<div>
               {langContent}
-              <UI.Popover
-                overlayClassName={UI.popoverClassName}
-                overlayInnerStyle={{ minWidth: 260 }}
-                getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-                content={compContent}
-                trigger='click'
-                placement='bottomLeft'
-                visible={showComponent}
-                onVisibleChange={(data)=>setShowComponent(data)}
-              ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
-                </UI.Button></UI.Popover>
+              <UI.Button type='default' size='small'>
+                <UI.Popover
+                  overlayClassName={UI.popoverClassName}
+                  overlayInnerStyle={{ minWidth: 260 }}
+                  getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
+                  content={compContent}
+                  trigger='click'
+                  placement='bottomLeft'
+                  visible={showComponent}
+                  onVisibleChange={(data)=>setShowComponent(data)}
+                >
+                  {$t({ defaultMessage: 'Components' })}
+                </UI.Popover>
+              </UI.Button>
               <PortalPreviewModal demoValue={demoValue} portalLang={portalLang}/>
               <UI.Button type='default'
                 size='small'

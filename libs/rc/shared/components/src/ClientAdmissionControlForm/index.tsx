@@ -2,7 +2,15 @@ import { Form, Slider, Switch, Tooltip } from 'antd'
 import { NamePath }                      from 'antd/es/form/interface'
 import { defineMessage, useIntl }        from 'react-intl'
 
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
 import { ClientAdmissionControlSliderBlock, FieldLabel } from './styledComponents'
+
+
+export enum ClientAdmissionControlLevelEnum {
+  VENUE_LEVEL = 'VENUE_LEVEL',
+  AP_LEVEL = 'AP_LEVEL',
+}
 
 export enum ClientAdmissionControlTypeEnum {
   CAC_24G = '24g',
@@ -15,6 +23,7 @@ const enableSwitchLabel = {
 }
 
 export function ClientAdmissionControlForm (props: {
+  level: ClientAdmissionControlLevelEnum,
   type: ClientAdmissionControlTypeEnum,
   readOnly: boolean
   isEnabled: boolean,
@@ -27,6 +36,7 @@ export function ClientAdmissionControlForm (props: {
  }) {
   const { $t } = useIntl()
   const {
+    level,
     type,
     readOnly,
     isEnabled,
@@ -46,9 +56,17 @@ export function ClientAdmissionControlForm (props: {
         style={{ zIndex: '1', paddingLeft: '10px' }}>
         <div style={{ background: 'var(--acx-primary-white)' }}>
           {$t(enableSwitchLabel[type])}
+          {(!readOnly && level === ClientAdmissionControlLevelEnum.AP_LEVEL) &&
+            <Tooltip
+              title={$t({ defaultMessage: `Note that enabling it will disable the band 
+              balancing and load balancing on this AP.` })}
+              placement='right'>
+              <QuestionMarkCircleOutlined style={{ height: '16px', marginBottom: -3 }} />
+            </Tooltip>
+          }
         </div>
         <Tooltip
-          title={(isMutuallyExclusive)?
+          title={(isMutuallyExclusive && level === ClientAdmissionControlLevelEnum.VENUE_LEVEL)?
             $t({ defaultMessage: `To enable the client admission control, please make sure 
               the band balancing or load balancing in the venue is disabled.` }): null}
           placement='right'>
