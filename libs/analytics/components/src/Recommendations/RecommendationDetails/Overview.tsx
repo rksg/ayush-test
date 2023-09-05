@@ -8,10 +8,9 @@ import { get }                                                                  
 import { DateFormatEnum, formatter }                                               from '@acx-ui/formatter'
 import { truthy }                                                                  from '@acx-ui/utils'
 
-import { DescriptionSection }                 from '../../DescriptionSection'
-import { codes, statusTrailMsgs }             from '../config'
-import { PriorityIcon, OptimizedIcon }        from '../styledComponents'
-import { getOptimizedState, getCrrmLinkText } from '../utils'
+import { DescriptionSection }          from '../../DescriptionSection'
+import { codes, statusTrailMsgs }      from '../config'
+import { PriorityIcon, OptimizedIcon } from '../styledComponents'
 
 import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
@@ -58,10 +57,19 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { statusTrail, category, sliceValue, status, code, id, priority } = details
+  const {
+    statusTrail,
+    category,
+    sliceValue,
+    status,
+    code,
+    id,
+    priority,
+    crrmOptimizedState,
+    crrmInterferingLinksText
+  } = details
   const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
-  const optimizedState = getOptimizedState(status)
   const isRrm = code.includes('crrm')
 
   const fields = [
@@ -69,7 +77,10 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       label: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM' })
         : $t({ defaultMessage: 'Venue RRM' }),
-      children: <OptimizedIcon value={optimizedState.order} text={$t(optimizedState.label)} />
+      children: <OptimizedIcon
+        value={crrmOptimizedState!.order}
+        text={$t(crrmOptimizedState!.label)}
+      />
     }),
     (!isRrm && {
       label: $t({ defaultMessage: 'Priority' }),
@@ -89,7 +100,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     }),
     (isRrm && {
       label: $t({ defaultMessage: 'Summary' }),
-      children: getCrrmLinkText(details)
+      children: crrmInterferingLinksText
     }),
     {
       label: $t({ defaultMessage: 'Status' }),
@@ -120,6 +131,6 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       visible={visible}
     />}
     { Object.keys(recommendationBandMapping).includes(details.code as string) &&
-      <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })}/>}
+      <DownloadRRMComparison details={details} title={$t({ defaultMessage: 'RRM comparison' })}/>}
   </Loader>
 }

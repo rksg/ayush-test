@@ -8,7 +8,7 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
-export const rrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
   nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
 }

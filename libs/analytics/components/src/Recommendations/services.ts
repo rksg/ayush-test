@@ -13,8 +13,14 @@ import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
 
-import { states, codes, StatusTrail, IconValue, StateType } from './config'
-import { kpiHelper, RecommendationKpi }                     from './RecommendationDetails/services'
+import { states,
+  codes,
+  StatusTrail,
+  IconValue,
+  StateType,
+  crrmStates
+} from './config'
+import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 
 export type CrrmListItem = {
@@ -22,7 +28,8 @@ export type CrrmListItem = {
   status: StateType
   sliceValue: string
   statusTrail: StatusTrail
-  appliedOnce?: boolean
+  crrmOptimizedState?: IconValue
+  crrmInterferingLinksText?: React.ReactNode
 } & Partial<RecommendationKpi>
 
 export type Recommendation = {
@@ -49,6 +56,7 @@ export type RecommendationListItem = Recommendation & {
   status: string
   statusTooltip: string
   statusEnum: StateType
+  crrmOptimizedState?: IconValue
 }
 
 export interface MutationPayload {
@@ -88,6 +96,7 @@ type Metadata = {
   scheduledAt?: string
   updatedAt?: string
 }
+
 const radioConfigMap = {
   radio24g: '2.4 GHz',
   radio5g: '5 GHz',
@@ -95,6 +104,7 @@ const radioConfigMap = {
   radio5gLower: 'Lower 5 GHz',
   radio5gUpper: 'Upper 5 GHz'
 }
+
 const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) => {
   const { $t } = getIntl()
   let errorMessage = metadata.error?.message
@@ -126,14 +136,61 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
     )
   })
 }
+
+export const getCrrmOptimizedState = (state: StateType) => {
+  const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+  return optimizedStates.includes(state)
+    ? crrmStates.optimized
+    : crrmStates.nonOptimized
+}
+
+export function extractBeforeAfter (value: CrrmListItem['kpis']) {
+  const { current, previous, projected } = value!
+  const [before, after] = [previous, current, projected]
+    .filter(value => value !== null)
+  return [before, after]
+}
+
+export const getCrrmInterferingLinksText = (
+  status: StateType,
+  kpi_number_of_interfering_links: RecommendationKpi['']
+) => {
+  const { $t } = getIntl()
+  if (status === 'reverted') return $t(states.reverted.text)
+  if (status === 'applyfailed') return $t(states.applyfailed.text)
+  if (status === 'revertfailed') return $t(states.revertfailed.text)
+  const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
+  if (kpi_number_of_interfering_links!.previous) return $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
+    description: 'Translation string - From, to, interfering, link, links'
+  }, { before, after })
+  if (status === 'new') return $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
+    description: 'Translation string - interfering, link, links, can be optimized to'
+  }, { before, after })
+  return $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: '{before} interfering {before, plural, one {link} other {links}} will be optimized to {after}',
+    description: 'Translation string - interfering, link, links, will be optimized to'
+  }, { before, after })
+}
+
 export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
   return recommendations.map(recommendation => {
-    const statusTrail: StatusTrail = recommendation.statusTrail
+    const { status, kpi_number_of_interfering_links } = recommendation
     return {
       ...recommendation,
-      appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied')) }
-  }) as CrrmListItem[]
+      crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
+      crrmInterferingLinksText: getCrrmInterferingLinksText(
+        status,
+        kpi_number_of_interfering_links!
+      )
+    } as unknown as CrrmListItem
+  })
 }
+
 function transformRecommendationList (recommendations: Recommendation[]): RecommendationListItem[] {
   const { $t } = getIntl()
   return recommendations.map(recommendation => {
@@ -148,10 +205,14 @@ function transformRecommendationList (recommendations: Recommendation[]): Recomm
       summary: $t(codes[code as keyof typeof codes].summary),
       status: $t(states[statusEnum].text),
       statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
-      statusEnum
+      statusEnum,
+      ...(code.includes('crrm') && {
+        crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+      })
     }
   })
 }
+
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
@@ -168,8 +229,7 @@ export const api = recommendationApi.injectEndpoints({
             id
             status
             sliceValue
-            ${kpiHelper({ code: 'c-crrm-channel24g-auto' })}
-            statusTrail { status }
+            ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
@@ -243,6 +303,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
@@ -267,6 +328,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
@@ -289,6 +351,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     })

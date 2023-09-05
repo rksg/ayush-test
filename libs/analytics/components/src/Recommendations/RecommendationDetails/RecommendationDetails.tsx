@@ -6,12 +6,15 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { Kpis }                          from './Kpis'
-import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './Overview'
-import { useRecommendationDetailsQuery } from './services'
-import { StatusTrail }                   from './StatusTrail'
-import { Values }                        from './Values'
+import { Kpis }                   from './Kpis'
+import MuteRecommendation         from './MuteRecommendation'
+import { Overview }               from './Overview'
+import {
+  useRecommendationCodeQuery,
+  useRecommendationDetailsQuery
+} from './services'
+import { StatusTrail } from './StatusTrail'
+import { Values }      from './Values'
 
 const aiOps = defineMessage({ defaultMessage: 'AI Operations' })
 
@@ -20,10 +23,11 @@ export const RecommendationDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'analytics/recommendations/aiOps'
-  const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
+  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
-    { ...(codeQuery.data!) },
-    { skip: !Boolean(codeQuery.data?.code) })
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data?.code) }
+  )
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader

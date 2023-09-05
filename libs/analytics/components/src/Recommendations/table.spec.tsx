@@ -1,12 +1,13 @@
+import { crrmStates }             from './config'
 import { RecommendationListItem } from './services'
-import { rrmStateSort }           from './table'
+import { crrmStateSort }          from './table'
 
-describe('rrmStateSort', () => {
+describe('crrmStateSort', () => {
   it('sorts by optimized state', () => {
-    const itemA = { statusEnum: 'applied' } as RecommendationListItem
-    const itemB = { statusEnum: 'new' } as RecommendationListItem
-    expect(rrmStateSort(itemA, itemB)).toBe(-1)
-    expect(rrmStateSort(itemB, itemA)).toBe(1)
-    expect(rrmStateSort(itemB, itemB)).toBe(0)
+    const itemA = { crrmOptimizedState: crrmStates.optimized } as RecommendationListItem
+    const itemB = { crrmOptimizedState: crrmStates.nonOptimized } as RecommendationListItem
+    expect(crrmStateSort(itemA, itemB)).toBe(-1)
+    expect(crrmStateSort(itemB, itemA)).toBe(1)
+    expect(crrmStateSort(itemB, itemB)).toBe(0)
   })
 })

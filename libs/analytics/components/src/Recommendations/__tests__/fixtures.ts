@@ -1,6 +1,6 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { StatusTrail, StateType } from '../config'
+import { StateType } from '../config'
 
 export const crrmListResult = {
   recommendations: [
@@ -12,11 +12,7 @@ export const crrmListResult = {
         current: 0,
         previous: 3,
         projected: null
-      },
-      statusTrail: [
-        { status: 'new' },
-        { status: 'applied' }
-      ] as StatusTrail
+      }
     },
     {
       id: '2',
@@ -24,14 +20,9 @@ export const crrmListResult = {
       sliceValue: 'zone-2',
       kpi_number_of_interfering_links: {
         current: 5,
-        previous: null,
-        projected: 2
-      },
-      statusTrail: [
-        { status: 'new' },
-        { status: 'applied' },
-        { status: 'revert' }
-      ] as StatusTrail
+        previous: 5,
+        projected: null
+      }
     },
     {
       id: '3',
@@ -41,10 +32,7 @@ export const crrmListResult = {
         current: 2,
         previous: null,
         projected: 0
-      },
-      statusTrail: [
-        { status: 'new' }
-      ] as StatusTrail
+      }
     }
   ]
 }

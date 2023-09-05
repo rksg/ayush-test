@@ -21,8 +21,7 @@ import {
   RecommendationListItem,
   useMuteRecommendationMutation
 } from './services'
-import * as UI               from './styledComponents'
-import { getOptimizedState } from './utils'
+import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -41,9 +40,9 @@ const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
   'revertscheduleinprogress'
 ]
 
-export const rrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
-  const stateA = getOptimizedState(itemA.statusEnum)
-  const stateB = getOptimizedState(itemB.statusEnum)
+export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
+  const stateA = itemA.crrmOptimizedState!
+  const stateB = itemB.crrmOptimizedState!
   return defaultSort(stateA.order, stateB.order)
 }
 
@@ -96,14 +95,13 @@ export function RecommendationTable ({ filters, showCrrm }:
       width: 90,
       dataIndex: 'optimizedState',
       key: 'optimizedState',
-      render: (_, value) => {
-        const optimizedState = getOptimizedState(value.statusEnum)
+      render: (_, { crrmOptimizedState }) => {
         return <UI.OptimizedIcon
-          value={optimizedState.order}
-          text={$t(optimizedState.label)}
+          value={crrmOptimizedState!.order}
+          text={$t(crrmOptimizedState!.label)}
         />
       },
-      sorter: { compare: rrmStateSort },
+      sorter: { compare: crrmStateSort },
       fixed: 'left',
       filterable: true
     }] : [{

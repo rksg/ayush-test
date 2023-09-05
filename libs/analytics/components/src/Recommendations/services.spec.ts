@@ -4,19 +4,93 @@ import { defineMessage } from 'react-intl'
 
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import {
-  DateRange,
-  setUpIntl,
-  NetworkPath
-} from '@acx-ui/utils'
+import { DateRange, NetworkPath }                                          from '@acx-ui/utils'
 
 import { crrmListResult, recommendationListResult } from './__tests__/fixtures'
+import { crrmStates }                               from './config'
 import {
   api,
+  transformCrrmList,
+  getCrrmOptimizedState,
+  getCrrmInterferingLinksText,
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation
 } from './services'
+
+import type { CrrmListItem } from './services'
+
+describe('Recommendations utils', () => {
+  let recommendations: CrrmListItem[]
+  beforeAll(() => {
+    recommendations = transformCrrmList(crrmListResult.recommendations as unknown as CrrmListItem[])
+  })
+
+  describe('getCrrmOptimizedState', () => {
+    it('returns optimized state', () => {
+      expect(getCrrmOptimizedState(recommendations[0].status)).toEqual(crrmStates.optimized)
+    })
+
+    it('returns non optimized state', () => {
+      expect(getCrrmOptimizedState(recommendations[1].status)).toEqual(crrmStates.nonOptimized)
+    })
+  })
+
+  describe('getCrrmInterferingLinksText', () => {
+    it('returns text when applied', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[0]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('From 3 to 0 interfering links')
+    })
+
+    it('returns text when revertfailed', () => {
+      const recommendation = { ...recommendations[0], status: 'revertfailed' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Revert Failed')
+    })
+
+    it('returns text when reverted', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[1]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Reverted')
+    })
+
+    it('returns text when new', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[2]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links can be optimized to 0')
+    })
+
+    it('returns text when reverted but no previous (revertedTime < appliedTime+24hours)', () => {
+      const recommendation = { ...recommendations[2], status: 'reverted' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Reverted')
+    })
+
+    it('returns text when applied but no previous (maxIngestedTime < appliedTime+24hours)', () => {
+      const recommendation = { ...recommendations[2], status: 'applied' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links will be optimized to 0')
+    })
+
+    it('returns text when applyscheduled', () => {
+      const recommendation = { ...recommendations[2], status: 'applyscheduled' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links will be optimized to 0')
+    })
+
+    it('returns text when applyfailed', () => {
+      const recommendation = { ...recommendations[2], status: 'applyfailed' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Failed')
+    })
+  })
+})
 
 describe('Recommendation services', () => {
   const props = {
@@ -28,10 +102,6 @@ describe('Recommendation services', () => {
   } as const
 
   beforeEach(() => {
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
   })
 
@@ -45,9 +115,21 @@ describe('Recommendation services', () => {
     )
 
     const expectedResult = [
-      { ...crrmListResult.recommendations[0], appliedOnce: true },
-      { ...crrmListResult.recommendations[1], appliedOnce: true },
-      { ...crrmListResult.recommendations[2], appliedOnce: false }
+      {
+        ...crrmListResult.recommendations[0],
+        crrmInterferingLinksText: 'From 3 to 0 interfering links',
+        crrmOptimizedState: crrmStates.optimized
+      },
+      {
+        ...crrmListResult.recommendations[1],
+        crrmInterferingLinksText: 'Reverted',
+        crrmOptimizedState: crrmStates.nonOptimized
+      },
+      {
+        ...crrmListResult.recommendations[2],
+        crrmInterferingLinksText: '2 interfering links can be optimized to 0',
+        crrmOptimizedState: crrmStates.nonOptimized
+      }
     ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
@@ -74,7 +156,8 @@ describe('Recommendation services', () => {
         summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
         status: 'Applied',
         statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
-        statusEnum: 'applied'
+        statusEnum: 'applied',
+        crrmOptimizedState: crrmStates.optimized
       },
       {
         ...recommendationListResult.recommendations[1],

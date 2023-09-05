@@ -7,13 +7,16 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
-import { CrrmValues }                    from './CrrmValues'
-import { CrrmValuesExtra }               from './CrrmValuesExtra'
-import { CloudRRMGraph }                 from './Graph'
-import MuteRecommendation                from './MuteRecommendation'
-import { Overview }                      from './Overview'
-import { useRecommendationDetailsQuery } from './services'
-import { StatusTrail }                   from './StatusTrail'
+import { CrrmValues }             from './CrrmValues'
+import { CrrmValuesExtra }        from './CrrmValuesExtra'
+import { CloudRRMGraph }          from './Graph'
+import MuteRecommendation         from './MuteRecommendation'
+import { Overview }               from './Overview'
+import {
+  useRecommendationCodeQuery,
+  useRecommendationDetailsQuery
+} from './services'
+import { StatusTrail } from './StatusTrail'
 
 const crrm = defineMessage({ defaultMessage: 'AI-Driven RRM' })
 
@@ -22,14 +25,15 @@ export const CrrmDetails = () => {
   const params = useParams()
   const id = get(params, 'id', undefined) as string
   const link = 'analytics/recommendations/crrm'
-  const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
+  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
-    { ...(codeQuery.data!) },
-    { skip: !Boolean(codeQuery.data?.code) })
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data?.code) }
+  )
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
-      title={impactedArea(details?.path, details?.sliceValue)}
+      title={impactedArea(details.path, details.sliceValue)}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
@@ -52,7 +56,7 @@ export const CrrmDetails = () => {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
-        <CloudRRMGraph/>
+        <CloudRRMGraph details={details}/>
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <CrrmValuesExtra details={details}/>
