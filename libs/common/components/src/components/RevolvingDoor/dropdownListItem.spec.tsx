@@ -37,7 +37,7 @@ describe('ListItemComponent', () => {
     const { container } = render(
       <ListItemComponent node={node} onClick={mockOnClick} />
     )
-    // eslint-disable-next-line testing-library/no-container
+    // eslint-disable-next-line  testing-library/no-node-access,testing-library/no-container
     expect(container.querySelector('div')).toBeInTheDocument()
   })
 
