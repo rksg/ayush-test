@@ -22,7 +22,7 @@ export const HelpButton = () => {
             break
           case 'how-to-videos':
             window.open(
-              'https://www.youtube.com/playlist?list=PLySwoo7u9-KKF7o-kkNIgCWneuT0RTmJi', '_blank')
+              'https://www.youtube.com/playlist?list=PLySwoo7u9-KJ4kZxhfoArNQfFDGWhwSJm', '_blank')
             break
           case 'license-information':
             window.open(
