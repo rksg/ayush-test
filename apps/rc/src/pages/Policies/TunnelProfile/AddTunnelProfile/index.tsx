@@ -69,7 +69,7 @@ const AddTunnelProfile = () => {
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
-            <Col span={8}>
+            <Col span={10}>
               <TunnelProfileForm />
             </Col>
           </Row>

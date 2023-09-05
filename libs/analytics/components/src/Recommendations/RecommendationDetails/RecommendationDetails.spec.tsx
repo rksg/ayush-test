@@ -1,9 +1,10 @@
+import { pick } from 'lodash'
+
 import { recommendationUrl, Provider }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedRecommendationFirmware } from './__tests__/fixtures'
-
-import { RecommendationDetails } from '.'
+import { RecommendationDetails }        from './RecommendationDetails'
 
 jest.mock('./Overview', () => ({ Overview: () => <div data-testid='Overview' /> }))
 jest.mock('./Kpis', () => ({ Kpis: () => <div data-testid='Kpis' /> }))
@@ -19,6 +20,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('RecommendationDetails', () => {
   it('renders correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+      data: {
+        recommendation: pick(mockedRecommendationFirmware, ['id', 'code'])
+      }
+    })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationFirmware }
     })

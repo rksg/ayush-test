@@ -6,6 +6,7 @@ import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../__tests__/fixtures'
+import { EnhancedRecommendation }                     from '../services'
 
 import { CloudRRMGraph } from '.'
 
@@ -27,29 +28,29 @@ jest.mock('./DownloadRRMComparison', () => ({
 }))
 
 describe('CloudRRM', () => {
-  it('should render correctly', async () => {
-    const params = { id: mockedRecommendationCRRM.id }
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: { recommendation: mockedRecommendationCRRM }
-    })
+  beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
-    render(<CloudRRMGraph />, { wrapper: Provider, route: { params } })
+  })
+
+  it('should render correctly', async () => {
+    const details = {
+      ...mockedRecommendationCRRM,
+      monitoring: null
+    } as EnhancedRecommendation
+    render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
     expect(await screen.findByText('More details')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
   it('should handle drawer', async () => {
-    const params = { id: mockedRecommendationCRRM.id }
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: { recommendation: mockedRecommendationCRRM }
-    })
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
-    })
-    render(<CloudRRMGraph />, { wrapper: Provider, route: { params } })
+    const details = {
+      ...mockedRecommendationCRRM,
+      monitoring: null
+    } as EnhancedRecommendation
+    render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
     await userEvent.click(await screen.findByText('More details'))
     expect(await screen.findByTestId('rrm-legend')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(4)
@@ -57,22 +58,15 @@ describe('CloudRRM', () => {
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
   })
   it('should handle monitoring', async () => {
-    const original = Date.now
-    Date.now = jest.fn(() => new Date('2023-06-25T00:00:25.772Z').getTime())
-    const params = { id: 'ad336e2a-63e4-4651-a9ac-65f5df4f4c47' }
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: { recommendation: { ...mockedRecommendationCRRM, status: 'applied' } }
-    })
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
-    })
-    render(<CloudRRMGraph />, { wrapper: Provider, route: { params } })
+    const details = {
+      ...mockedRecommendationCRRM,
+      monitoring: { until: '2023-06-26T00:00:00Z' }
+    } as EnhancedRecommendation
+    render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
     expect(await screen.findByText('Monitoring performance indicators')).toBeVisible()
     expect(await screen.findByText('until 06/26/2023 00:00')).toBeVisible()
     await userEvent.click(await screen.findByText('More details'))
     expect(await screen.findAllByText('Monitoring performance indicators')).toHaveLength(2)
     expect(await screen.findAllByText('until 06/26/2023 00:00')).toHaveLength(2)
-    Date.now = original
   })
-  //monitoring
 })
