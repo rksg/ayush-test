@@ -127,4 +127,14 @@ describe('RevolvingDoor', () => {
     fireEvent.click(await screen.findByText('Child1'))
     expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
   })
+  it('should handle onClear correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByTestId('CloseSymbol'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('Network')
+  })
 })

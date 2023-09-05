@@ -21,7 +21,6 @@ export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
-  const isMLISA = get('IS_MLISA_SA')
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()
@@ -33,9 +32,7 @@ export function useAnalyticsFilter () {
 
   return useMemo(() => {
     const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
-    let isSwitchPath = false
-    if(!isMLISA)
-      isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
+    const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
     const { filter, raw } = (isHealthPage && isSwitchPath)
       ? { filter: {}, raw: [] }

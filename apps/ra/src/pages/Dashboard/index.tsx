@@ -8,7 +8,8 @@ import {
   IncidentsCountBySeverities,
   NetworkHistory,
   SLA,
-  ReportTile
+  ReportTile,
+  MlisaNetworkFilter
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -53,13 +54,16 @@ export default function Dashboard () {
     <PageHeader
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
+        <>
+          <MlisaNetworkFilter />
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        </>
       ]}
     />
     <UI.Grid style={{ height }}>

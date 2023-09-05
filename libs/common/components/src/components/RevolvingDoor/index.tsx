@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { SearchOutlined } from '@acx-ui/icons'
+import { SearchOutlined, CaretDownSolid, CloseSymbol } from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
 import { searchTree, findMatchingNode } from './helpers'
@@ -80,7 +80,12 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
     const selectedNodePath = breadcrumb.map((node) => ({ name: node.name, type: node.type }))
     setNetworkPath(selectedNodePath, selectedNodePath)
   }
-
+  const onClose = () => {
+    setVisible(false)
+    const defaultPath = [{ name: 'Network', type: 'network' }]
+    setInputValue(defaultPath.map((node) => node.name).join(' / '))
+    setNetworkPath(defaultPath, defaultPath)
+  }
   useEffect(() => {
     if (searchText) {
       const results = searchTree(rootNode, searchText)
@@ -137,7 +142,7 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
           onClick={() => setVisible(true)}
           onChange={(e) => { setSearchText(e.target.value); setInputValue(e.target.value) }}
           value={inputValue}
-          allowClear
+          suffix={<CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose}/>}
         />
       </Dropdown>
     </UI.DropdownWrapper>

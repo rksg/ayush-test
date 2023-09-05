@@ -6,7 +6,7 @@ import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
 import { useDateFilter }                            from '@acx-ui/utils'
 
 import { NetworkFilter }      from '../NetworkFilter'
-import { MlisaNetworkFilter } from '../NetworkFilter/mlisaNetworkFilter'
+import { MlisaNetworkFilter } from '../NetworkFilter/MlisaNetworkFilter'
 
 const isMLISA = get('IS_MLISA_SA')
 export type SubTitle = {

@@ -3,7 +3,7 @@ import { IntlProvider }              from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { MlisaNetworkFilter }       from './mlisaNetworkFilter'
+import { MlisaNetworkFilter }       from './MlisaNetworkFilter'
 import { useNetworkHierarchyQuery } from './services'
 
 const mockSetNetworkPath = jest.fn()
