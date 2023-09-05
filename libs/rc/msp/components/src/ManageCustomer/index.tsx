@@ -62,7 +62,8 @@ import {
   EntitlementUtil,
   useTableQuery,
   EntitlementDeviceType,
-  EntitlementDeviceSubType
+  EntitlementDeviceSubType,
+  whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -420,20 +421,29 @@ export function ManageCustomer () {
         ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
       const quantitySwitch = _.isString(ecFormData.switchLicense)
         ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-      const assignLicense = trialSelected
-        ? { trialAction: AssignActionEnum.ACTIVATE }
-        : { assignments: [{
-          quantity: quantityWifi,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_WIFI
-        },
-        {
-          quantity: quantitySwitch,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SWITCH
-        }] }
+      const quantityApsw = _.isString(ecFormData.apswLicense)
+        ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+      const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
+        : isDeviceAgnosticEnabled
+          ? { assignments: [{
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          }] }
+          : { assignments: [{
+            quantity: quantityWifi,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_WIFI
+          },
+          {
+            quantity: quantitySwitch,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_SWITCH
+          }] }
+
       const delegations= [] as MspEcDelegatedAdmins[]
       mspAdmins.forEach((admin: MspAdministrator) => {
         delegations.push({
@@ -514,6 +524,16 @@ export function ManageCustomer () {
           isTrial: false,
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
+        if (isDeviceAgnosticEnabled) {
+          const quantityApsw = _.isString(ecFormData.apswLicense)
+            ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+          licAssignment.push({
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
       } else {
         if (_.isString(ecFormData.wifiLicense) || needUpdateLicense) {
           const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
@@ -540,6 +560,21 @@ export function ManageCustomer () {
             deviceSubtype: EntitlementDeviceSubType.ICX,
             deviceType: EntitlementDeviceType.MSP_SWITCH
           })
+        }
+
+        if (isDeviceAgnosticEnabled ) {
+          if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
+            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const quantityApsw = _.isString(ecFormData.apswLicense)
+              ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+            const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+            licAssignment.push({
+              quantity: quantityApsw,
+              assignmentId: apswAssignId,
+              action: actionApsw,
+              deviceType: EntitlementDeviceType.MSP_APSW
+            })
+          }
         }
       }
 
@@ -825,7 +860,7 @@ export function ManageCustomer () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
+            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
@@ -1223,7 +1258,10 @@ export function ManageCustomer () {
             name='name'
             label={intl.$t({ defaultMessage: 'Customer Name' })}
             style={{ width: '300px' }}
-            rules={[{ required: true }]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => whitespaceOnlyRegExp(value) }
+            ]}
             validateFirst
             hasFeedback
             children={<Input />}
@@ -1275,7 +1313,10 @@ export function ManageCustomer () {
               name='name'
               label={intl.$t({ defaultMessage: 'Customer Name' })}
               style={{ width: '300px' }}
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                { validator: (_, value) => whitespaceOnlyRegExp(value) }
+              ]}
               validateFirst
               hasFeedback
               children={<Input />}
