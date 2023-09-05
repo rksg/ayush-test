@@ -67,9 +67,6 @@ export default function Dashboard () {
       ]}
     />
     <UI.Grid style={{ height }}>
-      <div style={{ gridArea: 'a1' }}>
-        <Card title={$t({ defaultMessage: 'Network Filter' })} />
-      </div>
       <div style={{ gridArea: 'b1' }}>
         <ReportTile path={path} />
       </div>
