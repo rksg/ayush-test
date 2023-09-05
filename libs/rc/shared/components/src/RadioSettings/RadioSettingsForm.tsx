@@ -75,7 +75,7 @@ export function RadioSettingsForm (props:{
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
-    useWatch<string>(['radioParams6G', 'channelBandwidth'])
+    useWatch<string>(channelBandwidthFieldName)
   ]
 
   useEffect(() => {
@@ -169,7 +169,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
-      {channelBandwidth === '320MHz' ?
+      {(channelBandwidth === '320MHz')?
         <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
           <InformationOutlined style={{
             height: '14px',
