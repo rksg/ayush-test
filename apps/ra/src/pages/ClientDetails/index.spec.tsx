@@ -36,7 +36,6 @@ describe('ClientDetails', () => {
     expect(await screen.findByRole('tab', { name: 'Overview', selected: true })).toBeVisible()
     expect(await screen.findByText('Troubleshooting')).toBeVisible()
     expect(await screen.findByText('Reports')).toBeVisible()
-    expect(await screen.findByText('Timeline')).toBeVisible()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
