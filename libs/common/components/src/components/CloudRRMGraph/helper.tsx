@@ -362,8 +362,7 @@ export function getCrrmCsvData (graphs: Type.ProcessedCloudRRMGraph[], $t: IntlS
         name,
         apMac,
         formatter('radioFormat')(band2radio(before?.band ?? after?.band, i)),
-        [isChangeChannel, isChangeBandWidth, isChangeTx].some(value => value)
-          ? $t({ defaultMessage: 'TRUE' }) : $t({ defaultMessage: 'FALSE' }),
+        [isChangeChannel, isChangeBandWidth, isChangeTx].some(value => value) ? 'TRUE' : 'FALSE',
         channel[i][0],
         channel[i][1],
         bandwidthBefore === noDataDisplay ? '' : bandwidthBefore,
