@@ -154,6 +154,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       onClick={() => {
         const sec = generateHexKey(32)
         form.setFieldValue('secret', sec)
+        form.validateFields(['secret'])
       }}>
       {$t({ defaultMessage: 'Generate Secret' })}
     </Button>
