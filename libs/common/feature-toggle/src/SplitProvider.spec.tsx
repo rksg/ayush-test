@@ -65,13 +65,16 @@ jest.mock('@splitsoftware/splitio-react', () => ({
     if (attributes) {
       splitNames.forEach((splitName) => {
         if (splitName === 'testSplitName') {
-          treatments[splitName] = { treatment: 'on' }
+          treatments[splitName] = { treatment: 'on', config: JSON.stringify({
+              featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+              betaList: ['PLCY-EDGE', 'BETA-CP']
+            }) }
         } else {
-          treatments[splitName] = { treatment: 'off' }
+          treatments[splitName] = { treatment: 'off', config: '' }
         }
       })
       return treatments
-    } else return { treatment: 'control' }
+    } else return { treatment: 'control', config: '' }
   }
 }))
 
@@ -146,11 +149,12 @@ describe('useIsTierAllowed', () => {
     )
   })
 
-  it.skip('returns true for allowed feature', () => {
+  it('returns true for allowed feature', () => {
     jest.mock('./useIsTierAllowed', () => ({
-      useFFList: jest.fn(() => ({
+      useFFList: jest.fn(() => JSON.stringify({
         featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
         betaList: ['PLCY-EDGE', 'BETA-CP']
+
       }))
     }))
     jest.mocked(isDelegationMode).mockReturnValue(true)

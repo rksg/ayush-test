@@ -48,7 +48,9 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
   })[Features.PLM_FF]
 
   const userFFConfig = useMemo(() => {
+    console.log(treatment)
     if (treatment?.treatment === 'control') return defaultConfig
+    console.log(treatment?.config)
     return JSON.parse(String(treatment?.config))
   }, [treatment])
 
