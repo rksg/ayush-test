@@ -1,9 +1,7 @@
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-import { renderHook }                 from '@acx-ui/test-utils'
-import { UserUrlsInfo }               from '@acx-ui/user'
+import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                           from '@acx-ui/user'
 
 import { Features }         from './features'
 import { useIsSplitOn }     from './useIsSplitOn'
@@ -126,7 +124,7 @@ describe('useIsTierAllowed', () => {
       }))
     }))
 
-    jest.doMock('@acx-ui/rc/services', () => ({
+    jest.doMock('@acx-ui/users', () => ({
       useGetAccountTierQuery: jest.fn(() => ({
         data: {
           acx_account_tier: 'Gold'
@@ -145,7 +143,7 @@ describe('useIsTierAllowed', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
-      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
         (req, res, ctx) => {
           return res(ctx.json({ data: {
             acx_account_tier: 'Gold'
