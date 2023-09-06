@@ -325,5 +325,31 @@ describe('getCrrmCsvData', () => {
     ] as unknown as ProcessedCloudRRMGraph[]
     expect(getCrrmCsvData(graphs, $t)).toMatchSnapshot()
   })
+
+  it('returns correct value for Is Changed', () => {
+    const graphs = [
+      {
+        nodes: gen.nodes([
+          [1, [36], [80], ['_FULL']],
+          [2, [36], [80], ['_FULL']],
+          [3, [36], [80], ['_FULL']],
+          [4, [36], [80], ['_FULL']]
+        ]),
+        links: gen.links([[1, 2]]),
+        interferingLinks: gen.interferings([[1, 2]])
+      },
+      {
+        nodes: gen.nodes([
+          [1, [52], [80], ['_FULL']],
+          [2, [36], [40], ['_FULL']],
+          [3, [36], [80], ['_3DB']],
+          [4, [36], [80], ['_FULL']]
+        ]),
+        links: gen.links([[1, 2]]),
+        interferingLinks: gen.interferings([])
+      }
+    ] as unknown as ProcessedCloudRRMGraph[]
+    expect(getCrrmCsvData(graphs, $t)).toMatchSnapshot()
+  })
 })
 

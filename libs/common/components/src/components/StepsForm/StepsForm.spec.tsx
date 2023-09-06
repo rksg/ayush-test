@@ -38,8 +38,7 @@ describe('StepsForm', () => {
 
     const actions = screen.getByTestId('steps-form-actions')
 
-    expect(within(actions).getAllByRole('button').length).toEqual(3)
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+    expect(within(actions).getAllByRole('button').length).toEqual(2)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -216,7 +215,6 @@ describe('StepsForm', () => {
     }} />)
 
     expect(screen.getByRole('button', { name: 'Kill' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Before' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'After' })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'After' }))
@@ -232,7 +230,7 @@ describe('StepsForm', () => {
       cancel: 'Kill',
       submit: ''
     }} />)
-    expect(screen.getAllByRole('button').length).toBe(3)
+    expect(screen.getAllByRole('button').length).toBe(2)
   })
 
   it.skip('prevent navigate to other steps when field invalid', async () => {

@@ -68,7 +68,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
   }
   return (
     <>
-      <PageHeader
+      {!props.networkView &&<PageHeader
         title={edit
           ? $t({ defaultMessage: 'Edit VLAN Pool' })
           : $t({ defaultMessage: 'Add VLAN Pool' })}
@@ -80,7 +80,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
           },
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
-      />
+      />}
       <StepsFormLegacy<VLANPoolPolicyType>
         formRef={formRef}
         onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
@@ -92,7 +92,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <VLANPoolSettingForm edit={edit}/>
+          <VLANPoolSettingForm edit={edit} networkView={props.networkView}/>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>
