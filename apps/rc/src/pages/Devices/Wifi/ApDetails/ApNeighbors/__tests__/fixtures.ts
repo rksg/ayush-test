@@ -58,6 +58,7 @@ export const mockedApLldpNeighbors = {
   neighbors: [
     {
       neighborManaged: false,
+      neighborSerialNumber: '987654321',
       lldpInterface: 'eth0',
       lldpVia: 'LLDP',
       lldpRID: '5',
@@ -85,7 +86,8 @@ export const mockedApLldpNeighbors = {
       lldpUPOE: '0'
     },
     {
-      neighborManaged: false,
+      neighborManaged: true,
+      neighborSerialNumber: '123456789',
       lldpInterface: 'eth1',
       lldpVia: 'LLDP',
       lldpRID: '7',

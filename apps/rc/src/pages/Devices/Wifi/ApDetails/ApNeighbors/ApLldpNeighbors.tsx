@@ -12,6 +12,7 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { emtpyRenderer }                  from './ApRfNeighbors'
@@ -99,7 +100,19 @@ function useColumns (
     },
     {
       key: 'lldpSysName',
-      dataIndex: 'lldpSysName'
+      dataIndex: 'lldpSysName',
+      render: (data, row) => {
+        if (!row.neighborManaged) return data
+
+        const mac: string | undefined = row.lldpChassisID?.split(' ')[1]
+
+        return <TenantLink
+          // eslint-disable-next-line max-len
+          to={`/devices/switch/${mac || row.neighborSerialNumber}/${row.neighborSerialNumber}/details/overview`}
+          style={{ lineHeight: '20px' }}
+          children={data}
+        />
+      }
     },
     {
       key: 'lldpSysDesc',

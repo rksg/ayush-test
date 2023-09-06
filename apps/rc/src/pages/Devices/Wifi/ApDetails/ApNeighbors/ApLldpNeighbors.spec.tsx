@@ -66,13 +66,15 @@ describe('ApLldpNeighbors', () => {
 
     await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
 
-    const targetNeighbor = mockedApLldpNeighbors.neighbors[0]
-    const targetInterface = new RegExp(targetNeighbor.lldpInterface)
-    const targetRow = await screen.findByRole('row', { name: targetInterface })
-    expect(targetRow).toBeVisible()
+    const targetInterface = new RegExp(mockedApLldpNeighbors.neighbors[0].lldpInterface)
+    const targetInterfaceButton = await screen.findByRole('button', { name: targetInterface })
+    expect(targetInterfaceButton).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(targetRow).getByRole('button', { name: targetNeighbor.lldpInterface }))
+    const managedNeighborSysName = new RegExp(mockedApLldpNeighbors.neighbors[1].lldpSysName)
+    const managedNeighborLink = await screen.findByRole('link', { name: managedNeighborSysName })
+    expect(managedNeighborLink).toBeVisible()
+
+    await userEvent.click(targetInterfaceButton)
 
     const detailsDrawer = await screen.findByRole('dialog')
     expect(detailsDrawer).toBeVisible()
