@@ -89,7 +89,7 @@ function useColumns (
             setSelectedApLldpNeighbor(row)
             setDetailsDrawerVisible(true)
           }}
-          children={data}
+          children={row.lldpInterface}
         />
       }
     },
