@@ -20,9 +20,9 @@ import { getPoeUsage,
   SwitchSlot,
   SwitchStatusEnum,
   SwitchViewModel,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
 

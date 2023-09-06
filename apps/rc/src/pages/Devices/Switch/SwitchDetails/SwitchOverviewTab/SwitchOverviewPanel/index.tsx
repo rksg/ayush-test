@@ -5,6 +5,7 @@ import { AnalyticsFilter }                                                      
 import { GridCol, GridRow }                                                                            from '@acx-ui/components'
 import { TopologyFloorPlanWidget }                                                                     from '@acx-ui/rc/components'
 import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                           from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
@@ -43,10 +44,12 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <>
       <GridCol col={{ span: 24 }} style={{ height: '100px' }}>
-        <SwitchStatusByTime filters={filters} />
+        <SwitchStatusByTime filters={filters}
+          refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters} />
+        <SwitchesTrafficByVolume filters={filters}
+          refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ResourceUtilization filters={filters} />
