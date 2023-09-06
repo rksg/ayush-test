@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
@@ -46,11 +48,11 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
-  if (!wlanSecurity)
-    return false
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null) => {
+  const wlanSecurity = getWlanSecurity(wlanData)
+  const enableOwe = getIsOwe(wlanData, wlanSecurity)
 
-  return IsWPA3Security(wlanSecurity as WlanSecurityEnum)
+  return IsWPA3Security(wlanSecurity as WlanSecurityEnum) || enableOwe || false
 }
 
 export const inverseTargetValue =
@@ -123,8 +125,12 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
-export const getWlanSecurityFromWlanData = (wlanData : NetworkSaveData | null) => {
+export const getWlanSecurity = (wlanData : NetworkSaveData | null) => {
   return get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
+}
+
+export const getIsOwe = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  return get(wlanData, ['enableOwe']) || (wlanSecurity === WlanSecurityEnum.OWE)
 }
 
 const { useWatch } = Form
@@ -144,8 +150,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const wlanSecurity = getWlanSecurityFromWlanData(wlanData)
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanSecurity)
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData)
 
   useEffect(() => {
     const updateMloOptions = () => {

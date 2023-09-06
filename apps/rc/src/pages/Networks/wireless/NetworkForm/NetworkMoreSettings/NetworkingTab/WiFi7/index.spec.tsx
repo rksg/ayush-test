@@ -1,20 +1,19 @@
+/* eslint-disable max-len */
+
 import { userEvent } from '@storybook/testing-library'
 import { within }    from '@testing-library/react'
 import { Form }      from 'antd'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  NetworkSaveData,
-  WlanSecurityEnum
-} from '@acx-ui/rc/utils'
-import { Provider }                  from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
+import { fireEvent, render, screen }         from '@acx-ui/test-utils'
 
 import WiFi7, {
   disabledUnCheckOption,
-  enableAllRadioCheckboxes,
+  enableAllRadioCheckboxes, getIsOwe,
   getInitMloEnabled,
-  getInitMloOptions,
+  getInitMloOptions, getWlanSecurity,
   inverseTargetValue,
   isEnableOptionOf6GHz
 } from '.'
@@ -197,20 +196,68 @@ describe('WiFi7', () => {
 
 describe('test isEnableOptionOf6GHz func', () => {
   it('should return true when wlanSecurity is WPA3', function () {
-    const wlanSecurity = 'WPA3'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
   })
 
-  it('should return true when wlanSecurity is OWE', function () {
-    const wlanSecurity = 'OWE'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+  it('should return true when wlanSecurity is OWE and enableOwe is undefined', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.OWE
+      },
+      enableOwe: undefined
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return true when enableOwe is true and wlanSecurity is undefined', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: undefined
+      },
+      enableOwe: true
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
   })
 
   it('should return false when wlanSecurity is not WPA3 or OWE', function () {
-    const wlanSecurity = 'Open'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: 'Open'
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when enableOwe is true', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      enableOwe: true
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return true when enableOwe is false', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      enableOwe: false
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(false)
   })
 })
@@ -500,5 +547,85 @@ describe('test getUpdatedStateOfOptionsOnChange func', () => {
     ]
     const actual = inverseTargetValue(target, options)
     expect(actual).toEqual(expected)
+  })
+})
+
+describe('test getWlanSecurity func', () => {
+  it('should return WlanSecurityEnum.WPA3 when wlan.wlanSecurity is WPA3', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3
+      }
+    } as NetworkSaveData
+
+    const actual = getWlanSecurity(mockWlanData)
+    expect(actual).toBe(WlanSecurityEnum.WPA3)
+  })
+
+  it('should return WlanSecurityEnum.WPA3 when wlanSecurity is WPA3', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlanSecurity: WlanSecurityEnum.WPA3
+    } as NetworkSaveData
+
+    const actual = getWlanSecurity(mockWlanData)
+    expect(actual).toBe(WlanSecurityEnum.WPA3)
+  })
+
+  it('should return undefined when both wlanSecurity and wlan.wlanSecurity are undefined', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlanSecurity: undefined
+    } as NetworkSaveData
+
+    const actual = getWlanSecurity(mockWlanData)
+    expect(actual).toBe(undefined)
+  })
+})
+
+describe('test getIsOwe func', () => {
+  it('should return true when enableOwe is true', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: true
+    } as NetworkSaveData
+    const wlanSecurity = undefined
+
+    const actual = getIsOwe(mockWlanData, wlanSecurity)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when enableOwe is false', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: false
+    } as NetworkSaveData
+    const wlanSecurity = undefined
+
+    const actual = getIsOwe(mockWlanData, wlanSecurity)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when enableOwe is undefined and wlanSecurity is OWE', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: undefined
+    } as NetworkSaveData
+    const wlanSecurity = WlanSecurityEnum.OWE
+
+    const actual = getIsOwe(mockWlanData, wlanSecurity)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when enableOwe is undefined and wlanSecurity is not OWE', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: undefined
+    } as NetworkSaveData
+    const wlanSecurity = WlanSecurityEnum.Open
+
+    const actual = getIsOwe(mockWlanData, wlanSecurity)
+    expect(actual).toBe(false)
   })
 })
