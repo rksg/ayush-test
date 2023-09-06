@@ -41,6 +41,8 @@ export default function AAAPolicyModal (props:{
         mask={true}
         children={getContent}
         destroyOnClose={true}
+        width={600}
+        bodyStyle={{ width: '600px' }}
       />
     </>
   )

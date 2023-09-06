@@ -9,12 +9,12 @@ import {
   NetworkHistory,
   SLA,
   ReportTile,
+  MlisaNetworkFilter,
   AIDrivenRRM,
   AIOperations
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
   PageHeader,
   RangePicker,
   cssNumber,
@@ -55,19 +55,19 @@ export default function Dashboard () {
     <PageHeader
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
+        <>
+          <MlisaNetworkFilter />
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        </>
       ]}
     />
     <UI.Grid style={{ height }}>
-      <div style={{ gridArea: 'a1' }}>
-        <Card title={$t({ defaultMessage: 'Network Filter' })} />
-      </div>
       <div style={{ gridArea: 'b1' }}>
         <ReportTile path={path} />
       </div>
