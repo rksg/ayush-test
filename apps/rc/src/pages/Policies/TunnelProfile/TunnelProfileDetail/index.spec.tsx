@@ -32,7 +32,7 @@ describe('TunnelProfileDetail', () => {
     )
   })
 
-  it.skip('Should render TunnelProfileDetail successfully', async () => {
+  it('Should render TunnelProfileDetail successfully', async () => {
     render(
       <Provider>
         <TunnelProfileDetail />
