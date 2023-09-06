@@ -45,7 +45,8 @@ import {
   IpUtilsService,
   DpskPassphraseClient,
   DPSKDeviceInfo,
-  AccessControlUrls
+  AccessControlUrls,
+  DpskMutationResult
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -528,7 +529,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
+    createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
         const createDpskReq = createDpskHttpRequest(DpskUrls.addDpsk, params)
         return {
@@ -538,7 +539,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
-    updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
+    updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
         const updateDpskReq = createDpskHttpRequest(DpskUrls.updateDpsk, params)
         return {
