@@ -126,10 +126,9 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
-              readOnly
               bordered={false}
               value={row.clientSecret}
-              style={{ paddingLeft: '0px', overflow: 'visible', width: '270px' }}
+              style={{ paddingLeft: '0px', overflow: 'visible', width: '275px' }}
             />
             <Button
               ghost
