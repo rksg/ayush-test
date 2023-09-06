@@ -228,31 +228,6 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             payload: payload })
             .then(clearSelection)
           reloadAuthTable(2)
-          // const title = $t(
-          //   { defaultMessage: 'Activate application "{formattedName}"?' },
-          //   { formattedName: rows[0].name }
-          // )
-
-          // showActionModal({
-          //   type: 'confirm',
-          //   title: title,
-          //   content: $t(
-          //     { defaultMessage: 'Activate this application "{formattedName}"?' },
-          //     { formattedName: rows[0].name }
-          //   ),
-          //   okText: $t({ defaultMessage: 'Activate' }),
-          //   onOk: () => {
-          //     const payload: TenantAuthentications = {
-          //       name: rows[0].name,
-          //       authenticationType: rows[0].authenticationType,
-          //       clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
-          //     }
-          //     updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-          //       payload: payload })
-          //       .then(clearSelection)
-          //     reloadAuthTable(2)
-          //   }
-          // })
         }
       },
       {

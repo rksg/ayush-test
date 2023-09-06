@@ -197,9 +197,6 @@ describe('App Token Form Item', () => {
     const button = await screen.findByText('Activate')
     expect(button).toBeVisible()
     await userEvent.click(button)
-    // expect(await screen.findByText('Activate application "test456"?')).toBeVisible()
-    // const activateButtons = screen.getAllByRole('button', { name: 'Activate' })
-    // await userEvent.click(activateButtons[1])
     await waitFor(() => {
       expect(screen.queryByText('Activate application "test456"?')).toBeNull()
     })
