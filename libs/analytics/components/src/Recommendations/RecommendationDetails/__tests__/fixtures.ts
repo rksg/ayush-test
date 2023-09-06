@@ -380,7 +380,7 @@ export const mockedRecommendationCRRM = {
     }
   ],
   kpi_number_of_interfering_links: {
-    current: 0,
+    current: 2,
     previous: null,
     projected: 0
   }

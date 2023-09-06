@@ -2,7 +2,7 @@ import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }   from '@acx-ui/components'
 import { useParams }          from '@acx-ui/react-router-dom'
 
-import { RecommendationTable } from '../Recommendations/table'
+import { RecommendationTable } from '../Recommendations/Table'
 
 export const RecommendationTabContent = () => {
   const { filters } = useAnalyticsFilter()
