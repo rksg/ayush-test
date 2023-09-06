@@ -13,6 +13,7 @@ import { getIntl }   from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
+import { DownloadPcap }                            from './DownloadPcap'
 import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
@@ -87,6 +88,12 @@ export const getFailureExtra = (event: DisplayEvent) => {
     : null
 }
 
+const getActions = (event: DisplayEvent) => {
+  return (typeof event.pcapFilename === 'string')
+    ? <DownloadPcap pcapFilename={event.pcapFilename} />
+    : null
+}
+
 type ConnectionEventPopoverProps = Omit<PopoverProps, 'content'> & {
   children?: React.ReactNode,
   event: DisplayEvent
@@ -100,6 +107,7 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
   }
   const rowData = getConnectionDetails(event)
   const failureExtra: ReactNode = getFailureExtra(event)
+  const actions: ReactNode = getActions(event)
   const visibleHandle = (val: boolean) => {
     rest.onVisibleChange && rest.onVisibleChange(val)
     setOpen(val)
@@ -108,7 +116,12 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
     <UI.PopoverWrapper>
       <Popover
         {...rest}
-        content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
+        content={<Details
+          fields={rowData}
+          openHandler={hide}
+          extra={failureExtra}
+          actions={actions}
+        />}
         trigger='click'
         visible={open}
         onVisibleChange={visibleHandle}

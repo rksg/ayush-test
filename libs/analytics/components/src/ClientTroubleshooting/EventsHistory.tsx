@@ -66,7 +66,10 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>,
+      icon: <>
+        <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>
+        {typeof event.pcapFilename === 'string' && <UI.Download />}
+      </>,
       event
     }
   }),
