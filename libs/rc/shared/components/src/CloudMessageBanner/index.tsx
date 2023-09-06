@@ -5,7 +5,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Alert, Button }                                                        from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery, useLazyGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -27,6 +27,7 @@ export function CloudMessageBanner () {
   const params = useParams()
   const navigate = useNavigate()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const linkToAdministration = useTenantLink('/administration/')
   const dismissUpgradeSchedule = 'COMMON$dismiss-upgrade-schedule'
 
@@ -49,7 +50,7 @@ export function CloudMessageBanner () {
       checkWifiScheduleExists()
       if (!hasRoles(RolesEnum.DPSK_ADMIN))
         checkSwitchScheduleExists()
-      if(isEdgeEnabled)
+      if(isEdgeEnabled && isScheduleUpdateReady)
         checkEdgeScheduleExists()
     }
   }, [cloudVersion, userSettings])
