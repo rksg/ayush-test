@@ -46,7 +46,9 @@ export const DropdownList: React.FC<DropdownListProps> = ({
         }
         footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
         dataSource={nodesToShow as Node[]}
-        renderItem={(node) => <ListItemComponent node={node as Node} onClick={onSelect} />}
+        renderItem={(node) => (
+          <ListItemComponent currentNode={currentNode} node={node as Node} onClick={onSelect} />
+        )}
       />
     </Menu.Item>
   </UI.StyledMenu>

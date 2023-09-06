@@ -67,26 +67,18 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
   }
 `
 export const ListItemSpan = styled.span`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 180px;
 `
 export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
-  height: 54px;
   padding-left: 20px;
   padding-right: 16px;
   background-color:  ${(props) => props.isSelected ? 'var(--acx-accents-orange-20)' : 'white'};
   &:hover {
     cursor: pointer;
     background-color: var(--acx-accents-orange-10);
-  }
-  &:active {
-    background-color: var(--acx-accents-orange-20);
   }
 `
 export const StyledList = styled(List)`
