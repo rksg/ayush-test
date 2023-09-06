@@ -1,8 +1,7 @@
 export const mockedSocket = {
-  on: jest.fn(),
-  off: jest.fn(),
-  disconnect: jest.fn(),
-  disconnected: false
+  on: (eventName: string, handler: () => void) => {
+    if (eventName === 'connectedSocketEvent') setTimeout(handler, 0) // Simulate receving the message from websocket
+  }
 }
 
 export const tabPath = '/:tenantId/t/devices/wifi/:apId/details/neighbors/:activeSubTab'

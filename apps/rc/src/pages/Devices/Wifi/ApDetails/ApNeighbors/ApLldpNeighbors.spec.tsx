@@ -53,6 +53,14 @@ describe('ApLldpNeighbors', () => {
     )
   })
 
+  beforeEach(() => {
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
+  })
+
+  afterEach(() => {
+    mockedInitPokeSocketFn.mockRestore()
+  })
+
   it('should render LLDP Neighbors view', async () => {
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
       setTimeout(handler, 0) // Simulate receving the message from websocket
@@ -81,8 +89,6 @@ describe('ApLldpNeighbors', () => {
 
     await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(detailsDrawer).not.toBeVisible())
-
-    mockedInitPokeSocketFn.mockRestore()
   })
 
   it('should handle error correctly', async () => {
