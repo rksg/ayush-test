@@ -105,7 +105,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               readOnly
               bordered={false}
               value={row.clientID}
-              style={{ paddingLeft: '0px', overflow: 'scroll', width: '270px' }}
+              style={{ paddingLeft: '0px', width: '270px' }}
             />
             <Button
               ghost
@@ -128,7 +128,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             <PasswordInput
               bordered={false}
               value={row.clientSecret}
-              style={{ paddingLeft: '0px', overflow: 'visible', width: '275px' }}
+              style={{ paddingLeft: '0px', width: '275px' }}
             />
             <Button
               ghost
