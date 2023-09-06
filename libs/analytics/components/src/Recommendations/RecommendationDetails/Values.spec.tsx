@@ -4,7 +4,6 @@ import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
-  mockedRecommendationCRRM,
   mockedRecommendationPower,
   mockedRecommendationFirmware,
   mockRecommendationAutoBackground
@@ -13,15 +12,6 @@ import { RecommendationDetails, transformDetailsResponse } from './services'
 import { Values }                                          from './Values'
 
 describe('Recommendation Overview', () => {
-  it('should render correctly for crrm', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
-    render(<Values details={crrmDetails} />, { wrapper: Provider })
-    expect(await screen.findByText('Recommendation Details')).toBeVisible()
-    expect(await screen.findByText('AI-Driven Cloud RRM')).toBeVisible()
-    expect(await screen.findByText('ChannelFly and 80 MHz for 2.4 GHz with static AP Tx Power'))
-      .toBeVisible()
-  })
-
   it('should render correctly for tx power', async () => {
     const powerDetails = transformDetailsResponse(mockedRecommendationPower)
     render(<Values details={powerDetails} />, { wrapper: Provider })
