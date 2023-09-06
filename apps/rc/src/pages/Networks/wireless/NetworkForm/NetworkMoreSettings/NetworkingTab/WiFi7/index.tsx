@@ -123,6 +123,10 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
+export const getWlanSecurityFromWlanData = (wlanData : NetworkSaveData | null) => {
+  return get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
+}
+
 const { useWatch } = Form
 
 const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
@@ -140,7 +144,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData?.wlan?.wlanSecurity)
+  const wlanSecurity = getWlanSecurityFromWlanData(wlanData)
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanSecurity)
 
   useEffect(() => {
     const updateMloOptions = () => {
