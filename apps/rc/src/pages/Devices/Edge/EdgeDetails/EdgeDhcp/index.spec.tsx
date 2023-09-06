@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
+import { EdgeDhcpUrls, EdgeUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -52,6 +52,12 @@ describe('Edge DHCP no initial data', () => {
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })
@@ -104,6 +110,12 @@ describe('Edge DHCP', () => {
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: []
+        }))
       )
     )
   })

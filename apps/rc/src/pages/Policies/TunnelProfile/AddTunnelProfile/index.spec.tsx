@@ -38,9 +38,9 @@ describe('AddTunnelProfile', () => {
       </Provider>
       , { route: { path: createViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Policy Name' })
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
-    const ageTimeField = screen.getByRole('spinbutton', { name: 'Idle Period' })
+    const ageTimeField = screen.getByRole('spinbutton')
     await user.type(ageTimeField, '20')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({

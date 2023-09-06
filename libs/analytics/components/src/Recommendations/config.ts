@@ -4,9 +4,16 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { compareVersion } from '@acx-ui/analytics/utils'
 import { formatter }      from '@acx-ui/formatter'
 
-export type Priorities = { order: number, label: MessageDescriptor }
+export type IconValue = { order: number, label: MessageDescriptor }
 
-const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
+export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
+
+export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+}
+
+const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
@@ -15,7 +22,7 @@ const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
-  priority: Priorities
+  priority: IconValue
 }
 
 type RecommendationKPIConfig = {
@@ -38,7 +45,7 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: keyof typeof states, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
 }
 
 const categories = {
@@ -119,6 +126,8 @@ export const states = {
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
   }
 }
+
+export type StateType = keyof typeof states
 
 export const codes = {
   'c-bgscan24g-enable': {
@@ -317,7 +326,7 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: keyof typeof states, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -375,7 +384,7 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -409,7 +418,7 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -420,6 +429,6 @@ export const codes = {
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as keyof typeof states] = val.text
+  acc[key as StateType] = val.text
   return acc
-}, {} as Record<keyof typeof states, MessageDescriptor>)
+}, {} as Record<StateType, MessageDescriptor>)

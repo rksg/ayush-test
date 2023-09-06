@@ -41,6 +41,7 @@ export default function VLANPoolModal (props:{
         mask={true}
         children={getContent}
         destroyOnClose={true}
+        width={600}
       />
     </UI.ButtonContainer>
   )

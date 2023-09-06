@@ -194,6 +194,15 @@ test('should navigate to analytics/recommendations/crrm', () => {
   })
   expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
+test('should navigate to analytics/recommendations/crrm/:id', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/crrm/id',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
+})
 test('should navigate to analytics/recommendations/aiOps', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
