@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -16,7 +16,6 @@ export interface Node {
   mac?: string;
   children?: Node[];
   path?: Node[];
-  defaultSelected?: boolean;
 }
 
 interface RevolvingDoorProps {
@@ -46,6 +45,7 @@ const useBreadcrumbState = (initialBreadcrumb: Node[]) => {
 export const RevolvingDoor = (props: RevolvingDoorProps) => {
   const { data: rootNode, setNetworkPath } = props
   const { $t } = useIntl()
+  const defaultPath = [{ name: 'Network', type: 'network' }]
 
   const initialBreadcrumb = findMatchingNode(
     rootNode,
@@ -54,12 +54,8 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
     ]
   )?.path || [rootNode]
 
-  const {
-    breadcrumb,
-    onBreadcrumbClick,
-    addNodeToBreadcrumb,
-    setBreadcrumbPath
-  } = useBreadcrumbState(initialBreadcrumb)
+  const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
+    useBreadcrumbState(initialBreadcrumb)
 
   const [searchText, setSearchText] = useState<string>('')
   const [inputValue, setInputValue] = useState<string>(
@@ -67,13 +63,15 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
   )
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
+  const componentRef = useRef<HTMLDivElement | null>(null)
+  const currentNode = breadcrumb[breadcrumb.length - 1]
+  const isLeaf = currentNode?.children?.length === 0 || !Boolean(currentNode?.children)
 
   const onCancel = () => {
     setSearchText('')
-    setInputValue(breadcrumb.map((node) => node.name).join(' / '))
     setVisible(false)
+    setBreadcrumbPath(initialBreadcrumb)
   }
-
   const onApply = () => {
     setVisible(false)
     setInputValue(breadcrumb.map((node) => node.name).join(' / '))
@@ -82,27 +80,32 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
   }
   const onClose = () => {
     setVisible(false)
-    const defaultPath = [{ name: 'Network', type: 'network' }]
     setInputValue(defaultPath.map((node) => node.name).join(' / '))
     setNetworkPath(defaultPath, defaultPath)
+    setBreadcrumbPath([rootNode])
   }
-  useEffect(() => {
-    if (searchText) {
-      const results = searchTree(rootNode, searchText)
-      setSearchResults(results)
-    } else {
-      setSearchResults([])
-    }
-  }, [searchText, rootNode])
 
+  const handleClickOutside = (event : MouseEvent) => {
+    if (componentRef.current && !componentRef.current.contains(event.target as HTMLElement)) {
+      setVisible(false)
+    }
+  }
   const onSelect = (node: Node) => {
+    const isLeaf =
+      (currentNode?.children?.length === 0 || !Boolean(currentNode?.children)) &&
+      breadcrumb[breadcrumb.length - 1] === node
+    const isSameLeafNodeType = breadcrumb[breadcrumb.length - 1].type === node.type
     setSearchResults([])
     setSearchText('')
-
+    if (isLeaf) {
+      return
+    }
     if (node.path) {
       setBreadcrumbPath(node.path)
     } else {
-      addNodeToBreadcrumb(node)
+      isSameLeafNodeType
+        ? setBreadcrumbPath([...breadcrumb.slice(0, -1), node])
+        : addNodeToBreadcrumb(node)
     }
   }
   const onBack = () => {
@@ -112,37 +115,61 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
       setBreadcrumbPath(newBreadcrumb)
     }
   }
-  const currentNode = breadcrumb[breadcrumb.length - 1]
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+  useEffect(() => {
+    if (searchText) {
+      const results = searchTree(rootNode, searchText)
+      setSearchResults(results)
+    } else {
+      setSearchResults([])
+    }
+  }, [searchText, rootNode])
+
   const nodesToShow = searchText
     ? searchResults
     : breadcrumb.length > 0
-      ? breadcrumb[breadcrumb.length - 1].children
+      ? isLeaf
+        ? breadcrumb?.[breadcrumb.length - 2]?.children
+        : breadcrumb?.[breadcrumb.length - 1]?.children
       : []
-
+  const placeHolderText = inputValue === defaultPath[0].name
+    ? $t({ defaultMessage: 'Entire Organization' })
+    : inputValue
   return (
-    <UI.DropdownWrapper>
+    <UI.DropdownWrapper ref={componentRef}>
       <Dropdown
-        overlay={<DropdownList
-          nodesToShow={nodesToShow as Node[]}
-          breadcrumb={breadcrumb}
-          searchText={searchText}
-          currentNode={currentNode}
-          onSelect={onSelect}
-          onCancel={onCancel}
-          onApply={onApply}
-          onBack={onBack}
-          onBreadcrumbClick={onBreadcrumbClick}
-        />}
+        overlay={
+          <DropdownList
+            nodesToShow={nodesToShow as Node[]}
+            breadcrumb={breadcrumb}
+            searchText={searchText}
+            currentNode={currentNode}
+            onSelect={onSelect}
+            onCancel={onCancel}
+            onApply={onApply}
+            onBack={onBack}
+            onBreadcrumbClick={onBreadcrumbClick}
+          />
+        }
         visible={visible}
-      >
+        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}>
         <UI.StyledInput
           prefix={<SearchOutlined />}
           type='search'
-          placeholder={$t({ defaultMessage: 'Entire Organization' })}
+          title={placeHolderText}
+          placeholder={placeHolderText}
           onClick={() => setVisible(true)}
-          onChange={(e) => { setSearchText(e.target.value); setInputValue(e.target.value) }}
-          value={inputValue}
-          suffix={<CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose}/>}
+          onChange={(e) => {
+            setSearchText(e.target.value)
+          }}
+          value={searchText}
+          suffix={<CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />}
         />
       </Dropdown>
     </UI.DropdownWrapper>

@@ -26,12 +26,14 @@ export const DropdownHeader: React.FC<DropdownHeaderProps> = ({
   onBreadcrumbClick
 }) => (
   <>
-    <UI.ListHeader onClick={onBack}>
-      {breadcrumb.length > 1 && !searchText && <UI.LeftArrow />}
-      <UI.LeftArrowText hasLeftArrow={!Boolean(breadcrumb.length > 1 && !searchText)}>
+    <UI.ListHeader >
+      {breadcrumb.length > 1 && !searchText && <UI.LeftArrow onClick={onBack}/>}
+      <UI.LeftArrowText
+        hasLeftArrow={!Boolean(breadcrumb.length > 1 && !searchText)}
+        title={customCapitalize(currentNode)}>
         {searchText
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          ? useIntl().$t({ defaultMessage: 'Search Results' })
+          ? // eslint-disable-next-line react-hooks/rules-of-hooks
+          useIntl().$t({ defaultMessage: 'Search Results' })
           : customCapitalize(currentNode)}
       </UI.LeftArrowText>
     </UI.ListHeader>
@@ -39,9 +41,7 @@ export const DropdownHeader: React.FC<DropdownHeaderProps> = ({
       {!searchText &&
         breadcrumb.map((node, index) => (
           <Breadcrumb.Item key={index} onClick={() => onBreadcrumbClick(index)}>
-            {index !== breadcrumb.length - 1
-              ? customCapitalize(node)
-              : ''}
+            {index !== breadcrumb.length - 1 ? customCapitalize(node) : ''}
           </Breadcrumb.Item>
         ))}
     </UI.StyledBreadcrumb>

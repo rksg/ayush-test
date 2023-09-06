@@ -24,9 +24,6 @@ export const ListHeader = styled.span`
   padding-left: 20px;
   padding-right: 16px;
   margin-left: -8px;
-  &:hover {
-    cursor: pointer;
-  }
 `
 const arrowStyle = css`
   path {
@@ -35,10 +32,10 @@ const arrowStyle = css`
   vertical-align: middle;
 `
 export const LeftArrow = styled(ArrowChevronLeft)`
-  ${arrowStyle},
+  ${arrowStyle}
   stroke-width: 2px;
-  path {
-    opacity: 0.2;
+  &:hover {
+    cursor: pointer;
   }
   `
 export const RightArrow = styled(ArrowChevronRight)`
@@ -55,14 +52,6 @@ export const LeftArrowText = styled.span<{ hasLeftArrow: boolean }>`
   text-overflow: ellipsis;
   width: 180px;
   padding-left: ${(props) => props.hasLeftArrow ? '8px' : '0px'};
-  &:hover {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-    width: auto; 
-    position: relative;
-    z-index: 1; 
-  }
 `
 export const StyledBreadcrumb = styled(Breadcrumb)`
   overflow-wrap: break-word;
@@ -86,14 +75,6 @@ export const ListItemSpan = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   width: 180px;
-  &:hover {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-    width: auto; 
-    position: relative;
-    z-index: 1;
-  }
 `
 export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
   height: 54px;
@@ -142,13 +123,15 @@ export const StyledMenu = styled(Menu)`
 }
 `
 export const StyledInput = styled(Input)`
-  cursor: 'pointer';
   border-color: var(--acx-primary-black);
   color: var(--acx-primary-black);
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  .ant-input::placeholder {
+    color: var(--acx-primary-black) !important;
+  }
 `
 export const DropdownWrapper = styled.div`
 `

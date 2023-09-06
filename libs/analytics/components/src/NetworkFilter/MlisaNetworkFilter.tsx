@@ -8,7 +8,7 @@ export const MlisaNetworkFilter = () => {
   const networkFilter = { ...filters, shouldQuerySwitch: true }
   const networkHierarchyQuery = useNetworkHierarchyQuery(networkFilter)
   return (
-    <div style={{ width: 200 }}>
+    <div style={{ width: 250 }}>
       <Loader states={[networkHierarchyQuery]}>
         {networkHierarchyQuery?.data && (
           <RevolvingDoor
