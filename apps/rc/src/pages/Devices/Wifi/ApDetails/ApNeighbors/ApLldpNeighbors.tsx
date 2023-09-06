@@ -95,38 +95,51 @@ function useColumns (
     },
     {
       key: 'lldpTime',
-      dataIndex: 'lldpTime',
-      title: $t({ defaultMessage: 'Time' })
+      dataIndex: 'lldpTime'
     },
     {
       key: 'lldpSysName',
-      dataIndex: 'lldpSysName',
-      title: $t({ defaultMessage: 'System Name' })
+      dataIndex: 'lldpSysName'
     },
     {
       key: 'lldpSysDesc',
-      dataIndex: 'lldpSysDesc',
-      title: $t({ defaultMessage: 'System Description' })
+      dataIndex: 'lldpSysDesc'
     },
     {
       key: 'lldpChassisID',
-      dataIndex: 'lldpChassisID',
-      title: $t({ defaultMessage: 'Chassis ID' })
+      dataIndex: 'lldpChassisID'
     },
     {
       key: 'lldpMgmtIP',
-      dataIndex: 'lldpMgmtIP',
-      title: $t({ defaultMessage: 'Mgmt IP' })
+      dataIndex: 'lldpMgmtIP'
+    },
+    {
+      key: 'lldpCapability',
+      dataIndex: 'lldpCapability'
+    },
+    {
+      key: 'lldpPortDesc',
+      dataIndex: 'lldpPortDesc'
     },
     {
       key: 'lldpPortID',
-      dataIndex: 'lldpPortID',
-      title: $t({ defaultMessage: 'Port ID' })
+      dataIndex: 'lldpPortID'
+    },
+    {
+      key: 'lldpMDIPower',
+      dataIndex: 'lldpMDIPower'
     },
     {
       key: 'lldpClass',
-      dataIndex: 'lldpClass',
-      title: $t({ defaultMessage: 'Power Class' })
+      dataIndex: 'lldpClass'
+    },
+    {
+      key: 'lldpPDReqPowerVal',
+      dataIndex: 'lldpPDReqPowerVal'
+    },
+    {
+      key: 'lldpPSEAllocPowerVal',
+      dataIndex: 'lldpPSEAllocPowerVal'
     }
   ]
 
