@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { RadioBand }                          from '@acx-ui/components'
+import * as config                            from '@acx-ui/config'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
 import { Provider, store }                    from '@acx-ui/store'
@@ -15,6 +16,9 @@ const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
   embedDashboard: () => mockEmbedDashboard
 }))
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 const guestTokenReponse = {
   token: 'some token'
@@ -56,6 +60,7 @@ describe('EmbeddedDashboard', () => {
   afterEach(() => {
     process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
+    get.mockReturnValue('')
   })
 
   const params = { tenantId: 'tenant-id' }
@@ -73,6 +78,14 @@ describe('EmbeddedDashboard', () => {
   })
   it('should set the Host name to devalto for dev', () => {
     process.env = { NODE_ENV: 'development' }
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.AP_DETAIL} />
+    </Provider>, { route: { params } })
+  })
+  it('should set the Host name to staging for SA in dev', () => {
+    process.env = { NODE_ENV: 'development' }
+    get.mockReturnValue('true')
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL} />

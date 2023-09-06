@@ -12,11 +12,12 @@ import {
   ActivityButton,
   AlarmsButton,
   FetchBot,
+  HeaderContext,
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext,
-  RegionButton
+  RegionButton,
+  GlobalSearchBar
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -30,7 +31,6 @@ import { hasRoles, useUserProfileContext }                                  from
 import { AccountType, getJwtTokenPayload, PverName, useTenantId }           from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 import { useLogo }       from './useLogo'
 
@@ -114,7 +114,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <SearchBar />
+          <GlobalSearchBar />
           {isSupport && isMspVar &&
             <MspTenantLink to='/dashboard'>
               <UI.Home>

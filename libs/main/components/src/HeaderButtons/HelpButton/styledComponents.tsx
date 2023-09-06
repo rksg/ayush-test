@@ -22,8 +22,3 @@ export const CopyableText = styled(Typography.Link)
   cursor: auto !important;
   color:var(--acx-primary-black) !important;
 `
-export const ButtonWrapper = styled.span`
-  line-height: 1;
-  width: 32px;
-  height: 32px;
-`

@@ -6,24 +6,25 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { states, codes, Priorities  } from '../config'
+import { StateType, codes, IconValue, StatusTrail }           from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText } from '../services'
 
 
-type RecommendationsDetailsPayload = {
+export type BasicRecommendation = {
   id: string;
   code?: string;
 }
 
-type RecommendationKpi = Record<string, {
+export type RecommendationKpi = Record<string, {
   current: number | number[];
   previous: number | null;
-  projected: number | null
+  projected: number | null;
 }>
 
 export type RecommendationDetails = {
   id: string;
   code: keyof typeof codes;
-  status: keyof typeof states;
+  status: StateType;
   isMuted: boolean;
   appliedTime: string;
   originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
@@ -33,17 +34,19 @@ export type RecommendationDetails = {
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
-  statusTrail: Array<{ status: Lowercase<keyof typeof states>, createdAt: string }>;
+  statusTrail: StatusTrail;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
-  priority: Priorities;
+  priority: IconValue;
   summary: MessageDescriptor;
   category: MessageDescriptor;
   pathTooltip: string;
   appliedOnce: boolean;
   monitoring: null | { until: string };
   tooltipContent: string | MessageDescriptor;
+  crrmOptimizedState?: IconValue;
+  crrmInterferingLinksText?: React.ReactNode;
 }
 
 type RecommendationApPayload = {
@@ -60,7 +63,13 @@ export type RecommendationAp = {
 
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
-    code, statusTrail, status, appliedTime, currentValue, recommendedValue
+    code,
+    statusTrail,
+    status,
+    appliedTime,
+    currentValue,
+    recommendedValue,
+    kpi_number_of_interfering_links
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
@@ -76,6 +85,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   const tooltipContent = typeof recommendedValueTooltipContent === 'function'
     ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
     : recommendedValueTooltipContent
+  const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
   return {
     ...details,
     monitoring,
@@ -83,11 +93,18 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     priority,
     category,
     summary,
-    appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied'))
+    appliedOnce,
+    ...(code.includes('crrm') && {
+      crrmOptimizedState: getCrrmOptimizedState(status),
+      crrmInterferingLinksText: getCrrmInterferingLinksText(
+        status,
+        kpi_number_of_interfering_links!
+      )
+    })
   } as EnhancedRecommendation
 }
 
-const kpiHelper = ({ code }: { code?: string }) => {
+export const kpiHelper = (code: string) => {
   if (!code) return ''
   const data = codes[code]
   return get(data, ['kpis'])
@@ -104,8 +121,21 @@ const kpiHelper = ({ code }: { code?: string }) => {
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationDetails: build.query<EnhancedRecommendation, RecommendationsDetailsPayload>({
-      query: (payload) => ({
+    recommendationCode: build.query<BasicRecommendation, BasicRecommendation>({
+      query: ({ id }) => ({
+        document: gql`
+          query ConfigRecommendationCode($id: String) {
+            recommendation(id: $id) { id code }
+          }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: { recommendation: BasicRecommendation }) =>
+        response.recommendation,
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
+    }),
+    recommendationDetails: build.query<EnhancedRecommendation, BasicRecommendation>({
+      query: ({ id, code }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
@@ -114,13 +144,11 @@ export const api = recommendationApi.injectEndpoints({
               sliceType sliceValue
               path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(payload)}
+              ${kpiHelper(code!)}
             }
           }
         `,
-        variables: {
-          id: payload.id
-        }
+        variables: { id }
       }),
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
         transformDetailsResponse(response.recommendation),
@@ -153,4 +181,4 @@ export const api = recommendationApi.injectEndpoints({
   })
 })
 
-export const { useRecommendationDetailsQuery, useGetApsQuery } = api
+export const { useRecommendationCodeQuery, useRecommendationDetailsQuery, useGetApsQuery } = api

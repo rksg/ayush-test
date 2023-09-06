@@ -23,6 +23,7 @@ import {
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MSPUtils,
   VarCustomer
 } from '@acx-ui/msp/utils'
 import {
@@ -84,6 +85,7 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -229,11 +231,20 @@ export function VarCustomers () {
     ...(isDeviceAgnosticEnabled ? [
       {
         title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicenseInstalled',
+        key: 'apswLicenseInstalled',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Devices Subscriptions' }),
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return row.apswLicenses || 0
+          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
         }
       },
       {
@@ -242,7 +253,7 @@ export function VarCustomers () {
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: VarCustomer) {
-          return transformApUtilization(row, EntitlementNetworkDeviceType.APSW)
+          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
         }
       }
     ] : [
@@ -278,7 +289,7 @@ export function VarCustomers () {
         }
       }]),
     {
-      title: $t({ defaultMessage: 'Next License Expiration' }),
+      title: $t({ defaultMessage: 'Next Subscription Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
