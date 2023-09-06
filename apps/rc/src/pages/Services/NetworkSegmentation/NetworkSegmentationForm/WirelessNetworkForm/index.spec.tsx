@@ -178,7 +178,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const addButtons = await screen.findAllByRole('button', { name: 'Add' })
     await user.click(addButtons[0])
     const tunnelDialog = await screen.findByRole('dialog')
-    const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Policy Name' })
+    const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(within(tunnelDialog).getByRole('radio', { name: 'Auto' }))
     await user.click(within(tunnelDialog).getByRole('button', { name: 'Add' }))
