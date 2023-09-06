@@ -230,6 +230,9 @@ export const EditPortMessages = {
   }),
   TAGGED_VLAN_VOICE_TOOLTIP: defineMessage({
     defaultMessage: 'The port needs to be a tagged member of the VLAN  in order to use it as a Voice VLAN.'
+  }),
+  INVALID_VOICE_VLAN: defineMessage({
+    defaultMessage: 'Voice VLAN needs to be configured together with Tagged VLAN.'
   })
 }
 

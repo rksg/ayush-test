@@ -115,3 +115,36 @@ export const PortStatus = styled.div`
 export const VoiceVlan = styled.div`
   font-size: var(--acx-subtitle-3-font-size);
 `
+
+export const TaggedVlanTab = styled.div`
+  display: flex;
+  align-items: center;
+  svg {
+    fill: var(--acx-accents-orange-50);
+    stroke: var(--acx-accents-orange-50);
+    color: var(--acx-accents-orange-50);
+    margin-left: 5px;
+  }
+`
+
+export const FieldErrorMessage = styled.div`
+  font-size: var(--acx-body-3-font-size);
+  color: var(--acx-semantics-red-50);
+  margin-top: 10px;
+`
+
+export const VoiceVlanSwitch = styled.div`
+  margin-bottom: 10px;
+  .switch {
+    margin-left: 24px;
+    .ant-switch {
+      margin-left: 4px;
+    }
+  }
+  .invalid.ant-switch-checked {
+    border-color: var(--acx-semantics-red-50);
+    .ant-switch-handle::before {
+      background-color: var(--acx-semantics-red-50);
+    }
+  }
+`

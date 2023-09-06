@@ -7,7 +7,6 @@ import _                                                          from 'lodash'
 import {
   Alert,
   Button,
-  cssStr,
   Drawer,
   showActionModal,
   Subtitle,
@@ -184,6 +183,7 @@ export function EditPortDrawerNew ({
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
   const [venueUntaggedVlan, setVenueUntaggedVlan] = useState('' as string)
+  const [isVoiceVlanInvalid, setIsVoiceVlanInvalid ] = useState(false)
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
@@ -357,6 +357,7 @@ export function EditPortDrawerNew ({
         (portSetting.untaggedVlan ? portSetting.untaggedVlan :
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
+    checkIsVoiceVlanInvalid()
   }
 
   const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
@@ -694,6 +695,15 @@ export function EditPortDrawerNew ({
 
     await updateRelatedField()
     setButtonStatus()
+    checkIsVoiceVlanInvalid()
+  }
+
+  const checkIsVoiceVlanInvalid = () => {
+    const voiceVlanField = form?.getFieldValue('voiceVlan')
+    const taggedVlansField = form?.getFieldValue('taggedVlans')
+    const isInvalid = voiceVlanField &&
+    taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
+    setIsVoiceVlanInvalid(isInvalid)
   }
 
   const onClose = () => {
@@ -902,14 +912,20 @@ export function EditPortDrawerNew ({
                   : $t({ defaultMessage: 'No' })
               }
             </UI.VoiceVlan>
+            {
+              isVoiceVlanInvalid &&
+              <UI.FieldErrorMessage>
+                { $t(EditPortMessages.INVALID_VOICE_VLAN) }
+              </UI.FieldErrorMessage>
+            }
             {!untaggedVlan && !taggedVlans
               // eslint-disable-next-line max-len
               && !(isMultipleEdit && (hasMultipleValue.includes('untaggedVlan') || hasMultipleValue.includes('taggedVlans')))
-              && <Space style={{ fontSize: '12px', color: cssStr('--acx-semantics-red-50') }}>{
+              && <UI.FieldErrorMessage>{
                 isMultipleEdit
                   ? $t(MultipleEditPortMessages.UNSELECT_VLANS)
                   : $t(EditPortMessages.UNSELECT_VLANS)
-              }</Space>}
+              } </UI.FieldErrorMessage>}
           </div>
         </UI.FormItem>
 
@@ -1351,6 +1367,8 @@ export function EditPortDrawerNew ({
         vlanUsedByVe={vlanUsedByVe}
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
+        voiceVlan={voiceVlan}
+        isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
         profileId={switchConfigurationProfileId}

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, FormInstance, Input, Radio, Space, Typography } from 'antd'
-import _                                                           from 'lodash'
+import { Checkbox, FormInstance, Input, Radio, Space, Switch, Typography } from 'antd'
+import _                                                                   from 'lodash'
 
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
+import { InformationSolid }             from '@acx-ui/icons'
 import { useAddVlanMutation }           from '@acx-ui/rc/services'
 import {
   SwitchVlan,
@@ -33,6 +34,8 @@ export function SelectVlanModalNew (props: {
   vlanUsedByVe?: string,
   taggedVlans: string,
   untaggedVlan: number,
+  voiceVlan: string,
+  isVoiceVlanInvalid: boolean,
   hasSwitchProfile?: boolean,
   profileId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
@@ -43,7 +46,7 @@ export function SelectVlanModalNew (props: {
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile,
     vlanDisabledTooltip, defaultVlan, switchVlans,
-    vlanUsedByVe = [], taggedVlans = '', untaggedVlan
+    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, voiceVlan, isVoiceVlanInvalid
   } = props
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
@@ -94,17 +97,21 @@ export function SelectVlanModalNew (props: {
       const isSelectedTagged = tagged?.some((v: string) => Number(v) === Number(vlan?.vlanId))
       const isAclConflict = vlanUsedByVe?.toString()?.split(',')
         .some(v => Number(v) === Number(vlan?.vlanId))
-
+      const isVoiceVlan = Number(voiceVlan) === Number(vlan?.vlanId)
       const extra = isSelectedTagged
-        ? $t({ defaultMessage: '(Set as tagged VLAN)' })
+        ? (isVoiceVlan
+          ? $t({ defaultMessage: '(Set as tagged and voice VLAN)' })
+          : $t({ defaultMessage: '(Set as tagged VLAN)' }))
         : (isAclConflict
           ? $t({ defaultMessage: '(ACL conflict - VLAN is part of VE)' })
-          : (vlan?.vlanConfigName ? `(${vlan?.vlanConfigName})` : ''))
+          : (isVoiceVlan
+            ? $t({ defaultMessage: '(Set as voice VLAN)' })
+            :(vlan?.vlanConfigName ? `(${vlan?.vlanConfigName})` : '')))
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: vlan.vlanId, extra }),
         value: Number(vlan.vlanId),
-        disabled: isSelectedTagged
+        disabled: isVoiceVlan || isSelectedTagged
       }
     })
 
@@ -173,6 +180,14 @@ export function SelectVlanModalNew (props: {
     listType === 'tagged'
       ? setDisplayTaggedVlan(filteredOptions)
       : setDisplayUntaggedVlan(filteredOptions)
+  }
+
+  const showVoiceVlanSwitch = (vlan: CheckboxOptionType) => {
+    const vlanArray = Array.from(selectTaggedVlans?.toString().split(',') ?? [])
+    if(vlanArray.indexOf(String(vlan.value)) !== -1 || voiceVlan == vlan.value) {
+      return true
+    }
+    return false
   }
 
   return <>
@@ -248,7 +263,10 @@ export function SelectVlanModalNew (props: {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Tagged VLANs' })}
+          tab={<UI.TaggedVlanTab>
+            {$t({ defaultMessage: 'Tagged VLANs' })}
+            <InformationSolid />
+          </UI.TaggedVlanTab>}
           key='taggedVlans'
         >
           <Typography.Text style={{
@@ -269,10 +287,26 @@ export function SelectVlanModalNew (props: {
 
           <UI.GroupListLayout>
             <Checkbox.Group
-              options={displayTaggedVlan}
               defaultValue={Array.from(taggedVlans?.toString().split(',') ?? [])}
               onChange={onChangeTaggedVlan}
-            />
+            >
+              {
+                displayTaggedVlan.map(vlan =>
+                  <UI.VoiceVlanSwitch key={vlan.value as string}>
+                    <Checkbox value={vlan.value} disabled={vlan.disabled}>{vlan.label}</Checkbox>
+                    {
+                      showVoiceVlanSwitch(vlan) &&
+                    <div className='switch'>
+                      {$t({ defaultMessage: 'Set as Voice VLAN' })}
+                      <Switch
+                        className={(isVoiceVlanInvalid && vlan.value == voiceVlan) ? 'invalid' : ''}
+                        checked={vlan.value == voiceVlan}
+                      />
+                    </div>
+                    }
+                  </UI.VoiceVlanSwitch>)
+              }
+            </Checkbox.Group>
           </UI.GroupListLayout>
         </Tabs.TabPane>
       </Tabs>
