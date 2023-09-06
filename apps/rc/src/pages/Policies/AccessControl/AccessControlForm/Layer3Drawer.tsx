@@ -250,7 +250,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+    if (contentForm && layer3PolicyInfo &&
+      (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('description', layer3PolicyInfo.description)
       contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
@@ -265,11 +266,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       }).sort((a, b) => a.priority - b.priority)] as Layer3Rule[])
     }
-  }, [layer3PolicyInfo, queryPolicyId])
+  }, [contentForm, layer3PolicyInfo, queryPolicyId])
 
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
-    if (requestId && queryPolicyName) {
+    if (form && requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
@@ -281,7 +282,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       })
     }
-  }, [layer3SelectOptions, requestId, policyName])
+  }, [form, layer3SelectOptions, requestId, policyName])
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
@@ -902,7 +903,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -988,7 +989,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}

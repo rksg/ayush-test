@@ -1,14 +1,16 @@
-import { omit } from 'lodash'
+import { omit, pick } from 'lodash'
 
 import { recommendationUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }         from '@acx-ui/test-utils'
+
+import { crrmStates } from '../config'
 
 import {
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
   mockedRecommendationCRRM
 } from './__tests__/fixtures'
-import { api, EnhancedRecommendation, RecommendationAp } from './services'
+import { api, BasicRecommendation, EnhancedRecommendation, RecommendationAp } from './services'
 
 
 describe('recommendation services', () => {
@@ -21,57 +23,24 @@ describe('recommendation services', () => {
     search: ''
   }
 
-  it('should return correct recommendation details', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+  it('should return correct recommendation code', async () => {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
       data: {
-        recommendation: mockedRecommendationFirmware
+        recommendation: pick(mockedRecommendationFirmware, ['id', 'code'])
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
-        ...recommendationPayload,
-        code: 'i-zonefirmware-upgrade'
-      })
+      api.endpoints.recommendationCode.initiate(recommendationPayload)
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    const removedMsgs = omit(data, [
-      'category',
-      'priority',
-      'summary',
-      'tooltipContent'
-    ])
-    expect(removedMsgs).toStrictEqual<EnhancedRecommendation>({
-      appliedOnce: false,
-      appliedTime: null,
-      code: 'i-zonefirmware-upgrade',
-      currentValue: '6.1.1.0.1274',
+    expect(data).toStrictEqual<BasicRecommendation>({
       id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
-      kpi_aps_on_latest_fw_version: {
-        current: [0, 0],
-        previous: null,
-        projected: null
-      },
-      metadata: {},
-      monitoring: null,
-      originalValue: null,
-      path: [
-        { name: 'vsz34', type: 'system' },
-        { name: '39-IND-BDC-D39-Mayank', type: 'domain' },
-        { name: '39-IND-BDC-D39-Mayank-Ofc-Z2', type: 'zone' }
-      ],
-      recommendedValue: '6.1.2',
-      sliceType: 'zone',
-      sliceValue: '39-IND-BDC-D39-Mayank-Ofc-Z2',
-      status: 'new',
-      statusTrail: [{
-        createdAt: '2023-06-12T07:05:14.106Z',
-        status: 'new'
-      }]
-    } as unknown as EnhancedRecommendation)
+      code: 'i-zonefirmware-upgrade'
+    } as unknown as BasicRecommendation)
   })
 
-  it('should return correct details with code', async () => {
+  it('should return correct recommendation details', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationFirmware
@@ -159,11 +128,13 @@ describe('recommendation services', () => {
       sliceValue: '21_US_Beta_Samsung',
       status: 'applyscheduled',
       kpi_number_of_interfering_links: {
-        current: 0,
+        current: 2,
         previous: null,
         projected: 0
       },
-      statusTrail: mockedRecommendationCRRM.statusTrail
+      statusTrail: mockedRecommendationCRRM.statusTrail,
+      crrmOptimizedState: crrmStates.optimized,
+      crrmInterferingLinksText: '2 interfering links will be optimized to 0'
     } as unknown as EnhancedRecommendation)
   })
 

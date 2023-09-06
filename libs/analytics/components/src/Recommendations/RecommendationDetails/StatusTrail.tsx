@@ -3,7 +3,7 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { states, statusTrailMsgs } from '../config'
+import { StatusTrail as StatusTrailType, statusTrailMsgs } from '../config'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -14,7 +14,7 @@ import {
 } from './styledComponents'
 
 const trailFormatter = (
-  trail: Array<{ status: Lowercase<keyof typeof states> }>,
+  trail: StatusTrailType,
   trailIndex: number, $t: IntlShape['$t']) => {
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
