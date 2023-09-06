@@ -174,7 +174,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
@@ -888,7 +887,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 

@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { Menu, Dropdown, Space } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Menu, Space } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { LayoutUI, Tooltip }                              from '@acx-ui/components'
+import { LayoutUI, Dropdown, Tooltip }                    from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
 import { QuestionMarkCircleSolid, WarningCircleOutlined } from '@acx-ui/icons'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles }                                       from '@acx-ui/user'
 
-import Firewall          from './Firewall'
-import HelpPage          from './HelpPage'
-import { ButtonWrapper } from './styledComponents'
+import Firewall from './Firewall'
+import HelpPage from './HelpPage'
 
 export interface HelpButtonProps{
   supportStatus?: string
@@ -131,17 +130,13 @@ const HelpButton = (props:HelpButtonProps) => {
     />
   )
 
-  return (<ButtonWrapper>
-    <Dropdown
-      overlay={menuHeaderDropdown}
-      trigger={['click']}
-      placement='bottomLeft'
-      children={<LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />}
-    />
+  return <>
+    <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>{() =>
+      <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+    }</Dropdown>
     <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen} />
     <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen} />
-  </ButtonWrapper>
-  )
+  </>
 }
 
 export default HelpButton
