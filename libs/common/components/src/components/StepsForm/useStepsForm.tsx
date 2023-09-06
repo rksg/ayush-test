@@ -172,7 +172,7 @@ export function useStepsForm <T> ({
     pre: <Button
       onClick={() => newConfig.gotoStep(formConfig.current - 1)}
       children={labels.pre}
-      disabled={formConfig.current === 0}
+      hidden={formConfig.current === 0}
     />,
     // TODO:
     // - handle disable when validation not passed

@@ -285,6 +285,7 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
+      adminItem: true,
       children: [
         {
           type: 'group' as const,

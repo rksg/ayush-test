@@ -91,9 +91,9 @@ export function AccessSwitchDrawer (props: {
       // Group by switchMac
       const switchPorts = portList.reduce((
         accumulator: { [name: string]: DefaultOptionType[] }, currentValue) => {
-        const currentPortList = accumulator[currentValue['switchMac']]
-        accumulator[currentValue['switchMac']] = currentPortList ?
-          currentPortList.concat(_.omit(currentValue, 'switchMac')) : []
+        const { switchMac, ...rest } = currentValue
+        if (!accumulator[switchMac]) accumulator[switchMac] = []
+        accumulator[switchMac].push(rest)
         return accumulator
       }, {})
       return { portList: _.intersectionWith(...(_.values(switchPorts)), _.isEqual) }
