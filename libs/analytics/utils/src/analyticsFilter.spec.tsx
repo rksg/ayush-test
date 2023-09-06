@@ -3,12 +3,17 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
+import { get }                                  from '@acx-ui/config'
 import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter } from './analyticsFilter'
+import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter, defaultNetworkPath } from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
 const original = Date.now
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
@@ -27,7 +32,7 @@ describe('useAnalyticsFilter', () => {
       endDate: '2022-01-01T00:01:00+00:00',
       range: 'Last 24 Hours'
     })
-    expect(result.current.path).toEqual([])
+    expect(result.current.path).toEqual(defaultNetworkPath)
   })
 
   const filter = {
@@ -42,14 +47,23 @@ describe('useAnalyticsFilter', () => {
   it('should render correctly', () => {
     function Component () {
       const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      return (
+        <div>
+          {JSON.stringify(filters)} | {JSON.stringify(path)}
+        </div>
+      )
     }
-    const { asFragment } = render(<MemoryRouter initialEntries={[{
-      pathname: '/analytics/incidents',
-      search: ''
-    }]}>
-      <Component />
-    </MemoryRouter>)
+    const { asFragment } = render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/analytics/incidents',
+            search: ''
+          }
+        ]}>
+        <Component />
+      </MemoryRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
   it('changes filter value', () => {
@@ -57,16 +71,25 @@ describe('useAnalyticsFilter', () => {
       const { filters, path, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
         setNetworkPath([], raw)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      return (
+        <div>
+          {JSON.stringify(filters)} | {JSON.stringify(path)}
+        </div>
+      )
     }
-    const { asFragment } = render(<MemoryRouter initialEntries={[{
-      pathname: '/analytics/incidents',
-      search: `?analyticsNetworkFilter=${path}`
-    }]}>
-      <Component />
-    </MemoryRouter>)
+    const { asFragment } = render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/analytics/incidents',
+            search: `?analyticsNetworkFilter=${path}`
+          }
+        ]}>
+        <Component />
+      </MemoryRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
   it('gets initial value from search parameters', () => {
@@ -174,6 +197,29 @@ describe('useAnalyticsFilter', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should set filters correctly for mlisa app', () => {
+    mockGet.mockReturnValueOnce('true')
+    const filter = {
+      path: [
+        { type: 'zone', name: 'Zone' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, path } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('imports dashboard filter with single venue', () => {
     const venues = fixedEncodeURIComponent(JSON.stringify({
       nodes: [['venueId1']]
@@ -192,6 +238,7 @@ describe('useAnalyticsFilter', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+
 })
 describe('getFilterPayload', () => {
   it('returns default path', () => {
@@ -244,5 +291,20 @@ describe('pathToFilter', () => {
       networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
       switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
     })
+  })
+  it('returns correct filter for mlisa app', () => {
+    mockGet.mockReturnValueOnce('true')
+    expect(pathToFilter(
+      [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
+    )).toEqual({
+      networkNodes: [[{ name: 'z1', type: 'zone' }, { name: 'a1', type: 'apGroup' }]],
+      switchNodes: [[{ name: 'z1', type: 'zone' }, { name: 'a1', type: 'apGroup' }]]
+    })
+  })
+  it('returns correct empty object filter for empty array', () => {
+    mockGet.mockReturnValueOnce('true')
+    expect(pathToFilter(
+      []
+    )).toEqual({})
   })
 })

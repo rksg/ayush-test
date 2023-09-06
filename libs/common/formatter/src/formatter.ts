@@ -211,7 +211,7 @@ const json2keymap = (
     ), new Map())
 
 type CrrmTextType = { txPowerAPCount: number }
-  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: boolean }>
+  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: string }>
 
 const crrmText = (value: CrrmTextType) => {
   const { $t } = getIntl()
@@ -223,7 +223,9 @@ const crrmText = (value: CrrmTextType) => {
       const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
       const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
       const radio = formats.radioFormat(config.radio)
-      const autoCellSizing = config.autoCellSizing ? 'Auto Cell Sizing on' : 'static AP Power'
+      const autoCellSizing = config.autoCellSizing === 'true'
+        ? 'Auto Cell Sizing on'
+        : 'static AP Power'
       return $t({
         defaultMessage: '{channelMode} and {channelWidth} for {radio} with {autoCellSizing}' },
       { channelMode, channelWidth, radio, autoCellSizing } )
@@ -244,6 +246,8 @@ const crrmText = (value: CrrmTextType) => {
 }
 
 export const formats = {
+  countFormatRound: (value: number, { $t }: IntlShape) =>
+    $t(countFormat, { value: value < 1000 ? Math.round(value) : value }),
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number) => calendarFormat(number),
@@ -253,6 +257,7 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
+  bandwidthFormat: (value: string|number) => `${value} MHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,

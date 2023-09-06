@@ -100,7 +100,10 @@ const AAAForm = (props: AAAFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <AAASettingForm edit={edit} saveState={saveState} type={props.type}/>
+          <AAASettingForm edit={edit}
+            saveState={saveState}
+            type={props.type}
+            networkView={props.networkView}/>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>

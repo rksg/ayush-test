@@ -73,7 +73,7 @@ export function BssColoring () {
           <div style={{ margin: '2px' }}></div>
           <Tooltip.Question
           // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions' })}
+            title={$t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })}
             placement='bottom'
           />
 

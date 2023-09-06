@@ -128,8 +128,6 @@ export const switchList = {
   isPrimaryDeleted: false,
   name: '7150stack',
   rearModule: 'none',
-  sendedHostname: true,
-  softDeleted: false,
   specifiedType: 'AUTO',
   subnetMask: '255.255.254.0',
   venueId: 'a98653366d2240b9ae370e48fab3a9a1'

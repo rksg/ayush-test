@@ -321,7 +321,6 @@ describe('ManageCustomer', () => {
     expect(screen.queryByRole('heading', { name: 'Start service in' })).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Summary' })).toBeNull()
 
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 

@@ -12,7 +12,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
-  edit: boolean
+  edit: boolean,
+  networkView?: boolean,
 }
 
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
@@ -41,7 +42,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 8 }}>
+      <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
@@ -95,7 +96,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
           children={<Input/>}
         />
       </GridCol>
-      <GridCol col={{ span: 14 }}>
+      <GridCol col={props.networkView ? { span: 0 } :{ span: 14 }}>
       </GridCol>
     </GridRow>
   )

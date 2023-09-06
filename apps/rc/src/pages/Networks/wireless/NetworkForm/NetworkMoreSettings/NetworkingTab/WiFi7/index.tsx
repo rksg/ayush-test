@@ -5,10 +5,10 @@ import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }              from 'lodash'
 import { useIntl }                       from 'react-intl'
 
-import { Tooltip }                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { InformationSolid }                                             from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                             from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3Security } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -50,10 +50,7 @@ export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
   if (!wlanSecurity)
     return false
 
-  const isWPA3Security = wlanSecurity === WlanSecurityEnum.WPA3
-  const isOWESecurity = wlanSecurity === WlanSecurityEnum.OWE
-
-  return isWPA3Security || isOWESecurity
+  return IsWPA3Security(wlanSecurity as WlanSecurityEnum)
 }
 
 export const inverseTargetValue =
@@ -176,6 +173,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       inverseTargetValue(targetOption, options) : options
     const finalOptions = handleDisabledOfOptions(updatedOptions)
     setOptions(finalOptions)
+    // after onChange, validate the value
+    form.validateFields([['wlan', 'advancedCustomization', 'multiLinkOperationOptions']])
   }
 
   return (
@@ -185,18 +184,18 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       valuePropName='checked'
       style={{ marginBottom: '15px', width: '300px' }}
       rules={[
-        { validator: (_, value) => {
-          const itemValues = Object.values<boolean>(value)
+        { validator: () => {
           const MUST_SELECTED = 2
-          const numberOfSelected = itemValues.filter(itemValue => itemValue).length
+          const numberOfSelected = options.map(option => option.value)
+            .filter(value => value === true)
+            .length
           if (numberOfSelected < MUST_SELECTED) {
-            return Promise.reject($t({ defaultMessage: 'At least 2 bands are selected' }))
+            return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
           }
 
           return Promise.resolve()}
         }
       ]}
-      validateFirst
       children={
         <>
           { sortOptions(options).map((option, key) => {
@@ -269,18 +268,13 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   ]
 
   useEffect(() => {
-    const setWifi6 = () =>
+    if (!isUndefined(wifi7Enabled)) {
       form.setFieldValue(['wlan', 'advancedCustomization', 'wifi6Enabled'], wifi7Enabled)
-
-    const disableMlo = () => {
-      if (!wifi7Enabled) {
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      }
     }
-
-    setWifi6()
     // disable the mlo when wifi7 is disabled
-    disableMlo()
+    if (!wifi7Enabled) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
   }, [wifi7Enabled])
 
 
@@ -313,6 +307,11 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
             children={<Switch />}
           />
         </UI.FieldLabel>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'wifi6Enabled']}
+          initialValue={initWifi7Enabled}
+          hidden
+        />
         {!wifi7Enabled && (
           <div
             data-testid='Description'
@@ -346,7 +345,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
                   valuePropName='checked'
                   style={{ marginBottom: '15px', width: '300px' }}
                   initialValue={initMloEnabled}
-                  children={<Switch />}
+                  children={<Switch disabled={!wifi7Enabled} />}
                 />
               </UI.FieldLabel>
       }

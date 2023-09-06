@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Transfer } from 'antd'
-import { DefaultOptionType }                       from 'antd/lib/select'
-import { TransferItem }                            from 'antd/lib/transfer'
-import { useIntl }                                 from 'react-intl'
+import { Col, Form, Input, Row, Select } from 'antd'
+import { DefaultOptionType }             from 'antd/lib/select'
+import { TransferItem }                  from 'antd/lib/transfer'
+import { useIntl }                       from 'react-intl'
 
 import {
   PageHeader,
   Loader,
   StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsFormLegacyInstance,
+  Transfer
 } from '@acx-ui/components'
 import {
   useVenuesListQuery,

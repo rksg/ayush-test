@@ -154,8 +154,7 @@ export const checkVlanOptions = (
 ) => {
   if (init?.voice) {
     const voiceVlan = init?.voice.toString()
-    if (init?.untagged === voiceVlan && untaggedVlan !== voiceVlan) {
-      vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
+    if (init?.untagged === voiceVlan && String(untaggedVlan) !== voiceVlan) {
       if (init?.isDefaultVlan) {
         vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
       }
@@ -163,7 +162,6 @@ export const checkVlanOptions = (
     if (init?.tagged.indexOf(voiceVlan) !== -1) {
       const tagArray = taggedVlans?.split(',') ?? []
       if (tagArray.indexOf(voiceVlan) === -1) {
-        vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
         if (init?.isDefaultVlan) {
           vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
         }
