@@ -72,7 +72,7 @@ export default function Dashboard () {
         <ReportTile path={path} />
       </div>
       <div style={{ gridArea: 'a2' }}>
-        <Card title={$t({ defaultMessage: 'TBD' })} />
+        <Card />
       </div>
       <div style={{ gridArea: 'd2' }}>
         <SLA filters={analyticsFilter}/>
@@ -84,7 +84,7 @@ export default function Dashboard () {
         <AIDrivenRRM filters={filters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
+        <DidYouKnow filters={filters} maxFactPerSlide={4} maxSlideChar={340} />
       </div>
       <div style={{ gridArea: 'c1' }}>
         <AIOperations filters={filters} />
