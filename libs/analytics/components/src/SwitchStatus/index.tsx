@@ -6,7 +6,6 @@ import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }                  
 import { calculateGranularity }                                                    from '@acx-ui/analytics/utils'
 import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
 import { TimeStamp }                                                               from '@acx-ui/types'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                       from '@acx-ui/utils'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'

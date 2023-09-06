@@ -7,8 +7,8 @@ import {
   usePollingTableQuery,
   AdminLog
 } from '@acx-ui/rc/utils'
-import { useUserProfileContext } from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter }         from '@acx-ui/utils'
+import { useUserProfileContext }                            from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter } from '@acx-ui/utils'
 
 import { adminLogTypeMapping, eventTypeMapping } from './mapping'
 
