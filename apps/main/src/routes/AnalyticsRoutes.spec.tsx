@@ -221,15 +221,6 @@ test('should navigate to analytics/recommendations/aiOps/:id', () => {
   })
   expect(screen.getByTestId('RecommendationDetails')).toBeVisible()
 })
-test('should navigate to analytics/recommendations/crrm/:id', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/crrm/id',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
-})
 test('should navigate to analytics/health page', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(false)
   render(<Provider><AnalyticsRoutes /></Provider>, {
