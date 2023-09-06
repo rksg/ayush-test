@@ -12,8 +12,14 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }                                           from '@acx-ui/config'
-import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { get as getEnv } from '@acx-ui/config'
+import {
+  TenantType,
+  useLocation,
+  TenantNavLink,
+  NewTabLink,
+  MLISA_BASE_PATH
+} from '@acx-ui/react-router-dom'
 
 import modifyVars from '../../theme/modify-vars'
 
@@ -31,6 +37,8 @@ type SideNavProps = {
   activeIcon?: React.FC
   inactiveIcon?: React.FC
   isActiveCheck?: IsActiveCheck | RegExp
+  adminItem?: boolean
+  openNewTab?: boolean
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
@@ -123,16 +131,25 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
       {item.label}
     </>
-    return {
-      ...rest,
-      className: Boolean(isActive) ? 'menu-active' : undefined,
-      key: key,
-      label: uri
-        ? <TenantNavLink
+    const className = []
+    if (Boolean(isActive)) className.push('menu-active')
+    if (Boolean(item.adminItem)) className.push('menu-admin-item')
+    let label = content
+    if (uri) {
+      label = Boolean(item.openNewTab)
+        ? <NewTabLink to={uri}>{label}</NewTabLink>
+        : <TenantNavLink
           to={uri}
           tenantType={tenantType}
-          data-label={item.label}>{content}</TenantNavLink>
-        : content,
+          data-label={item.label}>
+          {label}
+        </TenantNavLink>
+    }
+    return {
+      ...rest,
+      className: className.join(' ') || undefined,
+      key,
+      label,
       ...(isSubMenuType(item) && {
         popupClassName: item.children?.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',

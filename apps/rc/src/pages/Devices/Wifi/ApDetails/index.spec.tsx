@@ -44,6 +44,10 @@ jest.mock('./ApOverviewTab/ApProperties', () => ({
   ApProperties: () => <div data-testid='ApProperties' />
 }))
 
+jest.mock('./ApNeighbors', () => ({
+  ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
+}))
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -103,7 +107,11 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData)))
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      )
     )
   })
 
@@ -221,7 +229,7 @@ describe('ApDetails', () => {
     await screen.findByTestId('rc-ActivityTable')
   })
 
-  it('should navigate to Neighbors tab correctly', async () => {
+  it('should navigate to neighbors tab correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_EDA_NEIGHBORS_TOGGLE)
 
     const params = {

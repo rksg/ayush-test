@@ -122,28 +122,7 @@ describe('Persona Group Details', () => {
     await screen.findByRole('heading', { level: 4, name: /Personas/i })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <PersonaGroupDetails />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
-        }
-      }
-    )
-
-    expect(screen.queryByText('Clients')).toBeNull()
-    expect(screen.queryByText('Persona Management')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Persona Group'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <PersonaGroupDetails />

@@ -5,11 +5,9 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { PageHeader, StepsForm }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { TunnelProfileForm, TunnelProfileFormType }                     from '@acx-ui/rc/components'
 import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
@@ -19,6 +17,8 @@ import {
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { ageTimeUnitConversion } from '../util'
 
 const EditTunnelProfile = () => {
 
@@ -37,7 +37,6 @@ const EditTunnelProfile = () => {
     { params: { id: params.policyId } }
   )
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
@@ -48,16 +47,9 @@ const EditTunnelProfile = () => {
     form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
 
     const ageTime = tunnelProfileData?.ageTimeMinutes || 20
-    if (ageTime % 10080 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 10080)
-      form.setFieldValue('ageTimeUnit', 'week')
-    } else if (ageTime % 1440 === 0) {
-      form.setFieldValue('ageTimeMinutes', ageTime / 1440)
-      form.setFieldValue('ageTimeUnit', 'days')
-    } else {
-      form.setFieldValue('ageTimeMinutes', ageTime)
-      form.setFieldValue('ageTimeUnit', 'minutes')
-    }
+    const result = ageTimeUnitConversion(ageTime)
+    form.setFieldValue('ageTimeMinutes', result?.value)
+    form.setFieldValue('ageTimeUnit', result?.unit)
   }, [form, tunnelProfileData])
 
   const handleUpdateTunnelProfile = async (data: TunnelProfileFormType) => {
@@ -79,7 +71,7 @@ const EditTunnelProfile = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
@@ -88,19 +80,6 @@ const EditTunnelProfile = () => {
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath
-          }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          },
-          {
-            text: tunnelProfileData?.name || '',
-            link: getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.DETAIL,
-              policyId: tunnelProfileData?.id || ''
-            })
           }
         ]}
       />
@@ -115,7 +94,7 @@ const EditTunnelProfile = () => {
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
-            <Col span={8}>
+            <Col span={10}>
               <TunnelProfileForm isDefaultTunnelProfile={isDefaultTunnelProfile}/>
             </Col>
           </Row>

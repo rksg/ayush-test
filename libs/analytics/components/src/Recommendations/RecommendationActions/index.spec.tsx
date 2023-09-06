@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { Provider, recommendationUrl }                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup } from '@acx-ui/test-utils'
 
-import { apiResult } from '../__tests__/fixtures'
+import { recommendationListResult } from '../__tests__/fixtures'
 
 import { RecommendationActions } from '.'
 
 const mockedCrrm = {
-  ...apiResult.recommendations[0],
+  ...recommendationListResult.recommendations[0],
   scope: 'test-scope',
   type: 'venue',
   priority: 'high',
@@ -83,7 +83,7 @@ describe('RecommendationActions', () => {
   })
   it('should handle same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(
       <RecommendationActions recommendation={mockedCrrm} />,
       { wrapper: Provider }
@@ -103,7 +103,7 @@ describe('RecommendationActions', () => {
   })
   it('should handle non-same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(
       <RecommendationActions recommendation={mockedCrrm} />,
       { wrapper: Provider }
@@ -123,7 +123,7 @@ describe('RecommendationActions', () => {
   })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
     render(
       <RecommendationActions recommendation={{ ...mockedCrrm, statusEnum: 'applyscheduled' }} />,
       { wrapper: Provider }

@@ -3,7 +3,7 @@ export type NodeType = 'network'
   | 'system'
   | 'controller'
   | 'domain'
-  | 'zone' | 'switchGroup'
+  | 'zone' | 'switchGroup' | 'switchSubGroup'
   | 'apGroup'
   | 'switch' | 'AP'
 

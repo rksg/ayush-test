@@ -113,6 +113,13 @@ describe('nodeTypes', () => {
 })
 
 describe('formattedPath', () => {
+  it('returns path with correct format if only one node', () => {
+    const path = [
+      { type: 'network', name: 'N' }
+    ]
+    const sliceValue = 'Name'
+    expect(formattedPath(path as NetworkPath, sliceValue)).toEqual('N')
+  })
   it('returns path with correct format', () => {
     const path = [
       { type: 'network', name: 'N' },

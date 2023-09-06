@@ -1,7 +1,20 @@
-import { Drawer as AntDrawer } from 'antd'
-import styled                  from 'styled-components'
+import { Drawer as AntDrawer }       from 'antd'
+import styled, { createGlobalStyle } from 'styled-components'
 
 import { disableStickyHeaders } from '../Table/styledComponents'
+
+export enum DrawerTypes {
+  Default = 'default',
+  FullHeight = 'fullHeight'
+}
+
+export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
+  ${props => props.$type === DrawerTypes.FullHeight ? `
+    .ant-drawer-content-wrapper {
+      height: 100vh;
+      margin-top: calc(-1 * var(--acx-drawer-top-space));
+    }` : ''}
+`
 
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {

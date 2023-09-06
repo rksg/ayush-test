@@ -1,19 +1,24 @@
 import { rest } from 'msw'
 
-import { FirmwareUrlsInfo }           from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { render, screen, mockServer } from '@acx-ui/test-utils'
-import { UserUrlsInfo }               from '@acx-ui/user'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { FirmwareUrlsInfo }               from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen, mockServer }     from '@acx-ui/test-utils'
+import { UserUrlsInfo }                   from '@acx-ui/user'
 
 import {
   allUserSettings,
   cloudMessageBanner,
   cloudVersion,
   scheduleVersion,
-  switchVenueVersionList
+  switchVenueVersionList,
+  venueEdgeFirmwareList
 } from './__tests__/fixtures'
 
 import { CloudMessageBanner } from '.'
+
+jest.mocked(useIsTierAllowed).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('cloud Message Banner', () => {
   const route = {
@@ -41,6 +46,10 @@ describe('cloud Message Banner', () => {
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(venueEdgeFirmwareList))
       )
     )
   })

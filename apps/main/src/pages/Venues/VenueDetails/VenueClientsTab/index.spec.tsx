@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { waitFor } from '@testing-library/react'
+import { rest }    from 'msw'
+
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PersonaUrls, PropertyUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   fireEvent,
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -27,9 +32,28 @@ jest.mock('@acx-ui/rc/components', () => ({
   SwitchClientsTable: () => <div data-testid={'SwitchClientsTable'} />
 }))
 
+jest.mock('apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable', () => ({
+  ...jest.requireActual('apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable'),
+  BasePersonaTable: () => <div data-testid={'personaTable'} />
+}))
+
+
 describe('VenueClientsTab', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.getPropertyConfigsQuery.url,
+        (_, res, ctx) => res(ctx.json({ content: [{ personaGroupId: 'group-id' }] }))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (_, res, ctx) => res(ctx.json({ id: 'group-id', nsgId: 'nsg-id' }))
+      )
+    )
+  })
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true) // Features.DEVICES
+    jest.mocked(useIsTierAllowed).mockReturnValue(true) // Features.CLOUDPATH_BETA
 
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
@@ -49,10 +73,20 @@ describe('VenueClientsTab', () => {
       hash: '',
       search: ''
     })
+
+    const personaTab = await screen.findByRole('tab', { name: /Persona/i })
+    await waitFor(() => expect(personaTab).toHaveAttribute('aria-selected', 'false'))
+    fireEvent.click(personaTab)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/persona`,
+      hash: '',
+      search: ''
+    })
   })
 
-  it('should render correct tab when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should render correct tab when beta flag is off', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7'
@@ -60,6 +94,6 @@ describe('VenueClientsTab', () => {
     render(<Provider><VenueClientsTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
     })
-    expect(await screen.findByRole('tab', { name: 'Wi-Fi' })).toBeVisible()
+    expect(screen.queryByRole('tab', { name: /Persona/i })).toBeNull()
   })
 })

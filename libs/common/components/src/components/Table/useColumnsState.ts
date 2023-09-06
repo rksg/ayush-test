@@ -25,7 +25,7 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   const { defaultState, initialState } = useDefaultAndInitialState(options)
   const [state, setState] = useState(defaultState)
 
-  useEffect(() => setState(initialState), [setState, initialState])
+  useEffect(() => setState(initialState), [initialState])
 
   const onChange = useCallback((state: TableColumnState) => {
     const newState = Object.entries(state).every(([,col]) => !col.show)
@@ -35,7 +35,7 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
 
     columnState?.onChange?.(stateToUserState(newState))
     setState(newState)
-  }, [setState, columnState, initialState, options.settingsId])
+  }, [columnState, initialState, options.settingsId])
 
   const resetState = useCallback(
     () => onChange(defaultState),
@@ -79,12 +79,18 @@ function useDefaultAndInitialState <RecordType> ({
       )
     }
 
-    const state = settingsId && localStorage.getItem(settingsId)
+    let state = settingsId && localStorage.getItem(settingsId)
       ? JSON.parse(localStorage.getItem(settingsId)!)
       : undefined
 
     if (settingsId && !state) {
       localStorage.setItem(settingsId, JSON.stringify(initialState))
+    }
+    else if (settingsId && state) {
+      state = {
+        ...initialState,
+        ...(_.pick(state, _.keys(initialState)))
+      } // for newly added column
     }
 
     return {

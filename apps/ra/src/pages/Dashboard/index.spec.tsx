@@ -25,6 +25,12 @@ describe('Dashboard', () => {
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
     expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
+    expect(await screen.findByTestId('NetworkHistory')).toBeVisible()
+    expect(await screen.findByTestId('SLA')).toBeVisible()
+    expect(await screen.findByTestId('ReportTile')).toBeVisible()
+    expect(await screen.findByTestId('MlisaNetworkFilter')).toBeVisible()
+    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
+    expect(await screen.findByTestId('AIOperations')).toBeVisible()
   })
 
   describe('useMonitorHeight', () => {

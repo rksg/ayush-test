@@ -1,6 +1,8 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
+import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
@@ -145,6 +147,22 @@ export class PskWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  wifi6Enabled?: boolean
+
+  wifi7Enabled?: boolean
+
+  multiLinkOperationEnabled?: boolean
+
+  multiLinkOperationOptions?: MultiLinkOperationOptions
+
+  qosMirroringEnabled?: boolean
+
+  qosMirroringScope?: string
+
+  qosMapSetEnabled?: boolean
+
+  qosMapSetOptions?: QosMapSetOptions
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -254,5 +272,15 @@ export class PskWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.wifi6Enabled = true
+
+    this.wifi7Enabled = true
+
+    this.multiLinkOperationEnabled = false
+
+    this.qosMapSetEnabled = false
+
+    this.qosMapSetOptions = new QosMapSetOptions()
   }
 }

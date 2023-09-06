@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button }                  from '@acx-ui/components'
+import { Alert, Button }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
 import {
-  useLazyGetSwitchVenueVersionListQuery
+  useLazyGetSwitchVenueVersionListQuery, useLazyGetVenueEdgeFirmwareListQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
@@ -25,18 +26,22 @@ export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const linkToAdministration = useTenantLink('/administration/')
   const dismissUpgradeSchedule = 'COMMON$dismiss-upgrade-schedule'
 
   const [version, setVersion] = useState({} as unknown as CloudVersion)
   const [newWifiScheduleExists, setNewWifiScheduleExists] = useState(false)
   const [newSwitchScheduleExists, setNewSwitchScheduleExists] = useState(false)
+  const [newEdgeScheduleExists, setNewEdgeScheduleExists] = useState(false)
 
   const { data } = useGetPlmMessageBannerQuery({ params })
   const { data: userSettings } = useGetAllUserSettingsQuery({ params })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
+  const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
   const showMessageBanner = !!(data && data.description)
 
   useEffect(() => {
@@ -45,6 +50,8 @@ export function CloudMessageBanner () {
       checkWifiScheduleExists()
       if (!hasRoles(RolesEnum.DPSK_ADMIN))
         checkSwitchScheduleExists()
+      if(isEdgeEnabled && isScheduleUpdateReady)
+        checkEdgeScheduleExists()
     }
   }, [cloudVersion, userSettings])
 
@@ -82,12 +89,41 @@ export function CloudMessageBanner () {
       })
   }
 
+  const checkEdgeScheduleExists = async () => {
+    return await getVenueEdgeFirmwareList({})
+      .unwrap()
+      .then(result => {
+        const upgradeVenueViewList = result ?? []
+        setNewEdgeScheduleExists(upgradeVenueViewList.some(
+          item => item.nextSchedule))
+      }).catch((error) => {
+        console.log(error) // eslint-disable-line no-console
+      })
+  }
+
+  const setGlobalCSSProperty = (isShow: boolean) => {
+    document.documentElement.style.setProperty(
+      '--acx-has-cloudmessagebanner', isShow ? '1' : '0'
+    )
+  }
+
   /* eslint-disable max-len */
   const MessageBanner = () => {
     if (showMessageBanner) {
-      return <Alert message={data?.description} type='info' showIcon closable />
+      setGlobalCSSProperty(true)
+      return <Alert message={data?.description}
+        type='info'
+        showIcon
+        closable
+        onClose={()=>{
+          setGlobalCSSProperty(false)
+        }}/>
     } else {
-      const showUpgradeSchedule = (newWifiScheduleExists || newSwitchScheduleExists) && !showMessageBanner
+      const showUpgradeSchedule = (
+        newWifiScheduleExists ||
+        newSwitchScheduleExists ||
+        newEdgeScheduleExists
+      ) && !showMessageBanner
       const upgradeMessageTitle = showUpgradeSchedule
         ? $t({ defaultMessage: 'An upgrade schedule for the new firmware version is available.' })
         : ''
@@ -97,10 +133,13 @@ export function CloudMessageBanner () {
           navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
         } else if (newSwitchScheduleExists) {
           navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
+        } else if(newEdgeScheduleExists) {
+          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
         }
       }
 
       if (upgradeMessageTitle) {
+        setGlobalCSSProperty(true)
         return <Alert
           message={<Space>{upgradeMessageTitle}
             <Button type='link'
@@ -114,6 +153,7 @@ export function CloudMessageBanner () {
         />
       }
     }
+    setGlobalCSSProperty(false)
     return null
   }
   /* eslint-enable max-len */

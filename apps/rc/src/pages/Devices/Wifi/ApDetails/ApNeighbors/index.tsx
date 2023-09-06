@@ -6,11 +6,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useApContext }           from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
-import ApLldpNeighbors from './ApLldpNeighbors'
-import ApRfNeighbors   from './ApRfNeighbors'
-
-
-type ApNeighborTypes = 'lldp' | 'rf'
+import ApLldpNeighbors     from './ApLldpNeighbors'
+import ApRfNeighbors       from './ApRfNeighbors'
+import { ApNeighborTypes } from './constants'
 
 const tabs : {
   key: ApNeighborTypes,
@@ -45,8 +43,9 @@ export function ApNeighborsTab () {
   return (isApNeighborsOn
     ? <Tabs
       onChange={onTabChange}
+      destroyInactiveTabPane={true}
       activeKey={activeSubTab}
-      type='card'
+      type='second'
     >
       {tabs.map(({ key, title, component }) =>
         <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}

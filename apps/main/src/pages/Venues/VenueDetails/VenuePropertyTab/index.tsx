@@ -16,6 +16,7 @@ import {
   Features,
   useIsSplitOn
 }                                from '@acx-ui/feature-toggle'
+import {  DateFormatEnum,  userDateTimeFormat } from '@acx-ui/formatter'
 import {
   DownloadOutlined,
   WarningTriangleSolid
@@ -37,7 +38,8 @@ import {
   useUpdatePropertyUnitMutation,
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
-  useLazyGetConnectionMeteringByIdQuery
+  useLazyGetConnectionMeteringByIdQuery,
+  useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -58,7 +60,6 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
-
 
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
@@ -87,11 +88,12 @@ function ConnectionMeteringLink (props:{
     if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
+      tooltip = $t({ defaultMessage: 'The Data Consumption date has expired' })
     } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
-        , { expireDate: expirationTime.format('YYYY/MM/DD') })
+        , { expireDate: expirationTime.format(userDateTimeFormat(DateFormatEnum.DateFormat)) })
     }
   }
   return (
@@ -142,6 +144,7 @@ export function VenuePropertyTab () {
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
 
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -549,6 +552,7 @@ export function VenuePropertyTab () {
         <PropertyUnitDrawer
           visible={true}
           venueId={venueId}
+          countryCode={venueData?.address?.countryCode}
           unitId={drawerState?.unitId}
           isEdit={drawerState.isEdit}
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}

@@ -2,18 +2,14 @@
 
 exports[`HelpButton should enable chat support button if support status is chatting 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__ButtonWrapper-sc-1jsh83e-3 lgxWYX"
+  <button
+    ant-click-animating-without-extra-node="true"
+    class="ant-btn ant-btn-primary ant-btn-icon-only styledComponents__Button-sc-iwostn-9 styledComponents__ButtonSolid-sc-iwostn-10 fZXiZc hIiyrn ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+    type="button"
   >
-    <button
-      ant-click-animating-without-extra-node="true"
-      class="ant-btn ant-btn-primary ant-btn-icon-only styledComponents__Button-sc-iwostn-10 styledComponents__ButtonSolid-sc-iwostn-15 ihgUTI fIlVXa ant-dropdown-trigger"
-      type="button"
-    >
-      <svg
-        data-testid="QuestionMarkCircleSolid"
-      />
-    </button>
-  </span>
+    <svg
+      data-testid="QuestionMarkCircleSolid"
+    />
+  </button>
 </DocumentFragment>
 `;

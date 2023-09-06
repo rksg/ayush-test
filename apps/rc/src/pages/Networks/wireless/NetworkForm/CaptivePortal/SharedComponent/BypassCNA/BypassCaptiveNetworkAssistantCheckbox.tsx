@@ -55,7 +55,7 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
 
   /* eslint-disable max-len */
   return (
-    <Form.Item data-testid='bypasscna-fullblock'>
+    <div style={{ display: 'flex', marginTop: '10px', marginBottom: '10px' }} data-testid='bypasscna-fullblock'>
       <Form.Item
         name={['wlan', 'bypassCNA']}
         noStyle
@@ -73,8 +73,8 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
       />
       <Tooltip title={$t({ defaultMessage: 'When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.' })}
         placement='bottom'>
-        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+        <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
-    </Form.Item>
+    </div>
   )
 }

@@ -33,8 +33,8 @@ describe('HealthPageContextProvider', () => {
   })
   afterAll(() => Date.now = original)
   const expectedTimeWindow: TimeStampRange = [
-    '2021-12-31T00:00:00+00:00',
-    '2022-01-01T00:00:59+00:00'
+    '2021-12-31T00:01:00+00:00',
+    '2022-01-01T00:01:00+00:00'
   ]
   it('should return null if ap count query is still loading', async () => {
     mockUseApCountForNodeQuery.mockImplementation(() => ({

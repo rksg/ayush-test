@@ -10,7 +10,10 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
+import type { CheckboxProps } from 'antd/lib/checkbox'
+
 interface DrawerHeaderProps {
+  drawerType?: UI.DrawerTypes,
   title: string,
   icon?: React.ReactNode,
   subTitle?: string,
@@ -37,9 +40,9 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 let currentDrawer: {
-  ref: RefObject<boolean>,
-  onClose: CallableFunction
-}
+  ref: RefObject<boolean> | null,
+  onClose: CallableFunction | null
+} = { ref: null, onClose: null }
 
 export function useCloseOutsideClick (
   onClose: CallableFunction,
@@ -53,28 +56,40 @@ export function useCloseOutsideClick (
       currentDrawer = { ref: wasVisible, onClose }
     }
     wasVisible.current = visible
-  }, [onClose, footer, wasVisible, visible])
+  }, [onClose, footer, visible])
+  useEffect(() => {
+    return () => {
+      if (currentDrawer?.ref === wasVisible) {
+        wasVisible.current = false
+        currentDrawer = { ref: null, onClose: null }
+      }
+    }
+  }, [])
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, ...rest } = props
+  const { title, icon, subTitle, onBackClick, drawerType = UI.DrawerTypes.Default, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
   useCloseOutsideClick(onClose, props.footer, Boolean(props.visible))
-  return <UI.Drawer
-    {...rest}
-    title={<Header {...headerProps}/>}
-    placement='right'
-    mask={false}
-    maskStyle={{ background: 'none' }}
-    maskClosable={false}
-    width={props.width || '336px'}
-    closeIcon={<CloseSymbol />}
-  />
+  return <>
+    <UI.Drawer
+      {...rest}
+      title={<Header {...headerProps}/>}
+      placement='right'
+      mask={false}
+      maskStyle={{ background: 'none' }}
+      maskClosable={false}
+      width={props.width || '336px'}
+      closeIcon={<CloseSymbol />}
+    />
+    <UI.DrawerStyle $type={drawerType}/>
+  </>
 }
 
 interface FormFooterProps {
   showAddAnother?: boolean
+  showAddAnotherProps?: CheckboxProps
   showSaveButton?: boolean
   onCancel: () => void
   onSave?: (checked: boolean) => Promise<void>
@@ -90,6 +105,7 @@ const FormFooter = (props: FormFooterProps) => {
   const [ loading, setLoading ] = useState(false)
   const {
     showAddAnother = false,
+    showAddAnotherProps,
     showSaveButton = true,
     onCancel,
     onSave
@@ -110,6 +126,7 @@ const FormFooter = (props: FormFooterProps) => {
           onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
           checked={checked}
           children={buttonLabel.addAnother}
+          {...showAddAnotherProps}
         />}
       </div>
       <div>

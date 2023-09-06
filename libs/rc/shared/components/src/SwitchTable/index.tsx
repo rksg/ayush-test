@@ -47,7 +47,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
@@ -365,7 +365,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
-    key: 'EnableCliSessionButton',
+    key: getShowWithoutRbacCheckKey('EnableCliSessionButton'),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -396,7 +396,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        return !row?.syncedAdminPassword && isConfigSynced
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
     onClick: handleClickMatchPassword
@@ -431,6 +432,19 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     } else if(!_.isEmpty(customFilters)) {
       customFilters.syncedSwitchConfig = null
     }
+
+    if (customFilters.deviceStatus?.includes(SwitchStatusEnum.FIRMWARE_UPD_START)) {
+      customFilters.deviceStatus = [
+        SwitchStatusEnum.FIRMWARE_UPD_START,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS,
+        SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING,
+        SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE,
+        SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE,
+        SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH,
+        SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      ]
+    }
+
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 

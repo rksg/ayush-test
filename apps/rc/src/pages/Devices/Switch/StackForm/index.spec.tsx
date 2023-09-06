@@ -208,7 +208,9 @@ describe('Switch Stack Form - Add', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
   })
+
   it('should handle add stack by stack switches', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
@@ -221,6 +223,7 @@ describe('Switch Stack Form - Add', () => {
     })
 
     expect(await screen.findByText('FEK3224R07X')).toBeVisible()
+    expect(await screen.findByText('FEK3224R07X_name')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
@@ -247,26 +250,7 @@ describe('Switch Stack Form - Add', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should render correct breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
-
-    await changeVenue()
-    await fillInForm()
-
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-  })
-
-  it('should render correct breadcrumb when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render correct breadcrumb', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })

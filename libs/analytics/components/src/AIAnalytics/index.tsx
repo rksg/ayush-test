@@ -5,14 +5,12 @@ import { get }                                   from '@acx-ui/config'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { useConfigChange }          from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
 import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
-  CONFIG_CHANGE = 'configChange',
   CRRM = 'recommendations/crrm',
   AIOPS = 'recommendations/aiOps'
 }
@@ -26,18 +24,12 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
     component: <IncidentTabContent/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
-  }
-  const configChangeTab = {
-    key: AIAnalyticsTabEnum.CONFIG_CHANGE,
-    title: $t({ defaultMessage: 'Config Change' }),
-    ...useConfigChange()
   }
   const recommendationTab = [
     {
@@ -55,8 +47,7 @@ const useTabs = () : Tab[] => {
   ]
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : []),
-    ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : [])
+    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : [])
   ]
 }
 

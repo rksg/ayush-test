@@ -3,7 +3,6 @@ import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
 import { StepsForm }                      from '@acx-ui/components'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -126,18 +125,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
     Modal.destroyAll()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
-    })
-    expect(screen.getByRole('link', {
-      name: /wired networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })

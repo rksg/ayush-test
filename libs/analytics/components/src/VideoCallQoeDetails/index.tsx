@@ -11,7 +11,6 @@ import { Loader, PageHeader, Table, TableProps, Tooltip,
   cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -20,9 +19,9 @@ import {
 import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
-import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, Client }                                                     from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
+import { useSearchClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, Client }                                                      from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'
@@ -30,7 +29,6 @@ import * as UI                                               from './styledCompo
 export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { testId } = useParams()
   const [isDrawerOpen,setIsDrawerOpen] = useState(false)
   const [participantId,setParticipantId] = useState<number|null>(null)
@@ -49,7 +47,7 @@ export function VideoCallQoeDetails (){
   }
 
   const [ search, setSearch ] = useState('')
-  const searchQueryResults = useSeachClientsQuery({
+  const searchQueryResults = useSearchClientsQuery({
     start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
     end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
     query: search,
@@ -329,10 +327,8 @@ export function VideoCallQoeDetails (){
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
           breadcrumb={[
-            ...(isNavbarEnhanced ? [
-              { text: $t({ defaultMessage: 'AI Assurance' }) },
-              { text: $t({ defaultMessage: 'Network Assurance' }) }
-            ]:[]),
+            { text: $t({ defaultMessage: 'AI Assurance' }) },
+            { text: $t({ defaultMessage: 'Network Assurance' }) },
             {
               text: $t({ defaultMessage: 'Video Call QoE' }),
               link: '/analytics/videoCallQoe'

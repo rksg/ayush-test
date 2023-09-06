@@ -2,7 +2,6 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { TunnelProfileUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -39,9 +38,9 @@ describe('AddTunnelProfile', () => {
       </Provider>
       , { route: { path: createViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Policy Name' })
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
-    const ageTimeField = screen.getByRole('spinbutton', { name: 'Idle Period' })
+    const ageTimeField = screen.getByRole('spinbutton')
     await user.type(ageTimeField, '20')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -51,23 +50,7 @@ describe('AddTunnelProfile', () => {
     }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <AddTunnelProfile />
-      </Provider>
-      , { route: { path: createViewPath, params } }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Tunnel Profile'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <AddTunnelProfile />
