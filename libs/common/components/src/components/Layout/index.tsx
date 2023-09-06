@@ -121,7 +121,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       }
     }
 
-    const { uri, tenantType, activeIcon, inactiveIcon, ...rest } = item
+    const { uri, tenantType, activeIcon, inactiveIcon, adminItem, ...rest } = item
     delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
@@ -133,7 +133,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     </>
     const className = []
     if (Boolean(isActive)) className.push('menu-active')
-    if (Boolean(item.adminItem)) className.push('menu-admin-item')
+    if (Boolean(adminItem)) className.push('menu-admin-item')
     let label = content
     if (uri) {
       label = Boolean(item.openNewTab)
