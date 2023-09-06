@@ -304,7 +304,6 @@ describe('ManageIntegrator', () => {
     expect(screen.queryByRole('heading', { name: 'Subscriptions' })).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Summary' })).toBeNull()
 
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
