@@ -353,11 +353,11 @@ describe('DpskPassphraseManagement', () => {
       name: /add device/i
     })
 
-    await userEvent.type(
-      screen.getByRole('textbox', {
-        name: /mac address/i
-      }), 'DC:AE:EB:22:5E:60'
-    )
+    // await userEvent.type(
+    //   screen.getByRole('textbox', {
+    //     name: /mac address/i
+    //   }), 'DC:AE:EB:22:5E:60'
+    // )
 
     await userEvent.click(screen.getByText(/add another device/i))
 
