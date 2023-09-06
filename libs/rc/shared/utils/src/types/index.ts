@@ -489,6 +489,7 @@ export interface SwitchClient {
   venueId: string
   venueName: string
   isRuckusAP: boolean
+  vni?: string
   dhcpClientOsVendorName?: string
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string

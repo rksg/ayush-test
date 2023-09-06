@@ -67,10 +67,10 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
       }
 
     }
-  }, [data, editMode])
+  }, [form, data, editMode])
 
   useEffect(() => {
-    if (embeddedMode) {
+    if (form && embeddedMode) {
       form.setFieldValue('enableLayer2', Boolean(embeddedObject?.l2AclPolicyId))
       form.setFieldValue('l2AclPolicyId', embeddedObject?.l2AclPolicyId)
       form.setFieldValue('enableLayer3', Boolean(embeddedObject?.l3AclPolicyId))
@@ -93,7 +93,7 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
         embeddedObject?.downlinkLimit && embeddedObject?.downlinkLimit > 0
       )
     }
-  }, [embeddedMode, embeddedObject])
+  }, [form, embeddedMode, embeddedObject])
 
   return (
     <GridRow>

@@ -4,9 +4,16 @@ import { kebabCase } from 'lodash'
 import { useIntl }   from 'react-intl'
 import sanitize      from 'sanitize-filename'
 
-import { Button, Loader, recommendationBandMapping, SuspenseBoundary } from '@acx-ui/components'
-import { formatter }                                                   from '@acx-ui/formatter'
-import { DownloadOutlined }                                            from '@acx-ui/icons'
+import {
+  Button,
+  Loader,
+  SuspenseBoundary,
+  recommendationBandMapping
+} from '@acx-ui/components'
+import { formatter }        from '@acx-ui/formatter'
+import { DownloadOutlined } from '@acx-ui/icons'
+
+import { EnhancedRecommendation } from '../services'
 
 import { useCRRMQuery }    from './services'
 import { DownloadWrapper } from './styledComponents'
@@ -23,24 +30,27 @@ const useDownloadUrl = (data: unknown, type: string) => {
   return url
 }
 
-export function DownloadRRMComparison (props: { title?: string }) {
+export function DownloadRRMComparison (props: {
+  details: EnhancedRecommendation,
+  title?: string
+}) {
   const { $t } = useIntl()
-  const { recommendation, queryResult } = useCRRMQuery()
+  const band = recommendationBandMapping[
+    props.details.code as keyof typeof recommendationBandMapping]
+  const queryResult = useCRRMQuery(props.details, band)
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 
-  const band = recommendationBandMapping[
-    recommendation.data?.code as keyof typeof recommendationBandMapping]
   const filename = sanitize([
     'rrm-comparison',
-    kebabCase(recommendation.data?.sliceValue),
+    kebabCase(props.details.sliceValue),
     kebabCase(formatter('radioFormat')(band).toLowerCase())
   ].join('-') + '.csv')
 
   return <DownloadWrapper>
-    <Loader states={[recommendation, queryResult]} fallback={<Spinner size='default' />}>
+    <Loader states={[queryResult]} fallback={<Spinner size='default' />}>
       <Button
         size='small'
-        disabled={!!recommendation.data?.monitoring}
+        disabled={!!props.details.monitoring}
         icon={<DownloadOutlined/>}
         download={filename}
         href={url}

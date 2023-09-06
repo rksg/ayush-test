@@ -7,7 +7,8 @@ import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
 import { NodeType, getIntl }               from '@acx-ui/utils'
 
-import { codes } from '../config'
+import { codes }              from '../config'
+import { extractBeforeAfter } from '../services'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -42,13 +43,6 @@ export const getValues = (details: EnhancedRecommendation) => {
       ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
       : recommendedValueTooltipContent
   }
-}
-
-export function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
-  const { current, previous, projected } = value!
-  const [before, after] = [previous, current, projected]
-    .filter(value => value !== null)
-  return [before, after]
 }
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {

@@ -77,10 +77,6 @@ export function useMenuConfig () {
             }, {
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
-            }] : []),
-            ...(isAnltAdvTier && showConfigChange ? [{
-              uri: '/analytics/configChange',
-              label: $t({ defaultMessage: 'Config Change' })
             }] : [])
           ]
         },
@@ -95,6 +91,10 @@ export function useMenuConfig () {
             ...(isAnltAdvTier ? [{
               uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
+            }] : []),
+            ...(isAnltAdvTier && showConfigChange ? [{
+              uri: '/analytics/configChange',
+              label: $t({ defaultMessage: 'Config Change' })
             }] : []),
             ...(isAnltAdvTier && showVideoCallQoe ? [{
               uri: '/analytics/videoCallQoe',
@@ -285,6 +285,7 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
+      adminItem: true,
       children: [
         {
           type: 'group' as const,
