@@ -73,9 +73,9 @@ import {
   getPoeClass,
   updateSwitchVlans
 } from './editPortDrawer.utils'
-import { LldpQOSTable }    from './lldpQOSTable'
-import { SelectVlanModal } from './selectVlanModal'
-import * as UI             from './styledComponents'
+import { LldpQOSTable }       from './lldpQOSTable'
+import { SelectVlanModalNew } from './selectVlanModalNew'
+import * as UI                from './styledComponents'
 
 
 
@@ -803,7 +803,7 @@ export function EditPortDrawerNew ({
               children={<Checkbox />}
             />
           </Space>}
-          <div>
+          <div style={{ marginBottom: '30px' }}>
             <Space style={{
               width: '510px', display: 'flex', justifyContent: 'space-between',
               marginBottom: isMultipleEdit ? '16px' : '4px'
@@ -882,7 +882,7 @@ export function EditPortDrawerNew ({
               </>}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 24 }}
-              style={{ width: '95%' }}
+              style={{ width: '95%', marginBottom: '0' }}
               name='taggedVlans'
               children={isMultipleEdit && hasMultipleValue.includes('taggedVlans')
                 ? <MultipleText data-testid='tagged-multi-text' />
@@ -895,6 +895,13 @@ export function EditPortDrawerNew ({
                     : '--'
                 }</Space>}
             />
+            <UI.VoiceVlan>
+              <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
+              {
+                voiceVlan ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
+                  : $t({ defaultMessage: 'No' })
+              }
+            </UI.VoiceVlan>
             {!untaggedVlan && !taggedVlans
               // eslint-disable-next-line max-len
               && !(isMultipleEdit && (hasMultipleValue.includes('untaggedVlan') || hasMultipleValue.includes('taggedVlans')))
@@ -1332,7 +1339,7 @@ export function EditPortDrawerNew ({
 
       </UI.Form>
 
-      {selectModalvisible && <SelectVlanModal
+      {selectModalvisible && <SelectVlanModalNew
         form={form}
         selectModalvisible={selectModalvisible}
         setSelectModalvisible={setSelectModalvisible}

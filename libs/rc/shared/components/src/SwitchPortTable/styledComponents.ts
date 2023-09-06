@@ -111,3 +111,7 @@ export const PortStatus = styled.div`
     margin-left: 4px;
   }
 `
+
+export const VoiceVlan = styled.div`
+  font-size: var(--acx-subtitle-3-font-size);
+`
