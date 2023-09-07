@@ -52,7 +52,6 @@ describe('VenueClientsTab', () => {
     )
   })
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true) // Features.DEVICES
     jest.mocked(useIsTierAllowed).mockReturnValue(true) // Features.CLOUDPATH_BETA
 
     const params = {
