@@ -21,6 +21,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);

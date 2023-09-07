@@ -53,13 +53,7 @@ export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
 export const AnchorLayoutSidebar = styled(Col)<{ $offsetTop?: number }>`
   > div > [aria-hidden] + .ant-affix {
     position: fixed;
-    top: calc(${props => props.$offsetTop || 0}px +
-      var(--acx-header-height) +
-      var(--acx-content-vertical-space) +
-      var(--acx-pageheader-height) +
-      var(--acx-cartablist-height) +
-      (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
-    ) !important;
+    top: ${props => props.$offsetTop || 0}px !important;
   }
   > div > :not(.ant-affix) > .ant-anchor-wrapper .ant-anchor-ink-ball {
     top: 13.5px !important;

@@ -56,14 +56,9 @@ const secondStyle = css`
   ${cardStyle}
   &.ant-tabs-top > .ant-tabs-nav {
     position: sticky;
-    top: calc(
-      var(--acx-header-height) +
-      var(--acx-content-vertical-space) +
-      var(--acx-pageheader-height) +
-      (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
-    );
+    top: var(--sticky-offset);
     background: var(--acx-primary-white);
-    z-index: 6;
+    z-index: 5;
     box-shadow: var(--acx-primary-white) 0px 10px 10px;
   }
 `
