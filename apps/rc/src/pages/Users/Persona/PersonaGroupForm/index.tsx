@@ -5,6 +5,7 @@ import TextArea                                               from 'antd/lib/inp
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
+import { useDpskNewConfigFlowParams }                                                   from '@acx-ui/rc/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists, DpskSaveData, PersonaGroup }                             from '@acx-ui/rc/utils'
 
@@ -20,10 +21,11 @@ export function PersonaGroupForm (props: {
   const { form, defaultValue } = props
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
 
-  const dpskPoolList = useGetDpskListQuery({ })
+  const dpskPoolList = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
 
   const { data: macRegistrationPoolList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
