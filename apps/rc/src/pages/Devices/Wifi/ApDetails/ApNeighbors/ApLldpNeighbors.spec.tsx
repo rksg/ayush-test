@@ -53,6 +53,14 @@ describe('ApLldpNeighbors', () => {
     )
   })
 
+  beforeEach(() => {
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
+  })
+
+  afterEach(() => {
+    mockedInitPokeSocketFn.mockRestore()
+  })
+
   it('should render LLDP Neighbors view', async () => {
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
       setTimeout(handler, 0) // Simulate receving the message from websocket
@@ -66,21 +74,21 @@ describe('ApLldpNeighbors', () => {
 
     await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
 
-    const targetNeighbor = mockedApLldpNeighbors.neighbors[0]
-    const targetInterface = new RegExp(targetNeighbor.lldpInterface)
-    const targetRow = await screen.findByRole('row', { name: targetInterface })
-    expect(targetRow).toBeVisible()
+    const targetInterface = new RegExp(mockedApLldpNeighbors.neighbors[0].lldpInterface)
+    const targetInterfaceButton = await screen.findByRole('button', { name: targetInterface })
+    expect(targetInterfaceButton).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(targetRow).getByRole('button', { name: targetNeighbor.lldpInterface }))
+    const managedNeighborSysName = new RegExp(mockedApLldpNeighbors.neighbors[1].lldpSysName)
+    const managedNeighborLink = await screen.findByRole('link', { name: managedNeighborSysName })
+    expect(managedNeighborLink).toBeVisible()
+
+    await userEvent.click(targetInterfaceButton)
 
     const detailsDrawer = await screen.findByRole('dialog')
     expect(detailsDrawer).toBeVisible()
 
     await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(detailsDrawer).not.toBeVisible())
-
-    mockedInitPokeSocketFn.mockRestore()
   })
 
   it('should handle error correctly', async () => {

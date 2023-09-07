@@ -14,7 +14,8 @@ import {
   PersonaDetailsLink,
   PersonaGroupLink,
   PropertyUnitLink,
-  ImportFileDrawerType
+  ImportFileDrawerType,
+  useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -208,6 +209,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setPersonasCount } = useContext(PersonasContext)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
@@ -254,7 +256,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
       const passphraseId = persona.dpskGuid
       if (!passphraseId) return
 
-      getDpskDevices({ params: { tenantId, passphraseId, serviceId } })
+      getDpskDevices({
+        params: { tenantId, passphraseId, serviceId, ...dpskNewConfigFlowParams }
+      })
         .then(result => {
           if (result.data) {
             const count = result.data.filter(d => d.online).length

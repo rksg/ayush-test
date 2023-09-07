@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
+import { SimpleListTooltip, useDpskNewConfigFlowParams }         from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
@@ -51,7 +51,9 @@ export default function AdaptivePolicySetTable () {
     payload: { pageSize: 10000 }
   }, { skip: !isCloudpathEnabled })
 
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { data: dpskList, isLoading: getDpsksLoading } = useGetDpskListQuery({
+    params: dpskNewConfigFlowParams,
     payload: { pageSize: 10000 }
   }, { skip: !isCloudpathEnabled })
 
