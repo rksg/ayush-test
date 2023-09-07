@@ -116,6 +116,7 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 
 
 export { TunnelProfileForm } from './TunnelProfileForm'
+export { useTunnelProfileActions } from './TunnelProfileForm/useTunnelProfileActions'
 export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
