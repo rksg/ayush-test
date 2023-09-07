@@ -7,10 +7,10 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip }                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                             from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3Security } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                                  from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -53,6 +53,7 @@ export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecur
   const enableOwe = getIsOwe(wlanData, wlanSecurity)
   const isWPA23Mixed = wlanSecurity === WlanSecurityEnum.WPA23Mixed
 
+  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum)
   return IsWPA3Security(wlanSecurity) || isWPA23Mixed || enableOwe || false
 }
 
