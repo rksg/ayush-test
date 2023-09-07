@@ -114,6 +114,15 @@ export const PortStatus = styled.div`
 
 export const VoiceVlan = styled.div`
   font-size: var(--acx-subtitle-3-font-size);
+  .ant-form-item-control-input {
+    font-size: var(--acx-body-4-font-size);
+    min-height: var(--acx-body-4-font-size); 
+    .multiple {
+      .title{
+        margin-right: 5px;
+      }
+    }
+  }
 `
 
 export const TaggedVlanTab = styled.div`

@@ -163,10 +163,11 @@ export function SelectVlanModal (props: {
       = !_.isEqual(taggedVlans?.toString().split(','), selectTaggedVlans?.toString().split(','))
     const isUntaggedVlanChanged
       = !_.isEqual(untaggedVlan?.toString(), selectUntaggedVlan?.toString())
+    const voiceVlanChanged
+      = !_.isEqual(voiceVlanTmp, voiceVlan)
+    setDisableButton(!(isTaggedVlansChanged || isUntaggedVlanChanged || voiceVlanChanged))
 
-    setDisableButton(!(isTaggedVlansChanged || isUntaggedVlanChanged))
-
-  }, [selectTaggedVlans, selectUntaggedVlan])
+  }, [selectTaggedVlans, selectUntaggedVlan, voiceVlanTmp])
 
   const onChangeTaggedVlan = (checkedValues: CheckboxValueType[]) => {
     const untaggedVlanOptions = getUntaggedVlanOptions(checkedValues)

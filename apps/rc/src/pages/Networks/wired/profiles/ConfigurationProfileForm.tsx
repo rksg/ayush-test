@@ -118,7 +118,7 @@ export function ConfigurationProfileForm () {
           prevConfig.forEach(p => {
             if(i.model == p.model) {
               if(p.voiceVlans.length){
-                const validVlans = options[index].taggedVlans // Need check index is OK or not
+                const validVlans = options[index].taggedVlans
                 p.voiceVlans.forEach(pVlan=>{
                   validVlans.forEach(o => {
                     if(o.vlanId == pVlan.vlanId){

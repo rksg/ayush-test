@@ -128,7 +128,6 @@ export function EditPortDrawer ({
     portVlansCheckbox,
     untaggedVlan,
     taggedVlans,
-    voiceVlanCheckbox,
     voiceVlan,
     portProtectedCheckbox,
     lldpEnableCheckbox,
@@ -142,7 +141,8 @@ export function EditPortDrawer ({
     lldpQosCheckbox,
     ingressAclCheckbox,
     egressAclCheckbox,
-    tagsCheckbox
+    tagsCheckbox,
+    profileName
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -443,7 +443,6 @@ export function EditPortDrawer ({
       case 'useVenuesettings': return disabledUseVenueSetting || switchDetail?.vlanCustomize
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
-      case 'voiceVlan': return (isMultipleEdit && !voiceVlanCheckbox) || vlansOptions?.length <= 1
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
@@ -492,7 +491,7 @@ export function EditPortDrawer ({
       const overrideFields = getOverrideFields(form.getFieldsValue())
       if ((overrideFields?.includes('portVlans') && vlansHasChanged)
         && !(hasBreakoutPortAndVenueSettings)) {
-        overrideFields.push('taggedVlans', 'untaggedVlan')
+        overrideFields.push('taggedVlans', 'untaggedVlan', 'voiceVlan')
       }
       return !isMultipleEdit
         ? []
@@ -501,10 +500,13 @@ export function EditPortDrawer ({
 
     const originalUntaggedVlan = editPortData?.untaggedVlan
     const originalTaggedVlan = editPortData?.taggedVlans
+    const originalVoiceVlan = editPortData?.voiceVlan
     const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString())
     const isDirtyTaggedVlan = !_.isEqual(originalTaggedVlan ?
       originalTaggedVlan : [''], taggedVlans?.split(','))
-    const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
+    const isDirtyVoiceVlan = (!originalVoiceVlan && !voiceVlan)
+      ? false : !_.isEqual(originalVoiceVlan, Number(voiceVlan))
+    const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan || isDirtyVoiceVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
       isMultipleEdit && (!portVlansCheckbox || !vlansHasChanged
@@ -513,9 +515,15 @@ export function EditPortDrawer ({
         'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
         'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
+      checkVlanIgnore(
+        'voiceVlan', voiceVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkAclIgnore('egressAcl', data?.egressAcl, aclsOptions),
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
+
+    if(data.voiceVlan === '') {
+      data.voiceVlan = null as unknown as string
+    }
 
     Object.keys(data).forEach(key => {
       if (ignoreFields.includes(key) || key.includes('Checkbox')) {
@@ -540,7 +548,7 @@ export function EditPortDrawer ({
         (form.getFieldValue('taggedVlans') ?
           form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: form.getFieldValue('voiceVlan') ?? null
+      voiceVlan: form.getFieldValue('voiceVlan')
     }
     const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
       ...result, [item.switchId]: item.defaultVlanId
@@ -569,7 +577,6 @@ export function EditPortDrawer ({
           }
         }
       })
-
       await savePortsSetting({ params: { tenantId }, payload }).unwrap()
       store.dispatch(
         switchApi.util.invalidateTags([
@@ -687,7 +694,7 @@ export function EditPortDrawer ({
         if (!revert) {
           updateVlanOptions()
           setHasMultipleValue(hasMultipleValue.filter(v =>
-            (v !== 'taggedVlans' && v !== 'untaggedVlan'))
+            (v !== 'taggedVlans' && v !== 'untaggedVlan' && v !== 'voiceVlan'))
           )
         }
       }
@@ -813,7 +820,7 @@ export function EditPortDrawer ({
               children={<Checkbox />}
             />
           </Space>}
-          <div style={{ marginBottom: '30px' }}>
+          <div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
             <Space style={{
               width: '510px', display: 'flex', justifyContent: 'space-between',
               marginBottom: isMultipleEdit ? '16px' : '4px'
@@ -857,9 +864,9 @@ export function EditPortDrawer ({
             { portEditStatus &&
               <UI.PortStatus>
                 {getPortEditStatus(portEditStatus)}
-                { // TODO: venue profile name
-                  portEditStatus === 'venue' &&
-                  <span className='profile'>({switchDetail?.venueName})</span>
+                {
+                  portEditStatus === 'venue' && profileName &&
+                  <span className='profile'>({profileName})</span>
                 }
               </UI.PortStatus>
             }
@@ -905,13 +912,48 @@ export function EditPortDrawer ({
                     : '--'
                 }</Space>}
             />
-            <UI.VoiceVlan>
-              <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
-              {
-                voiceVlan ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
-                  : $t({ defaultMessage: 'No' })
-              }
-            </UI.VoiceVlan>
+            { !isMultipleEdit ?
+              <UI.VoiceVlan>
+                <Form.Item
+                  name='voiceVlan'
+                  noStyle
+                  children={
+                    <>
+                      <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
+                      {
+                        voiceVlan
+                          ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
+                          : $t({ defaultMessage: 'No' })
+                      }
+                    </>
+                  }
+                />
+              </UI.VoiceVlan> :
+              <UI.VoiceVlan>
+                <Form.Item
+                  name='voiceVlan'
+                  label={<></>}
+                  labelCol={{ span: 8 }}
+                  wrapperCol={{ span: 24 }}
+                  style={{ width: '95%', marginBottom: '0' }}
+                  children={
+                    <span className='multiple'>
+                      <span className='title'>{$t({ defaultMessage: 'Set as Voice VLAN:' })}</span>
+                      {
+                        isMultipleEdit && hasMultipleValue.includes('voiceVlan')
+                          ? <MultipleText />
+                          : <>
+                            { voiceVlan
+                              ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
+                              : $t({ defaultMessage: 'No' })
+                            }
+                          </>
+                      }
+                    </span>
+                  }
+                />
+              </UI.VoiceVlan>
+            }
             {
               isVoiceVlanInvalid &&
               <UI.FieldErrorMessage>
@@ -928,28 +970,6 @@ export function EditPortDrawer ({
               } </UI.FieldErrorMessage>}
           </div>
         </UI.FormItem>
-
-        { getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            label={$t({ defaultMessage: 'Voice VLAN' })}
-            children={isMultipleEdit && !voiceVlanCheckbox && hasMultipleValue.includes('voiceVlan')
-              ? <MultipleText />
-              : <Tooltip title={getFieldTooltip('voiceVlan')}>
-                <Form.Item
-                  name='voiceVlan'
-                  initialValue=''
-                >
-                  <Select
-                    options={vlansOptions}
-                    disabled={getFieldDisabled('voiceVlan')}
-                  />
-                </Form.Item>
-              </Tooltip>
-            }
-          />,
-          'voiceVlan', $t({ defaultMessage: 'Voice VLAN' })
-        )}
 
         <UI.ContentDivider />
 
