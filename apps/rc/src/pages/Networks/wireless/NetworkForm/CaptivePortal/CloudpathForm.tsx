@@ -46,7 +46,7 @@ export function CloudpathForm () {
       }
     }
   },[data])
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
@@ -93,12 +93,17 @@ export function CloudpathForm () {
           guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath}
           enableDefaultWalledGarden={true} />
         <AuthAccServerSetting/>
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.Cloudpath}/>
       </GridCol>
     </GridRow>
+    {!(editMode) && <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
+      </GridCol>
+    </GridRow>}
+  </>
   )
 }
