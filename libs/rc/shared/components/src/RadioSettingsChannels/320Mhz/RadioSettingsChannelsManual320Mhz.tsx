@@ -93,7 +93,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     }
 
     const group = form.getFieldValue(props.channelBandwidth320MhzGroupFieldName)
-    if(group) {
+    if(group && group !== 'AUTO') {
       setCheckGroup(group)
     }
   }, [form, props.formName])
