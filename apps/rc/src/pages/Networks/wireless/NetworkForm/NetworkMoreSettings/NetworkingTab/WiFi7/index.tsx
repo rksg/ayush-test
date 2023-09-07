@@ -48,11 +48,11 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurityFromForm ?: WlanSecurityEnum) => {
-  const wlanSecurity = getWlanSecurity(wlanData, wlanSecurityFromForm)
-  const enableOwe = getIsOwe(wlanData, wlanSecurity)
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  const valueOfWlanSecurity = getWlanSecurity(wlanData, wlanSecurity)
+  const enableOwe = getIsOwe(wlanData, valueOfWlanSecurity)
 
-  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum) || enableOwe || false
+  return IsSecuritySupport6g(valueOfWlanSecurity as WlanSecurityEnum) || enableOwe || false
 }
 
 export const inverseTargetValue =
@@ -125,8 +125,8 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
-export const getWlanSecurity = (wlanData : NetworkSaveData | null, wlanSecurityFromForm ?: WlanSecurityEnum) => {
-  return wlanSecurityFromForm || get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
+export const getWlanSecurity = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  return wlanSecurity || get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
 }
 
 export const getIsOwe = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
@@ -150,8 +150,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const wlanSecurityFromForm = useWatch('wlanSecurity')
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurityFromForm)
+  const wlanSecurity = useWatch('wlanSecurity')
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurity)
 
   useEffect(() => {
     const updateMloOptions = () => {
