@@ -1,4 +1,4 @@
-import { Node } from './'
+import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
@@ -31,12 +31,16 @@ export const findMatchingNode = (
   return null
 }
 export const customCapitalize = (node?: Node | null ) => {
+
+
   if (!node) return ''
 
-  const { type, name } = node
-
+  let { type, name } = node
+  if (name.toLowerCase() === 'network') {
+    name = 'Entire Organization'
+  }
   if (type && type.toLowerCase() !== 'network') {
-    return capitalizeFirstLetter(`${type}(${name})`)
+    return capitalizeFirstLetter(`${name} (${type})`)
   } else {
     return capitalizeFirstLetter(name)
   }

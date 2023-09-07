@@ -1,5 +1,3 @@
-import { capitalize } from 'lodash'
-
 import { searchTree, findMatchingNode, customCapitalize } from './helpers'
 
 import { Node } from '.'
@@ -53,12 +51,12 @@ describe('Helper Functions', () => {
   describe('customCapitalize', () => {
     it('should capitalize and format the node name and type correctly', () => {
       const node: Node = { name: 'example', type: 'Device' }
-      expect(customCapitalize(node)).toBe(capitalize('Device(example)'))
+      expect(customCapitalize(node)).toBe('Example (Device)')
     })
 
     it('should only capitalize the name if the type is "network"', () => {
       const node: Node = { name: 'example', type: 'Network' }
-      expect(customCapitalize(node)).toBe(capitalize('example'))
+      expect(customCapitalize(node)).toBe('Example')
     })
 
     it('should return an empty string if the node is null or undefined', () => {

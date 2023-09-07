@@ -17,10 +17,18 @@ describe('RevolvingDoor', () => {
   const mockSetNetworkPath = jest.fn()
   const mockData: Node = {
     id: '1',
-    name: 'root',
+    name: 'network',
+    type: 'network',
     children: [
-      { id: '2', name: 'child1', children: [{ id: '4', name: 'child3' }] },
-      { id: '3', name: 'child2' }
+      {
+        id: '2', name: 'child1', type: 'child1',
+        children: [{ id: '4', name: 'child3', type: 'child3' },
+          { id: '4', name: 'child5', type: 'child3' }]
+      },
+      {
+        id: '3', name: 'child2', type: 'child2',
+        children: [{ id: '5', name: 'child4', type: 'child3' }]
+      }
     ]
   }
 
@@ -46,7 +54,7 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    expect(await screen.findByText('Root')).toBeInTheDocument()
+    expect(await screen.findByText('Entire Organization')).toBeInTheDocument()
   })
 
   it('should call onCancel correctly', async () => {
@@ -57,7 +65,7 @@ describe('RevolvingDoor', () => {
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Cancel'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
+    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('')
   })
 
   it('should call onApply correctly', async () => {
@@ -69,8 +77,8 @@ describe('RevolvingDoor', () => {
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(mockSetNetworkPath).toBeCalledWith(
-      [{ name: 'root', type: undefined }],
-      [{ name: 'root', type: undefined }]
+      [{ name: 'network', type: 'network' }],
+      [{ name: 'network', type: 'network' }]
     )
   })
 
@@ -98,9 +106,11 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1'))
+    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.click(await screen.findByText('Child3 (child3)'))
+    fireEvent.click(await screen.findByText('Child5 (child3)'))
 
-    expect(await screen.findByText('Child3')).toBeInTheDocument()
+    expect(await screen.findByText('Child3 (child3)')).toBeInTheDocument()
   })
 
   it('should handle onBreadcrumbClick correctly', async () => {
@@ -110,10 +120,10 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Root'))
-    fireEvent.click(await screen.findByText('Child1'))
-    fireEvent.click(await screen.findByText('Root'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
+    fireEvent.click(await screen.findByText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.click(await screen.findByText('Entire Organization'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
 
   it('should handle onBack correctly', async () => {
@@ -123,9 +133,10 @@ describe('RevolvingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1'))
-    fireEvent.click(await screen.findByText('Child1'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('root')
+    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.click(await screen.findByText('Child3 (child3)'))
+    fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
   it('should handle onClear correctly', async () => {
     render(
@@ -135,6 +146,29 @@ describe('RevolvingDoor', () => {
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByTestId('CloseSymbol'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('Network')
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+  })
+  it('should show no data', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <RevolvingDoor data={{ name: 'network',
+          type: 'network' }}
+        setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    expect(screen.getByText('No Data')).toBeInTheDocument()
+  })
+  it('should close the filter on clicking outside the filter', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <RevolvingDoor data={mockData}
+          setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.mouseDown(document.body)
+    expect(screen.getByText('Child1 (child1)')).toBeVisible()
   })
 })

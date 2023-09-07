@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
 import { Dropdown } from 'antd'
-import { useIntl }  from 'react-intl'
 
 import { SearchOutlined, CloseSymbol } from '@acx-ui/icons'
 
@@ -44,7 +43,6 @@ const useBreadcrumbState = (initialBreadcrumb: Node[]) => {
 
 export const RevolvingDoor = (props: RevolvingDoorProps) => {
   const { data: rootNode, setNetworkPath } = props
-  const { $t } = useIntl()
   const defaultPath = [{ name: 'Network', type: 'network' }]
 
   const initialBreadcrumb = findMatchingNode(
@@ -85,7 +83,7 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
     setBreadcrumbPath([rootNode])
   }
 
-  const handleClickOutside = (event : MouseEvent) => {
+  const handleClickOutside = (event: MouseEvent) => {
     if (componentRef.current && !componentRef.current.contains(event.target as HTMLElement)) {
       setVisible(false)
     }
@@ -138,9 +136,11 @@ export const RevolvingDoor = (props: RevolvingDoorProps) => {
         ? breadcrumb?.[breadcrumb.length - 2]?.children
         : breadcrumb?.[breadcrumb.length - 1]?.children
       : []
-  const placeHolderText = inputValue === defaultPath[0].name
-    ? $t({ defaultMessage: 'Entire Organization' })
-    : inputValue
+  const placeHolderText = inputValue.replace(
+    new RegExp(defaultPath[0].name, 'i'),
+    'Entire Organization'
+  )
+
   return (
     <UI.DropdownWrapper ref={componentRef}>
       <Dropdown

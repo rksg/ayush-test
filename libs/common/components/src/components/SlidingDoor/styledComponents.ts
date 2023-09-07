@@ -62,9 +62,13 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
   font-weight: 400;
   padding-left: 20px;
   padding-right: 16px;
-  &:hover {
-    cursor: pointer;
+  .ant-breadcrumb-link {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
+
 `
 export const ListItemSpan = styled.span`
   white-space: nowrap;
