@@ -214,7 +214,12 @@ export function StackForm () {
           })
 
         setTableData(stackMembers)
-        setRowKey(stackMembers.length)
+        const largestRowKey = stackMembers.reduce(
+          (maxUnitId: number, currentItem: { unitId: number }) => {
+            const unitId = currentItem.unitId
+            return unitId > maxUnitId ? unitId : maxUnitId
+          }, stackMembers.length)
+        setRowKey(largestRowKey)
       }
 
       getStackMembersList()
@@ -291,11 +296,13 @@ export function StackForm () {
   }
 
   const handleAddRow = () => {
-    setRowKey(rowKey + 1)
+    const newRowKey = rowKey + 1
+    formRef.current?.resetFields([`serialNumber${newRowKey}`])
+    setRowKey(newRowKey)
     setTableData([
       ...tableData,
       {
-        key: (rowKey + 1).toString(),
+        key: (newRowKey).toString(),
         id: '',
         model: '',
         disabled: false
@@ -412,7 +419,13 @@ export function StackForm () {
   }
 
   const handleDelete = (index: number, row: SwitchTable) => {
-    setTableData(tableData.filter((item) => item.key !== row.key))
+    const tmpTableData = tableData.filter((item) => item.key !== row.key)
+    const largestKey: number = tmpTableData.reduce((maxKey, currentItem) => {
+      const key: number = parseInt(currentItem.key, 10)
+      return key > maxKey ? key : maxKey
+    }, tmpTableData.length)
+    setRowKey(largestKey)
+    setTableData(tmpTableData)
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
