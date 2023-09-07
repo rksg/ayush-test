@@ -44,8 +44,8 @@ export const RightArrow = styled(ArrowChevronRight)`
 export const LeftArrowText = styled.span<{ hasLeftArrow: boolean }>`
   display: inline-block;
   vertical-align: middle;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: var(--acx-headline-3-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
   color: var(--acx-primary-black);
   white-space: nowrap;
   overflow: hidden;
@@ -58,8 +58,8 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
   width: 240px;
   margin-top: 5px;
   margin-bottom: 12px;
-  font-size: 10px;
-  font-weight: 400;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-headline-5-font-weight);
   padding-left: 20px;
   padding-right: 16px;
   .ant-breadcrumb-link {
