@@ -51,10 +51,8 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
 export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurityFromForm ?: WlanSecurityEnum) => {
   const wlanSecurity = getWlanSecurity(wlanData, wlanSecurityFromForm)
   const enableOwe = getIsOwe(wlanData, wlanSecurity)
-  const isWPA23Mixed = wlanSecurity === WlanSecurityEnum.WPA23Mixed
 
-  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum)
-  return IsWPA3Security(wlanSecurity) || isWPA23Mixed || enableOwe || false
+  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum) || enableOwe || false
 }
 
 export const inverseTargetValue =
