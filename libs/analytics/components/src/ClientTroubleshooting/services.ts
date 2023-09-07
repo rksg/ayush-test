@@ -50,7 +50,7 @@ type PcapFile = {
   pcapFile: Blob
 }
 
-const b64ToBlob = (b64Data: string) => {
+export const b64ToBlob = (b64Data: string) => {
   const sliceSize = 512
   const byteCharacters = window.atob(b64Data)
   const byteArrays = []

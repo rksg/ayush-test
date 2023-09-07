@@ -1,5 +1,6 @@
 import { ElementType } from 'react'
 
+import { Spin }        from 'antd'
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined, DownloadOutlined } from '@acx-ui/icons'
@@ -327,4 +328,13 @@ export const Download = styled(DownloadOutlined)`
   position: absolute;
   left: -4px;
   margin-top: 3px;
+`
+
+export const PcapWrapper = styled.div`
+  margin-top: 12px;
+`
+
+export const PcapSpin = styled(Spin)`
+  position: relative;
+  left: 15%;
 `

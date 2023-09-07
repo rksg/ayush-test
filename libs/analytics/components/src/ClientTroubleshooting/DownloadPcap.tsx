@@ -1,27 +1,49 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button }                 from '@acx-ui/components'
 import { handleBlobDownloadFile } from '@acx-ui/utils'
 
-import { DisplayEvent }          from './config'
 import { useClientPcapMutation } from './services'
+import { PcapSpin, PcapWrapper } from './styledComponents'
 
 export function DownloadPcap ({
   pcapFilename
 }: {
-  pcapFilename: DisplayEvent['pcapFilename']
+  pcapFilename: string
 }) {
   const [getPcap] = useClientPcapMutation()
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const { $t } = useIntl()
   const onClick = () => {
-    getPcap({ filename: pcapFilename! })
+    setIsLoading(true)
+    getPcap({ filename: pcapFilename })
       .unwrap()
       .then(({ pcapFile }) => {
-        handleBlobDownloadFile(pcapFile, pcapFilename!)
+        setIsLoading(false)
+        handleBlobDownloadFile(pcapFile, pcapFilename)
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        if (err && (err as unknown as Error).message) {
+          setError((err as unknown as Error).message)
+        }
       })
   }
 
-  return <Button type='default' onClick={() => onClick()}>
-    {$t({ defaultMessage: 'Download .pcap' })}
-  </Button>
+  return <PcapWrapper>
+    {isLoading
+      ? <PcapSpin />
+      : <Button
+        type='default'
+        disabled={Boolean(error)}
+        onClick={() => onClick()}
+      >
+        {error
+          ? error
+          : $t({ defaultMessage: 'Download .pcap' })}
+      </Button>}
+  </PcapWrapper>
 }
