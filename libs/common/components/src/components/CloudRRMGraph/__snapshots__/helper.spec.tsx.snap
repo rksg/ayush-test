@@ -2868,41 +2868,50 @@ Array [
 `;
 
 exports[`getCrrmCsvData returns correct state for AP missing in current 1`] = `
-"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
-AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
-AP 3,00:00:00:00:00:03,5 GHz,36,,80 MHz,,Full,
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 3,00:00:00:00:00:03,5 GHz,TRUE,36,,80 MHz,,Full,
 "
 `;
 
 exports[`getCrrmCsvData returns correct state for AP missing in previous 1`] = `
-"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
-AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
-AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 3,00:00:00:00:00:03,5 GHz,TRUE,,36,,80 MHz,,Full
 "
 `;
 
 exports[`getCrrmCsvData returns correct state for APs missing in both previous & current 1`] = `
-"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
-AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
-AP 4,00:00:00:00:00:04,5 GHz,36,,80 MHz,,Full,
-AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 4,00:00:00:00:00:04,5 GHz,TRUE,36,,80 MHz,,Full,
+AP 3,00:00:00:00:00:03,5 GHz,TRUE,,36,,80 MHz,,Full
 "
 `;
 
 exports[`getCrrmCsvData returns correct state for equal nodes 1`] = `
-"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
-AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
 "
 `;
 
 exports[`getCrrmCsvData returns correct state for nodes with TxPower = null 1`] = `
-"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
-AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,,
-AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,Full
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,36,80 MHz,40 MHz,,
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,52,80 MHz,40 MHz,Full,Full
+"
+`;
+
+exports[`getCrrmCsvData returns correct value for Is Changed 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,TRUE,36,52,80 MHz,80 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,TRUE,36,36,80 MHz,40 MHz,Full,Full
+AP 3,00:00:00:00:00:03,5 GHz,TRUE,36,36,80 MHz,80 MHz,Full,-3dB(1/2)
+AP 4,00:00:00:00:00:04,5 GHz,FALSE,36,36,80 MHz,80 MHz,Full,Full
 "
 `;
 
