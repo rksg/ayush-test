@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Space, Switch } from 'antd'
-import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
-import { get, isUndefined }              from 'lodash'
-import { useIntl }                       from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
+import { get, isUndefined }    from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { Tooltip }                                                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
@@ -225,7 +225,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
                     display: 'flex'
                   }}
                   children={
-                    <Checkbox
+                    <UI.StyledCheckbox
                       key={key}
                       name={option.name}
                       checked={option.value}
@@ -239,7 +239,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
             }
             else {
               return (
-                <Checkbox
+                <UI.StyledCheckbox
                   key={key}
                   name={option.name}
                   checked={option.value}
