@@ -5,7 +5,7 @@ import { useLayoutContext } from '../Layout'
 
 import * as UI from './styledComponents'
 
-export type TabsType = 'second' | 'third' | Exclude<AntTabsType, 'editable-card'>
+export type TabsType = 'first' | 'second' | 'third' | Exclude<AntTabsType, 'editable-card'>
 
 export type TabsProps = Omit<AntTabsProps, 'type'> & {
   /** @default 'line' */
@@ -18,9 +18,9 @@ export function Tabs ({ type, scrollToTop = true, ...props }: TabsProps) {
   const layout = useLayoutContext()
   const $type = type = type ?? 'line'
   if (type === 'second') type = 'card'
-  else if (type === 'third') type = 'line'
+  else if (type === 'third' || type === 'first') type = 'line'
 
-  if (scrollToTop && $type === 'second') {
+  if (scrollToTop && ($type === 'first' || $type === 'second')) {
     props.onTabClick = props.onTabClick || function () {
       window.scrollTo(0, 0)
     }

@@ -69,7 +69,7 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
       title={$t({ defaultMessage: 'Access Points' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wi-Fi' }) }]}
       footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs type='first' activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }

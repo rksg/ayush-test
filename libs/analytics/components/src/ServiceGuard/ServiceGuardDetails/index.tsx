@@ -58,7 +58,7 @@ export function ServiceGuardDetails () {
           <TestRunButton key='past-tests' />
         ]}
         footer={
-          <Tabs activeKey={activeTab} onChange={onTabChange}>
+          <Tabs type='first' activeKey={activeTab} onChange={onTabChange}>
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }

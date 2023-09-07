@@ -22,7 +22,7 @@ function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
   return (
-    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs type='first' onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       { hasAccess() && <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' /> }
       {isOperational &&

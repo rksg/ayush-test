@@ -144,7 +144,7 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs defaultActiveKey={'Settings'}>
+      <Tabs type='first' defaultActiveKey={'Settings'}>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Settings' })}
           key='Settings'>

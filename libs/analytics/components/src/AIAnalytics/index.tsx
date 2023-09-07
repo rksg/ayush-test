@@ -73,7 +73,7 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
       title={$t({ defaultMessage: 'AI Analytics' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
       footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs type='first' activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }

@@ -74,7 +74,7 @@ function PersonaPageHeader () {
         title={$t({ defaultMessage: 'Persona Management' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
         footer={
-          <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+          <Tabs type='first' onChange={onTabChange} activeKey={params.activeTab}>
             <Tabs.TabPane
               key={PersonaTabKey.PERSONA_GROUP}
               tab={$t(

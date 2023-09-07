@@ -74,7 +74,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
       title={$t({ defaultMessage: 'Network Assurance' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
       footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs type='first' activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }

@@ -52,6 +52,10 @@ const cardStyle = css`
   }
 `
 
+const firstStyle = css`
+  ${lineStyle}
+`
+
 const secondStyle = css`
   ${cardStyle}
   &.ant-tabs-top > .ant-tabs-nav {
@@ -129,6 +133,7 @@ const thirdStyle = css`
 const styles: Record<TabsType, FlattenSimpleInterpolation> = {
   line: lineStyle,
   card: cardStyle,
+  first: firstStyle,
   second: secondStyle,
   third: thirdStyle
 }

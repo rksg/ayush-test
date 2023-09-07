@@ -57,7 +57,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const notificationCount = notificationList?.data?.length || 0
 
   return (
-    <Tabs
+    <Tabs type='first'
       defaultActiveKey='accountSettings'
       activeKey={activeTab}
       onChange={onTabChange}

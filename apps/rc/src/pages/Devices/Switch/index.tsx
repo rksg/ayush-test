@@ -59,7 +59,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
       title={$t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs type='first' activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
