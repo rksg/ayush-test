@@ -1,9 +1,10 @@
-import { AnalyticsFilter, pathToFilter }                                                   from '@acx-ui/analytics/utils'
+import { pathToFilter }                                                                    from '@acx-ui/analytics/utils'
 import { get }                                                                             from '@acx-ui/config'
 import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
 import { DateRange }                                                                       from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
 import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'

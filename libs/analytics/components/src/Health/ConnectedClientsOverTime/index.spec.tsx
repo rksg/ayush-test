@@ -1,4 +1,3 @@
-import { AnalyticsFilter }                      from '@acx-ui/analytics/utils'
 import { dataApiURL, dataApi, Provider, store } from '@acx-ui/store'
 import {
   render,
@@ -7,8 +6,9 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange } from '@acx-ui/types'
-import { DateRange }      from '@acx-ui/utils'
+import { TimeStampRange }       from '@acx-ui/types'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
