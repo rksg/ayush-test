@@ -1,11 +1,10 @@
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-import { renderHook }                 from '@acx-ui/test-utils'
-import { UserUrlsInfo }               from '@acx-ui/user'
+import { AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { mockServer, render, screen }               from '@acx-ui/test-utils'
+import { renderHook }                               from '@acx-ui/test-utils'
+import { UserUrlsInfo }                             from '@acx-ui/user'
 
-import { Features }         from './features'
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
 
@@ -15,12 +14,12 @@ const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
-const user = require('@acx-ui/user')
+
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
 }))
 
-const tenantAccountTierValue = {
+const tenantAccountTierMock = {
   acx_account_tier: 'Gold'
 }
 
@@ -30,31 +29,54 @@ jest.mock('@acx-ui/analytics/utils', () => (
     useUserProfileContext: jest.fn()
   }))
 
-// Mock the useTreatments hook to return the expected values
 jest.mock('@splitsoftware/splitio-react', () => (
   {
     ...jest.requireActual('@splitsoftware/splitio-react'),
     useTreatments: jest.fn()
   }))
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useGetBetaStatusQuery: () => ({ data: {
+    enabled: 'true'
+  } })
+}))
 
-const userProfile = {
-  adminId: '246b49448c7e490895e925d5a200da4d',
-  companyName: 'RUCKUS NETWORKS, INC',
-  dateFormat: 'mm/dd/yyyy',
-  detailLevel: 'debug',
-  email: 'support.employee9@ruckuswireless.com',
-  externalId: '0032h00000LV0XAAA1',
-  firstName: 'support',
-  lastName: 'employee9',
-  role: 'PRIME_ADMIN',
-  support: true,
-  tenantId: 'bcaeb185cbd046528615473518e0382a',
-  username: 'support.employee9@ruckuswireless.com',
-  var: true,
-  varTenantId: 'bcaeb185cbd046528615473518e0382a',
-  allowedRegions: []
-}
+jest.mock('@acx-ui/analytics/utils', () => ({
+  useUserProfileContext: () => ({
+    data: {
+      accountId: 'mockedAccountId'
+    }
+  })
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@splitsoftware/splitio-react', () => ({
+  useTreatments: jest.fn()
+}))
+
+jest.mock('@splitsoftware/splitio-react', () => ({
+  useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
+    const treatments: Record<string, Object> = {}
+    if (attributes) {
+      splitNames.forEach((splitName) => {
+        if (splitName === 'testSplitName') {
+          treatments[splitName] = { treatment: 'on', config: JSON.stringify({
+            featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+            betaList: ['PLCY-EDGE', 'BETA-CP']
+          }) }
+        } else {
+          treatments[splitName] = { treatment: 'off', config: '' }
+        }
+      })
+      return treatments
+    } else return { treatment: 'control', config: '' }
+  }
+}))
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string }) {
   jest.resetModules()
@@ -113,70 +135,64 @@ describe('SplitProvider', () => {
 
 describe('useIsTierAllowed', () => {
   beforeEach( async () => {
-    jest.doMock('@splitsoftware/splitio-react', () => ({
-      useTreatments: jest.fn(() => ({
-        [Features.PLM_FF]: {
-          treatment: 'control',
-          config: JSON.stringify({
-            'feature-REC-Default': ['FEATURE_1', 'FEATURE_2'],
-            'feature-MSP-Default': ['FEATURE_3', 'FEATURE_4'],
-            'betaList': ['BETA_FEATURE_1', 'BETA_FEATURE_2']
-          })
-        }
-      }))
-    }))
-
-    jest.doMock('@acx-ui/rc/services', () => ({
-      useGetAccountTierQuery: jest.fn(() => ({
-        data: {
-          acx_account_tier: 'Gold'
-        }
-      }))
-    }))
-
-    jest.doMock('@acx-ui/user', () => ({
-      useGetBetaStatusQuery: jest.fn(() => ({
-        data: {
-          enabled: true
-        }
-      }))
-    }))
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
     mockServer.use(
       rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
         (req, res, ctx) => {
-          return res(ctx.json({ data: {
-            acx_account_tier: 'Gold'
-          } }))
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
         }
-      )
-    )
-
-    mockServer.use(
+      ),
       rest.get(UserUrlsInfo.getBetaStatus.url as string,
         (req, res, ctx) => {
-          return res(ctx.json({ data: {
-            enabled: true
-          } }))
+          return res(ctx.json({ data: { enabled: 'true' } }))
         }
       )
     )
-
   })
-  it.skip('should return tier Gold', async () => {
+
+  it.skip('returns true for allowed feature', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: jest.fn(() => JSON.stringify({
+        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+        betaList: ['PLCY-EDGE', 'BETA-CP']
+
+      }))
+    }))
+    jest.mocked(isDelegationMode).mockReturnValue(true)
     services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantAccountTierValue }
+      return { data: tenantAccountTierMock }
     })
+    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'))
 
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-
-    const { result } = renderHook(() => useIsTierAllowed('ANLT-ADV'))
     expect(result.current).toBe(true)
-
   })
 
+  it.skip('returns false for disallowed feature', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: jest.fn(() => ({
+        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+        betaList: ['PLCY-EDGE', 'BETA-CP']
+      }))
+    }))
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+    services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantAccountTierMock }
+    })
+    const { result } = renderHook(() => useIsTierAllowed('INVALID-FEATURE'))
+
+    expect(result.current).toBe(false)
+  })
+})
+
+describe('useIsSplitOn', () => {
+  it('should return true when the treatment is "on"', () => {
+    const { result } = renderHook(() => useIsSplitOn('testSplitName'))
+
+    expect(result.current).toBe(true)
+  })
+
+  it('should return false when the treatment is "off"', () => {
+    const { result } = renderHook(() => useIsSplitOn('anotherSplitName'))
+
+    expect(result.current).toBe(false)
+  })
 })
