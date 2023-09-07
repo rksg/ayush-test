@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy, getClientUrlWithHostname } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
@@ -76,11 +76,22 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'mac',
       key: 'mac',
-      render: (_, { mac, hostname }) => (
-        <TenantLink to={getClientUrlWithHostname(mac, hostname)}>
-          {mac}
-        </TenantLink>
-      ),
+      render: (_, { mac, hostname }) => {
+        const joinedHostname = Array.isArray(hostname) && hostname.length > 0
+          ? `?hostname=${hostname.join(', ')}`
+          : typeof hostname === 'string'
+            ? `?hostname=${hostname}`
+            : undefined
+        let link = `users/wifi/clients/${mac?.[0]?.toLocaleLowerCase()}/details/overview`
+        if (joinedHostname) {
+          link = link + joinedHostname
+        }
+        return (
+          <TenantLink to={link}>
+            {mac}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {

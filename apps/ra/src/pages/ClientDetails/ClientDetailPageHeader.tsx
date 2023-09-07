@@ -12,7 +12,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { useDateFilter } from '@acx-ui/utils'
 
-import ClientDetailTabs from './ClientDetailTabs'
+import ClientDetailTabs  from './ClientDetailTabs'
+import { HostnameSpace } from './styledComponents'
 
 function DatePicker () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
@@ -34,11 +35,10 @@ export const ClientDetailPageHeader = () => {
     <PageHeader
       title={<Space size={4}>{clientId}
         {
-          searchParams.get('hostname') &&
-      searchParams.get('hostname') !== clientId &&
-      <Space style={{ fontSize: '14px', marginLeft: '8px' }} size={0}>
-        ({searchParams.get('hostname')})
-      </Space>
+          searchParams.get('hostname')
+            && <HostnameSpace size={4}>
+              ({searchParams.get('hostname')})
+            </HostnameSpace>
         }
       </Space>}
       breadcrumb={[

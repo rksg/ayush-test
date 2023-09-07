@@ -230,7 +230,7 @@ describe('DpskForm', () => {
     )
 
     await screen.findByDisplayValue(mockedEditFormData.name)
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     // TODO
     // const errorMsgElem = await screen.findByText('Server Error')

@@ -64,7 +64,7 @@ import { ApEditContext } from '../ApEdit/index'
 import * as UI from './styledComponents'
 
 const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
+  fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -429,7 +429,9 @@ export function ApForm () {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
                     const originalVenue = getVenueById(venues, apDetails?.venueId as string)
-                    if (selectVenue?.country && originalVenue?.country) {
+                    if (selectVenue?.countryCode && originalVenue?.countryCode) {
+                      return checkValues(selectVenue.countryCode, originalVenue.countryCode, true)
+                    } else if (selectVenue?.country && originalVenue?.country) {
                       return checkValues(selectVenue?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()

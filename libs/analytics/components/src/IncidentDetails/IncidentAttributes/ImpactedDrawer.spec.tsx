@@ -98,6 +98,26 @@ describe('Drawer', () => {
       const icons = screen.getAllByTestId('InformationOutlined')
       expect(icons.length).toBe(2)
     })
+    it('should render string hostname for client drawer', async () => {
+      mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
+        data: { incident: { impactedClients: [sample[0]] } } })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end' />
+      </Provider>, { route: true })
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      screen.getByPlaceholderText('Search for...')
+      screen.getByText(sample[0].mac)
+      screen.getByText(`${sample[0].manufacturer}`)
+      screen.getByText(`${sample[0].ssid}`)
+      const link = screen.getByRole('link')
+      expect(link.textContent).toEqual('hostname')
+      expect((link as HTMLAnchorElement).href).toMatch(/&hostname=hostname$/)
+      screen.getByText(`${sample[0].username}`)
+      screen.getByText('1 Impacted Client')
+      screen.getByText('Hostname')
+      const icons = screen.getAllByTestId('InformationOutlined')
+      expect(icons.length).toBe(2)
+    })
     it('should render error', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         error: new Error('something went wrong!') })

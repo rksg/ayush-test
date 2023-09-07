@@ -319,7 +319,7 @@ describe.skip('ClientIsolationForm', () => {
     expect(nameInput).toBeInTheDocument()
 
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     // TODO
     // const errorMsgElem = await screen.findByText('Server Error')
