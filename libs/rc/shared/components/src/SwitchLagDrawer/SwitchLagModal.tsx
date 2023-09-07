@@ -40,7 +40,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
-import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
+import { SelectVlanModal as SelectVlanModalLegacy }          from '../SwitchPortTable/selectVlanModalLegacy'
 
 interface SwitchLagProps {
   visible: boolean
@@ -568,8 +568,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             children={lagForm}
           />
       }
-
-      <SelectVlanModal
+      <SelectVlanModalLegacy
         form={form}
         selectModalvisible={selectModalVisible}
         setSelectModalvisible={setSelectModalVisible}
@@ -587,6 +586,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
         }
       />
+      {/* TODO: Voice VLAN Modal*/}
     </>
   )
 

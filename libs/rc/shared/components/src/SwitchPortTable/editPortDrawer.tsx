@@ -7,7 +7,6 @@ import _                                                          from 'lodash'
 import {
   Alert,
   Button,
-  cssStr,
   Drawer,
   showActionModal,
   Subtitle,
@@ -184,6 +183,7 @@ export function EditPortDrawer ({
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
   const [venueUntaggedVlan, setVenueUntaggedVlan] = useState('' as string)
+  const [isVoiceVlanInvalid, setIsVoiceVlanInvalid ] = useState(false)
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
@@ -357,6 +357,7 @@ export function EditPortDrawer ({
         (portSetting.untaggedVlan ? portSetting.untaggedVlan :
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
+    checkIsVoiceVlanInvalid()
   }
 
   const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
@@ -694,6 +695,15 @@ export function EditPortDrawer ({
 
     await updateRelatedField()
     setButtonStatus()
+    checkIsVoiceVlanInvalid()
+  }
+
+  const checkIsVoiceVlanInvalid = () => {
+    const voiceVlanField = form?.getFieldValue('voiceVlan')
+    const taggedVlansField = form?.getFieldValue('taggedVlans')
+    const isInvalid = voiceVlanField &&
+    taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
+    setIsVoiceVlanInvalid(isInvalid)
   }
 
   const onClose = () => {
@@ -803,10 +813,10 @@ export function EditPortDrawer ({
               children={<Checkbox />}
             />
           </Space>}
-          <div>
+          <div style={{ marginBottom: '30px' }}>
             <Space style={{
               width: '510px', display: 'flex', justifyContent: 'space-between',
-              marginBottom: isMultipleEdit ? '16px' : '18px'
+              marginBottom: isMultipleEdit ? '16px' : '4px'
             }}>
               { !isMultipleEdit ?<Subtitle level={3} style={{ margin: 0 }}>
                 {$t({ defaultMessage: 'Port VLANs' })}
@@ -815,9 +825,6 @@ export function EditPortDrawer ({
               }
               {(!isMultipleEdit || portVlansCheckbox) &&
                 <Space size={24}>
-                  <Space style={{ fontSize: '12px' }}>
-                    {getPortEditStatus(portEditStatus)}
-                  </Space>
                   <Space size={0} split={<UI.Divider />}>
                     <Button type='link'
                       key='edit'
@@ -847,6 +854,15 @@ export function EditPortDrawer ({
                 </Space>
               }
             </Space>
+            { portEditStatus &&
+              <UI.PortStatus>
+                {getPortEditStatus(portEditStatus)}
+                { // TODO: venue profile name
+                  portEditStatus === 'venue' &&
+                  <span className='profile'>({switchDetail?.venueName})</span>
+                }
+              </UI.PortStatus>
+            }
             <Form.Item
               label={$t({ defaultMessage: 'Untagged VLAN' })}
               labelCol={{ span: 8 }}
@@ -868,10 +884,15 @@ export function EditPortDrawer ({
               }
             />
             <Form.Item
-              label={$t({ defaultMessage: 'Tagged VLAN' })}
+              label={<>
+                {$t({ defaultMessage: 'Tagged VLAN' })}
+                <Tooltip.Question
+                  title={$t(EditPortMessages.TAGGED_VLAN_VOICE_TOOLTIP)}
+                />
+              </>}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 24 }}
-              style={{ width: '95%' }}
+              style={{ width: '95%', marginBottom: '0' }}
               name='taggedVlans'
               children={isMultipleEdit && hasMultipleValue.includes('taggedVlans')
                 ? <MultipleText data-testid='tagged-multi-text' />
@@ -884,14 +905,27 @@ export function EditPortDrawer ({
                     : '--'
                 }</Space>}
             />
+            <UI.VoiceVlan>
+              <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
+              {
+                voiceVlan ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
+                  : $t({ defaultMessage: 'No' })
+              }
+            </UI.VoiceVlan>
+            {
+              isVoiceVlanInvalid &&
+              <UI.FieldErrorMessage>
+                { $t(EditPortMessages.INVALID_VOICE_VLAN) }
+              </UI.FieldErrorMessage>
+            }
             {!untaggedVlan && !taggedVlans
               // eslint-disable-next-line max-len
               && !(isMultipleEdit && (hasMultipleValue.includes('untaggedVlan') || hasMultipleValue.includes('taggedVlans')))
-              && <Space style={{ fontSize: '12px', color: cssStr('--acx-semantics-red-50') }}>{
+              && <UI.FieldErrorMessage>{
                 isMultipleEdit
                   ? $t(MultipleEditPortMessages.UNSELECT_VLANS)
                   : $t(EditPortMessages.UNSELECT_VLANS)
-              }</Space>}
+              } </UI.FieldErrorMessage>}
           </div>
         </UI.FormItem>
 
@@ -1333,6 +1367,8 @@ export function EditPortDrawer ({
         vlanUsedByVe={vlanUsedByVe}
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
+        voiceVlan={voiceVlan}
+        isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
         profileId={switchConfigurationProfileId}

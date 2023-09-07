@@ -24,9 +24,9 @@ import { getIntl }                   from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
-import { EditPortDrawer }    from './editPortDrawer'
-import { EditPortDrawerNew } from './editPortDrawerNew'
-import * as UI               from './styledComponents'
+import { EditPortDrawer }                         from './editPortDrawer'
+import { EditPortDrawer as EditPortDrawerLegacy } from './editPortDrawerLegacy'
+import * as UI                                    from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
@@ -329,7 +329,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       setVisible={setLagDrawerVisible}
     />}
 
-    { drawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawer
+    { drawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawerLegacy
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
@@ -339,7 +339,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       selectedPorts={selectedPorts}
     />}
 
-    { drawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawerNew
+    { drawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawer
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}

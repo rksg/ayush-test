@@ -33,7 +33,7 @@ import {
   untaggedVlansByVenue,
   vlansByVenue
 } from './__tests__/fixtures'
-import { EditPortDrawer } from './editPortDrawer'
+import { EditPortDrawer } from './editPortDrawerLegacy'
 
 const params = {
   venueId: 'venue-id',
