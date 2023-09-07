@@ -512,6 +512,7 @@ export interface ApRfNeighbor {
 
 export interface ApLldpNeighbor {
   neighborManaged: boolean,
+  neighborSerialNumber: string | null,
   lldpInterface: string | null,
   lldpVia: string | null,
   lldpRID: string | null,
