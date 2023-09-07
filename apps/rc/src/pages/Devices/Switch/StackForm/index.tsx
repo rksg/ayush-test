@@ -807,31 +807,32 @@ export function StackForm () {
                         }
                       </TypographyText></div>
                   }
-                  <TableContainer data-testid='dropContainer'>
-                    <Table
-                      columns={columns}
-                      dataSource={tableData}
-                      type='form'
-                      components={{
-                        body: {
-                          wrapper: DraggableContainer,
-                          row: DraggableBodyRow
-                        }
-                      }}
-                    />
-                    {tableData.length < 12 && enableAddMember() && (
-                      <Button
-                        onClick={handleAddRow}
-                        type='link'
-                        size='small'
-                        disabled={tableData.length >= 12}
-                        hidden={readOnly}
-                      >
-                        {$t({ defaultMessage: 'Add another member' })}
-                      </Button>
-                    )}
-                  </TableContainer>
-
+                  <Col span={18} style={{ padding: '0' }}>
+                    <TableContainer data-testid='dropContainer'>
+                      <Table
+                        columns={columns}
+                        dataSource={tableData}
+                        type='form'
+                        components={{
+                          body: {
+                            wrapper: DraggableContainer,
+                            row: DraggableBodyRow
+                          }
+                        }}
+                      />
+                      {tableData.length < 12 && enableAddMember() && (
+                        <Button
+                          onClick={handleAddRow}
+                          type='link'
+                          size='small'
+                          disabled={tableData.length >= 12}
+                          hidden={readOnly}
+                        >
+                          {$t({ defaultMessage: 'Add another member' })}
+                        </Button>
+                      )}
+                    </TableContainer>
+                  </Col>
                   <SwitchUpgradeNotification
                     switchModel={
                       // eslint-disable-next-line max-len
