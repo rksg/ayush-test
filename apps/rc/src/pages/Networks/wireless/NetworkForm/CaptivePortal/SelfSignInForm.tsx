@@ -35,6 +35,9 @@ import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassC
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import TwitterSetting                            from './TwitterSetting'
 
+const SelfSignInAppStyle = { marginBottom: '0' }
+
+
 export function SelfSignInForm () {
   const {
     data,
@@ -155,7 +158,7 @@ export function SelfSignInForm () {
       setRedirectURL(globalValues)
     }
   }, [globalValues])
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 12 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
@@ -166,11 +169,12 @@ export function SelfSignInForm () {
             { validator: (_, value) => checkSocial(value) }
           ]}
           label={<>
-            {$t({ defaultMessage: 'Allow Sign-In Using:(At least one option must be selected)' })}
+            {$t({ defaultMessage: 'Allow Sign-In Using: (At least one option must be selected)' })}
           </>}
         ><>
             <Form.Item name={['guestPortal', 'enableSmsLogin']}
-              initialValue={false}>
+              initialValue={false}
+              style={SelfSignInAppStyle}>
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
@@ -188,7 +192,8 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
-              initialValue={false}>
+              initialValue={false}
+              style={SelfSignInAppStyle}>
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'socialIdentities', 'facebook'])}
@@ -200,7 +205,8 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'google']}
-              initialValue={false}>
+              initialValue={false}
+              style={SelfSignInAppStyle}>
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'socialIdentities', 'google'])}
@@ -212,7 +218,8 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'twitter']}
-              initialValue={false}>
+              initialValue={false}
+              style={SelfSignInAppStyle}>
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'socialIdentities', 'twitter'])}
@@ -224,7 +231,8 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'linkedin']}
-              initialValue={false}>
+              initialValue={false}
+              style={SelfSignInAppStyle}>
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'socialIdentities', 'linkedin'])}
@@ -344,12 +352,17 @@ export function SelfSignInForm () {
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn}
           enableDefaultWalledGarden={false} />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 12 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.SelfSignIn} />
       </GridCol>
     </GridRow>
+    {!(editMode) && <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
+      </GridCol>
+    </GridRow>}
+  </>
   )
 }
