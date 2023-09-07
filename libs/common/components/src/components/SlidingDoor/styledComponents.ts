@@ -46,7 +46,7 @@ export const LeftArrowText = styled.span<{ hasLeftArrow: boolean }>`
   vertical-align: middle;
   font-size: 16px;
   font-weight: 700;
-  color: #333;
+  color: var(--acx-primary-black);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -90,7 +90,7 @@ export const StyledList = styled(List)`
   .ant-list-header {
     position: sticky;
     top: 0;
-    background-color: white;
+    background-color: var(--acx-primary-white);
     z-index: 1;
     padding-bottom: 0px;
   }
@@ -102,7 +102,7 @@ export const StyledList = styled(List)`
   .ant-list-footer {
     position: sticky;
     bottom: 0;
-    background-color: white;
+    background-color: var(--acx-primary-white);
     z-index: 1;
     padding-bottom: 0px;
   }
@@ -113,7 +113,7 @@ export const StyledMenu = styled(Menu)`
   .ant-dropdown-menu-item {
   padding : 0;
   &:hover {
-    background-color: #fff !important;
+    background-color: var(--acx-primary-white) !important;
     cursor: default;  }
 }
 }

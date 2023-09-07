@@ -5,7 +5,7 @@ import { IntlProvider }                       from 'react-intl'
 
 import * as helpers from './helpers'
 
-import { RevolvingDoor, Node } from '.'
+import { SlidingDoor, Node } from '.'
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
@@ -13,7 +13,7 @@ jest.mock('./helpers', () => ({
   findMatchingNode: jest.fn()
 }))
 
-describe('RevolvingDoor', () => {
+describe('SlidingDoor', () => {
   const mockSetNetworkPath = jest.fn()
   const mockData: Node = {
     id: '1',
@@ -41,7 +41,7 @@ describe('RevolvingDoor', () => {
   it('should render without errors', () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     expect(screen.getByPlaceholderText('Entire Organization')).toBeInTheDocument()
@@ -50,7 +50,7 @@ describe('RevolvingDoor', () => {
   it('should open dropdown on input click', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -60,7 +60,7 @@ describe('RevolvingDoor', () => {
   it('should call onCancel correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -71,7 +71,7 @@ describe('RevolvingDoor', () => {
   it('should call onApply correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -89,7 +89,7 @@ describe('RevolvingDoor', () => {
     ])
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     const input = screen.getByPlaceholderText('Entire Organization')
@@ -102,7 +102,7 @@ describe('RevolvingDoor', () => {
   it('should handle onSelect correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -116,7 +116,7 @@ describe('RevolvingDoor', () => {
   it('should handle onBreadcrumbClick correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -129,7 +129,7 @@ describe('RevolvingDoor', () => {
   it('should handle onBack correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -141,7 +141,7 @@ describe('RevolvingDoor', () => {
   it('should handle onClear correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -151,7 +151,7 @@ describe('RevolvingDoor', () => {
   it('should show no data', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={{ name: 'network',
+        <SlidingDoor data={{ name: 'network',
           type: 'network' }}
         setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
@@ -162,7 +162,7 @@ describe('RevolvingDoor', () => {
   it('should close the filter on clicking outside the filter', async () => {
     render(
       <IntlProvider locale='en'>
-        <RevolvingDoor data={mockData}
+        <SlidingDoor data={mockData}
           setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
