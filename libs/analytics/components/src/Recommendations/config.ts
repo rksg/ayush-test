@@ -4,6 +4,8 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { compareVersion } from '@acx-ui/analytics/utils'
 import { formatter }      from '@acx-ui/formatter'
 
+import { crrmText } from './utils'
+
 export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
@@ -379,7 +381,7 @@ export const codes = {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 2.4 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -396,7 +398,7 @@ export const codes = {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 5 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -413,7 +415,7 @@ export const codes = {
     category: categories['AI-Driven Cloud RRM'],
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 6 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
