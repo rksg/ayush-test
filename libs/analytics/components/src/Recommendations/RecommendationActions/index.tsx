@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/icons'
 
 import {
-  Recommendation,
+  RecommendationListItem,
   useCancelRecommendationMutation,
   useScheduleRecommendationMutation
 } from '../services'
@@ -49,7 +49,7 @@ function getFutureTime (value: Moment) {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-type ActionButtonProps = Recommendation & {
+type ActionButtonProps = RecommendationListItem & {
   disabled: boolean
   type: keyof typeof actionTooltip
 }
@@ -134,7 +134,7 @@ const actions = {
   cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 
-const getAvailableActions = (recommendation: Recommendation) => {
+const getAvailableActions = (recommendation: RecommendationListItem) => {
   const { isMuted, statusEnum } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
@@ -182,7 +182,7 @@ const getAvailableActions = (recommendation: Recommendation) => {
   }
 }
 
-export const RecommendationActions = (props: { recommendation: Recommendation }) => {
+export const RecommendationActions = (props: { recommendation: RecommendationListItem }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
   return <Row gutter={[0, 0]} align='middle' justify='start'>

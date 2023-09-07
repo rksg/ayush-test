@@ -103,3 +103,10 @@ export interface DPSKDeviceInfo {
   lastConnectedNetworkId?: string | null,
   lastConnectedTime?: string | null
 }
+
+export type DpskNewFlowMutationResult = {
+  requestId: string
+  id?: string
+}
+
+export type DpskMutationResult = DpskSaveData | DpskNewFlowMutationResult

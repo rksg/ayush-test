@@ -53,7 +53,7 @@ exports[`DescriptionRow should match snapshot 4`] = `
 exports[`DescriptionSection should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
   >
     <div
       class="ant-descriptions-view"
@@ -196,7 +196,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
 exports[`DescriptionSection should match snapshot 2`] = `
 <DocumentFragment>
   <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
   >
     <div
       class="ant-descriptions-view"
