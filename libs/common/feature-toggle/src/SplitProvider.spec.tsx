@@ -5,7 +5,6 @@ import { renderHook }                 from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
 import { isDelegationMode }           from '@acx-ui/utils'
 
-import { Features }         from './features'
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
 
@@ -136,37 +135,6 @@ describe('SplitProvider', () => {
 
 describe('useIsTierAllowed', () => {
   beforeEach( async () => {
-    jest.doMock('@splitsoftware/splitio-react', () => ({
-      useTreatments: jest.fn(() => ({
-        [Features.PLM_FF]: {
-          treatment: 'control',
-          config: JSON.stringify({
-            'feature-REC-Default': ['FEATURE_1', 'FEATURE_2'],
-            'feature-MSP-Default': ['FEATURE_3', 'FEATURE_4'],
-            'betaList': ['BETA_FEATURE_1', 'BETA_FEATURE_2']
-          })
-        }
-      }))
-    }))
-
-    jest.doMock('@acx-ui/users', () => ({
-      useGetAccountTierQuery: jest.fn(() => ({
-        data: {
-          acx_account_tier: 'Gold'
-        }
-      }))
-    }))
-
-    jest.doMock('@acx-ui/user', () => ({
-      useGetBetaStatusQuery: jest.fn(() => ({
-        data: {
-          enabled: true
-        }
-      }))
-    }))
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
     mockServer.use(
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (req, res, ctx) => {
