@@ -12,6 +12,7 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { emtpyRenderer }                  from './ApRfNeighbors'
@@ -89,44 +90,69 @@ function useColumns (
             setSelectedApLldpNeighbor(row)
             setDetailsDrawerVisible(true)
           }}
-          children={data}
+          children={row.lldpInterface}
         />
       }
     },
     {
       key: 'lldpTime',
-      dataIndex: 'lldpTime',
-      title: $t({ defaultMessage: 'Time' })
+      dataIndex: 'lldpTime'
     },
     {
       key: 'lldpSysName',
       dataIndex: 'lldpSysName',
-      title: $t({ defaultMessage: 'System Name' })
+      render: (data, row) => {
+        if (!row.neighborManaged) return data
+
+        const mac: string | undefined = row.lldpChassisID?.split(' ')[1]
+
+        return <TenantLink
+          // eslint-disable-next-line max-len
+          to={`/devices/switch/${mac || row.neighborSerialNumber}/${row.neighborSerialNumber}/details/overview`}
+          style={{ lineHeight: '20px' }}
+          children={data}
+        />
+      }
     },
     {
       key: 'lldpSysDesc',
-      dataIndex: 'lldpSysDesc',
-      title: $t({ defaultMessage: 'System Description' })
+      dataIndex: 'lldpSysDesc'
     },
     {
       key: 'lldpChassisID',
-      dataIndex: 'lldpChassisID',
-      title: $t({ defaultMessage: 'Chassis ID' })
+      dataIndex: 'lldpChassisID'
     },
     {
       key: 'lldpMgmtIP',
-      dataIndex: 'lldpMgmtIP',
-      title: $t({ defaultMessage: 'Mgmt IP' })
+      dataIndex: 'lldpMgmtIP'
+    },
+    {
+      key: 'lldpCapability',
+      dataIndex: 'lldpCapability'
+    },
+    {
+      key: 'lldpPortDesc',
+      dataIndex: 'lldpPortDesc'
     },
     {
       key: 'lldpPortID',
-      dataIndex: 'lldpPortID',
-      title: $t({ defaultMessage: 'Port ID' })
+      dataIndex: 'lldpPortID'
+    },
+    {
+      key: 'lldpMDIPower',
+      dataIndex: 'lldpMDIPower'
     },
     {
       key: 'lldpClass',
-      dataIndex: 'lldpClass',
-      title: $t({ defaultMessage: 'Power Class' })
+      dataIndex: 'lldpClass'
+    },
+    {
+      key: 'lldpPDReqPowerVal',
+      dataIndex: 'lldpPDReqPowerVal'
+    },
+    {
+      key: 'lldpPSEAllocPowerVal',
+      dataIndex: 'lldpPSEAllocPowerVal'
     }
   ]
 
