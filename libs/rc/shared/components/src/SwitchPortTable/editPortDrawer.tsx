@@ -612,6 +612,7 @@ export function EditPortDrawer ({
       untagged = profileDefaultVlan
       tagged = ''
       const tmpMultipleValue = _.uniq([...hasMultipleValue, 'taggedVlans', 'untaggedVlan'])
+        .filter(v => v !== 'voiceVlan')
       if (tagEqual && untagEqual) {
         if (!portsProfileVlans.untagged?.[0] && !portsProfileVlans.tagged?.[0]) {
           status = 'default'
@@ -639,7 +640,8 @@ export function EditPortDrawer ({
     form.setFieldsValue({
       ...form.getFieldsValue(),
       taggedVlans: tagged,
-      untaggedVlan: untagged
+      untaggedVlan: untagged,
+      voiceVlan: ''
     })
     setPortEditStatus(status)
     onValuesChange({ untaggedVlan: untagged, revert: true, status: status })
