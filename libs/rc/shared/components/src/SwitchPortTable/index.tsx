@@ -15,7 +15,7 @@ import {
   isOperationalSwitch,
   SwitchPortViewModel,
   SwitchVlan,
-  useTableQuery
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -77,7 +77,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
   ]
 
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
       filters: venueId ? { venueId: [venueId] } :
