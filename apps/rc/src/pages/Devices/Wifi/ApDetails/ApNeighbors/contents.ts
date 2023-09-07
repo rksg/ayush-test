@@ -1,8 +1,9 @@
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { ApLldpNeighbor } from '@acx-ui/rc/utils'
+import { ApErrorHandlingMessages, ApLldpNeighbor } from '@acx-ui/rc/utils'
 
-export type LldpNeighborsDisplayFields = Omit<ApLldpNeighbor, 'neighborManaged' | 'lldpUPOE'>
+// eslint-disable-next-line max-len
+export type LldpNeighborsDisplayFields = Omit<ApLldpNeighbor, 'neighborManaged' | 'lldpUPOE' | 'neighborSerialNumber'>
 
 // eslint-disable-next-line max-len
 export const lldpNeighborsFieldLabelMapping: Record<keyof LldpNeighborsDisplayFields, MessageDescriptor> = {
@@ -30,4 +31,12 @@ export const lldpNeighborsFieldLabelMapping: Record<keyof LldpNeighborsDisplayFi
   lldpPowerPriority: defineMessage({ defaultMessage: 'Power Priority' }),
   lldpPDReqPowerVal: defineMessage({ defaultMessage: 'Requested Power Value' }),
   lldpPSEAllocPowerVal: defineMessage({ defaultMessage: 'PSE Allocated Power Value' })
+}
+
+type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
+export const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
+  'WIFI-10496': 'FIRMWARE_IS_NOT_SUPPORTED',
+  'WIFI-10497': 'IS_NOT_OPERATIONAL',
+  'WIFI-10216': 'IS_NOT_FOUND',
+  'WIFI-10498': 'NO_DETECTED_NEIGHBOR_DATA'
 }

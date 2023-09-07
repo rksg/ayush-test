@@ -9,13 +9,14 @@ import {
   RadioChangeEvent,
   Space
 } from 'antd'
+import { Rule }                      from 'antd/lib/form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                     from '@acx-ui/components'
-import { Features, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
-import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
+import { Tooltip, PasswordInput }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector, PhoneInput, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { useGetDpskPassphraseQuery, useGetDpskQuery }                     from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   emailRegExp,
@@ -28,7 +29,7 @@ import {
   validateVlanId
 } from '@acx-ui/rc/utils'
 
-import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
+import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'
@@ -51,11 +52,20 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const dpskDeviceCountLimitToggle =
+    useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
+
+  const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
+    ? NEW_MAX_DEVICES_PER_PASSPHRASE
+    : OLD_MAX_DEVICES_PER_PASSPHRASE
   const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
-    { params: ({ ...params, passphraseId: editMode.passphraseId }) },
+    { params: { ...params, passphraseId: editMode.passphraseId, ...dpskNewConfigFlowParams } },
     { skip: !editMode.isEdit }
   )
-  const { poolDeviceCount } = useGetDpskQuery({ params }, {
+  const { poolDeviceCount } = useGetDpskQuery({
+    params: { ...params, ...dpskNewConfigFlowParams }
+  }, {
     skip: !isCloudpathEnabled,
     selectFromResult ({ data }) {
       return {
@@ -174,7 +184,18 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                           { max: MAX_DEVICES_PER_PASSPHRASE }
                         )
                       }
-                    ]}
+                    ].concat(editMode.isEdit && serverData?.numberOfDevices
+                      ? [{
+                        type: 'number',
+                        min: serverData.numberOfDevices,
+                        max: MAX_DEVICES_PER_PASSPHRASE,
+                        message: $t(
+                          // eslint-disable-next-line max-len
+                          { defaultMessage: 'Please enter a number equal to or greater than the existing value: {min}' },
+                          { min: serverData.numberOfDevices }
+                        )
+                      }]
+                      : []) as Rule[]}
                     children={<InputNumber />}
                   />
                 }

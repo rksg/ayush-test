@@ -17,7 +17,7 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp
+  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -193,7 +193,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             rules={[
               { required: true },
               { validator: (_, value) => nameValidator(value) },
-              { max: 255 }
+              { max: 255 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
             ]}
             validateFirst
             hasFeedback

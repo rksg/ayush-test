@@ -48,6 +48,14 @@ exports[`useAnalyticsFilter should set filter with switches when search paramete
 </DocumentFragment>
 `;
 
+exports[`useAnalyticsFilter should set filters correctly for mlisa app 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"zone","name":"Zone"}]]}} | [{"type":"zone","name":"Zone"}]
+  </div>
+</DocumentFragment>
+`;
+
 exports[`useAnalyticsFilter should set filters correctly path is health and selected node is zone 1`] = `
 <DocumentFragment>
   <div>

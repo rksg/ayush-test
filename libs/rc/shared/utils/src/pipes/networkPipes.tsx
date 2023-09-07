@@ -122,7 +122,8 @@ export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) 
   const map: { [key: string]: string } = {
     [WlanSecurityEnum.WPA2Personal]: 'WPA2',
     [WlanSecurityEnum.WEP]: 'WEP',
-    [WlanSecurityEnum.WPAPersonal]: 'WPA'
+    [WlanSecurityEnum.WPAPersonal]: 'WPA',
+    [WlanSecurityEnum.WPA23Mixed]: 'WPA3/WPA2 mixed mode'
   }
   return type ? map[type] : ''
 }

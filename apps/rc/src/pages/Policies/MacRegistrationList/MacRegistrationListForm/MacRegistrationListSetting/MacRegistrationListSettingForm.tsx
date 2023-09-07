@@ -10,8 +10,8 @@ import {
   useAdaptivePolicySetListQuery,
   useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { useParams }                                      from '@acx-ui/react-router-dom'
 
 import AdaptivePolicySetForm
   from '../../../AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
@@ -57,7 +57,8 @@ export function MacRegistrationListSettingForm () {
             rules={[
               { required: true },
               { max: 255 },
-              { validator: (_, value) => nameValidator(value) }
+              { validator: (_, value) => nameValidator(value) },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
             ]}
             validateFirst
             hasFeedback

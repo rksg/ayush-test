@@ -19,9 +19,9 @@ import {
 import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
-import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, Client }                                                     from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
+import { useSearchClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, Client }                                                      from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'
@@ -47,7 +47,7 @@ export function VideoCallQoeDetails (){
   }
 
   const [ search, setSearch ] = useState('')
-  const searchQueryResults = useSeachClientsQuery({
+  const searchQueryResults = useSearchClientsQuery({
     start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
     end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
     query: search,

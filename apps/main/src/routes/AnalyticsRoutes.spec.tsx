@@ -100,7 +100,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   NetworkAssurance: () => <div data-testid='networkAssurance' />,
   ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
   ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>,
-  RecommendationDetails: () => <div data-testid='RecommendationDetails'/>
+  RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
+  CrrmDetails: () => <div data-testid='CrrmDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -193,6 +194,15 @@ test('should navigate to analytics/recommendations/crrm', () => {
   })
   expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
+test('should navigate to analytics/recommendations/crrm/:id', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/crrm/id',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
+})
 test('should navigate to analytics/recommendations/aiOps', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
@@ -259,7 +269,7 @@ test('should navigate to analytics/configChange', () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
+  expect(screen.getByTestId('networkAssurance')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
