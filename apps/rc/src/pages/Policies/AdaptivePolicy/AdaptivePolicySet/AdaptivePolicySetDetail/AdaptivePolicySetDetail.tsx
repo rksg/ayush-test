@@ -4,6 +4,7 @@ import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                         from '@acx-ui/rc/components'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
@@ -51,16 +52,18 @@ export default function AdaptivePolicySetDetail () {
       }
     } })
 
-  // eslint-disable-next-line max-len
-  const { networkIdsInDpsk } = useGetDpskListQuery({ params: { size: '100000', page: '0', sort: 'name,desc' } },
-    {
-      skip: !isCloudpathEnabled,
-      selectFromResult ({ data }) {
-        return {
-          // eslint-disable-next-line max-len
-          networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
-        }
-      } }
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { networkIdsInDpsk } = useGetDpskListQuery({
+    params: { size: '100000', page: '0', sort: 'name,desc', ...dpskNewConfigFlowParams }
+  },
+  {
+    skip: !isCloudpathEnabled,
+    selectFromResult ({ data }) {
+      return {
+        // eslint-disable-next-line max-len
+        networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
+      }
+    } }
   )
 
   return (
