@@ -95,8 +95,11 @@ export interface DpskPassphraseClient {
 
 export interface DPSKDeviceInfo {
   mac: string,
-  online: boolean,
-  lastConnected: string,
+  online?: boolean,
+  lastConnected: string | null,
   lastConnectedNetwork: string,
   devicePassphrase: string
+  deviceConnectivity?: 'CONFIGURED' | 'CONNECTED',
+  lastConnectedNetworkId?: string | null,
+  lastConnectedTime?: string | null
 }
