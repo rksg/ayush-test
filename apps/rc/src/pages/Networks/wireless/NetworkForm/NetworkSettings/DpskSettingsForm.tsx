@@ -12,6 +12,7 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                from '@acx-ui/rc/components'
 import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -148,7 +149,8 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const { data: dpskList } = useGetDpskListQuery({})
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {

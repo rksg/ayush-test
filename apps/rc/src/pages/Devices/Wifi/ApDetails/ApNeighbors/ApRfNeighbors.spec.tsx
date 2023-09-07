@@ -38,10 +38,13 @@ describe('ApRfNeighbors', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.clearAllMocks()
+
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
   })
 
   afterEach(() => {
     jest.useRealTimers()
+    mockedInitPokeSocketFn.mockRestore()
   })
 
   beforeEach(() => {
@@ -85,8 +88,6 @@ describe('ApRfNeighbors', () => {
 
     const targetApName = new RegExp(mockedApRfNeighbors.neighbors[0].deviceName)
     expect(await screen.findByRole('row', { name: targetApName })).toBeVisible()
-
-    mockedInitPokeSocketFn.mockRestore()
   })
 
   it('should show error when timeout', async () => {
