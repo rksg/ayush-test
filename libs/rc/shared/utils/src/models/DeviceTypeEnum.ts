@@ -2,10 +2,10 @@ export enum DeviceTypeEnum {
   Laptop = 'Laptop',
   Smartphone = 'Smartphone',
   Tablet = 'Tablet',
-  Voip = 'Voip',
+  Voip = 'VoIP',
   Gaming = 'Gaming',
   Printer = 'Printer',
-  IotDevice = 'IotDevice',
+  IotDevice = 'Iot Device',
   HomeAvEquipment = 'HomeAvEquipment',
   WdsDevice = 'WdsDevice',
 }

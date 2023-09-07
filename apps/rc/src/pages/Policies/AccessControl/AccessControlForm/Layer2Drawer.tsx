@@ -33,6 +33,7 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
+import { useScrollLock }                   from '../ScrollLock'
 
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
@@ -102,6 +103,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const [
     accessStatus,
     policyName,
@@ -151,13 +154,24 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     return !_.isNil(layer2PolicyInfo)
   }
 
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      setVisible(status)
+      lockScroll()
+    } else {
+      setVisible(status)
+      unlockScroll()
+    }
+  }
+
+
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
   }, [isOnlyViewMode, l2AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
@@ -191,7 +205,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -259,7 +273,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const handleLayer2DrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -565,7 +579,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -598,7 +612,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           disabled={!l2AclPolicyId}
           onClick={() => {
             if (l2AclPolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(l2AclPolicyId)
               setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
             }
@@ -611,7 +625,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         <Button type='link'
           disabled={layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
           }}>
           {$t({ defaultMessage: 'Add New' })}
