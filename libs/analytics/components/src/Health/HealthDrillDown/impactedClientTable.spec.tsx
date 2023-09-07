@@ -99,6 +99,43 @@ describe('ImpactedClientsTable', () => {
     )
     expect(await screen.findByText('Top 100 Impacted Clients')).toBeVisible()
   })
+
+  it('should show correctly render hostname in link', async () => {
+    const mac = uniqueId()
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: {
+        network: {
+          hierarchyNode: {
+            impactedClients: [{
+              mac,
+              manufacturer: 'Intel Corporate',
+              ssid: 'Divya_1_hour',
+              hostname: 'DESKTOP-K1PAM9U',
+              username: 'DPSK_User_8709'
+            }]
+          }
+        }
+      }
+    })
+    render(
+      <Provider>
+        <ImpactedClientsTable
+          filters={filters}
+          drillDownSelection='connectionFailure'
+          selectedStage='Association'
+        />
+      </Provider>,
+      {
+        route: {
+          path: '/t/tenantId/analytics/health',
+          wrapRoutes: false
+        }
+      }
+    )
+    expect(await screen.findByText('1 Impacted Client')).toBeVisible()
+    const link: HTMLAnchorElement = await screen.findByText(mac)
+    expect(link.href).toMatch(/\?hostname=DESKTOP-K1PAM9U$/)
+  })
 })
 
 

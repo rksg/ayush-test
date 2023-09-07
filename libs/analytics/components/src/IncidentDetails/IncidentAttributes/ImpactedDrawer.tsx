@@ -98,8 +98,6 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
         let link = `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
         if (Array.isArray(hostname) && hostname.length > 0) {
           link = link + `&hostname=${hostname.join(', ')}`
-        } else if (typeof hostname === 'string') {
-          link = link + `&hostname=${hostname}`
         }
         return <TenantLink
           to={link}
