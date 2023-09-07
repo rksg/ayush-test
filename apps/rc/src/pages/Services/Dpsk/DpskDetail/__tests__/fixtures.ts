@@ -198,3 +198,11 @@ export const mockedNetworks = {
     }
   ]
 }
+
+export const mockedDpskPassphraseMultipleDevices = {
+  id: '9e7a4796ff0c47b580644f1442e254c0',
+  passphrase: 'pvH`/k3k1iv2=xjoHR',
+  username: 'DPSK_User_347',
+  numberOfDevices: 5,
+  createdDate: '2023-09-01T02:55:36.357257'
+}
