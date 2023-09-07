@@ -2,7 +2,8 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { ApErrorHandlingMessages, ApLldpNeighbor } from '@acx-ui/rc/utils'
 
-export type LldpNeighborsDisplayFields = Omit<ApLldpNeighbor, 'neighborManaged' | 'lldpUPOE'>
+// eslint-disable-next-line max-len
+export type LldpNeighborsDisplayFields = Omit<ApLldpNeighbor, 'neighborManaged' | 'lldpUPOE' | 'neighborSerialNumber'>
 
 // eslint-disable-next-line max-len
 export const lldpNeighborsFieldLabelMapping: Record<keyof LldpNeighborsDisplayFields, MessageDescriptor> = {
