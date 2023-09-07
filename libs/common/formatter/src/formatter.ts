@@ -239,7 +239,7 @@ const crrmText = (value: CrrmTextType) => {
       data, ({ mode, width, autoCellSizing }) => `${mode}-${width}-${autoCellSizing}`)
     const result = Object.values(groupByData)
     return result
-    // eslint-disable-next-line max-len
+      // eslint-disable-next-line max-len
       .map(config => `${config[0].mode} and ${config[0].width} for ${formatList(config.map(item => item.radio), { type: 'conjunction' })} with ${config[0].autoCellSizing}`)
       .join(', ')
   } else {
