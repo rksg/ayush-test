@@ -17,7 +17,7 @@ export interface Node {
   path?: Node[];
 }
 
-interface RevolvingDoorProps {
+interface SlidingDoorProps {
   data: Node;
   setNetworkPath: Function;
   defaultSelectedNode?: Node | null;
@@ -41,7 +41,7 @@ const useBreadcrumbState = (initialBreadcrumb: Node[]) => {
   return { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath }
 }
 
-export const RevolvingDoor = (props: RevolvingDoorProps) => {
+export const SlidingDoor = (props: SlidingDoorProps) => {
   const { data: rootNode, setNetworkPath } = props
   const defaultPath = [{ name: 'Network', type: 'network' }]
 
