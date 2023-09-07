@@ -260,6 +260,28 @@ describe('test isEnableOptionOf6GHz func', () => {
     const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(false)
   })
+
+  it('should return true when wlanSecurity is WPA23Mixed', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: 'WPA23Mixed'
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when wlanSecurity is not WPA23Mixed', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: 'Open'
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(false)
+  })
 })
 
 describe('test handleDisabledUnCheckOption func', () => {
@@ -581,6 +603,24 @@ describe('test getWlanSecurity func', () => {
 
     const actual = getWlanSecurity(mockWlanData)
     expect(actual).toBe(undefined)
+  })
+
+  it('should return WlanSecurityEnum.WPA3 when wlanSecurityFromForm is WPA3', function () {
+    const mockWlanData = {
+      name: 'test'
+    } as NetworkSaveData
+    const wlanSecurityFromForm = WlanSecurityEnum.WPA3
+    const actual = getWlanSecurity(mockWlanData, wlanSecurityFromForm)
+    expect(actual).toBe(WlanSecurityEnum.WPA3)
+  })
+
+  it('should return WlanSecurityEnum.Open when wlanSecurityFromForm is Open', function () {
+    const mockWlanData = {
+      name: 'test'
+    } as NetworkSaveData
+    const wlanSecurityFromForm = WlanSecurityEnum.Open
+    const actual = getWlanSecurity(mockWlanData, wlanSecurityFromForm)
+    expect(actual).toBe(WlanSecurityEnum.Open)
   })
 })
 

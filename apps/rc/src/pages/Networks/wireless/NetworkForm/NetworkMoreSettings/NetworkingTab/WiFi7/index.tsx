@@ -48,11 +48,12 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null) => {
-  const wlanSecurity = getWlanSecurity(wlanData)
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurityFromForm ?: WlanSecurityEnum) => {
+  const wlanSecurity = getWlanSecurity(wlanData, wlanSecurityFromForm)
   const enableOwe = getIsOwe(wlanData, wlanSecurity)
+  const isWPA23Mixed = wlanSecurity === WlanSecurityEnum.WPA23Mixed
 
-  return IsWPA3Security(wlanSecurity as WlanSecurityEnum) || enableOwe || false
+  return IsWPA3Security(wlanSecurity) || isWPA23Mixed || enableOwe || false
 }
 
 export const inverseTargetValue =
@@ -125,8 +126,8 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
-export const getWlanSecurity = (wlanData : NetworkSaveData | null) => {
-  return get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
+export const getWlanSecurity = (wlanData : NetworkSaveData | null, wlanSecurityFromForm ?: WlanSecurityEnum) => {
+  return wlanSecurityFromForm || get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
 }
 
 export const getIsOwe = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
@@ -150,7 +151,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData)
+  const wlanSecurityFromForm = useWatch('wlanSecurity')
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurityFromForm)
 
   useEffect(() => {
     const updateMloOptions = () => {
