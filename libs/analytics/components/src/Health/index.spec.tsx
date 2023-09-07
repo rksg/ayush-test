@@ -24,11 +24,18 @@ jest.mock('./SummaryBoxes', () => ({
   SummaryBoxes: () => <div data-testid='Summary Boxes' />
 }))
 
+jest.mock('./HealthDrillDown', () => ({
+  HealthDrillDown: () => <div data-testid='HealthDrillDown Boxes' />
+}))
+
+
 describe('HealthPage', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(dataApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: header.queryResult })
+    mockGraphqlQuery(dataApiURL, 'APCountForNode', {
+      data: { network: { node: { apCount: 0 } } } })
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
