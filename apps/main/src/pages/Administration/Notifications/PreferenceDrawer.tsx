@@ -58,7 +58,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
           // checked={isSupportAccessEnabled}
           // value={isSupportAccessEnabled}
         >
-          {$t({ defaultMessage: 'Network device firmware update (AP & Switch)' })}
+          {$t({ defaultMessage: 'Network device firmware updates weekly (AP & Switch)' })}
         </Checkbox>
       </SpaceWrapper>
     </Form.Item>
