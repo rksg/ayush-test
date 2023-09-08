@@ -1389,6 +1389,7 @@ export function EditPortDrawer ({
         vlanUsedByVe={vlanUsedByVe}
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
+        showVoiceVlan={true}
         voiceVlan={voiceVlan}
         isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}

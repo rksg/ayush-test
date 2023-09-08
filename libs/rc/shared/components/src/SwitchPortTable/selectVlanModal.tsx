@@ -34,8 +34,9 @@ export function SelectVlanModal (props: {
   vlanUsedByVe?: string,
   taggedVlans: string,
   untaggedVlan: number,
-  voiceVlan: string,
-  isVoiceVlanInvalid: boolean,
+  showVoiceVlan?: boolean,
+  voiceVlan?: string,
+  isVoiceVlanInvalid?: boolean,
   hasSwitchProfile?: boolean,
   profileId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
@@ -46,7 +47,8 @@ export function SelectVlanModal (props: {
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile,
     vlanDisabledTooltip, defaultVlan, switchVlans,
-    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, voiceVlan, isVoiceVlanInvalid
+    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, showVoiceVlan,
+    voiceVlan, isVoiceVlanInvalid
   } = props
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
@@ -199,7 +201,8 @@ export function SelectVlanModal (props: {
 
   const showVoiceVlanSwitch = (vlan: CheckboxOptionType) => {
     const vlanArray = Array.from(selectTaggedVlans?.toString().split(',') ?? [])
-    if(vlanArray.indexOf(String(vlan.value)) !== -1 || voiceVlanTmp == vlan.value) {
+    if(showVoiceVlan && vlanArray.indexOf(String(vlan.value)) !== -1
+       || voiceVlanTmp == vlan.value) {
       return true
     }
     return false
