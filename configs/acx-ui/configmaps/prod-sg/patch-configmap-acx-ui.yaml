@@ -4,10 +4,10 @@ metadata:
   name: configmap-acx-ui
 data:
   google.maps.key: "AIzaSyAWQnu3C-y2DsQIQmixgQNFp6UjQdvDFFo"
-  split.io.key: "jj5d5r9hnhvb3avsroeiplbdp3rn7glvoei8"
-  captive.portal.domain.name: "asia.ruckus.cloud"
+  split.io.key: "7be0ne01vnli2nea8eekg4h0c5tmmmn63sa5"
+  captive.portal.domain.name: "sp.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"
   fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-prd-latest.min.js"
-  new.api.domain.name: "api.asia.ruckus.cloud"
+  new.api.domain.name: "api.sp.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"

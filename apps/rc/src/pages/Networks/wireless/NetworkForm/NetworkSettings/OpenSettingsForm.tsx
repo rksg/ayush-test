@@ -46,7 +46,7 @@ export function OpenSettingsForm () {
     }
   }, [data])
 
-  return (
+  return (<>
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
@@ -55,7 +55,12 @@ export function OpenSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-  )
+    {!(editMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
 }
 
 function SettingsForm () {
@@ -125,7 +130,6 @@ function SettingsForm () {
   return (
     <>
       <StepsFormLegacy.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsFormLegacy.Title>
-
       <div>
         <Form.Item>
           {supportOweEncryption && <Form.Item>
@@ -195,9 +199,6 @@ function SettingsForm () {
 
         </>}
       </div>
-
-
-      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
     </>
   )
 }
