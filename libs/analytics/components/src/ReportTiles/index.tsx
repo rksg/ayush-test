@@ -33,7 +33,7 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
 
   const currentTile = queryResults.data?.[selected]!
 
-  return <Loader states={[queryResults]}>
+  return <Loader states={[queryResults, { isLoading: !currentTile }]}>
     <Card>{queryResults.data
       ? <ReportTileWrapper>
         <div>{
@@ -48,13 +48,13 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
             />
           })
         }</div>
-        <TenantLink to={currentTile.url}>
+        {currentTile && <TenantLink to={currentTile.url}>
           <Statistic
             title={$t(currentTile.text)}
             value={currentTile.value
               ? currentTile.format(currentTile.value)
               : noDataDisplay}/>
-        </TenantLink>
+        </TenantLink>}
       </ReportTileWrapper>
       : null}
     </Card>
