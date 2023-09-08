@@ -20,11 +20,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
+import { mockedTunnelProfileViewData }     from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockNetworkGroup,
-  mockNsgStatsList,
-  mockVenueNetworkData
+  mockDeepNetworkList,
+  mockNetworkGroup, mockNetworkSaveData,
+  mockNsgStatsList, mockVenueNetworkData
 } from '../../__tests__/fixtures'
 
 
@@ -77,6 +77,10 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
       ),
       rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+      ),
+      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(mockNetworkGroup))
       ),
@@ -84,7 +88,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => {
           mockedGetNetworkDeepList()
-          return res(ctx.status(200))
+          return res(ctx.json(mockDeepNetworkList))
         }
       ),
       rest.post(
