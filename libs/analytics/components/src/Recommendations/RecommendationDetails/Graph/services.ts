@@ -11,7 +11,7 @@ import {
   pairGraphs,
   trimPairedGraphs
 } from '@acx-ui/components'
-import type { BandEnum }     from '@acx-ui/components'
+import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 
 import { EnhancedRecommendation } from '../services'
@@ -49,6 +49,8 @@ export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
           flow(
             [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
           )(Object.values(result.data!).filter(Boolean), band)
+
+        details.status === 'applied' && processedGraphs?.reverse()
         return { ...result,
           data: processedGraphs && trimPairedGraphs(processedGraphs),
           csv: processedGraphs && getCrrmCsvData(processedGraphs, $t)

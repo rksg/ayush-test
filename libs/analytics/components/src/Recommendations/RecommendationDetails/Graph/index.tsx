@@ -27,7 +27,8 @@ import { Wrapper, GraphWrapper, DrawerGraphWrapper, ClickableWrapper, Monitoring
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
   monitoring: EnhancedRecommendation['monitoring'],
-  legend: string[]
+  legend: string[],
+  overview?: boolean
 ) {
   const { $t } = useIntl()
 
@@ -46,13 +47,15 @@ function useGraph (
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Before' })}
         data={graphs[0]}
+        overview={overview}
       />}</AutoSizer></div>,
       !monitoring
         ? <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
           style={{ width, height }}
           chartRef={connectChart}
           title={$t({ defaultMessage: 'Recommended' })}
-          data={graphs[1]} />}</AutoSizer></div>
+          data={graphs[1]}
+          overview={overview}/>}</AutoSizer></div>
         : <Monitoring key='crrm-graph-monitoring' >
           <div>{$t({ defaultMessage: 'Monitoring performance indicators' })}</div>
           <div>{$t({ defaultMessage: 'until {dateTime}' },
@@ -67,14 +70,17 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
+  const [ key, setKey ] = useState(0)
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
   const queryResult = useCRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
-
+  useEffect(() => {
+    setKey(Math.random()) // to reset graph zoom
+  }, [visible])
   return <Wrapper>
     <ClickableWrapper onClick={showDrawer}/>
-    <Loader states={[queryResult]}>
+    <Loader states={[queryResult]} key={key}>
       <Card
         type='no-border'
         title={title}
@@ -83,7 +89,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
-          useGraph(queryResult.data, details.monitoring!, [])
+          useGraph(queryResult.data, details.monitoring!, [], true)
         }</GraphWrapper>} />
       <Drawer
         drawerType={DrawerTypes.FullHeight}
