@@ -10,13 +10,13 @@ const AddTunnelProfile = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const { create } = useTunnelProfileActions(params)
+  const { createTunnelProfile } = useTunnelProfileActions(params)
 
   return (
     <TunnelProfileForm
       title={$t({ defaultMessage: 'Add Tunnel Profile' })}
       submitButtonLabel={$t({ defaultMessage: 'Add' })}
-      onFinish={create}
+      onFinish={createTunnelProfile}
     />
   )
 }

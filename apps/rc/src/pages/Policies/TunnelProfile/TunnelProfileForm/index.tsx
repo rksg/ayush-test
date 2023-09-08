@@ -39,8 +39,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const linkToTableView = useTenantLink(tablePath)
 
   const handleFinish = async (data: TunnelProfileFormTypeBase) => {
-    await onFinish(data)
-    redirectPreviousPage(navigate, previousPath, linkToTableView)
+    try{
+      await onFinish(data)
+      redirectPreviousPage(navigate, previousPath, linkToTableView)
+    } catch(error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   return (

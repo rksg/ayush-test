@@ -8,8 +8,8 @@ import { TunnelProfileFormType } from '.'
 export const useTunnelProfileActions = (
   params: Readonly<Params<string>>
 ) => {
-  const [createTunnelProfile, { isLoading: isCreating }] = useCreateTunnelProfileMutation()
-  const [updateTunnelProfile, { isLoading: isUpdating }] = useUpdateTunnelProfileMutation()
+  const [create, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
+  const [update, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
 
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
@@ -21,29 +21,29 @@ export const useTunnelProfileActions = (
     return result
   }
 
-  const create = async (data: TunnelProfileFormType) => {
+  const createTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
-      await createTunnelProfile({ payload }).unwrap()
+      await create({ payload }).unwrap()
     } catch (error) {
-      // TODO Error message TBD
+      return Promise.reject(error)
     }
   }
 
-  const update = async (data: TunnelProfileFormType) => {
+  const updateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
       let pathParams = { id: params.policyId }
-      await updateTunnelProfile({ params: pathParams, payload }).unwrap()
+      await update({ params: pathParams, payload }).unwrap()
     } catch (error) {
-      // TODO Error message TBD
+      return Promise.reject(error)
     }
   }
 
   return {
-    create,
-    update,
-    isCreating,
-    isUpdating
+    createTunnelProfile,
+    updateTunnelProfile,
+    isTunnelProfileCreating,
+    isTunnelProfileUpdating
   }
 }

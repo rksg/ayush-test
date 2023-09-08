@@ -13,11 +13,11 @@ export const TunnelProfileModal = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [visible, setVisible]=useState(false)
-  const { create, isCreating } = useTunnelProfileActions(params)
+  const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions(params)
 
   const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
-      await create(data)
+      await createTunnelProfile(data)
       setVisible(false)
     } catch {
       showToast({
@@ -27,7 +27,7 @@ export const TunnelProfileModal = () => {
     }
   }
 
-  const content = <Loader states={[{ isLoading: false, isFetching: isCreating }]}>
+  const content = <Loader states={[{ isLoading: false, isFetching: isTunnelProfileCreating }]}>
     <StepsForm
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}

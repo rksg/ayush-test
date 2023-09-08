@@ -20,7 +20,7 @@ const EditTunnelProfile = () => {
   const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
     { params: { id: params.policyId } }
   )
-  const { update } = useTunnelProfileActions(params)
+  const { updateTunnelProfile } = useTunnelProfileActions(params)
 
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
@@ -42,7 +42,7 @@ const EditTunnelProfile = () => {
         form={form}
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-        onFinish={update}
+        onFinish={updateTunnelProfile}
         isDefaultTunnel={isDefaultTunnelProfile}
       />
     </Loader>
