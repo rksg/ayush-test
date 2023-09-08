@@ -334,6 +334,11 @@ export const PcapWrapper = styled.div`
   margin-top: 12px;
 `
 
+export const PcapText = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-5-line-height);
+`
+
 export const PcapSpin = styled(Spin)`
   position: relative;
   left: 15%;

@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 import { Button }                 from '@acx-ui/components'
 import { handleBlobDownloadFile } from '@acx-ui/utils'
 
-import { useClientPcapMutation } from './services'
-import { PcapSpin, PcapWrapper } from './styledComponents'
+import { useClientPcapMutation }           from './services'
+import { PcapSpin, PcapText, PcapWrapper } from './styledComponents'
 
 export function DownloadPcap ({
   pcapFilename
@@ -39,9 +39,11 @@ export function DownloadPcap ({
         disabled={Boolean(error)}
         onClick={() => onClick()}
       >
-        {error
-          ? error
-          : $t({ defaultMessage: 'Download .pcap' })}
+        <PcapText>
+          {error
+            ? error
+            : $t({ defaultMessage: 'Download .pcap' })}
+        </PcapText>
       </Button>}
   </PcapWrapper>
 }

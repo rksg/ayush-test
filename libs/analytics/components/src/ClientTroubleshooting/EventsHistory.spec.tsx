@@ -1,10 +1,8 @@
-import { cleanup } from '@testing-library/react'
-
-import { Incident }                       from '@acx-ui/analytics/utils'
-import { Provider }                       from '@acx-ui/store'
-import { act, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Incident }                                from '@acx-ui/analytics/utils'
+import { Provider }                                from '@acx-ui/store'
+import { act, render, screen, fireEvent, cleanup } from '@acx-ui/test-utils'
+import { RolesEnum }                               from '@acx-ui/types'
+import { getUserProfile, setUserProfile }          from '@acx-ui/user'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -30,7 +28,10 @@ const incidents = [{
 const params = { tenantId: 'tenant-id', clientId: 'clientMac', activeTab: 'troubleshooting' }
 
 describe('EventsHistory', () => {
-  afterEach(() => jest.restoreAllMocks())
+  afterEach(() => {
+    jest.restoreAllMocks()
+    cleanup()
+  })
   it('should render correctly without data', async () => {
     const data = {
       connectionEvents: [],
