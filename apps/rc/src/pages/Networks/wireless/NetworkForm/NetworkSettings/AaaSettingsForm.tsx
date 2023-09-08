@@ -48,17 +48,21 @@ export function AaaSettingsForm () {
     }
   }, [data])
 
-  return (
+  return (<>
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
       </Col>
     </Row>
-  )
+    {!(editMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
 }
 
 function SettingsForm () {

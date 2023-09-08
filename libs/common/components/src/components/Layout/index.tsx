@@ -23,8 +23,8 @@ import {
 
 import modifyVars from '../../theme/modify-vars'
 
-import { Content } from './Responsive/content'
-import * as UI     from './styledComponents'
+import { Content as ResponsiveContent } from './Responsive/content'
+import * as UI                          from './styledComponents'
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -218,6 +218,8 @@ export function Layout ({
     }
   }, [window.innerWidth])
 
+  const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
+
   return <UI.Wrapper showScreen={display || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
@@ -242,9 +244,9 @@ export function Layout ({
       className={collapsed ? 'sider-collapsed' : ''}
     >
       <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
-        {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+        {(display || subOptimalDisplay) ? <Content>{content}</Content> :
           <UI.ResponsiveContent>
-            <Content setShowScreen={onSubOptimalDisplay} />
+            <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}
       </LayoutContext.Provider>
     </ProLayout>

@@ -88,6 +88,11 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={saveData}
+        buttonLabel={{
+          submit: editMode
+            ? $t({ defaultMessage: 'Apply' })
+            : $t({ defaultMessage: 'Add' })
+        }}
       >
         <StepsFormLegacy.StepForm<ClientIsolationSaveData>
           name='details'
