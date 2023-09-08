@@ -51,6 +51,7 @@ export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
           )(Object.values(result.data!).filter(Boolean), band)
 
         details.status === 'applied' && processedGraphs?.reverse()
+        // console.log('processedGraphs', processedGraphs)
         return { ...result,
           data: processedGraphs && trimPairedGraphs(processedGraphs),
           csv: processedGraphs && getCrrmCsvData(processedGraphs, $t)

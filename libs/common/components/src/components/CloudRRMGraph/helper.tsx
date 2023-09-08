@@ -301,7 +301,7 @@ export function deriveTxPowerHighlight (
     if (nodes.every(node => !!node)) {
       nodes[1]!.aggregate.forEach((agg, index) => {
         if (agg.txPower &&
-            nodes[0]!.aggregate[index]?.txPower &&
+            nodes[0]!.aggregate[index].txPower &&
             agg.txPower !== nodes[0]!.aggregate[index].txPower) {
           // update node category
           nodes = [ { ...nodes[0]! }, { ...nodes[1]!, category: Type.CategoryState.TxPower } ]

@@ -6,3 +6,10 @@ W07-R760-West-FACP,5C:DF:89:0B:FB:40,2.4 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Ful
 W10-R760-Doberman,5C:DF:89:0B:FE:E0,2.4 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
 "
 `;
+
+exports[`useConfigChangeQuery should return correct data for applied status 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+W07-R760-West-FACP,5C:DF:89:0B:FB:40,5 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
+W10-R760-Doberman,5C:DF:89:0B:FE:E0,5 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
+"
+`;
