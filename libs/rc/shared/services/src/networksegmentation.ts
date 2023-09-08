@@ -51,7 +51,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Add Network Segmentation Group',
             'Update Network Segmentation Group',
-            'Delete FNetwork Segmentation Group'
+            'Delete Network Segmentation Group'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }

@@ -19,7 +19,7 @@ export const showTsbBlockedSwitchErrorDialog = () => {
         href={link}
         rel='noreferrer'> {$t({ defaultMessage: 'RUCKUS support portal' })} </a>
       <br /><br />
-      {$t({ defaultMessage: 'This switch can only be added to RUCKUS One once FI 09.0.10h firmware becomes available. We recommend that you continue using the switch on FI 08.0.95k firmware until that time.' })}
+      {$t({ defaultMessage: 'This switch can only be added to RUCKUS One once FI 09.0.10h firmware becomes available. We recommend that you continue using the switch on FI 08.0.95j, FI 08.0.95k or FI 08.0.95m firmware until that time.' })}
     </>
   })
 }

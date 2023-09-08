@@ -27,7 +27,7 @@ exports[`useAnalyticsFilter imports dashboard filter with single venue 1`] = `
 exports[`useAnalyticsFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{}} | []
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{}} | [{"type":"network","name":"Network"}]
   </div>
 </DocumentFragment>
 `;
@@ -44,6 +44,14 @@ exports[`useAnalyticsFilter should set filter with switches when search paramete
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]]}} | [{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]
+  </div>
+</DocumentFragment>
+`;
+
+exports[`useAnalyticsFilter should set filters correctly for mlisa app 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"zone","name":"Zone"}]]}} | [{"type":"zone","name":"Zone"}]
   </div>
 </DocumentFragment>
 `;

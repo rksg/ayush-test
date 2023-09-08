@@ -38,7 +38,7 @@ import {
   Network,
   NetworkSaveData,
   NetworkVenue,
-  IsWPA3Security
+  IsSecuritySupport6g
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -156,7 +156,7 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && IsWPA3Security(row.deepNetwork.wlan?.wlanSecurity)) {
+          if (triBandRadioFeatureFlag && IsSecuritySupport6g(row.deepNetwork.wlan?.wlanSecurity)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
@@ -184,7 +184,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row.deepNetwork?.isOweMaster === false
+    return supportOweTransition && row?.isOweMaster === false
   }
 
   // TODO: Waiting for API support
@@ -249,8 +249,11 @@ export function VenueNetworksTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
-        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')) || isSystemCreatedNetwork(row)){
+        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
+        } else if (isSystemCreatedNetwork(row)) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
           title = ''
         }

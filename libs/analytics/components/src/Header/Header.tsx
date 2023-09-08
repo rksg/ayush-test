@@ -1,11 +1,14 @@
 import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
 import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
 import { useDateFilter }                            from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }      from '../NetworkFilter'
+import { MlisaNetworkFilter } from '../NetworkFilter/MlisaNetworkFilter'
 
+const isMLISA = get('IS_MLISA_SA')
 export type SubTitle = {
   key: string
   value: (number | string)[]
@@ -19,7 +22,7 @@ export type HeaderData = {
 type useHeaderExtraProps = {
   shouldQuerySwitch?: boolean,
   withIncidents?: boolean,
-  excludeNetworkFilter?: boolean
+  excludeNetworkFilter?: boolean,
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
 
@@ -28,7 +31,8 @@ const Filter = (
 ) => {
   return excludeNetworkFilter
     ? null
-    : <NetworkFilter
+  /* istanbul ignore next */
+    : isMLISA ? <MlisaNetworkFilter /> : <NetworkFilter
       key={getShowWithoutRbacCheckKey('network-filter')}
       shouldQuerySwitch={Boolean(shouldQuerySwitch)}
       withIncidents={withIncidents}

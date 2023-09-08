@@ -89,7 +89,19 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           params: { page, pageSize }
         }
       },
-      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add DHCP',
+            'Update DHCP',
+            'Delete DHCP'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getDhcpByEdgeId: build.query<EdgeDhcpSetting, RequestPayload>({
       query: ({ params }) => {

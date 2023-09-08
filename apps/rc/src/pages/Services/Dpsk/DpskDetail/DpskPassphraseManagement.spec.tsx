@@ -74,6 +74,14 @@ describe('DpskPassphraseManagement', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.get(
+        DpskUrls.getPassphrase.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
+      ),
+      rest.get(
+        DpskUrls.getPassphraseDevices.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       )
     )
   })
@@ -222,13 +230,6 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should render the edit passphrase view', async () => {
-    mockServer.use(
-      rest.get(
-        DpskUrls.getPassphrase.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
-      )
-    )
-
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
@@ -312,12 +313,30 @@ describe('DpskPassphraseManagement', () => {
     })
   })
 
+  it('should close the other drawer when editing passphrase or managing devices', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Manage Devices/i }))
+
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(1)
+    })
+  })
+
   it('should be able to add device in DpskPassphrase', async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getPassphraseDevices.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
-      ),
       rest.patch(
         DpskUrls.updatePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
@@ -372,10 +391,6 @@ describe('DpskPassphraseManagement', () => {
 
   it('should be able to delete device in DpskPassphrase', async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getPassphraseDevices.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
-      ),
       rest.patch(
         DpskUrls.updatePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))

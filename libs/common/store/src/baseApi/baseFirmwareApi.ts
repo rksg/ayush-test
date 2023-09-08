@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseFirmwareApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'firmwareApi',
-  tagTypes: ['Firmware', 'SwitchFirmware', 'ABF'],
+  tagTypes: ['Firmware', 'SwitchFirmware', 'ABF', 'EdgeFirmware'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

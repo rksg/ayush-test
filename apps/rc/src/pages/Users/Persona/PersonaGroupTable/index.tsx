@@ -11,6 +11,7 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupLink,
+  useDpskNewConfigFlowParams,
   VenueLink
 } from '@acx-ui/rc/components'
 import {
@@ -48,8 +49,9 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
-  const { data: dpskPool } = useGetDpskListQuery({})
+  const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
   const { data: macList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
@@ -171,6 +173,7 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
   const { setPersonaGroupCount } = useContext(PersonaGroupContext)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -213,7 +216,7 @@ export function PersonaGroupTable () {
       }
 
       if (dpskPoolId) {
-        getDpskById({ params: { serviceId: dpskPoolId } })
+        getDpskById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
           .then(result => {
             if (result.data) {
               dpskPools.set(dpskPoolId, result.data.name)

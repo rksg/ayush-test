@@ -106,6 +106,7 @@ export interface Venue {
   status: string
   city: string
   country: string
+  countryCode?: string
   latitude: string
   longitude: string
   mesh: { enabled: boolean }
@@ -489,6 +490,7 @@ export interface SwitchClient {
   venueId: string
   venueName: string
   isRuckusAP: boolean
+  vni?: string
   dhcpClientOsVendorName?: string
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
