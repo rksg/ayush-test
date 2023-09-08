@@ -20,11 +20,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData }     from '../../../../Policies/TunnelProfile/__tests__/fixtures'
+import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
   mockDeepNetworkList,
   mockNetworkGroup, mockNetworkSaveData,
-  mockNsgStatsList, mockVenueNetworkData
+  mockNsgStatsList
 } from '../../__tests__/fixtures'
 
 
