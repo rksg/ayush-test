@@ -92,7 +92,11 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'clientIDStatus',
-        key: 'clientIDStatus'
+        key: 'clientIDStatus',
+        render: function (_, row) {
+          return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
+            ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
+        }
       },
       {
         title: $t({ defaultMessage: 'Client ID' }),
