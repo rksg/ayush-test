@@ -16,8 +16,7 @@ import {
   render,
   renderHook,
   screen,
-  waitFor,
-  within
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
