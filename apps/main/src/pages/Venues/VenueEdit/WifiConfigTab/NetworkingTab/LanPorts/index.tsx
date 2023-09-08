@@ -22,6 +22,7 @@ import {
 
 import DefaultApModelDiagram from '../../../../../../assets/images/aps/ap-model-placeholder.png'
 import { VenueEditContext }  from '../../../index'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const { useWatch } = Form
@@ -53,6 +54,8 @@ export function LanPorts () {
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as ApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
+
+  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -225,6 +228,7 @@ export function LanPorts () {
                     setSelectedPortCaps={setSelectedPortCaps}
                     selectedModelCaps={selectedModelCaps}
                     isDhcpEnabled={isDhcpEnabled}
+                    isTrunkPortUntagedVlanEnabled={supportTrunkPortUntaggedVlan}
                     onGUIChanged={handleGUIChanged}
                     index={index}
                   />

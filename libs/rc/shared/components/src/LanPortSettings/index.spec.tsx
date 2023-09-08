@@ -116,4 +116,54 @@ describe('LanPortSettings', () => {
     expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
   })
+
+  it('should render correctly with trunk port untagged vlan toggle', async () => {
+    render(<Provider>
+      <Form initialValues={{ lan: lanData }}>
+        <LanPortSettings
+          index={0}
+          selectedPortCaps={selectedPortCaps}
+          selectedModel={selectedModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedModelCaps}
+          isTrunkPortUntagedVlanEnabled={true}
+          useVenueSettings={false}
+        />
+      </Form>
+    </Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    expect(screen.getByLabelText(/Port type/)).toBeEnabled()
+    expect(screen.getByLabelText(/VLAN untag ID/)).toBeEnabled()
+    expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+
+    fireEvent.change(screen.getByLabelText(/VLAN untag ID/), { target: { value: 2 } })
+    expect(screen.getByLabelText(/VLAN member/).value).toBe('1-4094')
+  })
+
+  it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {
+    render(<Provider>
+      <Form initialValues={{ lan: lanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={true}
+          selectedPortCaps={selectedPortCaps}
+          selectedModel={selectedModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedModelCaps}
+          isDhcpEnabled={true}
+          isTrunkPortUntagedVlanEnabled={true}
+          useVenueSettings={false}
+        />
+      </Form>
+    </Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    await screen.findByText(/The following LAN Port settings can’t work because DHCP is enabled/)
+    expect(screen.getByLabelText(/Port type/)).toBeDisabled()
+    expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
+    expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+  })
 })

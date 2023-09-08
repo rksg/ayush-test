@@ -33,6 +33,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext } from '../..'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export function LanPorts () {
   const { $t } = useIntl()
@@ -47,6 +48,7 @@ export function LanPorts () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails, apCapabilities: apCaps } = useContext(ApDataContext)
+  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
@@ -280,6 +282,7 @@ export function LanPorts () {
                           setSelectedPortCaps={setSelectedPortCaps}
                           selectedModelCaps={selectedModelCaps}
                           isDhcpEnabled={isDhcpEnabled}
+                          isTrunkPortUntagedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
                         />
