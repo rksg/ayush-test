@@ -64,7 +64,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const AddAppLink = () => {
     return (
-      <Col style={{ width: '800px' }}>
+      <Col style={{ width: '800px', paddingLeft: 0 }}>
         <Card type='solid-bg'>
           <Form.Item
             children={
