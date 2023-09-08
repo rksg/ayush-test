@@ -8,8 +8,8 @@ import { TunnelProfileFormType } from '.'
 export const useTunnelProfileActions = (
   params: Readonly<Params<string>>
 ) => {
-  const [createTunnelProfile] = useCreateTunnelProfileMutation()
-  const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
+  const [createTunnelProfile, { isLoading: isCreating }] = useCreateTunnelProfileMutation()
+  const [updateTunnelProfile, { isLoading: isUpdating }] = useUpdateTunnelProfileMutation()
 
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
@@ -42,6 +42,8 @@ export const useTunnelProfileActions = (
 
   return {
     create,
-    update
+    update,
+    isCreating,
+    isUpdating
   }
 }

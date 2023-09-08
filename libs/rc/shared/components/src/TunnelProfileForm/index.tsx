@@ -82,7 +82,7 @@ export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) =
               }
             </Space>
           }
-          // initialValue={MtuTypeEnum.AUTO}
+          initialValue={MtuTypeEnum.AUTO}
           children={
             <Radio.Group disabled={isDefaultTunnelProfile}>
               <Space direction='vertical'>

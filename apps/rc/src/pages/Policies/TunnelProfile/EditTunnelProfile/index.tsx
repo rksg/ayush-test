@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Loader }                       from '@acx-ui/components'
 import { useTunnelProfileActions }      from '@acx-ui/rc/components'
 import { useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
 import { useParams }                    from '@acx-ui/react-router-dom'
@@ -16,7 +17,7 @@ const EditTunnelProfile = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const { data: tunnelProfileData } = useGetTunnelProfileByIdQuery(
+  const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
     { params: { id: params.policyId } }
   )
   const { update } = useTunnelProfileActions(params)
@@ -24,7 +25,6 @@ const EditTunnelProfile = () => {
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
   useEffect(() => {
-    form.resetFields()
     form.setFieldValue('name', tunnelProfileData?.name)
     form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
     form.setFieldValue('mtuType', tunnelProfileData?.mtuType)
@@ -37,13 +37,15 @@ const EditTunnelProfile = () => {
   }, [form, tunnelProfileData])
 
   return (
-    <TunnelProfileForm
-      form={form}
-      title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
-      submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-      onFinish={update}
-      isDefaultTunnel={isDefaultTunnelProfile}
-    />
+    <Loader states={[{ isLoading }]}>
+      <TunnelProfileForm
+        form={form}
+        title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
+        submitButtonLabel={$t({ defaultMessage: 'Apply' })}
+        onFinish={update}
+        isDefaultTunnel={isDefaultTunnelProfile}
+      />
+    </Loader>
   )
 }
 

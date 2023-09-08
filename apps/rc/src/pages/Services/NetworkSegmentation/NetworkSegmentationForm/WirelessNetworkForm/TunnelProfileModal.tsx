@@ -1,23 +1,23 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsFormLegacy } from '@acx-ui/components'
-import { TunnelProfileForm }                                            from '@acx-ui/rc/components'
-import { useCreateTunnelProfileMutation }                               from '@acx-ui/rc/services'
-import { TunnelProfile }                                                from '@acx-ui/rc/utils'
+import { Button, Loader, Modal, ModalType, showToast, StepsForm }            from '@acx-ui/components'
+import { TunnelProfileForm, TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
 
 
 
 export const TunnelProfileModal = () => {
 
   const { $t } = useIntl()
+  const params = useParams()
   const [visible, setVisible]=useState(false)
-  const [createTunnelProfile, { isLoading: isFormSubmitting }] = useCreateTunnelProfileMutation()
+  const { create, isCreating } = useTunnelProfileActions(params)
 
-  const handleCreateTunnelProfile = async (data: TunnelProfile) => {
+  const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
-      await createTunnelProfile({ payload: data }).unwrap()
+      await create(data)
       setVisible(false)
     } catch {
       showToast({
@@ -27,16 +27,16 @@ export const TunnelProfileModal = () => {
     }
   }
 
-  const content = <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
-    <StepsFormLegacy
+  const content = <Loader states={[{ isLoading: false, isFetching: isCreating }]}>
+    <StepsForm
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsForm.StepForm>
         <TunnelProfileForm />
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+      </StepsForm.StepForm>
+    </StepsForm>
   </Loader>
 
   return (
@@ -46,7 +46,7 @@ export const TunnelProfileModal = () => {
       </Button>
       <Modal
         title={$t({ defaultMessage: 'Add Tunnel Profile' })}
-        width={600}
+        width={1100}
         visible={visible}
         type={ModalType.ModalStepsForm}
         mask={true}

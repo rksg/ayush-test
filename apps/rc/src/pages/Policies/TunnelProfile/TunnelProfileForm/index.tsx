@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 
 import { Col, FormInstance, Row }   from 'antd'
 import { useIntl }                  from 'react-intl'
@@ -11,7 +10,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   LocationExtended,
-  MtuTypeEnum, PolicyOperation,
+  PolicyOperation,
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -65,9 +64,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         onFinish={handleFinish}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
         buttonLabel={{ submit: submitButtonLabel }}
-        initialValues={{
-          mtuType: MtuTypeEnum.AUTO
-        }}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
