@@ -332,6 +332,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
+  networkActivations: {
+    method: 'post',
+    url: '/networkActivations/query'
+  },
   getNetworkDeepList: {
     // [New API] request not support list
     // method: 'get',
