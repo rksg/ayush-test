@@ -1,8 +1,7 @@
-import { gql }       from 'graphql-request'
-import { flow }      from 'lodash'
-import moment        from 'moment-timezone'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { gql }     from 'graphql-request'
+import { flow }    from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import {
   CloudRRMGraph,
@@ -10,12 +9,13 @@ import {
   deriveTxPowerHighlight,
   getCrrmCsvData,
   pairGraphs,
-  recommendationBandMapping,
   trimPairedGraphs
 } from '@acx-ui/components'
+import type { BandEnum }     from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 
-import { useRecommendationDetailsQuery } from '../services'
+import { EnhancedRecommendation } from '../services'
+
 
 const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -39,42 +39,21 @@ const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   })
 })
 
-export function useCRRMQuery () {
+export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
   const { $t } = useIntl()
-  const params = useParams()
-  const recommendation = useRecommendationDetailsQuery(
-    { id: String(params.id) },
-    { skip: !Boolean(params.id), selectFromResult: result => ({ ...result,
-      data: {
-        ...result.data,
-        band: recommendationBandMapping[
-          result.data?.code as keyof typeof recommendationBandMapping],
-        monitoring: (
-          result.data?.status === 'applied' &&
-          result.data?.appliedTime &&
-          Date.now() < moment(result.data?.appliedTime).add(24, 'hours').valueOf()
-        )
-          ? { until: moment(result.data?.appliedTime).add(24, 'hours').toISOString() }
-          : null
-      }
-    }) })
   const queryResult = useCloudRRMGraphQuery(
-    { id: String(params.id) }, {
-      skip: !Boolean(params.id && recommendation.data),
+    { id: String(details.id) }, {
+      skip: !Boolean(details.id),
       selectFromResult: result => {
         const processedGraphs = result.data &&
           flow(
             [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-          )(Object.values(result.data!).filter(Boolean), recommendation.data?.band)
+          )(Object.values(result.data!).filter(Boolean), band)
         return { ...result,
           data: processedGraphs && trimPairedGraphs(processedGraphs),
           csv: processedGraphs && getCrrmCsvData(processedGraphs, $t)
         }
       }
     })
-  return {
-    recommendation,
-    queryResult
-  }
+  return queryResult
 }
-

@@ -5,10 +5,10 @@ import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }              from 'lodash'
 import { useIntl }                       from 'react-intl'
 
-import { Tooltip }                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                             from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsWPA3Security } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                                  from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -50,7 +50,7 @@ export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
   if (!wlanSecurity)
     return false
 
-  return IsWPA3Security(wlanSecurity as WlanSecurityEnum)
+  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum)
 }
 
 export const inverseTargetValue =
@@ -173,6 +173,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       inverseTargetValue(targetOption, options) : options
     const finalOptions = handleDisabledOfOptions(updatedOptions)
     setOptions(finalOptions)
+    // after onChange, validate the value
+    form.validateFields([['wlan', 'advancedCustomization', 'multiLinkOperationOptions']])
   }
 
   return (
@@ -182,10 +184,11 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
       valuePropName='checked'
       style={{ marginBottom: '15px', width: '300px' }}
       rules={[
-        { validator: (_, value) => {
-          const itemValues = Object.values<boolean>(value)
+        { validator: () => {
           const MUST_SELECTED = 2
-          const numberOfSelected = itemValues.filter(itemValue => itemValue).length
+          const numberOfSelected = options.map(option => option.value)
+            .filter(value => value === true)
+            .length
           if (numberOfSelected < MUST_SELECTED) {
             return Promise.reject($t({ defaultMessage: 'Please select two radios' }))
           }
@@ -193,7 +196,6 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
           return Promise.resolve()}
         }
       ]}
-      validateFirst
       children={
         <>
           { sortOptions(options).map((option, key) => {

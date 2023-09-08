@@ -60,6 +60,7 @@ export {
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
 export {
   ClientAdmissionControlForm,
+  ClientAdmissionControlLevelEnum,
   ClientAdmissionControlTypeEnum
 } from './ClientAdmissionControlForm'
 export { StatusLight } from './StatusLight'

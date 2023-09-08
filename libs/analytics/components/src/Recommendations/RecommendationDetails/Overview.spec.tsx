@@ -100,14 +100,27 @@ describe('Recommendation Overview', () => {
     })
   })
 
-  it('should render correctly for crrm', async () => {
+  it('should render correctly for crrm in R1', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
     mockGet.mockReturnValue(false)
     render(<Overview details={crrmDetails} />, { wrapper: Provider })
-    expect(await screen.findByText('Priority')).toBeVisible()
-    expect(await screen.findByText('High')).toBeVisible()
+    expect(await screen.findByText('Venue RRM')).toBeVisible()
+    expect(await screen.findByText('Optimized')).toBeVisible()
     expect(screen.queryByText('Category')).toBeNull()
-    expect(screen.queryByText('AI-Driven Cloud RRM')).toBeNull()
+    expect(await screen.findByText('Summary')).toBeVisible()
+    expect(await screen.findByText('Status')).toBeVisible()
+    expect(await screen.findByText('Scheduled')).toBeVisible()
+    expect(await screen.findByText('Date')).toBeVisible()
+    expect(await screen.findByText('06/26/2023 06:04')).toBeVisible()
+  })
+
+  it('should render correctly for crrm in RA', async () => {
+    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    mockGet.mockReturnValue(true)
+    render(<Overview details={crrmDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Zone RRM')).toBeVisible()
+    expect(await screen.findByText('Optimized')).toBeVisible()
+    expect(screen.queryByText('Category')).toBeNull()
     expect(await screen.findByText('Summary')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('Scheduled')).toBeVisible()

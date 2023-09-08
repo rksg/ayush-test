@@ -5,7 +5,9 @@ import {
   Form,
   InputNumber,
   Select,
-  Space
+  Space,
+  Row,
+  Col
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -165,20 +167,26 @@ export function UserConnectionForm () {
 
   return(
     <>
-      <UI.Subtitle style={{ marginTop: 5 }}>{guestType!==GuestNetworkTypeEnum.ClickThrough &&
+      <Row justify='space-between'>
+        <Col>
+          <UI.Subtitle style={{ marginTop: 5 }}>{guestType!==GuestNetworkTypeEnum.ClickThrough &&
         $t({ defaultMessage: 'User Connection Settings' })}
-      {guestType===GuestNetworkTypeEnum.ClickThrough &&useDefaultSetting&&
-        $t({ defaultMessage: 'User Connection Settings(Default)' })}
-      {guestType===GuestNetworkTypeEnum.ClickThrough &&!useDefaultSetting&&
-        $t({ defaultMessage: 'User Connection Settings(Time limited)' })}
-      </UI.Subtitle>
-      {guestType===GuestNetworkTypeEnum.ClickThrough&&
-        <Button type='link'
-          onClick={changeSettings}
-          style={{ float: 'right', fontSize: 12, marginTop: -28 }}>
-          {!useDefaultSetting&&$t({ defaultMessage: 'Change to default connection' })}
-          {useDefaultSetting&&$t({ defaultMessage: 'Change to Time limited connection' })}
-        </Button>}
+          {guestType===GuestNetworkTypeEnum.ClickThrough &&useDefaultSetting&&
+        $t({ defaultMessage: 'User Connection Settings (Default)' })}
+          {guestType===GuestNetworkTypeEnum.ClickThrough &&!useDefaultSetting&&
+        $t({ defaultMessage: 'User Connection Settings (Time limited)' })}
+          </UI.Subtitle>
+        </Col>
+        {guestType===GuestNetworkTypeEnum.ClickThrough&&
+        <Col style={{ height: '20px', paddingTop: '20px', paddingBottom: '10px', marginTop: 5 }}>
+          <Button type='link'
+            onClick={changeSettings}
+            style={{ fontSize: 12 }}>
+            {!useDefaultSetting&&$t({ defaultMessage: 'Change to default connection' })}
+            {useDefaultSetting&&$t({ defaultMessage: 'Change to Time limited connection' })}
+          </Button>
+        </Col>}
+      </Row>
       {useDefaultSetting&&<Form.Item label={<>
         {$t({ defaultMessage: 'Allow the user to stay connected for' })}
         <Tooltip.Question
