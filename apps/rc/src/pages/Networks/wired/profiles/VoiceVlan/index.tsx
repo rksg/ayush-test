@@ -100,13 +100,16 @@ export function VoiceVlan () {
           }
         </Col>
       </Row>
-      <VoiceVlanDrawer
-        visible={voiceVlanDrawerVisible}
-        setVisible={setVoiceVlanDrawerVisible}
-        modelVlanOptions={modelVlanOptions}
-        modelVlanConfigs={modelVlanConfigs}
-        updateVoiceVlanConfigs={updateVoiceVlanConfigs}
-      />
+      {
+        voiceVlanDrawerVisible &&
+        <VoiceVlanDrawer
+          visible={voiceVlanDrawerVisible}
+          setVisible={setVoiceVlanDrawerVisible}
+          modelVlanOptions={modelVlanOptions}
+          modelVlanConfigs={modelVlanConfigs}
+          updateVoiceVlanConfigs={updateVoiceVlanConfigs}
+        />
+      }
     </>
   )
 }

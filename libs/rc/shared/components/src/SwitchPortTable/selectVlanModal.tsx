@@ -116,7 +116,7 @@ export function SelectVlanModal (props: {
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: vlan.vlanId, extra }),
         value: Number(vlan.vlanId),
-        disabled: isVoiceVlan || isSelectedTagged
+        disabled: isSelectedTagged
       }
     })
 
