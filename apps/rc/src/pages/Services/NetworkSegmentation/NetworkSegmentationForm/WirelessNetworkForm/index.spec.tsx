@@ -73,10 +73,6 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
-      ),
-      rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
