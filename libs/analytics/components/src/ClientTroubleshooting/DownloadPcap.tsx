@@ -25,11 +25,9 @@ export function DownloadPcap ({
         setIsLoading(false)
         handleBlobDownloadFile(pcapFile, pcapFilename)
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoading(false)
-        if (err && (err as unknown as Error).message) {
-          setError((err as unknown as Error).message)
-        }
+        setError($t({ defaultMessage: 'File not found, please try again later.' }))
       })
   }
 

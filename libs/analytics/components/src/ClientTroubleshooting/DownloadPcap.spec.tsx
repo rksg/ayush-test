@@ -95,7 +95,8 @@ describe('DownloadPcap', () => {
       expect(mockedDownload).toHaveBeenCalledTimes(0)
     })
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'failed to find pcap file' })).toBeVisible()
+      expect(screen.getByRole('button', { name: 'File not found, please try again later.' }))
+        .toBeVisible()
     })
   })
 })

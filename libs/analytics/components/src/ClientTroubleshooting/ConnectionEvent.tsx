@@ -125,6 +125,7 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
         trigger='click'
         visible={open}
         onVisibleChange={visibleHandle}
+        destroyTooltipOnHide
       >
         {children}
       </Popover>
