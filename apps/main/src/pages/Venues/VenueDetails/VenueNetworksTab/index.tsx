@@ -38,7 +38,7 @@ import {
   Network,
   NetworkSaveData,
   NetworkVenue,
-  IsWPA3Security
+  IsSecuritySupport6g
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -156,7 +156,7 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && IsWPA3Security(row.deepNetwork.wlan?.wlanSecurity)) {
+          if (triBandRadioFeatureFlag && IsSecuritySupport6g(row.deepNetwork.wlan?.wlanSecurity)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
