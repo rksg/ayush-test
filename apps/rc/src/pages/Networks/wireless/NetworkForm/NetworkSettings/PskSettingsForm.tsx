@@ -74,7 +74,7 @@ export function PskSettingsForm () {
     }
   }, [data])
 
-  return (
+  return (<>
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
@@ -83,7 +83,12 @@ export function PskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-  )
+    {!(editMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
 }
 
 function SettingsForm () {
@@ -212,11 +217,10 @@ function SettingsForm () {
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
 
   return (
-    <>
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
-        <div>
-          {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+      <div>
+        {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
             <Form.Item
               name={['wlan', 'passphrase']}
               label={
@@ -232,25 +236,25 @@ function SettingsForm () {
               extra={intl.$t({ defaultMessage: '8 characters minimum' })}
               children={<PasswordInput />}
             />
-          }
-          {wlanSecurity === 'WEP' && <>
-            <Form.Item
-              name={['wlan', 'wepHexKey']}
-              label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
-              rules={[
-                { required: true },
-                { validator: (_, value) => hexRegExp(value) }
-              ]}
-              extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
-              children={<PasswordInput />}
-            />
-            <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
-              <Button type='link' onClick={onGenerateHexKey}>
-                {intl.$t({ defaultMessage: 'Generate' })}
-              </Button>
-            </div>
-          </>}
-          {[WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity) &&
+        }
+        {wlanSecurity === 'WEP' && <>
+          <Form.Item
+            name={['wlan', 'wepHexKey']}
+            label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => hexRegExp(value) }
+            ]}
+            extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
+            children={<PasswordInput />}
+          />
+          <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
+            <Button type='link' onClick={onGenerateHexKey}>
+              {intl.$t({ defaultMessage: 'Generate' })}
+            </Button>
+          </div>
+        </>}
+        {[WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity) &&
             <Form.Item
               name={['wlan', 'saePassphrase']}
               label={wlanSecurity === WlanSecurityEnum.WPA3
@@ -267,19 +271,19 @@ function SettingsForm () {
               extra={intl.$t({ defaultMessage: '8 characters minimum' })}
               children={<PasswordInput />}
             />
-          }
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Security Protocol' })}
-            name={['wlan', 'wlanSecurity']}
-            initialValue={WlanSecurityEnum.WPA2Personal}
-            extra={securityDescription()}
-          >
-            <Select onChange={securityOnChange}>
-              {securityOptions}
-            </Select>
-          </Form.Item>
-          {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
-            .includes(wlanSecurity) &&
+        }
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Security Protocol' })}
+          name={['wlan', 'wlanSecurity']}
+          initialValue={WlanSecurityEnum.WPA2Personal}
+          extra={securityDescription()}
+        >
+          <Select onChange={securityOnChange}>
+            {securityOptions}
+          </Select>
+        </Form.Item>
+        {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
+          .includes(wlanSecurity) &&
             <Form.Item
               label={<>
                 {intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
@@ -304,69 +308,67 @@ function SettingsForm () {
                 {frameOptions}
               </Select>
             </Form.Item>
-          }
-        </div>
-        <div>
+        }
+      </div>
+      <div>
+        <Form.Item>
           <Form.Item>
-            <Form.Item>
-              <Form.Item noStyle
-                name={['wlan', 'macAddressAuthentication']}
-                valuePropName='checked'>
-                <Switch disabled={
-                  editMode || disablePolicies
-                }
-                onChange={onMacAuthChange}
-                />
-              </Form.Item>
-              <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
-              <Tooltip.Question
-                title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-                placement='bottom'
+            <Form.Item noStyle
+              name={['wlan', 'macAddressAuthentication']}
+              valuePropName='checked'>
+              <Switch disabled={
+                editMode || disablePolicies
+              }
+              onChange={onMacAuthChange}
               />
             </Form.Item>
+            <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
+            <Tooltip.Question
+              title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+            />
           </Form.Item>
-          {macAddressAuthentication && <>
+        </Form.Item>
+        {macAddressAuthentication && <>
+          <Form.Item
+            name={['wlan', 'isMacRegistrationList']}
+            initialValue={macRegistrationListId}
+          >
+            <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
+              <Space direction='vertical'>
+                <Radio value={true}
+                  disabled={
+                    !isCloudpathBetaEnabled
+                  }>
+                  { intl.$t({ defaultMessage: 'MAC Registration List' }) }
+                </Radio>
+                <Radio value={false}>
+                  { intl.$t({ defaultMessage: 'External MAC Auth' }) }
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+
+          { isMacRegistrationList && <MacRegistrationListComponent
+            inputName={['wlan']}
+          />}
+
+          { !isMacRegistrationList && <>
             <Form.Item
-              name={['wlan', 'isMacRegistrationList']}
-              initialValue={macRegistrationListId}
+              label={intl.$t({ defaultMessage: 'MAC Address Format' })}
+              name={['wlan', 'macAuthMacFormat']}
+              initialValue={MacAuthMacFormatEnum.UpperDash}
             >
-              <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
-                <Space direction='vertical'>
-                  <Radio value={true}
-                    disabled={
-                      !isCloudpathBetaEnabled
-                    }>
-                    { intl.$t({ defaultMessage: 'MAC Registration List' }) }
-                  </Radio>
-                  <Radio value={false}>
-                    { intl.$t({ defaultMessage: 'External MAC Auth' }) }
-                  </Radio>
-                </Space>
-              </Radio.Group>
+              <Select>
+                {macAuthOptions}
+              </Select>
             </Form.Item>
-
-            { isMacRegistrationList && <MacRegistrationListComponent
-              inputName={['wlan']}
-            />}
-
-            { !isMacRegistrationList && <>
-              <Form.Item
-                label={intl.$t({ defaultMessage: 'MAC Address Format' })}
-                name={['wlan', 'macAuthMacFormat']}
-                initialValue={MacAuthMacFormatEnum.UpperDash}
-              >
-                <Select>
-                  {macAuthOptions}
-                </Select>
-              </Form.Item>
-              <MACAuthService />
-            </>}
-
+            <MACAuthService />
           </>}
-        </div>
-      </Space>
-      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
-    </>
+
+        </>}
+      </div>
+    </Space>
   )
 }
 

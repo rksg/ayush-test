@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                                    from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
@@ -72,6 +72,7 @@ export default function DpskPassphraseManagement () {
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
   ] = useState<DpskPassphraseEditMode>({ isEdit: false })
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
@@ -86,11 +87,12 @@ export default function DpskPassphraseManagement () {
     sorter: defaultSorter,
     defaultPayload,
     search: defaultSearch,
-    enableSelectAllPagesData: ['id']
+    enableSelectAllPagesData: ['id'],
+    apiParams: dpskNewConfigFlowParams
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch((error) => {
+    downloadCsv({ params: { ...params, ...dpskNewConfigFlowParams } }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console
     })
   }
@@ -199,7 +201,10 @@ export default function DpskPassphraseManagement () {
       $t({ defaultMessage: 'Passphrase' }),
       selectedRows[0].username,
       [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) }],
-      async () => deletePassphrases({ params, payload: selectedRows.map(p => p.id) }).then(callback)
+      async () => deletePassphrases({
+        params: { ...params, ...dpskNewConfigFlowParams },
+        payload: selectedRows.map(p => p.id)
+      }).then(callback)
     )
   }
 
@@ -223,15 +228,16 @@ export default function DpskPassphraseManagement () {
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
+        setManageDevicesVisible(false)
       }
     },
     {
       label: $t({ defaultMessage: 'Manage Devices' }),
-      // eslint-disable-next-line max-len
       visible: (selectedRows: NewDpskPassphrase[]) => allowManageDevices(selectedRows),
       onClick: ([selectedRow]) => {
         setManagePassphraseInfo(selectedRow)
         setManageDevicesVisible(true)
+        setAddPassphrasesDrawerVisible(false)
       }
     },
     {
@@ -240,7 +246,7 @@ export default function DpskPassphraseManagement () {
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showRevokeModal(selectedRows, async (revocationReason: string) => {
           await revokePassphrases({
-            params,
+            params: { ...params, ...dpskNewConfigFlowParams },
             payload: {
               ids: selectedRows.map(p => p.id),
               changes: { revocationReason }
@@ -255,7 +261,7 @@ export default function DpskPassphraseManagement () {
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         revokePassphrases({
-          params,
+          params: { ...params, ...dpskNewConfigFlowParams },
           payload: {
             ids: selectedRows.map(p => p.id),
             changes: { revocationReason: null }
@@ -319,7 +325,10 @@ export default function DpskPassphraseManagement () {
           formData.append('usernamePrefix', formValues.usernamePrefix)
         }
         try {
-          await uploadCsv({ params, payload: formData }).unwrap()
+          await uploadCsv({
+            params: { ...params, ...dpskNewConfigFlowParams },
+            payload: formData
+          }).unwrap()
           setUploadCsvDrawerVisible(false)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console

@@ -13,7 +13,8 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupLink,
-  PropertyUnitLink
+  PropertyUnitLink,
+  useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
@@ -64,6 +65,7 @@ function PersonaDetails () {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -99,7 +101,7 @@ function PersonaDetails () {
     if (personaGroupData.dpskPoolId) {
       let name: string | undefined
       getDpskPoolById({
-        params: { serviceId: personaGroupData.dpskPoolId }
+        params: { serviceId: personaGroupData.dpskPoolId, ...dpskNewConfigFlowParams }
       })
         .then(result => name = result.data?.name)
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
