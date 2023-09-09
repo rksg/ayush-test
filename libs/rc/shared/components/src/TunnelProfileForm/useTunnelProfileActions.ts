@@ -1,13 +1,10 @@
 import { cloneDeep } from 'lodash'
-import { Params }    from 'react-router-dom'
 
 import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 
 import { TunnelProfileFormType } from '.'
 
-export const useTunnelProfileActions = (
-  params: Readonly<Params<string>>
-) => {
+export const useTunnelProfileActions = () => {
   const [create, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   const [update, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
 
@@ -24,17 +21,17 @@ export const useTunnelProfileActions = (
   const createTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
-      await create({ payload }).unwrap()
+      return await create({ payload }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
-  const updateTunnelProfile = async (data: TunnelProfileFormType) => {
+  const updateTunnelProfile = async (id: string, data: TunnelProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
-      let pathParams = { id: params.policyId }
-      await update({ params: pathParams, payload }).unwrap()
+      let pathParams = { id }
+      return await update({ params: pathParams, payload }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }

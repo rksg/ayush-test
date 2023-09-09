@@ -9,6 +9,7 @@ import {
   TunnelProfileFormType as TunnelProfileFormTypeBase
 } from '@acx-ui/rc/components'
 import {
+  CommonResult,
   LocationExtended,
   PolicyOperation,
   PolicyType,
@@ -21,7 +22,7 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 interface TunnelProfileFormProps {
   title: string
   submitButtonLabel: string
-  onFinish: (values: TunnelProfileFormTypeBase) => Promise<boolean | void>
+  onFinish: (values: TunnelProfileFormTypeBase) => Promise<CommonResult>
   form?: FormInstance
   isDefaultTunnel?: boolean
 }

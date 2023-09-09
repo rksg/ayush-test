@@ -4,10 +4,10 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                       from '@acx-ui/components'
-import { useTunnelProfileActions }      from '@acx-ui/rc/components'
-import { useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
-import { useParams }                    from '@acx-ui/react-router-dom'
+import { Loader }                                         from '@acx-ui/components'
+import { TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
+import { useGetTunnelProfileByIdQuery }                   from '@acx-ui/rc/services'
+import { useParams }                                      from '@acx-ui/react-router-dom'
 
 import { TunnelProfileForm }     from '../TunnelProfileForm'
 import { ageTimeUnitConversion } from '../util'
@@ -20,7 +20,7 @@ const EditTunnelProfile = () => {
   const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
     { params: { id: params.policyId } }
   )
-  const { updateTunnelProfile } = useTunnelProfileActions(params)
+  const { updateTunnelProfile } = useTunnelProfileActions()
 
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
@@ -36,13 +36,16 @@ const EditTunnelProfile = () => {
     form.setFieldValue('ageTimeUnit', result?.unit)
   }, [form, tunnelProfileData])
 
+  const handelUpdate = (data: TunnelProfileFormType) =>
+    updateTunnelProfile(params.policyId || '', data)
+
   return (
     <Loader states={[{ isLoading }]}>
       <TunnelProfileForm
         form={form}
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-        onFinish={updateTunnelProfile}
+        onFinish={handelUpdate}
         isDefaultTunnel={isDefaultTunnelProfile}
       />
     </Loader>

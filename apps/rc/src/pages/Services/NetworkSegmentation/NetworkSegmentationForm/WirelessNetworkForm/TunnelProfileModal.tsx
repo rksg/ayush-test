@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsForm }            from '@acx-ui/components'
 import { TunnelProfileForm, TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
@@ -11,9 +10,8 @@ import { TunnelProfileForm, TunnelProfileFormType, useTunnelProfileActions } fro
 export const TunnelProfileModal = () => {
 
   const { $t } = useIntl()
-  const params = useParams()
   const [visible, setVisible]=useState(false)
-  const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions(params)
+  const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions()
 
   const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
