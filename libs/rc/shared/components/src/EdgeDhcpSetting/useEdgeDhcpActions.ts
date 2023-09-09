@@ -1,11 +1,7 @@
-import { Params } from 'react-router-dom'
-
 import { useAddEdgeDhcpServiceMutation, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import { EdgeDhcpSettingFormData, convertEdgeDHCPFormDataToApiPayload }    from '@acx-ui/rc/utils'
 
-export const useEdgeDhcpActions = (
-  params: Readonly<Params<string>>
-) => {
+export const useEdgeDhcpActions = () => {
 
   const [create, { isLoading: isEdgeDhcpProfileCreating }] = useAddEdgeDhcpServiceMutation()
   const [update, { isLoading: isEdgeDhcpProfileUpdating }] = useUpdateEdgeDhcpServiceMutation()
@@ -13,17 +9,17 @@ export const useEdgeDhcpActions = (
   const createEdgeDhcpProfile = async (data: EdgeDhcpSettingFormData) => {
     try {
       const payload = convertEdgeDHCPFormDataToApiPayload(data)
-      await create({ payload }).unwrap()
+      return await create({ payload }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
-  const updateEdgeDhcpProfile = async (data: EdgeDhcpSettingFormData) => {
+  const updateEdgeDhcpProfile = async (id: string, data: EdgeDhcpSettingFormData) => {
     try {
-      const pathVar = { id: params.serviceId }
+      const pathVar = { id }
       const payload = convertEdgeDHCPFormDataToApiPayload(data)
-      await update({ payload, params: pathVar }).unwrap()
+      return await update({ payload, params: pathVar }).unwrap()
     } catch (error) {
       return Promise.reject(error)
     }

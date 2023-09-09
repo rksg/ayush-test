@@ -1,21 +1,32 @@
 import { FormInstance } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Loader, PageHeader, StepsForm }                                                                        from '@acx-ui/components'
-import { EdgeDhcpSettingForm }                                                                                  from '@acx-ui/rc/components'
-import { EdgeDhcpSettingFormData, ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
+import { EdgeDhcpSettingForm }           from '@acx-ui/rc/components'
+import {
+  CommonResult,
+  EdgeDhcpSettingFormData,
+  ServiceOperation,
+  ServiceType,
+  getServiceListRoutePath,
+  getServiceRoutePath
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeDhcpFormProps {
   title: string
   submitButtonLabel: string
-  onFinish: (values: EdgeDhcpSettingFormData) => Promise<boolean | void>
+  onFinish: (values: EdgeDhcpSettingFormData) => Promise<CommonResult>
   isSubmiting: boolean
+  isDataLoading?: boolean
   form?: FormInstance
 }
 
 export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
-  const { title, submitButtonLabel, onFinish, isSubmiting, form } = props
+  const {
+    title, submitButtonLabel, onFinish, isSubmiting, form,
+    isDataLoading = false
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
@@ -41,7 +52,7 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
           { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
         ]}
       />
-      <Loader states={[{ isLoading: false, isFetching: isSubmiting }]}>
+      <Loader states={[{ isLoading: isDataLoading, isFetching: isSubmiting }]}>
         <StepsForm
           form={form}
           onFinish={handleFinish}
