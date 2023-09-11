@@ -16,15 +16,15 @@ export const PersonaGroupContext = createContext({} as {
 export const PersonasContext = createContext({} as {
   setPersonasCount: (data: number) => void
 })
-enum PersonaTabKey {
-  PERSONA = 'persona',
-  PERSONA_GROUP = 'persona-group'
+enum IdentityTabKey {
+  IDENTITY = 'identity',
+  IDENTITY_GROUP = 'identity-group'
 }
 
 function PersonaPageHeader () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink('/users/persona-management/')
+  const basePath = useTenantLink('/users/identity-management/')
   const navigate = useNavigate()
   const [ personaGroupCount, setPersonaGroupCount ] = useState(0)
   const [ personasCount, setPersonasCount ] = useState(0)
@@ -56,8 +56,8 @@ function PersonaPageHeader () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const getTabComp = (activeTab?: PersonaTabKey) => {
-    if (activeTab === PersonaTabKey.PERSONA) {
+  const getTabComp = (activeTab?: IdentityTabKey) => {
+    if (activeTab === IdentityTabKey.IDENTITY) {
       return <PersonasContext.Provider value={{ setPersonasCount }}>
         <PersonaTable />
       </PersonasContext.Provider>
@@ -76,20 +76,20 @@ function PersonaPageHeader () {
         footer={
           <Tabs onChange={onTabChange} activeKey={params.activeTab}>
             <Tabs.TabPane
-              key={PersonaTabKey.PERSONA_GROUP}
+              key={IdentityTabKey.IDENTITY_GROUP}
               tab={$t(
                 { defaultMessage: 'Persona Groups ({personaGroupCount})' },
                 { personaGroupCount }
               )}
             />
             <Tabs.TabPane
-              key={PersonaTabKey.PERSONA}
+              key={IdentityTabKey.IDENTITY}
               tab={$t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })}
             />
           </Tabs>
         }
       />
-      { getTabComp(params.activeTab as PersonaTabKey) }
+      { getTabComp(params.activeTab as IdentityTabKey) }
     </>
   )
 }

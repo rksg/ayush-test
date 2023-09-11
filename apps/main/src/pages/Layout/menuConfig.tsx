@@ -148,12 +148,12 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Persona Management' }),
           children: [
             {
-              uri: '/users/persona-management/persona-group',
+              uri: '/users/identity-management/identity-group',
               label: $t({ defaultMessage: 'Persona Groups' })
             },
             {
-              uri: '/users/persona-management/persona',
-              isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
+              uri: '/users/identity-management/identity',
+              isActiveCheck: new RegExp('^/users/identity-management/identity($|/)'),
               label: $t({ defaultMessage: 'Personas List' })
             }
           ]

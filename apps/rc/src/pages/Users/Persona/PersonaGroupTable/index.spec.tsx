@@ -156,7 +156,7 @@ describe.skip('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -181,7 +181,7 @@ describe.skip('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
     //   80 |       70 |   66.66 |   80.95
@@ -204,7 +204,7 @@ describe.skip('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -225,7 +225,7 @@ describe.skip('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
     const createButton = await screen.findByRole('button', { name: /Add Persona Group/i })
@@ -270,7 +270,7 @@ describe.skip('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>,{
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

@@ -22,8 +22,8 @@ describe.skip('Persona Portal', () => {
         <PersonaPortal/>
       </Provider>, {
         route: {
-          params: { ...params, activeTab: 'persona-group' },
-          path: '/:tenantId/t/users/persona-management/:activeTab'
+          params: { ...params, activeTab: 'identity-group' },
+          path: '/:tenantId/t/users/identity-management/:activeTab'
         }
       }
     )
@@ -32,7 +32,7 @@ describe.skip('Persona Portal', () => {
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Persona' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/users/persona-management/persona`,
+      pathname: `/${params.tenantId}/t/users/identity-management/identity`,
       hash: '',
       search: ''
     })
@@ -45,7 +45,7 @@ describe.skip('Persona Portal', () => {
       </Provider>, {
         route: {
           params: { ...params, activeTab: 'persona' },
-          path: '/:tenantId/t/users/persona-management/:activeTab' }
+          path: '/:tenantId/t/users/identity-management/:activeTab' }
       }
     )
 

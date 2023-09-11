@@ -11,8 +11,8 @@ import {
   CsvSize,
   ImportFileDrawer,
   PersonaGroupSelect,
-  PersonaDetailsLink,
-  PersonaGroupLink,
+  IdentityDetailsLink,
+  IdentityGroupLink,
   PropertyUnitLink,
   ImportFileDrawerType,
   useDpskNewConfigFlowParams
@@ -61,7 +61,7 @@ function useColumns (
       dataIndex: 'name',
       title: $t({ defaultMessage: 'Persona Name' }),
       render: (_, row) =>
-        <PersonaDetailsLink
+        <IdentityDetailsLink
           name={row.name}
           personaId={row.id}
           personaGroupId={row.groupId}
@@ -130,7 +130,7 @@ function useColumns (
       sorter: true,
       render: (_, row) => {
         const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
-        return <PersonaGroupLink personaGroupId={row.groupId} name={name} />
+        return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
       },
       filterMultiple: false,
       filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],

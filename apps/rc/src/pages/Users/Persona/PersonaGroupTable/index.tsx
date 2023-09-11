@@ -10,7 +10,7 @@ import {
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  PersonaGroupLink,
+  IdentityGroupLink,
   useDpskNewConfigFlowParams,
   VenueLink
 } from '@acx-ui/rc/components'
@@ -77,7 +77,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       render: (_, row) =>
-        <PersonaGroupLink
+        <IdentityGroupLink
           name={row.name}
           personaGroupId={row.id}
         />

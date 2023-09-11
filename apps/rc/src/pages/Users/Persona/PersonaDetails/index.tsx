@@ -12,7 +12,7 @@ import {
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  PersonaGroupLink,
+  IdentityGroupLink,
   PropertyUnitLink,
   useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
@@ -151,7 +151,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
     { label: $t({ defaultMessage: 'Persona Group' }),
       value:
-      <PersonaGroupLink
+      <IdentityGroupLink
         name={personaGroupData?.name}
         personaGroupId={personaGroupData?.id}
       />
@@ -431,7 +431,7 @@ function PersonaDetailsPageHeader (props: {
         },
         {
           text: $t({ defaultMessage: 'Personas' }),
-          link: 'users/persona-management/persona'
+          link: 'users/identity-management/identity'
         }
       ]}
     />

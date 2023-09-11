@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, QosStats } from '@acx-ui/rc/utils'
 
-import { PersonaDetailsLink, PropertyUnitLink, VenueLink } from '../LinkHelper'
+import { IdentityDetailsLink, PropertyUnitLink, VenueLink } from '../LinkHelper'
 
 const defaultVenueListPayload = {
   fields: [
@@ -184,7 +184,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       key: 'personas',
       render: (_, { personas })=>
         personas
-          .map<ReactNode>(persona=> <PersonaDetailsLink key={persona.id} {...persona}/>)
+          .map<ReactNode>(persona=> <IdentityDetailsLink key={persona.id} {...persona}/>)
           .reduce((prev, curr) => [prev, ', ', curr])
     },
     {

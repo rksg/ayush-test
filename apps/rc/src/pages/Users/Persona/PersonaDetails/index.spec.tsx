@@ -109,7 +109,7 @@ describe.skip('Persona Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -129,7 +129,7 @@ describe.skip('Persona Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -146,7 +146,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -193,7 +193,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
 
@@ -223,7 +223,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
 

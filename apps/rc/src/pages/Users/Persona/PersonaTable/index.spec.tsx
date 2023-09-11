@@ -64,7 +64,7 @@ describe('Persona Table', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       })
 
@@ -91,7 +91,7 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
     const createButton = await screen.findByRole('button', { name: /Add Persona/i })
@@ -120,7 +120,7 @@ describe('Persona Table', () => {
       <Provider><PersonaTable /></Provider>,
       { route: {
         params: { ...params, personaGroupId: mockPersonaGroupList.content[0].id },
-        path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
       } }
     )
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
@@ -167,7 +167,7 @@ describe('Persona Table', () => {
       {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )

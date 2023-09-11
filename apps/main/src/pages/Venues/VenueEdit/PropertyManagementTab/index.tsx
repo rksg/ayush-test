@@ -20,9 +20,9 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                           from '@acx-ui/icons'
-import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector, PersonaGroupLink } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                            from '@acx-ui/icons'
+import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector, IdentityGroupLink } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -385,7 +385,7 @@ export function PropertyManagementTab () {
                   rules={[{ required: true }]}
                 >
                   {personaGroupHasBound
-                    ? <PersonaGroupLink
+                    ? <IdentityGroupLink
                       personaGroupId={selectedGroupId}
                       name={groupData?.name}
                     />

@@ -41,7 +41,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       sorter: { compare: sortProp('name', defaultSort) },
       render: (_, row) => {
         return <TenantLink
-          to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
+          to={`users/identity-management/identity-group/${row.groupId}/identity/${row.id}`}
         >
           {row.name ?? row.id}
         </TenantLink>

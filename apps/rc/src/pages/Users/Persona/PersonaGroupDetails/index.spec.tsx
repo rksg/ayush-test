@@ -111,7 +111,7 @@ describe('Persona Group Details', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
@@ -129,7 +129,7 @@ describe('Persona Group Details', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
@@ -148,7 +148,7 @@ describe('Persona Group Details', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
@@ -175,7 +175,7 @@ describe('Persona Group Details', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
@@ -200,7 +200,7 @@ describe('Persona Group Details', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
