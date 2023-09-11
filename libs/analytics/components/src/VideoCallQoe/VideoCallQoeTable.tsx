@@ -118,9 +118,9 @@ export function VideoCallQoeTable () {
             title={$t(messageMapping[
             (row as Meeting).invalidReason as keyof typeof messageMapping
             ])}>
-            <UI.WithDottedUnderline>
+            <UI.Invalid>
               {meetingStatus}
-            </UI.WithDottedUnderline>
+            </UI.Invalid>
           </Tooltip>))
       },
       sorter: { compare: sortProp('status', defaultSort) },
