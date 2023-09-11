@@ -69,9 +69,9 @@ describe.skip('Persona Group Drawer', () => {
         />
       </Provider>
     )
-    await screen.findByText('Create Persona Group')
-    const nameField = await screen.findByLabelText('Persona Group Name')
-    await userEvent.type(nameField, 'New Persona Group Name')
+    await screen.findByText('Create Identity Group')
+    const nameField = await screen.findByLabelText('Identity Group Name')
+    await userEvent.type(nameField, 'New Identity Group Name')
 
     // Select a DPSK Service
     const selector = await screen.findAllByRole('combobox')
@@ -99,8 +99,8 @@ describe.skip('Persona Group Drawer', () => {
       </Provider>
     )
 
-    await screen.findByText('Edit Persona Group')
-    const groupField = await screen.findByLabelText('Persona Group Name') as HTMLInputElement
+    await screen.findByText('Edit Identity Group')
+    const groupField = await screen.findByLabelText('Identity Group Name') as HTMLInputElement
     expect(groupField.value).toBe(mockPersonaGroup.name)
 
     const descriptionField = await screen.findByLabelText('Description')
