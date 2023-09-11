@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import { act }  from 'react-dom/test-utils'
 
 import { TunnelProfileUrls }               from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
@@ -36,7 +37,9 @@ describe('EdgeDhcpSettingForm', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { createTunnelProfile, isTunnelProfileCreating } = result.current
-    await createTunnelProfile({} as TunnelProfileFormType)
+    await act(async () => {
+      await createTunnelProfile({} as TunnelProfileFormType)
+    })
     await waitFor(() =>expect(isTunnelProfileCreating).toBeFalsy())
     await waitFor(() =>expect(mockedCreateTunnelApi).toBeCalledTimes(1))
   })
@@ -46,7 +49,9 @@ describe('EdgeDhcpSettingForm', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { updateTunnelProfile, isTunnelProfileUpdating } = result.current
-    await updateTunnelProfile('testId', {} as TunnelProfileFormType)
+    await act(async () => {
+      await updateTunnelProfile('testId', {} as TunnelProfileFormType)
+    })
     await waitFor(() =>expect(isTunnelProfileUpdating).toBeFalsy())
     await waitFor(() =>expect(mockedUpdateTunnelApi).toBeCalledTimes(1))
   })
