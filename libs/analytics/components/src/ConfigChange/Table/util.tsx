@@ -82,9 +82,9 @@ const configChangekpiMap = [
   return configMap
 }, {} as Record<string, string[]>)
 
-export const filterData = (data: ConfigChange[], kpiKeys: string[], legend?: string[]) => {
-  return data.filter(row => legend?.includes(
-    getConfigChangeEntityTypeMapping().filter(i => i.key === row.type)[0].label))
+export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: string[]) => {
+  const mapping = getConfigChangeEntityTypeMapping()
+  return data.filter(row => legend.includes(mapping.find(i => i.key === row.type)!.label))
     .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
       ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
       : true)

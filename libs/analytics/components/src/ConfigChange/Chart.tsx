@@ -16,8 +16,8 @@ function BasicChart (props: {
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  legend?: Record<string, boolean>,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  legend: Record<string, boolean>,
+  setLegend: Dispatch<SetStateAction<Record<string, boolean>>>,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
   setPagination?: (params: { current: number, pageSize: number }) => void
 }){
@@ -32,7 +32,7 @@ function BasicChart (props: {
     legend, setLegend, setSelectedData, setPagination
   } = props
   const { path } = useAnalyticsFilter()
-  const legendList = Object.keys(legend!).filter(key => legend![key])
+  const legendList = Object.keys(legend).filter(key => legend[key])
   const queryResults = useConfigChangeQuery({
     path,
     start: startDate.toISOString(),
