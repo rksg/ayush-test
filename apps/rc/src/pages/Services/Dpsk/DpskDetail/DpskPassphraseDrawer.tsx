@@ -3,11 +3,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer, showActionModal }    from '@acx-ui/components'
+import { Drawer }                     from '@acx-ui/components'
 import { useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useCreateDpskPassphrasesMutation,
-  useLazyGetEnhancedDpskPassphraseListQuery,
   useUpdateDpskPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
@@ -37,16 +36,15 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
   const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-  const [ getEnhancedDpskPassphraseList ] = useLazyGetEnhancedDpskPassphraseListQuery()
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const onManualSettingFormSave = async (overrideMac: boolean = false) => {
+  const onManualSettingFormSave = async () => {
     await formInstance.validateFields()
     // eslint-disable-next-line max-len
-    const payload = transferFormFieldsToSaveData(formInstance.getFieldsValue(), editMode.isEdit, overrideMac)
+    const payload = transferFormFieldsToSaveData(formInstance.getFieldsValue(), editMode.isEdit)
 
     if (editMode.isEdit) {
       await updatePassphrases({
@@ -63,41 +61,9 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     onClose()
   }
 
-  const checkMacDuplication = async (): Promise<boolean> => {
-    const mac = formInstance.getFieldValue('mac')
-
-    if (!mac) return false
-
-    const passphraseListResult = await getEnhancedDpskPassphraseList({
-      params: { ...params, ...dpskNewConfigFlowParams },
-      payload: { page: 1, pageSize: 65535, filters: { mac: [mac] } }
-    }).unwrap()
-
-    const passphraseId = formInstance.getFieldValue('id')
-
-    return passphraseListResult.data.length > 0 &&
-      passphraseListResult.data.some(p => p.id !== passphraseId)
-  }
-
   const onSave = async () => {
     try {
-      const isMacDuplicated = await checkMacDuplication()
-
-      if (isMacDuplicated) {
-        showActionModal({
-          type: 'confirm',
-          width: 450,
-          title: $t({ defaultMessage: 'Replace Passphrase For MAC Address?' }),
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'The specified MAC address has already an attached passphrase. Do you want to replace the passphrase?' }),
-          okText: $t({ defaultMessage: 'Replace Passphrase' }),
-          onOk: async () => {
-            await onManualSettingFormSave(true)
-          }
-        })
-      } else {
-        await onManualSettingFormSave()
-      }
+      await onManualSettingFormSave()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -130,8 +96,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
 function transferFormFieldsToSaveData (
   fields: CreateDpskPassphrasesFormFields,
-  isEdit: boolean,
-  overrideMac: boolean
+  isEdit: boolean
 ): DpskPassphrasesSaveData {
   const { id, passphrase, expiration, revocationReason, ...rest } = fields
 
@@ -141,7 +106,6 @@ function transferFormFieldsToSaveData (
     passphrase: passphrase === '' ? null : passphrase,
     revocationReason: revocationReason === '' ? undefined : revocationReason,
     // eslint-disable-next-line max-len
-    expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date,
-    ...(overrideMac ? { override: true } : {})
+    expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date
   }
 }
