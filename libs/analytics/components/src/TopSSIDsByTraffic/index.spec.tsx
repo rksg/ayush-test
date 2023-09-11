@@ -1,7 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { topSSIDsByTrafficFixture } from './__tests__/fixtures'

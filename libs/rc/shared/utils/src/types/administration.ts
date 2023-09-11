@@ -1,5 +1,4 @@
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
 
 import {
   EntitlementDeviceType,
@@ -76,10 +75,6 @@ export interface TenantPreferenceSettingValue {
 export interface TenantPreferenceSettings {
   global?: TenantPreferenceSettingValue;
   edgeBeta?: TenantPreferenceSettingValue;
-}
-
-export interface TenantAccountTierValue {
-  acx_account_tier: AccountTier
 }
 
 export interface Administrator {
