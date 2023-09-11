@@ -24,13 +24,13 @@ export const lldpNeighborsFieldLabelMapping: Record<keyof LldpNeighborsDisplayFi
   lldpAdv: defineMessage({ defaultMessage: 'Adv' }),
   lldpMAUOperType: defineMessage({ defaultMessage: 'MAU Oper Type' }),
   lldpMDIPower: defineMessage({ defaultMessage: 'MDI Power' }),
-  lldpDeviceType: defineMessage({ defaultMessage: 'Device Type' }),
+  lldpDeviceType: defineMessage({ defaultMessage: 'MDI Power Device Type' }),
   lldpPowerPairs: defineMessage({ defaultMessage: 'Power Pairs' }),
   lldpPowerType: defineMessage({ defaultMessage: 'Power Type' }),
   lldpPowerSource: defineMessage({ defaultMessage: 'Power Source' }),
   lldpPowerPriority: defineMessage({ defaultMessage: 'Power Priority' }),
-  lldpPDReqPowerVal: defineMessage({ defaultMessage: 'Requested Power Value' }),
-  lldpPSEAllocPowerVal: defineMessage({ defaultMessage: 'PSE Allocated Power Value' })
+  lldpPDReqPowerVal: defineMessage({ defaultMessage: 'PD Requested Power' }),
+  lldpPSEAllocPowerVal: defineMessage({ defaultMessage: 'PSE Allocated Power' })
 }
 
 type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages

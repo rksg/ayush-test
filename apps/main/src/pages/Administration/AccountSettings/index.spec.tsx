@@ -3,17 +3,18 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { mspApi }                                   from '@acx-ui/msp/services'
-import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
-import { administrationApi }                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
-import { Provider, store  }                         from '@acx-ui/store'
+import { mspApi }                 from '@acx-ui/msp/services'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { administrationApi }      from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }       from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps, UserUrlsInfo, setUserProfile } from '@acx-ui/user'
+import { isDelegationMode }                                                          from '@acx-ui/utils'
 
 import {
   fakeRecoveryPassphrase,
@@ -26,7 +27,8 @@ import AccountSettings from './'
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  useTenantId: () => 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  useTenantId: () => 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
 jest.mock('./AccessSupportFormItem', () => ({
@@ -49,10 +51,6 @@ jest.mock('./AuthServerFormItem', () => ({
 }))
 jest.mock('./AppTokenFormItem', () => ({
   AppTokenFormItem: () => <div data-testid={'rc-AppTokenFormItem'} title='AppTokenFormItem' />
-}))
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
 const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
