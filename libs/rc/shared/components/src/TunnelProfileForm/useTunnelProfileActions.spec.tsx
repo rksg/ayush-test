@@ -12,7 +12,7 @@ import { TunnelProfileFormType } from '.'
 const mockedCreateTunnelApi = jest.fn()
 const mockedUpdateTunnelApi = jest.fn()
 
-describe('EdgeDhcpSettingForm', () => {
+describe('useTunnelProfileActions', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
