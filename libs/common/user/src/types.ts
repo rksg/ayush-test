@@ -1,4 +1,5 @@
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }   from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 export enum DetailLevel {
   BASIC_USER = 'ba',
@@ -149,4 +150,8 @@ export interface CommonResult {
 export interface BetaStatus {
   enabled?: string,
   startDate?: string
+}
+
+export interface TenantAccountTierValue {
+  acx_account_tier: AccountTier
 }

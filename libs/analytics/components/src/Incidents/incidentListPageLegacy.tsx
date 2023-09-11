@@ -6,11 +6,11 @@ import {
   CategoryTab,
   CategoryOption,
   categoryCodeMap,
-  IncidentCode,
-  AnalyticsFilter
+  IncidentCode
 }                                                from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Tabs }                from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
 import { HeaderLegacy }       from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'
