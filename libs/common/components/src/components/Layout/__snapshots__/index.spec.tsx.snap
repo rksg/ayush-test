@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
+    class="styledComponents__Wrapper-sc-iwostn-0 jHMJbR"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -324,11 +324,11 @@ exports[`Layout should render correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-7 dOVsBH"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-9 cxqUhZ ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -361,10 +361,10 @@ exports[`Layout should render correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-5 bktDZ"
                 >
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-13 hwKuhP"
+                    class="styledComponents__DropdownText-sc-iwostn-14 jHzfHU"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -379,7 +379,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-6 dcDJhZ"
               >
                 <div>
                   Right header
@@ -408,7 +408,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render correctly when adminItem = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
+    class="styledComponents__Wrapper-sc-iwostn-0 jHMJbR"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -494,11 +494,11 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-7 dOVsBH"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-9 cxqUhZ ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -531,7 +531,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-5 bktDZ"
                 >
                   <div>
                     Left header
@@ -539,7 +539,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-6 dcDJhZ"
               >
                 <div>
                   Right header
@@ -568,7 +568,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
+    class="styledComponents__Wrapper-sc-iwostn-0 jHMJbR"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -654,11 +654,11 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-7 dOVsBH"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-9 cxqUhZ ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -691,7 +691,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-5 bktDZ"
                 >
                   <div>
                     Left header
@@ -699,7 +699,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-6 dcDJhZ"
               >
                 <div>
                   Right header
@@ -728,7 +728,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
+    class="styledComponents__Wrapper-sc-iwostn-0 jHMJbR"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -819,11 +819,11 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-7 dOVsBH"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-9 cxqUhZ ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -856,7 +856,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-5 bktDZ"
                 >
                   <div>
                     Left header
@@ -864,7 +864,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-6 dcDJhZ"
               >
                 <div>
                   Right header

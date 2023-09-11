@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ResidentPortal }                         from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { ResidentPortal }                              from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { act, mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockedResidentPortal, mockedResidentPortalList } from '../__tests__/fixtures'
 
@@ -77,7 +77,11 @@ describe('ResidentPortal', () => {
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedResidentPortalList.content[0].name)
-    nameInput.blur()
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      nameInput.blur()
+    })
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists ')

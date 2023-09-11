@@ -47,7 +47,7 @@ export const HistoryContent = styled.div`
   }
 `
 export const HistoryContentTitle = styled.span`
-  font-weight: 600;
+  font-weight: var(--acx-headline-4-font-weight-bold);
   font-size: var(--acx-headline-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   color: var(--acx-primary-black);
@@ -97,30 +97,29 @@ export const StyledDisabledPlusSquareOutline = styled(PlusSquareOutlined)`
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
-   font-size: 12px;`
+   font-size: var(--acx-body-4-font-size);`
 export const TimelineCount = styled.span`
    font-weight: var(--acx-body-font-weight-bold);
-   font-size: 12px;`
+   font-size: var(--acx-body-4-font-size);`
 
 export const TimelineSubContent = styled.span`
-   line-height: 16px;
+   line-height: var(--acx-body-4-line-height);
    font-weight: var(--acx-body-font-weight);
    white-space: nowrap;
-   font-size: 12px;
+   font-size: var(--acx-body-4-font-size);
    color: var(--acx-neutrals-70);`
 
 export const RoamingTimelineSubContent = styled.span`
-  line-height: 16px;
+  line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
   white-space: nowrap;
-  font-size: 10px;
+  font-size: var(--acx-body-5-font-size);
   color: var(--acx-neutrals-70);
-  text-decoration: underline dotted;
 `
 
 export const TooltipWrapper = styled.div`
     color: var(--acx-neutrals-70);
-    font-weight: 400;
+    font-weight: var(--acx-subtitle-6-font-weight);
     font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -129,7 +128,7 @@ export const TooltipWrapper = styled.div`
     `
 export const TooltipDate = styled.span`
     color: var(--acx-neutrals-70);
-    font-weight: 700;
+    font-weight: var(--acx-body-font-weight-bold);
     `
 export const TimelineLoaderWrapper = styled.div`
   height: 100%;
@@ -145,9 +144,9 @@ export const DetailsWrapper = styled.div`
   padding: 4px 0;
 `
 export const Header = styled.h3`
-  font-size: 10px;
-  line-height: 16px;
-  font-weight: 700;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
   text-align: left;
   font-family: var(--acx-neutral-brand-font);
   color: var(--acx-primary-black);
@@ -263,7 +262,6 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
 export const StepLabel = styled.p`
   align-self: center;
   grid-column: 1 / 2;
-  font-size: 11px;
   color: var(--acx-primary-black);
   overflow: hidden;
   text-overflow: ellipsis;

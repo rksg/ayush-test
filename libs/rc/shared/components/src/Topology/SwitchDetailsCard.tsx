@@ -2,12 +2,12 @@ import { Badge, Button, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader }                           from '@acx-ui/components'
 import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
 import { CloseSymbol }                                          from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
 import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
+import type { AnalyticsFilter }                                 from '@acx-ui/utils'
 
 import IncidentStackedBar               from './IncidentStackedBar'
 import * as UI                          from './styledComponents'

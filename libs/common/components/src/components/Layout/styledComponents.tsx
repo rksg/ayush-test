@@ -294,6 +294,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
         color: var(--acx-primary-white);
         padding: 0 20px 0 var(--acx-sider-width);
         font-size: var(--acx-body-4-font-size);
+        gap: var(--acx-header-item-margin);
       }
     }
 
@@ -370,6 +371,10 @@ export const Content = styled.div`
   }
 `
 
+export const IframeContent = styled(Content)`
+  margin: 15px 20px 25px 20px !important;
+`
+
 export const ResponsiveContent = styled.div`
   min-width: 100%;
   min-height: 100vh;
@@ -389,7 +394,7 @@ export const LeftHeaderContentWrapper = styled.div`
 
 export const RightHeaderContentWrapper = styled.div`
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   justify-content: end;
   flex-direction: row;
   align-items: center;
@@ -484,6 +489,7 @@ export const LayoutUI = {
     font-size: var(--acx-body-4-font-size);
     font-weight: var(--acx-body-font-weight);
     text-align: right;
+    flex-shrink: 0;
     max-width: var(--acx-header-company-name-width);
     min-width: var(--acx-header-company-name-min-width);
     max-height: calc(2 * var(--acx-body-4-line-height));
