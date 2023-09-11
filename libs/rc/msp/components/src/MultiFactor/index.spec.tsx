@@ -2,7 +2,6 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { isDelegationMode }         from '@acx-ui/rc/utils'
 import { Provider, userApi, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -10,6 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo, MFAMethod } from '@acx-ui/user'
+import { isDelegationMode }        from '@acx-ui/utils'
 
 import {
   fakeMFADisabledTenantDetail,
@@ -20,8 +20,8 @@ import {
 
 import { MultiFactor } from '.'
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 

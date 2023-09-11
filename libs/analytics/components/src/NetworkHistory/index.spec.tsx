@@ -1,6 +1,6 @@
-import { AnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                      from '@acx-ui/utils'
 import { DateRange }                                 from '@acx-ui/utils'
 
 import { api } from './services'
