@@ -15,7 +15,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 const mockedCreateDhcpApi = jest.fn()
 const mockedUpdateDhcpApi = jest.fn()
 
-describe('EdgeDhcpSettingForm', () => {
+describe('useEdgeDhcpActions', () => {
   beforeEach(() => {
     mockedConvertFn.mockReset()
     mockServer.use(
