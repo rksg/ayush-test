@@ -267,9 +267,10 @@ const tallStyle = css<StyledTable>`
     }
 
     .ant-pagination {
-      position: relative;
+      position: sticky;
+      bottom: 0;
       z-index: 4;
-      background-color: var(--acx-primary-white);
+      background-color: rgba(255, 255, 255, 0.8);
       padding: 16px 0;
       margin: unset;
     }
