@@ -1222,7 +1222,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ position: 'relative', top: '-20px' }}>
+        <Space style={{ marginBottom: '20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
