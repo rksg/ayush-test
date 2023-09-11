@@ -6,6 +6,8 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }               from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseDevicesMutation,
   useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
@@ -31,7 +33,6 @@ const { useWatch } = Form
 
 const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const { $t } = useIntl()
-  const ONLINE = 'Online'
 
   const { visible, setVisible, passphraseInfo } = props
   const params = useParams()
@@ -41,15 +42,18 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const [form] = Form.useForm()
 
   const macAddress = useWatch<string>('macAddress', form)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const { data: devicesData } = useGetDpskPassphraseDevicesQuery({
     params: {
       ...params,
-      passphraseId: passphraseInfo.id
+      passphraseId: passphraseInfo.id,
+      ...dpskNewConfigFlowParams
     }
   })
 
-  const { data } = useGetDpskQuery({ params: params })
+  const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
 
   useEffect(() => {
     if (data?.networkIds?.length) {
@@ -91,7 +95,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (_, row) => {
-        return row.lastConnected === ONLINE ? <TenantLink
+        return row.lastConnected === 'Online' ? <TenantLink
           to={`/users/wifi/clients/${row.mac}/details/`}>
           {row.mac}
         </TenantLink>: row.mac
@@ -103,7 +107,9 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       dataIndex: 'online',
       sorter: true,
       render: (_, row) => {
-        return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
+        return row.online
+          ? $t({ defaultMessage: 'Online' })
+          : new Date(row.lastConnected + ' GMT').toLocaleString()
       }
     },
     {
@@ -112,7 +118,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       dataIndex: 'lastConnectedNetwork',
       sorter: true,
       render: (_, row) => {
-        return row.lastConnectedNetwork ? <TenantLink
+        return row.lastConnectedNetwork? <TenantLink
           // eslint-disable-next-line max-len
           to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>
           {row.lastConnectedNetwork}
@@ -139,14 +145,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
         await deleteDevicesData({
           params: {
             ...params,
-            passphraseId: passphraseInfo.id
+            passphraseId: passphraseInfo.id,
+            ...dpskNewConfigFlowParams
           },
-          payload: {
-            id: passphraseInfo.id,
-            devicesMac: rows.map(row => row.mac),
-            poolId: params.serviceId,
-            tenantId: params.tenantId
-          }
+          payload: isNewConfigFlow
+            ? rows.map(row => row.mac)
+            : {
+              id: passphraseInfo.id,
+              devicesMac: rows.map(row => row.mac),
+              poolId: params.serviceId,
+              tenantId: params.tenantId
+            }
         })
         clearSelection()
       }
@@ -168,16 +177,19 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       await updateDevicesData({
         params: {
           ...params,
-          passphraseId: passphraseInfo.id
+          passphraseId: passphraseInfo.id,
+          ...dpskNewConfigFlowParams
         },
-        payload: {
-          id: passphraseInfo.id,
-          devicesMac: [
-            macAddress
-          ],
-          poolId: params.serviceId,
-          tenantId: params.tenantId
-        }
+        payload: isNewConfigFlow
+          ? [macAddress]
+          : {
+            id: passphraseInfo.id,
+            devicesMac: [
+              macAddress
+            ],
+            poolId: params.serviceId,
+            tenantId: params.tenantId
+          }
       })
 
       if (!addAnother) {

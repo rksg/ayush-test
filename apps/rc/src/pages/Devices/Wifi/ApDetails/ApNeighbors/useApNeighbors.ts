@@ -35,13 +35,13 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
         setIsDetecting(false)
         handler()
       })
+
+      pokeSocketRef.current.on('connectedSocketEvent', () => {
+        doDetect()
+      })
     }
 
     return closeSocket
-  }, [])
-
-  useEffect(() => {
-    doDetect()
   }, [])
 
   const closeSocket = () => {
