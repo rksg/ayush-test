@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
+import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
@@ -22,7 +23,8 @@ interface VoiceVlanDrawerProps {
   modelVlanConfigs?: VoiceVlanConfig
   visible: boolean
   setVisible: (v: boolean) => void
-  updateVoiceVlanConfigs: (model: string, voiceVlans: TaggedVlanPorts[]) => void
+  voiceVlanConfigs: VoiceVlanConfig[]
+  setVoiceVlanConfigs: (data: VoiceVlanConfig[]) => void
 }
 interface PortVlanMap {
   [key:string]: string[]
@@ -33,11 +35,13 @@ interface PortVoiceVlanMap {
 
 export function VoiceVlanDrawer (props: VoiceVlanDrawerProps) {
   const { $t } = useIntl()
-  const { modelVlanOptions, modelVlanConfigs, visible, setVisible, updateVoiceVlanConfigs } = props
+  const { modelVlanOptions, modelVlanConfigs, visible, setVisible,
+    voiceVlanConfigs, setVoiceVlanConfigs } = props
   const [tableData, setTableData] = useState<VoiceVlanPort[]>([])
   const [editPorts, setEditPorts] = useState({} as VoiceVlanModalData)
   const [portVlanMap, setPortVlanMap] = useState<PortVlanMap>({})
   const [voiceVlanModalVisible, setVoiceVlanModalVisible] = useState(false)
+  const form = Form.useFormInstance()
 
   useEffect(() => {
     if(modelVlanOptions && visible){
@@ -144,6 +148,17 @@ export function VoiceVlanDrawer (props: VoiceVlanDrawerProps) {
     setVoiceVlanModalVisible(true)
   }
 
+  const updateVoiceVlanConfigs = (model: string, voiceVlans: TaggedVlanPorts[]) => {
+    const tmp = JSON.parse(JSON.stringify(voiceVlanConfigs))
+    tmp.forEach((config:VoiceVlanConfig) => {
+      if(config.model === model) {
+        config.voiceVlans = voiceVlans
+      }
+    })
+    setVoiceVlanConfigs(tmp)
+    form.setFieldValue('voiceVlanConfigs', tmp)
+  }
+
   const onSave = () => {
     const voiceVlanPortMap:{ [key:string]: string[] } = {}
     tableData.forEach(row => {
@@ -219,7 +234,16 @@ const PortTable = (props: { onEdit: (selectedRows: VoiceVlanPort[]) => void, tab
     dataIndex: 'voiceVlan',
     key: 'voiceVlan',
     render: (_, row) => {
-      return row.voiceVlan || noDataDisplay
+      return <>
+        {
+          row.voiceVlan ?
+            <>
+              <span style={{ marginRight: '3px' }}>{$t({ defaultMessage: 'VLAN-ID:' })}</span>
+              {row.voiceVlan}
+            </>
+            : noDataDisplay
+        }
+      </>
     }
   }]
 

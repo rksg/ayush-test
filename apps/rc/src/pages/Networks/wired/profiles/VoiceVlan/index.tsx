@@ -4,7 +4,6 @@ import { Row, Col, Form, Space } from 'antd'
 
 import { StepsFormLegacy, Button } from '@acx-ui/components'
 import {
-  TaggedVlanPorts,
   VoiceVlanConfig,
   VoiceVlanOption
 } from '@acx-ui/rc/utils'
@@ -18,7 +17,6 @@ import { VoiceVlanDrawer } from './VoiceVlanDrawer'
 
 export function VoiceVlan () {
   const { $t } = getIntl()
-  const form = Form.useFormInstance()
   const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ voiceVlanOptions, setVoiceVlanOptions ] = useState<VoiceVlanOption[]>([])
   const [ voiceVlanConfigs, setVoiceVlanConfigs ] = useState<VoiceVlanConfig[]>([])
@@ -35,25 +33,16 @@ export function VoiceVlan () {
     }
   }, [currentData])
 
-  const updateVoiceVlanConfigs = (model: string, voiceVlans: TaggedVlanPorts[]) => {
-    const tmp = JSON.parse(JSON.stringify(voiceVlanConfigs))
-    tmp.forEach((config:VoiceVlanConfig) => {
-      if(config.model === model) {
-        config.voiceVlans = voiceVlans
-      }
-    })
-    setVoiceVlanConfigs(tmp)
-    form.setFieldValue('voiceVlanConfigs', tmp)
-  }
-
   const generateVoiceVlanDisplay = (config: VoiceVlanConfig) => {
     if(config.voiceVlans.length){
       return <>
         {
-          config.voiceVlans.map(vlan => <div>
-            {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
-            <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
-          </div>)
+          config.voiceVlans
+            .sort((a, b) => Number(a.vlanId) - Number(b.vlanId))
+            .map(vlan => <div>
+              {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
+              <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
+            </div>)
         }
       </>
     }
@@ -107,7 +96,8 @@ export function VoiceVlan () {
           setVisible={setVoiceVlanDrawerVisible}
           modelVlanOptions={modelVlanOptions}
           modelVlanConfigs={modelVlanConfigs}
-          updateVoiceVlanConfigs={updateVoiceVlanConfigs}
+          voiceVlanConfigs={voiceVlanConfigs}
+          setVoiceVlanConfigs={setVoiceVlanConfigs}
         />
       }
     </>

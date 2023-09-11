@@ -48,7 +48,7 @@ export function ConfigurationProfileForm () {
   useEffect(() => {
     if(data){
       setCurrentData(data as SwitchConfigurationProfile)
-      updateVlanCurrentData(data)
+      updateVlanCurrentData(data, 'init')
     }
   }, [data])
 
@@ -143,7 +143,8 @@ export function ConfigurationProfileForm () {
     return false
   }
 
-  const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+  const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>,
+    timing?: string) => {
     const nextCurrentData = {
       ...currentData,
       ...data
@@ -163,7 +164,9 @@ export function ConfigurationProfileForm () {
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
     const voiceVlanOptions =
       nextCurrentData.vlans && generateVoiceVlanOptions(nextCurrentData.vlans as Vlan[])
-    const voiceVlanConfigs = generateVoiceVlanConfig(voiceVlanOptions, currentData.voiceVlanConfigs)
+    const currentVoiceVlanConfigs = timing === 'init' ? data.voiceVlanConfigs
+      : currentData.voiceVlanConfigs
+    const voiceVlanConfigs = generateVoiceVlanConfig(voiceVlanOptions, currentVoiceVlanConfigs)
     setCurrentData({
       ...currentData,
       ...data,
