@@ -106,6 +106,7 @@ export interface Venue {
   status: string
   city: string
   country: string
+  countryCode?: string
   latitude: string
   longitude: string
   mesh: { enabled: boolean }

@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer }                                                          from '@acx-ui/rc/components'
+import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -52,11 +52,13 @@ export function PersonaDevicesTable (props: {
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
 
   const [getClientList] = useLazyGetClientListQuery()
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
     params: {
       tenantId,
       serviceId: dpskPoolId,
-      passphraseId: persona?.dpskGuid
+      passphraseId: persona?.dpskGuid,
+      ...dpskNewConfigFlowParams
     }
   }, { skip: !persona?.dpskGuid || !dpskPoolId })
 

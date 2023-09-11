@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }    from '@acx-ui/components'
-import { APStatus }                     from '@acx-ui/rc/components'
-import { useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
+import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { APStatus }                               from '@acx-ui/rc/components'
+import { useLazyGetApRfNeighborsQuery }           from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
   CatchErrorResponse,
@@ -59,91 +59,83 @@ export default function ApRfNeighbors () {
 function getColumns (): TableProps<ApRfNeighbor>['columns'] {
   const { $t } = getIntl()
 
-  return [
+  const columns: TableColumn<ApRfNeighbor, 'text'>[] = [
     {
       key: 'deviceName',
       dataIndex: 'deviceName',
-      title: $t({ defaultMessage: 'AP Name' }),
-      sorter: { compare: sortProp('deviceName', defaultSort) },
-      searchable: true
+      title: $t({ defaultMessage: 'AP Name' })
     },
     {
       key: 'apMac',
       dataIndex: 'apMac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      sorter: { compare: sortProp('apMac', defaultSort) },
-      searchable: true
+      title: $t({ defaultMessage: 'MAC Address' })
     },
     {
       key: 'status',
       dataIndex: 'status',
       title: $t({ defaultMessage: 'Status' }),
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: (_, row) => <APStatus status={row.status} />,
-      searchable: true
+      render: (_, row) => <APStatus status={row.status} />
     },
     {
       key: 'model',
       dataIndex: 'model',
-      title: $t({ defaultMessage: 'Model' }),
-      sorter: { compare: sortProp('model', defaultSort) },
-      searchable: true
+      title: $t({ defaultMessage: 'Model' })
     },
     {
       key: 'venueName',
       dataIndex: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
-      sorter: { compare: sortProp('venueName', defaultSort) },
-      searchable: true
+      title: $t({ defaultMessage: 'Venue' })
     },
     {
       key: 'ip',
       dataIndex: 'ip',
-      title: $t({ defaultMessage: 'IPv4 Address' }),
-      sorter: { compare: sortProp('ip', defaultSort) },
-      searchable: true
+      title: $t({ defaultMessage: 'IPv4 Address' })
     },
     {
       key: 'channel24G',
       dataIndex: 'channel24G',
       title: $t({ defaultMessage: 'Channel (2.4G)' }),
-      sorter: { compare: sortProp('channel24G', compareChannelAndSnr) },
-      searchable: true,
-      render: emtpyRenderer
+      sorter: { compare: sortProp('channel24G', compareChannelAndSnr) }
     },
     {
       key: 'channel5G',
       dataIndex: 'channel5G',
       title: $t({ defaultMessage: 'Channel (5G)' }),
-      sorter: { compare: sortProp('channel5G', compareChannelAndSnr) },
-      searchable: true,
-      render: emtpyRenderer
+      sorter: { compare: sortProp('channel5G', compareChannelAndSnr) }
+    },
+    {
+      key: 'channel6G',
+      dataIndex: 'channel6G',
+      title: $t({ defaultMessage: 'Channel(6G/5G)' }),
+      sorter: { compare: sortProp('channel5G', compareChannelAndSnr) }
     },
     {
       key: 'snr24G',
       dataIndex: 'snr24G',
       title: $t({ defaultMessage: 'SNR (2.4G)' }),
-      sorter: { compare: sortProp('snr24G', compareChannelAndSnr) },
-      searchable: true,
-      render: emtpyRenderer
+      sorter: { compare: sortProp('snr24G', compareChannelAndSnr) }
     },
     {
       key: 'snr5G',
       dataIndex: 'snr5G',
       title: $t({ defaultMessage: 'SNR (5G)' }),
-      sorter: { compare: sortProp('snr5G', compareChannelAndSnr) },
-      searchable: true,
-      render: emtpyRenderer
+      sorter: { compare: sortProp('snr5G', compareChannelAndSnr) }
     },
     {
       key: 'snr6G',
       dataIndex: 'snr6G',
       title: $t({ defaultMessage: 'SNR (6G/5G)' }),
-      sorter: { compare: sortProp('snr6G', compareChannelAndSnr) },
-      searchable: true,
-      render: emtpyRenderer
+      sorter: { compare: sortProp('snr6G', compareChannelAndSnr) }
     }
   ]
+
+  columns.forEach(column => {
+    column.sorter = column.sorter ?? { compare: sortProp(column.dataIndex as string, defaultSort) }
+    column.searchable = true
+    column.render = column.render ?? emtpyRenderer
+  })
+
+  return columns
 }
 
 export function emtpyRenderer (value?: React.ReactNode): React.ReactNode | string {
