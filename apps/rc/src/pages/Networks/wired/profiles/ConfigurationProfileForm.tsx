@@ -144,12 +144,16 @@ export function ConfigurationProfileForm () {
   }
 
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
-    const ipv4DhcpSnoopingValue =
-      data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
-    const arpInspectionValue =
-      data.vlans?.filter((item: Partial<Vlan>) => item.arpInspection === true) || []
-    const vlansWithTaggedPortsValue =
-      data.vlans?.filter((item: Partial<Vlan>) => {
+    const nextCurrentData = {
+      ...currentData,
+      ...data
+    }
+    const ipv4DhcpSnoopingValue = nextCurrentData.vlans?.filter(
+      (item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
+    const arpInspectionValue = nextCurrentData.vlans?.filter(
+      (item: Partial<Vlan>) => item.arpInspection === true) || []
+    const vlansWithTaggedPortsValue = nextCurrentData.vlans?.filter(
+      (item: Partial<Vlan>) => {
         return item.switchFamilyModels ?
           item.switchFamilyModels.find(model => model?.taggedPorts?.length)
           : false
@@ -157,7 +161,8 @@ export function ConfigurationProfileForm () {
     setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
     setArpInspection(arpInspectionValue.length > 0)
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
-    const voiceVlanOptions = data.vlans && generateVoiceVlanOptions(data.vlans as Vlan[])
+    const voiceVlanOptions =
+      nextCurrentData.vlans && generateVoiceVlanOptions(nextCurrentData.vlans as Vlan[])
     const voiceVlanConfigs = generateVoiceVlanConfig(voiceVlanOptions, currentData.voiceVlanConfigs)
     setCurrentData({
       ...currentData,
