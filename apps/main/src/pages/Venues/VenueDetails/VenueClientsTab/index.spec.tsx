@@ -74,12 +74,12 @@ describe('VenueClientsTab', () => {
       search: ''
     })
 
-    const personaTab = await screen.findByRole('tab', { name: /Persona/i })
+    const personaTab = await screen.findByRole('tab', { name: /Identity/i })
     await waitFor(() => expect(personaTab).toHaveAttribute('aria-selected', 'false'))
     fireEvent.click(personaTab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/persona`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/identity`,
       hash: '',
       search: ''
     })
@@ -94,6 +94,6 @@ describe('VenueClientsTab', () => {
     render(<Provider><VenueClientsTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
     })
-    expect(screen.queryByRole('tab', { name: /Persona/i })).toBeNull()
+    expect(screen.queryByRole('tab', { name: /Identity/i })).toBeNull()
   })
 })

@@ -14,7 +14,6 @@ import { PriorityIcon, OptimizedIcon } from '../styledComponents'
 
 import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
-import { RecommendationApImpacted }                                 from './styledComponents'
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   { id: string, aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
@@ -113,11 +112,11 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   if (hasAp && impactedApsQuery.data?.length) {
     const impactedApField = {
       label: $t({ defaultMessage: 'AP Impact Count' }),
-      children: <RecommendationApImpacted onClick={() => setVisible(true)}>
-        {$t({
-          defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' },
-        { count: impactedApsQuery.data.length, percent: formatter('percent')(100) })}
-      </RecommendationApImpacted>
+      children: $t(
+        { defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' },
+        { count: impactedApsQuery.data.length, percent: formatter('percent')(100) }
+      ),
+      onClick: () => setVisible(true)
     }
     fields.splice(2, 0, impactedApField)
   }
