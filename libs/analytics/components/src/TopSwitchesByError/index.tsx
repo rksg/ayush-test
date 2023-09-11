@@ -1,14 +1,14 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
   Table,
   TableProps,
   NoData } from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
 import { CustomTable }                                        from './styledComponents'

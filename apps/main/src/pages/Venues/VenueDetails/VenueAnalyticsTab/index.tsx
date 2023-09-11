@@ -1,7 +1,7 @@
-import { AnalyticsTabs }       from '@acx-ui/analytics/components'
-import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
-import { useParams }           from '@acx-ui/react-router-dom'
-import { generateVenueFilter } from '@acx-ui/utils'
+import { AnalyticsTabs }        from '@acx-ui/analytics/components'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { generateVenueFilter }  from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
   const { venueId } = useParams()
