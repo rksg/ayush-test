@@ -10,6 +10,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -41,7 +44,6 @@ export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
-  // const [showPreference, setShowPreference] = useState(false)
   const [editMode, setEditMode] = useState(false)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
@@ -179,11 +181,6 @@ export const NotificationsTable = () => {
         />
       </Loader>
 
-      {/* {showPreference && <PreferenceDrawer
-        visible={showPreference}
-        setVisible={setShowPreference}
-      />} */}
-
       <RecipientDialog
         visible={showDialog}
         setVisible={setShowDialog}
@@ -197,13 +194,16 @@ export const NotificationsTable = () => {
 
 const Notifications = () => {
   const { $t } = useIntl()
+  const mspUtils = MSPUtils()
+  const { data: mspProfile } = useGetMspProfileQuery({})
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isMspAggregateNotification =
+    useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
   const [showPreference, setShowPreference] = useState(false)
 
-  const handleClickPreference = () => {
-    // setEditMode(false)
-    // setEditData({} as NotificationRecipientUIModel)
-    setShowPreference(true)
-  }
+  // const handleClickPreference = () => {
+  //   setShowPreference(true)
+  // }
 
   return <UI.Wrapper>
     <Row>
@@ -213,12 +213,12 @@ const Notifications = () => {
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
           }
-          <Button style={{ marginLeft: 13 }}
+          {isMspAggregateNotification && <Button style={{ marginLeft: 13 }}
             type='link'
             size='small'
-            onClick={() => { handleClickPreference() }}>
+            onClick={() => { setShowPreference(true) }}>
             {$t({ defaultMessage: 'Preference' })}
-          </Button>
+          </Button>}
         </Typography>
 
       </Col>

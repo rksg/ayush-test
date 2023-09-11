@@ -102,7 +102,8 @@ export enum Features {
   DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
-  EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle'
+  EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
+  MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
