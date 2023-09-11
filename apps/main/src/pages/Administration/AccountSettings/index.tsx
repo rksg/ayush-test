@@ -6,12 +6,11 @@ import { Features, useIsSplitOn }                                          from 
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
-import { isDelegationMode }                                                from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { useTenantId } from '@acx-ui/utils'
+import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'

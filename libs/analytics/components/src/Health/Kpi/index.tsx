@@ -11,11 +11,11 @@ import {
 import {
   CategoryTab,
   kpisForTab,
-  AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 import { get }                      from '@acx-ui/config'
+import type { AnalyticsFilter }     from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
