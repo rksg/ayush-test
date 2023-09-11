@@ -42,11 +42,11 @@ function PersonaGroupDetailsPageHeader (props: {
           text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' })
+          text: $t({ defaultMessage: 'Identity Management' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Groups' }),
-          link: 'users/persona-management'
+          text: $t({ defaultMessage: 'Identity Groups' }),
+          link: 'users/identity-management'
         }
       ]}
     />
@@ -124,7 +124,7 @@ function PersonaGroupDetails () {
       />
     },
     {
-      title: $t({ defaultMessage: 'Personas' }),
+      title: $t({ defaultMessage: 'Identities' }),
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
@@ -171,7 +171,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}
