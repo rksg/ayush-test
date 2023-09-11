@@ -179,7 +179,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
         />
     },
     {
-      title: $t({ defaultMessage: 'Persona' }),
+      title: $t({ defaultMessage: 'Identity' }),
       dataIndex: 'personas',
       key: 'personas',
       render: (_, { personas })=>

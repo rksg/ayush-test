@@ -195,7 +195,7 @@ describe.skip('Persona Group Table', () => {
     fireEvent.click(deleteButton)
 
     await screen.findByText(`Delete "${personaGroupName}"?`)
-    const deletePersonaGroupButton = await screen.findByText('Delete Persona Group')
+    const deletePersonaGroupButton = await screen.findByText('Delete Identity Group')
     fireEvent.click(deletePersonaGroupButton)
   })
 
@@ -228,10 +228,10 @@ describe.skip('Persona Group Table', () => {
         route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
-    const createButton = await screen.findByRole('button', { name: /Add Persona Group/i })
+    const createButton = await screen.findByRole('button', { name: /Add Identity Group/i })
     fireEvent.click(createButton)
 
-    await screen.findByText('Create Persona Group')
+    await screen.findByText('Create Identity Group')
 
     // const addPersonaGroupButton = await screen.findAllByRole('button', { name: /Add/i })
     // fireEvent.click(addPersonaGroupButton)
@@ -259,9 +259,9 @@ describe.skip('Persona Group Table', () => {
             exportFn()
 
             return res(ctx.set({
-              'content-disposition': 'attachment; filename=PersonaGroups_20230118100829.csv',
+              'content-disposition': 'attachment; filename=IdentityGroups_20230118100829.csv',
               'content-type': 'text/csv;charset=ISO-8859-1'
-            }), ctx.text('PersonaGroup'))
+            }), ctx.text('IdentityGroup'))
           }
         })
     )

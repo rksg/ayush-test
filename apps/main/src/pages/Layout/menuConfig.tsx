@@ -145,16 +145,16 @@ export function useMenuConfig () {
         },
         ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
-          label: $t({ defaultMessage: 'Persona Management' }),
+          label: $t({ defaultMessage: 'Identity Management' }),
           children: [
             {
               uri: '/users/identity-management/identity-group',
-              label: $t({ defaultMessage: 'Persona Groups' })
+              label: $t({ defaultMessage: 'Identity Groups' })
             },
             {
               uri: '/users/identity-management/identity',
               isActiveCheck: new RegExp('^/users/identity-management/identity($|/)'),
-              label: $t({ defaultMessage: 'Personas List' })
+              label: $t({ defaultMessage: 'Identities List' })
             }
           ]
         }] : [])

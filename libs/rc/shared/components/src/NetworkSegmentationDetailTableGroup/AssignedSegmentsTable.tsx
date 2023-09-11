@@ -35,7 +35,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       fixed: 'left' as const
     },
     {
-      title: $t({ defaultMessage: 'Persona' }),
+      title: $t({ defaultMessage: 'Identity' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },

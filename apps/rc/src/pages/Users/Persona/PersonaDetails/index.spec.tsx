@@ -37,7 +37,7 @@ Object.assign(navigator, {
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-describe.skip('Persona Details', () => {
+describe.skip('Identity Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
@@ -134,9 +134,9 @@ describe.skip('Persona Details', () => {
       }
     )
     expect(await screen.findByText('Clients')).toBeVisible()
-    expect(await screen.findByText('Persona Management')).toBeVisible()
+    expect(await screen.findByText('Identity Management')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Personas'
+      name: 'Identities'
     })).toBeVisible()
   })
 
@@ -160,14 +160,14 @@ describe.skip('Persona Details', () => {
     await userEvent.click(copyBtn)
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(mockPersona.dpskPassphrase)
 
-    const personaName = screen.getByLabelText(/Persona Name/i) as HTMLInputElement
+    const personaName = screen.getByLabelText(/Identity Name/i) as HTMLInputElement
     expect(personaName.value).toBe(mockPersona.name)
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
     fireEvent.click(cancelButton)
 
     fireEvent.click(configButton)
-    fireEvent.change(personaName, { target: { value: 'New persona name' } })
+    fireEvent.change(personaName, { target: { value: 'New identity name' } })
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     fireEvent.click(applyButton)

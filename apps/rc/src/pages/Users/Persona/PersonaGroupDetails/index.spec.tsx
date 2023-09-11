@@ -119,7 +119,7 @@ describe('Persona Group Details', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await screen.findByRole('heading', { level: 1, name: mockPersonaGroup.name })
-    await screen.findByRole('heading', { level: 4, name: /Personas/i })
+    await screen.findByRole('heading', { level: 4, name: /Identities/i })
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -135,9 +135,9 @@ describe('Persona Group Details', () => {
     )
 
     expect(await screen.findByText('Clients')).toBeVisible()
-    expect(await screen.findByText('Persona Management')).toBeVisible()
+    expect(await screen.findByText('Identity Management')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Persona Groups'
+      name: 'Identity Groups'
     })).toBeVisible()
   })
 
@@ -164,8 +164,8 @@ describe('Persona Group Details', () => {
     fireEvent.click(deleteButton)
 
     await screen.findByText(`Delete "${targetPersona.name}"?`)
-    const deletePersonaButton = await screen.findByText(/Delete Persona/i)
-    fireEvent.click(deletePersonaButton)
+    const deleteIdentityButton = await screen.findByText(/Delete Identity/i)
+    fireEvent.click(deleteIdentityButton)
   })
 
   it.skip('should edit selected persona', async () => {
@@ -189,7 +189,7 @@ describe('Persona Group Details', () => {
     const editButton = screen.getByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
 
-    const personaName = await screen.findByLabelText(/Persona Name/i) as HTMLInputElement
+    const personaName = await screen.findByLabelText(/Identity Name/i) as HTMLInputElement
     expect(personaName.value).toBe(targetPersona.name)
   })
 
@@ -210,14 +210,14 @@ describe('Persona Group Details', () => {
     const configButton = await screen.findByRole('button', { name: /Configure/i })
     fireEvent.click(configButton)
 
-    const groupName = screen.getByLabelText(/Persona Group Name/i) as HTMLInputElement
+    const groupName = screen.getByLabelText(/Identity Group Name/i) as HTMLInputElement
     expect(groupName.value).toBe(mockPersonaGroup.name)
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
     fireEvent.click(cancelButton)
 
     fireEvent.click(configButton)
-    fireEvent.change(groupName, { target: { value: 'New persona group name' } })
+    fireEvent.change(groupName, { target: { value: 'New identity group name' } })
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     fireEvent.click(applyButton)

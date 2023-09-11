@@ -376,9 +376,9 @@ export function PropertyManagementTab () {
                 <Form.Item
                   name='personaGroupId'
                   label={<>
-                    {$t({ defaultMessage: 'Persona Group' })}
+                    {$t({ defaultMessage: 'Identity Group' })}
                     <Tooltip.Question
-                      title={$t(EditPropertyConfigMessages.BIND_PERSONA_GROUP_TOOLTIP)}
+                      title={$t(EditPropertyConfigMessages.BIND_IDENTITY_GROUP_TOOLTIP)}
                       placement={'bottom'}
                     />
                   </>}
@@ -404,7 +404,7 @@ export function PropertyManagementTab () {
                     size={'small'}
                     onClick={() => setPersonaGroupVisible(true)}
                   >
-                    {$t({ defaultMessage: 'Add Persona Group' })}
+                    {$t({ defaultMessage: 'Add Identity Group' })}
                   </Button>
                 </Form.Item>
 

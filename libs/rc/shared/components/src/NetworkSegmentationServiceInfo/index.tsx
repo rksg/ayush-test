@@ -124,7 +124,7 @@ export const NetworkSegmentationServiceInfo = styled((
       }
     },
     {
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       content: () => (
         <TenantLink to={`users/identity-management/identity-group/${personaGroupData?.id}`}>
           {personaGroupData?.name}

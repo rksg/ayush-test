@@ -28,9 +28,9 @@ describe.skip('Persona Portal', () => {
       }
     )
 
-    await screen.findByText(/Persona Management/i)
+    await screen.findByText(/Identity Management/i)
 
-    await userEvent.click(await screen.findByRole('tab', { name: 'Persona' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Identity' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/users/identity-management/identity`,
       hash: '',
@@ -44,11 +44,11 @@ describe.skip('Persona Portal', () => {
         <PersonaPortal/>
       </Provider>, {
         route: {
-          params: { ...params, activeTab: 'persona' },
+          params: { ...params, activeTab: 'identity' },
           path: '/:tenantId/t/users/identity-management/:activeTab' }
       }
     )
 
-    await screen.findByText(/Persona Management/i)
+    await screen.findByText(/Identity Management/i)
   })
 })

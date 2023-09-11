@@ -94,10 +94,10 @@ describe('Persona Table', () => {
         route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
-    const createButton = await screen.findByRole('button', { name: /Add Persona/i })
+    const createButton = await screen.findByRole('button', { name: /Add Identity/i })
     fireEvent.click(createButton)
 
-    const nameField = await screen.findByLabelText('Persona Name') as HTMLInputElement
+    const nameField = await screen.findByLabelText('Identity Name') as HTMLInputElement
     expect(nameField.value).toBe('')
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
@@ -127,7 +127,7 @@ describe('Persona Table', () => {
 
     const dialog = await screen.findByRole('dialog')
 
-    const csvFile = new File([''], 'persona_import_template.csv', { type: 'text/csv' })
+    const csvFile = new File([''], 'identity_import_template.csv', { type: 'text/csv' })
 
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
@@ -154,9 +154,9 @@ describe('Persona Table', () => {
             exportFn()
 
             return res(ctx.set({
-              'content-disposition': 'attachment; filename=Personas_20230118100829.csv',
+              'content-disposition': 'attachment; filename=Identities_20230118100829.csv',
               'content-type': 'text/csv;charset=ISO-8859-1'
-            }), ctx.text('Persona'))
+            }), ctx.text('Identity'))
           }
         }
       )

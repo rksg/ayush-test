@@ -31,8 +31,8 @@ import {
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                   from '@acx-ui/user'
 
-import { PersonaGroupContext } from '..'
-import { PersonaGroupDrawer }  from '../PersonaGroupDrawer'
+import { IdentityGroupContext } from '..'
+import { PersonaGroupDrawer }   from '../PersonaGroupDrawer'
 
 const propertyConfigDefaultPayload = {
   sortField: 'venueName',
@@ -72,7 +72,7 @@ function useColumns (
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,
@@ -143,7 +143,7 @@ function useColumns (
     },
     {
       key: 'personaCount',
-      title: $t({ defaultMessage: 'Personas' }),
+      title: $t({ defaultMessage: 'Identities' }),
       dataIndex: 'personaCount',
       align: 'center'
     }
@@ -172,7 +172,7 @@ export function PersonaGroupTable () {
     visible: false,
     data: {} as PersonaGroup | undefined
   })
-  const { setPersonaGroupCount } = useContext(PersonaGroupContext)
+  const { setIdentityGroupCount } = useContext(IdentityGroupContext)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const [getVenues] = useLazyVenuesListQuery()
@@ -259,7 +259,7 @@ export function PersonaGroupTable () {
     const { id, name } = selectedRow
     doProfileDelete(
       [selectedRow],
-      $t({ defaultMessage: 'Persona Group' }),
+      $t({ defaultMessage: 'Identity Group' }),
       selectedRow.name,
       [
         { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Network segmentation' }) },
@@ -269,7 +269,7 @@ export function PersonaGroupTable () {
         .then(() => {
           showToast({
             type: 'success',
-            content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
           })
           callback()
         })
@@ -278,7 +278,7 @@ export function PersonaGroupTable () {
 
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Add Persona Group' }),
+      label: $t({ defaultMessage: 'Add Identity Group' }),
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
@@ -321,7 +321,7 @@ export function PersonaGroupTable () {
     tableQuery.setPayload(payload)
   }
 
-  setPersonaGroupCount?.(tableQuery.data?.totalCount || 0)
+  setIdentityGroupCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
