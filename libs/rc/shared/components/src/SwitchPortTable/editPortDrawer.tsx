@@ -377,7 +377,7 @@ export function EditPortDrawer ({
     })
 
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
-    const portSetting = _.pick(portsSetting?.response?.[0], hasEqualValueFields)
+    const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setHasMultipleValue(_.uniq([
@@ -870,6 +870,10 @@ export function EditPortDrawer ({
                   portEditStatus === 'venue' && profileName &&
                   <span className='profile'>({profileName})</span>
                 }
+                <Form.Item
+                  name='profileName'
+                  hidden
+                />
               </UI.PortStatus>
             }
             <Form.Item
