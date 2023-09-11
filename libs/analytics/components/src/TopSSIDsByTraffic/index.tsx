@@ -2,7 +2,6 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -11,6 +10,7 @@ import {
   SparklineChart } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/formatter'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
 import { TrafficPercent }                               from './styledComponents'
