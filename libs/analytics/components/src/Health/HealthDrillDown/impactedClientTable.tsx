@@ -77,15 +77,13 @@ export const ImpactedClientsTable = ({
       dataIndex: 'mac',
       key: 'mac',
       render: (_, { mac, hostname }) => {
-        const joinedHostname = Array.isArray(hostname) && hostname.length > 0
-          ? `?hostname=${hostname.join(', ')}`
-          : typeof hostname === 'string'
-            ? `?hostname=${hostname}`
-            : undefined
-        let link = `users/wifi/clients/${mac?.[0]?.toLocaleLowerCase()}/details/overview`
-        if (joinedHostname) {
-          link = link + joinedHostname
+        const macAddress = mac?.[0]?.toLocaleLowerCase()
+        let queryParams = ''
+        if (hostname) {
+          const formattedHostname = Array.isArray(hostname) ? hostname.join(', ') : hostname
+          queryParams = `?hostname=${formattedHostname}`
         }
+        const link = `users/wifi/clients/${macAddress}/details/overview${queryParams}`
         return (
           <TenantLink to={link}>
             {mac}
