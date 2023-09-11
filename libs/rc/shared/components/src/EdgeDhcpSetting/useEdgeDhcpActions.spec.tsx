@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { EdgeDhcpSettingFormData, EdgeDhcpUrls } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }       from '@acx-ui/test-utils'
+import { act, mockServer, renderHook, waitFor }  from '@acx-ui/test-utils'
 
 import { useEdgeDhcpActions } from './useEdgeDhcpActions'
 
@@ -41,7 +41,9 @@ describe('EdgeDhcpSettingForm', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { createEdgeDhcpProfile, isEdgeDhcpProfileCreating } = result.current
-    await createEdgeDhcpProfile({} as EdgeDhcpSettingFormData)
+    await act(async () => {
+      await createEdgeDhcpProfile({} as EdgeDhcpSettingFormData)
+    })
     await waitFor(() =>expect(isEdgeDhcpProfileCreating).toBeFalsy())
     await waitFor(() =>expect(mockedConvertFn).toBeCalledTimes(1))
     await waitFor(() =>expect(mockedCreateDhcpApi).toBeCalledTimes(1))
@@ -52,7 +54,9 @@ describe('EdgeDhcpSettingForm', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { updateEdgeDhcpProfile } = result.current
-    await updateEdgeDhcpProfile('testId', {} as EdgeDhcpSettingFormData)
+    await act(async () => {
+      await updateEdgeDhcpProfile('testId', {} as EdgeDhcpSettingFormData)
+    })
     await waitFor(() =>expect(mockedConvertFn).toBeCalledTimes(1))
     await waitFor(() =>expect(mockedUpdateDhcpApi).toBeCalledTimes(1))
   })
