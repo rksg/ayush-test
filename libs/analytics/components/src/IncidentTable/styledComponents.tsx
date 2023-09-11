@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 
 import {
@@ -15,13 +15,14 @@ export type IncidentImpactedClientProps = {
   showImpactedClient: boolean
 }
 
-export const withEllipsis = `
+export const withEllipsis = css`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `
 
-export const withDottedUnderline = `
+export const withDottedUnderline = css`
+  cursor: pointer;
   text-decoration: dotted underline;
   // below css will hide the default safari tooltip
   :after {
@@ -31,7 +32,6 @@ export const withDottedUnderline = `
 `
 
 export const DescriptionSpan = styled.div`
-  cursor: pointer;
   ${withEllipsis}
   ${withDottedUnderline}
 `
