@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }               from '@acx-ui/analytics/utils'
 import { Loader, Card, NoData }          from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                  from '../Recommendations/styledComponents'
