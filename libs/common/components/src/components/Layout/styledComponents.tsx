@@ -369,6 +369,10 @@ export const Content = styled.div`
   }
 `
 
+export const IframeContent = styled(Content)`
+  margin: 15px 20px 25px 20px !important;
+`
+
 export const ResponsiveContent = styled.div`
   min-width: 100%;
   min-height: 100vh;
