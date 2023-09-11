@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { healthApi }                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }       from '@acx-ui/react-router-dom'
-import { dataApiURL, Provider, store }   from '@acx-ui/store'
+import { healthApi }                   from '@acx-ui/analytics/services'
+import { pathToFilter }                from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlMutation,
@@ -14,6 +14,7 @@ import {
 } from '@acx-ui/test-utils'
 import { TimeStampRange }                                            from '@acx-ui/types'
 import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                      from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
