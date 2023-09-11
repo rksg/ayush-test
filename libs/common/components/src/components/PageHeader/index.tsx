@@ -35,7 +35,11 @@ function PageHeader (props: PageHeaderProps) {
 
   useLayoutEffect(() => {
     const top = parseInt(getComputedStyle(ref.current!).top, 10)
-    const height = ref.current!.getBoundingClientRect().height
+    let height = ref.current!.getBoundingClientRect().height
+    const tab = ref.current!.nextSibling as HTMLElement
+    if (tab && tab.classList.contains('ant-tabs-card')) {
+      height += 57 // second-tab height
+    }
     layout.setPageHeaderY(top + height)
   })
 

@@ -16,7 +16,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
       </button>
       <div
         class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 eEpEiI"
-        style="--sticky-offset: 0px;"
       >
         <div
           class="ant-tabs-nav"

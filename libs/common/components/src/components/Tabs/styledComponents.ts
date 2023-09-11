@@ -59,11 +59,12 @@ const firstStyle = css`
 const secondStyle = css`
   ${cardStyle}
   &.ant-tabs-top > .ant-tabs-nav {
+    // height: calc(57px - 16px);
     position: sticky;
-    top: var(--sticky-offset);
+    top: calc(var(--acx-pageheader-height) - 57px);
     background: var(--acx-primary-white);
     z-index: 5;
-    box-shadow: var(--acx-primary-white) 0px 10px 10px;
+    box-shadow: 0px 16px 0 var(--acx-primary-white);
   }
 `
 

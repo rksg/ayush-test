@@ -94,7 +94,6 @@ exports[`PageHeader should render page header with tabs 1`] = `
       >
         <div
           class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 loixgj"
-          style="--sticky-offset: 0px;"
         >
           <div
             class="ant-tabs-nav"

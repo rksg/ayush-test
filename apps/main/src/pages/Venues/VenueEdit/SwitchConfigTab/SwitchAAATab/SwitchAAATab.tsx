@@ -130,7 +130,7 @@ export function SwitchAAATab () {
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
     >
-      <AnchorLayout items={anchorItems} offsetTop={113} />
+      <AnchorLayout items={anchorItems} offsetTop={60} />
     </StepsFormLegacy>
   )
 }

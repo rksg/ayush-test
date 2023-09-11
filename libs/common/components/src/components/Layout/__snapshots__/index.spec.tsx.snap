@@ -4,7 +4,7 @@ exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
-    style="--acx-has-cloudmessagebanner: 0;"
+    style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -409,7 +409,7 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
-    style="--acx-has-cloudmessagebanner: 0;"
+    style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -569,7 +569,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
-    style="--acx-has-cloudmessagebanner: 0;"
+    style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -729,7 +729,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-iwostn-0 dcGmdd"
-    style="--acx-has-cloudmessagebanner: 0;"
+    style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"

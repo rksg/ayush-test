@@ -141,7 +141,7 @@ export function NetworkingTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={items} offsetTop={113} />
+        <AnchorLayout items={items} offsetTop={60} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

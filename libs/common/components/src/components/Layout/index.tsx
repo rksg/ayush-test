@@ -225,7 +225,8 @@ export function Layout ({
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
     style={{
-      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0'
+      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
+      '--acx-pageheader-height': pageHeaderY + 'px'
     } as React.CSSProperties}>
     <ProLayout
       breakpoint='xl'

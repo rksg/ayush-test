@@ -55,8 +55,8 @@ export const AnchorLayoutSidebar = styled(Col)<{ $offsetTop?: number }>`
     position: fixed;
     top: ${props => props.$offsetTop || 0}px !important;
   }
-  > div > :not(.ant-affix) > .ant-anchor-wrapper .ant-anchor-ink-ball {
-    top: 13.5px !important;
+  > div .ant-anchor-wrapper .ant-anchor-ink-ball {
+    top: 13.5px;
   }
 `
 
