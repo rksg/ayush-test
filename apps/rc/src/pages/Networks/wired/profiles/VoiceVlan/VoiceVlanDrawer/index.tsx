@@ -58,6 +58,10 @@ export function VoiceVlanDrawer (props: VoiceVlanDrawerProps) {
         })})
       const portList = Object.keys(portVlans).sort((a:string, b:string) => {
         if(a.split('/')[2] && b.split('/')[2]) {
+          const slotDiff = Number(a.split('/')[1]) - Number(b.split('/')[1])
+          if(slotDiff !== 0) {
+            return slotDiff
+          }
           return Number(a.split('/')[2]) - Number(b.split('/')[2])
         }
         return 1
