@@ -242,12 +242,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const setDrawerVisible = (status: boolean) => {
     if (status) {
-      setVisible(status)
       lockScroll()
     } else {
-      setVisible(status)
       unlockScroll()
     }
+    setVisible(status)
   }
 
   useEffect(() => {

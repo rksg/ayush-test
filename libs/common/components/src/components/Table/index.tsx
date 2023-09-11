@@ -82,8 +82,7 @@ export interface TableProps <RecordType>
     filterableWidth?: number,
     searchableWidth?: number,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
-    getAllPagesData?: () => RecordType[],
-    fixed?: string
+    getAllPagesData?: () => RecordType[]
   }
 
 export interface TableHighlightFnArgs {

@@ -243,12 +243,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const setDrawerVisible = (status: boolean) => {
     if (status) {
-      setVisible(status)
       lockScroll()
     } else {
-      setVisible(status)
       unlockScroll()
     }
+    setVisible(status)
   }
 
   useEffect(() => {

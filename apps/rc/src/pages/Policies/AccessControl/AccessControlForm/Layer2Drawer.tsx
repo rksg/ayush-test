@@ -156,12 +156,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const setDrawerVisible = (status: boolean) => {
     if (status) {
-      setVisible(status)
       lockScroll()
     } else {
-      setVisible(status)
       unlockScroll()
     }
+    setVisible(status)
   }
 
 

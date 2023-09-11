@@ -61,7 +61,9 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     defaultPayload: {
       ...defaultClientPayload,
       filters: {
-        clientMac: devicesData && devicesData?.map(device => device.mac).length > 0
+        clientMac: devicesData && devicesData?.filter(device =>
+          device.deviceConnectivity === 'CONNECTED'
+        ).length > 0
           ? devicesData?.filter(device => device.deviceConnectivity === 'CONNECTED')
             .map(device => device.mac)
           : []
