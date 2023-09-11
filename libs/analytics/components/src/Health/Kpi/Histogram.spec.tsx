@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { act }   from 'react-dom/test-utils'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
-import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -13,7 +12,8 @@ import {
   cleanup,
   waitFor
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
 import Histogram from './Histogram'
 

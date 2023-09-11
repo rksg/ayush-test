@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -11,9 +10,10 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import type { DonutChartData } from '@acx-ui/components'
-import { formatter }           from '@acx-ui/formatter'
-import { useNavigateToPath }   from '@acx-ui/react-router-dom'
+import type { DonutChartData }  from '@acx-ui/components'
+import { formatter }            from '@acx-ui/formatter'
+import { useNavigateToPath }    from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopSSIDsByNetworkQuery } from './services'
 
