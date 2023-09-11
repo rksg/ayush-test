@@ -23,11 +23,7 @@ jest.mock('@acx-ui/msp/components', () => ({
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
-}))
-
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' }),
   isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
