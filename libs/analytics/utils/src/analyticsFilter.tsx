@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { get }          from '@acx-ui/config'
 import { useLocation }  from '@acx-ui/react-router-dom'
 import {
-  DateFilter,
+  AnalyticsFilter,
   NodeType,
   NodeFilter,
   NodesFilter,
@@ -14,7 +14,6 @@ import {
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
-export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {

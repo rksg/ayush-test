@@ -1,13 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
+import { sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   Stages,

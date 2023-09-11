@@ -1,9 +1,9 @@
 import { range, uniqueId } from 'lodash'
 
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {  mockImpactedClient }  from './__tests__/fixtures'
 import { ImpactedClientsTable } from './impactedClientTable'
