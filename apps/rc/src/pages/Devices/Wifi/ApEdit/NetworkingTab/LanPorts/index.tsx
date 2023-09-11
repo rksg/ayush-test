@@ -12,6 +12,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
@@ -33,7 +34,6 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext } from '../..'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export function LanPorts () {
   const { $t } = useIntl()

@@ -5,6 +5,7 @@ import { isEqual }                              from 'lodash'
 import { useIntl }                              from 'react-intl'
 
 import { Loader, Tabs }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -22,7 +23,6 @@ import {
 
 import DefaultApModelDiagram from '../../../../../../assets/images/aps/ap-model-placeholder.png'
 import { VenueEditContext }  from '../../../index'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const { useWatch } = Form
