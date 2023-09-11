@@ -114,10 +114,10 @@ describe('RecommendationTabContent', () => {
   })
 
   it('should render aiops table for RA', async () => {
-    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
-    })
+    const recommendations = [...recommendationListResult.recommendations
+      .filter(r => !r.code.includes('crrm'))]
+    recommendations[1].status = 'applywarning' // coverage for Status styled-component
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
     mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
