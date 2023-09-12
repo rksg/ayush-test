@@ -358,6 +358,6 @@ export const EditPropertyConfigMessages = {
   /* eslint-disable max-len */
   DISABLE_PROPERTY_MESSAGE: defineMessage({ defaultMessage: 'This will delete all related configurations and currently connected clients will lose their connectivity to networking services.' }),
   ENABLE_PROPERTY_TOOLTIP: defineMessage({ defaultMessage: 'Switching property management OFF will delete the entire related configuration and will cause clients to lose their networking service.' }),
-  BIND_PERSONA_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the persona group is not allowed.' })
+  BIND_IDENTITY_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the identity group is not allowed.' })
   /* eslint-enable */
 }

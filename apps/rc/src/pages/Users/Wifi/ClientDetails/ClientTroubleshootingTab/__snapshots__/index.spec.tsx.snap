@@ -304,7 +304,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
                       >
                         Connection Events
                       </span>
@@ -314,7 +314,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
                       >
                         0
                       </span>
@@ -334,7 +334,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
                       >
                         Roaming
                       </span>
@@ -344,7 +344,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
                       >
                         0
                       </span>
@@ -364,7 +364,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
                       >
                         Connection Quality
                       </span>
@@ -388,7 +388,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
                       >
                         Network Incidents
                       </span>
@@ -398,7 +398,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
                       >
                         0
                       </span>
@@ -1033,7 +1033,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
             class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
           >
             <span
-              class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
+              class="styledComponents__HistoryContentTitle-sc-hmshlr-3 hWeTZJ"
             >
               History
             </span>
