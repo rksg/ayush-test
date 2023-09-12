@@ -44,7 +44,7 @@ export function LanPortSettings (props: {
   selectedModelCaps: ApModel | CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
-  isTrunkPortUntagedVlanEnabled?: boolean
+  isTrunkPortUntagedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
 }) {
@@ -182,7 +182,7 @@ export function LanPortSettings (props: {
               index === idx ? {
                 ...lan,
                 untagId: value,
-                vlanMembers: isTrunkPort ? lan.vlanMembers : value?.toString()
+                vlanMembers: isTrunkPort ? lan?.vlanMembers : value?.toString()
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)
