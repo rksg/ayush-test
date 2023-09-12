@@ -22,7 +22,8 @@ import {
   mockedServiceId,
   mockedDpskPassphraseFormFields,
   mockedSingleDpskPassphrase,
-  mockedDpskPassphrase
+  mockedDpskPassphrase,
+  mockedDpskPassphraseList
 } from './__tests__/fixtures'
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -119,6 +120,54 @@ describe('DpskPassphraseDrawer', () => {
         numberOfPassphrases: 1,
         numberOfDevices: 1
       }))
+    })
+  })
+
+  it('should add passphrases with duplicated MAC', async () => {
+    const targetPassPhraseList = { ...mockedDpskPassphraseList }
+    const targetMac = targetPassPhraseList.data[1].mac
+    const saveFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        DpskUrls.addPassphrase.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({
+            requestId: '__REQUEST_ID__',
+            response: {}
+          }))
+        }
+      ),
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(targetPassPhraseList))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await populateValues({
+      ...mockedSingleDpskPassphrase,
+      mac: targetMac
+    })
+
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+
+    expect(await screen.findByText('Replace Passphrase For MAC Address?')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: /Replace Passphrase/ }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(expect.objectContaining({ override: true }))
     })
   })
 
