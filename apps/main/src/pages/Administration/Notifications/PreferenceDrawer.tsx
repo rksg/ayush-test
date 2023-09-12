@@ -71,9 +71,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
       {$t({ defaultMessage: 'Aggregations' })}
     </Subtitle>
 
-    <Form.Item
-      name='aggregation'
-    >
+    <Form.Item>
       <SpaceWrapper full justifycontent='flex-start'>
         <Checkbox
           onChange={handleAggregationsChange}
@@ -84,7 +82,6 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
       </SpaceWrapper>
     </Form.Item>
     {mspAggregationChecked && <Form.Item
-      name='ecExclusionEnabled'
       noStyle
       valuePropName='checked'>
       <Switch
