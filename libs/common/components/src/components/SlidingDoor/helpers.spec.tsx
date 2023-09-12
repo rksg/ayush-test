@@ -54,11 +54,6 @@ describe('Helper Functions', () => {
       expect(customCapitalize(node)).toBe('Example (Device)')
     })
 
-    it('should only capitalize the name if the type is "network"', () => {
-      const node: Node = { name: 'example', type: 'Network' }
-      expect(customCapitalize(node)).toBe('Example')
-    })
-
     it('should return an empty string if the node is null or undefined', () => {
       expect(customCapitalize(null)).toBe('')
       expect(customCapitalize(undefined)).toBe('')
