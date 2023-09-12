@@ -114,6 +114,11 @@ describe('ActionModal', () => {
         const pattern = new RegExp(mockErrorDetails.message, 'i')
         expect(await screen.findByText(pattern)).toBeVisible()
         expect(collapseBtn).toHaveAttribute('aria-expanded', 'true')
+
+        await assertButtonClicked({
+          label: 'OK',
+          shouldClose: true
+        })
       })
 
       it('should copy details content', async () => {
@@ -123,6 +128,11 @@ describe('ActionModal', () => {
         const copyBtn = await screen.findByRole('button', { name: 'Copy to clipboard' })
         fireEvent.click(copyBtn)
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith(detailsContent)
+
+        await assertButtonClicked({
+          label: 'OK',
+          shouldClose: true
+        })
       })
     })
   })

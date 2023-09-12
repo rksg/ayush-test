@@ -17,8 +17,8 @@ import {
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  PersonaDetailsLink,
-  PersonaGroupLink, PropertyUnitLink,
+  IdentityDetailsLink,
+  IdentityGroupLink, PropertyUnitLink,
   VenueLink
 } from './index'
 
@@ -49,9 +49,9 @@ describe('Common Link Helper', () => {
     )
   })
 
-  it('should render PersonaGroupLink correctly', async () => {
+  it('should render IdentityGroupLink correctly', async () => {
     render(
-      <PersonaGroupLink
+      <IdentityGroupLink
         personaGroupId={'group-id'}
         name={'group-name'}
       />,
@@ -62,13 +62,13 @@ describe('Common Link Helper', () => {
     expect(link).toBeVisible()
     expect(link).toHaveAttribute(
       'href',
-      `${tenantPrefix}/users/persona-management/persona-group/group-id`
+      `${tenantPrefix}/users/identity-management/identity-group/group-id`
     )
   })
 
   it('should render PersonaDetailLink correctly', async () => {
     render(
-      <PersonaDetailsLink
+      <IdentityDetailsLink
         personaGroupId={'group-id'}
         personaId={'persona-id'}
         name={'persona-name'}
@@ -80,7 +80,7 @@ describe('Common Link Helper', () => {
     expect(link).toBeVisible()
     expect(link).toHaveAttribute(
       'href',
-      `${tenantPrefix}/users/persona-management/persona-group/group-id/persona/persona-id`
+      `${tenantPrefix}/users/identity-management/identity-group/group-id/identity/persona-id`
     )
   })
 

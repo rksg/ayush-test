@@ -747,17 +747,21 @@ export function ManageIntegrator () {
               <Form.Item
                 name='number_of_days'
                 initialValue={'7'}
-                rules={[{ validator: (_, value) =>
-                {
-                  if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
-                    return Promise.reject(
-                      `${intl.$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
-                    )
+                rules={[
+                  { required: !unlimitSelected,
+                    message: intl.$t({ defaultMessage: 'Please enter number of days' })
+                  },
+                  { validator: (_, value) =>
+                  {
+                    if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+                      return Promise.reject(
+                        `${intl.$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
+                      )
+                    }
+                    return Promise.resolve()
                   }
-                  return Promise.resolve()
-                }
-                }]}
-                children={<Input disabled={unlimitSelected} type='number'/>}
+                  }]}
+                children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
               <label>Day(s)</label>

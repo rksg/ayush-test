@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { Loader, Carousel } from '@acx-ui/components'
+import { Loader, Carousel }     from '@acx-ui/components'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { getFactsData } from './facts'
 import {
