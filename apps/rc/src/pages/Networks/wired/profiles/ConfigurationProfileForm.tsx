@@ -201,6 +201,13 @@ export function ConfigurationProfileForm () {
         data.trustedPorts = []
       }
     }
+    if(data.vlans) {
+      data.vlans.forEach((vlan:Partial<Vlan>) => {
+        vlan.switchFamilyModels?.forEach((model) => {
+          delete model.voicePorts
+        })
+      })
+    }
     if(data.voiceVlanOptions) {
       delete data.voiceVlanOptions
     }

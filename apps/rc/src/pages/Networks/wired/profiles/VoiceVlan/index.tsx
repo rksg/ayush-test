@@ -39,7 +39,7 @@ export function VoiceVlan () {
         {
           config.voiceVlans
             .sort((a, b) => Number(a.vlanId) - Number(b.vlanId))
-            .map(vlan => <div>
+            .map(vlan => <div key={vlan.vlanId}>
               {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
               <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
             </div>)
@@ -61,7 +61,7 @@ export function VoiceVlan () {
         <Col span={10}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'Voice VLAN' })} />
           {
-            voiceVlanConfigs.map((item:VoiceVlanConfig) => <div key={item.model}>
+            voiceVlanConfigs.map((item:VoiceVlanConfig) => <div>
               <StepsFormLegacy.SectionTitle style={{ width: '800px', margin: '25px 0 12px 0' }}>
                 {item.model}
               </StepsFormLegacy.SectionTitle>
