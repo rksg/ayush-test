@@ -266,6 +266,7 @@ export function IncidentTable ({ filters }: {
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
+          tooltip: $t({ defaultMessage: 'Export to CSV' }),
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}

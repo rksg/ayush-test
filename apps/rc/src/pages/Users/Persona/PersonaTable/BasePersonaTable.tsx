@@ -430,6 +430,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,
+          tooltip: $t({ defaultMessage: 'Export to CSV' }),
           onClick: downloadPersona
         }}
       />

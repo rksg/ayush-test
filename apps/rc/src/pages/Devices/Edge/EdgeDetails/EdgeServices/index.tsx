@@ -191,9 +191,12 @@ export const EdgeServices = () => {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
         iconButton={
-          (exportDevice && false) ?
-            { icon: <DownloadOutlined />, disabled, onClick: exportCsv } :
-            undefined
+          (exportDevice && false) ? {
+            icon: <DownloadOutlined />,
+            disabled,
+            onClick: exportCsv,
+            tooltip: $t({ defaultMessage: 'Export to CSV' })
+          } : undefined
         }
       />
       <ServiceDetailDrawer

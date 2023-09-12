@@ -520,8 +520,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         }
       }
       ] : [])}
-      // eslint-disable-next-line max-len
-      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+      iconButton={exportDevice ? {
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t({ defaultMessage: 'Export to CSV' }),
+        onClick: exportCsv
+      } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}

@@ -261,8 +261,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
-        // eslint-disable-next-line max-len
-        iconButton={(exportDevice && false) ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={(exportDevice && false) ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t({ defaultMessage: 'Export to CSV' }),
+          onClick: exportCsv
+        } : undefined}
         {...otherProps}
       />
     </Loader>

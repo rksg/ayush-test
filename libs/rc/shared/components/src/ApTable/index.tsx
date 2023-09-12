@@ -516,8 +516,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
-        // eslint-disable-next-line max-len
-        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          onClick: exportCsv,
+          tooltip: $t({ defaultMessage: 'Export to CSV' })
+        } : undefined
+        }
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.AP}

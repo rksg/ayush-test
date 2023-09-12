@@ -115,7 +115,12 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
+      iconButton={{
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t({ defaultMessage: 'Export to CSV' }),
+        onClick: exportCsv
+      }}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

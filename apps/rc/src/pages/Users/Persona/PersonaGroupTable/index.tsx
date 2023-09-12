@@ -343,6 +343,7 @@ export function PersonaGroupTable () {
         rowSelection={hasAccess() && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
+          tooltip: $t({ defaultMessage: 'Export to CSV' }),
           onClick: downloadPersonaGroups
         }}
       />

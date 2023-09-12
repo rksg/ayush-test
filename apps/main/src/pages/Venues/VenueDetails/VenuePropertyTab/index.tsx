@@ -545,6 +545,7 @@ export function VenuePropertyTab () {
         rowSelection={{ type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
+          tooltip: $t({ defaultMessage: 'Export to CSV' }),
           onClick: downloadUnit
         }}
       />
