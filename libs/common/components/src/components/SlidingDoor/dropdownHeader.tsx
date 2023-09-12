@@ -24,16 +24,16 @@ export const DropdownHeader: React.FC<DropdownHeaderProps> = ({
   currentNode,
   onBack,
   onBreadcrumbClick
-}) => (
-  <>
+}) => {
+  const { $t } = useIntl()
+  return <>
     <UI.ListHeader >
       {breadcrumb.length > 1 && !searchText && <UI.LeftArrow onClick={onBack}/>}
       <UI.LeftArrowText
         hasLeftArrow={!Boolean(breadcrumb.length > 1 && !searchText)}
         title={customCapitalize(currentNode)}>
         {searchText
-          ? // eslint-disable-next-line react-hooks/rules-of-hooks
-          useIntl().$t({ defaultMessage: 'Search Results' })
+          ? $t({ defaultMessage: 'Search Results' })
           : customCapitalize(currentNode)}
       </UI.LeftArrowText>
     </UI.ListHeader>
@@ -46,4 +46,4 @@ export const DropdownHeader: React.FC<DropdownHeaderProps> = ({
         ))}
     </UI.StyledBreadcrumb>
   </>
-)
+}
