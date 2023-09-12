@@ -27,7 +27,7 @@ export const DropdownHeader: React.FC<DropdownHeaderProps> = ({
 }) => {
   const { $t } = useIntl()
   return <>
-    <UI.ListHeader >
+    <UI.ListHeader>
       {breadcrumb.length > 1 && !searchText && <UI.LeftArrow onClick={onBack}/>}
       <UI.LeftArrowText
         hasLeftArrow={!Boolean(breadcrumb.length > 1 && !searchText)}
