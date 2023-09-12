@@ -23,7 +23,8 @@ import {
   MspEcProfile,
   MspPortal,
   ParentLogoUrl,
-  NewMspEntitlementSummary
+  NewMspEntitlementSummary,
+  MspAggregations
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -707,6 +708,40 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspAggregations: build.query<MspAggregations, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspAggregations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspAggregations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspAggregations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteMspAggregations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAggregations, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -763,5 +798,9 @@ export const {
   useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
   useUpdateMspAssignmentMutation,
-  useDeleteMspAssignmentMutation
+  useDeleteMspAssignmentMutation,
+  useGetMspAggregationsQuery,
+  useAddMspAggregationsMutation,
+  useUpdateMspAggregationsMutation,
+  useDeleteMspAggregationsMutation
 } = mspApi

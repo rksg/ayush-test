@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react'
+
 import { Checkbox, Form, Switch } from 'antd'
+import { CheckboxChangeEvent }    from 'antd/es/checkbox'
 import { useIntl }                from 'react-intl'
 import styled                     from 'styled-components'
 
-import { Drawer, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }     from '@acx-ui/rc/components'
+import { Drawer, Subtitle }                                             from '@acx-ui/components'
+import { useGetMspAggregationsQuery, useUpdateMspAggregationsMutation } from '@acx-ui/msp/services'
+import { SpaceWrapper }                                                 from '@acx-ui/rc/components'
 
 interface PreferenceDrawerProps {
   visible: boolean
@@ -19,10 +23,18 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible } = props
+  const [ mspAggregationChecked, setMspAggregationChecked ] = useState(false)
+  const [ ecExclusionChecked, setEcExclusionChecked ] = useState(false)
   const [form] = Form.useForm()
 
-  // const [updateNetworkFirmware] = useUpdateNetworkFirmwareMutation()
-  // const [updateAllCustomersNotifications] = useUpdateAllCustomersNotificationsMutation()
+  const { data: mspAggregations } = useGetMspAggregationsQuery({ })
+
+  const [updateMspAggregations] = useUpdateMspAggregationsMutation()
+
+  useEffect(() => {
+    setMspAggregationChecked(mspAggregations?.aggregation === true)
+    setEcExclusionChecked(mspAggregations?.ecExclusionEnabled === true)
+  }, [mspAggregations])
 
   const onClose = () => {
     setVisible(false)
@@ -30,14 +42,24 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   }
 
   const onSubmit = async () => {
-    // const networkFirware = form.getFieldValue('networkFirmware')
-    // const allNotifications = form.getFieldValue('allNotifications')
+    const payload = {
+      aggregation: mspAggregationChecked,
+      ecExclusionEnabled: ecExclusionChecked
+    }
     try {
       await form.validateFields()
+      updateMspAggregations({ payload })
+        .then(() => {
+          setVisible(false)
+        })
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const handleAggregationsChange = (e: CheckboxChangeEvent) => {
+    setMspAggregationChecked(e.target.checked)
   }
 
   const formContent = <Form layout='vertical'form={form} >
@@ -50,28 +72,25 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
     </Subtitle>
 
     <Form.Item
-      name='networkFirmware'
+      name='aggregation'
     >
       <SpaceWrapper full justifycontent='flex-start'>
         <Checkbox
-          // onChange={handleAccessSupportChange}
-          // checked={isSupportAccessEnabled}
-          // value={isSupportAccessEnabled}
+          onChange={handleAggregationsChange}
+          checked={mspAggregationChecked}
         >
           {$t({ defaultMessage: 'Network device firmware updates weekly (AP & Switch)' })}
         </Checkbox>
       </SpaceWrapper>
     </Form.Item>
-    <Form.Item
-      name='allNotifications'
+    {mspAggregationChecked && <Form.Item
+      name='ecExclusionEnabled'
       noStyle
       valuePropName='checked'>
       <Switch
         style={{ marginLeft: '20px', marginTop: '-5px' }}
-        // checked={enableBssColoring}
-        // onClick={(checked) => {
-        //   handleChanged(checked)
-        // }}
+        checked={ecExclusionChecked}
+        onClick={(checked) => { setEcExclusionChecked(checked) }}
       />
       <div><label>
         {$t({ defaultMessage: 'All customers do not receive this type of' })}
@@ -79,7 +98,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
       <div><label style={{ marginLeft: '57px' }}>
         {$t({ defaultMessage: 'notifications from RUCKUS One' })}
       </label></div>
-    </Form.Item>
+    </Form.Item>}
   </Form>
 
   return (
