@@ -203,16 +203,18 @@ export const checkPortEditStatus = (
   revert: boolean,
   taggedByVenue: string,
   untaggedByVenue: string,
+  voiceByVenue?: string,
   forceStatus?: string
 ) => {
   const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
   const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
+  const voiceVlan = form?.getFieldValue('voiceVlan') || portSetting?.voiceVlan
 
   if (forceStatus) {
     return forceStatus.toString()
-  } else if (!revert && (taggedVlans || untaggedVlan)) {
+  } else if (!revert && (taggedVlans || untaggedVlan || voiceVlan)) {
     return 'port'
-  } else if (revert && (taggedByVenue || untaggedByVenue)) {
+  } else if (revert && (taggedByVenue || untaggedByVenue || voiceByVenue)) {
     return 'venue'
   } else {
     return 'default'
@@ -316,22 +318,22 @@ export const getPortVenueVlans = (vlans:Vlan[], port: SwitchPortViewModel) => {
     voice: ''
   }
   vlans?.filter(v => v.switchFamilyModels)
-  .forEach((item: Vlan) => {
-    const requestPort = '1' + port.portIdentifier.slice(1)
-    const model = item?.switchFamilyModels?.find(i => i.model === port.switchModel) ?? false
-    if (model) {
-      const vlanId = item.vlanId.toString()
-      if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) {
-        portsProfileVlans.tagged = vlanId
+    .forEach((item: Vlan) => {
+      const requestPort = '1' + port.portIdentifier.slice(1)
+      const model = item?.switchFamilyModels?.find(i => i.model === port.switchModel) ?? false
+      if (model) {
+        const vlanId = item.vlanId.toString()
+        if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) {
+          portsProfileVlans.tagged = vlanId
+        }
+        if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
+          portsProfileVlans.untagged = vlanId
+        }
+        if (model.voicePorts && model.voicePorts.split(',').includes(requestPort)) {
+          portsProfileVlans.voice = vlanId
+        }
       }
-      if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
-        portsProfileVlans.untagged = vlanId
-      }
-      if (model.voicePorts && model.voicePorts.split(',').includes(requestPort)) {
-        portsProfileVlans.voice = vlanId
-      }
-    }
-  })
+    })
   return portsProfileVlans
 }
 
