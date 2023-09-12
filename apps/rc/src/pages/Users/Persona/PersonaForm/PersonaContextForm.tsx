@@ -26,7 +26,7 @@ export function PersonaContextForm (props: {
         params: { size: '2147483647', page: '0' },
         payload: { keyword: name }
       }, true).unwrap()).data.filter(p => p.id !== defaultValue?.id).map(p => ({ name: p.name }))
-      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona' }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity' }))
     } catch (e) {
       return Promise.resolve()
     }
@@ -47,7 +47,7 @@ export function PersonaContextForm (props: {
     >
       <Form.Item
         name='name'
-        label={$t({ defaultMessage: 'Persona Name' })}
+        label={$t({ defaultMessage: 'Identity Name' })}
         hasFeedback
         validateFirst
         validateTrigger={['onBlur']}
@@ -76,7 +76,7 @@ export function PersonaContextForm (props: {
       />
       <Form.Item
         name='groupId'
-        label={$t({ defaultMessage: 'Persona Group' })}
+        label={$t({ defaultMessage: 'Identity Group' })}
         rules={[
           { required: true }
         ]}
