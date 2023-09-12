@@ -70,7 +70,8 @@ import {
   PortVlan,
   MultipleText,
   getPoeClass,
-  updateSwitchVlans
+  updateSwitchVlans,
+  getPortVenueVlans
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -93,7 +94,8 @@ const allMultipleEditableFields = [
 
 interface ProfileVlans {
   tagged: string[],
-  untagged: string
+  untagged: string,
+  voice: string
 }
 
 export function EditPortDrawer ({
@@ -183,6 +185,7 @@ export function EditPortDrawer ({
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
   const [venueUntaggedVlan, setVenueUntaggedVlan] = useState('' as string)
+  const [venueVoiceVlan, setVenueVoiceVlan] = useState('' as string)
   const [isVoiceVlanInvalid, setIsVoiceVlanInvalid ] = useState(false)
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
@@ -305,7 +308,7 @@ export function EditPortDrawer ({
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
-        : await getSinglePortValue(portSpeed, defaultVlan)
+        : await getSinglePortValue(portSpeed, defaultVlan, vlansByVenue)
 
       setLoading(false)
     }
@@ -318,36 +321,28 @@ export function EditPortDrawer ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPorts, switchDetail, switchesDefaultVlan, visible])
 
-  const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
+  const getSinglePortValue = async (portSpeed: string[], defaultVlan: string, vlansByVenue: Vlan[]) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
       params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
       payload: [selectedPorts?.[0]?.portIdentifier]
     }, true).unwrap()
 
-    const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')
-    const params = {
-      tenantId, venueId: vid,
-      model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
-    }
-    const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
-    const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
-
-    const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
-    const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
+    const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
+    setVenueTaggedVlans(tagged)
+    setVenueUntaggedVlan(untagged)
+    setVenueVoiceVlan(voice)
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setUseVenueSettings(portSetting.revert)
     setLldpQosList(portSetting.lldpQos || [])
-    setVenueTaggedVlans(taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString())
-    setVenueUntaggedVlan(untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString())
+
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(checkPortEditStatus(form, portSetting, portSetting?.revert, tagged, untagged))
 
     form.setFieldsValue({
       ...portSetting,
-      voiceVlan: portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan,
       poeEnable: portSetting.poeCapability ? portSetting.poeEnable : false,
       poeBudget: portSetting.poeBudget === 0 ? '' : portSetting.poeBudget,
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
@@ -355,7 +350,9 @@ export function EditPortDrawer ({
       taggedVlans: (portSetting.revert ? tagged : (portSetting.taggedVlans || '')).toString(),
       untaggedVlan: portSetting.revert ? (untagged || defaultVlan) :
         (portSetting.untaggedVlan ? portSetting.untaggedVlan :
-          (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
+          (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
+      voiceVlan: (portSetting.revert ? voice 
+        : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
     })
     checkIsVoiceVlanInvalid()
   }
@@ -383,7 +380,8 @@ export function EditPortDrawer ({
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
-      ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || [])
+      ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
+      ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || []),
     ]))
     setInitPortVlans(vlansValue?.initPortVlans)
     setPortsProfileVlans(vlansValue?.portsProfileVlans as unknown as ProfileVlans)
@@ -394,7 +392,8 @@ export function EditPortDrawer ({
     form.setFieldsValue({
       ...portSetting,
       poeEnable: poeCapabilityDisabled ? false : portSetting?.poeEnable,
-      voiceVlan: portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan,
+      voiceVlan: !hasMultipleValueFields?.includes('voiceVlan') 
+      ? (portSetting?.voiceVlan || vlansValue.voice)?.toString() : '',
       taggedVlans: !hasMultipleValueFields?.includes('taggedVlans')
         ? (portSetting?.taggedVlans || vlansValue.tagged)?.toString() : '',
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
@@ -604,34 +603,34 @@ export function EditPortDrawer ({
   const onApplyVenueSettings = () => {
     setUseVenueSettings(true)
 
-    let untagged, tagged, status = 'venue'
+    let untagged, tagged, status = 'venue', voice
     const tagEqual = _.uniq(portsProfileVlans?.tagged).length === 1
     const untagEqual = _.uniq(portsProfileVlans?.untagged).length === 1
-
+    const voiceEqual = _.uniq(portsProfileVlans?.voice).length === 1
+    const equalFields =  [
+      ...((tagEqual && ['taggedVlans']) || []),
+      ...((untagEqual && ['untaggedVlan']) || []),
+      ...((voiceEqual && ['voiceVlan']) || []),
+    ]
     if (portVlansCheckbox) {
       untagged = profileDefaultVlan
       tagged = ''
-      const tmpMultipleValue = _.uniq([...hasMultipleValue, 'taggedVlans', 'untaggedVlan'])
-        .filter(v => v !== 'voiceVlan')
-      if (tagEqual && untagEqual) {
+      voice = ''
+      const tmpMultipleValue = _.uniq([...hasMultipleValue, 'taggedVlans', 'untaggedVlan', 'voiceVlan'])
+      setHasMultipleValue(_.xor(tmpMultipleValue, equalFields))
+      if (tagEqual && untagEqual && voiceEqual) {
         if (!portsProfileVlans.untagged?.[0] && !portsProfileVlans.tagged?.[0]) {
           status = 'default'
         }
         untagged = portsProfileVlans.untagged?.[0] || profileDefaultVlan
         tagged = portsProfileVlans.tagged?.[0]?.toString()
-        setHasMultipleValue(tmpMultipleValue.filter(v =>
-          (v !== 'taggedVlans' && v !== 'untaggedVlan')))
-      } else if (tagEqual && !untagEqual) {
-        setHasMultipleValue(tmpMultipleValue.filter(v => v !== 'taggedVlans'))
-      } else if (!tagEqual && untagEqual) {
-        setHasMultipleValue(tmpMultipleValue.filter(v => v !== 'untaggedVlan'))
-      } else {
-        setHasMultipleValue(tmpMultipleValue)
-      }
+        voice = portsProfileVlans.voice?.[0]
+      } 
     } else {
       const untaggedVlan = venueUntaggedVlan || profileDefaultVlan
       untagged = untaggedVlan
       tagged = venueTaggedVlans.toString()
+      voice = venueVoiceVlan
       if (Number(untaggedVlan) === Number(defaultVlan) && !venueTaggedVlans) {
         status = 'default' // Venue no setting, revert to default
       }
@@ -641,7 +640,7 @@ export function EditPortDrawer ({
       ...form.getFieldsValue(),
       taggedVlans: tagged,
       untaggedVlan: untagged,
-      voiceVlan: ''
+      voiceVlan: voice
     })
     setPortEditStatus(status)
     onValuesChange({ untaggedVlan: untagged, revert: true, status: status })

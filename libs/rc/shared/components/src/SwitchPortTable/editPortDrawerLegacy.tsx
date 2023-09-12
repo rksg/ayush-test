@@ -60,7 +60,7 @@ import {
   getAllSwitchVlans,
   getFormItemLayout,
   getInitPortVlans,
-  getMultipleVlanValue,
+  getMultipleVlanValueLegacy,
   getOverrideFields,
   getPoeCapabilityDisabled,
   getPortEditStatus,
@@ -361,7 +361,7 @@ export function EditPortDrawer ({
 
   const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
     const portsSetting = await getMultiplePortsSetting()
-    const vlansValue = getMultipleVlanValue(
+    const vlansValue = getMultipleVlanValueLegacy(
       selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
     )
     const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
