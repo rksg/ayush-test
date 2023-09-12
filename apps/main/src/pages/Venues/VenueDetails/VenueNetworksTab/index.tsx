@@ -264,7 +264,7 @@ export function VenueNetworksTab () {
           disabled = true
         } else if (row?.isOnBoarded) {
           disabled = true
-          title = $t({ defaultMessage: 'You cannot activate the Onboarded Network on this venue because it already enabled by Service Network.' })
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DSAE for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
         }else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
