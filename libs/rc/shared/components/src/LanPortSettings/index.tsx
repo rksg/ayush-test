@@ -44,7 +44,7 @@ export function LanPortSettings (props: {
   selectedModelCaps: ApModel | CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
-  isTrunkPortUntagedVlanEnabled?: boolean,
+  isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
 }) {
@@ -57,7 +57,7 @@ export function LanPortSettings (props: {
     selectedModelCaps,
     onGUIChanged,
     isDhcpEnabled,
-    isTrunkPortUntagedVlanEnabled,
+    isTrunkPortUntaggedVlanEnabled,
     readOnly,
     useVenueSettings
   } = props
@@ -172,12 +172,12 @@ export function LanPortSettings (props: {
         disabled={readOnly
           || isDhcpEnabled
           || !lan?.enabled
-          || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntagedVlanEnabled)
+          || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
           || lan?.vni > 0
         }
         onChange={(value) => {
           const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
-          if (!isTrunkPort || isTrunkPortUntagedVlanEnabled) {
+          if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
             const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
               index === idx ? {
                 ...lan,

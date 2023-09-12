@@ -126,7 +126,7 @@ describe('LanPortSettings', () => {
           selectedModel={selectedModel}
           setSelectedPortCaps={jest.fn()}
           selectedModelCaps={selectedModelCaps}
-          isTrunkPortUntagedVlanEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={true}
           useVenueSettings={false}
         />
       </Form>
@@ -153,7 +153,7 @@ describe('LanPortSettings', () => {
           setSelectedPortCaps={jest.fn()}
           selectedModelCaps={selectedModelCaps}
           isDhcpEnabled={true}
-          isTrunkPortUntagedVlanEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={true}
           useVenueSettings={false}
         />
       </Form>

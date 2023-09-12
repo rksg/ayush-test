@@ -282,7 +282,7 @@ export function LanPorts () {
                           setSelectedPortCaps={setSelectedPortCaps}
                           selectedModelCaps={selectedModelCaps}
                           isDhcpEnabled={isDhcpEnabled}
-                          isTrunkPortUntagedVlanEnabled={supportTrunkPortUntaggedVlan}
+                          isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
                         />
