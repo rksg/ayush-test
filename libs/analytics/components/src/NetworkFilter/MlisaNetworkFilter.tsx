@@ -1,3 +1,5 @@
+import { omit } from 'lodash'
+
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Loader }             from '@acx-ui/components'
 
@@ -12,7 +14,7 @@ type MlisaNetworkFilterProps = {
 export const MlisaNetworkFilter = ({ shouldQuerySwitch = true }: MlisaNetworkFilterProps) => {
   const { setNetworkPath, filters, path } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQuerySwitch: shouldQuerySwitch }
-  const networkHierarchyQuery = useNetworkHierarchyQuery(networkFilter)
+  const networkHierarchyQuery = useNetworkHierarchyQuery(omit(networkFilter, 'path', 'filter'))
   return (
     <div style={{ width: 250 }}>
       <Loader states={[networkHierarchyQuery]}>

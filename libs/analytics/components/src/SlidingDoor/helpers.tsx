@@ -4,7 +4,10 @@ import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
-  if (node?.name?.toLowerCase().includes(searchText.toLowerCase())) {
+  if (
+    node?.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+    node?.mac?.toLowerCase().includes(searchText.toLowerCase())
+  ) {
     results.push({ ...node, path: [...path, node] })
   }
   if (Array.isArray(node.children)) {

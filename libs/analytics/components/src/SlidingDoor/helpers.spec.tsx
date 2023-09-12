@@ -15,7 +15,8 @@ const rootNode: Node = {
     {
       id: '3',
       name: 'Child2',
-      type: 'Device'
+      type: 'Device',
+      mac: 'mac'
     }
   ]
 }
@@ -24,7 +25,9 @@ describe('Helper Functions', () => {
   describe('searchTree', () => {
     it('should return an array containing the nodes that match the search text', () => {
       const results = searchTree(rootNode, 'child')
+      const macResults = searchTree(rootNode, 'mac')
       expect(results.length).toBe(2)
+      expect(macResults.length).toBe(1)
     })
 
     it('should return an empty array if no node matches the search text', () => {
