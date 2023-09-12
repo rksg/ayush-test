@@ -19,11 +19,12 @@ export const findMatchingNode = (
   targetNode: Node | null | undefined,
   path: Node[] = []
 ): Node | null => {
-  if (targetNode && node.name === targetNode.name && node.type === targetNode.type) {
-    if(node.type !== 'ap' && node.type !== 'switch')
-      return { ...node, path: [...path, node] }
-    if(node.mac === targetNode.list?.[0] && (node.type === 'ap' || node.type === 'switch'))
-      return { ...node, path: [...path, node] }
+  if (!targetNode) return null
+  const isMatchingNode = node.name === targetNode.name && node.type === targetNode.type
+  const isApOrSwitchNode =
+    node.mac === targetNode.list?.[0] && (node.type === 'ap' || node.type === 'switch')
+  if (isMatchingNode && ((node.type !== 'ap' && node.type !== 'switch') || isApOrSwitchNode)) {
+    return { ...node, path: [...path, node] }
   }
   if (Array.isArray(node.children)) {
     for (const child of node.children) {
