@@ -23,8 +23,8 @@ import {
 
 import modifyVars from '../../theme/modify-vars'
 
-import { Content } from './Responsive/content'
-import * as UI     from './styledComponents'
+import { Content as ResponsiveContent } from './Responsive/content'
+import * as UI                          from './styledComponents'
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -121,7 +121,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       }
     }
 
-    const { uri, tenantType, activeIcon, inactiveIcon, ...rest } = item
+    const { uri, tenantType, activeIcon, inactiveIcon, adminItem, ...rest } = item
     delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
@@ -133,7 +133,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     </>
     const className = []
     if (Boolean(isActive)) className.push('menu-active')
-    if (Boolean(item.adminItem)) className.push('menu-admin-item')
+    if (Boolean(adminItem)) className.push('menu-admin-item')
     let label = content
     if (uri) {
       label = Boolean(item.openNewTab)
@@ -218,6 +218,8 @@ export function Layout ({
     }
   }, [window.innerWidth])
 
+  const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
+
   return <UI.Wrapper showScreen={display || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
@@ -242,9 +244,9 @@ export function Layout ({
       className={collapsed ? 'sider-collapsed' : ''}
     >
       <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
-        {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+        {(display || subOptimalDisplay) ? <Content>{content}</Content> :
           <UI.ResponsiveContent>
-            <Content setShowScreen={onSubOptimalDisplay} />
+            <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}
       </LayoutContext.Provider>
     </ProLayout>

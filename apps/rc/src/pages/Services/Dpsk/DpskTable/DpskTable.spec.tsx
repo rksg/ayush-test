@@ -144,7 +144,7 @@ describe('DpskTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should not delete the selected row when it is mapped to Persona or Network', async () => {
+  it('should not delete the selected row when it is mapped to Identity or Network', async () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -167,7 +167,7 @@ describe('DpskTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('You are unable to delete this record due to its usage in Persona,Network')).toBeVisible()
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {

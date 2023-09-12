@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import {
-  AnalyticsFilter,
   fakeIncident,
   IncidentCode,
   transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
-import { dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { dataApiURL, store }    from '@acx-ui/store'
+import { mockGraphqlQuery }     from '@acx-ui/test-utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 import {
   DateRange,
   setUpIntl,

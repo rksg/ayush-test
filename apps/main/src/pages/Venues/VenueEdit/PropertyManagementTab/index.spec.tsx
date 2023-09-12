@@ -148,8 +148,8 @@ describe('Property Config Tab', () => {
     const enableSwitch = await screen.findByTestId('property-enable-switch')
     expect(enableSwitch).toHaveAttribute('aria-checked', 'false')
 
-    // other fields should not render(e.g., Persona Group)
-    const otherFields = screen.queryByText('Persona Group')
+    // other fields should not render(e.g., Identity Group)
+    const otherFields = screen.queryByText('Identity Group')
     expect(otherFields).toBeNull()
 
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
@@ -175,11 +175,11 @@ describe('Property Config Tab', () => {
     await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
     // check rending other fields
-    await screen.findByText('Persona Group')
+    await screen.findByText('Identity Group')
 
     // Open addPersonaGroup drawer and close drawer.
-    const addPersonaGroupButton = await screen.findByRole('button', { name: 'Add Persona Group' })
-    await userEvent.click(addPersonaGroupButton)
+    const addIdentityGroupButton = await screen.findByRole('button', { name: 'Add Identity Group' })
+    await userEvent.click(addIdentityGroupButton)
 
     const personaGroupDrawer = await screen.findByRole('dialog')
     const cancelBtn = await within(personaGroupDrawer).findByRole('button', { name: /cancel/i })

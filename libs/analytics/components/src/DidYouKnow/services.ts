@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment'
 
-import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }                           from '@acx-ui/store'
+import { getFilterPayload }     from '@acx-ui/analytics/utils'
+import { dataApi }              from '@acx-ui/store'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { DidYouKnowData } from './facts'
 
