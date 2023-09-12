@@ -206,13 +206,67 @@ export const codes = {
       deltaSign: '-'
     }]
   },
-  'c-bgscan-3rd-radio-timer': {
+  'c-bgscan-lower5g-timer': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Background scan timer on 6(5) GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Background scan timer on Lower 5 GHz radio' }),
     priority: priorities.low,
     valueFormatter: formatter('durationFormat'),
-    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6(5) GHz radio)' }),
-    actionText: defineMessage({ defaultMessage: '6(5) GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (Lower 5 GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: 'Lower 5 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
+    kpis: [{
+      key: 'avg-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-bgscan-upper5g-timer': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Background scan timer on Upper 5 GHz radio' }),
+    priority: priorities.low,
+    valueFormatter: formatter('durationFormat'),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (Upper 5 GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: 'Upper 5 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
+    kpis: [{
+      key: 'avg-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-bgscan-6g-timer': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Background scan timer on 6 GHz radio' }),
+    priority: priorities.low,
+    valueFormatter: formatter('durationFormat'),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6 GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: '6 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
     reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{
@@ -250,7 +304,83 @@ export const codes = {
       deltaSign: '-'
     }]
   },
+  'c-dfschannels-lower5g-enable': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Enable DFS channels' }),
+    priority: priorities.medium,
+    valueFormatter: formatter('enabledFormat'),
+    valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
+    actionText: defineMessage({ defaultMessage: '{scope} does not have DFS channels enabled, it is recommended to enable DFS Channels for radio Lower 5 GHz.' }),
+    reasonText: defineMessage({ defaultMessage: 'Enabling DFS channels will give better channel availability to the AP and enable AP to pick the best available channel. This shall help in reducing co-channel interference and help in improving user experience and throughput for Lower 5 GHz Wi-Fi connections.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'DFS channels share the spectrum with weather radar and other radar systems. RUCKUS APs have the capability to detect if there is a conflict and automatically move away from the channel if there is a conflict. This move may not be observable to most Wi-Fi end users. However, for users engaged in a live audio/video call or other real-time and low-latency applications, this move may cause temporary disruptions.' }),
+    kpis: [{
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-dfschannels-upper5g-enable': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Enable DFS channels' }),
+    priority: priorities.medium,
+    valueFormatter: formatter('enabledFormat'),
+    valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
+    actionText: defineMessage({ defaultMessage: '{scope} does not have DFS channels enabled, it is recommended to enable DFS Channels for radio Upper 5 GHz.' }),
+    reasonText: defineMessage({ defaultMessage: 'Enabling DFS channels will give better channel availability to the AP and enable AP to pick the best available channel. This shall help in reducing co-channel interference and help in improving user experience and throughput for Upper 5 GHz Wi-Fi connections.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'DFS channels share the spectrum with weather radar and other radar systems. RUCKUS APs have the capability to detect if there is a conflict and automatically move away from the channel if there is a conflict. This move may not be observable to most Wi-Fi end users. However, for users engaged in a live audio/video call or other real-time and low-latency applications, this move may cause temporary disruptions.' }),
+    kpis: [{
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
   'c-dfschannels-disable': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Disable DFS channels' }),
+    priority: priorities.low,
+    valueFormatter: formatter('enabledFormat'),
+    valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
+    actionText: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this zone.' }),
+    reasonText: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Disabling DFS Channels will reduce number of available channels for the AP. In a deployment, if there are less available channels and more APs, AP may pick overlapping channels and may cause channel interference and hence inferior user experience.' }),
+    kpis: [{
+      key: 'avg-dfs-event-count',
+      label: defineMessage({ defaultMessage: 'Average DFS Events' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-dfs-event-count',
+      label: defineMessage({ defaultMessage: 'Max DFS Events' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-dfschannels-lower5g-disable': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Disable DFS channels' }),
+    priority: priorities.low,
+    valueFormatter: formatter('enabledFormat'),
+    valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
+    actionText: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this zone.' }),
+    reasonText: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Disabling DFS Channels will reduce number of available channels for the AP. In a deployment, if there are less available channels and more APs, AP may pick overlapping channels and may cause channel interference and hence inferior user experience.' }),
+    kpis: [{
+      key: 'avg-dfs-event-count',
+      label: defineMessage({ defaultMessage: 'Average DFS Events' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-dfs-event-count',
+      label: defineMessage({ defaultMessage: 'Max DFS Events' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-dfschannels-upper5g-disable': {
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Disable DFS channels' }),
     priority: priorities.low,
