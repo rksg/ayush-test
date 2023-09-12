@@ -20,7 +20,10 @@ export const findMatchingNode = (
   path: Node[] = []
 ): Node | null => {
   if (targetNode && node.name === targetNode.name && node.type === targetNode.type) {
-    return { ...node, path: [...path, node] }
+    if(node.type !== 'ap' && node.type !== 'switch')
+      return { ...node, path: [...path, node] }
+    if(node.mac === targetNode.list?.[0] && (node.type === 'ap' || node.type === 'switch'))
+      return { ...node, path: [...path, node] }
   }
   if (Array.isArray(node.children)) {
     for (const child of node.children) {

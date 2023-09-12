@@ -46,6 +46,36 @@ describe('Helper Functions', () => {
       const result = findMatchingNode(rootNode, targetNode)
       expect(result).toBeNull()
     })
+
+    it('should find a matching node based on name, type & mac address', () => {
+      const mock: Node = {
+        id: '1',
+        name: 'Root',
+        type: 'Network',
+        children: [
+          {
+            id: '3',
+            name: 'ap',
+            type: 'ap',
+            mac: '1'
+          },
+          {
+            id: '3',
+            name: 'switch',
+            type: 'switch',
+            mac: '2'
+          }
+        ]
+      }
+      const targetNode1 = { name: 'switch', type: 'switch', list: ['2'] }
+      const targetNode2 = { name: 'ap', type: 'ap',list: ['1'] }
+      const result1 = findMatchingNode(mock, targetNode1)
+      expect(result1?.name).toBe('switch')
+      expect(result1?.type).toBe('switch')
+      const result2 = findMatchingNode(mock, targetNode2)
+      expect(result2?.name).toBe('ap')
+      expect(result2?.type).toBe('ap')
+    })
   })
 
   describe('customCapitalize', () => {

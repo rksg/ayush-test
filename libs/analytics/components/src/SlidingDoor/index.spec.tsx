@@ -77,7 +77,52 @@ describe('SlidingDoor', () => {
       [{ name: 'network', type: 'network' }]
     )
   })
-
+  it('should call onApply correctly for ap', async () => {
+    const mock: Node = {
+      id: '1',
+      name: 'network',
+      type: 'network',
+      children: [
+        { id: '2', name: 'ap', type: 'ap', mac: '1' },
+        { id: '3', name: 'switch', type: 'switch', mac: '2' }
+      ]
+    }
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mock} setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Ap (ap)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    expect(mockSetNetworkPath).toBeCalledWith(
+      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
+      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }]
+    )
+  })
+  it('should call onApply correctly for switch', async () => {
+    const mock: Node = {
+      id: '1',
+      name: 'network',
+      type: 'network',
+      children: [
+        { id: '2', name: 'ap', type: 'ap', mac: '1' },
+        { id: '3', name: 'switch', type: 'switch', mac: '2' }
+      ]
+    }
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mock} setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Switch (switch)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    expect(mockSetNetworkPath).toBeCalledWith(
+      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
+      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }]
+    )
+  })
   it('should search nodes correctly', async () => {
     render(
       <IntlProvider locale='en'>

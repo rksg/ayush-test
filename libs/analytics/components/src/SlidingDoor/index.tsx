@@ -15,6 +15,7 @@ export interface Node {
   mac?: string;
   children?: Node[];
   path?: Node[];
+  list?: string[]
 }
 
 interface SlidingDoorProps {
@@ -73,7 +74,19 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const onApply = () => {
     setVisible(false)
     setInputValue(breadcrumb.map((node) => node.name).join(' / '))
-    const selectedNodePath = breadcrumb.map((node) => ({ name: node.name, type: node.type }))
+    const selectedNodePath = breadcrumb.map((node) => {
+      const nodeInfo = {
+        name: node.name,
+        type: node.type
+      }
+      const apOrSwitchInfo = node.type === 'ap' || node.type === 'switch'
+        ? { list: [node?.mac] }
+        : {}
+      return {
+        ...nodeInfo,
+        ...apOrSwitchInfo
+      }
+    })
     setNetworkPath(selectedNodePath, selectedNodePath)
   }
   const onClose = () => {
