@@ -27,11 +27,10 @@ import {
   switchRoutedList,
   switchVlans,
   switchVlanUnion,
-  taggedVlansByVenue,
   portSetting,
   portsSetting,
-  untaggedVlansByVenue,
-  vlansByVenue
+  vlansByVenue,
+  singleVlansByVenue
 } from './__tests__/fixtures'
 import { EditPortDrawer } from './editPortDrawer'
 
@@ -50,6 +49,7 @@ const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
   await screen.findByText('Select Port VLANs')
 
   if (inputTagged) {
+    fireEvent.click(await screen.findByRole('tab', { name: 'Tagged VLANs' }))
     const taggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
     const taggedInput = await within(taggedTabPanel).findByTestId('tagged-input')
     fireEvent.change(taggedInput, { target: { value: inputTagged } })
@@ -318,8 +318,8 @@ describe('EditPortDrawer', () => {
             revert: true
           }))
         ),
-        rest.post(SwitchUrlsInfo.getUntaggedVlansByVenue.url,
-          (_, res, ctx) => res(ctx.json(untaggedVlansByVenue))
+        rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+          (_, res, ctx) => res(ctx.json(singleVlansByVenue))
         )
       )
       render(<Provider>
@@ -327,9 +327,9 @@ describe('EditPortDrawer', () => {
           visible={true}
           setDrawerVisible={jest.fn()}
           isCloudPort={false}
-          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isMultipleEdit={selectedPorts?.slice(1, 2)?.length > 1}
           isVenueLevel={false}
-          selectedPorts={selectedPorts?.slice(0, 1)}
+          selectedPorts={selectedPorts?.slice(1,2)}
         />
       </Provider>, {
         route: {
@@ -355,8 +355,8 @@ describe('EditPortDrawer', () => {
             revert: true
           }))
         ),
-        rest.post(SwitchUrlsInfo.getTaggedVlansByVenue.url,
-          (_, res, ctx) => res(ctx.json(taggedVlansByVenue))
+        rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+          (_, res, ctx) => res(ctx.json(singleVlansByVenue))
         )
       )
       render(<Provider>
@@ -364,9 +364,9 @@ describe('EditPortDrawer', () => {
           visible={true}
           setDrawerVisible={jest.fn()}
           isCloudPort={false}
-          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isMultipleEdit={selectedPorts?.slice(1, 2)?.length > 1}
           isVenueLevel={false}
-          selectedPorts={selectedPorts?.slice(0, 1)}
+          selectedPorts={selectedPorts?.slice(1, 2)}
         />
       </Provider>, {
         route: {
