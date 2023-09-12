@@ -334,7 +334,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   networkActivations: {
     method: 'post',
-    url: '/networkActivations/query'
+    url: '/networkActivations/query',
+    newApi: true
   },
   getNetworkDeepList: {
     // [New API] request not support list
