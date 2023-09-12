@@ -130,7 +130,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '190px' }}>
+        {hasSsoConfigured && <Col style={{ width: '190px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <Form.Item
               colon={false}

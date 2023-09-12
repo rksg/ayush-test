@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import * as router from 'react-router-dom'
 
-import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }      from '@acx-ui/utils'
 
 import { AnalyticsTabs } from '.'
 
