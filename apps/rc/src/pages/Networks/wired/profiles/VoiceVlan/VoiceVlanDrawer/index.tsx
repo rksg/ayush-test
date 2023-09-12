@@ -211,13 +211,15 @@ export function VoiceVlanDrawer (props: VoiceVlanDrawerProps) {
           </>
         }
       />
-      <VoiceVlanModal
-        visible={voiceVlanModalVisible}
-        handleCancel={() => setVoiceVlanModalVisible(false)}
-        editPorts={editPorts}
-        tableData={tableData}
-        setTableData={setTableData}
-      />
+      {
+        voiceVlanModalVisible && <VoiceVlanModal
+          visible={voiceVlanModalVisible}
+          handleCancel={() => setVoiceVlanModalVisible(false)}
+          editPorts={editPorts}
+          tableData={tableData}
+          setTableData={setTableData}
+        />
+      }
     </>
   )
 }
