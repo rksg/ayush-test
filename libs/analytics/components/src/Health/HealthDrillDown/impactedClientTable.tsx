@@ -80,10 +80,8 @@ export const ImpactedClientsTable = ({
       render: (_, { mac, hostname }) => {
         const macAddress = mac?.[0]?.toLocaleLowerCase()
         let queryParams = ''
-        if (hostname) {
-          const formattedHostname = Array.isArray(hostname) ? hostname.join(', ') : hostname
-          queryParams = `?hostname=${formattedHostname}`
-        }
+        const formattedHostname = (hostname as string[]).join(', ')
+        queryParams = `?hostname=${formattedHostname}`
         const link = `users/wifi/clients/${macAddress}/details/overview${queryParams}`
         return (
           <TenantLink to={link}>
