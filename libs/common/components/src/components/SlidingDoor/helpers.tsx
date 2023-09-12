@@ -1,3 +1,5 @@
+import { getIntl } from '@acx-ui/utils'
+
 import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
@@ -30,19 +32,14 @@ export const findMatchingNode = (
   }
   return null
 }
-export const customCapitalize = (node?: Node | null ) => {
-
-
+export const customCapitalize = (node?: Node | null) => {
   if (!node) return ''
-
   let { type, name } = node
-  if (name.toLowerCase() === 'network') {
-    name = 'Entire Organization'
-  }
-  if (type && type.toLowerCase() !== 'network') {
-    return capitalizeFirstLetter(`${name} (${type})`)
+  if (type === 'network') {
+    const { $t } = getIntl()
+    return $t({ defaultMessage: 'Entire Organization' })
   } else {
-    return capitalizeFirstLetter(name)
+    return capitalizeFirstLetter(`${name} (${type})`)
   }
 }
 const capitalizeFirstLetter = (str : string) => {
