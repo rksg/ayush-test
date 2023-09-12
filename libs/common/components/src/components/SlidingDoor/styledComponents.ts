@@ -79,7 +79,9 @@ export const ListItemSpan = styled.span`
 export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
   padding-left: 20px;
   padding-right: 16px;
-  background-color:  ${(props) => props.isSelected ? 'var(--acx-accents-orange-20)' : 'white'};
+  background-color:  ${(props) => props.isSelected
+    ? 'var(--acx-accents-orange-20)'
+    : 'var(--acx-primary-white)'};
   &:hover {
     cursor: pointer;
     background-color: var(--acx-accents-orange-10);
