@@ -387,6 +387,13 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
+    if (item?.dsaeOnboardNetwork) {
+      item = { ...item,
+        ...{ children: [{ ...item?.dsaeOnboardNetwork,
+          isOnBoarded: true,
+          activated: calculateNetworkActivated(networkApGroup) } as Network] }
+      }
+    }
     if (networkApGroup) {
       data.push({
         ...item,
