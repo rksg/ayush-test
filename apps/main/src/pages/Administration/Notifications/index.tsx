@@ -201,10 +201,6 @@ const Notifications = () => {
     useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
   const [showPreference, setShowPreference] = useState(false)
 
-  // const handleClickPreference = () => {
-  //   setShowPreference(true)
-  // }
-
   return <UI.Wrapper>
     <Row>
       <Col span={24} className='description'>
