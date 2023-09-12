@@ -7,6 +7,7 @@ import _                                                                from 'lo
 import moment                                                           from 'moment-timezone'
 import { useIntl }                                                      from 'react-intl'
 
+import { Subtitle }               from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AVAILABLE_SLOTS,
@@ -261,10 +262,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
               </Space>
             </Radio.Group>}
-            {enableSwitchTwoVersionUpgrade && <Typography>
+            {enableSwitchTwoVersionUpgrade && <Subtitle level={4}>
               { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX-8200 Series' }) } ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-            </Typography>}
+                $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+            </Subtitle>}
             {enableSwitchTwoVersionUpgrade && <Radio.Group
               style={{ margin: 12 }}
               onChange={handleChangeForVersionAboveTen}
@@ -279,10 +280,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               </Space>
             </Radio.Group>}
             {enableSwitchTwoVersionUpgrade && <UI.Section>
-              <Typography>
+              <Subtitle level={4}>
                 { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series Models' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
-              </Typography>
+                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+              </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
                 onChange={handleChange}
@@ -299,9 +300,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             </UI.Section>}
           </div>
         </Form.Item>
-        <UI.TitleActive>When do you want the update to run?</UI.TitleActive>
+        <Subtitle level={4}>When do you want the update to run?</Subtitle>
         { // eslint-disable-next-line max-len
           <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
+
         <UI.DateContainer>
           <label>Update date:</label>
           <DatePicker
@@ -311,7 +313,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             value={selectedDate ? moment(selectedDateMoment) : undefined}
           />
         </UI.DateContainer>
-        { selectedDate ?
+
+        {selectedDate ?
           <UI.DateContainer>
             <label>Update time:</label>
             <Radio.Group
@@ -328,6 +331,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           </UI.DateContainer>
           : null
         }
+
+
+
         <PreDownload
           checked={checked}
           setChecked={onPreDownloadChange}

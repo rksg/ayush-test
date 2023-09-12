@@ -134,7 +134,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
           </Radio.Group>}
           {enableSwitchTwoVersionUpgrade && <Typography>
             { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Firmware available for ICX-8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+              $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
           </Typography>}
           {enableSwitchTwoVersionUpgrade && <Radio.Group
             style={{ margin: 12 }}
@@ -151,7 +151,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
           {enableSwitchTwoVersionUpgrade && <UI.Section>
             <Typography>
               { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series Models' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+                $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
             </Typography>
             <Radio.Group
               style={{ margin: 12 }}

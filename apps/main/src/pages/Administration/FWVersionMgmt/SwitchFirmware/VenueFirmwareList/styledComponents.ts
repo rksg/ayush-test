@@ -7,6 +7,7 @@ export const DateContainer = styled.div`
   display: grid;
   grid-template-columns: 180px 280px;
   padding: 10px;
+  margin-top: 10px;
   background-color: #f7f7f7;
   label {
     margin-top: 4px;

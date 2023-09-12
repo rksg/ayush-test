@@ -148,9 +148,9 @@ describe('Firmware Venues Table', () => {
 
     const article = await screen.findAllByRole('article')
     expect(article).toHaveLength(2)
-    expect(article[0].innerHTML).toBe('Firmware available for ICX-8200 Series (3 switches)')
+    expect(article[0].innerHTML).toBe('Firmware available for ICX 8200 Series (3 switches)')
     // eslint-disable-next-line max-len
-    expect(article[1]?.innerHTML).toBe('Firmware available for ICX 7150/7550/7650/7850 Series Models (2 switches)')
+    expect(article[1]?.innerHTML).toBe('Firmware available for ICX 7150/7550/7650/7850 Series (2 switches)')
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(notCheckedOptions).toHaveLength(5)
