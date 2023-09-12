@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Checkbox, Form, Switch } from 'antd'
 import { CheckboxChangeEvent }    from 'antd/es/checkbox'
 import { useIntl }                from 'react-intl'
-import styled                     from 'styled-components'
 
 import { Drawer, Subtitle }                                             from '@acx-ui/components'
 import { useGetMspAggregationsQuery, useUpdateMspAggregationsMutation } from '@acx-ui/msp/services'
@@ -13,11 +12,6 @@ interface PreferenceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
 }
-
-const Label = styled.span`
-  font-size: var(--acx-body-4-font-size);
-  line-height: 40px;
-`
 
 export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   const { $t } = useIntl()
@@ -63,9 +57,9 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   }
 
   const formContent = <Form layout='vertical'form={form} >
-    <Label>
+    <h4 style={{ marginTop: '14px', marginBottom: '20px' }}>
       {$t({ defaultMessage: 'Select the notifications you wish to receive:' })}
-    </Label>
+    </h4>
 
     <Subtitle level={5}>
       {$t({ defaultMessage: 'Aggregations' })}
@@ -74,6 +68,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
     <Form.Item>
       <SpaceWrapper full justifycontent='flex-start'>
         <Checkbox
+          style={{ marginLeft: '3px' }}
           onChange={handleAggregationsChange}
           checked={mspAggregationChecked}
         >
@@ -85,14 +80,14 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
       noStyle
       valuePropName='checked'>
       <Switch
-        style={{ marginLeft: '20px', marginTop: '-5px' }}
+        style={{ marginLeft: '26px', marginTop: '-5px' }}
         checked={ecExclusionChecked}
         onClick={(checked) => { setEcExclusionChecked(checked) }}
       />
       <div><label>
         {$t({ defaultMessage: 'All customers do not receive this type of' })}
       </label></div>
-      <div><label style={{ marginLeft: '57px' }}>
+      <div><label style={{ marginLeft: '63px' }}>
         {$t({ defaultMessage: 'notifications from RUCKUS One' })}
       </label></div>
     </Form.Item>}
