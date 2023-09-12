@@ -1,5 +1,5 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react'
-import { IntlProvider }                       from 'react-intl'
+import { render, fireEvent, screen } from '@testing-library/react'
+import { IntlProvider }              from 'react-intl'
 
 import * as helpers from './helpers'
 
@@ -7,7 +7,6 @@ import { SlidingDoor, Node } from '.'
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
-  searchTree: jest.fn(),
   findMatchingNode: jest.fn()
 }))
 
@@ -32,7 +31,6 @@ describe('SlidingDoor', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (helpers.searchTree as jest.Mock).mockReturnValue([]);
     (helpers.findMatchingNode as jest.Mock).mockReturnValue(null)
   })
 
@@ -81,20 +79,28 @@ describe('SlidingDoor', () => {
   })
 
   it('should search nodes correctly', async () => {
-    (helpers.searchTree as jest.Mock).mockReturnValue([
-      { id: '2', name: 'child1' },
-      { id: '3', name: 'child2' }
-    ])
     render(
       <IntlProvider locale='en'>
         <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
       </IntlProvider>
     )
+    const input = await screen.findByPlaceholderText('Entire Organization')
+    fireEvent.click(input)
+    fireEvent.change(input, { target: { value: 'Child5' } })
+    fireEvent.click((await screen.findAllByText('Child5 (child3)'))[0])
+  })
+
+  it('renders empty search', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     const input = screen.getByPlaceholderText('Entire Organization')
-    fireEvent.change(input, { target: { value: 'child' } })
-    await waitFor(() => {
-      expect(helpers.searchTree).toHaveBeenCalledWith(mockData, 'child')
-    })
+    fireEvent.click(input)
+    fireEvent.change(input, { target: { value: 'Child6' } })
+    expect(await screen.findByText('No Data')).toBeInTheDocument()
   })
 
   it('should handle onSelect correctly', async () => {

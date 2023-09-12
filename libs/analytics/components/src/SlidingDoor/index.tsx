@@ -91,9 +91,13 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const onSelect = (node: Node) => {
     setSearchResults([])
     setSearchText('')
-    breadcrumb[breadcrumb.length - 1].type === node.type
-      ? setBreadcrumbPath([...breadcrumb.slice(0, -1), node])
-      : addNodeToBreadcrumb(node)
+    if (node.path) {
+      setBreadcrumbPath(node.path)
+    } else {
+      breadcrumb[breadcrumb.length - 1].type === node.type
+        ? setBreadcrumbPath([...breadcrumb.slice(0, -1), node])
+        : addNodeToBreadcrumb(node)
+    }
   }
   const onBack = () => {
     const newBreadcrumb = [...breadcrumb]
@@ -118,11 +122,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
 
   const nodesToShow = searchText
     ? searchResults
-    : breadcrumb.length > 0
-      ? isLeaf
-        ? breadcrumb?.[breadcrumb.length - 2]?.children
-        : breadcrumb?.[breadcrumb.length - 1]?.children
-      : []
+    : breadcrumb?.[breadcrumb.length - (isLeaf ? 2 : 1)]?.children
   const placeHolderText = inputValue.replace(
     new RegExp(defaultPath[0].name, 'i'),
     'Entire Organization'
