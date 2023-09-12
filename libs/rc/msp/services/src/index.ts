@@ -106,7 +106,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -131,7 +132,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -160,7 +162,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -180,7 +183,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -191,7 +195,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -288,7 +293,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -299,7 +305,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     supportCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -310,7 +317,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -321,7 +329,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getTenantDetail: build.query<TenantDetail, RequestPayload>({
       query: ({ params }) => {
@@ -352,7 +361,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
       query: ({ params }) => {

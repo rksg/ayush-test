@@ -39,7 +39,8 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
             )
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteTunnelProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
