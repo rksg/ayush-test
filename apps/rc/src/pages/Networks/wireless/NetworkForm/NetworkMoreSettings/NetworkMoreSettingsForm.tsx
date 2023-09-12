@@ -150,7 +150,9 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
     <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
       <VlanTab wlanData={wlanData} />
     </div>
+    {(data?.type === NetworkTypeEnum.CAPTIVEPORTAL) &&
     <div style={{ display: currentTab === 'userConnection' ? 'block' : 'none' }}>
+    }
       <UserConnectionTab />
     </div>
     <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
