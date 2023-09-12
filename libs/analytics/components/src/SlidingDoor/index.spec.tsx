@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 import { IntlProvider }                       from 'react-intl'
 
@@ -109,7 +107,6 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Child1 (child1)'))
     fireEvent.click(await screen.findByText('Child3 (child3)'))
     fireEvent.click(await screen.findByText('Child5 (child3)'))
-
     expect(await screen.findByText('Child3 (child3)')).toBeInTheDocument()
   })
 
@@ -170,5 +167,17 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Child1 (child1)'))
     fireEvent.mouseDown(document.body)
     expect(screen.getByText('Child1 (child1)')).toBeVisible()
+  })
+  it('should not close the filter on clicking inside the filter', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData}
+          setNetworkPath={mockSetNetworkPath} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.mouseDown(await screen.findByText('Child1 (child1)'))
+    expect(screen.getByText('Child1 (child1)')).not.toBeVisible()
   })
 })

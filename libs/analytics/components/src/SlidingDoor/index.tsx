@@ -89,29 +89,16 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     }
   }
   const onSelect = (node: Node) => {
-    const isLeaf =
-      (currentNode?.children?.length === 0 || !Boolean(currentNode?.children)) &&
-      breadcrumb[breadcrumb.length - 1] === node
-    const isSameLeafNodeType = breadcrumb[breadcrumb.length - 1].type === node.type
     setSearchResults([])
     setSearchText('')
-    if (isLeaf) {
-      return
-    }
-    if (node.path) {
-      setBreadcrumbPath(node.path)
-    } else {
-      isSameLeafNodeType
-        ? setBreadcrumbPath([...breadcrumb.slice(0, -1), node])
-        : addNodeToBreadcrumb(node)
-    }
+    breadcrumb[breadcrumb.length - 1].type === node.type
+      ? setBreadcrumbPath([...breadcrumb.slice(0, -1), node])
+      : addNodeToBreadcrumb(node)
   }
   const onBack = () => {
-    if (breadcrumb.length > 1) {
-      const newBreadcrumb = [...breadcrumb]
-      newBreadcrumb.pop()
-      setBreadcrumbPath(newBreadcrumb)
-    }
+    const newBreadcrumb = [...breadcrumb]
+    newBreadcrumb.pop()
+    setBreadcrumbPath(newBreadcrumb)
   }
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
