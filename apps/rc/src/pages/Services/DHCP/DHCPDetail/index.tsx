@@ -58,7 +58,7 @@ export default function DHCPServiceDetail () {
           </TenantLink>
         ])}
       />
-      <Tabs type='first' defaultActiveKey={'OVERVIEW'}>
+      <Tabs defaultActiveKey={'OVERVIEW'}>
         <Tabs.TabPane key={'OVERVIEW'} tab={$t({ defaultMessage: 'Overview' })}>
           <GridRow>
             <GridCol col={{ span: 24 }}>

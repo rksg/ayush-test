@@ -19,7 +19,7 @@ function WiredTabs (props: { profileCount: number, cliCount: number }) {
   const cliCount = props.cliCount
 
   return (
-    <Tabs type='first'
+    <Tabs
       onChange={onTabChange}
       defaultActiveKey='profiles'
       activeKey={params.activeTab}

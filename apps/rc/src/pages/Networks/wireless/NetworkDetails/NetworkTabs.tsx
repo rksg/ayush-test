@@ -24,7 +24,7 @@ function NetworkTabs () {
   ]
 
   return (
-    <Tabs type='first' onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview'

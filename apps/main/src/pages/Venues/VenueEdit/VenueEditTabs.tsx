@@ -82,7 +82,7 @@ function VenueEditTabs () {
   }, [])
 
   return (
-    <Tabs type='first' onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       <Tabs.TabPane

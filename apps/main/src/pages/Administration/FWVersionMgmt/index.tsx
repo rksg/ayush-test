@@ -140,7 +140,7 @@ const FWVersionMgmt = () => {
   return (
     <Tabs
       defaultActiveKey='apFirmware'
-      type='second'
+      type='card'
       onChange={onTabChange}
       activeKey={params.activeSubTab}
     >

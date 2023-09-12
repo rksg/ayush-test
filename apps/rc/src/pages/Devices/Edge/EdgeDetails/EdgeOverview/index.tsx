@@ -132,8 +132,8 @@ export const EdgeOverview = () => {
         />
       </Col>
       <Col span={24}>
-        <Tabs
-          type='card'
+        <Tabs type='card'
+          stickyTop={false}
           activeKey={currentTab}
           defaultActiveKey={activeSubTab || tabs[0].value}
           onChange={handleTabChange}

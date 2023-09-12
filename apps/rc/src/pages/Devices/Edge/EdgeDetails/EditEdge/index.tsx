@@ -111,7 +111,7 @@ export const EditEdgeTabs = () => {
   }
 
   return (
-    <Tabs type='first' onChange={onTabChange} activeKey={activeTab}>
+    <Tabs onChange={onTabChange} activeKey={activeTab}>
       {Object.keys(tabs)
         .map((key) => <Tabs.TabPane tab={tabs[key as keyof typeof tabs]?.title} key={key} />)}
     </Tabs>

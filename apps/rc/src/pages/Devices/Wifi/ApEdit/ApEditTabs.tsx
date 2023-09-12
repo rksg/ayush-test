@@ -121,7 +121,7 @@ function ApEditTabs () {
 
 
   return (
-    <Tabs type='first' onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={tabTitleMap('general')} key='general' />
       { typeof currentAP?.model !== 'undefined' && (
         ApEditTabKeys.map(tabKey => <Tabs.TabPane tab={tabTitleMap(tabKey)} key={tabKey} />)

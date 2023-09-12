@@ -147,7 +147,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
       title={$t({ defaultMessage: 'Wireless' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
       footer={
-        tabs.length > 1 && <Tabs type='first' activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }

@@ -58,7 +58,8 @@ export function VenueClientsTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='second'>
+      type='card'
+    >
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wireless' })}
         key='wifi'>

@@ -94,7 +94,7 @@ export default function DpskDetails () {
           </TenantLink>
         ])}
         footer={
-          <Tabs type='first' onChange={onTabChange} activeKey={activeTab}>
+          <Tabs onChange={onTabChange} activeKey={activeTab}>
             <Tabs.TabPane
               tab={$t(dpskTabNameMapping[DpskDetailsTabKey.OVERVIEW])}
               key={DpskDetailsTabKey.OVERVIEW}

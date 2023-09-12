@@ -1,8 +1,6 @@
 import { Tabs as AntTabs, TabsProps }              from 'antd'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
-import type { TabsType } from '.'
-
 const lineStyle = css`
   &.ant-tabs-top > .ant-tabs-nav {
     &:before { border: 0; }
@@ -50,10 +48,6 @@ const cardStyle = css`
       }
     }
   }
-`
-
-const firstStyle = css`
-  ${lineStyle}
 `
 
 const secondStyle = css`
@@ -130,15 +124,15 @@ const thirdStyle = css`
     }
   }
 `
+export type styleTabsType = 'line' | 'card' | 'third' | 'second'
 
-const styles: Record<TabsType, FlattenSimpleInterpolation> = {
+const styles: Record<styleTabsType, FlattenSimpleInterpolation> = {
   line: lineStyle,
   card: cardStyle,
-  first: firstStyle,
   second: secondStyle,
   third: thirdStyle
 }
 
 export const Tabs = styled(AntTabs)<
-  TabsProps & { $type: TabsType }
->`${props => styles[props.$type]}`
+  TabsProps & { $type: styleTabsType }
+>`${props => styles[props.$type]}}`

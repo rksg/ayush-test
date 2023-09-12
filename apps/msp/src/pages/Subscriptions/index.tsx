@@ -355,7 +355,7 @@ export function Subscriptions () {
           </TenantLink>
         ]}
       />
-      {isMspSelfAssignmentEnabled && <Tabs type='first'
+      {isMspSelfAssignmentEnabled && <Tabs
         defaultActiveKey='mspSubscriptions'
         onChange={onTabChange}
       >
