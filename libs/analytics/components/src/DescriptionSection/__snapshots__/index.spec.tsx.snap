@@ -3,7 +3,7 @@
 exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
   >
     <div
       data-testid="children"
@@ -92,7 +92,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-0"
@@ -134,7 +134,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-1"
@@ -176,7 +176,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-2"
@@ -263,7 +263,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-0"
@@ -283,7 +283,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-1"
@@ -303,7 +303,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     <div
                       data-testid="children-2"

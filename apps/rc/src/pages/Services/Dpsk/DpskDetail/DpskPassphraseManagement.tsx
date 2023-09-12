@@ -200,7 +200,7 @@ export default function DpskPassphraseManagement () {
       selectedRows,
       $t({ defaultMessage: 'Passphrase' }),
       selectedRows[0].username,
-      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) }],
+      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
       async () => deletePassphrases({
         params: { ...params, ...dpskNewConfigFlowParams },
         payload: selectedRows.map(p => p.id)

@@ -16,16 +16,7 @@ export const optimizedColors = [
   '--acx-semantics-red-60'
 ]
 
-export const withDottedUnderline = `
-  text-decoration: dotted underline;
-  // below css will hide the default safari tooltip
-  :after {
-    content: '';
-    display: block;
-  }
-`
-export const UnderlinedSpan = styled.span<{ $statusEnum?: string }>`
-  ${withDottedUnderline}
+export const Status = styled.span<{ $statusEnum?: string }>`
   ${props => props.$statusEnum === 'applywarning' && 'color: var(--acx-semantics-red-50);'}
 `
 

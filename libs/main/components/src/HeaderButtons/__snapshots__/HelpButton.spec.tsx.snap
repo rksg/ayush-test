@@ -4,7 +4,7 @@ exports[`HelpButton should enable chat support button if support status is chatt
 <DocumentFragment>
   <button
     ant-click-animating-without-extra-node="true"
-    class="ant-btn ant-btn-primary ant-btn-icon-only styledComponents__Button-sc-iwostn-9 styledComponents__ButtonSolid-sc-iwostn-10 fZXiZc hIiyrn ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+    class="ant-btn ant-btn-primary ant-btn-icon-only styledComponents__Button-sc-iwostn-10 styledComponents__ButtonSolid-sc-iwostn-11 ihgUTI khbpjC ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
     type="button"
   >
     <svg

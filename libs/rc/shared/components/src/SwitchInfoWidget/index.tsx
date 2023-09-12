@@ -6,7 +6,6 @@ import { useIntl }    from 'react-intl'
 import {
   IncidentBySeverityDonutChart
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
 import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
 import type { DonutChartData }                                     from '@acx-ui/components'
 import { Client }                                                  from '@acx-ui/icons'
@@ -19,6 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }         from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 

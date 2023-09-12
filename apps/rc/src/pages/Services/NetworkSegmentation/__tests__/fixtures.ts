@@ -146,6 +146,22 @@ export const mockVenueNetworkData = {
   ]
 }
 
+export const mockNetworkSaveData = {
+  fields: ['venueId', 'networkId'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    { networkId: '1', venueId: 'testVenueId1' }
+  ]
+}
+
+export const mockDeepNetworkList = {
+  requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',
+  response: [
+    { name: 'Network 1', id: '1', type: 'dpsk' }
+  ]
+}
+
 export const mockNetworkGroup = {
   requestId: '1234',
   response: [

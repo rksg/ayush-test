@@ -2,10 +2,11 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }                     from '@acx-ui/analytics/utils'
+import { TimeSeriesChartData, getSeriesData }                                      from '@acx-ui/analytics/utils'
 import { calculateGranularity }                                                    from '@acx-ui/analytics/utils'
 import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
 import { TimeStamp }                                                               from '@acx-ui/types'
+import type { AnalyticsFilter }                                                    from '@acx-ui/utils'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'

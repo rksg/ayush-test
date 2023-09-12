@@ -35,7 +35,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       showToast({
         type: 'success',
         content: $t({
-          defaultMessage: 'Persona Group {name} was {isEdit, select, true {updated} other {added}}'
+          defaultMessage: 'Identity Group {name} was {isEdit, select, true {updated} other {added}}'
         },
         { name: contextData.name, isEdit }
         )
@@ -93,8 +93,8 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       destroyOnClose={true}
       title={
         isEdit
-          ? $t({ defaultMessage: 'Edit Persona Group' })
-          : $t({ defaultMessage: 'Create Persona Group' })
+          ? $t({ defaultMessage: 'Edit Identity Group' })
+          : $t({ defaultMessage: 'Create Identity Group' })
       }
       width={'400px'}
       visible={visible}
