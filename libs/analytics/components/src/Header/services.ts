@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
 import { getSelectedNodePath, normalizeNodeType } from '@acx-ui/analytics/utils'
-import type { AnalyticsFilter }                   from '@acx-ui/analytics/utils'
 import { dataApi }                                from '@acx-ui/store'
+import type { AnalyticsFilter }                   from '@acx-ui/utils'
 import { NetworkPath, NodeType, NodesFilter }     from '@acx-ui/utils'
 
 import { HeaderData, SubTitle } from '.'

@@ -252,7 +252,7 @@ export function PersonaDevicesTable (props: {
           },
           // FIXME: Need to add mac registration list id into this dialog
           // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this persona. Are you sure you want to delete them?' }),
+          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
           onOk: () => {
             deleteDevices(selectedItems)
             clearSelection()

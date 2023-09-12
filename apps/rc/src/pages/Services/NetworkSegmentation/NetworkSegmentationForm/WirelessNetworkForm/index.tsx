@@ -8,21 +8,13 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { Loader, StepsForm, useStepFormContext }                                                                      from '@acx-ui/components'
-import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery } from '@acx-ui/rc/services'
+import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
+import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
 import * as UI                from './styledComponents'
 import { TunnelProfileModal } from './TunnelProfileModal'
-
-const venueNetworkDefaultPayload = {
-  fields: ['name', 'id', 'venues'],
-  filters: { nwSubType: ['dpsk'] },
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
@@ -65,9 +57,14 @@ export const WirelessNetworkForm = () => {
       tunnelProfileOptions?.find(item => value === item.value)?.label
     )}
 
-  const { networkList } = useVenueNetworkListQuery({
-    params: { ...params, venueId: venueId },
-    payload: venueNetworkDefaultPayload
+  const { networkList } = useVenueNetworkActivationsDataListQuery({
+    params: { ...params },
+    payload: {
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      venueId: venueId
+    }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
@@ -77,10 +74,9 @@ export const WirelessNetworkForm = () => {
       }
     }
   })
-  const networkOptions = networkList?.data
-    .filter(item => item.venues?.ids.includes(venueId))
-    .map(item => ({ label: item.name, value: item.id }))
-  const networkIds = networkList?.data.map(item => (item.id))
+  const networkOptions = networkList?.filter(item => item.type === 'dpsk')
+    .map(item => ({ label: item.name as string, value: item.id as string }))
+  const networkIds = networkList?.map(item => (item.id))
 
   const { nsgViewData } =
   useGetNetworkSegmentationViewDataListQuery({

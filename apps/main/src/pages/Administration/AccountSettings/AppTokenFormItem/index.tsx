@@ -64,7 +64,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const AddAppLink = () => {
     return (
-      <Col style={{ width: '800px' }}>
+      <Col style={{ width: '800px', paddingLeft: 0 }}>
         <Card type='solid-bg'>
           <Form.Item
             children={
@@ -92,7 +92,11 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'clientIDStatus',
-        key: 'clientIDStatus'
+        key: 'clientIDStatus',
+        render: function (_, row) {
+          return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
+            ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
+        }
       },
       {
         title: $t({ defaultMessage: 'Client ID' }),
