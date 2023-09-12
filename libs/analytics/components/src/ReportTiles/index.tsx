@@ -31,15 +31,19 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
     return () => timer.current && clearInterval(timer.current)
   }, [queryResults.data?.length])
 
-  const currentTile = queryResults.data?.[selected]!
+  useEffect(() => setSelected(0), [path])
 
-  return <Loader states={[queryResults, { isLoading: !currentTile }]}>
+  const currentTile = queryResults.data?.[selected]
+
+  return <Loader states={[queryResults]}>
     <Card>{queryResults.data
       ? <ReportTileWrapper>
         <div>{
           queryResults.data?.map(({ key }, index) => {
             return <Tile
               key={key}
+              role='radio'
+              aria-checked={selected === index}
               selected={index === (selected)}
               onClick={() => {
                 setSelected(index)
