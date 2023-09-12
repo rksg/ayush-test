@@ -543,7 +543,7 @@ export function EditPortDrawer ({
         (form.getFieldValue('taggedVlans') ?
           form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: form.getFieldValue('voiceVlan')
+      voiceVlan: useVenueSettings ? null : form.getFieldValue('voiceVlan')
     }
     const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
       ...result, [item.switchId]: item.defaultVlanId
