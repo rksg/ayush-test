@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                    from '@acx-ui/components'
+import { useAnalyticsFilter }   from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }     from '@acx-ui/components'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { Header }             from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'

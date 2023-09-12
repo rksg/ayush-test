@@ -39,7 +39,7 @@ export function PersonaGroupForm (props: {
         params: { size: '2147483647', page: '0' },
         payload: { keyword: name }
       }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
-      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona Group' }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity Group' }))
     } catch (e) {
       return Promise.resolve()
     }
@@ -64,7 +64,7 @@ export function PersonaGroupForm (props: {
           <Col span={21}>
             <Form.Item
               name='name'
-              label={$t({ defaultMessage: 'Persona Group Name' })}
+              label={$t({ defaultMessage: 'Identity Group Name' })}
               hasFeedback
               validateFirst
               validateTrigger={['onBlur']}

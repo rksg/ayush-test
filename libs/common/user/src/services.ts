@@ -9,6 +9,7 @@ import {
   MfaDetailStatus,
   MfaOtpMethod,
   PlmMessageBanner,
+  TenantAccountTierValue,
   UserSettings,
   UserProfile,
   UserSettingsUIModel,
@@ -32,6 +33,11 @@ export const UserUrlsInfo = {
     method: 'get',
     url: '/tenants/userProfiles',
     oldUrl: '/api/tenant/:tenantId/user-profile',
+    newApi: true
+  },
+  getAccountTier: {
+    method: 'get',
+    url: '/tenants/accountTier',
     newApi: true
   },
   getCloudVersion: {
@@ -139,6 +145,7 @@ export const {
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
+  useGetAccountTierQuery,
   useGetCloudVersionQuery,
   useGetCloudScheduleVersionQuery,
   useLazyGetCloudScheduleVersionQuery,
@@ -175,6 +182,15 @@ export const {
         ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
         body: payload
       })
+    }),
+    getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserUrlsInfo.getAccountTier, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'UserProfile', id: 'ACCOUNT_TIER' }]
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)

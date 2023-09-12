@@ -3,12 +3,12 @@ import { gql } from 'graphql-request'
 import {
   getSelectedNodePath,
   getFilterPayload,
-  AnalyticsFilter,
   calculateGranularity,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { dataApi }     from '@acx-ui/store'
-import { NodesFilter } from '@acx-ui/utils'
+import { dataApi }              from '@acx-ui/store'
+import { NodesFilter }          from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number
