@@ -1,5 +1,7 @@
-import { useAnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { SlidingDoor, Loader } from '@acx-ui/components'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Loader }             from '@acx-ui/components'
+
+import { SlidingDoor } from '..'
 
 import { useNetworkHierarchyQuery } from './services'
 
