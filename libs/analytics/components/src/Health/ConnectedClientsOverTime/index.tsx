@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { NetworkHistory }    from '../../NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'

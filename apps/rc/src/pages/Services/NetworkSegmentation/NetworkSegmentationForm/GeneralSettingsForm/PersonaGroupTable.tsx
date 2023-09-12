@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                               from '@acx-ui/components'
-import { PersonaGroupLink, useDpskNewConfigFlowParams }                            from '@acx-ui/rc/components'
+import { IdentityGroupLink, useDpskNewConfigFlowParams }                           from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetPersonaGroupByIdQuery }                            from '@acx-ui/rc/services'
 import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
@@ -60,16 +60,16 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
 
   const columns: TableProps<TableDataType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       key: 'personaGroupName',
       dataIndex: 'personaGroupName',
-      render: (data, row) => (<PersonaGroupLink
+      render: (data, row) => (<IdentityGroupLink
         name={row.personaGroupName}
         personaGroupId={row.personaGroupId}
       />)
     },
     {
-      title: $t({ defaultMessage: 'Number of Personas' }),
+      title: $t({ defaultMessage: 'Number of Identities' }),
       key: 'personaCount',
       dataIndex: 'personaCount'
     },

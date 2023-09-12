@@ -1,7 +1,7 @@
 import { NetworkPath, NodeType } from '@acx-ui/utils'
+import type { AnalyticsFilter }  from '@acx-ui/utils'
 
-import { AnalyticsFilter } from '../analyticsFilter'
-import incidentSeverities  from '../incidentSeverities.json'
+import incidentSeverities from '../incidentSeverities.json'
 
 import type { IncidentCode }        from '../constants'
 import type { IncidentInformation } from '../incidentInformation'

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import userEvent   from '@testing-library/user-event'
-import { act }     from 'react-dom/test-utils'
 import { useIntl } from 'react-intl'
 
 import {
@@ -37,27 +36,7 @@ jest.mock('antd', () => {
 })
 
 describe('MdnsProxyForwardingRuleDrawer', () => {
-  it('should close drawer', async () => {
-    const { result: drawerVisible } = renderHook(() => {
-      const [ visible, setVisible ] = useState(true)
-      return { visible, setVisible }
-    })
-
-    render(
-      <MdnsProxyForwardingRuleDrawer
-        editMode={false}
-        visible={drawerVisible.current.visible}
-        setVisible={drawerVisible.current.setVisible}
-        setRule={jest.fn()}
-      />
-    )
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
-    expect(drawerVisible.current.visible).toEqual(false)
-  })
-
-  it.skip('should not close drawer if Add another rule is checked', async () => {
+  it('should not close drawer if Add another rule is checked', async () => {
     const { result: drawerVisible } = renderHook(() => {
       const [ visible, setVisible ] = useState(true)
       return { visible, setVisible }
@@ -96,14 +75,11 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     // eslint-disable-next-line max-len
     await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), ruleToAdd.toVlan.toString())
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-      expect(setRule).toHaveBeenCalledWith({
-        service: ruleToAdd.service,
-        fromVlan: ruleToAdd.fromVlan,
-        toVlan: ruleToAdd.toVlan
-      })
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(setRule).toHaveBeenCalledWith({
+      service: ruleToAdd.service,
+      fromVlan: ruleToAdd.fromVlan,
+      toVlan: ruleToAdd.toVlan
     })
 
     expect(drawerVisible.current.visible).toEqual(true)

@@ -155,7 +155,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
         return <Tooltip placement='top' title={value.scope}>
-          <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
+          {highlightFn(value.sliceValue)}
         </Tooltip>
       },
       sorter: { compare: sortProp('sliceValue', defaultSort) },
@@ -168,7 +168,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'status',
       render: (_, value ) => {
         return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.UnderlinedSpan $statusEnum={value.statusEnum}>{value.status}</UI.UnderlinedSpan>
+          <UI.Status $statusEnum={value.statusEnum}>{value.status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
