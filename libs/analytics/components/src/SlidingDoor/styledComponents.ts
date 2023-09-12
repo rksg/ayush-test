@@ -76,10 +76,10 @@ export const ListItemSpan = styled.span`
   text-overflow: ellipsis;
   width: 180px;
 `
-export const ListItem = styled(List.Item)<{ isSelected?: boolean }>`
+export const ListItem = styled(List.Item)<{ $isSelected?: boolean }>`
   padding-left: 20px;
   padding-right: 16px;
-  background-color:  ${(props) => props.isSelected
+  background-color:  ${(props) => props.$isSelected
     ? 'var(--acx-accents-orange-20)'
     : 'var(--acx-primary-white)'};
   &:hover {

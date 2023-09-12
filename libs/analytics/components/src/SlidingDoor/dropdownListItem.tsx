@@ -18,7 +18,7 @@ export const ListItemComponent: React.FC<Props> = ({ node, onClick, currentNode 
     <UI.ListItem
       key={`${node?.type}-${node.name}`}
       onClick={() => onClick(node)}
-      isSelected={isItemSelected}>
+      $isSelected={isItemSelected}>
       <UI.ListItemSpan key={`${node?.type}-${node.name}`} title={customCapitalize(node)}>
         {customCapitalize(node)}
       </UI.ListItemSpan>
