@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }               from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '@acx-ui/rc/components'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }                                           from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                                                            from '@acx-ui/feature-toggle'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -42,11 +42,11 @@ function PersonaGroupDetailsPageHeader (props: {
           text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' })
+          text: $t({ defaultMessage: 'Identity Management' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Groups' }),
-          link: 'users/persona-management'
+          text: $t({ defaultMessage: 'Identity Groups' }),
+          link: 'users/identity-management'
         }
       ]}
     />
@@ -71,6 +71,7 @@ function PersonaGroupDetails () {
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
@@ -88,7 +89,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })
@@ -123,7 +124,7 @@ function PersonaGroupDetails () {
       />
     },
     {
-      title: $t({ defaultMessage: 'Personas' }),
+      title: $t({ defaultMessage: 'Identities' }),
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
@@ -170,7 +171,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

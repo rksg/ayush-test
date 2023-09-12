@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { AnalyticsFilter }        from '@acx-ui/analytics/utils'
 import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, dataApiURL  }  from '@acx-ui/store'
 import { render,
@@ -9,7 +8,8 @@ import { render,
   screen,
   waitForElementToBeRemoved,
   mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { currentAP } from './__tests__/fixtures'
 

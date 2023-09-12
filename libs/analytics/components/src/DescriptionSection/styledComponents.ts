@@ -5,10 +5,10 @@ import {
 import AutoSizer       from 'react-virtualized-auto-sizer'
 import styled, { css } from 'styled-components/macro'
 
+import { withDottedUnderline } from '../IncidentTable/styledComponents'
+
 export const TextContent = styled.span`${props => props.onClick ? css`
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  cursor: pointer;
+  ${withDottedUnderline}
 ` : ''}`
 
 export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`

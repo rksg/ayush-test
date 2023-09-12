@@ -100,3 +100,10 @@ export interface DPSKDeviceInfo {
   lastConnectedNetwork: string,
   devicePassphrase: string
 }
+
+export type DpskNewFlowMutationResult = {
+  requestId: string
+  id?: string
+}
+
+export type DpskMutationResult = DpskSaveData | DpskNewFlowMutationResult
