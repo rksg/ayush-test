@@ -11,7 +11,13 @@ describe('ListItemComponent', () => {
     }
     const mockOnClick = jest.fn()
     render(
-      <ListItemComponent node={node} onClick={mockOnClick} />
+      <ListItemComponent
+        node={node}
+        onClick={mockOnClick}
+        isAnimationSlideIn
+        isSearchTriggerred={false}
+        currentNode={node}
+      />
     )
 
     expect(screen.getByText(/TestFolder/)).toBeInTheDocument()
@@ -23,7 +29,13 @@ describe('ListItemComponent', () => {
     }
     const mockOnClick = jest.fn()
     render(
-      <ListItemComponent node={node} onClick={mockOnClick} isSelected={true}/>
+      <ListItemComponent
+        node={node}
+        onClick={mockOnClick}
+        isAnimationSlideIn
+        isSearchTriggerred={false}
+        currentNode={node}
+      />
     )
     expect(screen.getByText(/TestFolder/)).toBeInTheDocument()
   })
@@ -35,7 +47,13 @@ describe('ListItemComponent', () => {
     }
     const mockOnClick = jest.fn()
     const { container } = render(
-      <ListItemComponent node={node} onClick={mockOnClick} />
+      <ListItemComponent
+        node={node}
+        onClick={mockOnClick}
+        isAnimationSlideIn
+        isSearchTriggerred
+        currentNode={node}
+      />
     )
     // eslint-disable-next-line  testing-library/no-node-access,testing-library/no-container
     expect(container.querySelector('div')).toBeInTheDocument()
@@ -49,9 +67,14 @@ describe('ListItemComponent', () => {
     }
     const mockOnClick = jest.fn()
     render(
-      <ListItemComponent node={node} onClick={mockOnClick} />
+      <ListItemComponent
+        node={node}
+        onClick={mockOnClick}
+        isAnimationSlideIn
+        isSearchTriggerred
+        currentNode={node}
+      />
     )
-
     fireEvent.click(screen.getByText(/TestFolder/))
     expect(mockOnClick).toHaveBeenCalledWith(node)
   })
