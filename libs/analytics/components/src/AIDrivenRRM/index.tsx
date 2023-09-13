@@ -31,7 +31,7 @@ function AIDrivenRRMWidget ({
   const optimized = data?.crrmCount?.optimized
   const totalScenario = countFormat(data?.crrmScenario?.total)
   // eslint-disable-next-line max-len
-  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} zones covering {totalScenario} possible RRM combinations. Currently {optimized}/{total} zones have been optimized.' }, { total, optimized, totalScenario })
+  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenario} possible RRM combinations. Currently {optimized}/{total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenario })
   // eslint-disable-next-line max-len
   const noCrrmText = $t({ defaultMessage: 'RUCKUS AI has confirmed that all zones are currently operating with the optimal RRM onfigurations and no further recommendation is required.' })
 
