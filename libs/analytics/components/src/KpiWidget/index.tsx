@@ -1,10 +1,11 @@
 import { Typography }         from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
-import { healthApi }                                           from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
-import { intlFormats, formatter }                              from '@acx-ui/formatter'
+import { healthApi }                                         from '@acx-ui/analytics/services'
+import { kpiConfig, getSparklineGranularity }                from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, SparklineChart, Loader, Tooltip } from '@acx-ui/components'
+import { intlFormats, formatter }                            from '@acx-ui/formatter'
+import type { AnalyticsFilter }                              from '@acx-ui/utils'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 

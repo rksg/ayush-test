@@ -97,6 +97,7 @@
     &.ant-btn-icon-only:not(.ant-btn-sm):not(.ant-btn-lg) {
       width: 32px;
       height: 32px;
+      min-width: 32px;
     }
 
     &.ant-btn-link:not(.ant-btn-icon-only) {
@@ -249,6 +250,9 @@
     &-title-content {
       font-size: var(--acx-body-4-font-size);
       font-weight: var(--acx-body-font-weight);
+      a:hover, a:focus {
+        text-decoration: none;
+      }
     }
 
     &-item {
