@@ -65,7 +65,8 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
       {$t({ defaultMessage: 'Aggregations' })}
     </Subtitle>
 
-    <Form.Item>
+    <Form.Item
+      style={{ marginBottom: '10px' }}>
       <SpaceWrapper full justifycontent='flex-start'>
         <Checkbox
           style={{ marginLeft: '3px' }}
@@ -76,21 +77,23 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
         </Checkbox>
       </SpaceWrapper>
     </Form.Item>
-    {mspAggregationChecked && <Form.Item
-      noStyle
-      valuePropName='checked'>
-      <Switch
-        style={{ marginLeft: '26px', marginTop: '-5px' }}
-        checked={ecExclusionChecked}
-        onClick={(checked) => { setEcExclusionChecked(checked) }}
-      />
-      <div><label>
-        {$t({ defaultMessage: 'All customers do not receive this type of' })}
-      </label></div>
-      <div><label style={{ marginLeft: '63px' }}>
-        {$t({ defaultMessage: 'notifications from RUCKUS One' })}
-      </label></div>
-    </Form.Item>}
+    {mspAggregationChecked &&
+      <div style={{ display: 'inline-flex' }}>
+        <Form.Item
+          noStyle
+          valuePropName='checked'>
+          <Switch
+            style={{ marginLeft: '26px' }}
+            checked={ecExclusionChecked}
+            onClick={(checked) => { setEcExclusionChecked(checked) }}
+          />
+        </Form.Item>
+        <label>
+          {$t({
+            defaultMessage:
+              'All customers do not receive this type of notifications from RUCKUS One'
+          })}
+        </label> </div>}
   </Form>
 
   return (
