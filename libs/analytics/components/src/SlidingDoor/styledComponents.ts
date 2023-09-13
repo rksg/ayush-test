@@ -87,11 +87,11 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
   }
 
 `
-export const ListItemSpan = styled.span`
+export const ListItemSpan = styled.span<{ hasArrow: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 180px;
+  width: ${(props) => props.hasArrow ? '180px' : '210px'};
 `
 export const ListItem = styled(List.Item)<{
   $isSelected?: boolean;
@@ -136,7 +136,7 @@ export const StyledList = styled(List)`
     bottom: 0;
     background-color: var(--acx-primary-white);
     z-index: 1;
-    padding-bottom: 0px;
+    padding: 0px;
   }
 `
 export const StyledMenu = styled(Menu)`
@@ -149,7 +149,7 @@ export const StyledMenu = styled(Menu)`
   }
   &:hover {
     background-color: var(--acx-primary-white) !important;
-    cursor: default;  
+    cursor: default;
   }
 }
 }

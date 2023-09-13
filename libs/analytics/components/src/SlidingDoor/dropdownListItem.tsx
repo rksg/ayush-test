@@ -31,6 +31,7 @@ export const ListItemComponent: React.FC<Props> = ({
       $isSearchTriggerred={isSearchTriggerred}
     >
       <UI.ListItemSpan
+        hasArrow={!node?.mac}
         key={`${node?.type}-${node.name}`}
         title={customCapitalize(node)}
       >
