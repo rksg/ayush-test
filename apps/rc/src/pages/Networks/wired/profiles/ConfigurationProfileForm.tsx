@@ -82,17 +82,11 @@ export function ConfigurationProfileForm () {
       if(vlan.switchFamilyModels) {
         vlan.switchFamilyModels.forEach((model: SwitchModel) => {
           if(model.taggedPorts?.length){
-            if(modelMap[model.model]) {
-              modelMap[model.model].push({
-                vlanId: String(vlan.vlanId),
-                taggedPorts: model.taggedPorts.split(',')
-              })
-            } else {
-              modelMap[model.model] = [{
-                vlanId: String(vlan.vlanId),
-                taggedPorts: model.taggedPorts.split(',')
-              }]
-            }
+            const vlanId = String(vlan.vlanId)
+            const taggedPorts = model.taggedPorts.split(',')
+            modelMap[model.model] = modelMap[model.model]
+              ? [...modelMap[model.model], { vlanId, taggedPorts }]
+              : [{ vlanId, taggedPorts }]
           }
         })
       }
@@ -109,38 +103,42 @@ export function ConfigurationProfileForm () {
   }
 
   const generateVoiceVlanConfig = (options?: VoiceVlanOption[], prevConfig?: VoiceVlanConfig[]) => {
-    if(options) {
-      const initVoiceVlanConfigs:VoiceVlanConfig[] = options && options
-        .map(i => ({ model: i.model, voiceVlans: [] }))
+    if (!options) return false
 
-      if(prevConfig){
-        initVoiceVlanConfigs.forEach((i, index) => {
-          prevConfig.forEach(p => {
-            if(i.model == p.model) {
-              if(p.voiceVlans.length){
-                const validVlans = options[index].taggedVlans
-                p.voiceVlans.forEach(pVlan=>{
-                  validVlans.forEach(o => {
-                    if(o.vlanId == pVlan.vlanId){
-                      const ports = pVlan.taggedPorts
-                        .filter(port => o.taggedPorts.indexOf(port)!==-1)
-                      if(ports.length) {
-                        i.voiceVlans.push({
-                          vlanId: pVlan.vlanId,
-                          taggedPorts: ports
-                        })
-                      }
-                    }
-                  })
-                })
-              }
-            }
-          })
-        })
+    const initVoiceVlanConfigs: VoiceVlanConfig[] = options.map((option) => {
+      const matchingPrevConfig = prevConfig?.find((prev) => prev.model === option.model)
+      const taggedVlans = option.taggedVlans || []
+
+      if (!matchingPrevConfig || matchingPrevConfig.voiceVlans.length === 0) {
+        return {
+          model: option.model,
+          voiceVlans: []
+        }
       }
-      return initVoiceVlanConfigs
-    }
-    return false
+
+      const newVoiceVlans = matchingPrevConfig.voiceVlans
+        .filter((prevVlan) => taggedVlans.some(
+          (taggedVlan) => taggedVlan.vlanId === prevVlan.vlanId))
+        .map((prevVlan) => {
+          const taggedPorts = prevVlan.taggedPorts.filter((port) =>
+            taggedVlans.find(
+              (taggedVlan) => taggedVlan.vlanId === prevVlan.vlanId)?.taggedPorts.includes(port)
+          )
+
+          return {
+            vlanId: prevVlan.vlanId,
+            taggedPorts
+          }
+        })
+
+      return {
+        model: option.model,
+        voiceVlans: newVoiceVlans
+      }
+    })
+
+    return initVoiceVlanConfigs
+
   }
 
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>,
