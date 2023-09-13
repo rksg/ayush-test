@@ -382,7 +382,8 @@ export interface SwitchModel {
 	model: string,
 	slots: SwitchModelSlot[],
   taggedPorts?: string,
-  untaggedPorts?: string
+	untaggedPorts?: string,
+	voicePorts?: string
 }
 
 export interface Vlan {
