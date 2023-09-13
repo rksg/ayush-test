@@ -5,7 +5,7 @@ import { useForm }                                          from 'antd/lib/form/
 import { useIntl }                                          from 'react-intl'
 
 import {
-  Modal
+  Modal, Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -132,10 +132,11 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
                 <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
             </Space>
           </Radio.Group>}
-          {enableSwitchTwoVersionUpgrade && <Typography>
-            { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-          </Typography>}
+          {enableSwitchTwoVersionUpgrade && <Subtitle level={4}>
+            {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+            &nbsp;
+            ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+          </Subtitle>}
           {enableSwitchTwoVersionUpgrade && <Radio.Group
             style={{ margin: 12 }}
             onChange={onChangeRegularForVersionAboveTen}
@@ -149,10 +150,11 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
             </Space>
           </Radio.Group>}
           {enableSwitchTwoVersionUpgrade && <UI.Section>
-            <Typography>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
-            </Typography>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+              &nbsp;
+              ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+            </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
               onChange={onChangeRegular}
@@ -168,12 +170,24 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
           </UI.Section>}
           <UI.Section>
             <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'This action cannot be canceled once initiated.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'You will be notified once the update process has finished.' })}</UI.Li>}
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}
+                </label>
+              </li>
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'This action cannot be canceled once initiated.' })}
+                </label>
+              </li>
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'You will be notified once the update process has finished.' })}
+                </label>
+              </li>
             </UI.Ul>
           </UI.Section>
         </Form.Item>

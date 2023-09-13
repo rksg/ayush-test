@@ -7,7 +7,7 @@ import _                                                                from 'lo
 import moment                                                           from 'moment-timezone'
 import { useIntl }                                                      from 'react-intl'
 
-import { Subtitle }               from '@acx-ui/components'
+import { Modal, Subtitle }               from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AVAILABLE_SLOTS,
@@ -232,7 +232,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }
 
   return (
-    <UI.ScheduleModal
+    <Modal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       visible={visible}
       width={560}
@@ -263,8 +263,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               </Space>
             </Radio.Group>}
             {enableSwitchTwoVersionUpgrade && <Subtitle level={4}>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+              {
+                $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+                &nbsp;
+              ({icx8200Count} {$t({ defaultMessage: 'switches' })})
             </Subtitle>}
             {enableSwitchTwoVersionUpgrade && <Radio.Group
               style={{ margin: 12 }}
@@ -282,7 +284,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             {enableSwitchTwoVersionUpgrade && <UI.Section>
               <Subtitle level={4}>
                 { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                  &nbsp;
+                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
               </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
@@ -339,6 +343,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           setChecked={onPreDownloadChange}
         />
       </Form>
-    </UI.ScheduleModal>
+    </Modal>
   )
 }

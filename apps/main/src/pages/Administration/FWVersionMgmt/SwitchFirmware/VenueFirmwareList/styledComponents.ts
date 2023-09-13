@@ -38,27 +38,20 @@ export const ItemModel = styled.div`
 `
 
 export const Ul = styled.ul`
-  list-style-type: none;
-  padding-left: 1em;
+  padding-left: 35px;
+  li {
+    margin-bottom: 8px;
+  }
 `
 
 export const Li = styled.li`
   &:before {
-    content: "-";
     position: absolute;
     margin-left: -1em;
   }
   margin-top: 5px;
 `
 
-export const ScheduleModal = styled(Modal)`
-.ant-modal-body{
-  overflow: initial;
-}
-.ant-modal-content{
-  max-height: initial;
-}
-`
 export const ChangeButton = styled(Button)`
   position: absolute;
   top: 40px;
