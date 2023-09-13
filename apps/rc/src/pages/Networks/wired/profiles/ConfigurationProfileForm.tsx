@@ -211,7 +211,7 @@ export function ConfigurationProfileForm () {
     if(data.voiceVlanOptions) {
       delete data.voiceVlanOptions
     }
-    if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
+    if(!isSwitchVoiceVlanEnhanced || (data.voiceVlanConfigs && !data.voiceVlanConfigs.length)) {
       delete data.voiceVlanConfigs
     }
     return data
