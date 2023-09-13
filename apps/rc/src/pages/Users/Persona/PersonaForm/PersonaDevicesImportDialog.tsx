@@ -36,7 +36,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
   const { visible, onSubmit, onCancel, personaGroupId, selectedMacAddress } = props
   const subTitle = `The devices will be added to MAC Registration List
-  (${macRegistrationPool?.name ?? noDataDisplay}) which is associated with this persona`
+  (${macRegistrationPool?.name ?? noDataDisplay}) which is associated with this identity`
 
   useEffect(() => {
     if (!personaGroupId) return

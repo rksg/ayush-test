@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Provider }        from '@acx-ui/store'
-import { render }          from '@acx-ui/test-utils'
+import { Provider }             from '@acx-ui/store'
+import { render }               from '@acx-ui/test-utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { useGetNetwork } from '../services'
 

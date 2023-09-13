@@ -1,10 +1,11 @@
 import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { KpiThresholdType, useApCountForNodeQuery }       from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Card, Loader, ProgressBarV2 }                    from '@acx-ui/components'
-import { formatter }                                      from '@acx-ui/formatter'
+import { KpiThresholdType, useApCountForNodeQuery } from '@acx-ui/analytics/services'
+import { kpiConfig, useAnalyticsFilter }            from '@acx-ui/analytics/utils'
+import { Card, Loader, ProgressBarV2 }              from '@acx-ui/components'
+import { formatter }                                from '@acx-ui/formatter'
+import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
 import { useKpiThresholdsQuery } from '../Health/Kpi'
 import { usePillQuery }          from '../Health/Kpi/Pill'

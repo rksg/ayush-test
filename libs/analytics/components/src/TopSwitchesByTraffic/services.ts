@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }                           from '@acx-ui/store'
+import { getFilterPayload }     from '@acx-ui/analytics/utils'
+import { dataApi }              from '@acx-ui/store'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 export type SwitchesByTrafficData = {
   name: string

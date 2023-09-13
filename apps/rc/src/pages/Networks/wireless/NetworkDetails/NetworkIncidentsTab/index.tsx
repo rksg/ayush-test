@@ -1,7 +1,7 @@
-import { IncidentTabContent } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { Loader }             from '@acx-ui/components'
-import { useDateFilter }      from '@acx-ui/utils'
+import { IncidentTabContent }   from '@acx-ui/analytics/components'
+import { Loader }               from '@acx-ui/components'
+import { useDateFilter }        from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { extractSSIDFilter, useGetNetwork } from '../services'
 

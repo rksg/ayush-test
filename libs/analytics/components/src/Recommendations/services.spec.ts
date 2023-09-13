@@ -153,7 +153,7 @@ describe('Recommendation services', () => {
         type: 'Venue',
         priority: { order: 2, label: defineMessage({ defaultMessage: 'High' }) },
         category: 'AI-Driven Cloud RRM',
-        summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
+        summary: 'Optimal Ch/Width and Tx power found for 5 GHz radio',
         status: 'Applied',
         statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
         statusEnum: 'applied',

@@ -6,12 +6,12 @@ import {
   nodeTypes,
   getFilterPayload,
   formattedPath,
-  productNames,
-  AnalyticsFilter
+  productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
+import type { AnalyticsFilter }           from '@acx-ui/utils'
 
 import { states,
   codes,
