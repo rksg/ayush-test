@@ -206,3 +206,48 @@ export const mockedDpskPassphraseMultipleDevices = {
   numberOfDevices: 5,
   createdDate: '2023-09-01T02:55:36.357257'
 }
+
+export const mockedDevices = [
+  {
+    mac: '11:22:33:44:55:66',
+    lastConnectedNetwork: null,
+    lastConnectedNetworkId: null,
+    lastConnectedTime: null,
+    deviceConnectivity: 'CONFIGURED'
+  },
+  {
+    mac: '36:29:3f:06:15:15',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:09:08.695762',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'b6:d8:e3:ad:e0:37',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:27:54.475295',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'e6:f9:c7:0a:5a:20',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:50:00.169552',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'c2:05:ec:c1:dc:a1',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T08:39:42.73776',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'c8:89:f3:de:99:f2',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-07T02:09:39.672192',
+    deviceConnectivity: 'CONNECTED'
+  }
+]

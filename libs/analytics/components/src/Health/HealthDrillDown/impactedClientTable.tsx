@@ -77,18 +77,11 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'mac',
       key: 'mac',
-      render: (_, { mac, hostname }) => {
-        const macAddress = mac?.[0]?.toLocaleLowerCase()
-        let queryParams = ''
-        const formattedHostname = (hostname as string[]).join(', ')
-        queryParams = `?hostname=${formattedHostname}`
-        const link = `users/wifi/clients/${macAddress}/details/overview${queryParams}`
-        return (
-          <TenantLink to={link}>
-            {mac}
-          </TenantLink>
-        )
-      },
+      render: (_, { mac }) => (
+        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/overview`}>
+          {mac}
+        </TenantLink>
+      ),
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {

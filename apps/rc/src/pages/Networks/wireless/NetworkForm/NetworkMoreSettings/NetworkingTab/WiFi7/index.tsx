@@ -1,9 +1,11 @@
+/* eslint-disable max-len */
+
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Space, Switch } from 'antd'
-import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
-import { get, isUndefined }              from 'lodash'
-import { useIntl }                       from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
+import { get, isUndefined }    from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { Tooltip }                                                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
@@ -46,11 +48,11 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
-  if (!wlanSecurity)
-    return false
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  const valueOfWlanSecurity = getWlanSecurity(wlanData, wlanSecurity)
+  const enableOwe = getIsOwe(wlanData, valueOfWlanSecurity)
 
-  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum)
+  return IsSecuritySupport6g(valueOfWlanSecurity as WlanSecurityEnum) || enableOwe || false
 }
 
 export const inverseTargetValue =
@@ -123,6 +125,14 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
+export const getWlanSecurity = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  return wlanSecurity || get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
+}
+
+export const getIsOwe = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
+  return get(wlanData, ['enableOwe']) || (wlanSecurity === WlanSecurityEnum.OWE)
+}
+
 const { useWatch } = Form
 
 const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
@@ -140,7 +150,8 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData?.wlan?.wlanSecurity)
+  const wlanSecurity = useWatch('wlanSecurity')
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurity)
 
   useEffect(() => {
     const updateMloOptions = () => {
@@ -213,7 +224,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
                     display: 'flex'
                   }}
                   children={
-                    <Checkbox
+                    <UI.StyledCheckbox
                       key={key}
                       name={option.name}
                       checked={option.value}
@@ -227,7 +238,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
             }
             else {
               return (
-                <Checkbox
+                <UI.StyledCheckbox
                   key={key}
                   name={option.name}
                   checked={option.value}

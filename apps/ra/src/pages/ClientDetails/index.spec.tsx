@@ -37,6 +37,7 @@ describe('ClientDetails', () => {
       }
     })
     expect(await screen.findByText(params.clientId)).toBeVisible()
+    expect(await screen.findByText('Unknown')).toBeVisible()
     expect(await screen.findByRole('tab', { name: 'Overview', selected: true })).toBeVisible()
     expect(await screen.findByText('Troubleshooting')).toBeVisible()
     expect(await screen.findByText('Reports')).toBeVisible()
@@ -47,21 +48,6 @@ describe('ClientDetails', () => {
       hash: '',
       search: ''
     })
-  })
-
-  it('should render with hostname', async () => {
-    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('soyboy')
-    render(<ClientDetails/>, {
-      wrapper: Provider,
-      route: {
-        params: {
-          ...params,
-          activeTab: 'overview'
-        },
-        path: '/users/wifi/clients/:clientId/details/:activeTab'
-      }
-    })
-    expect(await screen.findByText('soyboy')).toBeVisible()
   })
 
   it('should render with reports correctly', async () => {
