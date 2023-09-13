@@ -131,7 +131,7 @@ export const StyledList = styled(List)`
     bottom: 0;
     background-color: var(--acx-primary-white);
     z-index: 1;
-    padding-bottom: 0px;
+    padding: 0px;
   }
 `
 export const StyledMenu = styled(Menu)`
