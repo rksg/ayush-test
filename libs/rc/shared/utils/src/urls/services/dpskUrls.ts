@@ -104,6 +104,12 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
+  exportNewFlowPassphrases: {
+    method: 'post',
+    // eslint-disable-next-line max-len
+    url: genDpskNewFlowUrl(NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat'),
+    newApi: true
+  },
   revokePassphrases: {
     method: 'PATCH',
     url: NewDpskPassphraseBaseUrl,
@@ -135,17 +141,21 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   getNewFlowPassphraseDevices: {
     method: 'get',
-    url: '/v2' + NewDpskPassphraseDevices,
+    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
     newApi: true
   },
   updateNewFlowPassphraseDevices: {
     method: 'post',
-    url: '/v2' + NewDpskPassphraseDevices,
+    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
     newApi: true
   },
   deleteNewFlowPassphraseDevices: {
     method: 'delete',
-    url: '/v2' + NewDpskPassphraseDevices,
+    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
     newApi: true
   }
+}
+
+export function genDpskNewFlowUrl (url: string): string {
+  return '/v2' + url
 }

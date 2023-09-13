@@ -12,11 +12,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
+  useLazyDownloadNewFlowPassphrasesQuery,
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
@@ -37,7 +38,8 @@ import { RolesEnum }                           from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl }                             from '@acx-ui/utils'
 
-import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import NetworkForm                    from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import { MAX_PASSPHRASES_PER_TENANT } from '../constants'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -72,10 +74,12 @@ export default function DpskPassphraseManagement () {
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
   ] = useState<DpskPassphraseEditMode>({ isEdit: false })
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
+  const [ downloadNewFlowCsv ] = useLazyDownloadNewFlowPassphrasesQuery()
   const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
@@ -91,10 +95,23 @@ export default function DpskPassphraseManagement () {
     apiParams: dpskNewConfigFlowParams
   })
 
-  const downloadPassphrases = () => {
-    downloadCsv({ params: { ...params, ...dpskNewConfigFlowParams } }).unwrap().catch((error) => {
+  const downloadPassphrases = async () => {
+    const apiParams = { ...params, ...dpskNewConfigFlowParams }
+
+    try {
+      if (isNewConfigFlow) {
+        const payload = {
+          page: 1,
+          pageSize: MAX_PASSPHRASES_PER_TENANT,
+          ...tableQuery.search
+        }
+        downloadNewFlowCsv({ params: apiParams, payload }).unwrap()
+      } else {
+        downloadCsv({ params: apiParams }).unwrap()
+      }
+    } catch (error) {
       console.log(error) // eslint-disable-line no-console
-    })
+    }
   }
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [

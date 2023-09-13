@@ -1,15 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { serviceApi }       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { serviceApi }                               from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
   DpskUrls,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  genDpskNewFlowUrl
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -30,7 +31,8 @@ import {
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
-const mockDownloadCsv = jest.fn()
+const mockedDownloadCsv = jest.fn()
+const mockedDownloadNewFlowCsv = jest.fn()
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -39,7 +41,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useDownloadPassphrasesMutation: () => ([ mockDownloadCsv ])
+  useDownloadPassphrasesMutation: () => ([ mockedDownloadCsv ]),
+  useLazyDownloadNewFlowPassphrasesQuery: () => ([ mockedDownloadNewFlowCsv ])
 }))
 
 describe('DpskPassphraseManagement', () => {
@@ -57,6 +60,10 @@ describe('DpskPassphraseManagement', () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
+      ),
+      rest.post(
+        genDpskNewFlowUrl(DpskUrls.getEnhancedPassphraseList.url),
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
       rest.delete(
@@ -210,11 +217,14 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should export the passphrases', async () => {
-    mockDownloadCsv.mockImplementation(() => ({
+    mockedDownloadCsv.mockImplementation(() => ({
+      unwrap: () => Promise.resolve()
+    }))
+    mockedDownloadNewFlowCsv.mockImplementation(() => ({
       unwrap: () => Promise.resolve()
     }))
 
-    render(
+    const { rerender } = render(
       <Provider>
         <DpskPassphraseManagement />
       </Provider>, {
@@ -224,9 +234,18 @@ describe('DpskPassphraseManagement', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
 
-    await waitFor(() => {
-      expect(mockDownloadCsv).toHaveBeenCalled()
-    })
+    await waitFor(() => expect(mockedDownloadCsv).toHaveBeenCalledTimes(1))
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+    rerender(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
+    await waitFor(() => expect(mockedDownloadNewFlowCsv).toHaveBeenCalledTimes(1))
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should render the edit passphrase view', async () => {

@@ -29,7 +29,7 @@ import {
   validateVlanId
 } from '@acx-ui/rc/utils'
 
-import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
+import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES_PER_ADDITION } from '../constants'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'
@@ -124,7 +124,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         label={$t({
           defaultMessage: 'Number of Passphrases (Up to {maximum} passphrases)'
         }, {
-          maximum: MAX_PASSPHRASES
+          maximum: MAX_PASSPHRASES_PER_ADDITION
         })}
         name='numberOfPassphrases'
         initialValue={1}
@@ -133,9 +133,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           {
             type: 'number',
             min: 1,
-            max: MAX_PASSPHRASES,
+            max: MAX_PASSPHRASES_PER_ADDITION,
             // eslint-disable-next-line max-len
-            message: $t({ defaultMessage: 'Number of Passphrases must be between 1 and {max}' }, { max: MAX_PASSPHRASES })
+            message: $t({ defaultMessage: 'Number of Passphrases must be between 1 and {max}' }, { max: MAX_PASSPHRASES_PER_ADDITION })
           }
         ]}
         children={<InputNumber />}
