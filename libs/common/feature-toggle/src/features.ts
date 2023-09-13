@@ -98,7 +98,7 @@ export enum Features {
   SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
-  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
   DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
