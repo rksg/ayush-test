@@ -29,6 +29,6 @@ export const Container = styled.div`
 export const Wrapper = styled.div`
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: stretch;
 `
