@@ -118,11 +118,11 @@ export function ConfigurationProfileForm () {
 
       const newVoiceVlans = matchingPrevConfig.voiceVlans
         .filter((prevVlan) => taggedVlans.some(
-          (taggedVlan) => taggedVlan.vlanId === prevVlan.vlanId))
+          (taggedVlan) => taggedVlan.vlanId == prevVlan.vlanId))
         .map((prevVlan) => {
           const taggedPorts = prevVlan.taggedPorts.filter((port) =>
             taggedVlans.find(
-              (taggedVlan) => taggedVlan.vlanId === prevVlan.vlanId)?.taggedPorts.includes(port)
+              (taggedVlan) => taggedVlan.vlanId == prevVlan.vlanId)?.taggedPorts.includes(port)
           )
 
           return {
