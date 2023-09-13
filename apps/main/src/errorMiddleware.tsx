@@ -33,7 +33,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo', 'detectApNeighbors'
+  'clientInfo', 'detectApNeighbors', 'getPropertyConfigs', 'importPersonas'
 ]
 
 export const errorMessage = {
