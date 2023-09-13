@@ -21,7 +21,9 @@ import {
   SpeedIndicatorSolid,
   SwitchOutlined,
   SwitchSolid,
-  WiFi
+  WiFi,
+  DevicesOutlined,
+  DevicesSolid
 } from '@acx-ui/icons'
 import {
   getServiceCatalogRoutePath,
@@ -50,6 +52,7 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -208,6 +211,12 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(showRwgUI ? [{
+      uri: '/ruckus-wan-gateway',
+      label: $t({ defaultMessage: 'RWG' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: SwitchOutlined,

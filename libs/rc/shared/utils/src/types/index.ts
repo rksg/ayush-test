@@ -158,6 +158,19 @@ export interface AlarmMeta {
   edgeName: string
 }
 
+export interface RWG {
+  id: string
+  name: string
+  status: string
+  venueId: string
+  venueName: string
+  loginUrl: string
+  username: string
+  password: string
+  rwgId: string
+  tenantId: string
+}
+
 export type Alarm = AlarmBase & AlarmMeta
 
 export enum EventSeverityEnum {
