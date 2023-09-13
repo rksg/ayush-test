@@ -1,7 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
-import { AnalyticsFilter }                             from '@acx-ui/analytics/utils'
 import { Provider, store, dataApiURL }                 from '@acx-ui/store'
 import { fireEvent, render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                        from '@acx-ui/utils'
 import { DateRange }                                   from '@acx-ui/utils'
 
 import { topWifiByNetworkFixture } from './__tests__/fixtures'

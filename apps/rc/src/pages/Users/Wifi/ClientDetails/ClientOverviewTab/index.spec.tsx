@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                        from '@acx-ui/analytics/utils'
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -18,7 +17,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
 import {
   apCaps,
