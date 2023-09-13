@@ -93,6 +93,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }
   const onClose = () => {
     setVisible(false)
+    setSearchText('')
     setInputValue(defaultPath.map((node) => node.name).join(' / '))
     setNetworkPath(defaultPath, defaultPath)
     setBreadcrumbPath([rootNode])
