@@ -259,20 +259,15 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: CrrmResponse) => {
-        const total = response.crrmCount.length
-        const optimized = response.crrmCount.filter(i => {
-          const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
-          return optimizedStates.includes(i.status)
-        }).length
-        const result: CrrmData = {
+        return {
           recommendations: transformCrrmList(response.recommendations),
           crrmCount: {
-            total: total,
-            optimized: optimized
+            total: response.crrmCount.length,
+            optimized: response.crrmCount
+              .filter(i => getCrrmOptimizedState(i.status as StateType).order === 0).length
           },
           crrmScenario: response.crrmScenario
         }
-        return result
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
