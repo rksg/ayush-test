@@ -47,6 +47,17 @@ export type Recommendation = {
   path: NetworkPath
 }
 
+export type CrrmData = {
+  recommendations: CrrmListItem[]
+  crrmScenario: {
+    total: number
+  }
+  crrmCount: {
+    total: number
+    optimized: number
+  }
+}
+
 export type RecommendationListItem = Recommendation & {
   scope: string
   type: string
@@ -216,15 +227,21 @@ function transformRecommendationList (recommendations: Recommendation[]): Recomm
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
-      CrrmListItem[],
-      AnalyticsFilter & { n: number }
+      CrrmData,
+      AnalyticsFilter & { n: number, m: number }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int, $m: Int
         ) {
+          crrmCount(start: $start, end: $end, path: $path, n: $m, crrm: true) {
+            status
+          }
+          crrmScenario(start: $start, end: $end, path: $path, n: $m, crrm: true) {
+            total
+          }
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
             id
             status
@@ -237,11 +254,25 @@ export const api = recommendationApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           n: payload.n,
+          m: payload.m,
           ...getFilterPayload(payload)
         }
       }),
-      transformResponse: (response: Response<CrrmListItem>) => {
-        return transformCrrmList(response.recommendations)
+      transformResponse: (response: CrrmResponse) => {
+        const total = response.crrmCount.length
+        const optimized = response.crrmCount.filter(i => {
+          const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+          return optimizedStates.includes(i.status)
+        }).length
+        const result: CrrmData = {
+          recommendations: transformCrrmList(response.recommendations),
+          crrmCount: {
+            total: total,
+            optimized: optimized
+          },
+          crrmScenario: response.crrmScenario
+        }
+        return result
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
@@ -357,6 +388,14 @@ export const api = recommendationApi.injectEndpoints({
     })
   })
 })
+
+export interface CrrmResponse {
+  recommendations: CrrmListItem[],
+  crrmScenario: {
+    total: number
+  },
+  crrmCount: Recommendation[]
+}
 
 export interface Response<Recommendation> {
   recommendations: Recommendation[]

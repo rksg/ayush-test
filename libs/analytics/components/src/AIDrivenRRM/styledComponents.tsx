@@ -5,7 +5,7 @@ export const List = styled(AntList)``
 
 List.Item = styled(AntList.Item)`
   border-bottom-color: var(--acx-neutrals-25);
-  padding: 10px 0;
+  padding: 5px 0;
   a {
     display: block;
     flex: 1;
@@ -34,4 +34,8 @@ List.Item.Meta = styled(AntList.Item.Meta)`
     line-height: var(--acx-body-6-line-height);
     color: var(--acx-neutrals-50);
   }
+`
+
+export const subtitle = styled.div`
+  margin: 20px 0px 10px 0px;
 `
