@@ -99,7 +99,8 @@ export const apApi = baseApApi.injectEndpoints({
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
