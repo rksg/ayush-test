@@ -28,6 +28,7 @@ export const ListItemComponent: React.FC<Props> = ({
       $isAnimationSlideIn={isAnimationSlideIn}
     >
       <UI.ListItemSpan
+        hasArrow={!node?.mac}
         key={`${node?.type}-${node.name}`}
         title={customCapitalize(node)}
       >
