@@ -23,10 +23,11 @@ export const findMatchingNode = (
   path: Node[] = []
 ): Node | null => {
   if (!targetNode) return null
-  const isMatchingNode = node.type === 'ap' || node.type === 'switch'
-    ? node.mac === targetNode.list?.[0]
-    : node.name === targetNode.name && node.type === targetNode.type
-  if (isMatchingNode) {
+  if (node.type === targetNode.type && (
+    node.type === 'ap' || node.type === 'switch'
+      ? node.mac === targetNode.list?.[0]
+      : node.name === targetNode.name
+  )) {
     return { ...node, path: [...path, node] }
   }
   if (Array.isArray(node.children)) {
