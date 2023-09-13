@@ -7,8 +7,7 @@ import {
   RangePicker
 } from '@acx-ui/components'
 import {
-  useParams,
-  useSearchParams
+  useParams
 } from '@acx-ui/react-router-dom'
 import { useDateFilter } from '@acx-ui/utils'
 
@@ -29,17 +28,14 @@ function DatePicker () {
 export const ClientDetailPageHeader = () => {
   const { $t } = useIntl()
   const { clientId } = useParams()
-  const [searchParams] = useSearchParams()
 
   return (
     <PageHeader
       title={<Space size={4}>{clientId}
-        {
-          searchParams.get('hostname')
-            && <HostnameSpace size={4}>
-              ({searchParams.get('hostname')})
-            </HostnameSpace>
-        }
+        {<HostnameSpace size={4}>
+          {/* TODO: use client detail query to get hostname */}
+          ({$t({ defaultMessage: 'Unknown' })})
+        </HostnameSpace>}
       </Space>}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Clients' }), link: '' },

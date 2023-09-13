@@ -94,15 +94,10 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
     column('hostname', {
       title: $t({ defaultMessage: 'Hostname' }),
       tooltip: tooltips.hostname,
-      render: (_, { mac, hostname }) => {
-        let link = `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
-        if (Array.isArray(hostname) && hostname.length > 0) {
-          link = link + `&hostname=${hostname.join(', ')}`
-        }
-        return <TenantLink
-          to={link}
+      render: (_, { mac, hostname }) =>
+        <TenantLink
+          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
         >{hostname}</TenantLink>
-      }
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
