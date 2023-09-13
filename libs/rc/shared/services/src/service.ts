@@ -48,8 +48,10 @@ import {
   AccessControlUrls,
   DpskMutationResult,
   DpskDownloadNewFlowPassphrasesPayload,
-  genDpskNewFlowUrl,
-  DpskDownloadPassphrasesPayload
+  convertDpskNewFlowUrl,
+  DpskDownloadPassphrasesPayload,
+  DpskPassphrasesClientPayload,
+  DpskNewFlowPassphraseClient
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -824,14 +826,39 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    getPassphraseClient: build.query<DpskPassphraseClient, RequestPayload>({
+    // eslint-disable-next-line max-len
+    getPassphraseClient: build.query<DpskPassphraseClient, RequestPayload<DpskPassphrasesClientPayload>>({
       query: ({ params, payload }) => {
-        const getPassphraseClientReq = createDpskHttpRequest(DpskUrls.getPassphraseClient, params)
+        const isNewFlow = isDpskNewFlow(params)
+
+        const apiInfo = DpskUrls[isNewFlow ? 'getNewFlowPassphraseClient' : 'getPassphraseClient']
+        const apiParams = isNewFlow ? {
+          ...params,
+          networkId: payload!.networkId,
+          mac: payload!.mac
+        } : params
+
+        const req = createHttpRequest(apiInfo, apiParams)
 
         return {
-          ...getPassphraseClientReq,
-          body: payload
+          ...req,
+          ...(isNewFlow ? {} : { body: payload })
         }
+      },
+      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, _, arg) {
+        if (!isDpskNewFlow(arg.params)) return result as DpskPassphraseClient
+
+        const res = result as DpskNewFlowPassphraseClient
+
+        return {
+          passphraseId: res.id,
+          username: res.username,
+          passphrase: res.passphrase,
+          numberOfDevices: res.numberOfDevices,
+          clientMac: res.devices.map(device => device.mac),
+          createdDate: res.createdDate,
+          expirationDate: res.expirationDate
+        } as DpskPassphraseClient
       }
     }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
@@ -993,7 +1020,7 @@ export type DpskNewConfigFlowParamsValue = 'y' | 'n'
 export function transferDpskNewConfigApiInfo (apiInfo: ApiInfo, params?: Params<string>): ApiInfo {
   if (!isDpskNewFlow(params)) return apiInfo
 
-  return { ...apiInfo, url: genDpskNewFlowUrl(apiInfo.url) }
+  return { ...apiInfo, url: convertDpskNewFlowUrl(apiInfo.url) }
 }
 
 export function createDpskHttpRequest (

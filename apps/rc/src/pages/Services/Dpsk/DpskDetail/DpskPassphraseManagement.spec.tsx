@@ -10,7 +10,7 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  genDpskNewFlowUrl
+  convertDpskNewFlowUrl
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -63,7 +63,7 @@ describe('DpskPassphraseManagement', () => {
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
       rest.post(
-        genDpskNewFlowUrl(DpskUrls.getEnhancedPassphraseList.url),
+        convertDpskNewFlowUrl(DpskUrls.getEnhancedPassphraseList.url),
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
       rest.delete(

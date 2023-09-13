@@ -22,6 +22,8 @@ export const NewDpskPassphraseBaseUrlWithId = NewDpskPassphraseBaseUrl + '/:pass
 
 export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrlWithId + '/devices'
 
+const DpskNewFlowPassphraseDevicesUrl = '/v2' + NewDpskPassphraseDevices
+
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -106,8 +108,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   exportNewFlowPassphrases: {
     method: 'post',
-    // eslint-disable-next-line max-len
-    url: genDpskNewFlowUrl(NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat'),
+    url: '/v2' + NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
   revokePassphrases: {
@@ -119,6 +120,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   getPassphraseClient: {
     method: 'post',
     url: '/dpskpassphrases/client',
+    newApi: true
+  },
+  getNewFlowPassphraseClient: {
+    method: 'get',
+    url: '/v2/dpskServices/client?mac=:mac&networkId=:networkId',
     newApi: true
   },
   getPassphraseDevices: {
@@ -141,21 +147,22 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   getNewFlowPassphraseDevices: {
     method: 'get',
-    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
+    url: DpskNewFlowPassphraseDevicesUrl,
     newApi: true
   },
   updateNewFlowPassphraseDevices: {
     method: 'post',
-    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
+    url: DpskNewFlowPassphraseDevicesUrl,
     newApi: true
   },
   deleteNewFlowPassphraseDevices: {
     method: 'delete',
-    url: genDpskNewFlowUrl(NewDpskPassphraseDevices),
+    url: DpskNewFlowPassphraseDevicesUrl,
     newApi: true
   }
 }
 
-export function genDpskNewFlowUrl (url: string): string {
+
+export function convertDpskNewFlowUrl (url: string): string {
   return '/v2' + url
 }

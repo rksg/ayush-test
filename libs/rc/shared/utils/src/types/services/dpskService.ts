@@ -90,7 +90,18 @@ export interface DpskPassphraseClient {
   numberOfDevices?: number;
   clientMac: string[];
   createdDate: string;
-  expirationDate: string;
+  expirationDate?: string;
+}
+
+
+export interface DpskNewFlowPassphraseClient {
+  id: string;
+  username: string;
+  passphrase: string;
+  numberOfDevices?: number;
+  createdDate: string;
+  devices: { mac: string }[];
+  expirationDate?: string;
 }
 
 export interface DPSKDeviceInfo {
@@ -117,4 +128,10 @@ export interface DpskDownloadNewFlowPassphrasesPayload extends DpskDownloadPassp
   page: number,
   pageSize: number,
   searchString?: string
+}
+
+export interface DpskPassphrasesClientPayload {
+  networkId: string,
+  mac: string,
+  username?: string
 }
