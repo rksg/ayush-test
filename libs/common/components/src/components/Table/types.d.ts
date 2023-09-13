@@ -20,7 +20,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
   /**
    * Mark column as fixed
    */
-  fixed?: 'left'
+  fixed?: 'left' | 'right' | undefined
   /**
    * Mark column as unable to move
    * If `fixed` is set, this prop will be override to `true`
