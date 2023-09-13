@@ -4,12 +4,29 @@ import {
   Menu,
   Input
 } from 'antd'
+import { keyframes }   from 'styled-components'
 import styled, { css } from 'styled-components/macro'
 
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 export type SeveritySpanProps = {
   severity: string
 }
+const slideIn = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`
+const slideOut = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`
 
 export const ButtonDiv = styled.div`
   background-color: var(--acx-neutrals-10);
@@ -76,12 +93,20 @@ export const ListItemSpan = styled.span`
   text-overflow: ellipsis;
   width: 180px;
 `
-export const ListItem = styled(List.Item)<{ $isSelected?: boolean }>`
+export const ListItem = styled(List.Item)<{
+  $isSelected?: boolean;
+  $isAnimationSlideIn: boolean;
+}>`
   padding-left: 20px;
   padding-right: 16px;
-  background-color:  ${(props) => props.$isSelected
-    ? 'var(--acx-accents-orange-20)'
-    : 'var(--acx-primary-white)'};
+  animation: ${(props) =>
+    props.$isAnimationSlideIn
+      ? slideIn
+      : slideOut} 0.3s ease-in-out;
+  background-color: ${(props) =>
+    props.$isSelected
+      ? 'var(--acx-accents-orange-20)'
+      : 'var(--acx-primary-white)'};
   &:hover {
     cursor: pointer;
     background-color: var(--acx-accents-orange-10);
@@ -114,9 +139,13 @@ export const StyledMenu = styled(Menu)`
   user-select: none;
   .ant-dropdown-menu-item {
   padding : 0;
+  &.ant-dropdown-menu-item-active {
+    background-color: var(--acx-primary-white) !important;
+  }
   &:hover {
     background-color: var(--acx-primary-white) !important;
-    cursor: default;  }
+    cursor: default;  
+  }
 }
 }
 `

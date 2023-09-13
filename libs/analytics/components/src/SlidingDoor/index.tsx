@@ -24,11 +24,12 @@ interface SlidingDoorProps {
   defaultSelectedNode?: Node | null;
 }
 
-const useBreadcrumbState = (initialBreadcrumb: Node[]) => {
+const useBreadcrumbState = (initialBreadcrumb: Node[], cb: CallableFunction) => {
   const [breadcrumb, setBreadcrumb] = useState<Node[]>(initialBreadcrumb)
 
   const onBreadcrumbClick = (index: number) => {
     setBreadcrumb(breadcrumb.slice(0, index + 1))
+    cb(false)
   }
 
   const addNodeToBreadcrumb = (node: Node) => {
@@ -52,9 +53,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
       (props.defaultSelectedNode as unknown as Node[]).length - 1
     ]
   )?.path || [rootNode]
-
+  const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
-    useBreadcrumbState(initialBreadcrumb)
+    useBreadcrumbState(initialBreadcrumb, setIsAnimationSlideIn)
 
   const [searchText, setSearchText] = useState<string>('')
   const [inputValue, setInputValue] = useState<string>(
@@ -62,6 +63,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   )
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
+
   const componentRef = useRef<HTMLDivElement | null>(null)
   const currentNode = breadcrumb[breadcrumb.length - 1]
   const isLeaf = currentNode?.children?.length === 0 || !Boolean(currentNode?.children)
@@ -104,6 +106,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const onSelect = (node: Node) => {
     setSearchResults([])
     setSearchText('')
+    setIsAnimationSlideIn(true)
     if (node.path) {
       setBreadcrumbPath(node.path)
     } else {
@@ -116,6 +119,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     const newBreadcrumb = [...breadcrumb]
     newBreadcrumb.pop()
     setBreadcrumbPath(newBreadcrumb)
+    setIsAnimationSlideIn(false)
   }
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
@@ -155,6 +159,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
             onApply={onApply}
             onBack={onBack}
             onBreadcrumbClick={onBreadcrumbClick}
+            isAnimationSlideIn={isAnimationSlideIn}
           />
         }
         visible={visible}

@@ -9,17 +9,28 @@ interface Props {
   node: Node;
   onClick: (node: Node) => void;
   currentNode: Node;
+  isAnimationSlideIn: boolean
 }
 
-export const ListItemComponent: React.FC<Props> = ({ node, onClick, currentNode }) => {
+export const ListItemComponent: React.FC<Props> = ({
+  node,
+  onClick,
+  currentNode,
+  isAnimationSlideIn
+}) => {
   const isLeaf = node?.children?.length === 0 || !Boolean(node?.children)
   const isItemSelected = node === currentNode
   return (
     <UI.ListItem
       key={`${node?.type}-${node.name}`}
       onClick={() => onClick(node)}
-      $isSelected={isItemSelected}>
-      <UI.ListItemSpan key={`${node?.type}-${node.name}`} title={customCapitalize(node)}>
+      $isSelected={isItemSelected}
+      $isAnimationSlideIn={isAnimationSlideIn}
+    >
+      <UI.ListItemSpan
+        key={`${node?.type}-${node.name}`}
+        title={customCapitalize(node)}
+      >
         {customCapitalize(node)}
       </UI.ListItemSpan>
       <div>{!isLeaf && <UI.RightArrow />}</div>
