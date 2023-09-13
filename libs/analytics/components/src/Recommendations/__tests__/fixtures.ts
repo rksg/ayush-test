@@ -34,7 +34,11 @@ export const crrmListResult = {
         projected: 0
       }
     }
-  ]
+  ],
+  crrmCount: [{ status: 'applied' }, { status: 'reverted' }, { status: 'new' }],
+  crrmScenario: {
+    total: 100
+  }
 }
 
 export const recommendationListResult = {

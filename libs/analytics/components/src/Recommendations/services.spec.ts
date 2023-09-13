@@ -111,7 +111,7 @@ describe('Recommendation services', () => {
     })
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.crrmList.initiate({ ...props, n: 5 })
+      api.endpoints.crrmList.initiate({ ...props, n: 5, m: 1000 })
     )
 
     const expectedResult = [
@@ -133,7 +133,7 @@ describe('Recommendation services', () => {
     ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult)
+    expect(data?.recommendations).toStrictEqual(expectedResult)
   })
 
   it('should return recommendation list', async () => {

@@ -262,9 +262,9 @@ export const api = recommendationApi.injectEndpoints({
         return {
           recommendations: transformCrrmList(response.recommendations),
           crrmCount: {
-            total: response.crrmCount.length,
+            total: response.crrmCount?.length,
             optimized: response.crrmCount
-              .filter(i => getCrrmOptimizedState(i.status as StateType).order === 0).length
+              ?.filter(i => getCrrmOptimizedState(i.status as StateType).order === 0).length
           },
           crrmScenario: response.crrmScenario
         }

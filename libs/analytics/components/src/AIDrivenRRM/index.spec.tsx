@@ -54,6 +54,7 @@ describe('AIDrivenRRM dashboard', () => {
       wrapper: Provider
     })
 
-    expect(await screen.findByText('No recommendations')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('RUCKUS AI has confirmed that all zones are currently operating with the optimal RRM onfigurations and no further recommendation is required.')).toBeVisible()
   })
 })
