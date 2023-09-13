@@ -32,7 +32,7 @@ jest.mock('./services', () => ({
 describe('MlisaNetworkFilter', () => {
   const mockNetworkHierarchyData = {
     name: 'root',
-    type: 'root',
+    type: 'system',
     children: [{ id: '2', name: 'child1', type: 'child1' }]
   }
 
@@ -44,6 +44,6 @@ describe('MlisaNetworkFilter', () => {
   it('should render without errors', async () => {
     render(<IntlProvider locale='en'><MlisaNetworkFilter /></IntlProvider>)
     fireEvent.click(await screen.findByPlaceholderText('root'))
-    expect(await screen.findByText('Root (root)')).toBeInTheDocument()
+    expect(await screen.findByText('Root (SZ Cluster)')).toBeInTheDocument()
   })
 })

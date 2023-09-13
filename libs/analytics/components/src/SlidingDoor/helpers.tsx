@@ -1,4 +1,5 @@
-import { getIntl } from '@acx-ui/utils'
+import { nodeTypes }         from '@acx-ui/analytics/utils'
+import { getIntl, NodeType } from '@acx-ui/utils'
 
 import { Node } from '.'
 
@@ -47,7 +48,7 @@ export const customCapitalize = (node?: Node | null) => {
     const { $t } = getIntl()
     return $t({ defaultMessage: 'Entire Organization' })
   } else {
-    return capitalizeFirstLetter(`${name} (${type})`)
+    return capitalizeFirstLetter(`${name} (${nodeTypes(type as NodeType)})`)
   }
 }
 const capitalizeFirstLetter = (str : string) => {

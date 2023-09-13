@@ -83,8 +83,8 @@ describe('Helper Functions', () => {
 
   describe('customCapitalize', () => {
     it('should capitalize and format the node name and type correctly', () => {
-      const node: Node = { name: 'example', type: 'Device' }
-      expect(customCapitalize(node)).toBe('Example (Device)')
+      const node: Node = { name: 'example', type: 'system' }
+      expect(customCapitalize(node)).toBe('Example (SZ Cluster)')
     })
 
     it('should return an empty string if the node is null or undefined', () => {

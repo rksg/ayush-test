@@ -18,13 +18,13 @@ describe('SlidingDoor', () => {
     type: 'network',
     children: [
       {
-        id: '2', name: 'child1', type: 'child1',
-        children: [{ id: '4', name: 'child3', type: 'child3' },
-          { id: '4', name: 'child5', type: 'child3' }]
+        id: '2', name: 'child1', type: 'system',
+        children: [{ id: '4', name: 'child3', type: 'domain' },
+          { id: '4', name: 'child5', type: 'domain' }]
       },
       {
-        id: '3', name: 'child2', type: 'child2',
-        children: [{ id: '5', name: 'child4', type: 'child3' }]
+        id: '3', name: 'child2', type: 'system',
+        children: [{ id: '5', name: 'child4', type: 'domain' }]
       }
     ]
   }
@@ -93,7 +93,7 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Ap (ap)'))
+    fireEvent.click(await screen.findByText('Ap (Access Point)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(mockSetNetworkPath).toBeCalledWith(
       [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
@@ -116,7 +116,7 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Switch (switch)'))
+    fireEvent.click(await screen.findByText('Switch (Switch)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(mockSetNetworkPath).toBeCalledWith(
       [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
@@ -132,7 +132,7 @@ describe('SlidingDoor', () => {
     const input = await screen.findByPlaceholderText('Entire Organization')
     fireEvent.click(input)
     fireEvent.change(input, { target: { value: 'Child5' } })
-    fireEvent.click((await screen.findAllByText('Child5 (child3)'))[0])
+    fireEvent.click((await screen.findAllByText('Child5 (Domain)'))[0])
   })
 
   it('renders empty search', async () => {
@@ -155,10 +155,10 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1 (child1)'))
-    fireEvent.click(await screen.findByText('Child3 (child3)'))
-    fireEvent.click(await screen.findByText('Child5 (child3)'))
-    expect(await screen.findByText('Child3 (child3)')).toBeInTheDocument()
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Child3 (Domain)'))
+    fireEvent.click(await screen.findByText('Child5 (Domain)'))
+    expect(await screen.findByText('Child3 (Domain)')).toBeInTheDocument()
   })
 
   it('should handle onBreadcrumbClick correctly', async () => {
@@ -169,7 +169,7 @@ describe('SlidingDoor', () => {
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
     fireEvent.click(await screen.findByText('Entire Organization'))
     expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
@@ -181,8 +181,8 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1 (child1)'))
-    fireEvent.click(await screen.findByText('Child3 (child3)'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Child3 (Domain)'))
     fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
     expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
@@ -215,9 +215,9 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1 (child1)'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
     fireEvent.mouseDown(document.body)
-    expect(screen.getByText('Child1 (child1)')).toBeVisible()
+    expect(screen.getByText('Child1 (SZ Cluster)')).toBeVisible()
   })
   it('should not close the filter on clicking inside the filter', async () => {
     render(
@@ -227,8 +227,8 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByText('Child1 (child1)'))
-    fireEvent.mouseDown(await screen.findByText('Child1 (child1)'))
-    expect(screen.getByText('Child1 (child1)')).not.toBeVisible()
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.mouseDown(await screen.findByText('Child1 (SZ Cluster)'))
+    expect(screen.getByText('Child1 (SZ Cluster)')).not.toBeVisible()
   })
 })
