@@ -9,14 +9,16 @@ interface Props {
   node: Node;
   onClick: (node: Node) => void;
   currentNode: Node;
-  isAnimationSlideIn: boolean
+  isAnimationSlideIn: boolean;
+  isSearchTriggerred: boolean;
 }
 
 export const ListItemComponent: React.FC<Props> = ({
   node,
   onClick,
   currentNode,
-  isAnimationSlideIn
+  isAnimationSlideIn,
+  isSearchTriggerred
 }) => {
   const isLeaf = node?.children?.length === 0 || !Boolean(node?.children)
   const isItemSelected = node === currentNode
@@ -26,6 +28,7 @@ export const ListItemComponent: React.FC<Props> = ({
       onClick={() => onClick(node)}
       $isSelected={isItemSelected}
       $isAnimationSlideIn={isAnimationSlideIn}
+      $isSearchTriggerred={isSearchTriggerred}
     >
       <UI.ListItemSpan
         key={`${node?.type}-${node.name}`}

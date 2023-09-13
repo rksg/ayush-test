@@ -54,6 +54,7 @@ export const DropdownList: React.FC<DropdownListProps> = ({
             currentNode={currentNode}
             node={node as Node}
             onClick={onSelect}
+            isSearchTriggerred={Boolean(searchText)}
           />
         )}
       />
