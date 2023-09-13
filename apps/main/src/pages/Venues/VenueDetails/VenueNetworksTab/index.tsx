@@ -141,7 +141,6 @@ export function VenueNetworksTab () {
         if (item?.children) {
           _rows.push(item.id)
         }
-        setExpandedRowKeys(_rows)
 
         data.push({
           ...item,
@@ -150,6 +149,7 @@ export function VenueNetworksTab () {
           longitude: venueDetailsQuery.data?.venue.longitude
         })
       })
+      setExpandedRowKeys(_rows)
       setTableData(data)
     }
   }, [tableQuery.data, venueDetailsQuery.data])
