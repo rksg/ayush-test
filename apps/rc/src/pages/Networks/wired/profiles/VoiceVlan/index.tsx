@@ -61,7 +61,7 @@ export function VoiceVlan () {
         <Col span={10}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'Voice VLAN' })} />
           {
-            voiceVlanConfigs.map((item:VoiceVlanConfig) => <div>
+            voiceVlanConfigs.map((item:VoiceVlanConfig) => <div key={item.model}>
               <StepsFormLegacy.SectionTitle style={{ width: '800px', margin: '25px 0 12px 0' }}>
                 {item.model}
               </StepsFormLegacy.SectionTitle>
