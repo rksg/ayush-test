@@ -204,13 +204,11 @@ export const showErrorModal = (details: {
 const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const endpoint = action?.meta?.arg?.endpointName || ''
   const request = action?.meta?.baseQueryMeta?.request
-  console.log('Request', request, 'isIgnoreErrorModal', isIgnoreErrorModal(request))
   return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
 }
 
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
-  console.log('action', action)
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
     if (!shouldIgnoreErrorModal(action)) {
