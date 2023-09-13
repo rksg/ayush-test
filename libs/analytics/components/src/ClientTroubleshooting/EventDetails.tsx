@@ -28,7 +28,7 @@ export const Details = ({ fields, openHandler, extra, actions }: {
             />
           )}
         </Descriptions>
-        {actions && actions}
+        {actions}
       </UI.ListDetails>
       {extra && <><UI.VerticalLine />{extra}</>}
     </UI.Body>
