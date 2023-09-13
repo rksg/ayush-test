@@ -313,7 +313,7 @@ export const getInitPortVlans = (portSetting: PortSettingModel[], defaultVlan: s
 
 export const getPortVenueVlans = (vlans:Vlan[], port: SwitchPortViewModel) => {
   const portsProfileVlans = {
-    tagged: '',
+    tagged: [] as string[],
     untagged: '',
     voice: ''
   }
@@ -324,7 +324,7 @@ export const getPortVenueVlans = (vlans:Vlan[], port: SwitchPortViewModel) => {
       if (model) {
         const vlanId = item.vlanId.toString()
         if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) {
-          portsProfileVlans.tagged = vlanId
+          portsProfileVlans.tagged.push(vlanId)
         }
         if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
           portsProfileVlans.untagged = vlanId
@@ -334,7 +334,10 @@ export const getPortVenueVlans = (vlans:Vlan[], port: SwitchPortViewModel) => {
         }
       }
     })
-  return portsProfileVlans
+  return {
+    ...portsProfileVlans,
+    tagged: portsProfileVlans.tagged.toString()
+  }
 }
 
 export const getMultipleVlanValueLegacy = ( // TODO: rewrite
