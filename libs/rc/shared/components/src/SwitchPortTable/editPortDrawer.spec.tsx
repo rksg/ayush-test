@@ -41,7 +41,7 @@ const params = {
   serialNumber: 'serial-number'
 }
 
-const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
+const editPortVlans = async (inputTagged, inputUntagged, currentStatus?, voiceVlan?) => {
   fireEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
@@ -55,6 +55,9 @@ const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
     fireEvent.change(taggedInput, { target: { value: inputTagged } })
     expect(within(taggedTabPanel).queryByText(/VLAN-ID-55/)).not.toBeInTheDocument()
     fireEvent.click(await within(taggedTabPanel).findByText(inputTagged, { exact: true }))
+    if (voiceVlan) {
+      fireEvent.click(await within(taggedTabPanel).findByRole('switch'))
+    }
   }
 
   if (inputUntagged) {
@@ -199,7 +202,7 @@ describe('EditPortDrawer', () => {
       await user.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
       await user.click(await screen.findByText('2 (802.3af 7.0 W)'))
       expect(await screen.findByTestId('poe-budget-input')).toBeDisabled()
-      await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port')
+      await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port', 'voiceVlan')
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
