@@ -178,7 +178,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
           value={searchText}
           suffix={visible || searchText || inputValue
             ? <CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />
-            : <CaretDownSolid />
+            : <CaretDownSolid style={{ cursor: 'pointer' }} onClick={open} />
           }
         />
       </Dropdown>
