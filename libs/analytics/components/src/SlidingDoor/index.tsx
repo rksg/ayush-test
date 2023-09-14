@@ -135,9 +135,10 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     }
   }, [searchText, rootNode])
 
-  const nodesToShow = searchText
+  const nodesToShow = (searchText
     ? searchResults
     : breadcrumb?.[breadcrumb.length - (isLeaf ? 2 : 1)]?.children
+  )?.slice().sort((a, b) => a.name.localeCompare(b.name))
   const placeHolderText = inputValue || $t({ defaultMessage: 'Entire Organization' })
   const open = () => setVisible(true)
   return (
