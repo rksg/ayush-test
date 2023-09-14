@@ -84,6 +84,7 @@ export enum Features {
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
+  WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
@@ -91,20 +92,23 @@ export enum Features {
   WIFI_DHCP_OPT_82_TOGGLE = 'wifi-dhcp-opt-82-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
+  CCD_TOGGLE = 'ap-ops-client-connection-diagnosis-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
-  WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
+  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
-  MSP_SELF_ASSIGNMENT = 'entitlement-license-assignment-toggle',
+  MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
   DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
-  WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle'
+  WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
+  MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

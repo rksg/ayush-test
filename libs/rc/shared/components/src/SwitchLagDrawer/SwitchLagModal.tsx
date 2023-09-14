@@ -42,6 +42,7 @@ import { getIntl }   from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
+import { SelectVlanModal as SelectVlanModalLegacy }          from '../SwitchPortTable/selectVlanModalLegacy'
 
 interface SwitchLagProps {
   visible: boolean
@@ -57,6 +58,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { visible, setVisible, isEditMode, editData } = props
   const { tenantId, switchId, serialNumber } = useParams()
   const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const portPayload = {
     fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
@@ -571,30 +573,59 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           />
       }
 
-      <SelectVlanModal
-        form={form}
-        selectModalvisible={selectModalVisible}
-        setSelectModalvisible={setSelectModalVisible}
-        setUseVenueSettings={setUseVenueSettings}
-        onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
-        defaultVlan={String(defaultVlanId)}
-        switchVlans={getAllSwitchVlans(switchVlans)}
-        venueVlans={venueVlans}
-        taggedVlans={taggedVlans}
-        untaggedVlan={untaggedVlan}
-        vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
-        hasSwitchProfile={hasSwitchProfile}
-        profileId={switchConfigurationProfileId}
-        updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values,
-            switchVlans,
-            setSwitchVlans,
-            venueVlans,
-            setVenueVlans,
-            enableSwitchLevelVlan
-          )
-        }
-      />
+      {
+        !isSwitchVoiceVlanEnhanced &&
+        <SelectVlanModalLegacy
+          form={form}
+          selectModalvisible={selectModalVisible}
+          setSelectModalvisible={setSelectModalVisible}
+          setUseVenueSettings={setUseVenueSettings}
+          onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
+          defaultVlan={String(defaultVlanId)}
+          switchVlans={getAllSwitchVlans(switchVlans)}
+          venueVlans={venueVlans}
+          taggedVlans={taggedVlans}
+          untaggedVlan={untaggedVlan}
+          vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+          hasSwitchProfile={hasSwitchProfile}
+          profileId={switchConfigurationProfileId}
+          updateSwitchVlans={async (values: Vlan) =>
+            updateSwitchVlans(values,
+              switchVlans,
+              setSwitchVlans,
+              venueVlans,
+              setVenueVlans,
+              enableSwitchLevelVlan
+            )
+          }
+        />
+      }
+      { isSwitchVoiceVlanEnhanced &&
+        <SelectVlanModal
+          form={form}
+          selectModalvisible={selectModalVisible}
+          setSelectModalvisible={setSelectModalVisible}
+          setUseVenueSettings={setUseVenueSettings}
+          onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
+          defaultVlan={String(defaultVlanId)}
+          switchVlans={getAllSwitchVlans(switchVlans)}
+          venueVlans={venueVlans}
+          taggedVlans={taggedVlans}
+          untaggedVlan={untaggedVlan}
+          vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+          hasSwitchProfile={hasSwitchProfile}
+          profileId={switchConfigurationProfileId}
+          updateSwitchVlans={async (values: Vlan) =>
+            updateSwitchVlans(values,
+              switchVlans,
+              setSwitchVlans,
+              venueVlans,
+              setVenueVlans,
+              enableSwitchLevelVlan
+            )
+          }
+        />
+      }
     </>
   )
 
