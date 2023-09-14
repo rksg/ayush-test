@@ -111,6 +111,7 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
+  enableGroups?: boolean
 }
 
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
@@ -118,7 +119,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, enableGroups=true } = props
   const { setApsCount } = useContext(ApsTabContext)
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
@@ -177,7 +178,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
       render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -185,7 +187,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: filterables && getGroupableConfig()?.modelGroupableOptions
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -280,8 +283,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: filterables &&
-        getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+      groupable: enableGroups
+        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+        : undefined
     }, {
       key: 'rf-channels',
       dataIndex: 'rf-channels',

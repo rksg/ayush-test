@@ -668,6 +668,27 @@ export interface TrustedPort {
   trustedPortType: TrustedPortTypeEnum
 }
 
+export interface TaggedVlanPorts {
+  vlanId: string
+  taggedPorts: string[]
+}
+
+export interface VoiceVlanOption {
+  model: string
+  taggedVlans: TaggedVlanPorts[]
+}
+
+export interface VoiceVlanConfig {
+  model: string
+  voiceVlans: TaggedVlanPorts[]
+}
+
+export interface VoiceVlanPort {
+  taggedPort: string
+  voiceVlan: string
+  vlanOptions?: string[]
+}
+
 export interface SwitchConfigurationProfile {
   acls: Acl[]
   id: string
@@ -677,6 +698,8 @@ export interface SwitchConfigurationProfile {
   vlans: Vlan[]
   description: string
   trustedPorts: TrustedPort[]
+  voiceVlanOptions?: VoiceVlanOption[]
+  voiceVlanConfigs?: VoiceVlanConfig[]
 }
 
 export interface AclStandardRule {
