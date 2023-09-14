@@ -13,6 +13,7 @@ export const initialSocket = (url: string) => {
 }
 
 export function getIndependentSocket (url: string): SocketIOClient.Socket {
+  //console.log('getIndependentSocket url: ', url)
   return io.connect(url, {
     path: websocketServerUrl,
     secure: true,

@@ -10,7 +10,7 @@ export const initCcdSocket = (subscriptionId: string, handler: (msg: string) => 
   socket.on('ccdEvent', handler)
 
   //socket.on('disconnect', (reason: string) => {
-  //  console.log('CCD websocket disXConnection - reason', reason)
+  //  console.log('CCD websocket disconnection - reason', reason)
   //})
 
   return socket
@@ -20,5 +20,5 @@ export const closeCcdSocket = (socket: SocketIOClient.Socket) => {
   if (socket.disconnected) return
 
   socket.off('ccdEvent')
-  socket.close()
+  //socket.close()
 }
