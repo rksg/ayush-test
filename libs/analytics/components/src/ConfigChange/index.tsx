@@ -10,8 +10,8 @@ import { get }                                                    from '@acx-ui/
 import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
 import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
 
-import { NetworkFilter }      from '../NetworkFilter'
-import { MlisaNetworkFilter } from '../NetworkFilter/MlisaNetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
@@ -57,7 +57,7 @@ export function useConfigChange () {
 
   const headerExtra = [
     isMLISA
-      ? <MlisaNetworkFilter />
+      ? <SANetworkFilter />
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('network-filter')}
         shouldQuerySwitch={true}

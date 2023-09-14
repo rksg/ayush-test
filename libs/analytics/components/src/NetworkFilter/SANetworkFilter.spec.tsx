@@ -3,7 +3,7 @@ import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { MlisaNetworkFilter }       from './MlisaNetworkFilter'
+import { SANetworkFilter }          from './SANetworkFilter'
 import { useNetworkHierarchyQuery } from './services'
 
 const mockSetNetworkPath = jest.fn()
@@ -29,7 +29,7 @@ jest.mock('./services', () => ({
   useNetworkHierarchyQuery: jest.fn()
 }))
 
-describe('MlisaNetworkFilter', () => {
+describe('SANetworkFilter', () => {
   const mockNetworkHierarchyData = {
     name: 'Network',
     type: 'network',
@@ -46,7 +46,7 @@ describe('MlisaNetworkFilter', () => {
   })
 
   it('should render without errors', async () => {
-    render(<IntlProvider locale='en'><MlisaNetworkFilter /></IntlProvider>)
+    render(<IntlProvider locale='en'><SANetworkFilter /></IntlProvider>)
     await screen.findByPlaceholderText('Entire Organization')
   })
 })

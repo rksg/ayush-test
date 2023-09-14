@@ -6,8 +6,8 @@ import { Node } from '.'
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
   if (
-    node?.name?.toLowerCase().includes(searchText) ||
-    node?.mac?.toLowerCase().includes(searchText)
+    node?.name?.toLowerCase().match(searchText) ||
+    node?.mac?.toLowerCase().match(searchText)
   ) {
     results.push({ ...node, path: [...path, node] })
   }
