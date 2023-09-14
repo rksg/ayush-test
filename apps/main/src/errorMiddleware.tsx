@@ -10,20 +10,44 @@ import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal 
 export type ErrorAction = {
   type: string,
   meta: {
-    baseQueryMeta: {
-      response: Response,
+    baseQueryMeta?: {
+      response?: Response,
       request: Request
     },
     arg?: {
       endpointName: string
     }
-  },
+  }
+} & ({
+  // fetchBaseQuery
   payload: {
-    data?: ErrorDetailsProps
+    data?: ErrorDetailsProps | CatchErrorResponse['data']
     originalStatus?: number
     status?: number
   }
-}
+} | {
+  // baseQuery (for retry API)
+  payload: {
+    error: CatchErrorResponse
+    meta: {
+      response?: Response
+      request: Request
+    }
+  }
+} | {
+  // GraphQL
+  payload: {
+    message: string
+    name: string
+    stack: string
+  }
+} | {
+  // FETCH_ERROR
+  payload: {
+    error: string
+    status: string
+  }
+})
 
 interface ErrorMessageType {
   title: { defaultMessage: string },
@@ -33,7 +57,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo', 'detectApNeighbors', 'getPropertyConfigs', 'importPersonas'
+  'clientInfo'
 ]
 
 export const errorMessage = {
@@ -101,20 +125,28 @@ export const getErrorContent = (action: ErrorAction) => {
     intl = getIntl()
   }
   const { $t } = intl
-  const status = action.meta.baseQueryMeta?.response?.status
-   ?? action.payload?.originalStatus
-   ?? action.payload?.status
-  const request = action.meta.baseQueryMeta?.request
+  const queryMeta = getMetaFromAction(action)
+  const status = (queryMeta?.response) ? queryMeta.response.status :
+    ('originalStatus' in action.payload) ? action.payload.originalStatus :
+      ('status' in action.payload) ? action.payload?.status : undefined
+  const request = queryMeta?.request
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
-  let errors = action.payload.data
+  let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
+  if ('data' in action.payload) {
+    errors = action.payload.data
+  } else if ('error' in action.payload) {
+    errors = (typeof action.payload.error === 'string') ?
+      action.payload.error : action.payload.error.data
+  }
   let needLogout = false
   let callback = undefined
 
   switch (status) {
     case 400:
-      if (errors?.error === 'API-KEY not present') {
+      if (errors && typeof errors !== 'string' && 'error' in errors &&
+      errors.error === 'API-KEY not present') { //ErrorDetailsProps
         needLogout = true
       }
       errorMsg = errorMessage.BAD_REQUEST
@@ -130,7 +162,7 @@ export const getErrorContent = (action: ErrorAction) => {
       break
     case 423:
       errorMsg = errorMessage.REQUEST_IN_PROGRESS
-      errors = '' as ErrorDetailsProps
+      errors = ''
       break
     case 504: // no connection [development mode]
     case 0:   // no connection
@@ -157,10 +189,10 @@ export const getErrorContent = (action: ErrorAction) => {
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
   if (errors && isShowApiError(request)) {
     if (typeof errors === 'string') {
-      content = errors // Cannot use 'in' operator for string
+      content = <>errors</>
     }
-    else if ('errors' in errors) {
-      const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
+    else if ('errors' in errors) { // CatchErrorDetails
+      const errorsMessageList = errors.errors.map(err=>err.message)
       content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
     }
   }
@@ -169,7 +201,7 @@ export const getErrorContent = (action: ErrorAction) => {
     title: $t(errorMsg?.title),
     content,
     type,
-    errors,
+    errors: errors as ErrorDetailsProps,
     callback,
     needLogout
   }
@@ -201,10 +233,19 @@ export const showErrorModal = (details: {
   }
 }
 
+const getMetaFromAction = (action?: ErrorAction) => {
+  if (action && 'meta' in action.payload) {
+    return action.payload.meta
+  }
+  return action?.meta?.baseQueryMeta
+}
+
 const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const endpoint = action?.meta?.arg?.endpointName || ''
-  const request = action?.meta?.baseQueryMeta?.request
-  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+  return (
+    ignoreEndpointList.includes(endpoint) ||
+    isIgnoreErrorModal(getMetaFromAction(action)?.request)
+  )
 }
 
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
