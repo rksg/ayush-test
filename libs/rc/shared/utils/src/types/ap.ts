@@ -549,3 +549,8 @@ export interface ApLldpNeighborsResponse {
   detectedTime: string,
   neighbors: ApLldpNeighbor[]
 }
+
+export interface SupportCcdVenue {
+  id: string,
+  name: string
+}

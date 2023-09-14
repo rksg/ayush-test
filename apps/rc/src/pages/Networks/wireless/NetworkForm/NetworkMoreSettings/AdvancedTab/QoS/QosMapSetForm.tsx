@@ -307,7 +307,12 @@ function QosMapRuleSettingForm (props: QosMapRuleSettingFormProps) {
   }
 
   const handleExceptionDscpInput = (value: string) => {
-    setExceptionDscp(value.split(',').map(Number))
+    value = value.trim()
+    if (!value || value.length === 0){
+      setExceptionDscp([])
+    } else {
+      setExceptionDscp(value.split(',').map(Number))
+    }
   }
 
   const validateDscpInputRange = (_:RuleObject, value: string) => {

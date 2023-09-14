@@ -559,5 +559,15 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/venues/aps/:serialNumber/neighbors',
     newApi: true
+  },
+  getCcdSupportVenues: {
+    method: 'post',
+    url: '/venues/clientConnectionDiagnosis/query',
+    newApi: true
+  },
+  runCcd: {
+    method: 'post',
+    url: '/venues/:venueId/clientConnectionDiagnosis',
+    newApi: true
   }
 }

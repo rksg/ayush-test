@@ -1,5 +1,4 @@
 import { Form, Radio, Typography } from 'antd'
-import _                           from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
 import {
@@ -118,17 +117,16 @@ export default function SelectServiceForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               {sets.map(set => {
-                const isAllDisabled = _.findIndex(set.items,
-                  (o) => o.disabled === undefined || o.disabled === false ) === -1
+                const isAllDisabled = set.items.every(item => item.disabled)
                 return !isAllDisabled &&
-                <UI.CategoryContainer>
+                <UI.CategoryContainer key={$t(set.title)}>
                   <Typography.Title level={3}>
                     { $t(set.title) }
                   </Typography.Title>
                   <GridRow>
                     {set.items.map(item => item.disabled
                       ? null
-                      : <GridCol col={{ span: 6 }}>
+                      : <GridCol key={item.type} col={{ span: 6 }}>
                         <ServiceCard
                           key={item.type}
                           serviceType={item.type}

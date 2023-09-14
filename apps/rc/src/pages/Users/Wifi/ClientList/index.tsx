@@ -3,15 +3,16 @@ import { useState, useEffect } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker, Tabs }                           from '@acx-ui/components'
-import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui/rc/components'
-import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
-import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra }          from '@acx-ui/reports/components'
-import { filterByAccess }                                          from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                           from '@acx-ui/utils'
+import { PageHeader, RangePicker, Tabs }                  from '@acx-ui/components'
+import { ClientTabContext, defaultClientPayload }         from '@acx-ui/rc/components'
+import { useGetClientListQuery, useGetGuestsListQuery }   from '@acx-ui/rc/services'
+import { usePollingTableQuery }                           from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { filterByAccess }                                 from '@acx-ui/user'
+import { DateRange, getDateRangeFilter }                  from '@acx-ui/utils'
 
+import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
 import { defaultGuestPayload } from './GuestsTab/GuestsDetail'
 import { GuestTabContext }     from './GuestsTab/GuestsTable/context'
@@ -102,7 +103,7 @@ const useTabs = () : WirelessTab[] => {
     key: WirelessTabsEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount }),
     component: <ClientTabContext.Provider value={{ setClientCount }}>
-      <ClientDualTable />
+      <ClientTab />
     </ClientTabContext.Provider>,
     headerExtra: []
   }
