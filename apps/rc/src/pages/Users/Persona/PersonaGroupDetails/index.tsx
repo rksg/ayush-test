@@ -42,11 +42,11 @@ function PersonaGroupDetailsPageHeader (props: {
           text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' })
+          text: $t({ defaultMessage: 'Identity Management' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Groups' }),
-          link: 'users/persona-management'
+          text: $t({ defaultMessage: 'Identity Groups' }),
+          link: 'users/identity-management'
         }
       ]}
     />
@@ -119,18 +119,20 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Venue' }),
       content:
       <VenueLink
+        showNoData={true}
         name={venueDisplay?.name}
         venueId={venueDisplay?.id}
       />
     },
     {
-      title: $t({ defaultMessage: 'Personas' }),
+      title: $t({ defaultMessage: 'Identities' }),
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
       content:
       <DpskPoolLink
+        showNoData={true}
         name={dpskPoolDisplay?.name}
         dpskPoolId={detailsQuery.data?.dpskPoolId}
       />
@@ -139,6 +141,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'MAC Registration' }),
       content:
         <MacRegistrationPoolLink
+          showNoData={true}
           name={macPoolDisplay?.name}
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
@@ -147,6 +150,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Network Segmentation' }),
       content:
         <NetworkSegmentationLink
+          showNoData={true}
           name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
         />
@@ -171,7 +175,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

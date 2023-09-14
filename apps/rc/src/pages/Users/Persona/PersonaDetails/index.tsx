@@ -12,7 +12,7 @@ import {
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  PersonaGroupLink,
+  IdentityGroupLink,
   PropertyUnitLink,
   useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
@@ -149,9 +149,9 @@ function PersonaDetails () {
   const details = [
     { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
-    { label: $t({ defaultMessage: 'Persona Group' }),
+    { label: $t({ defaultMessage: 'Identity Group' }),
       value:
-      <PersonaGroupLink
+      <IdentityGroupLink
         name={personaGroupData?.name}
         personaGroupId={personaGroupData?.id}
       />
@@ -160,6 +160,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
+          showNoData={true}
           name={dpskPoolData?.name}
           dpskPoolId={dpskPoolData?.id}
         />
@@ -186,6 +187,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
       <MacRegistrationPoolLink
+        showNoData={true}
         name={macPoolData?.name}
         macRegistrationPoolId={personaGroupData?.macRegistrationPoolId}
       />
@@ -194,6 +196,7 @@ function PersonaDetails () {
       ? [{ label: $t({ defaultMessage: 'Unit' }),
         value:
         <PropertyUnitLink
+          showNoData={true}
           {...unitData}
         />
       }] : []
@@ -219,6 +222,7 @@ function PersonaDetails () {
       value:
       personaGroupData?.nsgId
         && <NetworkSegmentationLink
+          showNoData={true}
           name={nsgData?.name}
           nsgId={personaGroupData?.nsgId}
         />
@@ -257,7 +261,7 @@ function PersonaDetails () {
         <Row gutter={[0, 8]}>
           <Col span={12}>
             <Subtitle level={4}>
-              {$t({ defaultMessage: 'Persona Details' })}
+              {$t({ defaultMessage: 'Identity Details' })}
             </Subtitle>
           </Col>
           <Col span={12}>
@@ -356,8 +360,8 @@ function PersonaDetailsPageHeader (props: {
       defaultMessage: `{revokedStatus, select,
       true {Unblock}
       other {Block}
-      } this Persona: {name}`,
-      description: 'Translation strings - Unblock, Block, this Persona'
+      } this Identity: {name}`,
+      description: 'Translation strings - Unblock, Block, this Identity'
     }, {
       revokedStatus,
       name: title
@@ -367,11 +371,11 @@ function PersonaDetailsPageHeader (props: {
   const getRevokedContent = () => {
     return $t({
       defaultMessage: `{revokedStatus, select,
-      true {Are you sure you want to unblock this persona?}
-      other {The user will be blocked. Are you sure want to block this persona?}
+      true {Are you sure you want to unblock this identity?}
+      other {The user will be blocked. Are you sure want to block this identity?}
       }`,
       // eslint-disable-next-line max-len
-      description: 'Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona'
+      description: 'Translation strings - Are you sure you want to unblock this identity, The user will be blocked. Are you sure want to block this identity'
     }, {
       revokedStatus
     })
@@ -399,8 +403,8 @@ function PersonaDetailsPageHeader (props: {
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
-        other {Block Persona}}`,
-        description: 'Translation strings - Unblock, Block Persona'
+        other {Block Identity}}`,
+        description: 'Translation strings - Unblock, Block Identity'
       }, { revokedStatus })}
     </Button>,
     <Button type={'primary'} onClick={onClick}>
@@ -427,11 +431,11 @@ function PersonaDetailsPageHeader (props: {
           text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' })
+          text: $t({ defaultMessage: 'Identity Management' })
         },
         {
-          text: $t({ defaultMessage: 'Personas' }),
-          link: 'users/persona-management/persona'
+          text: $t({ defaultMessage: 'Identities' }),
+          link: 'users/identity-management/identity'
         }
       ]}
     />

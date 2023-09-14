@@ -209,7 +209,7 @@ export default function MacRegistrationListsTable () {
         $t({ defaultMessage: 'List' }),
         selectedRow.name,
         [
-          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Persona' }) },
+          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
         async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
