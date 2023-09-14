@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, FormInstance, Input, Radio, Space, Switch, Typography } from 'antd'
-import _                                                                   from 'lodash'
+import { Checkbox, FormInstance, Input, Radio, Space, Typography } from 'antd'
+import _                                                           from 'lodash'
 
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
-import { InformationSolid }             from '@acx-ui/icons'
 import { useAddVlanMutation }           from '@acx-ui/rc/services'
 import {
   SwitchVlan,
@@ -34,9 +33,6 @@ export function SelectVlanModal (props: {
   vlanUsedByVe?: string,
   taggedVlans: string,
   untaggedVlan: number,
-  showVoiceVlan?: boolean,
-  voiceVlan?: string,
-  isVoiceVlanInvalid?: boolean,
   hasSwitchProfile?: boolean,
   profileId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
@@ -47,8 +43,7 @@ export function SelectVlanModal (props: {
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile,
     vlanDisabledTooltip, defaultVlan, switchVlans,
-    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, showVoiceVlan,
-    voiceVlan, isVoiceVlanInvalid
+    vlanUsedByVe = [], taggedVlans = '', untaggedVlan
   } = props
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
@@ -59,16 +54,13 @@ export function SelectVlanModal (props: {
   const [untaggedVlanOptions, setUntaggedVlanOptions] = useState([] as CheckboxOptionType[])
   const [displayTaggedVlan, setDisplayTaggedVlan] = useState([] as CheckboxOptionType[])
   const [displayUntaggedVlan, setDisplayUntaggedVlan] = useState([] as CheckboxOptionType[])
-  const [voiceVlanTmp, setVoiceVlanTmp] = useState(voiceVlan)
-  const [isVoiceVlanInvalidTmp, setIsVoiceVlanInvalidTmp] = useState(isVoiceVlanInvalid)
   const [addVlan] = useAddVlanMutation()
 
   const onOk = async () => {
     form.setFieldsValue({
       ...form.getFieldsValue(),
       taggedVlans: selectTaggedVlans.toString(),
-      untaggedVlan: selectUntaggedVlan,
-      voiceVlan: voiceVlanTmp
+      untaggedVlan: selectUntaggedVlan
     })
     onValuesChange({ untaggedVlan: Number(selectUntaggedVlan), revert: false })
     setUseVenueSettings(false)
@@ -102,16 +94,12 @@ export function SelectVlanModal (props: {
       const isSelectedTagged = tagged?.some((v: string) => Number(v) === Number(vlan?.vlanId))
       const isAclConflict = vlanUsedByVe?.toString()?.split(',')
         .some(v => Number(v) === Number(vlan?.vlanId))
-      const isVoiceVlan = Number(voiceVlanTmp) === Number(vlan?.vlanId)
+
       const extra = isSelectedTagged
-        ? (isVoiceVlan
-          ? $t({ defaultMessage: '(Set as tagged and voice VLAN)' })
-          : $t({ defaultMessage: '(Set as tagged VLAN)' }))
+        ? $t({ defaultMessage: '(Set as tagged VLAN)' })
         : (isAclConflict
           ? $t({ defaultMessage: '(ACL conflict - VLAN is part of VE)' })
-          : (isVoiceVlan
-            ? $t({ defaultMessage: '(Set as voice VLAN)' })
-            :(vlan?.vlanConfigName ? `(${vlan?.vlanConfigName})` : '')))
+          : (vlan?.vlanConfigName ? `(${vlan?.vlanConfigName})` : ''))
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: vlan.vlanId, extra }),
@@ -152,29 +140,17 @@ export function SelectVlanModal (props: {
   }, [switchVlans])
 
   useEffect(() => {
-    const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
-    setTaggedVlanOptions(taggedVlanOptions)
-    setDisplayTaggedVlan(taggedVlanOptions)
-    setUntaggedVlanOptions(untaggedVlanOptions)
-    setDisplayUntaggedVlan(untaggedVlanOptions)
-  }, [voiceVlanTmp])
-
-  useEffect(() => {
     const isTaggedVlansChanged
       = !_.isEqual(taggedVlans?.toString().split(','), selectTaggedVlans?.toString().split(','))
     const isUntaggedVlanChanged
       = !_.isEqual(untaggedVlan?.toString(), selectUntaggedVlan?.toString())
-    const voiceVlanChanged
-      = !_.isEqual(voiceVlanTmp, voiceVlan)
-    setDisableButton(!(isTaggedVlansChanged || isUntaggedVlanChanged || voiceVlanChanged))
 
-  }, [selectTaggedVlans, selectUntaggedVlan, voiceVlanTmp])
+    setDisableButton(!(isTaggedVlansChanged || isUntaggedVlanChanged))
+
+  }, [selectTaggedVlans, selectUntaggedVlan])
 
   const onChangeTaggedVlan = (checkedValues: CheckboxValueType[]) => {
     const untaggedVlanOptions = getUntaggedVlanOptions(checkedValues)
-    const isInvalid = !!(voiceVlanTmp && checkedValues.indexOf(String(voiceVlanTmp)) === -1)
-    setIsVoiceVlanInvalidTmp(isInvalid)
     setSelectTaggedVlans(checkedValues.toString())
     setDisplayUntaggedVlan(untaggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
@@ -197,27 +173,6 @@ export function SelectVlanModal (props: {
     listType === 'tagged'
       ? setDisplayTaggedVlan(filteredOptions)
       : setDisplayUntaggedVlan(filteredOptions)
-  }
-
-  const showVoiceVlanSwitch = (vlan: CheckboxOptionType) => {
-    const vlanArray = Array.from(selectTaggedVlans?.toString().split(',') ?? [])
-    if(showVoiceVlan && vlanArray.indexOf(String(vlan.value)) !== -1
-       || voiceVlanTmp == vlan.value) {
-      return true
-    }
-    return false
-  }
-
-  const onVoiceVlanChange = (checked: boolean, vlan: CheckboxValueType) => {
-    if(checked) {
-      const voiceVlanValue = String(vlan)
-      setVoiceVlanTmp(voiceVlanValue)
-      const isInvalid = selectTaggedVlans.split(',').indexOf(voiceVlanValue) === -1
-      setIsVoiceVlanInvalidTmp(isInvalid)
-    }else{
-      setVoiceVlanTmp('')
-      setIsVoiceVlanInvalidTmp(false)
-    }
   }
 
   return <>
@@ -264,7 +219,36 @@ export function SelectVlanModal (props: {
         </Space>
       ]}
     >
-      <Tabs defaultActiveKey='untaggedVlan'>
+      <Tabs defaultActiveKey='taggedVlans'>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Tagged VLANs' })}
+          key='taggedVlans'
+        >
+          <Typography.Text style={{
+            display: 'inline-block', fontSize: '12px', marginBottom: '6px'
+          }}>
+            {$t({ defaultMessage: 'VLANs to activate on this port:' })}
+          </Typography.Text>
+          <Input
+            data-testid='tagged-input'
+            placeholder={$t({ defaultMessage: 'Search by VLAN ID or name' })}
+            allowClear={true}
+            maxLength={64}
+            disabled={!taggedVlanOptions.length}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onFilterList(e.target.value, 'tagged')
+            }
+          />
+
+          <UI.GroupListLayout>
+            <Checkbox.Group
+              options={displayTaggedVlan}
+              defaultValue={Array.from(taggedVlans?.toString().split(',') ?? [])}
+              onChange={onChangeTaggedVlan}
+            />
+          </UI.GroupListLayout>
+        </Tabs.TabPane>
+
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Untagged VLANs' })}
           key='untaggedVlan'
@@ -289,56 +273,6 @@ export function SelectVlanModal (props: {
               defaultValue={Number(untaggedVlan) || ''}
               options={displayUntaggedVlan}
             />
-          </UI.GroupListLayout>
-        </Tabs.TabPane>
-
-        <Tabs.TabPane
-          tab={<UI.TaggedVlanTab>
-            {$t({ defaultMessage: 'Tagged VLANs' })}
-            {isVoiceVlanInvalidTmp && <InformationSolid />}
-          </UI.TaggedVlanTab>}
-          key='taggedVlans'
-        >
-          <Typography.Text style={{
-            display: 'inline-block', fontSize: '12px', marginBottom: '6px'
-          }}>
-            {$t({ defaultMessage: 'VLANs to activate on this port:' })}
-          </Typography.Text>
-          <Input
-            data-testid='tagged-input'
-            placeholder={$t({ defaultMessage: 'Search by VLAN ID or name' })}
-            allowClear={true}
-            maxLength={64}
-            disabled={!taggedVlanOptions.length}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onFilterList(e.target.value, 'tagged')
-            }
-          />
-
-          <UI.GroupListLayout>
-            <Checkbox.Group
-              defaultValue={Array.from(taggedVlans?.toString().split(',') ?? [])}
-              onChange={onChangeTaggedVlan}
-            >
-              {
-                displayTaggedVlan.map(vlan =>
-                  <UI.VoiceVlanSwitch key={vlan.value as string}>
-                    <Checkbox value={vlan.value} disabled={vlan.disabled}>{vlan.label}</Checkbox>
-                    {
-                      showVoiceVlanSwitch(vlan) &&
-                    <div className='switch'>
-                      {$t({ defaultMessage: 'Set as Voice VLAN' })}
-                      <Switch
-                        className={(isVoiceVlanInvalidTmp && vlan.value == voiceVlanTmp)
-                          ? 'invalid' : ''}
-                        checked={vlan.value == voiceVlanTmp}
-                        onChange={(checked: boolean) => { onVoiceVlanChange(checked, vlan.value) }}
-                      />
-                    </div>
-                    }
-                  </UI.VoiceVlanSwitch>)
-              }
-            </Checkbox.Group>
           </UI.GroupListLayout>
         </Tabs.TabPane>
       </Tabs>
