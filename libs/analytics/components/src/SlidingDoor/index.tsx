@@ -142,6 +142,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     ? searchResults
     : breadcrumb?.[breadcrumb.length - (isLeaf ? 2 : 1)]?.children
   const placeHolderText = inputValue || $t({ defaultMessage: 'Entire Organization' })
+  const open = () => setVisible(true)
   return (
     <UI.DropdownWrapper ref={componentRef}>
       <Dropdown
@@ -166,14 +167,14 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
           type='search'
           title={placeHolderText}
           placeholder={placeHolderText}
-          onClick={() => setVisible(true)}
+          onClick={open}
           onChange={(e) => {
             setSearchText(e.target.value)
           }}
           value={searchText}
           suffix={visible || searchText || inputValue
             ? <CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />
-            : <CaretDownSolid />
+            : <CaretDownSolid style={{ cursor: 'pointer' }} onClick={open} />
           }
         />
       </Dropdown>
