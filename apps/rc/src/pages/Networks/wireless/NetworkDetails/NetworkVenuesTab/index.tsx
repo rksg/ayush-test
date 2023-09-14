@@ -164,7 +164,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data.owePairNetworkId !== undefined)
         }
       })
       setTableData(data)
