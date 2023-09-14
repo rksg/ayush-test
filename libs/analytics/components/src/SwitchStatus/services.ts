@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                                 from '@acx-ui/store'
+import { getFilterPayload, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                from '@acx-ui/store'
+import type { AnalyticsFilter }                   from '@acx-ui/utils'
 
 export type SwitchStatusTimeSeries = {
   time: string[];

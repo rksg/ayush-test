@@ -25,6 +25,7 @@ import { useParams }                                                     from '@
 import { filterByAccess, hasAccess }                                     from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
+import { useScrollLock }                   from '../../ScrollLock'
 import { AddModeProps, editModeProps }     from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -123,6 +124,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const [
     accessStatus,
     policyName,
@@ -160,6 +163,15 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     { skip: skipFetch }
   )
 
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
+  }
+
   const isViewMode = () => {
     if (queryPolicyId === '') {
       return false
@@ -178,7 +190,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
@@ -204,7 +216,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -238,7 +250,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       sorter: { compare: sortProp('deviceType', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'OS Vendor' }),
+      title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osVendor',
       key: 'osVendor',
       sorter: { compare: sortProp('osVendor', defaultSort) }
@@ -302,7 +314,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   const handleDeviceOSDrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -537,7 +549,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -570,7 +582,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           disabled={!devicePolicyId}
           onClick={() => {
             if (devicePolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(devicePolicyId)
               setLocalEdiMode({ id: devicePolicyId, isEdit: true })
             }
@@ -583,7 +595,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         <Button type='link'
           disabled={deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
             clearFieldsValue()
           }}>

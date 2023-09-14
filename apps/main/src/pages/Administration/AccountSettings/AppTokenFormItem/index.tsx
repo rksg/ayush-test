@@ -64,7 +64,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const AddAppLink = () => {
     return (
-      <Col style={{ width: '800px' }}>
+      <Col style={{ width: '800px', paddingLeft: 0 }}>
         <Card type='solid-bg'>
           <Form.Item
             children={
@@ -92,21 +92,24 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'clientIDStatus',
-        key: 'clientIDStatus'
+        key: 'clientIDStatus',
+        render: function (_, row) {
+          return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
+            ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
+        }
       },
       {
         title: $t({ defaultMessage: 'Client ID' }),
         dataIndex: 'clientID',
-        align: 'center',
         key: 'clientID',
-        width: 235,
+        width: 275,
         render: function (_, row) {
           return <div>
             <Input
               readOnly
               bordered={false}
               value={row.clientID}
-              style={{ overflow: 'hidden', width: '190px' }}
+              style={{ paddingLeft: '0px', width: '270px' }}
             />
             <Button
               ghost
@@ -122,15 +125,14 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Shared Secret' }),
         dataIndex: 'clientSecret',
-        align: 'center',
         key: 'clientSecret',
-        width: 235,
+        width: 275,
         render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
-              readOnly
               bordered={false}
               value={row.clientSecret}
+              style={{ paddingLeft: '0px', width: '275px' }}
             />
             <Button
               ghost
@@ -190,8 +192,9 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             title: title,
             content: $t({
               defaultMessage: `
-              Revoke "{formattedName}" will suspend all its services,
-                are you sure you want to proceed?
+              You are about to revoke access for the "{formattedName}" application.
+              This will prevent the application from accessing your data and performing 
+              actions on your behalf
               `
             }, { formattedName: rows[0].name }),
             okText: $t({ defaultMessage: 'Revoke' }),
@@ -219,31 +222,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           return false
         },
         onClick: (rows, clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Activate application "{formattedName}"?' },
-            { formattedName: rows[0].name }
-          )
-
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t(
-              { defaultMessage: 'Activate this application "{formattedName}"?' },
-              { formattedName: rows[0].name }
-            ),
-            okText: $t({ defaultMessage: 'Activate' }),
-            onOk: () => {
-              const payload: TenantAuthentications = {
-                name: rows[0].name,
-                authenticationType: rows[0].authenticationType,
-                clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
-              }
-              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-                payload: payload })
-                .then(clearSelection)
-              reloadAuthTable(2)
-            }
-          })
+          const payload: TenantAuthentications = {
+            name: rows[0].name,
+            authenticationType: rows[0].authenticationType,
+            clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+          }
+          updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+            payload: payload })
+            .then(clearSelection)
+          reloadAuthTable(2)
         }
       },
       {
