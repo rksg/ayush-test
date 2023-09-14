@@ -381,6 +381,7 @@ export interface SwitchModel {
 	id: string,
 	model: string,
 	slots: SwitchModelSlot[],
+	switchModel?: string,
   taggedPorts?: string,
   untaggedPorts?: string
 }
@@ -394,8 +395,10 @@ export interface Vlan {
 	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
+	switchVlanPortModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
+	vlanConfigName?: string
   untaggedPorts?: string,
   taggedPorts?: string,
   title?: string,

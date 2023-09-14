@@ -24,7 +24,9 @@ export interface PortsType {
 export function UntaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues, vlanList } = useContext(VlanPortsContext)
+  const {
+    vlanSettingValues, setVlanSettingValues, vlanList, portsUsedByLag
+  } = useContext(VlanPortsContext)
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -207,6 +209,13 @@ export function UntaggedPortsStep () {
     }
 
   const getDisabledPorts = (timeslot: string) => {
+    // TODO: support switch level vlan
+    // const vlanSelectedPorts = isSwitchLevel && vlanList
+    //   ? vlanList.map((item: Vlan) => item.switchVlanPortModels?.filter((obj) => obj))
+    //   : (vlanList ? vlanList.map(item => item.switchFamilyModels
+    //     ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    //   )
+
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
@@ -217,13 +226,24 @@ export function UntaggedPortsStep () {
     const taggedPorts =
       vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
-    const disabledPorts = taggedPorts.includes(timeslot) || portExists || false
+    const disabledPorts
+      = taggedPorts.includes(timeslot) || portsUsedByLag?.includes(timeslot) || portExists || false
+
     return disabledPorts
   }
 
   const getTooltip = (timeslot: string) => {
     const taggedPorts =
     vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
+
+    // TODO: support switch level vlan
+    // const untaggedModel = isSwitchLevel && vlanList
+    //   ? vlanList.filter((item:Vlan) => item.switchVlanPortModels?.some((switchModel) =>
+    //     switchModel.untaggedPorts?.split(',')?.includes(timeslot)))
+    //   : (vlanList ?
+    //     vlanList.filter(item => item.switchFamilyModels?.some(
+    //       switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+    //     switchModel.untaggedPorts?.split(',')?.includes(timeslot))) : [])
 
     const untaggedModel = vlanList ?
       vlanList.filter(item => item.switchFamilyModels?.some(
@@ -233,11 +253,13 @@ export function UntaggedPortsStep () {
     const taggedModel = vlanList ?
       vlanList.filter(item => item.switchFamilyModels?.some(
         switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
-        switchModel.taggedPorts?.split(',').includes(timeslot))) : []
+        switchModel.taggedPorts?.split(',')?.includes(timeslot))) : []
 
     if(taggedPorts.includes(timeslot)){
       return <div>{$t({ defaultMessage: 'Port set as tagged' })}</div>
-    }else{
+    } else if (portsUsedByLag?.includes(timeslot)) {
+      return <div>{$t({ defaultMessage: 'Port used by LAG' })}</div>
+    } else{
       return <div>
         <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
         <div>

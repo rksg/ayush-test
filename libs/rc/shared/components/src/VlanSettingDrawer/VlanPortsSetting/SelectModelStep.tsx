@@ -27,6 +27,7 @@ export interface PortsType {
 export function SelectModelStep (props: { editMode: boolean }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  // const { vlanSettingValues, isSwitchLevel, switchFamilyModel } = useContext(VlanPortsContext)
   const { vlanSettingValues } = useContext(VlanPortsContext)
   const { editMode } = props
 
@@ -68,6 +69,19 @@ export function SelectModelStep (props: { editMode: boolean }) {
       })
       setFamilies(familiesData)
     }
+
+    // if (switchFamilyModel) {
+    //   const selectedFamily = switchFamilyModel?.split('-')?.[0]
+    //   const selectedModel = switchFamilyModel?.split('-')?.[1]
+    //   form.setFieldsValue({
+    //     family: selectedFamily,
+    //     model: selectedModel
+    //   })
+    //   setFamily(selectedFamily)
+    //   setModel(selectedModel)
+    //   familyChangeAction(selectedFamily)
+    //   modelChangeAction(selectedFamily, selectedModel)
+    // }
     if(ICX_MODELS_MODULES && vlanSettingValues.family && vlanSettingValues.model){
       const selectedFamily = vlanSettingValues.family
       const selectedModel = vlanSettingValues.model
@@ -371,6 +385,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={<Radio.Group onChange={onFamilyChange}
                 >
                   {families.map(({ label, value }) => (
+                    // <Radio key={value} value={value} disabled={editMode || isSwitchLevel}>
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
@@ -394,6 +409,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={<Radio.Group onChange={onModelChange}
                 >
                   {models.map(({ label, value }) => (
+                    // <Radio key={value} value={value} disabled={editMode || isSwitchLevel}>
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>

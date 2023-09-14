@@ -130,11 +130,21 @@ export const updateSwitchVlans = (
   switchVlans: SwitchVlanUnion,
   setSwitchVlans: (switchVlans: SwitchVlanUnion) => void,
   venueVlans: Vlan[],
-  setVenueVlans: (switchVlans: Vlan[]) => void
+  setVenueVlans: (switchVlans: Vlan[]) => void,
+  enableSwitchLevelVlan?: boolean
 ) => {
   store.dispatch(switchApi.util.invalidateTags([
     { type: 'SwitchVlan', id: 'LIST' }
   ]))
+
+  const switchVlan = [
+    ...switchVlans.switchVlan, {
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: Number(vlan.vlanId),
+      switchId: switchVlans.switchVlan?.[0].switchId,
+      ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
+    }] as SwitchVlan[]
 
   const profileVlan = [
     ...switchVlans.profileVlan, {
@@ -142,7 +152,10 @@ export const updateSwitchVlans = (
       ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
     }] as SwitchVlan[]
 
-  setSwitchVlans({ ...switchVlans, profileVlan })
+  setSwitchVlans({
+    ...switchVlans,
+    ...(enableSwitchLevelVlan ? { switchVlan } : { profileVlan })
+  })
   setVenueVlans([ ...venueVlans, vlan ])
 }
 

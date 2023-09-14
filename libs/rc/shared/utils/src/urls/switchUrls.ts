@@ -231,6 +231,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/vlans/switch/:switchId',
     newApi: true
   },
+  addSwitchVlans: {
+    method: 'post',
+    url: '/switches/:switchId/vlans',
+    newApi: true
+  },
+  deleteSwitchVlan: {
+    method: 'delete',
+    url: '/switches/vlans/:vlanId',
+    newApi: true
+  },
+  updateSwitchVlan: {
+    method: 'put',
+    url: '/switches/vlans/:vlanId',
+    newApi: true
+  },
   getSwitchesVlan: {
     method: 'post',
     url: '/switches/vlansIntersection/query',

@@ -13,6 +13,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -34,11 +35,14 @@ export interface VlanSettingDrawerProps {
   visible: boolean
   setVisible: (v: boolean) => void
   vlansList: Vlan[]
+  enablePortModelConfigure?: boolean
+  // switchFamilyModel?: string
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
-  const { vlan, setVlan, visible, setVisible, editMode, vlansList } = props
+  const { vlan, setVlan, visible, setVisible, editMode,
+    vlansList, enablePortModelConfigure = true } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -62,6 +66,8 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlan={vlan}
           setVlan={setVlan}
           vlansList={vlansList || []}
+          enablePortModelConfigure={enablePortModelConfigure}
+          // switchFamilyModel={switchFamilyModel}
         />
       }
       footer={
@@ -94,6 +100,8 @@ interface VlanSettingFormProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
   vlansList: Vlan[]
+  // switchFamilyModel?: string
+  enablePortModelConfigure?: boolean
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -105,7 +113,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList } = props
+  const { form, vlan, setVlan, vlansList, enablePortModelConfigure = true } = props
+
+  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   useEffect(() => {
     if(vlan){
@@ -335,45 +345,48 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
-        <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
-        </Col>
-        <Col>
-          <Button
-            type='link'
-            onClick={() => {
-              setSelected(undefined)
-              setOpenModal(true)
-            }}
-          >
-            {$t({ defaultMessage: 'Add Model' })}
-          </Button>
-        </Col>
-      </Row>
-      <Table
-        rowKey='model'
-        rowActions={filterByAccess(rowActions)}
-        columns={columns}
-        rowSelection={{
-          type: 'radio',
-          selectedRowKeys: selected ? [selected.model] : [],
-          onChange: (keys: React.Key[]) => {
-            setSelected(
-              ruleList?.find((i: { model: Key }) => i.model === keys[0])
-            )
-          }
-        }}
-        dataSource={ruleList || undefined}
-      />
-      <VlanPortsModal
-        open={openModal}
-        editRecord={selected}
-        currrentRecords={ruleList}
-        onCancel={onCancel}
-        onSave={onSaveVlan}
-        vlanList={vlansList}
-      />
+      { enableSwitchLevelVlan && !enablePortModelConfigure
+        ? null
+        : <><Row justify='space-between' style={{ margin: '25px 0 10px' }}>
+          <Col>
+            <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
+          </Col>
+          <Col>
+            <Button
+              type='link'
+              onClick={() => {
+                setSelected(undefined)
+                setOpenModal(true)
+              }}
+            >
+              {$t({ defaultMessage: 'Add Model' })}
+            </Button>
+          </Col>
+        </Row>
+        <Table
+          rowKey='model'
+          rowActions={filterByAccess(rowActions)}
+          columns={columns}
+          rowSelection={{
+            type: 'radio',
+            selectedRowKeys: selected ? [selected.model] : [],
+            onChange: (keys: React.Key[]) => {
+              setSelected(
+                ruleList?.find((i: { model: Key }) => i.model === keys[0])
+              )
+            }
+          }}
+          dataSource={ruleList || undefined}
+        />
+        <VlanPortsModal
+          open={openModal}
+          editRecord={selected}
+          currrentRecords={ruleList}
+          onCancel={onCancel}
+          onSave={onSaveVlan}
+          vlanList={vlansList}
+          // switchFamilyModel={enableSwitchLevelVlan ? switchFamilyModel : undefined}
+        /></>}
     </div>
   )
 }

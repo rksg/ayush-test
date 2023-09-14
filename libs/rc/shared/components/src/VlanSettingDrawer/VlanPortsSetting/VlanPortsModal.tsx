@@ -5,11 +5,13 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { useGetLagListQuery }          from '@acx-ui/rc/services'
 import {
   SwitchModelPortData,
   TrustedPort,
   Vlan
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'
@@ -34,9 +36,11 @@ export function VlanPortsModal (props: {
   onCancel?: ()=>void,
   editRecord?: SwitchModelPortData,
   currrentRecords?: SwitchModelPortData[],
-  vlanList: Vlan[]
+  vlanList: Vlan[],
+  // switchFamilyModel?: string
 }) {
   const { $t } = useIntl()
+  const { tenantId, switchId } = useParams()
   const { open, editRecord, onSave, onCancel, vlanList } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
@@ -47,6 +51,10 @@ export function VlanPortsModal (props: {
       model: '',
       trustedPorts: []
     })
+
+  const [portsUsedByLag, setPortsUsedByLag] = useState([] as string[])
+  const { data: lagList }
+    = useGetLagListQuery({ params: { tenantId, switchId } }, { skip: !switchId })
 
   useEffect(()=>{
     setEditMode(open && !!editRecord)
@@ -59,6 +67,13 @@ export function VlanPortsModal (props: {
       setVlanSettingValues({ family: '', model: '', trustedPorts: [] })
     }
   }, [form, open, editRecord])
+
+  useEffect(()=>{
+    if (lagList) {
+      const ports = lagList.map(l => l.ports).flat()
+      setPortsUsedByLag(ports as string[])
+    }
+  }, [lagList])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
@@ -151,7 +166,11 @@ export function VlanPortsModal (props: {
       data-testid='vlanSettingModal'
     >
       <VlanPortsContext.Provider value={{
-        vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
+        vlanSettingValues, setVlanSettingValues, vlanList, editMode,
+        // isSwitchLevel: !!switchFamilyModel,
+        // switchFamilyModel,
+        portsUsedByLag
+      }}>
         <StepsForm
           editMode={editMode}
           onCancel={onCancel}

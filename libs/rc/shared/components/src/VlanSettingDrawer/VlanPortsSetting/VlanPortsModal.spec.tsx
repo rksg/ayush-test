@@ -1,10 +1,16 @@
 import '@testing-library/jest-dom'
+
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
 import { debounce }                  from 'lodash'
+import { rest }                      from 'msw'
 import { IntlProvider }              from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+
+import { StepsForm }      from '@acx-ui/components'
+import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
+import { mockServer }     from '@acx-ui/test-utils'
 
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'
@@ -91,20 +97,31 @@ describe('VlanPortsModal', () => {
   }
   /* eslint-enable */
 
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getLagList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+  })
+
   afterEach(() => {
     //Modal.destroyAll()
   })
 
   it('should render correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -123,14 +140,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7150-24 model correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -157,14 +176,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7150-24 model with drag and select untagged ports correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -207,14 +228,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7150-24 model with drag and select tagged ports correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -257,14 +280,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7550-24 model correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -300,14 +325,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7650-48F model correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     const family = await screen.findByText('ICX-7650')
@@ -325,14 +352,16 @@ describe('VlanPortsModal', () => {
 
   it('should add ICX7850-48F model correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -364,14 +393,16 @@ describe('VlanPortsModal', () => {
 
   it('should disable port correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={undefined}
-        currrentRecords={undefined}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[vlans[1]]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[vlans[1]]}
+        />
+      </Provider>
     </IntlProvider>)
 
     await screen.findByText(/Select Ports By Model/i)
@@ -487,14 +518,16 @@ describe('VlanPortsModal', () => {
   //TODO: edit mode
   it.skip('should render edit mode correctly', async () => {
     render(<IntlProvider locale='en'>
-      <VlanPortsModal
-        open={true}
-        editRecord={records[0]}
-        currrentRecords={records}
-        onCancel={jest.fn()}
-        onSave={jest.fn()}
-        vlanList={[vlans[1]]}
-      />
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={records[0]}
+          currrentRecords={records}
+          onCancel={jest.fn()}
+          onSave={jest.fn()}
+          vlanList={[vlans[1]]}
+        />
+      </Provider>
     </IntlProvider>
     )
 

@@ -24,7 +24,9 @@ export interface PortsType {
 export function TaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues, vlanList } = useContext(VlanPortsContext)
+  const {
+    vlanSettingValues, setVlanSettingValues, vlanList, portsUsedByLag
+  } = useContext(VlanPortsContext)
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -206,7 +208,9 @@ export function TaggedPortsStep () {
     const untaggedPorts =
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
-    const disabledPorts = untaggedPorts.includes(timeslot) || false
+    const disabledPorts
+      = untaggedPorts.includes(timeslot) || portsUsedByLag?.includes(timeslot) || false
+
     return disabledPorts
   }
 
@@ -226,7 +230,9 @@ export function TaggedPortsStep () {
 
     if(untaggedPorts.includes(timeslot)){
       return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
-    }else{
+    } else if (portsUsedByLag?.includes(timeslot)) {
+      return <div>{$t({ defaultMessage: 'Port used by LAG' })}</div>
+    } else {
       return <div>
         <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
         <div>

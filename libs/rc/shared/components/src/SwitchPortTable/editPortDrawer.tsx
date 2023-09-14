@@ -14,6 +14,7 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -146,6 +147,7 @@ export function EditPortDrawer ({
     tagsCheckbox
   } = (useWatch([], form) ?? {})
 
+  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const { tenantId, venueId, serialNumber } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -1336,8 +1338,16 @@ export function EditPortDrawer ({
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
         profileId={switchConfigurationProfileId}
+        isVenueLevel={isVenueLevel}
         updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+          updateSwitchVlans(
+            values,
+            switchVlans,
+            setSwitchVlans,
+            venueVlans,
+            setVenueVlans,
+            enableSwitchLevelVlan
+          )
         }
       />}
 

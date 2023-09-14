@@ -15,6 +15,7 @@ import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip, Transfer } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                 from '@acx-ui/icons'
 import {
   useAddLagMutation,
@@ -55,6 +56,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
   const { tenantId, switchId, serialNumber } = useParams()
+  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const portPayload = {
     fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
@@ -584,7 +586,13 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         hasSwitchProfile={hasSwitchProfile}
         profileId={switchConfigurationProfileId}
         updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+          updateSwitchVlans(values,
+            switchVlans,
+            setSwitchVlans,
+            venueVlans,
+            setVenueVlans,
+            enableSwitchLevelVlan
+          )
         }
       />
     </>

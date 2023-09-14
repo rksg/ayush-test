@@ -858,7 +858,7 @@ export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
 
 export function validateDuplicateVlanId (vlanId: number, vlanList: Vlan[]) {
   const { $t } = getIntl()
-  const index = vlanList.filter(item => item.vlanId.toString() === vlanId.toString())
+  const index = vlanList.filter(item => item.vlanId?.toString() === vlanId.toString())
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.vlanIdInvalid))
   } else {
