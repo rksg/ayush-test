@@ -121,7 +121,6 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
@@ -134,6 +133,10 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
       setSearchResults([])
     }
   }, [searchText, rootNode])
+  useEffect(() => {
+    setSearchText('')
+    setBreadcrumbPath(initialBreadcrumb)
+  }, [rootNode]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const nodesToShow = (searchText
     ? searchResults
