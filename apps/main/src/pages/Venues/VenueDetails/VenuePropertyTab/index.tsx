@@ -58,6 +58,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+import { exportMessageMapping } from '@acx-ui/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
@@ -545,6 +546,7 @@ export function VenuePropertyTab () {
         rowSelection={{ type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadUnit
         }}
       />
