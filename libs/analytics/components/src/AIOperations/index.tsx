@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
 import * as UI                                                from '../AIDrivenRRM/styledComponents'
 import { useRecommendationListQuery, RecommendationListItem } from '../Recommendations/services'

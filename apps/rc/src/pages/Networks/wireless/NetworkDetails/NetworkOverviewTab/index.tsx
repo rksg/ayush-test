@@ -10,7 +10,6 @@ import {
   TrafficByVolume
 } from '@acx-ui/analytics/components'
 import {
-  AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import {
@@ -21,6 +20,7 @@ import {
 } from '@acx-ui/components'
 import { NetworkTypeEnum }                    from '@acx-ui/rc/utils'
 import { useDateFilter, generateVenueFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }               from '@acx-ui/utils'
 
 import { networkTypes }                     from '../../NetworkForm/contentsMap'
 import { extractSSIDFilter, useGetNetwork } from '../services'

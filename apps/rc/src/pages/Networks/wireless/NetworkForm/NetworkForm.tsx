@@ -468,7 +468,9 @@ export default function NetworkForm (props:{
             'accountingRadiusId',
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }else{
@@ -476,7 +478,9 @@ export default function NetworkForm (props:{
           [
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }

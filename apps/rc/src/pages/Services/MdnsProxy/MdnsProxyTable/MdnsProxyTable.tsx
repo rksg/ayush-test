@@ -158,8 +158,12 @@ function useColumns () {
       render: function (_, { rules }) {
         return (rules && rules.length > 0
           ? <Tooltip
-            title={<MdnsProxyForwardingRulesTable readonly={true} rules={rules}/>}
-            overlayStyle={{ maxWidth: 'none' }}
+            overlayInnerStyle={{ minWidth: '380px' }}
+            title={<MdnsProxyForwardingRulesTable
+              readonly={true}
+              tableType={'compactBordered'}
+              rules={rules}
+            />}
             children={rules.length}
           />
           : 0

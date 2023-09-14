@@ -83,7 +83,7 @@ export function MacRegistrationsTab () {
         $t({ defaultMessage: 'MAC Address' }),
         selectedRows[0].macAddress,
         [
-          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Persona' }) }
+          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
         async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })

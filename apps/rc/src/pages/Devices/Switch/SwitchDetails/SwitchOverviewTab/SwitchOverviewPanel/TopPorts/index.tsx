@@ -1,10 +1,11 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData }                                  from '@acx-ui/analytics/utils'
+import { getSeriesData }                                                   from '@acx-ui/analytics/utils'
 import { DonutChartData, MultiLineTimeSeriesChart }                        from '@acx-ui/components'
 import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
 import { formatter }                                                       from '@acx-ui/formatter'
+import type { AnalyticsFilter }                                            from '@acx-ui/utils'
 
 import { Ports, useTopPortsQuery } from './services'
 

@@ -2,7 +2,6 @@ import { CSSProperties, ReactNode } from 'react'
 
 import { Form, FormItemProps, Radio, Space } from 'antd'
 import { NamePath }                          from 'antd/lib/form/interface'
-import { includes }                          from 'lodash'
 import { defineMessage, useIntl }            from 'react-intl'
 
 import { MdnsFencingService } from '@acx-ui/rc/utils'
@@ -114,31 +113,3 @@ export const FieldsetItem = ({ children, label, switchStyle, ...props }: FormIte
   <FixedFieldet {...{ label, children }} switchStyle={switchStyle}/>
 </Form.Item>
 
-
-export const ConvertToStandardMacAddress = (macAddress: string): string => {
-  let result = macAddress.toUpperCase()
-
-  if (includes(macAddress, '-')) {
-    result = result.replace(/-/g, ':')
-  } else if (includes(macAddress, '.') || !includes(macAddress, ':')) {
-    result = result.replace(/\./g, '')
-    const len = result.length
-    const ret = []
-    for (let i = 0; i < len; i += 2) {
-      ret.push(result.substring(i, i+2))
-    }
-    result = ret.join(':')
-  }
-
-  return result
-}
-
-export const IsValidMacAddress = (macAddress: string) => {
-  const regex = (includes(macAddress, ':') || includes(macAddress, '-'))
-    ? /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
-    : (includes(macAddress, '.'))
-      ? /^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/
-      : /^([0-9A-F]{12})$/
-
-  return regex.test(macAddress.toUpperCase())
-}
