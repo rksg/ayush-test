@@ -5,6 +5,7 @@ metadata:
 data:
   google.maps.key: "AIzaSyB3qIewrpkyQaSIIkOygIy11QKz2CyV1Y8"
   split.io.key: "dt1vi86ncfjjh04k8e4gp8auf6v41iutk4su"
+  splitproxy.cs.endpoint: "https://splitproxy.scale.ruckus.cloud"
   captive.portal.domain.name: "scale.ruckus.cloud"
   new.api.domain.name: "api.scale.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"

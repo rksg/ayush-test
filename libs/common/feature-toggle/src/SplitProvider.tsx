@@ -11,13 +11,14 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
+const splitProxyEndpoint = get('SPLIT_PROXY_ENDPOINT')
 const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { tenantId } = useParams() as { tenantId: string }
   const { data: userProfile } = useUserProfileContext()
-  const prefixKey = isMLISA ? 'MLISA' : 'ACX'
+  const prefixKey = isMLISA ? 'MLISA-' : 'ACX-'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
   if (!factory && tenantKey) {
     factory = SplitSdk({
@@ -27,6 +28,11 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
       core: {
         authorizationKey: splitKey,
         key: tenantKey
+      },
+      urls: {
+        sdk: splitProxyEndpoint,
+        events: splitProxyEndpoint,
+        auth: splitProxyEndpoint
       },
       storage: {
         type: 'LOCALSTORAGE',

@@ -107,7 +107,8 @@ export enum Features {
   EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
-  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle'
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  SPLITIO_PROXY = 'acx-ui-splitio-proxy-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
