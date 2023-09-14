@@ -111,7 +111,7 @@ describe('Recommendation services', () => {
     })
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.crrmList.initiate({ ...props, n: 5, m: 1000 })
+      api.endpoints.crrmList.initiate({ ...props, n: 5 })
     )
 
     const expectedResult = [

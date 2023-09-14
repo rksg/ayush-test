@@ -21,7 +21,7 @@ function AIDrivenRRMWidget ({
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...filters, n: 5, m: 10000 })
+  const queryResults = useCrrmListQuery({ ...filters, n: 5 })
   const data = queryResults?.data
   const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const noData = data?.recommendations?.length === 0

@@ -228,18 +228,18 @@ export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmData,
-      AnalyticsFilter & { n: number, m: number }
+      AnalyticsFilter & { n: number }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int, $m: Int
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
         ) {
-          crrmCount(start: $start, end: $end, path: $path, n: $m, crrm: true) {
+          crrmCount(start: $start, end: $end, path: $path, crrm: true) {
             status
           }
-          crrmScenario(start: $start, end: $end, path: $path, n: $m, crrm: true) {
+          crrmScenario(start: $start, end: $end, path: $path, crrm: true) {
             total
           }
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
@@ -254,7 +254,6 @@ export const api = recommendationApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           n: payload.n,
-          m: payload.m,
           ...getFilterPayload(payload)
         }
       }),

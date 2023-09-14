@@ -41,6 +41,8 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
     expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('There are recommendations for 3 zones covering 100 possible RRM combinations. Currently 1/3 zones have been optimized.')).toBeVisible()
   })
 
   it('handles no data', async () => {
