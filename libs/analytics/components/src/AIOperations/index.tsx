@@ -40,7 +40,7 @@ function AIOperationsWidget ({
       noData
         ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
         : <>
-          <UI.subtitle children={subtitle}/>
+          <UI.Subtitle children={subtitle}/>
           <UI.List
             dataSource={data?.slice(0,5)}
             renderItem={item => {

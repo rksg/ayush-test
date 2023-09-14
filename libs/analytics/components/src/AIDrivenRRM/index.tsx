@@ -40,7 +40,7 @@ function AIDrivenRRMWidget ({
       noData
         ? <NoData text={noCrrmText} />
         : <>
-          <UI.subtitle children={subtitle}/>
+          <UI.Subtitle children={subtitle}/>
           <UI.List
             dataSource={data?.recommendations}
             renderItem={item => {
