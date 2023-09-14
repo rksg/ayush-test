@@ -4,6 +4,7 @@ type commonEnvironment = {
   SPLIT_IO_KEY: string
   PENDO_API_KEY: string
   STATIC_ASSETS: string
+  SPLIT_PROXY_ENDPOINT: string
 }
 
 /**

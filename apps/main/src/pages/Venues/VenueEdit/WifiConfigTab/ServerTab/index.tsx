@@ -97,7 +97,7 @@ export function ServerTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={items} offsetTop={56} />
+        <AnchorLayout items={items} offsetTop={60} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

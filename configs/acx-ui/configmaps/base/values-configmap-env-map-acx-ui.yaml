@@ -12,6 +12,9 @@ data:
       - configmap: configmap-acx-ui
         key: split.io.key
         name: SPLIT_IO_KEY
+      - configmap: configmap-splitproxy
+        key: splitproxy-cs-endpoint
+        name: SPLIT_PROXY_ENDPOINT
       - configmap: configmap-acx-ui
         key: pendo.api.key
         name: PENDO_API_KEY

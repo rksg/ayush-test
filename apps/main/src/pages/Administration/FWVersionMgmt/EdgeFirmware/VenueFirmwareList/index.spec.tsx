@@ -278,7 +278,7 @@ describe('Edge venue firmware list', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/edgeFirmware' }
       })
 
-    await user.click(screen.getByRole('button', { name: /Preferences/i }))
+    await user.click(await screen.findByRole('button', { name: /Preferences/i }))
 
     const preferenceDialog = await screen.findByRole('dialog')
     const cancelButton = await within(preferenceDialog).findByRole('button', { name: 'Cancel' })
