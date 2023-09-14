@@ -28,6 +28,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                         from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
+import { exportMessageMapping }                   from '@acx-ui/utils'
 
 import { seriesMappingAP } from '../DevicesWidget'
 import { useEdgeActions }  from '../useEdgeActions'
@@ -261,8 +262,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
-        // eslint-disable-next-line max-len
-        iconButton={(exportDevice && false) ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={(exportDevice && false) ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv
+        } : undefined}
         {...otherProps}
       />
     </Loader>
