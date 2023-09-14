@@ -99,8 +99,8 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       destroyOnClose={true}
       title={
         isEdit
-          ? $t({ defaultMessage: 'Edit Persona' })
-          : $t({ defaultMessage: 'Create Persona' })
+          ? $t({ defaultMessage: 'Edit Identity' })
+          : $t({ defaultMessage: 'Create Identity' })
       }
       width={'400px'}
       visible={visible}

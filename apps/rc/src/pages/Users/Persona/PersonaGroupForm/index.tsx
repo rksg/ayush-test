@@ -5,6 +5,7 @@ import TextArea                                               from 'antd/lib/inp
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
+import { useDpskNewConfigFlowParams }                                                   from '@acx-ui/rc/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists, DpskSaveData, PersonaGroup, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
@@ -20,10 +21,11 @@ export function PersonaGroupForm (props: {
   const { form, defaultValue } = props
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
 
-  const dpskPoolList = useGetDpskListQuery({ })
+  const dpskPoolList = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
 
   const { data: macRegistrationPoolList } = useMacRegListsQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
@@ -37,7 +39,7 @@ export function PersonaGroupForm (props: {
         params: { size: '2147483647', page: '0' },
         payload: { keyword: name }
       }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
-      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona Group' }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity Group' }))
     } catch (e) {
       return Promise.resolve()
     }
@@ -62,7 +64,7 @@ export function PersonaGroupForm (props: {
           <Col span={21}>
             <Form.Item
               name='name'
-              label={$t({ defaultMessage: 'Persona Group Name' })}
+              label={$t({ defaultMessage: 'Identity Group Name' })}
               hasFeedback
               validateFirst
               validateTrigger={['onBlur']}

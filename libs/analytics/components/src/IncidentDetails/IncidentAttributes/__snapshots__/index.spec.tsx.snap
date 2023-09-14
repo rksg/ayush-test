@@ -3,7 +3,7 @@
 exports[`IncidentAttributes should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
   >
     <div
       class="ant-descriptions-view"
@@ -42,7 +42,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     5 of 27 clients (18.52%)
                   </span>
@@ -82,7 +82,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                   >
                     1 of 1 AP (100%)
                   </span>

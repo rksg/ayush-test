@@ -1,8 +1,7 @@
 export const mockedSocket = {
-  on: jest.fn(),
-  off: jest.fn(),
-  disconnect: jest.fn(),
-  disconnected: false
+  on: (eventName: string, handler: () => void) => {
+    if (eventName === 'connectedSocketEvent') setTimeout(handler, 0) // Simulate receving the message from websocket
+  }
 }
 
 export const tabPath = '/:tenantId/t/devices/wifi/:apId/details/neighbors/:activeSubTab'
@@ -58,6 +57,7 @@ export const mockedApLldpNeighbors = {
   neighbors: [
     {
       neighborManaged: false,
+      neighborSerialNumber: '987654321',
       lldpInterface: 'eth0',
       lldpVia: 'LLDP',
       lldpRID: '5',
@@ -85,7 +85,8 @@ export const mockedApLldpNeighbors = {
       lldpUPOE: '0'
     },
     {
-      neighborManaged: false,
+      neighborManaged: true,
+      neighborSerialNumber: '123456789',
       lldpInterface: 'eth1',
       lldpVia: 'LLDP',
       lldpRID: '7',

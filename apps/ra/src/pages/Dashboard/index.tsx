@@ -6,9 +6,11 @@ import { useIntl } from 'react-intl'
 import {
   DidYouKnow,
   IncidentsCountBySeverities,
-  NetworkHistory,
   SLA,
-  ReportTile
+  ReportTile,
+  MlisaNetworkFilter,
+  AIDrivenRRM,
+  AIOperations
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -53,39 +55,39 @@ export default function Dashboard () {
     <PageHeader
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
+        <>
+          <MlisaNetworkFilter />
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        </>
       ]}
     />
     <UI.Grid style={{ height }}>
       <div style={{ gridArea: 'a1' }}>
-        <Card title={$t({ defaultMessage: 'Network Filter' })} />
-      </div>
-      <div style={{ gridArea: 'b1' }}>
         <ReportTile path={path} />
       </div>
-      <div style={{ gridArea: 'b2' }}>
-        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
-      </div>
-      <div style={{ gridArea: 'b3' }}>
-        <SLA filters={analyticsFilter}/>
-      </div>
-      <div style={{ gridArea: 'c1' }}>
-        <IncidentsCountBySeverities filters={filters} />
-      </div>
-      <div style={{ gridArea: 'c2' }}>
-        <Card title={$t({ defaultMessage: 'AI-Driven RRM' })} />
-      </div>
-      <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
+      <div style={{ gridArea: 'a2' }}>
+        <Card />
       </div>
       <div style={{ gridArea: 'd2' }}>
-        <Card title={$t({ defaultMessage: 'AI Operations' })} />
+        <SLA filters={analyticsFilter}/>
+      </div>
+      <div style={{ gridArea: 'b1' }}>
+        <IncidentsCountBySeverities filters={filters} />
+      </div>
+      <div style={{ gridArea: 'b2' }}>
+        <AIDrivenRRM filters={filters} />
+      </div>
+      <div style={{ gridArea: 'd1' }}>
+        <DidYouKnow filters={filters} maxFactPerSlide={4} maxSlideChar={340} />
+      </div>
+      <div style={{ gridArea: 'c1' }}>
+        <AIOperations filters={filters} />
       </div>
     </UI.Grid>
   </>

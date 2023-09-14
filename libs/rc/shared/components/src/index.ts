@@ -60,6 +60,7 @@ export {
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
 export {
   ClientAdmissionControlForm,
+  ClientAdmissionControlLevelEnum,
   ClientAdmissionControlTypeEnum
 } from './ClientAdmissionControlForm'
 export { StatusLight } from './StatusLight'
@@ -69,6 +70,7 @@ export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus, defaultSwitchPayload } from './SwitchTable'
 export type { SwitchTableRefType } from './SwitchTable'
 export { SwitchPortTable, isLAGMemberPort, getInactiveTooltip } from './SwitchPortTable'
+export { EditPortDrawer as EditPortDrawerLegacy } from './SwitchPortTable/editPortDrawerLegacy'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { SwitchLagModal } from './SwitchLagDrawer/SwitchLagModal'
 export { TimelineDrawer } from './TimelineDrawer'

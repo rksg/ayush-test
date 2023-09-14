@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer }                                                          from '@acx-ui/rc/components'
+import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -52,11 +52,13 @@ export function PersonaDevicesTable (props: {
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
 
   const [getClientList] = useLazyGetClientListQuery()
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
     params: {
       tenantId,
       serviceId: dpskPoolId,
-      passphraseId: persona?.dpskGuid
+      passphraseId: persona?.dpskGuid,
+      ...dpskNewConfigFlowParams
     }
   }, { skip: !persona?.dpskGuid || !dpskPoolId })
 
@@ -250,7 +252,7 @@ export function PersonaDevicesTable (props: {
           },
           // FIXME: Need to add mac registration list id into this dialog
           // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this persona. Are you sure you want to delete them?' }),
+          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
           onOk: () => {
             deleteDevices(selectedItems)
             clearSelection()

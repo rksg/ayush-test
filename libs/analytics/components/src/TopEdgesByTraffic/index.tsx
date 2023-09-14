@@ -2,12 +2,13 @@ import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, BarChartData, calculateGranularity, getBarChartSeriesData } from '@acx-ui/analytics/utils'
-import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr }   from '@acx-ui/components'
-import { formatter }                                                                  from '@acx-ui/formatter'
-import { useGetEdgesTopTrafficQuery }                                                 from '@acx-ui/rc/services'
-import { NavigateFunction, Path, useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
-import { FilterNameNode }                                                             from '@acx-ui/utils'
+import { BarChartData, calculateGranularity, getBarChartSeriesData }                from '@acx-ui/analytics/utils'
+import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr } from '@acx-ui/components'
+import { formatter }                                                                from '@acx-ui/formatter'
+import { useGetEdgesTopTrafficQuery }                                               from '@acx-ui/rc/services'
+import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
+import { FilterNameNode }                                                           from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByTrafficWidget as TopEdgesByTraffic }
 

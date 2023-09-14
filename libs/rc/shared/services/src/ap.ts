@@ -47,6 +47,7 @@ import {
   MeshUplinkAp,
   ApRfNeighborsResponse,
   ApLldpNeighborsResponse,
+  SupportCcdVenue,
   ApClientAdmissionControl
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
@@ -99,7 +100,8 @@ export const apApi = baseApApi.injectEndpoints({
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
@@ -801,6 +803,22 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+        }
+      }
+    }),
+    runCcd: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getApClientAdmissionControl: build.query<ApClientAdmissionControl, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApClientAdmissionControl, params)
@@ -904,6 +922,8 @@ export const {
   useLazyGetApRfNeighborsQuery,
   useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
+  useGetCcdSupportVenuesQuery,
+  useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation
