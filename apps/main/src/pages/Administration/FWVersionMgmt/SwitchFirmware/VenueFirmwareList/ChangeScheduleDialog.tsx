@@ -214,6 +214,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const onModalCancel = () => {
     form.resetFields()
     resetValues()
+    setSelectedDate('')
+    setSelectedTime('')
     onCancel()
   }
 
