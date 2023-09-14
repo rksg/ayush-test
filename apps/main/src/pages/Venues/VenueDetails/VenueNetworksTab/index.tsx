@@ -70,7 +70,8 @@ const defaultPayload = {
     'captiveType',
     'id',
     'isOweMaster',
-    'owePairNetworkId'
+    'owePairNetworkId',
+    'dsaeOnboardNetwork'
   ]
 }
 
@@ -118,6 +119,7 @@ export function VenueNetworksTab () {
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
   const [
     addNetworkVenue,
@@ -131,8 +133,15 @@ export function VenueNetworksTab () {
   useEffect(()=>{
     if (tableQuery.data) {
       const data: React.SetStateAction<NetworkExtended[]> = []
+      // showing onboarded networks
+      const _rows: string[]=[]
+
       tableQuery.data.data.forEach(item => {
         const activatedVenue = getCurrentVenue(item)
+        if (item?.children) {
+          _rows.push(item.id)
+        }
+
         data.push({
           ...item,
           deepVenue: activatedVenue,
@@ -140,6 +149,7 @@ export function VenueNetworksTab () {
           longitude: venueDetailsQuery.data?.venue.longitude
         })
       })
+      setExpandedRowKeys(_rows)
       setTableData(data)
     }
   }, [tableQuery.data, venueDetailsQuery.data])
@@ -219,8 +229,9 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return (
-          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
+        return (!!row?.isOnBoarded ?
+          <span>{row.name}</span>
+          : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
@@ -251,7 +262,10 @@ export function VenueNetworksTab () {
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
         if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
-        } else if (isSystemCreatedNetwork(row)) {
+        } else if (row?.isOnBoarded) {
+          disabled = true
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DSAE for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
+        }else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
@@ -274,7 +288,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
     {
@@ -283,7 +297,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
     {
@@ -292,7 +306,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
     {
@@ -300,7 +314,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), isSystemCreatedNetwork(row))
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     }
   ]
@@ -404,6 +418,11 @@ export function VenueNetworksTab () {
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        expandedRowKeys={expandedRowKeys}
+        expandIconColumnIndex={-1}
+        expandIcon={
+          () => <></>
+        }
       />
       <Form.Provider
         onFormFinish={handleFormFinish}
