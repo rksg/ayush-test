@@ -22,7 +22,7 @@ export interface Node {
 interface SlidingDoorProps {
   data: Node;
   setNetworkPath: Function;
-  defaultSelectedNode?: Node | null;
+  defaultSelectedNode: Node[];
 }
 
 const useBreadcrumbState = (initialBreadcrumb: Node[], cb: CallableFunction) => {
@@ -46,21 +46,18 @@ const useBreadcrumbState = (initialBreadcrumb: Node[], cb: CallableFunction) => 
 
 export const SlidingDoor = (props: SlidingDoorProps) => {
   const { $t } = useIntl()
-  const { data: rootNode, setNetworkPath } = props
+  const { data: rootNode, setNetworkPath, defaultSelectedNode: selectedNode } = props
   const defaultPath = [{ name: 'Network', type: 'network' }]
-
   const initialBreadcrumb = findMatchingNode(
     rootNode,
-    (props?.defaultSelectedNode as unknown as Node[])?.[
-      (props.defaultSelectedNode as unknown as Node[]).length - 1
-    ]
+    selectedNode?.[selectedNode.length - 1]
   )?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
     useBreadcrumbState(initialBreadcrumb, setIsAnimationSlideIn)
-  const breadcrumbToInputValue = () => breadcrumb.slice(1).map(node => node.name).join(' / ')
+  const nodeToInputValue = (node: Node[]) => node.slice(1).map(node => node.name).join(' / ')
   const [searchText, setSearchText] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>(breadcrumbToInputValue())
+  const [inputValue, setInputValue] = useState<string>(nodeToInputValue(selectedNode))
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
 
@@ -75,7 +72,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }
   const onApply = () => {
     setVisible(false)
-    setInputValue(breadcrumbToInputValue())
+    setInputValue(nodeToInputValue(breadcrumb))
     const selectedNodePath = breadcrumb.map((node) => {
       const nodeInfo = {
         name: node.name,

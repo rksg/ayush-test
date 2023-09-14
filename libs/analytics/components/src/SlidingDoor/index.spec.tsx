@@ -11,7 +11,11 @@ jest.mock('./helpers', () => ({
 }))
 
 describe('SlidingDoor', () => {
-  const mockSetNetworkPath = jest.fn()
+  const selected = [{
+    name: 'Network',
+    type: 'network'
+  }]
+  const setNetwork = jest.fn()
   const mockData: Node = {
     id: '1',
     name: 'network',
@@ -37,7 +41,7 @@ describe('SlidingDoor', () => {
   it('should render without errors', () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     expect(screen.getByPlaceholderText('Entire Organization')).toBeInTheDocument()
@@ -46,7 +50,7 @@ describe('SlidingDoor', () => {
   it('should open dropdown on input click', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -56,7 +60,7 @@ describe('SlidingDoor', () => {
   it('should call onCancel correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -67,12 +71,12 @@ describe('SlidingDoor', () => {
   it('should call onApply correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Apply'))
-    expect(mockSetNetworkPath).toBeCalledWith(
+    expect(setNetwork).toBeCalledWith(
       [{ name: 'network', type: 'network' }],
       [{ name: 'network', type: 'network' }]
     )
@@ -89,13 +93,13 @@ describe('SlidingDoor', () => {
     }
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mock} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mock} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Ap (Access Point)'))
     fireEvent.click(await screen.findByText('Apply'))
-    expect(mockSetNetworkPath).toBeCalledWith(
+    expect(setNetwork).toBeCalledWith(
       [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
       [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }]
     )
@@ -112,13 +116,13 @@ describe('SlidingDoor', () => {
     }
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mock} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mock} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Switch (Switch)'))
     fireEvent.click(await screen.findByText('Apply'))
-    expect(mockSetNetworkPath).toBeCalledWith(
+    expect(setNetwork).toBeCalledWith(
       [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
       [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }]
     )
@@ -126,7 +130,7 @@ describe('SlidingDoor', () => {
   it('should search nodes correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     const input = await screen.findByPlaceholderText('Entire Organization')
@@ -138,7 +142,7 @@ describe('SlidingDoor', () => {
   it('renders empty search', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -151,7 +155,7 @@ describe('SlidingDoor', () => {
   it('should handle onSelect correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -164,7 +168,7 @@ describe('SlidingDoor', () => {
   it('should handle onBreadcrumbClick correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -177,7 +181,7 @@ describe('SlidingDoor', () => {
   it('should handle onBack correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -189,7 +193,7 @@ describe('SlidingDoor', () => {
   it('should handle onClear correctly', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData} setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -199,9 +203,10 @@ describe('SlidingDoor', () => {
   it('should show no data', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={{ name: 'network',
-          type: 'network' }}
-        setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={{ name: 'network', type: 'network' }}
+          setNetworkPath={setNetwork}
+          defaultSelectedNode={selected}
+        />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -210,8 +215,7 @@ describe('SlidingDoor', () => {
   it('should close the filter on clicking outside the filter', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData}
-          setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
@@ -222,8 +226,7 @@ describe('SlidingDoor', () => {
   it('should not close the filter on clicking inside the filter', async () => {
     render(
       <IntlProvider locale='en'>
-        <SlidingDoor data={mockData}
-          setNetworkPath={mockSetNetworkPath} />
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))

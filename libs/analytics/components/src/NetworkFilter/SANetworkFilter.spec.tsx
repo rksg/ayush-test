@@ -15,6 +15,7 @@ const filters = {
 }
 const mockUseAnalyticsFilter = {
   filters,
+  path: [{ type: 'network', name: 'Network' }],
   setNetworkPath: mockSetNetworkPath,
   raw: []
 }

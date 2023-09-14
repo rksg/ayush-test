@@ -20,10 +20,9 @@ export const searchTree = (node: Node, searchText: string, path: Node[] = []): N
 }
 export const findMatchingNode = (
   node: Node,
-  targetNode: Node | null | undefined,
+  targetNode: Node,
   path: Node[] = []
 ): Node | null => {
-  if (!targetNode) return null
   if (node.type === targetNode.type && (
     node.type === 'ap' || node.type === 'switch'
       ? node.mac === targetNode.list?.[0]
@@ -41,8 +40,7 @@ export const findMatchingNode = (
   }
   return null
 }
-export const customCapitalize = (node?: Node | null) => {
-  if (!node) return ''
+export const customCapitalize = (node: Node) => {
   let { type, name } = node
   if (type === 'network') {
     const { $t } = getIntl()

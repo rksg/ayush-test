@@ -86,10 +86,5 @@ describe('Helper Functions', () => {
       const node: Node = { name: 'example', type: 'system' }
       expect(customCapitalize(node)).toBe('Example (SZ Cluster)')
     })
-
-    it('should return an empty string if the node is null or undefined', () => {
-      expect(customCapitalize(null)).toBe('')
-      expect(customCapitalize(undefined)).toBe('')
-    })
   })
 })
