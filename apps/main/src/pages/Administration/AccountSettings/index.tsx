@@ -46,12 +46,17 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
+  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && !isDogfood
+    && canMSPDelegation && !isMspEc
+
 
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params },
@@ -110,7 +115,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { showSsoSupport && (
+        { showApiKeySupport && (
           <>
             <Divider />
             <AppTokenFormItem

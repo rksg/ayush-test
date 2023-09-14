@@ -71,7 +71,7 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(isAnltAdvTier && recommendationsEnabled ? [{
+            ...(recommendationsEnabled ? [{
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
             }, {
