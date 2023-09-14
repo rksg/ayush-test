@@ -31,12 +31,13 @@ const Filter = (
 ) => {
   return excludeNetworkFilter
     ? null
-  /* istanbul ignore next */
-    : isMLISA ? <MlisaNetworkFilter /> : <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
-      withIncidents={withIncidents}
-    />
+    : isMLISA
+      ? <MlisaNetworkFilter shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        withIncidents={withIncidents}
+      />
 }
 
 export const useHeaderExtra = (props: useHeaderExtraProps) => {
