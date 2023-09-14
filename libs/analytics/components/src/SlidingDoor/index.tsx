@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { defaultNetworkPath }                          from '@acx-ui/analytics/utils'
 import { SearchOutlined, CloseSymbol, CaretDownSolid } from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
@@ -179,7 +178,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
           value={searchText}
           suffix={visible || searchText || inputValue
             ? <CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />
-            : <CaretDownSolid style={{ cursor: 'pointer' }} onClick={open} />
+            : <CaretDownSolid />
           }
         />
       </Dropdown>
