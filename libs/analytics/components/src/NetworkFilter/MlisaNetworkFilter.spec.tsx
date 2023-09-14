@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { IntlProvider }              from 'react-intl'
+import { render, screen } from '@testing-library/react'
+import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
