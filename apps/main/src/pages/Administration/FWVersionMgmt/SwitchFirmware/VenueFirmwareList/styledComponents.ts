@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Button, Modal } from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
 
 export const DateContainer = styled.div`
   height: auto;
