@@ -95,19 +95,17 @@ export const ListItemSpan = styled.span<{ hasArrow: boolean }>`
 `
 export const ListItem = styled(List.Item)<{
   $isSelected?: boolean;
-  $isAnimationSlideIn: boolean;
-  $isSearchTriggerred: boolean;
+  $animation: 'none' | 'ltr' | 'rtl';
 }>`
   padding-left: 20px;
   padding-right: 16px;
-  animation: ${(props) =>
-    props.$isAnimationSlideIn
-      ? slideIn
-      : slideOut} 
-    ${(props) =>
-    props.$isSearchTriggerred
-      ? '0s'
-      : '0.3s'} ease-in-out;
+  animation: ${(props) => {
+    switch(props.$animation) {
+      case 'none': return 'none'
+      case 'rtl': return slideIn
+      case 'ltr': return slideOut
+    }
+  }} 0.3s ease-in-out;
   background-color: ${(props) =>
     props.$isSelected
       ? 'var(--acx-accents-orange-20)'

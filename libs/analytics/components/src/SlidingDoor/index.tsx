@@ -156,7 +156,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
             onApply={onApply}
             onBack={onBack}
             onBreadcrumbClick={onBreadcrumbClick}
-            isAnimationSlideIn={isAnimationSlideIn}
+            animation={searchText ? 'none' : (isAnimationSlideIn ? 'rtl' : 'ltr')}
           />
         }
         visible={visible}

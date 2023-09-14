@@ -14,8 +14,7 @@ describe('ListItemComponent', () => {
       <ListItemComponent
         node={node}
         onClick={mockOnClick}
-        isAnimationSlideIn
-        isSearchTriggerred={false}
+        animation='rtl'
         currentNode={node}
       />
     )
@@ -32,8 +31,7 @@ describe('ListItemComponent', () => {
       <ListItemComponent
         node={node}
         onClick={mockOnClick}
-        isAnimationSlideIn
-        isSearchTriggerred={false}
+        animation='rtl'
         currentNode={node}
       />
     )
@@ -50,8 +48,7 @@ describe('ListItemComponent', () => {
       <ListItemComponent
         node={node}
         onClick={mockOnClick}
-        isAnimationSlideIn
-        isSearchTriggerred
+        animation='none'
         currentNode={node}
       />
     )
@@ -70,8 +67,7 @@ describe('ListItemComponent', () => {
       <ListItemComponent
         node={node}
         onClick={mockOnClick}
-        isAnimationSlideIn
-        isSearchTriggerred
+        animation='none'
         currentNode={node}
       />
     )
