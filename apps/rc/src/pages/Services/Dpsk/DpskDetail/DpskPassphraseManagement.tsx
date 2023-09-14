@@ -21,7 +21,9 @@ import {
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
-  useUploadPassphrasesMutation
+  useUploadPassphrasesMutation,
+  getDisabledActionMessage,
+  showAppliedInstanceMessage
 } from '@acx-ui/rc/services'
 import {
   EXPIRATION_TIME_FORMAT,
@@ -225,6 +227,22 @@ export default function DpskPassphraseManagement () {
     )
   }
 
+  // eslint-disable-next-line max-len
+  const canRevoke = (type: 'revoke' | 'unrevoke', selectedRows: NewDpskPassphrase[], callback: () => void) => {
+    const disabledActionMessage = getDisabledActionMessage(
+      selectedRows,
+      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
+      // eslint-disable-next-line max-len
+      type === 'revoke' ? intl.$t({ defaultMessage: 'Revoke' }) : intl.$t({ defaultMessage: 'Unrevoke' })
+    )
+
+    if (disabledActionMessage) {
+      showAppliedInstanceMessage(disabledActionMessage)
+    } else {
+      callback()
+    }
+  }
+
   const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
     return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
   }
@@ -261,15 +279,17 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        showRevokeModal(selectedRows, async (revocationReason: string) => {
-          await revokePassphrases({
-            params: { ...params, ...dpskNewConfigFlowParams },
-            payload: {
-              ids: selectedRows.map(p => p.id),
-              changes: { revocationReason }
-            }
+        canRevoke('revoke', selectedRows, () => {
+          showRevokeModal(selectedRows, async (revocationReason: string) => {
+            await revokePassphrases({
+              params: { ...params, ...dpskNewConfigFlowParams },
+              payload: {
+                ids: selectedRows.map(p => p.id),
+                changes: { revocationReason }
+              }
+            })
+            clearSelection()
           })
-          clearSelection()
         })
       }
     },
@@ -277,13 +297,15 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        revokePassphrases({
-          params: { ...params, ...dpskNewConfigFlowParams },
-          payload: {
-            ids: selectedRows.map(p => p.id),
-            changes: { revocationReason: null }
-          }
-        }).then(clearSelection)
+        canRevoke('unrevoke', selectedRows, () => {
+          revokePassphrases({
+            params: { ...params, ...dpskNewConfigFlowParams },
+            payload: {
+              ids: selectedRows.map(p => p.id),
+              changes: { revocationReason: null }
+            }
+          }).then(clearSelection)
+        })
       }
     },
     {
