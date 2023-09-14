@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, AnalyticsFilter, getSparklineGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                                    from '@acx-ui/store'
+import { getFilterPayload, getSparklineGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                   from '@acx-ui/store'
+import type { AnalyticsFilter }                      from '@acx-ui/utils'
 
 export type HierarchyNodeData = {
   totalUserTraffic: number

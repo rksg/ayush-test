@@ -380,7 +380,7 @@ export const mockedRecommendationCRRM = {
     }
   ],
   kpi_number_of_interfering_links: {
-    current: 0,
+    current: 2,
     previous: null,
     projected: 0
   }
@@ -403,7 +403,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
     channelMode: 'CHANNEL_FLY',
     channelWidth: '_AUTO',
     radio: '5',
-    autoCellSizing: true
+    autoCellSizing: 'true'
   }],
   recommendedValue: {
     recommended: 'crrm',

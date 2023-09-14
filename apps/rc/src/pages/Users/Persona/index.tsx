@@ -10,24 +10,24 @@ import { useNavigate, useParams, useTenantLink }                     from '@acx-
 import { PersonaGroupTable } from './PersonaGroupTable'
 import { PersonaTable }      from './PersonaTable'
 
-export const PersonaGroupContext = createContext({} as {
-  setPersonaGroupCount: (data: number) => void
+export const IdentityGroupContext = createContext({} as {
+  setIdentityGroupCount: (data: number) => void
 })
-export const PersonasContext = createContext({} as {
-  setPersonasCount: (data: number) => void
+export const IdentitiesContext = createContext({} as {
+  setIdentitiesCount: (data: number) => void
 })
-enum PersonaTabKey {
-  PERSONA = 'persona',
-  PERSONA_GROUP = 'persona-group'
+enum IdentityTabKey {
+  IDENTITY = 'identity',
+  IDENTITY_GROUP = 'identity-group'
 }
 
 function PersonaPageHeader () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink('/users/persona-management/')
+  const basePath = useTenantLink('/users/identity-management/')
   const navigate = useNavigate()
-  const [ personaGroupCount, setPersonaGroupCount ] = useState(0)
-  const [ personasCount, setPersonasCount ] = useState(0)
+  const [ identityGroupCount, setIdentityGroupCount ] = useState(0)
+  const [ identitiesCount, setIdentitiesCount ] = useState(0)
 
   const personaGroupTableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
@@ -43,11 +43,11 @@ function PersonaPageHeader () {
   })
 
   useEffect(() => {
-    setPersonaGroupCount(personaGroupTableQuery.data?.totalCount || 0)
+    setIdentityGroupCount(personaGroupTableQuery.data?.totalCount || 0)
   }, [personaGroupTableQuery.data])
 
   useEffect(() => {
-    setPersonasCount(personaTableQuery.data?.totalCount || 0)
+    setIdentitiesCount(personaTableQuery.data?.totalCount || 0)
   }, [personaTableQuery.data])
 
   const onTabChange = (tab: string) =>
@@ -56,40 +56,40 @@ function PersonaPageHeader () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const getTabComp = (activeTab?: PersonaTabKey) => {
-    if (activeTab === PersonaTabKey.PERSONA) {
-      return <PersonasContext.Provider value={{ setPersonasCount }}>
+  const getTabComp = (activeTab?: IdentityTabKey) => {
+    if (activeTab === IdentityTabKey.IDENTITY) {
+      return <IdentitiesContext.Provider value={{ setIdentitiesCount: setIdentitiesCount }}>
         <PersonaTable />
-      </PersonasContext.Provider>
+      </IdentitiesContext.Provider>
     }
 
-    return <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
+    return <IdentityGroupContext.Provider value={{ setIdentityGroupCount: setIdentityGroupCount }}>
       <PersonaGroupTable />
-    </PersonaGroupContext.Provider>
+    </IdentityGroupContext.Provider>
   }
 
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Persona Management' })}
+        title={$t({ defaultMessage: 'Identity Management' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
         footer={
           <Tabs onChange={onTabChange} activeKey={params.activeTab}>
             <Tabs.TabPane
-              key={PersonaTabKey.PERSONA_GROUP}
+              key={IdentityTabKey.IDENTITY_GROUP}
               tab={$t(
-                { defaultMessage: 'Persona Groups ({personaGroupCount})' },
-                { personaGroupCount }
+                { defaultMessage: 'Identity Groups ({identityGroupCount})' },
+                { identityGroupCount }
               )}
             />
             <Tabs.TabPane
-              key={PersonaTabKey.PERSONA}
-              tab={$t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })}
+              key={IdentityTabKey.IDENTITY}
+              tab={$t({ defaultMessage: 'Identities ({identitiesCount})' }, { identitiesCount })}
             />
           </Tabs>
         }
       />
-      { getTabComp(params.activeTab as PersonaTabKey) }
+      { getTabComp(params.activeTab as IdentityTabKey) }
     </>
   )
 }

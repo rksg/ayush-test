@@ -101,7 +101,7 @@ describe('PersonaDevicesTable', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -138,7 +138,7 @@ describe('PersonaDevicesTable', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -176,7 +176,7 @@ describe('PersonaDevicesTable', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -197,7 +197,7 @@ describe('PersonaDevicesTable', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )

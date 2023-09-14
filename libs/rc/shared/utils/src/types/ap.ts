@@ -512,6 +512,7 @@ export interface ApRfNeighbor {
 
 export interface ApLldpNeighbor {
   neighborManaged: boolean,
+  neighborSerialNumber: string | null,
   lldpInterface: string | null,
   lldpVia: string | null,
   lldpRID: string | null,
@@ -547,4 +548,9 @@ export interface ApRfNeighborsResponse {
 export interface ApLldpNeighborsResponse {
   detectedTime: string,
   neighbors: ApLldpNeighbor[]
+}
+
+export interface SupportCcdVenue {
+  id: string,
+  name: string
 }

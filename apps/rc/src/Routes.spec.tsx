@@ -942,7 +942,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/users/persona-management',
+        path: '/tenantId/t/users/identity-management',
         wrapRoutes: false
       }
     })
@@ -953,7 +953,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/users/persona-management/persona-group/personGroupId/persona/personaId',
+        path: '/tenantId/t/users/identity-management/identity-group/personGroupId/identity/personaId',
         wrapRoutes: false
       }
     })
@@ -964,7 +964,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/users/persona-management/persona-group/personGroupId',
+        path: '/tenantId/t/users/identity-management/identity-group/personGroupId',
         wrapRoutes: false
       }
     })

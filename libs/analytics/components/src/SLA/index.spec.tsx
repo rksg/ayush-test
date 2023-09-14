@@ -1,8 +1,7 @@
-
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router  }         from '@acx-ui/react-router-dom'
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { SLA } from '.'

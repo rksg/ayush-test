@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { isNull }  from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, cssStr } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
 import { CloseSymbol }                      from '@acx-ui/icons'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   titleConfig,

@@ -1,16 +1,96 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+import { defineMessage } from 'react-intl'
 
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import {
-  DateRange,
-  setUpIntl,
-  NetworkPath
-} from '@acx-ui/utils'
+import { DateRange, NetworkPath }                                          from '@acx-ui/utils'
 
-import { apiResult }                                                                                              from './__tests__/fixtures'
-import { api, useCancelRecommendationMutation, useMuteRecommendationMutation, useScheduleRecommendationMutation } from './services'
+import { crrmListResult, recommendationListResult } from './__tests__/fixtures'
+import { crrmStates }                               from './config'
+import {
+  api,
+  transformCrrmList,
+  getCrrmOptimizedState,
+  getCrrmInterferingLinksText,
+  useCancelRecommendationMutation,
+  useMuteRecommendationMutation,
+  useScheduleRecommendationMutation
+} from './services'
+
+import type { CrrmListItem } from './services'
+
+describe('Recommendations utils', () => {
+  let recommendations: CrrmListItem[]
+  beforeAll(() => {
+    recommendations = transformCrrmList(crrmListResult.recommendations as unknown as CrrmListItem[])
+  })
+
+  describe('getCrrmOptimizedState', () => {
+    it('returns optimized state', () => {
+      expect(getCrrmOptimizedState(recommendations[0].status)).toEqual(crrmStates.optimized)
+    })
+
+    it('returns non optimized state', () => {
+      expect(getCrrmOptimizedState(recommendations[1].status)).toEqual(crrmStates.nonOptimized)
+    })
+  })
+
+  describe('getCrrmInterferingLinksText', () => {
+    it('returns text when applied', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[0]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('From 3 to 0 interfering links')
+    })
+
+    it('returns text when revertfailed', () => {
+      const recommendation = { ...recommendations[0], status: 'revertfailed' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Revert Failed')
+    })
+
+    it('returns text when reverted', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[1]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Reverted')
+    })
+
+    it('returns text when new', () => {
+      const { status, kpi_number_of_interfering_links } = recommendations[2]
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links can be optimized to 0')
+    })
+
+    it('returns text when reverted but no previous (revertedTime < appliedTime+24hours)', () => {
+      const recommendation = { ...recommendations[2], status: 'reverted' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Reverted')
+    })
+
+    it('returns text when applied but no previous (maxIngestedTime < appliedTime+24hours)', () => {
+      const recommendation = { ...recommendations[2], status: 'applied' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links will be optimized to 0')
+    })
+
+    it('returns text when applyscheduled', () => {
+      const recommendation = { ...recommendations[2], status: 'applyscheduled' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('2 interfering links will be optimized to 0')
+    })
+
+    it('returns text when applyfailed', () => {
+      const recommendation = { ...recommendations[2], status: 'applyfailed' } as CrrmListItem
+      const { status, kpi_number_of_interfering_links } = recommendation
+      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
+        .toBe('Failed')
+    })
+  })
+})
 
 describe('Recommendation services', () => {
   const props = {
@@ -21,128 +101,98 @@ describe('Recommendation services', () => {
     filter: {}
   } as const
 
-
-  const expectedResult = [
-    {
-      id: '1',
-      code: 'c-crrm-channel5g-auto',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:05:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-1',
-      metadata: {},
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz611' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ],
-      category: 'AI-Driven Cloud RRM',
-      priority: 2,
-      priorityLabel: 'High',
-      scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-      status: 'Applied',
-      statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
-      summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
-      type: 'Venue',
-      statusEnum: 'applied'
-    }, {
-      id: '2',
-      code: 'c-txpower-same',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:06:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-2',
-      metadata: {
-        error: {
-          details: [{
-            apName: 'AP',
-            apMac: 'MAC',
-            configKey: 'radio5g',
-            message: 'unknown error'
-          }]
-        }
-      },
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz6' },
-        { type: 'zone', name: 'EDU' }
-      ],
-      category: 'Wi-Fi Client Experience',
-      priority: 1,
-      priorityLabel: 'Medium',
-      scope: `vsz6 (SZ Cluster)
-> EDU (Venue)`,
-      status: 'Revert Failed',
-      statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
-      summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
-      type: 'Venue',
-      statusEnum: 'revertfailed'
-    },
-    {
-      category: 'Wi-Fi Client Experience',
-      code: 'c-bandbalancing-enable',
-      createdAt: '2023-06-12T07:05:14.900Z',
-      id: '3',
-      isMuted: true,
-      metadata: {},
-      mutedAt: null,
-      mutedBy: '',
-      path: [
-        {
-          name: 'vsz34',
-          type: 'system'
-        },
-        {
-          name: '27-US-CA-D27-Peat-home',
-          type: 'domain'
-        },
-        {
-          name: 'Deeps Place',
-          type: 'zone'
-        }
-      ],
-      priority: 0,
-      priorityLabel: 'Low',
-      scope: `vsz34 (SZ Cluster)
-> 27-US-CA-D27-Peat-home (Domain)
-> Deeps Place (Venue)`,
-      sliceType: 'zone',
-      sliceValue: 'Deeps Place',
-      status: 'New',
-      statusTooltip: 'Schedule a day and time to apply this recommendation.',
-      summary: 'Enable band balancing',
-      type: 'Venue',
-      updatedAt: '2023-07-06T06:05:21.004Z',
-      statusEnum: 'new'
-    }
-  ]
-
   beforeEach(() => {
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
   })
 
-  it('should return correct data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: apiResult
+  it('should return crrm list', async () => {
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: crrmListResult
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.crrmList.initiate({ ...props, n: 5 })
+    )
+
+    const expectedResult = [
+      {
+        ...crrmListResult.recommendations[0],
+        crrmInterferingLinksText: 'From 3 to 0 interfering links',
+        crrmOptimizedState: crrmStates.optimized
+      },
+      {
+        ...crrmListResult.recommendations[1],
+        crrmInterferingLinksText: 'Reverted',
+        crrmOptimizedState: crrmStates.nonOptimized
+      },
+      {
+        ...crrmListResult.recommendations[2],
+        crrmInterferingLinksText: '2 interfering links can be optimized to 0',
+        crrmOptimizedState: crrmStates.nonOptimized
+      }
+    ]
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('should return recommendation list', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: recommendationListResult
     })
 
     const { status, data, error } = await store.dispatch(
       api.endpoints.recommendationList.initiate(props)
     )
 
+    const expectedResult = [
+      {
+        ...recommendationListResult.recommendations[0],
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: { order: 2, label: defineMessage({ defaultMessage: 'High' }) },
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal Ch/Width and Tx power found for 5 GHz radio',
+        status: 'Applied',
+        statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
+        statusEnum: 'applied',
+        crrmOptimizedState: crrmStates.optimized
+      },
+      {
+        ...recommendationListResult.recommendations[1],
+        scope: `vsz6 (SZ Cluster)
+> EDU (Venue)`,
+        type: 'Venue',
+        priority: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
+        status: 'Revert Failed',
+        statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
+        statusEnum: 'revertfailed'
+      },
+      {
+        ...recommendationListResult.recommendations[2],
+        scope: `vsz34 (SZ Cluster)
+> 27-US-CA-D27-Peat-home (Domain)
+> Deeps Place (Venue)`,
+        type: 'Venue',
+        priority: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable band balancing',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      }
+    ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)
   })
 
-  it('should mutate correct data', async () => {
+  it('should mute correctly', async () => {
     const resp = { toggleMute: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'MuteRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useMuteRecommendationMutation(),
@@ -156,9 +206,9 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
-  it('should mutate apply correctly', async () => {
+  it('should schedule correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useScheduleRecommendationMutation(),
@@ -172,9 +222,9 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
-  it('should mutate cancel correctly', async () => {
+  it('should cancel correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
 
     const { result } = renderHook(
       () => useCancelRecommendationMutation(),
