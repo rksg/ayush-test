@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 import { Dropdown } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { SearchOutlined, CloseSymbol } from '@acx-ui/icons'
 
@@ -44,6 +45,7 @@ const useBreadcrumbState = (initialBreadcrumb: Node[], cb: CallableFunction) => 
 }
 
 export const SlidingDoor = (props: SlidingDoorProps) => {
+  const { $t } = useIntl()
   const { data: rootNode, setNetworkPath } = props
   const defaultPath = [{ name: 'Network', type: 'network' }]
 
@@ -56,11 +58,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
     useBreadcrumbState(initialBreadcrumb, setIsAnimationSlideIn)
-
+  const breadcrumbToInputValue = () => breadcrumb.slice(1).map(node => node.name).join(' / ')
   const [searchText, setSearchText] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>(
-    breadcrumb.map((node) => node.name).join(' / ')
-  )
+  const [inputValue, setInputValue] = useState<string>(breadcrumbToInputValue())
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
 
@@ -75,7 +75,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }
   const onApply = () => {
     setVisible(false)
-    setInputValue(breadcrumb.map((node) => node.name).join(' / '))
+    setInputValue(breadcrumbToInputValue())
     const selectedNodePath = breadcrumb.map((node) => {
       const nodeInfo = {
         name: node.name,
@@ -94,7 +94,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const onClose = () => {
     setVisible(false)
     setSearchText('')
-    setInputValue(defaultPath.map((node) => node.name).join(' / '))
+    setInputValue('')
     setNetworkPath(defaultPath, defaultPath)
     setBreadcrumbPath([rootNode])
   }
@@ -131,7 +131,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }, [])
   useEffect(() => {
     if (searchText) {
-      const results = searchTree(rootNode, searchText)
+      const results = searchTree(rootNode, searchText.toLowerCase())
       setSearchResults(results)
     } else {
       setSearchResults([])
@@ -141,11 +141,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const nodesToShow = searchText
     ? searchResults
     : breadcrumb?.[breadcrumb.length - (isLeaf ? 2 : 1)]?.children
-  const placeHolderText = inputValue.replace(
-    new RegExp(defaultPath[0].name, 'i'),
-    'Entire Organization'
-  )
-
+  const placeHolderText = inputValue || $t({ defaultMessage: 'Entire Organization' })
   return (
     <UI.DropdownWrapper ref={componentRef}>
       <Dropdown
@@ -160,7 +156,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
             onApply={onApply}
             onBack={onBack}
             onBreadcrumbClick={onBreadcrumbClick}
-            isAnimationSlideIn={isAnimationSlideIn}
+            animation={searchText ? 'none' : (isAnimationSlideIn ? 'rtl' : 'ltr')}
           />
         }
         visible={visible}

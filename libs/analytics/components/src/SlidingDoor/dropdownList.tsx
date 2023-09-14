@@ -18,7 +18,7 @@ interface DropdownListProps {
   onApply: () => void;
   onBack: () => void;
   onBreadcrumbClick: (index: number) => void;
-  isAnimationSlideIn: boolean
+  animation: 'none' | 'ltr' | 'rtl';
 }
 
 export const DropdownList: React.FC<DropdownListProps> = ({
@@ -31,7 +31,7 @@ export const DropdownList: React.FC<DropdownListProps> = ({
   onApply,
   onBack,
   onBreadcrumbClick,
-  isAnimationSlideIn
+  animation
 }) => (
   <UI.StyledMenu>
     <Menu.Item key='1'>
@@ -50,11 +50,10 @@ export const DropdownList: React.FC<DropdownListProps> = ({
         dataSource={nodesToShow as Node[]}
         renderItem={(node) => (
           <ListItemComponent
-            isAnimationSlideIn={isAnimationSlideIn}
+            animation={animation}
             currentNode={currentNode}
             node={node as Node}
             onClick={onSelect}
-            isSearchTriggerred={Boolean(searchText)}
           />
         )}
       />

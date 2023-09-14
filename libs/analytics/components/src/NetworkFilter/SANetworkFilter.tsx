@@ -7,11 +7,11 @@ import { SlidingDoor } from '..'
 
 import { useNetworkHierarchyQuery } from './services'
 
-type MlisaNetworkFilterProps = {
+type SANetworkFilterProps = {
   shouldQuerySwitch? : boolean
  }
 
-export const MlisaNetworkFilter = ({ shouldQuerySwitch = true }: MlisaNetworkFilterProps) => {
+export const SANetworkFilter = ({ shouldQuerySwitch = true }: SANetworkFilterProps) => {
   const { setNetworkPath, filters, path } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQuerySwitch: shouldQuerySwitch }
   const networkHierarchyQuery = useNetworkHierarchyQuery(omit(networkFilter, 'path', 'filter'))
