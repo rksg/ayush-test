@@ -45,12 +45,15 @@ export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
     { id: String(details.id) }, {
       skip: !Boolean(details.id),
       selectFromResult: result => {
+        const sortedData = {
+          previous: result.data?.previous,
+          current: result.data?.current,
+          projected: result.data?.projected
+        }
         const processedGraphs = result.data &&
           flow(
             [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-          )(Object.values(result.data!).filter(Boolean), band)
-
-        details.status === 'applied' && processedGraphs?.reverse()
+          )(Object.values(sortedData!).filter(Boolean), band)
         return { ...result,
           data: processedGraphs && trimPairedGraphs(processedGraphs),
           csv: processedGraphs && getCrrmCsvData(processedGraphs, $t)

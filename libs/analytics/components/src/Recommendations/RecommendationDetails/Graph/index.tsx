@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { connect }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
-import AutoSizer    from 'react-virtualized-auto-sizer'
+import { ScalePower } from 'd3'
+import { scalePow }   from 'd3-scale'
+import { connect }    from 'echarts'
+import ReactECharts   from 'echarts-for-react'
+import { useIntl }    from 'react-intl'
+import AutoSizer      from 'react-virtualized-auto-sizer'
 
 import {
   Card,
@@ -28,7 +30,7 @@ function useGraph (
   graphs: ProcessedCloudRRMGraph[],
   monitoring: EnhancedRecommendation['monitoring'],
   legend: string[],
-  overview?: boolean
+  externalZoomScale?: ScalePower<number, number, never>
 ) {
   const { $t } = useIntl()
 
@@ -47,7 +49,7 @@ function useGraph (
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Before' })}
         data={graphs[0]}
-        overview={overview}
+        externalZoomScale={externalZoomScale}
       />}</AutoSizer></div>,
       !monitoring
         ? <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
@@ -55,7 +57,7 @@ function useGraph (
           chartRef={connectChart}
           title={$t({ defaultMessage: 'Recommended' })}
           data={graphs[1]}
-          overview={overview}/>}</AutoSizer></div>
+          externalZoomScale={externalZoomScale}/>}</AutoSizer></div>
         : <Monitoring key='crrm-graph-monitoring' >
           <div>{$t({ defaultMessage: 'Monitoring performance indicators' })}</div>
           <div>{$t({ defaultMessage: 'until {dateTime}' },
@@ -75,6 +77,10 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
   const queryResult = useCRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
+  const zoomScale = scalePow()
+    .exponent(0.01)
+    .domain([3, 10, 20, 30, 63, 125, 250, 375, 500, 750])
+    .range([1.75, 0.6, 0.4, 0.35, 0.2, 0.15, 0.11, 0.09, 0.075, 0.06])
   useEffect(() => {
     setKey(Math.random()) // to reset graph zoom
   }, [visible])
@@ -89,7 +95,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
-          useGraph(queryResult.data, details.monitoring!, [], true)
+          useGraph(queryResult.data, details.monitoring!, [], zoomScale)
         }</GraphWrapper>} />
       <Drawer
         drawerType={DrawerTypes.FullHeight}

@@ -1,5 +1,6 @@
 import { RefCallback, useImperativeHandle, useRef } from 'react'
 
+import { ScalePower }                      from 'd3'
 import { scalePow }                        from 'd3-scale'
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import PropTypes                           from 'prop-types'
@@ -14,11 +15,6 @@ const zoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.1])
-
-const overviewZoomScale = scalePow()
-  .exponent(0.01)
-  .domain([3, 10, 20, 30, 63, 125, 250, 375, 500, 750])
-  .range([1.75, 0.6, 0.4, 0.35, 0.2, 0.15, 0.11, 0.09, 0.075, 0.06])
 
 const zoomFactor = scalePow()
   .exponent(3)
@@ -36,7 +32,7 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   title: string
   subtext?: string
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
-  overview?: boolean
+  externalZoomScale?: ScalePower<number, number, never>
 }
 
 export function Graph (props: GraphProps) {
@@ -48,11 +44,11 @@ export function Graph (props: GraphProps) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
 
-  const { data: { nodes = [], links = [], categories = [] }, overview } = props
+  const { data: { nodes = [], links = [], categories = [] }, externalZoomScale } = props
 
   const linksNodeRatio = links.length / nodes.length || 1
   const zoom = (
-    overview ? overviewZoomScale(nodes.length) : zoomScale(nodes.length)
+    externalZoomScale ? externalZoomScale(nodes.length) : zoomScale(nodes.length)
   ) * zoomFactor(linksNodeRatio)
   const repulsion = repulsionScale(linksNodeRatio)
 
