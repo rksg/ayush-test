@@ -146,9 +146,9 @@ export function EditPortDrawer ({
     profileName
   } = (useWatch([], form) ?? {})
 
-  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const { tenantId, venueId, serialNumber } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
+  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const defaultVlanName = 'DEFAULT-VLAN'
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })

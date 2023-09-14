@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { Checkbox, FormInstance, Input, Radio, Space, Typography } from 'antd'
 import _                                                           from 'lodash'
 
-import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
-import { useAddVlanMutation }           from '@acx-ui/rc/services'
+import { Button, Modal, Tabs, Tooltip }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useAddVlanMutation, useAddSwitchVlansMutation } from '@acx-ui/rc/services'
 import {
   SwitchVlan,
   PortSettingModel,
@@ -35,6 +36,7 @@ export function SelectVlanModal (props: {
   untaggedVlan: number,
   hasSwitchProfile?: boolean,
   profileId?: string,
+  isVenueLevel?: boolean,
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string
 }) {
@@ -43,9 +45,10 @@ export function SelectVlanModal (props: {
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile,
     vlanDisabledTooltip, defaultVlan, switchVlans,
-    vlanUsedByVe = [], taggedVlans = '', untaggedVlan
+    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, isVenueLevel
   } = props
 
+  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
   const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
@@ -55,6 +58,7 @@ export function SelectVlanModal (props: {
   const [displayTaggedVlan, setDisplayTaggedVlan] = useState([] as CheckboxOptionType[])
   const [displayUntaggedVlan, setDisplayUntaggedVlan] = useState([] as CheckboxOptionType[])
   const [addVlan] = useAddVlanMutation()
+  const [addSwitchVlans] = useAddSwitchVlansMutation()
 
   const onOk = async () => {
     form.setFieldsValue({
@@ -80,7 +84,7 @@ export function SelectVlanModal (props: {
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: v.vlanId, extra }),
-        value: v.vlanId.toString(),
+        value: v.vlanId?.toString(),
         disabled: isSelectedUntagged
       }
     })
@@ -175,6 +179,68 @@ export function SelectVlanModal (props: {
       : setDisplayUntaggedVlan(filteredOptions)
   }
 
+  const setVlan = async (values: Vlan) => {
+    if (enableSwitchLevelVlan && isVenueLevel) {
+      // isVenueLevel
+    } else if (enableSwitchLevelVlan) {
+      const payload = {
+        // ...values,
+        ...(_.omit(values, ['switchFamilyModels']))
+        // switchVlanPortModels: values?.switchFamilyModels?.map(models => {
+        //   return {
+        //     ...(_.omit(models, ['model'])),
+        //     switchModel: models?.model,
+        //     taggedPorts: models?.taggedPorts?.toString(),
+        //     untaggedPorts: models?.untaggedPorts?.toString()
+        //   }
+        // })
+      }
+
+      try {
+        await addSwitchVlans({
+          params,
+          payload
+        }).unwrap()
+        await props.updateSwitchVlans?.({
+          ...values
+          // switchFamilyModels: values?.switchFamilyModels?.map(models => {
+          //   return {
+          //     ...models,
+          //     //...(_.omit(models, ['model'])),
+          //     // switchModel: models?.model,
+          //     taggedPorts: models?.taggedPorts?.toString(),
+          //     untaggedPorts: models?.untaggedPorts?.toString()
+          //   }
+          // })
+        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    } else {
+      const payload = {
+        ...values,
+        switchFamilyModels: values?.switchFamilyModels?.map(models => {
+          return {
+            ...models,
+            taggedPorts: models?.taggedPorts?.toString(),
+            untaggedPorts: models?.untaggedPorts?.toString()
+          }
+        })
+      }
+
+      try {
+        await addVlan({
+          params: { tenantId: params.tenantId, profileId: props.profileId },
+          payload
+        }).unwrap()
+        await props.updateSwitchVlans?.(values)
+
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
+  }
+
   return <>
     <Modal
       title={$t({ defaultMessage: 'Select Port VLANs' })}
@@ -184,24 +250,37 @@ export function SelectVlanModal (props: {
       onCancel={onCancel}
       footer={[
         <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
-          <Tooltip
-            placement='top'
-            key='disable-add-vlan-tooltip'
-            title={!hasSwitchProfile ? vlanDisabledTooltip : ''}
-          >
-            <Space>
-              <Button key='add-vlan'
-                type='link'
-                size='small'
-                disabled={!hasSwitchProfile}
-                onClick={() => {
-                  setVlanDrawerVisible(true)
-                }}
-              >
-                {$t({ defaultMessage: 'Add VLAN' })}
-              </Button>
-            </Space>
-          </Tooltip>
+          {/* {
+            TODO: remove tooltip and disabled button when removing FF enableSwitchLevelVlan
+          } */}
+          {enableSwitchLevelVlan
+            ?<Button key='add-vlan'
+              type='link'
+              size='small'
+              onClick={() => {
+                setVlanDrawerVisible(true)
+              }}
+            >
+              {$t({ defaultMessage: 'Add VLAN' })}
+            </Button>
+            :<Tooltip
+              placement='top'
+              key='disable-add-vlan-tooltip'
+              title={!hasSwitchProfile ? vlanDisabledTooltip : ''}
+            >
+              <Space>
+                <Button key='add-vlan'
+                  type='link'
+                  size='small'
+                  disabled={!hasSwitchProfile}
+                  onClick={() => {
+                    setVlanDrawerVisible(true)
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add VLAN' })}
+                </Button>
+              </Space>
+            </Tooltip>}
           <Space>
             <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
             <Tooltip
@@ -283,30 +362,12 @@ export function SelectVlanModal (props: {
       visible={vlanDrawerVisible}
       setVisible={setVlanDrawerVisible}
       vlan={{} as Vlan}
-      setVlan={async (values) => {
-        const payload = {
-          ...values,
-          switchFamilyModels: values?.switchFamilyModels?.map(models => {
-            return {
-              ...models,
-              taggedPorts: models?.taggedPorts?.toString(),
-              untaggedPorts: models?.untaggedPorts?.toString()
-            }
-          })
-        }
-
-        try {
-          await addVlan({
-            params: { tenantId: params.tenantId, profileId: props.profileId },
-            payload
-          }).unwrap()
-          await props.updateSwitchVlans?.(values)
-
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
-        }
-      }}
-      vlansList={props.venueVlans}
+      enablePortModelConfigure={false}
+      setVlan={setVlan}
+      vlansList={(enableSwitchLevelVlan
+        ? props.switchVlans
+        : props.venueVlans
+      ) as unknown as Vlan[]}
     />}
 
   </>
