@@ -130,11 +130,12 @@ describe('Firmware Venues Table', () => {
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     fireEvent.click(changeButton)
 
-    const article = screen.getByRole('article')
-    expect(article.innerHTML).toBe('Choose which version to update the venue to:')
+    expect(screen.getByRole('heading', {
+      name: /Choose which version to update the venue to:/i
+    })).toBeVisible()
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(3)
+    expect(notCheckedOptions).toHaveLength(7)
 
     await screen.findByText('Selected time will apply to each venue according to own time-zone')
     expect(screen.getByRole('button', { name: /Save/i })).toBeDisabled()
@@ -162,7 +163,7 @@ describe('Firmware Venues Table', () => {
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
     // eslint-disable-next-line max-len
     const versionNotCheckedOptions = notCheckedOptions.filter(o => !(o as HTMLInputElement).value.includes('-'))
-    expect(versionNotCheckedOptions).toHaveLength(5)
+    expect(versionNotCheckedOptions).toHaveLength(7)
 
     const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
     // eslint-disable-next-line max-len

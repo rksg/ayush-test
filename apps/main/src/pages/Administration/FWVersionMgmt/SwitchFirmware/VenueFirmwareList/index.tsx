@@ -178,7 +178,10 @@ export const VenueFirmwareTable = (
 
     return availableVersions?.map((version) => {
       if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
-        return { id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR }
+        return {
+          ...version,
+          id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
+        }
       } return version
     })
   }
@@ -279,9 +282,7 @@ export const VenueFirmwareTable = (
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
-        // eslint-disable-next-line max-len
-        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
-
+        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
         if (enableSwitchTwoVersionUpgrade) {
           nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
           icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
@@ -329,8 +330,7 @@ export const VenueFirmwareTable = (
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
-        // eslint-disable-next-line max-len
-        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
 
         if (enableSwitchTwoVersionUpgrade) {
           nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
@@ -481,5 +481,18 @@ const removeCurrentVersionsAnd10010IfNeeded = (version: string,
     }
     return v.id === version || v.id === rodanVersion
   })
+}
+
+function checkCurrentVersions (version: string,
+  rodanVersion: string,
+  filterVersions: FirmwareVersion[]): FirmwareVersion[] {
+  let inUseVersions = [] as FirmwareVersion[]
+  filterVersions.forEach((v: FirmwareVersion) => {
+    if (v.id === version || v.id === rodanVersion) {
+      v = { ...v, inUse: true }
+    }
+    inUseVersions.push(v)
+  })
+  return inUseVersions
 }
 

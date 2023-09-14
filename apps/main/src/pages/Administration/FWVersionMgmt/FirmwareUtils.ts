@@ -131,7 +131,12 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   const versionName = parseSwitchVersion(version?.name)
   const versionType = transform(version?.category)
 
-  return `${versionName} (${versionType})`
+  let displayVersion = `${versionName} (${versionType})`
+  if(version.inUse){
+    // eslint-disable-next-line max-len
+    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'This version has been in use' })}`
+  }
+  return displayVersion
 }
 
 export const toUserDate = (date: string): string => {

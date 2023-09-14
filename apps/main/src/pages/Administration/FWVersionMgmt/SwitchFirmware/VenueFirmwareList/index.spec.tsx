@@ -120,11 +120,12 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
-    const article = screen.getByRole('article')
-    expect(article.innerHTML).toBe('Choose which version to update the venue to:')
+    expect(screen.getByRole('heading', {
+      name: /Choose which version to update the venue to:/i
+    })).toBeVisible()
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(3)
+    expect(notCheckedOptions).toHaveLength(7)
     expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
   })
 
@@ -154,7 +155,7 @@ describe('Firmware Venues Table', () => {
     })).toBeVisible()
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(5)
+    expect(notCheckedOptions).toHaveLength(7)
 
     const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
     expect(checkedOptions).toHaveLength(2)
