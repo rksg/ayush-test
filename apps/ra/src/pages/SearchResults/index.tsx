@@ -34,12 +34,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   })
 
   const handleClick: MenuProps['onClick'] = (e) => {
-    // eslint-disable-next-line no-console
-    console.log('Selected Range: ',e.key)
     setDateRange(e.key as DateRange)
-    const timeRanges = defaultRanges()[e.key as DateRange]!
-    // eslint-disable-next-line no-console
-    console.log('Date Range: ', timeRanges)
   }
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
