@@ -76,6 +76,7 @@ export interface Network {
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
+  owePairNetworkId?: string
 }
 
 export interface NetworkDetail {
