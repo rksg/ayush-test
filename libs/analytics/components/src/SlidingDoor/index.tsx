@@ -131,7 +131,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }, [])
   useEffect(() => {
     if (searchText) {
-      const results = searchTree(rootNode, searchText)
+      const results = searchTree(rootNode, searchText.toLowerCase())
       setSearchResults(results)
     } else {
       setSearchResults([])
