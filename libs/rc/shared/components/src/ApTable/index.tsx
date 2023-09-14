@@ -41,6 +41,7 @@ import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/ut
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { exportMessageMapping }                              from '@acx-ui/utils'
 
 import { seriesMappingAP }                                 from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -520,7 +521,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           icon: <DownloadOutlined />,
           disabled,
           onClick: exportCsv,
-          tooltip: $t({ defaultMessage: 'Export to CSV' })
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
         } : undefined
         }
       />

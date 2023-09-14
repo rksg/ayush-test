@@ -48,7 +48,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -523,7 +523,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       iconButton={exportDevice ? {
         icon: <DownloadOutlined />,
         disabled,
-        tooltip: $t({ defaultMessage: 'Export to CSV' }),
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
         onClick: exportCsv
       } : undefined}
     />

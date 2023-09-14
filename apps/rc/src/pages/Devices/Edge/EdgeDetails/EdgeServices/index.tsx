@@ -16,6 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'
@@ -195,7 +196,7 @@ export const EdgeServices = () => {
             icon: <DownloadOutlined />,
             disabled,
             onClick: exportCsv,
-            tooltip: $t({ defaultMessage: 'Export to CSV' })
+            tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
           } : undefined
         }
       />
