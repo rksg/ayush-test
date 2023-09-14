@@ -516,7 +516,7 @@ export function EditPortDrawer ({
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
 
-    if(data.voiceVlan === '') {
+    if(!data.voiceVlan) {
       data.voiceVlan = null as unknown as string
     }
 
@@ -543,7 +543,7 @@ export function EditPortDrawer ({
         (form.getFieldValue('taggedVlans') ?
           form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: useVenueSettings ? null : form.getFieldValue('voiceVlan')
+      voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
     }
     const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
       ...result, [item.switchId]: item.defaultVlanId
@@ -1275,7 +1275,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ position: 'relative', top: '-20px' }}>
+        <Space style={{ marginBottom: '20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
