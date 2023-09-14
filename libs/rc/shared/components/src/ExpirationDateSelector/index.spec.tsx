@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { ExpirationDateEntity, ExpirationType } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }           from '@acx-ui/test-utils'
+import { act, render, renderHook, screen }      from '@acx-ui/test-utils'
 
 import { ExpirationDateSelector } from '.'
 
@@ -21,16 +21,17 @@ describe('ExpirationDateSelector', () => {
   })
 
   it('should render the selector with the given data', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-
     const expirationByDate: ExpirationDateEntity = new ExpirationDateEntity()
     expirationByDate.setToByDate('2022-12-01')
 
     const expirationAfterTime: ExpirationDateEntity = new ExpirationDateEntity()
     expirationAfterTime.setToAfterTime(ExpirationType.DAYS_AFTER_TIME, 2)
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue(mockedInputName, expirationByDate)
+      return form
+    })
 
     // Verify expiration date - By date
     const { rerender } = render(
@@ -39,9 +40,7 @@ describe('ExpirationDateSelector', () => {
       </Form>
     )
 
-    formRef.current.setFieldValue(mockedInputName, expirationByDate)
     const selectDateElem = await screen.findByDisplayValue('12/01/2022')
-
     expect(selectDateElem).toBeInTheDocument()
 
     // Verify expiration date - After...
@@ -50,8 +49,11 @@ describe('ExpirationDateSelector', () => {
         <ExpirationDateSelector label={mockedLabel} inputName={mockedInputName} />
       </Form>
     )
-    formRef.current.resetFields()
-    formRef.current.setFieldValue(mockedInputName, expirationAfterTime)
+
+    act(() => {
+      formRef.current.resetFields()
+      formRef.current.setFieldValue(mockedInputName, expirationAfterTime)
+    })
 
     const afterTimeOffetElem = await screen.findByRole('spinbutton')
     expect(afterTimeOffetElem).toHaveValue(expirationAfterTime.offset!.toString())
@@ -63,13 +65,14 @@ describe('ExpirationDateSelector', () => {
   it('should get normalized date after selecting from the Datepicker', async () => {
     Date.now = jest.fn().mockReturnValue(new Date('2022-11-01T00:00:00.000Z'))
 
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-
     const expirationByDate: ExpirationDateEntity = new ExpirationDateEntity()
     expirationByDate.setToByDate('2022-11-02')
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue(mockedInputName, expirationByDate)
+      return form
+    })
 
     render(
       <Form form={formRef.current}>
@@ -77,7 +80,6 @@ describe('ExpirationDateSelector', () => {
       </Form>
     )
 
-    formRef.current.setFieldValue(mockedInputName, expirationByDate)
     const selectDateElem = await screen.findByDisplayValue('11/02/2022')
 
     await userEvent.click(selectDateElem)
