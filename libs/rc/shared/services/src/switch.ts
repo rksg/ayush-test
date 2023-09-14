@@ -659,7 +659,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
       query: ({ params, payload }) => {
