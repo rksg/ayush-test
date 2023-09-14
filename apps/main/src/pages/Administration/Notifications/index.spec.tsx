@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -37,6 +38,15 @@ jest.mock('./RecipientDialog', () => ({
     return mockedRecipientDialog(props)
   }
 }))
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const mspUtils = require('@acx-ui/msp/utils')
+jest.mock('@acx-ui/msp/utils', () => ({
+  ...jest.requireActual('@acx-ui/msp/utils')
+}))
+
 describe('Notification List', () => {
   let params: { tenantId: string }
 
@@ -44,6 +54,8 @@ describe('Notification List', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    services.useGetMspProfileQuery = jest.fn().mockReturnValue({ data: {} })
+    services.useGetMspAggregationsQuery = jest.fn().mockReturnValue({ data: {} })
 
     mockServer.use(
       rest.get(
@@ -163,5 +175,22 @@ describe('Notification List', () => {
     expect(screen.getByTestId('rc-RecipientDialog-email-check').textContent).toBe('true')
     expect(screen.getByTestId('rc-RecipientDialog-mobile-check').textContent).toBe('true')
     expect(screen.getByTestId('rc-RecipientDialog-others-check').textContent).toBe('false')
+  })
+
+  it('should show preferences button if feature flag on', async () => {
+    mspUtils.isOnboardedMsp = jest.fn().mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NotificationList />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Preference' }))
+    expect(await screen.findByRole('dialog')).toBeVisible()
   })
 })

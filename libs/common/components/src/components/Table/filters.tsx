@@ -66,11 +66,13 @@ export function renderSearch <RecordType> (
   setSearchValue: Function,
   width: number
 ): React.ReactNode {
+  const placeHolderText = intl.$t({ defaultMessage: 'Search {searchables}' }, {
+    searchables: searchables.map(column => column.title).join(', ')
+  })
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
-    placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
-      searchables: searchables.map(column => column.title).join(', ')
-    })}
+    placeholder={placeHolderText}
+    title={placeHolderText}
     style={{ width }}
     value={searchValue}
     allowClear

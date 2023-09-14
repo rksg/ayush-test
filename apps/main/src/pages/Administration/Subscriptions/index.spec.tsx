@@ -4,9 +4,11 @@ import { rest }   from 'msw'
 import { showToast }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                  from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo, isDelegationMode }     from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo }                       from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within  } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                 from '@acx-ui/user'
+import { isDelegationMode }                             from '@acx-ui/utils'
 
 import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
 
@@ -25,8 +27,8 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
 }))
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
@@ -69,7 +71,7 @@ describe('Subscriptions', () => {
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
       ),
-      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
         (req, res, ctx) => {
           return res(ctx.json({ acx_account_tier: 'Gold' }))
         }

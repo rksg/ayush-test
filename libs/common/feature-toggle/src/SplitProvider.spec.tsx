@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
-import { mockServer, render, screen }               from '@acx-ui/test-utils'
-import { renderHook }                               from '@acx-ui/test-utils'
-import { UserUrlsInfo }                             from '@acx-ui/user'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { renderHook }                 from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
+import { isDelegationMode }           from '@acx-ui/utils'
 
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
@@ -136,7 +136,7 @@ describe('SplitProvider', () => {
 describe('useIsTierAllowed', () => {
   beforeEach( async () => {
     mockServer.use(
-      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+      rest.get(UserUrlsInfo.getAccountTier.url as string,
         (req, res, ctx) => {
           return res(ctx.json({ acx_account_tier: 'Gold' }))
         }
