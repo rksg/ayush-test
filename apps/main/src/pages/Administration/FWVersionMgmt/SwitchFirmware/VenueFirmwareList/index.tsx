@@ -346,14 +346,14 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    visible: (selectedRows) => {
-      let skipUpdateVisilibity = true
+    disabled: (selectedRows) => {
+      let skipUpdateEnabled = true
       selectedRows.forEach((row) => {
         if (!hasSchedule(row)) {
-          skipUpdateVisilibity = false
+          skipUpdateEnabled = false
         }
       })
-      return skipUpdateVisilibity
+      return !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows, clearSelection) => {

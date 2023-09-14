@@ -7,7 +7,7 @@ import _                                                                from 'lo
 import moment                                                           from 'moment-timezone'
 import { useIntl }                                                      from 'react-intl'
 
-import { Modal, Subtitle }               from '@acx-ui/components'
+import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AVAILABLE_SLOTS,
@@ -248,8 +248,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         <Form.Item>
           <div>
             {!enableSwitchTwoVersionUpgrade && <Typography>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Choose which version to update the venue to:' })}
+              {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
             </Typography>}
             {!enableSwitchTwoVersionUpgrade && <Radio.Group
               style={{ margin: 12 }}
@@ -263,8 +262,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               </Space>
             </Radio.Group>}
             {enableSwitchTwoVersionUpgrade && <Subtitle level={4}>
-              {
-                $t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
                 &nbsp;
               ({icx8200Count} {$t({ defaultMessage: 'switches' })})
             </Subtitle>}
@@ -283,10 +281,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             </Radio.Group>}
             {enableSwitchTwoVersionUpgrade && <UI.Section>
               <Subtitle level={4}>
-                { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
-                  &nbsp;
-                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+                {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                &nbsp;
+                ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
               </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
@@ -304,12 +301,18 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             </UI.Section>}
           </div>
         </Form.Item>
-        <Subtitle level={4}>When do you want the update to run?</Subtitle>
-        { // eslint-disable-next-line max-len
-          <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
+        <Subtitle level={4}>
+          {$t({ defaultMessage: 'When do you want the update to run?' })}
+        </Subtitle>
+        {
+          <UI.TitleActive>
+            {$t({
+              defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+            })}
+          </UI.TitleActive>}
 
         <UI.DateContainer>
-          <label>Update date:</label>
+          <label>{$t({ defaultMessage: 'Update date:' })}</label>
           <DatePicker
             showToday={false}
             disabledDate={disabledDate}
@@ -320,11 +323,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
         {selectedDate ?
           <UI.DateContainer>
-            <label>Update time:</label>
+            <label>{$t({ defaultMessage: 'Update time:' })}</label>
             <Radio.Group
               style={{ margin: 12 }}
-              // eslint-disable-next-line max-len
-              // defaultValue={availableVersions && availableVersions[0] ? availableVersions[0].name : ''}
               onChange={onChangeRegular}
               value={selectedTime}>
               <Space direction={'vertical'}>
@@ -335,13 +336,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           </UI.DateContainer>
           : null
         }
-
-
-
         <PreDownload
           checked={checked}
           setChecked={onPreDownloadChange}
         />
+
       </Form>
     </Modal>
   )
