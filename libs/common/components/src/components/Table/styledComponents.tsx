@@ -273,6 +273,16 @@ const tallStyle = css<StyledTable>`
       background-color: rgba(255, 255, 255, 0.8);
       padding: 16px 0;
       margin: unset;
+      .ant-select-dropdown {
+        left: 0 !important;
+        top: -204px !important;
+        &[class*="enter-active"],
+        &[class*="appear-active"]
+        { animation-name: antSlideDownIn; }
+
+        &[class*="leave-active"]
+        { animation-name: antSlideDownOut; }
+      }
     }
   }
 `

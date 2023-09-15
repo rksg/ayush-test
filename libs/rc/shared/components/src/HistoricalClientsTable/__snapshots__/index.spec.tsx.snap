@@ -12,7 +12,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
         Historical Clients
       </h4>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-12 jRtyNt"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 kfuQyv"
         style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
       >
         <div
