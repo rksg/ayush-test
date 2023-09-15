@@ -5,7 +5,6 @@ metadata:
 data:
   google.maps.key: "AIzaSyCpQ4EbLcktRsOYx_UemIY5ZvIMgB6P-mo"
   split.io.key: "mlbj64qb8lgfji5upnedt4lo7h5c4ik65m95"
-  splitproxy.cs.endpoint: "https://splitproxy.stage.ruckus.cloud"
   captive.portal.domain.name: "stage.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"

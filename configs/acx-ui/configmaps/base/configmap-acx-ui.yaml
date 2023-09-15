@@ -5,7 +5,6 @@ metadata:
 data:
   google.maps.key: "AIzaSyDq4QI2gdhGotqFiR28ZXk_RkbWtZ-IMDQ"
   split.io.key: "s56i5harnvpksqb6a5kom1phqncj9d6ujf92"
-  splitproxy.cs.endpoint: "https://splitproxy.dev.ruckus.cloud"
   pendo.api.key: "b775f526-720b-449c-7fca-f45b7c3df0ae"
   disable.pendo: "false"
   captive.portal.domain.name: "dev.ruckus.cloud"
