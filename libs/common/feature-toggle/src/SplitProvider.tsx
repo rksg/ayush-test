@@ -40,7 +40,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         type: 'LOCALSTORAGE',
         prefix: prefixKey + suffix
       },
-      debug: true // set this value to true for running in debug mode for debugging in local development only
+      debug: false // set this value to true for running in debug mode for debugging in local development only
     })
   }
   return tenantKey ? (
