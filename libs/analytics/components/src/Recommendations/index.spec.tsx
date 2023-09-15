@@ -139,7 +139,7 @@ describe('RecommendationTabContent', () => {
     mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations/aiOps',
+        path: '/ai/recommendations/aiOps',
         params: { activeTab: 'aiOps' }
       }
     })
@@ -184,7 +184,7 @@ describe('RecommendationTabContent', () => {
     }))
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations/aiOps',
+        path: '/ai/recommendations/aiOps',
         params: { activeTab: 'aiOps' },
         wrapRoutes: false
       }
