@@ -27,7 +27,8 @@ import {
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
-  useNetworkVenueListQuery
+  useNetworkVenueListQuery,
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -97,6 +98,16 @@ export function NetworkVenuesTab () {
     useQuery: useNetworkVenueListQuery,
     defaultPayload
   })
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
+    })
+  })
+
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -153,7 +164,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
       setTableData(data)
@@ -305,12 +316,15 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       fixed: 'left'
     },
     {
       key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
+      filterKey: 'city',
+      filterable: cityFilterOptions || false,
       sorter: true
     },
     {
@@ -507,7 +521,10 @@ export function NetworkVenuesTab () {
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
+        enableApiFilter={true}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
       />
       <Form.Provider
         onFormFinish={handleFormFinish}

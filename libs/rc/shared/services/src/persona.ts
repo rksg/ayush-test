@@ -114,7 +114,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'PersonaGroups.csv'
+              : 'IdentityGroups.csv'
             downloadFile(response, fileName)
           }
         }
@@ -286,7 +286,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'Personas.csv'
+              : 'Identities.csv'
             downloadFile(response, fileName)
           }
         }

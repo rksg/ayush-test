@@ -30,6 +30,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                   from '@acx-ui/user'
+import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 import { PersonaGroupDrawer }   from '../PersonaGroupDrawer'
@@ -343,6 +344,7 @@ export function PersonaGroupTable () {
         rowSelection={hasAccess() && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersonaGroups
         }}
       />

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button } from '../Button'
+import { Button } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
