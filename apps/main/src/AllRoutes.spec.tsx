@@ -71,6 +71,11 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
+jest.mock('./pages/RWG/RWGTable', () => ({
+  RWGTable: () => {
+    return <div data-testid='ruckus-wan-gateway' />
+  }
+}), { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -254,5 +259,15 @@ describe('AllRoutes', () => {
     await screen.findAllByRole('menuitem')
 
     expect(menuItem).not.toBeInTheDocument()
+  })
+
+  test('should navigate to ruckus-wan-gateway/*', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/ruckus-wan-gateway'
+      }
+    })
+    expect(await screen.findByTestId('ruckus-wan-gateway')).toBeInTheDocument()
   })
 })
