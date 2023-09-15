@@ -36,6 +36,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { IdentitiesContext }  from '..'
 import { PersonaDrawer }      from '../PersonaDrawer'
@@ -430,6 +431,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersona
         }}
       />

@@ -150,6 +150,7 @@ export type IconButtonProps = {
   key?: string
   icon: React.ReactNode
   disabled?: boolean
+  tooltip?: string
   onClick?: () => void
   dropdownMenu?: Omit<MenuProps, 'placement'>
 }
