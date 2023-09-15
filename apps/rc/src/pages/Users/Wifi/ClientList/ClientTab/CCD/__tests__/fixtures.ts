@@ -16,119 +16,35 @@ export const mockVenueList = [
   }
 ]
 
-export const mockApListByApGroup = {
-  data: [{
-    aps: [{
-      serialNumber: '302002030366',
-      name: 'R550_0601',
-      model: 'R550',
-      fwVersion: '7.0.0.103.390',
-      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-      venueName: 'My-Venue',
-      deviceStatus: '2_00_Operational',
-      IP: '10.206.78.138',
-      apMac: '34:20:E3:1D:0C:50',
-      apStatusData: {
-        APRadio: [{
-          txPower: null,
-          channel: 1,
-          band: '2.4G',
-          Rssi: null,
-          radioId: 0
-        }, {
-          txPower: null,
-          channel: 64,
-          band: '5G',
-          Rssi: null,
-          radioId: 1
-        }]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: 'f2863482681e489ab8566e2f229572aa',
-      deviceGroupName: ''
-    },
-    {
-      serialNumber: '922102004888',
-      name: 'T750SE',
-      model: 'T750SE',
-      fwVersion: '7.0.0.103.390',
-      venueId: '991eb992ece042a183b6945a2398ddb9',
-      venueName: 'joe-test',
-      deviceStatus: '1_09_Offline',
-      IP: '192.168.5.103',
-      apMac: 'E0:10:7F:23:DA:B0',
-      apStatusData: {
-        APRadio: [{
-          txPower: null,
-          channel: 5,
-          band: '2.4G',
-          Rssi: null,
-          radioId: 0
-        }, {
-          txPower: null,
-          channel: 104,
-          band: '5G',
-          Rssi: null,
-          radioId: 1
-        }]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
-      tags: '',
-      deviceGroupName: ''
-    }],
-    deviceGroupId: 'f2863482681e489ab8566e2f229572aa',
-    deviceGroupName: '',
-    venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-    networks: {
-      count: 3,
-      names: [
-        'bess_google',
-        'app5-gpass',
-        'joe-psk'
-      ]
-    },
-    members: 2,
-    incidents: 0,
-    clients: 0
-  }, {
-    deviceGroupId: 'f2863482681e489ab8566e2f229572bb',
-    deviceGroupName: 'test-apGroup',
-    venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-    aps: [{
-      serialNumber: '302002030377',
-      name: 'R550_tttt',
-      model: 'R550',
-      fwVersion: '7.0.0.103.390',
-      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-      venueName: 'My-Venue',
-      deviceStatus: '2_00_Operational',
-      IP: '10.206.78.138',
-      apMac: '34:20:E3:1D:0C:77',
-      apStatusData: {
-        APRadio: [{
-          txPower: null,
-          channel: 1,
-          band: '2.4G',
-          Rssi: null,
-          radioId: 0
-        }, {
-          txPower: null,
-          channel: 64,
-          band: '5G',
-          Rssi: null,
-          radioId: 1
-        }]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: 'f2863482681e489ab8566e2f229572bb',
-      deviceGroupName: ''
-    }],
-    members: 1,
-    incidents: 0,
-    clients: 0
-  }]
-}
+export const mockApListByApGroup = [{
+  aps: [{
+    serialNumber: '302002030366',
+    name: 'R550_0601',
+    model: 'R550',
+    apMac: '34:20:E3:1D:0C:50'
+  },
+  {
+    serialNumber: '922102004888',
+    name: 'T750SE',
+    model: 'T750SE',
+    apMac: 'E0:10:7F:23:DA:B0'
+  }],
+  apGroupId: 'f2863482681e489ab8566e2f229572aa',
+  apGroupName: '',
+  venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+  members: 2
+}, {
+  apGroupId: 'f2863482681e489ab8566e2f229572bb',
+  apGroupName: 'test-apGroup',
+  venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+  aps: [{
+    serialNumber: '302002030377',
+    name: 'R550_tttt',
+    model: 'R550',
+    apMac: '34:20:E3:1D:0C:77'
+  }],
+  members: 1
+}]
 
 export const mockApInfoList = [{
   serialNumber: '302002030366',
