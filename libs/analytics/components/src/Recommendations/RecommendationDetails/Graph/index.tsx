@@ -86,12 +86,10 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
   const queryResult = useCRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
-  useEffect(() => {
-    setKey(Math.random()) // to reset graph zoom
-  }, [visible])
+  useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
   return <Wrapper>
     <ClickableWrapper onClick={showDrawer}/>
-    <Loader states={[queryResult]} key={key}>
+    <Loader states={[queryResult]}>
       <Card
         type='no-border'
         title={title}
@@ -103,6 +101,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           useGraph(queryResult.data, details.monitoring!, [], detailsZoomScale)
         }</GraphWrapper>} />
       <Drawer
+        key={key}
         drawerType={DrawerTypes.FullHeight}
         width={'90vw'}
         title={title}
