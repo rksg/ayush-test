@@ -29,12 +29,12 @@ import {
 import {
   EntitlementNetworkDeviceType,
   EntitlementUtil,
-  isDelegationMode,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { isDelegationMode }                from '@acx-ui/utils'
 
 const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
   if (row.entitlements) {
