@@ -565,6 +565,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/clientConnectionDiagnosis/query',
     newApi: true
   },
+  getCcdSupportApGroups: {
+    method: 'post',
+    url: '/apGroups/clientConnectionDiagnosis/query?venueId=:venueId',
+    newApi: true
+  },
   runCcd: {
     method: 'post',
     url: '/venues/:venueId/clientConnectionDiagnosis',
