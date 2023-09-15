@@ -20,6 +20,8 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { data: userProfile } = useUserProfileContext()
   const prefixKey = isMLISA ? 'MLISA-' : 'ACX-'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
+  /* eslint-disable-next-line no-console */
+  console.log(`splitProxyEndpoint: ${splitProxyEndpoint}`)
   if (!factory && tenantKey) {
     factory = SplitSdk({
       scheduler: {
@@ -38,7 +40,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         type: 'LOCALSTORAGE',
         prefix: prefixKey + suffix
       },
-      debug: false // set this value to true for running in debug mode for debugging in local development only
+      debug: true // set this value to true for running in debug mode for debugging in local development only
     })
   }
   return tenantKey ? (
