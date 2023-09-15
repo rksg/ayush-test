@@ -554,3 +554,11 @@ export interface SupportCcdVenue {
   id: string,
   name: string
 }
+
+export interface SupportCcdApGroup {
+  apGroupId: string,
+  apGroupName: string,
+  venueId: string,
+  members: number,
+  aps: APExtended[]
+}
