@@ -5,8 +5,8 @@ import { get }                                      from '@acx-ui/config'
 import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
 import { useDateFilter }                            from '@acx-ui/utils'
 
-import { NetworkFilter }      from '../NetworkFilter'
-import { MlisaNetworkFilter } from '../NetworkFilter/MlisaNetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
 const isMLISA = get('IS_MLISA_SA')
 export type SubTitle = {
@@ -31,12 +31,13 @@ const Filter = (
 ) => {
   return excludeNetworkFilter
     ? null
-  /* istanbul ignore next */
-    : isMLISA ? <MlisaNetworkFilter /> : <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
-      withIncidents={withIncidents}
-    />
+    : isMLISA
+      ? <SANetworkFilter shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        withIncidents={withIncidents}
+      />
 }
 
 export const useHeaderExtra = (props: useHeaderExtraProps) => {

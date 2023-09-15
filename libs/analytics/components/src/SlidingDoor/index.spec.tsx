@@ -1,0 +1,237 @@
+import { render, fireEvent, screen } from '@testing-library/react'
+import { IntlProvider }              from 'react-intl'
+
+import * as helpers from './helpers'
+
+import { SlidingDoor, Node } from '.'
+
+jest.mock('./helpers', () => ({
+  ...jest.requireActual('./helpers'),
+  findMatchingNode: jest.fn()
+}))
+
+describe('SlidingDoor', () => {
+  const selected = [{
+    name: 'Network',
+    type: 'network'
+  }]
+  const setNetwork = jest.fn()
+  const mockData: Node = {
+    id: '1',
+    name: 'network',
+    type: 'network',
+    children: [
+      {
+        id: '2', name: 'child1', type: 'system',
+        children: [{ id: '4', name: 'child3', type: 'domain' },
+          { id: '4', name: 'child5', type: 'domain' }]
+      },
+      {
+        id: '3', name: 'child2', type: 'system',
+        children: [{ id: '5', name: 'child4', type: 'domain' }]
+      }
+    ]
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (helpers.findMatchingNode as jest.Mock).mockReturnValue(null)
+  })
+
+  it('should render without errors', () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeInTheDocument()
+  })
+
+  it('should open dropdown on input click', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    expect(await screen.findByText('Entire Organization')).toBeInTheDocument()
+  })
+
+  it('should call onCancel correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Cancel'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toHaveValue('')
+  })
+
+  it('should call onApply correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Apply'))
+    expect(setNetwork).toBeCalledWith(
+      [{ name: 'network', type: 'network' }],
+      [{ name: 'network', type: 'network' }]
+    )
+  })
+  it('should call onApply correctly for ap', async () => {
+    const mock: Node = {
+      id: '1',
+      name: 'network',
+      type: 'network',
+      children: [
+        { id: '2', name: 'ap', type: 'ap', mac: '1' },
+        { id: '3', name: 'switch', type: 'switch', mac: '2' }
+      ]
+    }
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mock} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Ap (Access Point)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    expect(setNetwork).toBeCalledWith(
+      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
+      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }]
+    )
+  })
+  it('should call onApply correctly for switch', async () => {
+    const mock: Node = {
+      id: '1',
+      name: 'network',
+      type: 'network',
+      children: [
+        { id: '2', name: 'ap', type: 'ap', mac: '1' },
+        { id: '3', name: 'switch', type: 'switch', mac: '2' }
+      ]
+    }
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mock} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Switch (Switch)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    expect(setNetwork).toBeCalledWith(
+      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
+      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }]
+    )
+  })
+  it('should search nodes correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    const input = await screen.findByPlaceholderText('Entire Organization')
+    fireEvent.click(input)
+    fireEvent.change(input, { target: { value: 'Child5' } })
+    fireEvent.click((await screen.findAllByText('Child5 (Domain)'))[0])
+  })
+
+  it('renders empty search', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    const input = screen.getByPlaceholderText('Entire Organization')
+    fireEvent.click(input)
+    fireEvent.change(input, { target: { value: 'Child6' } })
+    expect(await screen.findByText('No Data')).toBeInTheDocument()
+  })
+
+  it('should handle onSelect correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Child3 (Domain)'))
+    fireEvent.click(await screen.findByText('Child5 (Domain)'))
+    expect(await screen.findByText('Child3 (Domain)')).toBeInTheDocument()
+  })
+
+  it('should handle onBreadcrumbClick correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Entire Organization'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+  })
+
+  it('should handle onBack correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Child3 (Domain)'))
+    fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+  })
+  it('should handle onClear correctly', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByTestId('CloseSymbol'))
+    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+  })
+  it('should show no data', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={{ name: 'network', type: 'network' }}
+          setNetworkPath={setNetwork}
+          defaultSelectedNode={selected}
+        />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    expect(screen.getByText('No Data')).toBeInTheDocument()
+  })
+  it('should close the filter on clicking outside the filter', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.mouseDown(document.body)
+    expect(screen.getByText('Child1 (SZ Cluster)')).toBeVisible()
+  })
+  it('should not close the filter on clicking inside the filter', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
+      </IntlProvider>
+    )
+    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.mouseDown(await screen.findByText('Child1 (SZ Cluster)'))
+    expect(screen.getByText('Child1 (SZ Cluster)')).not.toBeVisible()
+  })
+})

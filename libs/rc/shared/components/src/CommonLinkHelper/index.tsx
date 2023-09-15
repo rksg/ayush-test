@@ -12,27 +12,27 @@ import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
 
-export function VenueLink (props: { venueId?: string, name?: string }) {
-  const { venueId, name } = props
+export function VenueLink (props: { venueId?: string, name?: string, showNoData?: boolean }) {
+  const { venueId, name, showNoData } = props
   return (
     venueId
       ? <TenantLink to={`venues/${venueId}/venue-details/overview`}>
         {name ?? venueId}
       </TenantLink>
-      : <>{noDataDisplay}</>
+      : <>{ showNoData && noDataDisplay}</>
   )
 }
 
-export function PersonaGroupLink (props: { personaGroupId?: string, name?: string }) {
+export function IdentityGroupLink (props: { personaGroupId?: string, name?: string }) {
   const { personaGroupId, name } = props
   return (
-    <TenantLink to={`users/persona-management/persona-group/${personaGroupId}`}>
+    <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
       {name ?? personaGroupId}
     </TenantLink>
   )
 }
 
-export function PersonaDetailsLink (
+export function IdentityDetailsLink (
   props: {
     personaGroupId?: string,
     personaId?: string,
@@ -41,15 +41,15 @@ export function PersonaDetailsLink (
   const { personaGroupId, personaId, name } = props
   return (
     <TenantLink
-      to={`users/persona-management/persona-group/${personaGroupId}/persona/${personaId}`}
+      to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
     >
       {name ?? personaId}
     </TenantLink>
   )
 }
 
-export function DpskPoolLink (props: { dpskPoolId?: string, name?: string }) {
-  const { dpskPoolId, name } = props
+export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {
+  const { dpskPoolId, name, showNoData } = props
   return (
     dpskPoolId
       ? <TenantLink to={getServiceDetailsLink({
@@ -60,12 +60,16 @@ export function DpskPoolLink (props: { dpskPoolId?: string, name?: string }) {
       })}>
         {name ?? dpskPoolId}
       </TenantLink>
-      : <>{noDataDisplay}</>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 
-export function MacRegistrationPoolLink (props: { macRegistrationPoolId?: string, name?: string }) {
-  const { macRegistrationPoolId, name } = props
+export function MacRegistrationPoolLink (props: {
+  macRegistrationPoolId?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { macRegistrationPoolId, name, showNoData } = props
   return (
     macRegistrationPoolId
       ? <TenantLink to={getPolicyDetailsLink({
@@ -76,12 +80,16 @@ export function MacRegistrationPoolLink (props: { macRegistrationPoolId?: string
       })}>
         {name ?? macRegistrationPoolId}
       </TenantLink>
-      : <>{noDataDisplay}</>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 
-export function NetworkSegmentationLink (props: { nsgId?: string, name?: string }) {
-  const { nsgId, name } = props
+export function NetworkSegmentationLink (props: {
+  nsgId?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { nsgId, name, showNoData } = props
   return (
     nsgId
       ? <TenantLink to={getServiceDetailsLink({
@@ -91,12 +99,17 @@ export function NetworkSegmentationLink (props: { nsgId?: string, name?: string 
       })}>
         {name ?? nsgId}
       </TenantLink>
-      : <>{noDataDisplay}</>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 
-export function PropertyUnitLink (props: { venueId?: string, unitId?: string, name?: string }) {
-  const { venueId, unitId, name } = props
+export function PropertyUnitLink (props: {
+  venueId?: string,
+  unitId?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { venueId, unitId, name, showNoData } = props
   return (
     (venueId && unitId)
       ? <TenantLink
@@ -104,7 +117,7 @@ export function PropertyUnitLink (props: { venueId?: string, unitId?: string, na
       >
         {name ?? unitId}
       </TenantLink>
-      : <>{noDataDisplay}</>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 

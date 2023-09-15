@@ -137,7 +137,7 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => expect(confirmDialog).not.toBeInTheDocument())
   })
 
-  it('should not delete selected passphrase when it is mapped to Persona', async () => {
+  it('should not delete selected passphrase when it is mapped to Identity', async () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
@@ -161,7 +161,7 @@ describe('DpskPassphraseManagement', () => {
 
     const confirmDialog = await screen.findByRole('dialog')
     // eslint-disable-next-line max-len
-    expect(within(confirmDialog).getByText('You are unable to delete this record due to its usage in Persona')).toBeVisible()
+    expect(within(confirmDialog).getByText('You are unable to delete this record due to its usage in Identity')).toBeVisible()
 
     await userEvent.click(await screen.findByText('OK'))
     await waitFor(() => expect(confirmDialog).not.toBeInTheDocument())
@@ -371,12 +371,6 @@ describe('DpskPassphraseManagement', () => {
     await screen.findByRole('dialog', {
       name: /add device/i
     })
-
-    await userEvent.type(
-      screen.getByRole('textbox', {
-        name: /mac address/i
-      }), 'DC:AE:EB:22:5E:60'
-    )
 
     await userEvent.click(screen.getByText(/add another device/i))
 

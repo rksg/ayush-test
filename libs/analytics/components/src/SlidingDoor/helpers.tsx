@@ -1,8 +1,14 @@
-import { Node } from './'
+import { nodeTypes }         from '@acx-ui/analytics/utils'
+import { getIntl, NodeType } from '@acx-ui/utils'
+
+import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
-  if (node?.name?.toLowerCase().includes(searchText.toLowerCase())) {
+  if (
+    node?.name?.toLowerCase().match(searchText) ||
+    node?.mac?.toLowerCase().match(searchText)
+  ) {
     results.push({ ...node, path: [...path, node] })
   }
   if (Array.isArray(node.children)) {
@@ -14,10 +20,14 @@ export const searchTree = (node: Node, searchText: string, path: Node[] = []): N
 }
 export const findMatchingNode = (
   node: Node,
-  targetNode: Node | null | undefined,
+  targetNode: Node,
   path: Node[] = []
 ): Node | null => {
-  if (targetNode && node.name === targetNode.name && node.type === targetNode.type) {
+  if (node.type === targetNode.type && (
+    node.type === 'ap' || node.type === 'switch'
+      ? node.mac === targetNode.list?.[0]
+      : node.name === targetNode.name
+  )) {
     return { ...node, path: [...path, node] }
   }
   if (Array.isArray(node.children)) {
@@ -30,15 +40,13 @@ export const findMatchingNode = (
   }
   return null
 }
-export const customCapitalize = (node?: Node | null ) => {
-  if (!node) return ''
-
-  const { type, name } = node
-
-  if (type && type.toLowerCase() !== 'network') {
-    return capitalizeFirstLetter(`${type}(${name})`)
+export const customCapitalize = (node: Node) => {
+  let { type, name } = node
+  if (type === 'network') {
+    const { $t } = getIntl()
+    return $t({ defaultMessage: 'Entire Organization' })
   } else {
-    return capitalizeFirstLetter(name)
+    return capitalizeFirstLetter(`${name} (${nodeTypes(type as NodeType)})`)
   }
 }
 const capitalizeFirstLetter = (str : string) => {
