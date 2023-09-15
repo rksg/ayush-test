@@ -35,7 +35,8 @@ import {
   baseMsgTemplateApi as msgTemplateApi,
   videoCallQoeApi,
   baseEdgeFirewallApi as edgeFirewallApi,
-  baseSigPackApi as sigPackApi
+  baseSigPackApi as sigPackApi,
+  baseRWGApi as rwgApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -74,7 +75,8 @@ export const store = configureStore({
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
     [sigPackApi.reducerPath]: sigPackApi.reducer,
-    [residentPortalApi.reducerPath]: residentPortalApi.reducer
+    [residentPortalApi.reducerPath]: residentPortalApi.reducer,
+    [rwgApi.reducerPath]: rwgApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -114,7 +116,8 @@ export const store = configureStore({
       videoCallQoeApi.middleware,
       edgeFirewallApi.middleware,
       sigPackApi.middleware,
-      residentPortalApi.middleware
+      residentPortalApi.middleware,
+      rwgApi.middleware
     ])
   },
 
