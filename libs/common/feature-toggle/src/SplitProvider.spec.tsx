@@ -59,6 +59,7 @@ jest.mock('@splitsoftware/splitio-react', () => ({
   useTreatments: jest.fn()
 }))
 
+const splitProxyEndpoint = 'https://splitproxy.dev.ruckus.cloud/api'
 jest.mock('@splitsoftware/splitio-react', () => ({
   useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
     const treatments: Record<string, Object> = {}
@@ -78,7 +79,8 @@ jest.mock('@splitsoftware/splitio-react', () => ({
   }
 }))
 
-function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string }) {
+function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
+  SPLIT_PROXY_ENDPOINT: string }) {
   jest.resetModules()
   jest.doMock('@acx-ui/config', () => ({
     get: jest.fn().mockImplementation(name => name === 'SPLIT_IO_KEY'
@@ -105,28 +107,36 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string }) {
 
 describe('SplitProvider', () => {
   it('renders nothing if no tenant provided', async () => {
-    render(<TestSplitProvider IS_MLISA_SA='' tenant='' />)
+    render(<TestSplitProvider IS_MLISA_SA=''
+      tenant=''
+      SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
     expect(screen.queryByText('rendered')).toBeNull()
   })
   it('provides for R1', async () => {
     const tenant = 'f91b36cbfb9941e8b45b337a37f330c0'
-    render(<TestSplitProvider IS_MLISA_SA='' tenant={tenant} />)
+    render(<TestSplitProvider IS_MLISA_SA=''
+      tenant={tenant}
+      SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
     await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: tenant },
-      storage: { type: 'LOCALSTORAGE', prefix: 'ACX01234' },
+      urls: { auth: '', events: '', sdk: '' },
+      storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
   it('provides for RA', async () => {
-    render(<TestSplitProvider IS_MLISA_SA='true' tenant='0015000000GlI7SAAV' />)
+    render(<TestSplitProvider IS_MLISA_SA='true'
+      tenant='0015000000GlI7SAAV'
+      SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
     await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA01234' },
+      urls: { auth: 'true', events: 'true', sdk: 'true' },
+      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
