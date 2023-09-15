@@ -11,11 +11,6 @@ import { tooltipOptions }    from '../Chart/helper'
 import { categoryStyles, tooltipFormatter } from './helper'
 import * as Type                            from './type'
 
-const zoomScale = scalePow()
-  .exponent(0.01)
-  .domain([3, 10, 63, 125, 250, 375, 500])
-  .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.1])
-
 const zoomFactor = scalePow()
   .exponent(3)
   .domain([0, 1, 10, 20])
@@ -26,13 +21,16 @@ const repulsionScale = scalePow()
   .domain([0, 1, 10, 20])
   .range([500, 500, 8500, 8500])
 
+/**
+ * @param zoomScale scalePow().exponent(0.01).domain[<list of node count>].range[<list of scale>]
+ */
 export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 'style'>{
   chartRef: RefCallback<ReactECharts>
   data: Type.ProcessedCloudRRMGraph
   title: string
+  zoomScale: ScalePower<number, number, never>
   subtext?: string
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
-  externalZoomScale?: ScalePower<number, number, never>
 }
 
 export function Graph (props: GraphProps) {
@@ -44,12 +42,10 @@ export function Graph (props: GraphProps) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
 
-  const { data: { nodes = [], links = [], categories = [] }, externalZoomScale } = props
+  const { data: { nodes = [], links = [], categories = [] }, zoomScale } = props
 
   const linksNodeRatio = links.length / nodes.length || 1
-  const zoom = (
-    externalZoomScale ? externalZoomScale(nodes.length) : zoomScale(nodes.length)
-  ) * zoomFactor(linksNodeRatio)
+  const zoom = zoomScale(nodes.length) * zoomFactor(linksNodeRatio)
   const repulsion = repulsionScale(linksNodeRatio)
 
   const option = {
