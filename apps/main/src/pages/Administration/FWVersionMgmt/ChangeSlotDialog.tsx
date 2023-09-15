@@ -41,7 +41,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     if (times) {
       setValueTimes([...times])
     }
-  }, [])
+  }, [days, times])
 
   // eslint-disable-next-line max-len
   const dayOptions = AVAILABLE_DAYS.map(item => <Option key={item.value} value={item.value} disabled={disabledDays && !valueDays.includes(item.value)}>{item.label}</Option>) ?? []

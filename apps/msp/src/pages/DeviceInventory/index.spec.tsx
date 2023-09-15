@@ -243,7 +243,7 @@ describe('Device Inventory Table', () => {
         route: { params, path: '/:tenantId/deviceinventory' }
       })
 
-    const button = screen.getByRole('button', { name: 'Export To CSV' })
+    const button = screen.getByRole('button', { name: 'Export to CSV' })
     expect(button).toBeVisible()
     await userEvent.click(button)
 
