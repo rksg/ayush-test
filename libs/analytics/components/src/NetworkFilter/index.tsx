@@ -16,7 +16,6 @@ import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { MlisaNetworkFilter }                       from './MlisaNetworkFilter'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import { SeverityCircles }                          from './SeverityCircles'
 import * as UI                                      from './styledComponents'
@@ -297,4 +296,3 @@ function ConnectedNetworkFilter (
     </UI.Container>
   )
 }
-export { MlisaNetworkFilter }
