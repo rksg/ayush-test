@@ -768,14 +768,20 @@ export function ManageCustomer () {
         <Form.Item
           name='admin_firstname'
           label={intl.$t({ defaultMessage: 'First Name' })}
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
           children={<Input />}
           style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
         />
         <Form.Item
           name='admin_lastname'
           label={intl.$t({ defaultMessage: 'Last Name' })}
-          rules={[ { required: true } ]}
+          rules={[
+            { required: true },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
           children={<Input />}
           style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
         />

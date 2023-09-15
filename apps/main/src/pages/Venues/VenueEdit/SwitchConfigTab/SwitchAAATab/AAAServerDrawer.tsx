@@ -233,6 +233,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       label={<>
         { $t({ defaultMessage: 'Password' }) }
         <Tooltip.Question
+          overlayStyle={{ maxWidth: '450px' }}
           title={<FormattedMessage
             {...LOCAL_USER_PASSWORD_TOOLTIP}
             values={{

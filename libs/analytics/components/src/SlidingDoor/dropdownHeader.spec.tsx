@@ -27,7 +27,7 @@ describe('DropdownHeader', () => {
     expect(screen.getByText(customCapitalize(currentNode))).toBeInTheDocument()
   })
 
-  it('calls onBack when header is clicked', () => {
+  it('calls onBack when header is clicked', async () => {
     const mockOnBack = jest.fn()
     render(
       <IntlProvider locale='en'>
@@ -41,7 +41,7 @@ describe('DropdownHeader', () => {
       </IntlProvider>
     )
 
-    fireEvent.click(screen.getByText(customCapitalize(currentNode)))
+    fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
     expect(mockOnBack).toHaveBeenCalledTimes(1)
   })
 
