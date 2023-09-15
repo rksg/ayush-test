@@ -128,7 +128,7 @@ export const getErrorContent = (action: ErrorAction) => {
   const queryMeta = getMetaFromAction(action)
   const status = (queryMeta?.response) ? queryMeta.response.status :
     ('originalStatus' in action.payload) ? action.payload.originalStatus :
-      ('status' in action.payload) ? action.payload?.status : undefined
+      ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
 
   let errorMsg = {} as ErrorMessageType
@@ -137,8 +137,8 @@ export const getErrorContent = (action: ErrorAction) => {
   if ('data' in action.payload) {
     errors = action.payload.data
   } else if ('error' in action.payload) {
-    errors = (typeof action.payload.error === 'string') ?
-      action.payload.error : action.payload.error.data
+    // eslint-disable-next-line max-len
+    errors = (typeof action.payload.error === 'string') ? action.payload.error : action.payload.error.data
   }
   let needLogout = false
   let callback = undefined
@@ -189,7 +189,7 @@ export const getErrorContent = (action: ErrorAction) => {
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
   if (errors && isShowApiError(request)) {
     if (typeof errors === 'string') {
-      content = <>errors</>
+      content = <p>{errors}</p>
     }
     else if ('errors' in errors) { // CatchErrorDetails
       const errorsMessageList = errors.errors.map(err=>err.message)
@@ -234,7 +234,7 @@ export const showErrorModal = (details: {
 }
 
 const getMetaFromAction = (action?: ErrorAction) => {
-  if (action && 'meta' in action.payload) {
+  if (action?.payload && 'meta' in action.payload) {
     return action.payload.meta
   }
   return action?.meta?.baseQueryMeta
