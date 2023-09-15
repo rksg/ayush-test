@@ -10,7 +10,8 @@ import { get }                                                    from '@acx-ui/
 import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
 import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
@@ -19,6 +20,8 @@ import { Table }                from './Table'
 
 export function useConfigChange () {
   const { $t } = useIntl()
+  const isMLISA = get('IS_MLISA_SA')
+
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
@@ -53,11 +56,13 @@ export function useConfigChange () {
   }
 
   const headerExtra = [
-    <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={true}
-      withIncidents={false}
-    />,
+    isMLISA
+      ? <SANetworkFilter />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={true}
+        withIncidents={false}
+      />,
     <Dropdown
       key={getShowWithoutRbacCheckKey('date-dropdown')}
       overlay={<Menu
@@ -76,7 +81,7 @@ export function useConfigChange () {
 
   const component = <ConfigChangeProvider dateRange={dateRange} setDateRange={setDateRange}>
     <GridRow>
-      <GridCol col={{ span: 24 }} style={{ minHeight: get('IS_MLISA_SA') ? '200px' : '170px' }}>
+      <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
         <Chart
           selected={selected}
           onClick={onDotClick}
