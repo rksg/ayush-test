@@ -182,7 +182,7 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country',
+    defaultMessage: 'Cannot move AP to another venue in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({

@@ -22,13 +22,12 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                                               from '@acx-ui/rc/components'
-import { isDelegationMode }                                                 from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                                        from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                  from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, PverName, useTenantId }           from '@acx-ui/utils'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
+import { useParams }                                                                from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'

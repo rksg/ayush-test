@@ -146,11 +146,10 @@ export function MspCustomers () {
   }
 
   const transformAdminCount = (data: MspEc) => {
-    if (data?.mspInstallerAdminCount)
-      return data.mspInstallerAdminCount
-    else if (data?.mspIntegratorAdminCount)
-      return data.mspIntegratorAdminCount
-    return isIntegrator ? 0 : data.mspAdminCount
+    const type = tenantDetailsData.data?.tenantType
+    return type === AccountType.MSP_INSTALLER
+      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
+        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
   }
 
   const transformAdminCountHeader = () => {

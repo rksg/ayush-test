@@ -21,12 +21,13 @@ export * from './constants'
 
 interface MdnsProxyForwardingRulesTableProps {
   readonly?: boolean;
+  tableType?: TableProps<MdnsProxyForwardingRule>['type'];
   rules?: MdnsProxyForwardingRule[];
   setRules?: (r: MdnsProxyForwardingRule[]) => void;
 }
 
 export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTableProps) {
-  const { readonly = false, rules = [], setRules = () => null } = props
+  const { readonly = false, tableType, rules = [], setRules = () => null } = props
   const { $t } = useIntl()
   const [ drawerFormRule, setDrawerFormRule ] = useState<MdnsProxyForwardingRule>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
@@ -153,6 +154,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       <Table
         columns={columns}
         dataSource={rules}
+        type={tableType}
         rowKey='id'
         actions={readonly ? [] : filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}

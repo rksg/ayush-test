@@ -228,6 +228,13 @@ export function VarCustomers () {
       searchable: true,
       sorter: true
     },
+    {
+      title: $t({ defaultMessage: 'Alarm Count' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      show: false,
+      sorter: true
+    },
     ...(isDeviceAgnosticEnabled ? [
       {
         title: $t({ defaultMessage: 'Installed Devices' }),

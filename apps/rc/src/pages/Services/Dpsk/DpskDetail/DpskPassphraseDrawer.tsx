@@ -3,7 +3,8 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer, showActionModal }   from '@acx-ui/components'
+import { Drawer, showActionModal }    from '@acx-ui/components'
+import { useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useCreateDpskPassphrasesMutation,
   useLazyGetEnhancedDpskPassphraseListQuery,
@@ -32,6 +33,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   const { $t } = useIntl()
   const { visible, setVisible, editMode } = props
   const params = useParams()
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
   const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
@@ -48,11 +50,14 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
     if (editMode.isEdit) {
       await updatePassphrases({
-        params: { ...params, passphraseId: editMode.passphraseId },
+        params: { ...params, passphraseId: editMode.passphraseId, ...dpskNewConfigFlowParams },
         payload
       }).unwrap()
     } else {
-      await createPassphrases({ params, payload }).unwrap()
+      await createPassphrases({
+        params: { ...params, ...dpskNewConfigFlowParams },
+        payload
+      }).unwrap()
     }
 
     onClose()
@@ -64,7 +69,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     if (!mac) return false
 
     const passphraseListResult = await getEnhancedDpskPassphraseList({
-      params,
+      params: { ...params, ...dpskNewConfigFlowParams },
       payload: { page: 1, pageSize: 65535, filters: { mac: [mac] } }
     }).unwrap()
 
