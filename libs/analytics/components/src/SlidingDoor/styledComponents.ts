@@ -127,7 +127,8 @@ export const StyledList = styled(List)`
   .ant-list-items {
     min-height: 200px;
     max-height: 300px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .ant-list-footer {
     position: sticky;
