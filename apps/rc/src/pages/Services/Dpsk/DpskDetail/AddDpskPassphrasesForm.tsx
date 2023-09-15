@@ -325,7 +325,8 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           label={$t({ defaultMessage: 'Contact Email Address' })}
           name='email'
           rules={[
-            { validator: (_, value) => emailRegExp(value) }
+            { validator: (_, value) => emailRegExp(value) },
+            { max: 255 }
           ]}
           children={<Input placeholder={$t({ defaultMessage: 'Enter email address' })} />}
         />
