@@ -338,8 +338,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           children={
             <PhoneInput
               name={'phoneNumber'}
-              callback={(value) => form.setFieldValue('phoneNumber', value)}
-              onTop={true}
+              callback={value => {
+                form.setFieldValue('phoneNumber', value)
+                form.validateFields(['phoneNumber'])
+              }}
+              onTop={false}
             />
           }
         />
