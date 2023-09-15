@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button }                 from '@acx-ui/components'
+import { Button, showToast }      from '@acx-ui/components'
 import { handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { useClientPcapMutation }           from './services'
@@ -27,6 +27,12 @@ export function DownloadPcap ({
       })
       .catch(() => {
         setIsLoading(false)
+        showToast({
+          type: 'error',
+          content: $t(
+            { defaultMessage: 'File not found, please try again later.' }
+          )
+        })
         setError($t({ defaultMessage: 'File not found, please try again later.' }))
       })
   }
@@ -40,9 +46,7 @@ export function DownloadPcap ({
         onClick={() => onClick()}
       >
         <PcapText>
-          {error
-            ? error
-            : $t({ defaultMessage: 'Download .pcap' })}
+          {$t({ defaultMessage: 'Download .pcap' })}
         </PcapText>
       </Button>}
   </PcapWrapper>
