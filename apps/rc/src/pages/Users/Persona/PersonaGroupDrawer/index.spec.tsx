@@ -86,10 +86,10 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(dialogAddBtn)
 
     // Required fields
-    await screen.findByText('Please enter Persona Group Name')
+    await screen.findByText('Please enter Identity Group Name')
     await screen.findByText('Please select a DPSK Service')
 
-    const nameField = await screen.findByRole('textbox', { name: /persona group name/i })
+    const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, mockPersonaGroupTableResult.content[0].name)
 
     // @ts-ignore
@@ -97,7 +97,7 @@ describe('Persona Group Drawer', () => {
 
     // Name validator
     await waitFor(async () =>
-      await screen.findByText('Persona Group with that name already exists'))
+      await screen.findByText('Identity Group with that name already exists'))
   })
 
   it('should add a persona group', async () => {
@@ -109,14 +109,14 @@ describe('Persona Group Drawer', () => {
           onClose={closeFn}
         />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       }
     )
 
     await screen.findByRole('dialog')
 
-    const nameField = await screen.findByRole('textbox', { name: /persona group name/i })
-    await userEvent.type(nameField, 'New Persona Group Name')
+    const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
+    await userEvent.type(nameField, 'New Identity Group Name')
 
     // Select a DPSK Service
     const selector = await screen.findAllByRole('combobox')
@@ -136,7 +136,7 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(addButton[addButton.length - 1])
 
     await waitFor(() => expect(createPersonaGroupSpy).toHaveBeenCalled())
-    await screen.findByText('Persona Group New Persona Group Name was added')
+    await screen.findByText('Identity Group New Identity Group Name was added')
   })
 
   it('should edit a persona group', async () => {
@@ -149,13 +149,13 @@ describe('Persona Group Drawer', () => {
           onClose={closeFn}
         />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       }
     )
 
-    await screen.findByText('Edit Persona Group')
+    await screen.findByText('Edit Identity Group')
 
-    const nameField = await screen.findByRole('textbox', { name: /persona group name/i })
+    const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     expect(nameField).toHaveAttribute('value', mockPersonaGroup.name)
 
     const descriptionField = await screen.findByLabelText('Description')
@@ -165,6 +165,6 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
-    await screen.findByText('Persona Group Class A was updated')
+    await screen.findByText('Identity Group Class A was updated')
   })
 })

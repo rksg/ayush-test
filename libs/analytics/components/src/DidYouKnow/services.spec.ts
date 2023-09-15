@@ -1,8 +1,8 @@
-import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { dataApiURL }       from '@acx-ui/store'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+import { dataApiURL }           from '@acx-ui/store'
+import { store }                from '@acx-ui/store'
+import { mockGraphqlQuery }     from '@acx-ui/test-utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
 import { expectedResult } from './__tests__/fixtures'
 import { api }            from './services'

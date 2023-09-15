@@ -73,7 +73,7 @@ describe('Persona Table', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona'
+          path: '/:tenantId/t/users/identity-management/identity'
         }
       })
 
@@ -102,7 +102,7 @@ describe('Persona Table', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       })
 
@@ -127,13 +127,13 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
-    const createButton = await screen.findByRole('button', { name: /Add Persona/i })
+    const createButton = await screen.findByRole('button', { name: /Add Identity/i })
     await userEvent.click(createButton)
 
-    const nameField = await screen.findByLabelText('Persona Name') as HTMLInputElement
+    const nameField = await screen.findByLabelText('Identity Name') as HTMLInputElement
     expect(nameField.value).toBe('')
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
@@ -150,7 +150,7 @@ describe('Persona Table', () => {
           return res(ctx.status(400), ctx.json({
             message: 'An error occurred',
             subErrors: [ // to render Technical Details
-              { object: 'Persona', message: 'validation failed' }
+              { object: 'Identity', message: 'validation failed' }
             ]
           }))
         }
@@ -163,14 +163,14 @@ describe('Persona Table', () => {
       </Provider>,
       { route: {
         params,
-        path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
       } }
     )
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
 
     const dialog = await screen.findByRole('dialog')
 
-    const csvFile = new File([''], 'persona_import_template.csv', { type: 'text/csv' })
+    const csvFile = new File([''], 'identity_import_template.csv', { type: 'text/csv' })
 
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
@@ -207,7 +207,7 @@ describe('Persona Table', () => {
       </Provider>,
       { route: {
         params,
-        path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
       } }
     )
 
@@ -218,14 +218,14 @@ describe('Persona Table', () => {
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
 
     const editDialog = await screen.findByRole('dialog')
-    expect(await within(editDialog).findByText(new RegExp(/edit persona/i))).toBeVisible()
+    expect(await within(editDialog).findByText(new RegExp(/edit identity/i))).toBeVisible()
 
     await userEvent.click(await within(editDialog).findByRole('button', { name: /cancel/i }))
     expect(editDialog).not.toBeVisible()
 
     await userEvent.click(row)
     await userEvent.click(await screen.findByRole('button', { name: /delete/i }))
-    await userEvent.click(await screen.findByRole('button', { name: /delete persona/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /delete identity/i }))
 
     await waitFor(() => expect(deletePersonaSpy).toHaveBeenCalled())
     await waitFor(() => {
@@ -251,9 +251,9 @@ describe('Persona Table', () => {
             mockDownloadCsv()
 
             return res(ctx.set({
-              'content-disposition': 'attachment; filename=Personas_20230118100829.csv',
+              'content-disposition': 'attachment; filename=Identities_20230118100829.csv',
               'content-type': 'text/csv;charset=ISO-8859-1'
-            }), ctx.text('Persona'))
+            }), ctx.text('Identity'))
           }
         }
       )
@@ -264,7 +264,7 @@ describe('Persona Table', () => {
       {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona'
+          path: '/:tenantId/t/users/identity-management/identity'
         }
       }
     )
@@ -294,7 +294,7 @@ describe('Persona Table', () => {
       {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )
@@ -305,7 +305,7 @@ describe('Persona Table', () => {
     // eslint-disable-next-line testing-library/no-node-access
     const importDialog = importTextElement.closest('.ant-drawer-content') as HTMLDivElement
 
-    const csvFile = new File([''], 'Persona_import_template.csv', { type: 'text/csv' })
+    const csvFile = new File([''], 'Identity_import_template.csv', { type: 'text/csv' })
 
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)

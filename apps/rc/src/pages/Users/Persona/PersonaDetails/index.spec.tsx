@@ -37,7 +37,7 @@ Object.assign(navigator, {
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-describe.skip('Persona Details', () => {
+describe.skip('Identity Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
@@ -109,7 +109,7 @@ describe.skip('Persona Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
@@ -129,14 +129,14 @@ describe.skip('Persona Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
         }
       }
     )
     expect(await screen.findByText('Clients')).toBeVisible()
-    expect(await screen.findByText('Persona Management')).toBeVisible()
+    expect(await screen.findByText('Identity Management')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Personas'
+      name: 'Identities'
     })).toBeVisible()
   })
 
@@ -146,7 +146,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -160,14 +160,14 @@ describe.skip('Persona Details', () => {
     await userEvent.click(copyBtn)
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(mockPersona.dpskPassphrase)
 
-    const personaName = screen.getByLabelText(/Persona Name/i) as HTMLInputElement
+    const personaName = screen.getByLabelText(/Identity Name/i) as HTMLInputElement
     expect(personaName.value).toBe(mockPersona.name)
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
     fireEvent.click(cancelButton)
 
     fireEvent.click(configButton)
-    fireEvent.change(personaName, { target: { value: 'New persona name' } })
+    fireEvent.change(personaName, { target: { value: 'New identity name' } })
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     fireEvent.click(applyButton)
@@ -193,7 +193,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
 
@@ -223,7 +223,7 @@ describe.skip('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
       }
     )
 

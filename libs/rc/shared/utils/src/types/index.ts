@@ -76,6 +76,7 @@ export interface Network {
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
+  owePairNetworkId?: string
 }
 
 export interface NetworkDetail {
@@ -106,6 +107,7 @@ export interface Venue {
   status: string
   city: string
   country: string
+  countryCode?: string
   latitude: string
   longitude: string
   mesh: { enabled: boolean }

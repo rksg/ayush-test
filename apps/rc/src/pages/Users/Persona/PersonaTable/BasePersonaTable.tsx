@@ -11,10 +11,11 @@ import {
   CsvSize,
   ImportFileDrawer,
   PersonaGroupSelect,
-  PersonaDetailsLink,
-  PersonaGroupLink,
+  IdentityDetailsLink,
+  IdentityGroupLink,
   PropertyUnitLink,
-  ImportFileDrawerType
+  ImportFileDrawerType,
+  useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -35,8 +36,9 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
-import { PersonasContext }    from '..'
+import { IdentitiesContext }  from '..'
 import { PersonaDrawer }      from '../PersonaDrawer'
 import { PersonaBlockedIcon } from '../styledComponents'
 
@@ -58,9 +60,9 @@ function useColumns (
     {
       key: 'name',
       dataIndex: 'name',
-      title: $t({ defaultMessage: 'Persona Name' }),
+      title: $t({ defaultMessage: 'Identity Name' }),
       render: (_, row) =>
-        <PersonaDetailsLink
+        <IdentityDetailsLink
           name={row.name}
           personaId={row.id}
           personaGroupId={row.groupId}
@@ -125,11 +127,11 @@ function useColumns (
     {
       key: 'groupId',
       dataIndex: 'group',
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       sorter: true,
       render: (_, row) => {
         const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
-        return <PersonaGroupLink personaGroupId={row.groupId} name={name} />
+        return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
       },
       filterMultiple: false,
       filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
@@ -207,7 +209,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     { skip: !personaGroupId }
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
-  const { setPersonasCount } = useContext(PersonasContext)
+  const { setIdentitiesCount } = useContext(IdentitiesContext)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
@@ -254,7 +257,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
       const passphraseId = persona.dpskGuid
       if (!passphraseId) return
 
-      getDpskDevices({ params: { tenantId, passphraseId, serviceId } })
+      getDpskDevices({
+        params: { tenantId, passphraseId, serviceId, ...dpskNewConfigFlowParams }
+      })
         .then(result => {
           if (result.data) {
             const count = result.data.filter(d => d.online).length
@@ -309,7 +314,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Add Persona' }),
+      label: $t({ defaultMessage: 'Add Identity' }),
       onClick: () => {
         // if user is under PersonaGroup page, props groupId into Drawer
         setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
@@ -339,7 +344,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Persona' }),
+            entityName: $t({ defaultMessage: 'Identity' }),
             entityValue: selectedItems[0].name,
             numOfEntities: selectedItems.length
           },
@@ -347,13 +352,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
             $t({
               // Display warning while one of the Persona contains devices.
               defaultMessage: `{hasDevices, select,
-              true {The Persona contains devices in the MAC registration list.}
+              true {The Identity contains devices in the MAC registration list.}
               other {}
               }
               Are you sure you want to delete {count, plural,
               one {this}
               other {these}
-              } Persona?`
+              } Identity?`
             }, {
               hasDevices: !!selectedItems.find(p => (p?.deviceCount ?? 0) > 0),
               count: selectedItems.length
@@ -404,7 +409,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     personaListQuery.setPayload(payload)
   }
 
-  setPersonasCount?.(personaListQuery.data?.totalCount || 0)
+  setIdentitiesCount?.(personaListQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
@@ -426,6 +431,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersona
         }}
       />
@@ -440,11 +446,11 @@ export function BasePersonaTable (props: PersonaTableProps) {
         title={$t({ defaultMessage: 'Import from file' })}
         visible={true}
         isLoading={uploadCsvResult.isLoading}
-        type={ImportFileDrawerType.Persona}
+        type={ImportFileDrawerType.Identity}
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={1000}
-        templateLink='assets/templates/persona_import_template.csv'
+        templateLink='assets/templates/identity_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}
       >
@@ -452,7 +458,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
           name='groupId'
           rules={[{ required: true }]}
           initialValue={personaGroupId}
-          label={$t({ defaultMessage: 'Persona Group' })}
+          label={$t({ defaultMessage: 'Identity Group' })}
         >
           <PersonaGroupSelect disabled={!!personaGroupId}/>
         </Form.Item>

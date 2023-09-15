@@ -6,9 +6,9 @@ import { useIntl } from 'react-intl'
 import {
   DidYouKnow,
   IncidentsCountBySeverities,
-  NetworkHistory,
   SLA,
   ReportTile,
+  MlisaNetworkFilter,
   AIDrivenRRM,
   AIOperations
 } from '@acx-ui/analytics/components'
@@ -55,38 +55,38 @@ export default function Dashboard () {
     <PageHeader
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
+        <>
+          <MlisaNetworkFilter />
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        </>
       ]}
     />
     <UI.Grid style={{ height }}>
       <div style={{ gridArea: 'a1' }}>
-        <Card title={$t({ defaultMessage: 'Network Filter' })} />
-      </div>
-      <div style={{ gridArea: 'b1' }}>
         <ReportTile path={path} />
       </div>
-      <div style={{ gridArea: 'b2' }}>
-        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
+      <div style={{ gridArea: 'a2' }}>
+        <Card />
       </div>
-      <div style={{ gridArea: 'b3' }}>
+      <div style={{ gridArea: 'd2' }}>
         <SLA filters={analyticsFilter}/>
       </div>
-      <div style={{ gridArea: 'c1' }}>
+      <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
-      <div style={{ gridArea: 'c2' }}>
+      <div style={{ gridArea: 'b2' }}>
         <AIDrivenRRM filters={filters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow filters={filters} maxFactPerSlide={2} maxSlideChar={180} />
+        <DidYouKnow filters={filters} maxFactPerSlide={4} maxSlideChar={340} />
       </div>
-      <div style={{ gridArea: 'd2' }}>
+      <div style={{ gridArea: 'c1' }}>
         <AIOperations filters={filters} />
       </div>
     </UI.Grid>
