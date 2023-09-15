@@ -299,12 +299,16 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
 
     const revokeDialog = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    const revokeInput = within(revokeDialog).getByRole('textbox', { name: /Type the reason to revoke/i })
 
-    await userEvent.type(
-      within(revokeDialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
-      '1234'
-    )
+    // Character limit validation
+    await userEvent.type(revokeInput, 'a'.repeat(256))
+    // eslint-disable-next-line max-len
+    expect((await within(revokeDialog).findByRole('alert')).textContent).toBe('Field exceeds 255 characters')
+    await userEvent.clear(revokeInput)
 
+    await userEvent.type(revokeInput, '1234')
     await userEvent.click(within(revokeDialog).getByRole('button', { name: /OK/i }))
     await waitFor(() => {
       expect(revokeFn).toHaveBeenCalledWith({
