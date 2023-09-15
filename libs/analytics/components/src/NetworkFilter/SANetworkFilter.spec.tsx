@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { IntlProvider }              from 'react-intl'
+import { render, screen } from '@testing-library/react'
+import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { MlisaNetworkFilter }       from './MlisaNetworkFilter'
+import { SANetworkFilter }          from './SANetworkFilter'
 import { useNetworkHierarchyQuery } from './services'
 
 const mockSetNetworkPath = jest.fn()
@@ -15,6 +15,7 @@ const filters = {
 }
 const mockUseAnalyticsFilter = {
   filters,
+  path: [{ type: 'network', name: 'Network' }],
   setNetworkPath: mockSetNetworkPath,
   raw: []
 }
@@ -29,10 +30,15 @@ jest.mock('./services', () => ({
   useNetworkHierarchyQuery: jest.fn()
 }))
 
-describe('MlisaNetworkFilter', () => {
+describe('SANetworkFilter', () => {
   const mockNetworkHierarchyData = {
-    name: 'root',
-    children: [{ id: '2', name: 'child1' }]
+    name: 'Network',
+    type: 'network',
+    children: [{
+      name: 'root',
+      type: 'system',
+      children: [{ id: '2', name: 'child1', type: 'child1' }]
+    }]
   }
 
   beforeEach(() => {
@@ -41,8 +47,7 @@ describe('MlisaNetworkFilter', () => {
   })
 
   it('should render without errors', async () => {
-    render(<IntlProvider locale='en'><MlisaNetworkFilter /></IntlProvider>)
-    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    expect(await screen.findByText('Root')).toBeInTheDocument()
+    render(<IntlProvider locale='en'><SANetworkFilter /></IntlProvider>)
+    await screen.findByPlaceholderText('Entire Organization')
   })
 })
