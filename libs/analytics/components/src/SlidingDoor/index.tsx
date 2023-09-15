@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 import { Dropdown } from 'antd'
+import { debounce } from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { SearchOutlined, CloseSymbol, CaretDownSolid } from '@acx-ui/icons'
@@ -144,6 +145,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   )?.slice().sort((a, b) => a.name.localeCompare(b.name))
   const placeHolderText = inputValue || $t({ defaultMessage: 'Entire Organization' })
   const open = () => setVisible(true)
+  const debouncedSetSearchText = debounce(setSearchText, 500)
   return (
     <UI.DropdownWrapper ref={componentRef}>
       <Dropdown
@@ -170,9 +172,8 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
           placeholder={placeHolderText}
           onClick={open}
           onChange={(e) => {
-            setSearchText(e.target.value)
+            debouncedSetSearchText(e.target.value)
           }}
-          value={searchText}
           suffix={visible || searchText || inputValue
             ? <CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />
             : <CaretDownSolid style={{ cursor: 'pointer' }} onClick={open} />
