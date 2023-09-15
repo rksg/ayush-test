@@ -1,11 +1,4 @@
-import { flow } from 'lodash'
-
-import {
-  deriveInterferingGraphs,
-  deriveTxPowerHighlight,
-  pairGraphs,
-  recommendationBandMapping
-} from '@acx-ui/components'
+import { recommendationBandMapping }             from '@acx-ui/components'
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
@@ -14,7 +7,7 @@ import { EnhancedRecommendation }                                               
 
 import { useCRRMQuery } from './services'
 
-describe('useConfigChangeQuery', () => {
+describe('useCRRMQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
     mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
@@ -27,11 +20,7 @@ describe('useConfigChangeQuery', () => {
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-
-    const expectedData = flow(
-      [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-    )(Object.values(mockedCRRMGraphs.graph).filter(Boolean), band)
-    expect(result.current.data).toEqual(expectedData)
+    expect(result.current.data).toMatchSnapshot()
     expect(result.current.csv).toMatchSnapshot()
   })
   it('should return correct data for applied status', async () => {
@@ -45,12 +34,7 @@ describe('useConfigChangeQuery', () => {
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-
-    const expectedData = flow(
-      [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-    )(Object.values(mockedCRRMGraphsApplied.graph).filter(Boolean), band)
-    expect(result.current.data[1]).toEqual(expectedData[0])
-    expect(result.current.data[0]).toEqual(expectedData[1])
+    expect(result.current.data).toMatchSnapshot()
     expect(result.current.csv).toMatchSnapshot()
   })
 })
