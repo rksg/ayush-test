@@ -60,7 +60,7 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
           />
           <li>{variables.map(vars => <FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
-            defaultMessage='Channl number (radio {radio}): <b>{channel}</b>'
+            defaultMessage='Channel number (radio {radio}): <b>{channel}</b>'
             values={{
               ..._.pick(vars, ['radio', 'channel']),
               b: (contents) => <b>{contents}</b>
@@ -76,7 +76,7 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
           />)}</li>
           {showTxPower && <li>{variables.map(vars => <FormattedMessage
             key={`${vars.radio}-${vars.txPower}`}
-            defaultMessage='TxPower (radio {radio}): <b>{txPower}</b>'
+            defaultMessage='Tx Power (radio {radio}): <b>{txPower}</b>'
             values={{
               ..._.pick(vars, ['radio', 'txPower']),
               b: (contents) => <b>{contents}</b>

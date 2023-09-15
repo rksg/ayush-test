@@ -2915,9 +2915,9 @@ AP 4,00:00:00:00:00:04,5 GHz,FALSE,36,36,80 MHz,80 MHz,Full,Full
 "
 `;
 
-exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channl number (radio 5 GHz): <b>48</b>Channl number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li><li>TxPower (radio 5 GHz): <b>Full</b>TxPower (radio 6(5) GHz): <b>Min</b></li></ul></div>"`;
+exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li><li>TxPower (radio 5 GHz): <b>Full</b>TxPower (radio 6(5) GHz): <b>Min</b></li></ul></div>"`;
 
-exports[`tooltipFormatter should match snapshot 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channl number (radio 5 GHz): <b>48</b>Channl number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li></ul></div>"`;
+exports[`tooltipFormatter should match snapshot 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li></ul></div>"`;
 
 exports[`trimGraph should return correct trimed graph data 1`] = `
 Object {
