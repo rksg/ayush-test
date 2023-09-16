@@ -77,7 +77,7 @@ export const StatusTrailItemWrapper = styled.div`
 `
 
 export const StatusTrailWrapper = styled.div`
-  height: 400px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
 `
