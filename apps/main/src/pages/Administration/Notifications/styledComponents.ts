@@ -1,5 +1,8 @@
-import { Checkbox as AntCheckbox } from 'antd'
-import styled, { css }             from 'styled-components/macro'
+import {
+  Checkbox as AntCheckbox,
+  List as AntList
+} from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 
 export const Wrapper = styled.div`
@@ -33,4 +36,14 @@ export const Checkbox = styled(AntCheckbox)`
 
 export const AfterMsg = styled.div`
   color: var(--acx-neutrals-60);
+`
+
+export const List = styled(AntList)`
+  .ant-list-split .ant-list-item {
+    border-bottom: 0px;
+  }
+
+  .ant-list-item {
+    border-bottom: 0px;
+  }
 `

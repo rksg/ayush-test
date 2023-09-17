@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { Drawer, Button, List }   from 'antd'
+import { Drawer, Button }         from 'antd'
 import { isEqual }                from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -105,16 +105,15 @@ export const IncidientNotificationDrawer = ({
     <Loader states={[query]}>
       <UI.IncidentNotificationWrapper>
         {title}
-        <List bordered={false}>
-          {priorities.map((({ label, key, checked }) => <List.Item key={key}>
+        <UI.List bordered={false}>
+          {priorities.map((({ label, key, checked }) => <UI.List.Item key={key}>
             <UI.Checkbox
-              style={{ paddingRight: '5px' }}
               checked={checked}
               onChange={(e) => setState(s => ({ ...s, [key]: e.target.checked }))}
             />
             {label}
-          </List.Item>))}
-        </List>
+          </UI.List.Item>))}
+        </UI.List>
         <UI.AfterMsg>{afterMsg}</UI.AfterMsg>
       </UI.IncidentNotificationWrapper>
     </Loader>
