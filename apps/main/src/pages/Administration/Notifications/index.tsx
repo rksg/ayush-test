@@ -4,12 +4,15 @@ import { Row, Col, Badge, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -25,6 +28,7 @@ import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { IncidientNotificationDrawer } from './IncidentNotificationDrawer'
+import { PreferenceDrawer }            from './PreferenceDrawer'
 import RecipientDialog                 from './RecipientDialog'
 import * as UI                         from './styledComponents'
 
@@ -208,9 +212,14 @@ export const NotificationsTable = () => {
   )
 }
 
-
 const Notifications = () => {
   const { $t } = useIntl()
+  const mspUtils = MSPUtils()
+  const { data: mspProfile } = useGetMspProfileQuery({})
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isMspAggregateNotification =
+    useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
+  const [showPreference, setShowPreference] = useState(false)
 
   return <UI.Wrapper>
     <Row>
@@ -220,10 +229,22 @@ const Notifications = () => {
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
           }
+          {isMspAggregateNotification && <Button style={{ marginLeft: 13 }}
+            type='link'
+            size='small'
+            onClick={() => { setShowPreference(true) }}>
+            {$t({ defaultMessage: 'Preference' })}
+          </Button>}
         </Typography>
+
       </Col>
     </Row>
     <UI.Spacer />
+    {showPreference && <PreferenceDrawer
+      visible={showPreference}
+      setVisible={setShowPreference}
+    />}
+
     <NotificationsTable />
   </UI.Wrapper>
 }

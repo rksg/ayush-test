@@ -36,6 +36,7 @@ import {
   videoCallQoeApi,
   baseEdgeFirewallApi as edgeFirewallApi,
   baseSigPackApi as sigPackApi,
+  baseRWGApi as rwgApi,
   notificationApi
 } from './baseApi'
 
@@ -76,6 +77,7 @@ export const store = configureStore({
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
     [sigPackApi.reducerPath]: sigPackApi.reducer,
     [residentPortalApi.reducerPath]: residentPortalApi.reducer,
+    [rwgApi.reducerPath]: rwgApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer
   },
 
@@ -117,6 +119,7 @@ export const store = configureStore({
       edgeFirewallApi.middleware,
       sigPackApi.middleware,
       residentPortalApi.middleware,
+      rwgApi.middleware,
       notificationApi.middleware
     ])
   },

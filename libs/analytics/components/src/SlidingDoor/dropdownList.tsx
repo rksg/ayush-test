@@ -18,6 +18,7 @@ interface DropdownListProps {
   onApply: () => void;
   onBack: () => void;
   onBreadcrumbClick: (index: number) => void;
+  animation: 'none' | 'ltr' | 'rtl';
 }
 
 export const DropdownList: React.FC<DropdownListProps> = ({
@@ -29,7 +30,8 @@ export const DropdownList: React.FC<DropdownListProps> = ({
   onCancel,
   onApply,
   onBack,
-  onBreadcrumbClick
+  onBreadcrumbClick,
+  animation
 }) => (
   <UI.StyledMenu>
     <Menu.Item key='1'>
@@ -46,7 +48,14 @@ export const DropdownList: React.FC<DropdownListProps> = ({
         }
         footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
         dataSource={nodesToShow as Node[]}
-        renderItem={(node) => <ListItemComponent node={node as Node} onClick={onSelect} />}
+        renderItem={(node) => (
+          <ListItemComponent
+            animation={animation}
+            currentNode={currentNode}
+            node={node as Node}
+            onClick={onSelect}
+          />
+        )}
       />
     </Menu.Item>
   </UI.StyledMenu>

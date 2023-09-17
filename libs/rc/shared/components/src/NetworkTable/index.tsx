@@ -52,6 +52,12 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       case WlanSecurityEnum.WEP:
         _securityProtocol = intl.$t({ defaultMessage: 'WEP' })
         break
+      case WlanSecurityEnum.Open:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open' })
+        break
+      case WlanSecurityEnum.OpenCaptivePortal:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open Captive Portal' })
+        break
     }
     return _securityProtocol
   }
@@ -230,7 +236,8 @@ const rowSelection = (supportOweTransition: boolean) => {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition && record?.isOweMaster === false)
+        || (supportOweTransition &&
+          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
