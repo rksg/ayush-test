@@ -139,8 +139,8 @@ function useColumns (
       dataIndex: 'lldpPortID'
     },
     {
-      key: 'lldpMDIPower',
-      dataIndex: 'lldpMDIPower'
+      key: 'lldpDeviceType',
+      dataIndex: 'lldpDeviceType'
     },
     {
       key: 'lldpClass',

@@ -153,7 +153,7 @@ describe('Recommendation services', () => {
         type: 'Venue',
         priority: { order: 2, label: defineMessage({ defaultMessage: 'High' }) },
         category: 'AI-Driven Cloud RRM',
-        summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
+        summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
         status: 'Applied',
         statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
         statusEnum: 'applied',
@@ -166,7 +166,7 @@ describe('Recommendation services', () => {
         type: 'Venue',
         priority: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
         category: 'Wi-Fi Client Experience',
-        summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio',
         status: 'Revert Failed',
         statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
         statusEnum: 'revertfailed'

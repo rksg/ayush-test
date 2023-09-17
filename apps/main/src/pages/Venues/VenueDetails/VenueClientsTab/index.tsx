@@ -89,10 +89,10 @@ export function VenueClientsTab () {
       {(isCloudpathBetaEnabled && personaGroupData?.nsgId && personaGroupData?.id) &&
         <Tabs.TabPane
           tab={$t(
-            { defaultMessage: 'Persona ({count})' },
+            { defaultMessage: 'Identity ({count})' },
             { count: personaGroupData?.personas?.length ?? 0 }
           )}
-          key={'persona'}
+          key={'identity'}
         >
           <BasePersonaTable
             personaGroupId={personaGroupData.id}

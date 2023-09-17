@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { AnalyticsFilter }                                    from '@acx-ui/analytics/utils'
 import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { dataApiURL, Provider }                               from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, mockGraphqlQuery } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                               from '@acx-ui/utils'
 
 import {
   switchDetailData

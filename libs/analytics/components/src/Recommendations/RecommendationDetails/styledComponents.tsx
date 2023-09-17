@@ -2,8 +2,7 @@ import styled, { css } from 'styled-components'
 
 import { BulbOutlined, InformationSolid } from '@acx-ui/icons'
 
-import { Subtitle }            from '../../IncidentDetails/Insights/styledComponents'
-import { withDottedUnderline } from '../styledComponents'
+import { Subtitle } from '../../IncidentDetails/Insights/styledComponents'
 
 export const detailsHeaderFontStyles = css`
   color: var(--acx-primary-black);
@@ -78,14 +77,9 @@ export const StatusTrailItemWrapper = styled.div`
 `
 
 export const StatusTrailWrapper = styled.div`
-  height: 400px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
-`
-
-export const RecommendationApImpacted = styled.span`
-  cursor: pointer;
-  ${withDottedUnderline}
 `
 
 export const KpiContentWrapper = styled.div`

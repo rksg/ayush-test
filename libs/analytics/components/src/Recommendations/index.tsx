@@ -11,7 +11,7 @@ export const RecommendationTabContent = () => {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <RecommendationTable filters={filters} showCrrm={showCrrm} />
+        <RecommendationTable filters={filters} showCrrm={showCrrm} key={String(showCrrm)} />
       </GridCol>
     </GridRow>
   )

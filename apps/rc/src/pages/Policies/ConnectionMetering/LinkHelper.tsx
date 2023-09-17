@@ -28,11 +28,11 @@ export function VenueLink (props: { venueId?: string, name?: string }) {
   )
 }
 
-export function PersonaDetailsLink (props: { id?: string,groupId?: string, name?: string }) {
+export function IdentityDetailsLink (props: { id?: string,groupId?: string, name?: string }) {
   const { id, groupId, name } = props
   return (
     <TenantLink
-      to={`users/persona-management/persona-group/${groupId}/persona/${id}`}
+      to={`users/identity-management/identity-group/${groupId}/identity/${id}`}
     >
       {name ?? id}
     </TenantLink>

@@ -1,8 +1,8 @@
 import { healthApi }                        from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { TimeStampRange }                   from '@acx-ui/types'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'

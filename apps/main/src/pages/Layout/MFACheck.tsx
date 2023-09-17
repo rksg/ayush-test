@@ -3,14 +3,13 @@ import { useEffect, useState } from 'react'
 import {
   MFASetupModal
 } from '@acx-ui/msp/components'
-import { isDelegationMode }        from '@acx-ui/rc/utils'
 import { Outlet }                  from '@acx-ui/react-router-dom'
 import {
   MfaDetailStatus,
   useLazyGetMfaTenantDetailsQuery,
   useLazyGetMfaAdminDetailsQuery
 } from '@acx-ui/user'
-import { getJwtTokenPayload } from '@acx-ui/utils'
+import { getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 export const MFACheck = () => {
   const { tenantId } = getJwtTokenPayload()

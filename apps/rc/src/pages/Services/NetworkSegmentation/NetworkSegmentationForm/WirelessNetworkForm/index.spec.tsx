@@ -21,9 +21,9 @@ import {
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockNetworkGroup,
-  mockNsgStatsList,
-  mockVenueNetworkData
+  mockDeepNetworkList,
+  mockNetworkGroup, mockNetworkSaveData,
+  mockNsgStatsList
 } from '../../__tests__/fixtures'
 
 
@@ -72,8 +72,8 @@ describe('NetworkSegmentation - WirelessNetworkForm', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -83,7 +83,7 @@ describe('NetworkSegmentation - WirelessNetworkForm', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => {
           mockedGetNetworkDeepList()
-          return res(ctx.status(200))
+          return res(ctx.json(mockDeepNetworkList))
         }
       ),
       rest.post(

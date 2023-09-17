@@ -1,7 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+
+import { baseQuery } from './baseQuery'
 
 export const baseResidentPortalApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: baseQuery,
   reducerPath: 'residentPortalApi',
   tagTypes: ['ResidentPortal'],
   refetchOnMountOrArgChange: true,
