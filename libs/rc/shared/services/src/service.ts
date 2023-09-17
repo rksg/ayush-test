@@ -212,7 +212,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
       query: ({ params }) => {
@@ -314,7 +315,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -391,7 +393,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           totalCount: response.length
         }
       },
-      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getPortal: build.query<Portal | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -503,7 +506,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -601,7 +605,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -671,7 +676,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDpskPassphrase: build.query<NewDpskPassphrase, RequestPayload>({
       query: ({ params }) => {
@@ -873,7 +879,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getPortalLang: build.mutation<{ [key: string]: string }, RequestPayload>({
       query: ({ params }) => {

@@ -332,6 +332,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
+  networkActivations: {
+    method: 'post',
+    url: '/networkActivations/query',
+    newApi: true
+  },
   getNetworkDeepList: {
     // [New API] request not support list
     // method: 'get',
@@ -513,6 +518,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptions: {
     method: 'put',
     url: '/venues/:venueId/radiusOptions',
+    newApi: true
+  },
+  getRwgList: {
+    method: 'get',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateways: {
+    method: 'delete',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/rwgs/:rwgId',
     newApi: true
   }
 }

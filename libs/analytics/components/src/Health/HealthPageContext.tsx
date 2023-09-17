@@ -4,11 +4,10 @@ import moment from 'moment-timezone'
 
 import { useApCountForNodeQuery } from '@acx-ui/analytics/services'
 import {
-  useAnalyticsFilter,
-  AnalyticsFilter
+  useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { TimeStamp, TimeStampRange } from '@acx-ui/types'
-
+import type { AnalyticsFilter }      from '@acx-ui/utils'
 
 export interface HealthFilter extends AnalyticsFilter {
   timeWindow: TimeStampRange

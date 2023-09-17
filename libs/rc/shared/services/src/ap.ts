@@ -47,6 +47,8 @@ import {
   MeshUplinkAp,
   ApRfNeighborsResponse,
   ApLldpNeighborsResponse,
+  SupportCcdVenue,
+  SupportCcdApGroup,
   ApClientAdmissionControl
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
@@ -99,7 +101,8 @@ export const apApi = baseApApi.injectEndpoints({
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
@@ -801,6 +804,31 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getCcdSupportApGroups: build.query<SupportCcdApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportApGroups, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    runCcd: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getApClientAdmissionControl: build.query<ApClientAdmissionControl, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApClientAdmissionControl, params)
@@ -904,6 +932,10 @@ export const {
   useLazyGetApRfNeighborsQuery,
   useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
+  useGetCcdSupportVenuesQuery,
+  useGetCcdSupportApGroupsQuery,
+  useLazyGetCcdSupportApGroupsQuery,
+  useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation

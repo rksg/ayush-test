@@ -3,11 +3,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { get }                                from '@acx-ui/config'
-import { BrowserRouter as Router }            from '@acx-ui/react-router-dom'
+import { BrowserRouter as Router, Link }      from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
-  render, screen,
+  render,
+  screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 import { setUpIntl } from '@acx-ui/utils'
@@ -21,12 +22,6 @@ const mockGet = get as jest.Mock
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
-}))
-
-const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
 }))
 
 const mockedUseMuteRecommendationMutation = useMuteRecommendationMutation as jest.Mock
@@ -114,10 +109,10 @@ describe('RecommendationTabContent', () => {
   })
 
   it('should render aiops table for RA', async () => {
-    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
-    })
+    const recommendations = [...recommendationListResult.recommendations
+      .filter(r => !r.code.includes('crrm'))]
+    recommendations[1].status = 'applywarning' // coverage for Status styled-component
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
     mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
@@ -129,6 +124,27 @@ describe('RecommendationTabContent', () => {
     const text = await screen.findAllByText('Medium')
     expect(text).toHaveLength(1)
     expect(screen.getByText('Zone')).toBeVisible()
+  })
+
+  it('switches from aiops to crrm without error', async () => {
+    const recommendations = [...recommendationListResult.recommendations
+      .filter(r => !r.code.includes('crrm'))]
+    const crrm = [...recommendationListResult.recommendations
+      .filter(r => r.code.includes('crrm'))]
+    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
+    render(
+      <Provider><RecommendationTabContent /><Link to='/crrm'>CRRM</Link></Provider>,
+      { route: { path: '/:activeTab', params: { activeTab: 'aiOps' } } }
+    )
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: crrm } })
+    await userEvent.click(screen.getByText('CRRM'))
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const text = await screen.findAllByText('Optimized')
+    expect(text).toHaveLength(1)
   })
 
   it('should render muted recommendations & reset correctly', async () => {

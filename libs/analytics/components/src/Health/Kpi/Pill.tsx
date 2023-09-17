@@ -9,11 +9,12 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
-import { Tooltip, ProgressPill, Loader }            from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import { InformationOutlined }                      from '@acx-ui/icons'
-import { TimeStampRange }                           from '@acx-ui/types'
+import { kpiConfig, productNames }       from '@acx-ui/analytics/utils'
+import { Tooltip, ProgressPill, Loader } from '@acx-ui/components'
+import { formatter }                     from '@acx-ui/formatter'
+import { InformationOutlined }           from '@acx-ui/icons'
+import { TimeStampRange }                from '@acx-ui/types'
+import type { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 import * as UI               from '../styledComponents'

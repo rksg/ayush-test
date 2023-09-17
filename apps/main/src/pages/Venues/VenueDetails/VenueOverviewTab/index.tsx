@@ -17,9 +17,6 @@ import {
   VenueHealth
 } from '@acx-ui/analytics/components'
 import {
-  AnalyticsFilter
-} from '@acx-ui/analytics/utils'
-import {
   GridRow,
   GridCol,
   ContentSwitcherProps,
@@ -32,6 +29,7 @@ import {
 } from '@acx-ui/rc/components'
 import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
 import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }               from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()

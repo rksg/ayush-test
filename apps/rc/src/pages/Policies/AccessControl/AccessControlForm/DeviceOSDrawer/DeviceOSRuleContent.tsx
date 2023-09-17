@@ -238,7 +238,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         { required: true },
         { validator: (_, value) => {
           if (value === 'Select...') {
-            return Promise.reject('Please select the deviceType option')
+            return Promise.reject($t({ defaultMessage: 'Please select the Device Type option' }))
           }
           return Promise.resolve()
         }
@@ -259,13 +259,15 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     />
     <DrawerFormItem
       name='osVendor'
-      label={$t({ defaultMessage: 'OS Vender' })}
+      label={$t({ defaultMessage: 'OS or Manufacturer' })}
       initialValue={$t({ defaultMessage: 'Please select...' })}
       rules={[
         { required: true },
         { validator: (_, value) => {
           if (value === 'Please select...') {
-            return Promise.reject('Please select the osVendor option')
+            return Promise.reject($t({
+              defaultMessage: 'Please select the OS or Manufacturer option'
+            }))
           }
           return Promise.resolve()
         }
