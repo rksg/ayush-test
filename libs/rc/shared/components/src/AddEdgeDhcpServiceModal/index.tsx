@@ -3,19 +3,19 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { EdgeDhcpSettingForm }                                    from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation }                          from '@acx-ui/rc/services'
-import { convertEdgeDHCPFormDataToApiPayload, EdgeDhcpSetting }   from '@acx-ui/rc/utils'
+import { EdgeDhcpSetting }                                        from '@acx-ui/rc/utils'
 
-export const DhcpServiceModal = () => {
+import { EdgeDhcpSettingForm } from '../EdgeDhcpSetting/EdgeDhcpSettingForm'
+import { useEdgeDhcpActions }  from '../EdgeDhcpSetting/useEdgeDhcpActions'
+
+export const AddEdgeDhcpServiceModal = () => {
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
-  const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
+  const { createEdgeDhcpProfile, isEdgeDhcpProfileCreating } = useEdgeDhcpActions()
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
     try {
-      const payload = convertEdgeDHCPFormDataToApiPayload(data)
-      await addEdgeDhcp({ payload: payload }).unwrap()
+      await createEdgeDhcpProfile(data)
       setVisible(false)
     } catch {
       showToast({
@@ -25,7 +25,7 @@ export const DhcpServiceModal = () => {
     }
   }
 
-  const content = <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
+  const content = <Loader states={[{ isLoading: false, isFetching: isEdgeDhcpProfileCreating }]}>
     <StepsForm
       onFinish={handleAddEdgeDhcp}
       onCancel={() => setVisible(false)}
@@ -44,7 +44,7 @@ export const DhcpServiceModal = () => {
       </Button>
       <Modal
         title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
-        width={1000}
+        width={1100}
         visible={visible}
         type={ModalType.ModalStepsForm}
         mask={true}
