@@ -1,4 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import { Checkbox as AntCheckbox } from 'antd'
+import styled, { css }             from 'styled-components/macro'
+
 
 export const Wrapper = styled.div`
   .description {
@@ -19,4 +21,16 @@ export const dialogStyles = css`
   .email_mobile_help .ant-form-item-control {
     display: none;
   }
+`
+
+export const IncidentNotificationWrapper = styled.div`
+  padding-top: var(--acx-content-vertical-space);
+`
+
+export const Checkbox = styled(AntCheckbox)`
+  padding-right: 5px;
+`
+
+export const AfterMsg = styled.div`
+  color: var(--acx-neutrals-60);
 `
