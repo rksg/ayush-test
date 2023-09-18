@@ -4,9 +4,9 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
-import { get }                       from '@acx-ui/config'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { getIntl }                   from '@acx-ui/utils'
+import { get }                              from '@acx-ui/config'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
+import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { cssNumber, cssStr }   from '../../theme/helper'
 import { qualitativeColorSet } from '../Chart/helper'
@@ -422,8 +422,8 @@ export function useLegendTableFilter (
 
     selectedLegend[selectedType] === false && setSelectedData?.(null)
     setPagination?.({
-      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / 10),
-      pageSize: 10
+      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / TABLE_DEFAULT_PAGE_SIZE),
+      pageSize: TABLE_DEFAULT_PAGE_SIZE
     })
   }, [selectedLegend, data.length])
 }
