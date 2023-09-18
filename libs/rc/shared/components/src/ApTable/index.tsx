@@ -197,8 +197,11 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
             warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
           }
-          if (afcInfo?.afcStatus === AFCStatus.REJECTED || afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for PLM reply' })
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
           }
 
           return (

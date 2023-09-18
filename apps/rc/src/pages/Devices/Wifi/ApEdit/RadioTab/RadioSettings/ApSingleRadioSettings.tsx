@@ -72,10 +72,18 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         )
       }
 
-      if (afcInfo.afcStatus === AFCStatus.REJECTED || afcInfo.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+      if (afcInfo.afcStatus === AFCStatus.REJECTED) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: 'Wait for PLM reply' })}
+            {$t({ defaultMessage: 'Wait for AFC server response.' })}
+          </p>
+        )
+      }
+
+      if (afcInfo.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        warningMessages.push(
+          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
+            {$t({ defaultMessage: 'FCC DB replies that there is no channel available.' })}
           </p>
         )
       }
