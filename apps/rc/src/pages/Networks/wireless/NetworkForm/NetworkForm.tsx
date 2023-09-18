@@ -1,66 +1,56 @@
-import { useState, useRef, useEffect } from 'react'
+import {useEffect, useRef, useState} from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import {Form} from 'antd'
+import _ from 'lodash'
+import {defineMessage, useIntl} from 'react-intl'
 
-import {
-  PageHeader,
-  StepsForm,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
-} from '@acx-ui/components'
+import {PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance} from '@acx-ui/components'
 import {
   useAddNetworkMutation,
-  useGetNetworkQuery,
-  useUpdateNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation,
   useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
-  NetworkTypeEnum,
-  NetworkSaveData,
-  GuestNetworkTypeEnum,
+  AuthRadiusEnum,
   Demo,
   GuestPortal,
-  redirectPreviousPage,
   LocationExtended,
-  NetworkVenue,
   Network,
-  AuthRadiusEnum
+  NetworkSaveData,
+  NetworkTypeEnum,
+  NetworkVenue,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import {
-  useLocation,
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import {useLocation, useNavigate, useParams, useTenantLink} from '@acx-ui/react-router-dom'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import {CloudpathForm} from './CaptivePortal/CloudpathForm'
+import {GuestPassForm} from './CaptivePortal/GuestPassForm'
+import {HostApprovalForm} from './CaptivePortal/HostApprovalForm'
+import {OnboardingForm} from './CaptivePortal/OnboardingForm'
+import {PortalTypeForm} from './CaptivePortal/PortalTypeForm'
+import {SelfSignInForm} from './CaptivePortal/SelfSignInForm'
+import {WISPrForm} from './CaptivePortal/WISPrForm'
+import {NetworkDetailForm} from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext from './NetworkFormContext'
+import {NetworkMoreSettingsForm} from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import {AaaSettingsForm} from './NetworkSettings/AaaSettingsForm'
+import {DpskSettingsForm} from './NetworkSettings/DpskSettingsForm'
+import {OpenSettingsForm} from './NetworkSettings/OpenSettingsForm'
+import {PskSettingsForm} from './NetworkSettings/PskSettingsForm'
+import {SummaryForm} from './NetworkSummary/SummaryForm'
 import {
-  transferDetailToSave,
   tranferSettingsToSave,
+  transferDetailToSave,
   transferMoreSettingsToSave,
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
 import PortalInstance from './PortalInstance'
-import { Venues }     from './Venues/Venues'
+import {Venues} from './Venues/Venues'
+import {GuestNetworkTypeEnum} from "../../../../../../../libs/rc/shared/utils/src/models/GuestNetworkTypeEnum";
 
 
 const settingTitle = defineMessage({
@@ -679,6 +669,7 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     case GuestNetworkTypeEnum.SelfSignIn:
     case GuestNetworkTypeEnum.GuestPass:
     case GuestNetworkTypeEnum.HostApproval:
+    case GuestNetworkTypeEnum.Cloudpath:
       return true
     default:
       // eslint-disable-next-line no-console
