@@ -35,7 +35,3 @@ List.Item.Meta = styled(AntList.Item.Meta)`
     color: var(--acx-neutrals-50);
   }
 `
-
-export const Subtitle = styled.div`
-  margin: 20px 0px 10px 0px;
-`

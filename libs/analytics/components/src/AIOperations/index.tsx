@@ -36,36 +36,33 @@ function AIOperationsWidget ({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations' })
 
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick}>{
+    <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
       noData
         ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-        : <>
-          <UI.Subtitle children={subtitle}/>
-          <UI.List
-            dataSource={data?.slice(0,5)}
-            renderItem={item => {
-              const recommendation = item as RecommendationListItem
-              const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
-              return <UI.List.Item key={id}>
-                <TenantLink to={`/recommendations/aiOps/${id}`}>
-                  <Tooltip
-                    placement='top'
-                    title={$t(
-                      { defaultMessage: '{summary} on {sliceValue}' },
-                      { sliceValue, summary }
-                    )}
-                  >
-                    <UI.List.Item.Meta
-                      avatar={<PriorityIcon value={priority.order} />}
-                      title={category}
-                      description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
-                    />
-                  </Tooltip>
-                </TenantLink>
-              </UI.List.Item>
-            }}
-          />
-        </>
+        : <UI.List
+          dataSource={data?.slice(0,5)}
+          renderItem={item => {
+            const recommendation = item as RecommendationListItem
+            const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
+            return <UI.List.Item key={id}>
+              <TenantLink to={`/recommendations/aiOps/${id}`}>
+                <Tooltip
+                  placement='top'
+                  title={$t(
+                    { defaultMessage: '{summary} on {sliceValue}' },
+                    { sliceValue, summary }
+                  )}
+                >
+                  <UI.List.Item.Meta
+                    avatar={<PriorityIcon value={priority.order} />}
+                    title={category}
+                    description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
+                  />
+                </Tooltip>
+              </TenantLink>
+            </UI.List.Item>
+          }}
+        />
     }</Card>
   </Loader>
 }

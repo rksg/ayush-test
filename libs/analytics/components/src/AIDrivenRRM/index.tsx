@@ -31,37 +31,34 @@ function AIDrivenRRMWidget ({
   const optimized = data?.crrmCount?.optimized
   const totalScenario = countFormat(data?.crrmScenario?.total)
   // eslint-disable-next-line max-len
-  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenario} possible RRM combinations. Currently {optimized}/{total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenario })
+  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenario} possible RRM combinations. Currently {optimized} out of {total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenario })
   // eslint-disable-next-line max-len
   const noCrrmText = $t({ defaultMessage: 'RUCKUS AI has confirmed that all zones are currently operating with the optimal RRM onfigurations and no further recommendation is required.' })
 
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick}>{
+    <Card title={title} onArrowClick={onArrowClick} subTitle={noData ? noCrrmText :subtitle}>{
       noData
-        ? <NoData text={noCrrmText} />
-        : <>
-          <UI.Subtitle children={subtitle}/>
-          <UI.List
-            dataSource={data?.recommendations}
-            renderItem={item => {
-              const recommendation = item as CrrmListItem
-              const {
-                sliceValue, id,
-                crrmOptimizedState,
-                crrmInterferingLinksText
-              } = recommendation
-              return <UI.List.Item key={id}>
-                <TenantLink to={`/recommendations/crrm/${id}`}>
-                  <UI.List.Item.Meta
-                    avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                    title={sliceValue}
-                    description={crrmInterferingLinksText}
-                  />
-                </TenantLink>
-              </UI.List.Item>
-            }}
-          />
-        </>
+        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
+        : <UI.List
+          dataSource={data?.recommendations}
+          renderItem={item => {
+            const recommendation = item as CrrmListItem
+            const {
+              sliceValue, id,
+              crrmOptimizedState,
+              crrmInterferingLinksText
+            } = recommendation
+            return <UI.List.Item key={id}>
+              <TenantLink to={`/recommendations/crrm/${id}`}>
+                <UI.List.Item.Meta
+                  avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                  title={sliceValue}
+                  description={crrmInterferingLinksText}
+                />
+              </TenantLink>
+            </UI.List.Item>
+          }}
+        />
     }</Card>
   </Loader>
 }

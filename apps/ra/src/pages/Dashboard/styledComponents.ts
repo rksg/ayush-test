@@ -5,7 +5,7 @@ import { gridGap } from '@acx-ui/components'
 export const Grid = styled.div`
   display: grid;
   grid-gap: ${gridGap}px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 1fr;
   grid-template-areas:
 /* 1 */  "a1 b1 b1 d1"
