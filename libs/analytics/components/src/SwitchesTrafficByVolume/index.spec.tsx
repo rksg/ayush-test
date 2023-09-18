@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
-import { DateRange, TABLE_QUERY_LONG_POLLING_INTERVAL }                        from '@acx-ui/utils'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }             from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
+import { DateRange, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { api } from './services'
 

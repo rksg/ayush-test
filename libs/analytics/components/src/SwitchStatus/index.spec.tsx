@@ -1,7 +1,7 @@
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
-import { DateRange, TABLE_QUERY_LONG_POLLING_INTERVAL }                        from '@acx-ui/utils'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery }             from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
+import { DateRange, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchStatusTimeSeries } from './__tests__/fixtures'
 import { api }                    from './services'
