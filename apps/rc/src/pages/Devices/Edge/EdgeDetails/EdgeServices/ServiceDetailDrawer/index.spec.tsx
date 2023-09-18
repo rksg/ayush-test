@@ -1,7 +1,14 @@
 import { rest } from 'msw'
 
-import { EdgeDhcpUrls, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
+import {
+  EdgeDhcpUrls,
+  EdgeFirewallUrls,
+  EdgeUrlsInfo,
+  NetworkSegmentationUrls,
+  PersonaUrls,
+  TunnelProfileUrls
+} from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -11,16 +18,22 @@ import {
 
 import {
   mockEdgeData as currentEdge,
-  mockEdgeList,
   mockDhcpStatsData,
+  mockEdgeList,
+  mockFirewallData,
+  mockedEdgeDhcpDataList,
   mockedEdgeServiceList,
-  mockFirewallData } from '../../../__tests__/fixtures'
+  mockedNsgStatsList,
+  mockedPersonaGroup,
+  mockedTunnelProfileData
+} from '../../../__tests__/fixtures'
 
 import { ServiceDetailDrawer } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />
+  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
+  NetworkSegmentationDetailTableGroup: () => <div data-testid='rc-NsgTableGroup' />
 }))
 
 const mockedSetVisible = jest.fn()
@@ -42,6 +55,22 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.get(
         EdgeFirewallUrls.getEdgeFirewall.url,
         (req, res, ctx) => res(ctx.json(mockFirewallData))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcp.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeDhcpDataList.content[0]))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockedPersonaGroup))
+      ),
+      rest.get(
+        TunnelProfileUrls.getTunnelProfile.url,
+        (req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       )
     )
   })
@@ -114,7 +143,20 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       </Provider>, {
         route: { params }
       })
-
-    expect(await screen.findByText('Nsg Details')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'NSG-1' })).toBeVisible()
+    expect(await screen.findByText('Venue')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'MockVenue1' })).toBeVisible()
+    expect(await screen.findByText('Persona Group')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
+    expect(await screen.findByText('Number of Segments')).toBeVisible()
+    expect(await screen.findByText('Number of devices per segment')).toBeVisible()
+    expect((await screen.findAllByText('10')).length).toBe(2)
+    expect(await screen.findByText('DHCP Service')).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'TestDhcp-1' })).toBeVisible()
+    expect(await screen.findByText('Tunnel Profile')).toBeVisible()
+    expect(await screen.findByRole('link', { name: /tunnelProfile1/i })).toBeVisible()
+    expect(await screen.findByText('Networks')).toBeVisible()
+    expect(await screen.findByText('2')).toBeVisible()
+    expect(await screen.findByTestId('rc-NsgTableGroup')).toBeVisible()
   })
 })

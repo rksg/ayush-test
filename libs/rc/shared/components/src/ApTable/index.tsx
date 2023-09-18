@@ -144,7 +144,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }, [tableQuery.data])
 
   const apAction = useApActions()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
@@ -274,11 +273,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'clients',
       align: 'center',
       render: (_, row: APExtended) => {
-        return releaseTag ?
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-            {transformDisplayNumber(row.clients)}
-          </TenantLink>
-          : <>{transformDisplayNumber(row.clients)}</>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
       }
     }, {
       key: 'deviceGroupName',
