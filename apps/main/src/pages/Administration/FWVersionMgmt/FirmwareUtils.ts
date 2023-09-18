@@ -134,7 +134,7 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   let displayVersion = `${versionName} (${versionType})`
   if(version.inUse){
     // eslint-disable-next-line max-len
-    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'This version has been in use' })}`
+    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
   }
   return displayVersion
 }
