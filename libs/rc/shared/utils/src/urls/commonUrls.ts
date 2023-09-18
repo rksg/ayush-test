@@ -519,5 +519,20 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/radiusOptions',
     newApi: true
+  },
+  getRwgList: {
+    method: 'get',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateways: {
+    method: 'delete',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/rwgs/:rwgId',
+    newApi: true
   }
 }
