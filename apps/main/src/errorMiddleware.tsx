@@ -19,33 +19,26 @@ export type ErrorAction = {
     }
   }
 } & ({
-  // fetchBaseQuery
-  payload: {
+  payload: ({
+    // fetchBaseQuery
     data?: ErrorDetailsProps | CatchErrorResponse['data']
     originalStatus?: number
     status?: number
-  }
-} | {
-  // baseQuery (for retry API)
-  payload: {
-    error: CatchErrorResponse
-    meta: {
-      response?: Response
-      request: Request
-    }
-  }
-} | {
-  // GraphQL
-  payload: {
+  } | {
+    // GraphQL
     message: string
     name: string
     stack: string
-  }
-} | {
-  // FETCH_ERROR
-  payload: {
+  } | {
+    // FETCH_ERROR
     error: string
     status: string
+  }) & {
+    // baseQuery (for retry API)
+    meta?: {
+      response?: Response
+      request: Request
+    }
   }
 })
 
@@ -137,8 +130,9 @@ export const getErrorContent = (action: ErrorAction) => {
   if ('data' in action.payload) {
     errors = action.payload.data
   } else if ('error' in action.payload) {
-    // eslint-disable-next-line max-len
-    errors = (typeof action.payload.error === 'string') ? action.payload.error : action.payload.error.data
+    errors = action.payload.error
+  } else if ('message' in action.payload) {
+    errors = action.payload.message
   }
   let needLogout = false
   let callback = undefined
