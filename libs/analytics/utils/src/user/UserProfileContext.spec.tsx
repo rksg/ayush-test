@@ -58,7 +58,7 @@ function TestUserProfile () {
   return <div>{`${userProfile?.firstName} ${userProfile?.lastName}`}</div>
 }
 
-const route = { path: '/analytics/next' }
+const route = { path: '/ai' }
 
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
