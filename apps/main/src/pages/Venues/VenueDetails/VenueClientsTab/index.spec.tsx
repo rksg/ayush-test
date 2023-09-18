@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import { waitFor } from '@testing-library/react'
 import { rest }    from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { PersonaUrls, PropertyUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -52,7 +52,6 @@ describe('VenueClientsTab', () => {
     )
   })
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true) // Features.DEVICES
     jest.mocked(useIsTierAllowed).mockReturnValue(true) // Features.CLOUDPATH_BETA
 
     const params = {
