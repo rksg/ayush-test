@@ -5,7 +5,6 @@ import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
 import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
 import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
@@ -42,12 +41,10 @@ export function CliStepModels () {
   const { form, editMode } = useStepFormContext()
   const { data: profiles } = useGetProfilesQuery({ params, payload: profilesPayload })
 
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
 
-  const icxModels = _.omit(ICX_MODELS_MODULES, !isSupportIcx8200 ? ['ICX8200'] : []) as IcxModel
-  const allFamilyModels = transformIcxModels(icxModels)
+  const allFamilyModels = transformIcxModels(ICX_MODELS_MODULES)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(
@@ -55,7 +52,7 @@ export function CliStepModels () {
   ).map(t => t.name) ?? []
 
   useEffect(() => {
-    const allFamily = Object.keys(icxModels)
+    const allFamily = Object.keys(ICX_MODELS_MODULES)
     form.setFieldValue('selectedFamily', allFamily)
     setFilteredModelFamily(allFamily)
     setCount(form.getFieldValue('models')?.length)
@@ -132,7 +129,7 @@ export function CliStepModels () {
               <UI.FamilyGroup
                 onChange={onModelFamilyChange}
               > {
-                  Object.keys(icxModels).map(family => <Row key={family}>
+                  Object.keys(ICX_MODELS_MODULES).map(family => <Row key={family}>
                     <Checkbox value={family}>{family}</Checkbox>
                   </Row>
                   )
