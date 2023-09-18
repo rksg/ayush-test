@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl }                  from 'react-intl'
 import { useNavigate, useParams }                     from 'react-router-dom'
 
 import { Alert, Button, StepsForm, Tooltip, useStepFormContext }                 from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                               from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool, ServiceOperation, ServiceType, getServiceDetailsLink }    from '@acx-ui/rc/utils'
 import { useTenantLink }                                                         from '@acx-ui/react-router-dom'
@@ -12,7 +13,6 @@ import { useTenantLink }                                                        
 import { NetworkSegmentationGroupFormData } from '..'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
-import { DhcpServiceModal }     from './DhcpServiceModal'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
 interface SmartEdgeFormProps {
@@ -263,7 +263,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         </Col>
         {
           !shouldDhcpDisabled && (
-            <Col ><DhcpServiceModal /></Col>
+            <Col ><AddEdgeDhcpServiceModal /></Col>
           )
         }
       </Row>
