@@ -3,10 +3,8 @@ import { useDebugValue, useMemo } from 'react'
 import { useTreatments } from '@splitsoftware/splitio-react'
 import { useParams }     from 'react-router-dom'
 
-import { useGetAccountTierQuery }                           from '@acx-ui/rc/services'
-import { isDelegationMode }                                 from '@acx-ui/rc/utils'
-import { useGetBetaStatusQuery }                            from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
+import { useGetAccountTierQuery, useGetBetaStatusQuery }                      from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'

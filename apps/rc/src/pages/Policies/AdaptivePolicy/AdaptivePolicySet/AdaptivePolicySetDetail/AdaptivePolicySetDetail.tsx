@@ -3,7 +3,8 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                         from '@acx-ui/rc/components'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
@@ -30,7 +31,6 @@ export default function AdaptivePolicySetDetail () {
     { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
 
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
@@ -52,36 +52,31 @@ export default function AdaptivePolicySetDetail () {
       }
     } })
 
-  // eslint-disable-next-line max-len
-  const { networkIdsInDpsk } = useGetDpskListQuery({ params: { size: '100000', page: '0', sort: 'name,desc' } },
-    {
-      skip: !isCloudpathEnabled,
-      selectFromResult ({ data }) {
-        return {
-          // eslint-disable-next-line max-len
-          networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
-        }
-      } }
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { networkIdsInDpsk } = useGetDpskListQuery({
+    params: { size: '100000', page: '0', sort: 'name,desc', ...dpskNewConfigFlowParams }
+  },
+  {
+    skip: !isCloudpathEnabled,
+    selectFromResult ({ data }) {
+      return {
+        // eslint-disable-next-line max-len
+        networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
+      }
+    } }
   )
 
   return (
     <>
       <PageHeader
         title={policySetData?.name || ''}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
           { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
-            link: tablePath }
-        ] : [
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
             link: tablePath }
         ]}
         extra={filterByAccess([

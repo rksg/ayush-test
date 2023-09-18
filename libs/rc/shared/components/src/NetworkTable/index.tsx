@@ -23,8 +23,8 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
-  function getDpskSecurityProtocol (securityProtocol: WlanSecurityEnum) {
+function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
+  function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
       case WlanSecurityEnum.WPA2Personal:
@@ -35,6 +35,28 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         break
       case WlanSecurityEnum.WPA23Mixed:
         _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        break
+      case WlanSecurityEnum.OWE:
+        _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
+        break
+      case WlanSecurityEnum.OWETransition:
+        _securityProtocol = oweTransFlag && oweMaster === false ?
+          intl.$t({ defaultMessage: 'OWE' }) : ''
+        break
+      case WlanSecurityEnum.WPA3:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA3' })
+        break
+      case WlanSecurityEnum.WPA2Enterprise:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2 Enterprise' })
+        break
+      case WlanSecurityEnum.WEP:
+        _securityProtocol = intl.$t({ defaultMessage: 'WEP' })
+        break
+      case WlanSecurityEnum.Open:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open' })
+        break
+      case WlanSecurityEnum.OpenCaptivePortal:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open Captive Portal' })
         break
     }
     return _securityProtocol
@@ -153,8 +175,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
+      show: false,
       render: (data, row) =>
-        getDpskSecurityProtocol(row?.securityProtocol as WlanSecurityEnum) || noDataDisplay
+        getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
+        noDataDisplay
     }
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
@@ -199,7 +223,9 @@ export const defaultNetworkPayload = {
     'captiveType',
     'id',
     'securityProtocol',
-    'dsaeOnboardNetwork'
+    'dsaeOnboardNetwork',
+    'isOweMaster',
+    'owePairNetworkId'
   ],
   page: 1,
   pageSize: 2048
@@ -210,7 +236,8 @@ const rowSelection = (supportOweTransition: boolean) => {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition && record?.isOweMaster === false)
+        || (supportOweTransition &&
+          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
@@ -293,7 +320,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
-      }
+      },
+      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -329,7 +357,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
           onOk: () => deleteNetwork({ params: { tenantId, networkId: selected.id } })
             .then(clearSelection)
         })
-      }
+      },
+      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
     }
   ]
 
@@ -349,7 +378,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     ]}>
       <Table
         settingsId='network-table'
-        columns={getCols(intl)}
+        columns={getCols(intl, supportOweTransition)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

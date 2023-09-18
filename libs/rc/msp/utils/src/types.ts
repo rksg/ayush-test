@@ -4,7 +4,8 @@ import {
   Address,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  EntitlementNetworkDeviceType
+  EntitlementNetworkDeviceType,
+  Entitlement
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -56,6 +57,7 @@ export interface MspEc {
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   edgeLicenses?: string;
   assignedMspEcList: string[];
   creationDate: number;
@@ -97,6 +99,7 @@ export interface VarCustomer {
   tenantEmail: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   entitlements: DelegationEntitlementRecord[];
   entitlement: DelegationEntitlementRecord;
 }
@@ -167,6 +170,13 @@ export interface MspEntitlementSummary {
   effectiveDate: string;
   expirationDate: string;
   remainingDays: number;
+  remainingLicenses: number;
+}
+
+export interface NewMspEntitlementSummary {
+  mspEntitlementBanners: Array<unknown>;
+  mspEntitlements: Entitlement[];
+  mspEntitlementSummaries: MspEntitlementSummary[];
 }
 
 export interface EntitlementAssignment {
@@ -200,6 +210,7 @@ export interface MspAssignmentSummary {
   courtesyMspEntitlementsUsed: boolean;
   remainingDevices: number;
   trial: boolean;
+  myAssignments?: number;
 }
 
 export interface MspEcAdmin {
@@ -371,4 +382,9 @@ export interface MspLogoFile {
 
 export interface ParentLogoUrl {
   logo_url: string
+}
+
+export interface MspAggregations {
+  aggregation: boolean,
+  ecExclusionEnabled: boolean
 }

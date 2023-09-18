@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { useDpskNewConfigFlowParams }   from '@acx-ui/rc/components'
 import { useGetDpskListQuery }          from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
@@ -19,7 +20,8 @@ export function DpskSummaryForm (props: {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
-  const { data: dpskList } = useGetDpskListQuery({})
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
 
   useEffect(() => {

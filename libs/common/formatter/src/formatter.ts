@@ -9,8 +9,6 @@ import {
 import { getUserProfile }         from '@acx-ui/user'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { channelSelection } from './channelSelection'
-
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 const hertz = [' Hz', ' daHz', ' hHz', ' kHz', ' MHz', ' GHz', ' THz']
@@ -189,61 +187,9 @@ function hertzFormat (number:number) {
   }
 }
 
-const handleAutoWidth = (text: string) => {
-  if (text === 'Auto') {
-    return text
-  } else {
-    return `${text} MHz`
-  }
-}
-
-const json2keymap = (
-  keyFields: string[],
-  field: keyof(typeof channelSelection)[0],
-  filter: string[]
-) =>
-  (mappings: typeof channelSelection) => mappings
-    .flatMap(items => items)
-    .filter(item => !filter.includes(item[field] as string))
-    .reduce((map, item) => map.set(
-      keyFields.map(keyField => item[keyField as keyof typeof item]).join('-'),
-      item[field]
-    ), new Map())
-
-type CrrmTextType = { txPowerAPCount: number }
-  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: boolean }>
-
-const crrmText = (value: CrrmTextType) => {
-  const { $t } = getIntl()
-  const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
-  const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
-  const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
-  if (Array.isArray(value)) {
-    return value.map(config => {
-      const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
-      const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
-      const radio = formats.radioFormat(config.radio)
-      const autoCellSizing = config.autoCellSizing ? 'Auto Cell Sizing on' : 'static AP Power'
-      return $t({
-        defaultMessage: '{channelMode} and {channelWidth} for {radio} with {autoCellSizing}' },
-      { channelMode, channelWidth, radio, autoCellSizing } )
-    }).join(', ')
-  } else {
-    const { txPowerAPCount } = value
-    // eslint-disable-next-line max-len
-    return $t({ defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection with {txPowerAPCountText}' }, {
-      txPowerAPCountText: txPowerAPCount
-        // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: `static AP transmit power and lower AP transmit power in {txPowerAPCount} {txPowerAPCount, plural,
-            one {AP}
-            other {APs}
-          }` }, { txPowerAPCount })
-        : $t({ defaultMessage: 'no change in AP transmit power' })
-    })
-  }
-}
-
 export const formats = {
+  countFormatRound: (value: number, { $t }: IntlShape) =>
+    $t(countFormat, { value: value < 1000 ? Math.round(value) : value }),
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number) => calendarFormat(number),
@@ -253,6 +199,7 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
+  bandwidthFormat: (value: string|number) => `${value} MHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
@@ -262,7 +209,6 @@ export const formats = {
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
   fpsFormat: (value: number) => `${value} fps`,
   percent: (value: number) => `${value} %`,
-  crrmFormat: (value: CrrmTextType) => crrmText(value),
   noFormat: (value: unknown) => `${value}`
 } as const
 

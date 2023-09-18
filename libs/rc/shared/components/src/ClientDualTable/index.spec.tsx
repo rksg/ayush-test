@@ -7,8 +7,6 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import { ClientDualTable } from './index'
 
-window.scrollTo = jest.fn()
-
 describe('ClientDualTable', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.USERS
   const params = {

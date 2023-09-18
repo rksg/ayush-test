@@ -8,11 +8,10 @@ import { Alert, StepsForm, Tooltip, useStepFormContext }                   from 
 import { useGetPropertyConfigsQuery, useGetQueriablePropertyConfigsQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 import * as UI                              from '../styledComponents'
 
-import { PersonaGroupTable }  from './PersonaGroupTable'
-import { AlertCheckMarkIcon } from './styledComponents'
+import { PersonaGroupTable }            from './PersonaGroupTable'
+import { AlertCheckMarkIcon, Sub5Bold } from './styledComponents'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -29,7 +28,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
-  const venueId = useWatch('venueId', form)
+  const venueId = Form.useWatch('venueId', form)
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
     payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -52,7 +51,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   )
 
   useEffect(() => {
-    if(personaGroupId) {
+    if(!props.editMode && personaGroupId) {
       form.setFieldValue('personaGroupId', personaGroupId)
     }
   }, [personaGroupId])
@@ -73,15 +72,17 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
     defaultMessage={
       // eslint-disable-next-line max-len
       'Please make sure you’ve done the following preparations before creating a Network Segmentation:' +
+      '<br></br><br></br>' +
+      // eslint-disable-next-line max-len
+      '<icon></icon>Already enabled the <sub5b>Property Management</sub5b> service for the venue where you want to apply' +
       '<br></br>' +
       // eslint-disable-next-line max-len
-      '<icon></icon>Already enabled the Property Management service for the venue where you want to apply' +
-      '<br></br>' +
-      '<icon></icon>Already had an SmartEdge deployed in the venue where you want to apply'}
+      '<icon></icon>Already had an <sub5b>SmartEdge</sub5b> deployed in the venue where you want to apply'}
 
     values={{
       br: () => <br />,
-      icon: () => <AlertCheckMarkIcon />
+      icon: () => <AlertCheckMarkIcon />,
+      sub5b: (content) => <Sub5Bold >{content}</Sub5Bold>
     }}
   />
 
@@ -110,14 +111,19 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
         </Col>
       </Row>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={12}>
           <UI.FieldTitle>
             {
               $t({
-                defaultMessage: 'Select the Venue where you want to segment the devices (personas):'
+                // eslint-disable-next-line max-len
+                defaultMessage: 'Select the Venue where you want to segment the devices (identities):'
               })
             }
           </UI.FieldTitle>
+        </Col>
+      </Row>
+      <Row gutter={20}>
+        <Col span={8}>
           <Form.Item
             name='venueId'
             label={

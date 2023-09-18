@@ -286,12 +286,21 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.applicationPolicyId = null
   }
 
-  if (!get(data, 'wlan.advancedCustomization.l2AclPolicyId')) {
+  if (!get(data, 'wlan.advancedCustomization.l2AclPolicyId') ||
+    !get(data, 'wlan.advancedCustomization.l2AclEnable')
+  ) {
     advancedCustomization.l2AclPolicyId = null
   }
 
-  if (!get(data, 'wlan.advancedCustomization.l3AclPolicyId')) {
+  if (!get(data, 'wlan.advancedCustomization.l3AclPolicyId') ||
+    !get(data, 'wlan.advancedCustomization.l3AclEnable')
+  ) {
     advancedCustomization.l3AclPolicyId = null
+  }
+
+  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication') &&
+      !get(data, 'wlan.macAddressAuthentication')) {
+    (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 
   if (!get(data, 'accessControlProfileEnable')) {
@@ -355,6 +364,24 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.enableMulticastDownlinkRateLimiting = false
     advancedCustomization.enableMulticastUplinkRateLimiting6G = false
     advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
+  }
+
+  // clean multiLinkOperationOptions when multiLinkOperationEnabled is false
+  if (!get(data, 'wlan.advancedCustomization.multiLinkOperationEnabled')) {
+    advancedCustomization.multiLinkOperationOptions = undefined
+  }
+
+  // clean the qosMirroringScope when qosMirroringEnabled is disabled
+  if (!get(data, 'wlan.advancedCustomization.qosMirroringEnabled')) {
+    advancedCustomization.qosMirroringScope = undefined
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.qosMapSetEnabled')) {
+    advancedCustomization.qosMapSetEnabled = false
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.qosMapSetOptions')) {
+    advancedCustomization.qosMapSetOptions = { rules: [] }
   }
 
   let saveData:NetworkSaveData = {

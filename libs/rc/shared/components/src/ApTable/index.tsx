@@ -43,6 +43,7 @@ import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/ut
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { exportMessageMapping }                              from '@acx-ui/utils'
 
 import { seriesMappingAP }                                 from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -114,6 +115,7 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
+  enableGroups?: boolean
 }
 
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
@@ -121,7 +123,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, enableGroups=true } = props
   const { setApsCount } = useContext(ApsTabContext)
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
@@ -145,7 +147,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }, [tableQuery.data])
 
   const apAction = useApActions()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
@@ -181,7 +182,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
@@ -217,7 +219,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: filterables && getGroupableConfig()?.modelGroupableOptions
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -301,11 +304,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'clients',
       align: 'center',
       render: (_, row: APExtended) => {
-        return releaseTag ?
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-            {transformDisplayNumber(row.clients)}
-          </TenantLink>
-          : <>{transformDisplayNumber(row.clients)}</>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
       }
     }, {
       key: 'deviceGroupName',
@@ -314,8 +315,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: filterables &&
-        getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+      groupable: enableGroups
+        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+        : undefined
     }, {
       key: 'rf-channels',
       dataIndex: 'rf-channels',
@@ -547,8 +549,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
-        // eslint-disable-next-line max-len
-        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          onClick: exportCsv,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
+        } : undefined
+        }
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.AP}

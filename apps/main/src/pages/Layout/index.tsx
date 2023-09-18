@@ -12,25 +12,24 @@ import {
   ActivityButton,
   AlarmsButton,
   FetchBot,
+  HeaderContext,
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext,
-  RegionButton
+  RegionButton,
+  GlobalSearchBar
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
-import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink }      from '@acx-ui/react-router-dom'
-import { useParams }                                              from '@acx-ui/react-router-dom'
-import { RolesEnum }                                              from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, PverName, useTenantId } from '@acx-ui/utils'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink }                        from '@acx-ui/react-router-dom'
+import { useParams }                                                                from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 import { useLogo }       from './useLogo'
 
@@ -112,7 +111,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <SearchBar />
+          <GlobalSearchBar />
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         {isDelegationMode()

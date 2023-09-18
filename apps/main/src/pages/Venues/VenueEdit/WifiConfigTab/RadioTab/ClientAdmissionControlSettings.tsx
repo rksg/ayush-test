@@ -4,8 +4,12 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader }                                                                               from '@acx-ui/components'
-import { ClientAdmissionControlForm, ClientAdmissionControlTypeEnum }                           from '@acx-ui/rc/components'
+import { Loader }                   from '@acx-ui/components'
+import {
+  ClientAdmissionControlForm,
+  ClientAdmissionControlTypeEnum,
+  ClientAdmissionControlLevelEnum
+} from '@acx-ui/rc/components'
 import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl }                                                          from '@acx-ui/rc/utils'
 
@@ -15,7 +19,7 @@ import { VenueEditContext } from '../..'
 
 const { useWatch } = Form
 
-export function ClientAdmissionControlSettings () {
+export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEnabled?: boolean }) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
@@ -42,6 +46,7 @@ export function ClientAdmissionControlSettings () {
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
+  const { isLoadOrBandBalaningEnabled } = props
   const getClientAdmissionControl = useGetVenueClientAdmissionControlQuery({ params: { venueId } })
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateVenueClientAdmissionControlMutation()
@@ -70,22 +75,16 @@ export function ClientAdmissionControlSettings () {
   }, [isTurnedOffAndGrayedOut, form, getClientAdmissionControl?.data])
 
   useEffect(() => {
-    const isSwitchTurnedOffAndGrayedOut = editRadioContextData?.isBandBalancingEnabled ||
-    editRadioContextData?.isLoadBalancingEnabled
-    if (isSwitchTurnedOffAndGrayedOut) {
+    if (isLoadOrBandBalaningEnabled) {
       form.setFieldValue(enable24GFieldName, false)
       form.setFieldValue(enable50GFieldName, false)
       setIsTurnedOffAndGrayedOut(true)
     } else {
       setIsTurnedOffAndGrayedOut(false)
     }
-  }, [
-    form,
-    editRadioContextData?.isBandBalancingEnabled,
-    editRadioContextData?.isLoadBalancingEnabled
-  ])
+  }, [form, isLoadOrBandBalaningEnabled])
 
-  const handleUpdateClientAdmissionControl = async () => {
+  const handleUpdateClientAdmissionControl = async (callback?: () => void) => {
     try {
       const payload: VenueClientAdmissionControl = {
         enable24G: form.getFieldValue(enable24GFieldName),
@@ -99,7 +98,8 @@ export function ClientAdmissionControlSettings () {
       }
       await updateClientAdmissionControl({
         params: { venueId },
-        payload
+        payload,
+        callback: callback
       }).unwrap()
 
     } catch (error) {
@@ -127,7 +127,8 @@ export function ClientAdmissionControlSettings () {
     isFetching: isUpdatingClientAdmissionControl
   }]}>
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_24G}
+      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_24G}
       readOnly={false}
       isEnabled={enable24G}
@@ -139,7 +140,8 @@ export function ClientAdmissionControlSettings () {
       onFormDataChanged={onFormDataChanged}
     />
     <ClientAdmissionControlForm
-      key={ClientAdmissionControlTypeEnum.CAC_5G}
+      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_5G}
       readOnly={false}
       isEnabled={enable50G}

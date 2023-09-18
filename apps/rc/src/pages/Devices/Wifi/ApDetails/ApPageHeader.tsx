@@ -7,7 +7,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
@@ -36,7 +35,6 @@ function ApPageHeader () {
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -92,11 +90,11 @@ function ApPageHeader () {
     <PageHeader
       title={data?.title || ''}
       titleExtra={<APStatus status={status} showText={!currentApOperational} />}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ] : [{ text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }]}
+      ]}
       extra={[
         enableTimeFilter()
           ? <RangePicker

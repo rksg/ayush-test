@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { SwitchConfigHistoryTable, SwitchVeTable } from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
 
@@ -18,7 +17,6 @@ export function SwitchConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/switch/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
@@ -59,7 +57,7 @@ export function SwitchConfigTab () {
       onChange={onTabChange}
       defaultActiveKey='radio'
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
     >
       <TabPane tab={tabTitleMap('general')} key='general'>
         <GeneralSettingForm />
@@ -68,14 +66,12 @@ export function SwitchConfigTab () {
         <SwitchAAATab />
       </TabPane>
       <TabPane
-        disabled={!releaseTag}
         tab={tabTitleMap('history')}
         key='history'
       >
         <SwitchConfigHistoryTable isVenueLevel={true} />
       </TabPane>
       <TabPane
-        disabled={!releaseTag}
         tab={tabTitleMap('interfaces')}
         key='interfaces'
       >

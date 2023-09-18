@@ -2,7 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskUrls,
@@ -148,24 +148,7 @@ describe('DpskForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <DpskForm />
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: createPath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'DPSK'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <DpskForm />
@@ -247,7 +230,7 @@ describe('DpskForm', () => {
     )
 
     await screen.findByDisplayValue(mockedEditFormData.name)
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     // TODO
     // const errorMsgElem = await screen.findByText('Server Error')

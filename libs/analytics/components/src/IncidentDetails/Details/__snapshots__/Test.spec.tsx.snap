@@ -3,7 +3,7 @@
 exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -98,7 +98,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -139,7 +139,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -178,7 +178,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -561,7 +561,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -656,7 +656,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -697,7 +697,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -736,7 +736,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               7 of 21 APs (33.33%)
                             </span>
@@ -1119,7 +1119,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1214,7 +1214,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -1255,7 +1255,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -1294,7 +1294,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               1 of 1 client (100%)
                             </span>
@@ -1334,7 +1334,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -1717,7 +1717,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1812,7 +1812,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -1853,7 +1853,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -1892,7 +1892,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               6 of 7 APs (85.71%)
                             </span>
@@ -2275,7 +2275,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2370,7 +2370,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -2411,7 +2411,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -2450,7 +2450,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               1 of 1 client (100%)
                             </span>
@@ -2490,7 +2490,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               1 of 1 AP (100%)
                             </span>
@@ -2876,7 +2876,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2971,7 +2971,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -3012,7 +3012,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -3051,7 +3051,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               14 of 14 APs (100%)
                             </span>
@@ -3433,7 +3433,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -3528,7 +3528,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -3569,7 +3569,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -3608,7 +3608,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               14 of 14 APs (100%)
                             </span>
@@ -3982,7 +3982,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
 exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -4077,7 +4077,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -4118,7 +4118,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -4157,7 +4157,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               20 of 30 clients (66.67%)
                             </span>
@@ -4555,7 +4555,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -4650,7 +4650,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -4691,7 +4691,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -4730,7 +4730,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -5116,7 +5116,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5211,7 +5211,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -5252,7 +5252,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -5291,7 +5291,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -5677,7 +5677,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
 exports[`Test Details should render FailureTemplate correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5772,7 +5772,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -5813,7 +5813,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -5852,7 +5852,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -6238,7 +6238,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
 exports[`Test Details should render FailureTemplate correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -6333,7 +6333,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -6374,7 +6374,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -6413,7 +6413,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -6799,7 +6799,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
 exports[`Test Details should render FailureTemplate correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -6894,7 +6894,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -6935,7 +6935,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -6974,7 +6974,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               5 of 27 clients (18.52%)
                             </span>
@@ -7360,7 +7360,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
 exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -7455,7 +7455,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -7496,7 +7496,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -7824,7 +7824,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 exports[`Test Details should render SwitchPoePd correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -7919,7 +7919,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -7960,7 +7960,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -8301,7 +8301,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
 exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -8396,7 +8396,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -8437,7 +8437,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -8765,7 +8765,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 exports[`Test Details should render Ttc correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
+    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -8860,7 +8860,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
                 type="button"
               >
                 <svg
@@ -8901,7 +8901,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
             style="width: 1280px;"
           >
             <div
-              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
             >
               <div
                 class="ant-descriptions-view"
@@ -8940,7 +8940,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
+                              class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
                             >
                               15 of 1 client (1,500%)
                             </span>

@@ -1,5 +1,4 @@
 import { Form, Radio, Typography } from 'antd'
-import _                           from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
 import {
@@ -28,7 +27,6 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
@@ -100,11 +98,9 @@ export default function SelectServiceForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Service' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ] : [
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
       <StepsFormLegacy
@@ -121,17 +117,16 @@ export default function SelectServiceForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               {sets.map(set => {
-                const isAllDisabled = _.findIndex(set.items,
-                  (o) => o.disabled === undefined || o.disabled === false ) === -1
+                const isAllDisabled = set.items.every(item => item.disabled)
                 return !isAllDisabled &&
-                <UI.CategoryContainer>
+                <UI.CategoryContainer key={$t(set.title)}>
                   <Typography.Title level={3}>
                     { $t(set.title) }
                   </Typography.Title>
                   <GridRow>
                     {set.items.map(item => item.disabled
                       ? null
-                      : <GridCol col={{ span: 6 }}>
+                      : <GridCol key={item.type} col={{ span: 6 }}>
                         <ServiceCard
                           key={item.type}
                           serviceType={item.type}

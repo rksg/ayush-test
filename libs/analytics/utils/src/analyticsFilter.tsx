@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
+import { get }          from '@acx-ui/config'
 import { useLocation }  from '@acx-ui/react-router-dom'
 import {
-  DateFilter,
+  AnalyticsFilter,
   NodeType,
   NodeFilter,
   NodesFilter,
@@ -13,14 +14,12 @@ import {
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
-export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
-
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()
@@ -31,7 +30,7 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
-    const { path, raw: rawPath } = read() || { path: [], raw: [] }
+    const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
     const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
     const { filter, raw } = (isHealthPage && isSwitchPath)
@@ -56,7 +55,16 @@ export const getFilterPayload = (
 }
 
 export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
+  const isMLISA = get('IS_MLISA_SA')
   const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
+  if(isMLISA) {
+    if(path.length === 0)
+      return {}
+    return {
+      networkNodes: [path as NodeFilter],
+      switchNodes: [path as NodeFilter]
+    }
+  }
   switch (path.length) {
     case 0:
       return {}

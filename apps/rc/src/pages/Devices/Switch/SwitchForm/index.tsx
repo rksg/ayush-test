@@ -40,7 +40,6 @@ import {
   isOperationalSwitch,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
   VenueMessages
 } from '@acx-ui/rc/utils'
 import {
@@ -112,8 +111,6 @@ export function SwitchForm () {
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
 
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
@@ -335,8 +332,7 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -375,12 +371,10 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wired' }) },
         { text: $t({ defaultMessage: 'Switches' }) },
         { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-      ] : [
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
     <StepsFormLegacy
@@ -594,9 +588,6 @@ export function SwitchForm () {
                   <>
                     <Form.Item name='id' hidden={true}><Input /></Form.Item>
                     <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
                     <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
               }
