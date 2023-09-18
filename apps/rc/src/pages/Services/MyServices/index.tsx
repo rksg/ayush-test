@@ -40,12 +40,12 @@ export default function MyServices () {
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
