@@ -7,7 +7,7 @@ import { useIntl }                                            from 'react-intl'
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useDpskNewConfigFlowParams }                                                   from '@acx-ui/rc/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, DpskSaveData, PersonaGroup }                             from '@acx-ui/rc/utils'
+import { checkObjectNotExists, DpskSaveData, PersonaGroup, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
@@ -72,6 +72,7 @@ export function PersonaGroupForm (props: {
                 [
                   { required: true },
                   { max: 255 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) },
                   { validator: (_, value) => nameValidator(value) }
                 ]
               }

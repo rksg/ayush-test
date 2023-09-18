@@ -20,10 +20,9 @@ SwitchesTrafficByVolume.defaultProps = {
 }
 
 export function SwitchesTrafficByVolume ({
-  filters, vizType
-} : { filters : AnalyticsFilter, vizType: string }) {
+  filters, vizType, refreshInterval
+} : { filters : AnalyticsFilter, vizType: string, refreshInterval?: number }) {
   const { $t } = useIntl()
-
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
     { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
@@ -31,6 +30,7 @@ export function SwitchesTrafficByVolume ({
   ] as Array<{ key: Key, name: string }>
 
   const queryResults = useSwitchesTrafficByVolumeQuery(filters, {
+    ...(refreshInterval ? { pollingInterval: refreshInterval } : {}),
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest

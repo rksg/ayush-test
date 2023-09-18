@@ -516,7 +516,7 @@ export function EditPortDrawer ({
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
 
-    if(data.voiceVlan === '') {
+    if(!data.voiceVlan) {
       data.voiceVlan = null as unknown as string
     }
 
@@ -543,7 +543,7 @@ export function EditPortDrawer ({
         (form.getFieldValue('taggedVlans') ?
           form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: useVenueSettings ? null : form.getFieldValue('voiceVlan')
+      voiceVlan: useVenueSettings ? null : Number(form.getFieldValue('voiceVlan'))
     }
     const defaultVlanMap = switchesDefaultVlan?.reduce((result, item) => ({
       ...result, [item.switchId]: item.defaultVlanId
@@ -600,15 +600,16 @@ export function EditPortDrawer ({
     setUseVenueSettings(true)
 
     let untagged, tagged, status = 'venue', voice
-    const tagEqual = _.uniq(portsProfileVlans?.tagged).length === 1
-    const untagEqual = _.uniq(portsProfileVlans?.untagged).length === 1
-    const voiceEqual = _.uniq(portsProfileVlans?.voice).length === 1
-    const equalFields = [
-      ...((tagEqual && ['taggedVlans']) || []),
-      ...((untagEqual && ['untaggedVlan']) || []),
-      ...((voiceEqual && ['voiceVlan']) || [])
-    ]
     if (portVlansCheckbox) {
+      const tagEqual = _.uniq(
+        portsProfileVlans?.tagged?.map(t => (t || '')?.toString()))?.length <= 1
+      const untagEqual = _.uniq(portsProfileVlans?.untagged).length === 1
+      const voiceEqual = _.uniq(portsProfileVlans?.voice).length === 1
+      const equalFields = [
+        ...((tagEqual && ['taggedVlans']) || []),
+        ...((untagEqual && ['untaggedVlan']) || []),
+        ...((voiceEqual && ['voiceVlan']) || [])
+      ]
       untagged = profileDefaultVlan
       tagged = ''
       voice = ''
@@ -616,12 +617,17 @@ export function EditPortDrawer ({
         [...hasMultipleValue, 'taggedVlans', 'untaggedVlan', 'voiceVlan']
       )
       setHasMultipleValue(_.xor(tmpMultipleValue, equalFields))
-      if (tagEqual && untagEqual && voiceEqual) {
-        if (!portsProfileVlans.untagged?.[0] && !portsProfileVlans.tagged?.[0]) {
-          status = 'default'
-        }
+      if (tagEqual && untagEqual && !portsProfileVlans.untagged?.[0]
+        && !portsProfileVlans.tagged?.[0]) {
+        status = 'default'
+      }
+      if (untagEqual) {
         untagged = portsProfileVlans.untagged?.[0] || profileDefaultVlan
+      }
+      if (tagEqual) {
         tagged = portsProfileVlans.tagged?.[0]?.toString()
+      }
+      if (voiceEqual) {
         voice = portsProfileVlans.voice?.[0]
       }
     } else {
@@ -1275,7 +1281,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ position: 'relative', top: '-20px' }}>
+        <Space style={{ marginBottom: '20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}

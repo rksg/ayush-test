@@ -9,7 +9,6 @@ export enum Features {
   SERVICES = 'acx-ui-services',
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
-  DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'PLCY-EDGE',
   EDGES_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge related API being triggered in prod env
@@ -18,19 +17,15 @@ export enum Features {
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
-  UNRELEASED = 'acx-ui-unreleased',
-  SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   DIRECTED_MULTICAST = 'wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT = 'acx-ui-help-support',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LOAD_BALANCING = 'wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
-  SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
   SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   MDNS_FENCING = 'wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP = 'wifi-consumer-ap-snmp-toggle',
-  NEW_API = 'acx-ui-new-api',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   CONNECTION_METERING = 'connection-metering-enabled',
@@ -43,7 +38,6 @@ export enum Features {
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
   SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
@@ -53,7 +47,6 @@ export enum Features {
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
-  SWITCH_BREAKOUT_PORT = 'switch-breakout-port',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
@@ -105,7 +98,10 @@ export enum Features {
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT='dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
-  WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle'
+  WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
+  RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
+  MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

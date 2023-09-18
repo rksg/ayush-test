@@ -366,7 +366,7 @@ describe('Aps', () => {
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return (ff === Features.DEVICES || ff === Features.EXPORT_DEVICE) ? true : false
+      return (ff === Features.EXPORT_DEVICE) ? true : false
     })
 
     render(<Provider><ApTable
