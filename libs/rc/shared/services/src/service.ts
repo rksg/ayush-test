@@ -833,7 +833,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    getPassphraseClient: build.query<DpskPassphraseClient, RequestPayload<DpskPassphrasesClientPayload>>({
+    getPassphraseClient: build.query<DpskPassphraseClient | undefined, RequestPayload<DpskPassphrasesClientPayload>>({
       query: ({ params, payload }) => {
         const isNewFlow = isDpskNewFlow(params)
 
@@ -851,8 +851,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...(isNewFlow ? {} : { body: payload })
         }
       },
-      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, _, arg) {
+      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, meta, arg) {
         if (!isDpskNewFlow(arg.params)) return result as DpskPassphraseClient
+
+        if (_.isEmpty(result)) return undefined
 
         const res = result as DpskNewFlowPassphraseClient
 
