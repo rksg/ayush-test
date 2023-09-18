@@ -5,6 +5,7 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ArrowCollapse }             from '@acx-ui/icons'
 import { TenantLink }                from '@acx-ui/react-router-dom'
@@ -65,7 +66,10 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>,
+      icon: <>
+        <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>
+        {typeof event.pcapFilename === 'string' && <UI.Download />}
+      </>,
       event
     }
   }),
@@ -108,7 +112,7 @@ function WrappedItem (
       description={item.description} />
   </List.Item>
   return item.id
-    ? hasAccess()
+    ? (Boolean(get('IS_MLISA_SA')) || hasAccess())
       ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
       : Item
     : <ConnectionEventPopover
