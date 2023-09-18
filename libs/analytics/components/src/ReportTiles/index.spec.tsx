@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
-import { Provider, dataApiURL, store, dataApi } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen }     from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store, dataApi }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { networkSummaryInfo } from './__tests__/fixtures'
 
@@ -42,5 +43,40 @@ describe('ReportTile', () => {
     const tiles = await screen.findAllByTestId('Tile')
     await userEvent.click(tiles[0])
     expect(spy.mock.calls.some(args => args[1] === 5000)).toBe(true)
+  })
+  it('reset to first tile when path changed', async () => {
+    const { rerender } = render(<ReportTile
+      path={[{ type: 'network', name: 'Network' }]}
+    />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 'tenant-id' } }
+    })
+
+    const tiles = await screen.findAllByTestId('Tile')
+
+    await userEvent.click(tiles[4])
+    expect(tiles[4]).toBeChecked()
+
+    const node = {
+      ..._.pick(networkSummaryInfo, ['apCount', 'clientCount']),
+      type: 'apMac',
+      name: '00:00:00:00:00:01'
+    }
+    mockGraphqlQuery(dataApiURL, 'NetworkInfo', { data: { network: { node } } })
+
+    rerender(<ReportTile path={[
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 'S1' },
+      { type: 'zone', name: 'Z1' },
+      { type: 'apGroup', name: 'NetworAG1' },
+      { type: 'AP', name: '00:00:00:00:00:01' }
+    ]} />)
+
+    const newTiles = await waitFor(async () => {
+      const newTiles = await screen.findAllByTestId('Tile')
+      expect(newTiles).toHaveLength(2)
+      return newTiles
+    })
+    expect(newTiles[0]).toBeChecked()
   })
 })

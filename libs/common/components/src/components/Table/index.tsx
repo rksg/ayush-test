@@ -325,7 +325,9 @@ function Table <RecordType extends Record<string, any>> ({
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasRowActionsOffset = [
-    props.rowSelection?.type && props.tableAlertRender !== false,
+    props.rowSelection?.type
+      && props.tableAlertRender !== false
+      && !props.rowSelection?.alwaysShowAlert,
     filterables.length,
     searchables.length,
     groupable.length,
