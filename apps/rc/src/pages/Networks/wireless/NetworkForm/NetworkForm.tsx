@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import {Form} from 'antd'
-import _ from 'lodash'
-import {defineMessage, useIntl} from 'react-intl'
+import { Form }                   from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import {PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance} from '@acx-ui/components'
+import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -16,6 +16,7 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
+  GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
   Network,
@@ -24,23 +25,23 @@ import {
   NetworkVenue,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import {useLocation, useNavigate, useParams, useTenantLink} from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import {CloudpathForm} from './CaptivePortal/CloudpathForm'
-import {GuestPassForm} from './CaptivePortal/GuestPassForm'
-import {HostApprovalForm} from './CaptivePortal/HostApprovalForm'
-import {OnboardingForm} from './CaptivePortal/OnboardingForm'
-import {PortalTypeForm} from './CaptivePortal/PortalTypeForm'
-import {SelfSignInForm} from './CaptivePortal/SelfSignInForm'
-import {WISPrForm} from './CaptivePortal/WISPrForm'
-import {NetworkDetailForm} from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext from './NetworkFormContext'
-import {NetworkMoreSettingsForm} from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import {AaaSettingsForm} from './NetworkSettings/AaaSettingsForm'
-import {DpskSettingsForm} from './NetworkSettings/DpskSettingsForm'
-import {OpenSettingsForm} from './NetworkSettings/OpenSettingsForm'
-import {PskSettingsForm} from './NetworkSettings/PskSettingsForm'
-import {SummaryForm} from './NetworkSummary/SummaryForm'
+import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   tranferSettingsToSave,
   transferDetailToSave,
@@ -49,8 +50,7 @@ import {
   updateClientIsolationAllowlist
 } from './parser'
 import PortalInstance from './PortalInstance'
-import {Venues} from './Venues/Venues'
-import {GuestNetworkTypeEnum} from "../../../../../../../libs/rc/shared/utils/src/models/GuestNetworkTypeEnum";
+import { Venues }     from './Venues/Venues'
 
 
 const settingTitle = defineMessage({
