@@ -45,7 +45,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    const policyNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({

@@ -6,7 +6,7 @@ import { showToast }                                                            
 import { ApErrorHandlingMessages, CatchErrorResponse, closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
 
 
-const socketTimeout = 10000
+const socketTimeout = 600000
 
 
 type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
@@ -44,7 +44,7 @@ export function useCcd (handler: (msg: string) => void) {
 
   const closeSocket = () => {
     if (ccdSocketRef.current) {
-      //console.log('Close CCD socket')
+      //console.log('Close CCD socket - ', ccdSocketRef.current)
       closeCcdSocket(ccdSocketRef.current)
       ccdSocketRef.current = undefined
     }

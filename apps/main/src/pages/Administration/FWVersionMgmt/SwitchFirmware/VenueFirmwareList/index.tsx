@@ -57,7 +57,6 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
@@ -84,7 +83,7 @@ function useColumns (
         if (row.switchFirmwareVersion?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
         }
-        if (enableSwitchRodanFirmware && row.switchFirmwareVersionAboveTen?.id) {
+        if (row.switchFirmwareVersionAboveTen?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
         }
         return versionList.length > 0 ? versionList.join(', ') : '--'
@@ -153,7 +152,6 @@ export const VenueFirmwareTable = (
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
 
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
   const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
@@ -244,10 +242,9 @@ export const VenueFirmwareTable = (
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
     selectedRows.forEach((row: FirmwareSwitchVenue) => {
       const version = row.switchFirmwareVersion?.id
-      const rodanVersion = enableSwitchRodanFirmware ?
-        row.switchFirmwareVersionAboveTen?.id : ''
+      const rodanVersion = row.switchFirmwareVersionAboveTen?.id
       // eslint-disable-next-line max-len
-      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
     })
     return filterVersions?.length > 0
   }
@@ -281,7 +278,7 @@ export const VenueFirmwareTable = (
       let nonIcx8200Count = 0, icx8200Count = 0
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
         filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
         if (enableSwitchTwoVersionUpgrade) {
           nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
@@ -329,7 +326,7 @@ export const VenueFirmwareTable = (
 
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
         filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
 
         if (enableSwitchTwoVersionUpgrade) {
@@ -430,7 +427,6 @@ export const VenueFirmwareTable = (
 
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
@@ -443,7 +439,7 @@ export function VenueFirmwareList () {
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       let versionList = data?.currentVersions
-      if (enableSwitchRodanFirmware && data?.currentVersionsAboveTen && versionList) {
+      if (data?.currentVersionsAboveTen && versionList) {
         versionList = versionList.concat(data?.currentVersionsAboveTen)
       }
 
@@ -473,12 +469,8 @@ function hasSchedule (venue: FirmwareSwitchVenue): boolean {
 
 const removeCurrentVersionsAnd10010IfNeeded = (version: string,
   rodanVersion: string,
-  filterVersions: FirmwareVersion[],
-  enableSwitchRodanFirmware: boolean) => {
+  filterVersions: FirmwareVersion[]) => {
   _.remove(filterVersions, (v: FirmwareVersion) => {
-    if (!enableSwitchRodanFirmware && v.id.startsWith('100')) {
-      return true
-    }
     return v.id === version || v.id === rodanVersion
   })
 }
