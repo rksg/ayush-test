@@ -1,10 +1,8 @@
-import { cleanup } from '@testing-library/react'
-
-import { Incident }                       from '@acx-ui/analytics/utils'
-import { Provider }                       from '@acx-ui/store'
-import { act, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Incident }                                from '@acx-ui/analytics/utils'
+import { Provider }                                from '@acx-ui/store'
+import { act, render, screen, fireEvent, cleanup } from '@acx-ui/test-utils'
+import { RolesEnum }                               from '@acx-ui/types'
+import { getUserProfile, setUserProfile }          from '@acx-ui/user'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -30,7 +28,10 @@ const incidents = [{
 const params = { tenantId: 'tenant-id', clientId: 'clientMac', activeTab: 'troubleshooting' }
 
 describe('EventsHistory', () => {
-  afterEach(() => jest.restoreAllMocks())
+  afterEach(() => {
+    jest.restoreAllMocks()
+    cleanup()
+  })
   it('should render correctly without data', async () => {
     const data = {
       connectionEvents: [],
@@ -87,6 +88,39 @@ describe('EventsHistory', () => {
     expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
     expect(screen.queryByRole('link')).toBeValid()
+  })
+  it('should render pcapIcon with data', async () => {
+    const pcapEvents = connectionEvents.map((events, id) =>
+      ({ ...events, pcapFilename: `${id}.pcap` }))
+    const data = {
+      connectionEvents: pcapEvents,
+      incidents,
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={{}}
+          historyContentToggle
+          setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
+    expect(screen.queryByRole('link')).toBeValid()
+    expect(screen.getAllByTestId('DownloadOutlined')).toHaveLength(4)
   })
   it('should render with data and filters', async () => {
     const data = {
