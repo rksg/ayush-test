@@ -4,12 +4,13 @@ import { Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
 import { Rule }                                                from 'antd/lib/form'
 import { useIntl }                                             from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal }             from '@acx-ui/components'
 import {
   DHCP_OPTION_TYPE,
   getDhcpOptionList,
   serverIpAddressRegExp,
-  SwitchDhcpOption
+  SwitchDhcpOption,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -26,6 +27,7 @@ const validatorMap: { [key in DHCP_OPTION_TYPE]: Rule[] } = {
   ],
   IP: [
     { required: true },
+    { validator: (_, value) => trailingNorLeadingSpaces(value) },
     { validator: (_, value) => dhcpOptionIpsValidation(value) }
   ],
   INTEGER: [
