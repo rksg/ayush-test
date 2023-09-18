@@ -12,8 +12,7 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
+import { formatter } from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -72,8 +71,6 @@ export function AlarmsDrawer (props: AlarmsType) {
     setVisible(true)
     setSeverity(e.detail.data.name)
   }) as EventListener)
-
-  const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
   const [severity, setSeverity] = useState('all')
 
@@ -140,15 +137,11 @@ export function AlarmsDrawer (props: AlarmsType) {
         </TenantLink>
       }
       case EventTypeEnum.SWITCH: {
-        if(toggleForSwitch){
-          const switchId = alarm.switchMacAddress || alarm.serialNumber
-          return <TenantLink
-            to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
-            {alarm.switchName}
-          </TenantLink>
-        }else{
-          return <UI.EmptyLink>{alarm.switchName}</UI.EmptyLink>
-        }
+        const switchId = alarm.switchMacAddress || alarm.serialNumber
+        return <TenantLink
+          to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
+          {alarm.switchName}
+        </TenantLink>
       }
       case EventTypeEnum.EDGE: {
         return <TenantLink
