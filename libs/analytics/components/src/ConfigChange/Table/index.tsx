@@ -19,30 +19,32 @@ import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }                        from './styledComponents'
-import { EntityType, enumTextMap, filterKPIData, jsonMapping } from './util'
+import { Badge, CascaderFilterWrapper }                     from './styledComponents'
+import { EntityType, enumTextMap, filterData, jsonMapping } from './util'
 
 export function Table (props: {
   selected: ConfigChange | null,
   onRowClick: (params: ConfigChange) => void,
   pagination: { current: number, pageSize: number },
   setPagination: (params: { current: number, pageSize: number }) => void,
-  dotSelect: number | null
+  dotSelect: number | null,
+  legend: Record<string, boolean>
 }) {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
   const { path } = useAnalyticsFilter()
+  const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
+  const legendList = Object.keys(legend).filter(key => legend[key])
+
   const queryResults = useConfigChangeQuery({
     path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterKPIData(queryResults.data ?? [], kpiFilter)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
   }) })
-
-  const { selected, onRowClick, pagination, setPagination, dotSelect } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
