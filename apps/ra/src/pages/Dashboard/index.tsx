@@ -8,7 +8,7 @@ import {
   IncidentsCountBySeverities,
   SLA,
   ReportTile,
-  MlisaNetworkFilter,
+  SANetworkFilter,
   AIDrivenRRM,
   AIOperations
 } from '@acx-ui/analytics/components'
@@ -56,7 +56,7 @@ export default function Dashboard () {
       title={$t({ defaultMessage: 'How is my network doing?' })}
       extra={[
         <>
-          <MlisaNetworkFilter />
+          <SANetworkFilter />
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

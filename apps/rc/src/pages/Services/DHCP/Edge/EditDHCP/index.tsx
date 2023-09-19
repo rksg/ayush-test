@@ -1,44 +1,31 @@
 import { useEffect } from 'react'
 
-import { Form }                   from 'antd'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
-  Loader,
-  PageHeader,
-  StepsForm
-} from '@acx-ui/components'
-import {
-  EdgeDhcpSettingForm
+  useEdgeDhcpActions
 } from '@acx-ui/rc/components'
-import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import { useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
 import {
-  LeaseTimeType,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation,
-  ServiceType,
   EdgeDhcpSettingFormData,
-  convertEdgeDHCPFormDataToApiPayload
+  LeaseTimeType
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+
+import { EdgeDhcpForm } from '../DHCPForm'
 
 
 const EditDhcp = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
   const [form] = Form.useForm()
+  const { updateEdgeDhcpProfile, isEdgeDhcpProfileUpdating } = useEdgeDhcpActions()
   const {
     data: edgeDhcpData,
     isLoading: isEdgeDhcpDataLoading
   } = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
-  const [updateEdgeDhcp, { isLoading: isFormSubmitting }] = useUpdateEdgeDhcpServiceMutation()
-  const tablePath = getServiceRoutePath(
-    { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
   useEffect(() => {
     if(edgeDhcpData) {
@@ -57,43 +44,20 @@ const EditDhcp = () => {
         (edgeDhcpData.dhcpPools?.length ?? -1) > 0
       )
     }
-
   }, [edgeDhcpData])
 
-  const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
-    try {
-      const pathVar = { id: params.serviceId }
-      const payload = convertEdgeDHCPFormDataToApiPayload({ ...edgeDhcpData, ...data })
-      await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
-      navigate(linkToServices, { replace: true })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
+  const handelEdit = async (data: EdgeDhcpSettingFormData) =>
+    updateEdgeDhcpProfile(params.serviceId || '', data)
 
   return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Edit DHCP for SmartEdge Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
-        ]}
-      />
-      <Loader states={[{ isLoading: isEdgeDhcpDataLoading, isFetching: isFormSubmitting }]}>
-        <StepsForm
-          form={form}
-          onFinish={handleEditEdgeDhcp}
-          onCancel={() => navigate(linkToServices)}
-          buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        >
-          <StepsForm.StepForm>
-            <EdgeDhcpSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Loader>
-    </>
+    <EdgeDhcpForm
+      form={form}
+      title={$t({ defaultMessage: 'Edit DHCP for SmartEdge Service' })}
+      submitButtonLabel={$t({ defaultMessage: 'Apply' })}
+      onFinish={handelEdit}
+      isSubmiting={isEdgeDhcpProfileUpdating}
+      isDataLoading={isEdgeDhcpDataLoading}
+    />
   )
 }
 
