@@ -1,4 +1,3 @@
-import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
 import { isLAGMemberPort }                                from '@acx-ui/rc/components'
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
@@ -14,7 +13,6 @@ export function FrontViewSlot (props:{
   deviceStatus: SwitchStatusEnum
 }) {
   const { slot, deviceStatus, isStack, portLabel, isOnline } = props
-  const enableBreakourtPortFlag = useIsSplitOn(Features.SWITCH_BREAKOUT_PORT)
 
   const getPortIcon = (port: SwitchPortStatus) => {
     if (deviceStatus === SwitchStatusEnum.DISCONNECTED) {
@@ -57,15 +55,14 @@ export function FrontViewSlot (props:{
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
             const portNumber = item.portnumber as unknown as number
-            if (enableBreakourtPortFlag &&
-              String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
+            if (String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 1
             }
 
             return portNumber % 2 === 1
           })
           .map((port: SwitchPortStatus) => {
-            const isBreakOutPort = enableBreakourtPortFlag && String(port.portnumber).includes(':')
+            const isBreakOutPort = String(port.portnumber).includes(':')
             if (isBreakOutPort) {
               return (<FrontViewBreakoutPort key={port.portIdentifier}
                 ports={slot.portStatus}
@@ -95,14 +92,13 @@ export function FrontViewSlot (props:{
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
             const portNumber = item.portnumber as unknown as number
-            if (enableBreakourtPortFlag &&
-              String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
+            if (String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 0
             }
             return portNumber % 2 === 0
           })
           .map((port: SwitchPortStatus) => {
-            const isBreakOutPort = enableBreakourtPortFlag && String(port.portnumber).includes(':')
+            const isBreakOutPort = String(port.portnumber).includes(':')
             if (isBreakOutPort) {
               return (
                 <FrontViewBreakoutPort key={port.portIdentifier}

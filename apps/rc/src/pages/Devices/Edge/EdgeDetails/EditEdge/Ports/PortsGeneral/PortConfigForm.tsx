@@ -217,7 +217,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             name={getFieldPath('name')}
             label={$t({ defaultMessage: 'Description' })}
             rules={[
-              { max: 255 }
+              { max: 63 }
             ]}
             children={<TextArea />}
           />

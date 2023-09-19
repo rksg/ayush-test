@@ -57,7 +57,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
             })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -192,7 +193,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Network', id: 'LIST' }]
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -241,7 +243,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     venueNetworkList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -282,7 +285,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: venueNetworkListQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      extraOptions: { maxRetries: 5 }
     }),
     venueNetworkActivationsDataList: build.query<NetworkSaveData[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -387,6 +391,13 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
+    if (item?.dsaeOnboardNetwork) {
+      item = { ...item,
+        ...{ children: [{ ...item?.dsaeOnboardNetwork,
+          isOnBoarded: true,
+          activated: calculateNetworkActivated(networkApGroup) } as Network] }
+      }
+    }
     if (networkApGroup) {
       data.push({
         ...item,
