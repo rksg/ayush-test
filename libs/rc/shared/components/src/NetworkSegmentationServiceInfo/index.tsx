@@ -137,7 +137,7 @@ export const NetworkSegmentationServiceInfo = styled((
         const edgeInfo = nsgViewData?.edgeInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeId}/edge-details/overview`}
+            to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}
           >
             {edgeInfo?.edgeName}
           </TenantLink>
