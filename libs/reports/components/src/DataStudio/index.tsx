@@ -49,7 +49,7 @@ export function DataStudio () {
       .then(url => {
         setUrl(url)
       })
-  }, [authenticate, i18nDataStudioEnabled, locale])
+  }, [authenticate, locale])
 
   return (
     <div data-testid='data-studio'
