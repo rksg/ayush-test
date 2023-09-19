@@ -623,7 +623,13 @@ export function StackForm () {
     if(venuesList){
       const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
       setCurrentFw(venueFw || '')
-      const miniMembers = venueFw?.includes('09010h') ? 4 : 2
+
+      const switchModel =
+        getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+        (venueFw?.includes('09010h') ? 4 : 2) :
+        (venueFw?.includes('09010h') ? 8 : 4))
+
       setTableData(tableData.splice(0, miniMembers))
     }
     setApGroupOption(options as DefaultOptionType[])
