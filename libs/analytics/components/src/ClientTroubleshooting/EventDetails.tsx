@@ -7,10 +7,11 @@ import { CloseSymbol }  from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
-export const Details = ({ fields, openHandler, extra }: {
+export const Details = ({ fields, openHandler, extra, actions }: {
   fields: Array<{ label: string, value: string }>,
   openHandler: () => void,
-  extra?: ReactNode
+  extra?: ReactNode,
+  actions?: ReactNode,
 }) => {
   const { $t } = useIntl()
   return <UI.DetailsWrapper>
@@ -27,6 +28,7 @@ export const Details = ({ fields, openHandler, extra }: {
             />
           )}
         </Descriptions>
+        {actions}
       </UI.ListDetails>
       {extra && <><UI.VerticalLine />{extra}</>}
     </UI.Body>

@@ -112,7 +112,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
@@ -137,7 +137,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
@@ -163,7 +163,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
