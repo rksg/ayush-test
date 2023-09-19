@@ -83,10 +83,13 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   SPLIT_PROXY_ENDPOINT: string }) {
   jest.resetModules()
   jest.doMock('@acx-ui/config', () => ({
-    get: jest.fn().mockImplementation(name => name === 'SPLIT_IO_KEY'
-      ? '0123456789'
-      : props.IS_MLISA_SA
-    )
+    get: jest.fn().mockImplementation(name => {
+      switch(name) {
+        case 'SPLIT_IO_KEY': return '0123456789'
+        case 'SPLIT_PROXY_ENDPOINT': return props.SPLIT_PROXY_ENDPOINT
+        default: return props.IS_MLISA_SA
+      }
+    })
   }))
   jest.doMock('@acx-ui/analytics/utils', () => ({
     useUserProfileContext: jest.fn().mockImplementation(() => ({
@@ -121,7 +124,11 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: tenant },
-      urls: { auth: '', events: '', sdk: '' },
+      urls: {
+        auth: 'https://splitproxy.dev.ruckus.cloud/api',
+        events: 'https://splitproxy.dev.ruckus.cloud/api',
+        sdk: 'https://splitproxy.dev.ruckus.cloud/api'
+      },
       storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234' },
       debug: false
     })
@@ -130,12 +137,11 @@ describe('SplitProvider', () => {
   it('provides for RA', async () => {
     render(<TestSplitProvider IS_MLISA_SA='true'
       tenant='0015000000GlI7SAAV'
-      SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
+      SPLIT_PROXY_ENDPOINT={''} />)
     await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      urls: { auth: '', events: '', sdk: '' },
       storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })

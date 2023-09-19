@@ -11,7 +11,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
-const splitProxyEndpoint = get('SPLIT_PROXY_ENDPOINT')
+const splitProxy = get('SPLIT_PROXY_ENDPOINT')
 const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
@@ -30,11 +30,11 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         authorizationKey: splitKey,
         key: tenantKey
       },
-      ...(isMLISA ? {} : { urls: {
-        sdk: splitProxyEndpoint,
-        events: splitProxyEndpoint,
-        auth: splitProxyEndpoint
-      } }),
+      ...(splitProxy ? { urls: {
+          sdk: splitProxy,
+          events: splitProxy,
+          auth: splitProxy
+        } } : {}),
       storage: {
         type: 'LOCALSTORAGE',
         prefix: prefixKey + suffix
