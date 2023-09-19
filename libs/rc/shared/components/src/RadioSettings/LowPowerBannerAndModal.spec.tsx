@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, cleanup } from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { LowPowerBannerAndModal } from './LowPowerBannerAndModal'
 
