@@ -676,7 +676,7 @@ export function StackForm () {
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
       return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
     } else {
-      return tableData.length < (currentFW.includes('09010h') ? 8 : 2)
+      return tableData.length < (currentFW.includes('09010h') ? 8 : 4)
     }
   }
 
@@ -685,7 +685,7 @@ export function StackForm () {
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
     return switchModel?.includes('ICX7150') ?
       (currentFW.includes('09010h') ? 4 : 2) :
-      (currentFW.includes('09010h') ? 8 : 2)
+      (currentFW.includes('09010h') ? 8 : 4)
   }
 
   return (
