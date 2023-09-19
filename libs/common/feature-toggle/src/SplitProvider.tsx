@@ -31,10 +31,10 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         key: tenantKey
       },
       ...(splitProxy ? { urls: {
-          sdk: splitProxy,
-          events: splitProxy,
-          auth: splitProxy
-        } } : {}),
+        sdk: splitProxy,
+        events: splitProxy,
+        auth: splitProxy
+      } } : {}),
       storage: {
         type: 'LOCALSTORAGE',
         prefix: prefixKey + suffix
