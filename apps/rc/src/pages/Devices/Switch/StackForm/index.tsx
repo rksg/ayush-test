@@ -34,18 +34,18 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
+import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
-  useVenuesListQuery,
   useConvertToStackMutation,
   useSaveSwitchMutation,
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
   useLazyGetStackMemberListQuery,
-  useLazyGetSwitchListQuery
+  useLazyGetSwitchListQuery,
+  useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   Switch,
@@ -80,10 +80,9 @@ import {
 } from './styledComponents'
 
 const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
+  firmwareType: '',
+  firmwareVersion: '',
+  search: '', updateAvailable: ''
 }
 
 export function StackForm () {
@@ -99,7 +98,7 @@ export function StackForm () {
   const isStackSwitches = stackSwitches?.length > 0
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
-    useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
+  useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
@@ -119,6 +118,7 @@ export function StackForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
+  const [currentFW, setCurrentFw] = useState('')
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
@@ -144,7 +144,7 @@ export function StackForm () {
         })) ?? []
       )
     }
-    if (switchData && switchDetail) {
+    if (switchData && switchDetail && venuesList) {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
@@ -156,6 +156,11 @@ export function StackForm () {
         isOperationalSwitch(
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
+
+      const switchFw = switchData.firmwareVersion
+      const venueFw = venuesList.data.find(
+        venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+      setCurrentFw(switchFw || venueFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModule',
@@ -614,6 +619,11 @@ export function StackForm () {
     if (options.length === 0) {
       formRef.current?.setFieldValue('initialVlanId', null)
     }
+
+    if(venuesList){
+      const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      setCurrentFw(venueFw || '')
+    }
     setApGroupOption(options as DefaultOptionType[])
   }
 
@@ -664,16 +674,18 @@ export function StackForm () {
     }
 
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < 2
+      return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
     } else {
-      return tableData.length < 4
+      return tableData.length < (currentFW.includes('09010h') ? 8 : 2)
     }
   }
 
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-    return switchModel?.includes('ICX7150') ? 2 : 4
+    return switchModel?.includes('ICX7150') ?
+      (currentFW.includes('09010h') ? 4 : 2) :
+      (currentFW.includes('09010h') ? 8 : 2)
   }
 
   return (
