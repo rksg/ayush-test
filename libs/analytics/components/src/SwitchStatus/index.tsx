@@ -36,12 +36,14 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
     return startEndTimes
   }, [] as [TimeStamp, string, TimeStamp, number | null, string][])
 }
-export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
+export function SwitchStatusByTime ({ filters, refreshInterval }:
+  { filters: AnalyticsFilter, refreshInterval?: number }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'isSwitchUp', name: $t({ defaultMessage: 'SwitchStatus' }) }
   ] as Array<{ key: Key; name: string }>
   const queryResults = useSwitchStatusQuery(filters, {
+    ...(refreshInterval ? { pollingInterval: refreshInterval } : {}),
     selectFromResult: ({ data, ...rest }) => {
       return {
         timeSeries: getStartAndEndTimes(

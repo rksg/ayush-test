@@ -1,10 +1,11 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { ClientDetailPageHeader } from './ClientDetailPageHeader'
+import { ClientDetailPageHeader }   from './ClientDetailPageHeader'
+import { ClientTroubleshootingTab } from './ClientTroubleshooting'
 
 const tabs = {
   overview: () => <div>overview</div>,
-  troubleshooting: () => <div>troubleshooting</div>,
+  troubleshooting: ClientTroubleshootingTab,
   reports: () => <div>reports</div>
 }
 
