@@ -58,6 +58,190 @@ export const apGrouplist = {
   ]
 }
 
+export const switchFirmwareVenue = {
+  upgradeVenueViewList: [
+    {
+      id: 'a2b8c535a600476a93bce1a450881fba',
+      name: 'cliApplied',
+      switchFirmwareVersion: {
+        id: '09010f_b18',
+        name: '09010f_b18',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010b_b43',
+        name: '10010b_b43',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      lastScheduleUpdateTime: '2023-08-31T03:00:00.058+00:00',
+      preDownload: true,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }, {
+      id: '8fc3ac989b2341a4b68d32ef5297662e',
+      name: '9010fVenue',
+      switchFirmwareVersion: {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010a_b35',
+        name: '10010a_b35',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      lastScheduleUpdateTime: '2023-08-02T10:19:27.919+00:00',
+      preDownload: false,
+      switchCount: 1,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }, {
+      id: '0888c7d7c5e04764a8dfd45ad433abce',
+      name: 'testNewTarget',
+      switchFirmwareVersion: {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010a_cd3_b11',
+        name: '10010a_cd3_b11',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }, {
+      id: 'd046e35d3c554fedbdd88df55451fd16',
+      name: 'My-Venue',
+      switchFirmwareVersion: {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010_rc3',
+        name: '10010_rc3',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }, {
+      id: 'd24e1cf660174b2eb419d739d1f76ca3',
+      name: 'new10010Venue',
+      switchFirmwareVersion: {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010a_b36',
+        name: '10010a_b36',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      lastScheduleUpdateTime: '2023-08-15T10:52:24.639+00:00',
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }, {
+      id: '5953c855edc140ec9628a672817b234c',
+      name: '10010Venue',
+      switchFirmwareVersion: {
+        id: '09010f_b401',
+        name: '09010f_b401',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010a_b1',
+        name: '10010a_b1',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010h_rc1',
+          name: '09010h_rc1',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      ],
+      lastScheduleUpdateTime: '2023-07-14T02:46:02.929+00:00',
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      upgradeVenueViewList: null
+    }
+  ]
+}
+
 export const successResponse = {
   requestId: 'request-id'
 }
