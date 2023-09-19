@@ -669,7 +669,6 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     case GuestNetworkTypeEnum.SelfSignIn:
     case GuestNetworkTypeEnum.GuestPass:
     case GuestNetworkTypeEnum.HostApproval:
-    case GuestNetworkTypeEnum.Cloudpath:
       return true
     default:
       // eslint-disable-next-line no-console
