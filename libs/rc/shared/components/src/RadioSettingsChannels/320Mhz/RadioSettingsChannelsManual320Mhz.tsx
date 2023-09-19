@@ -54,12 +54,13 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   let { disabled = false, handleChanged } = props
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
-    setCheckGroup(event.target.value)
-    form.setFieldValue(props.channelBandwidth320MhzGroupFieldName, event.target.value)
+    const selected320MhzGroup = event.target.value
+    setCheckGroup(selected320MhzGroup)
+    form.setFieldValue(props.channelBandwidth320MhzGroupFieldName, selected320MhzGroup)
 
     // If 320MHz-1's channel is selected, and that channel is overlap with 320MHz-2
     // Keep that channel selected, clear state if it's not.
-    if(!_.intersection(ChannelGroup_320MHz_Manual[event.target.value], checkedChannel)) {
+    if(!_.intersection(ChannelGroup_320MHz_Manual[selected320MhzGroup], checkedChannel)) {
       form.setFieldValue(props.formName, [])
       setCheckedChannel([])
     }
