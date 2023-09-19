@@ -11,6 +11,7 @@ import {
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ClientDetails   from './pages/ClientDetails'
+import { ClientsList } from './pages/ClientsList'
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
 import Incidents       from './pages/Incidents'
@@ -67,6 +68,7 @@ function AllRoutes () {
             </Route>
           </Route>
         </Route>
+        <Route path='wifi/clients/list' element={<ClientsList />}/>
       </Route>
     </Route>
   </Route>)
