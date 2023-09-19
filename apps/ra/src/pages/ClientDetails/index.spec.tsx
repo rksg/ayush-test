@@ -18,6 +18,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./ClientTroubleshooting', () => ({
+  ClientTroubleshootingTab: () => <div data-testid='troubleshooting'></div>
+}))
+
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
@@ -73,5 +77,6 @@ describe('ClientDetails', () => {
     })
     expect(await screen.findByRole('tab', { name: 'Troubleshooting', selected: true }))
       .toBeVisible()
+    expect(await screen.findByTestId('troubleshooting')).toBeVisible()
   })
 })
