@@ -59,13 +59,11 @@ export function RadioSettingsChannelsManual320Mhz (props: {
 
     // If 320MHz-1's channel is selected, and that channel is overlap with 320MHz-2
     // Keep that channel selected, clear state if it's not.
-    if(_.intersection(ChannelGroup_320MHz_Manual[event.target.value], checkedChannel)) {
-      return
-    }
-    else {
+    if(!_.intersection(ChannelGroup_320MHz_Manual[event.target.value], checkedChannel)) {
       form.setFieldValue(props.formName, [])
       setCheckedChannel([])
     }
+
     // notify data is changed
     if(handleChanged) {
       handleChanged()
