@@ -135,7 +135,7 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      urls: { auth: 'true', events: 'true', sdk: 'true' },
+      urls: { auth: '', events: '', sdk: '' },
       storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })
