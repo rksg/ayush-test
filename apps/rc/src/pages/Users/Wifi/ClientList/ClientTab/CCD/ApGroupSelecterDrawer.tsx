@@ -6,9 +6,9 @@ import { includes }        from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { Drawer }             from '@acx-ui/components'
-import { useLazyApListQuery } from '@acx-ui/rc/services'
-import { APExtendedGrouped }  from '@acx-ui/rc/utils'
+import { Drawer }                            from '@acx-ui/components'
+import { useLazyGetCcdSupportApGroupsQuery } from '@acx-ui/rc/services'
+import { SupportCcdApGroup }                 from '@acx-ui/rc/utils'
 
 import { ApInfo } from './contents'
 
@@ -26,7 +26,7 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
 
   const { visible, venueId, updateSelectAps, updateSelectApsInfo } = props
 
-  const [ getApsByApGroup ] = useLazyApListQuery()
+  const [ getApsByApGroup ] = useLazyGetCcdSupportApGroupsQuery()
 
   const selectedKeysRef = useRef<string[]>()
   const apGroupMapRef = useRef<Map<string, string>>()
@@ -36,28 +36,28 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
 
   useEffect(() => {
     if (venueId) {
-      const converteToTreeData = (apGroupData?: APExtendedGrouped[]) => {
+      const converteToTreeData = (apGroupData?: SupportCcdApGroup[]) => {
         if (apGroupData) {
           const apList: ApInfo[] = []
           const apGroupMap = new Map()
           const treeData = apGroupData.map(data => {
-            const { deviceGroupName, deviceGroupId, members, aps } = data
-            const groupName = (deviceGroupName ==='')? 'Ungrouped APs' : deviceGroupName
+            const { apGroupName, apGroupId, members, aps } = data
+            const groupName = (apGroupName ==='')? 'Ungrouped APs' : apGroupName
 
-            apGroupMap.set(deviceGroupId, groupName)
+            apGroupMap.set(apGroupId, groupName)
 
             const childrenTreeData = aps?.map(ap => {
               const { name, apMac, serialNumber, model } = ap
               apList.push({ name, apMac, serialNumber, model })
               return {
                 title: `${name} (${apMac})`,
-                key: `${deviceGroupId}-${serialNumber}`
+                key: `${apGroupId}-${serialNumber}`
               }
             })
 
             return {
               title: `${groupName} (${members} APs)`,
-              key: deviceGroupId,
+              key: apGroupId,
               children: childrenTreeData
             }
           })
@@ -71,27 +71,8 @@ const ApGroupSelecterDrawer = (props: ApGroupSelecterDrawerProps) => {
       }
 
       const createAPGroupTreeData = async (venueId: string) => {
-        const payload = {
-          fields: [
-            'name', 'apMac', 'serialNumber', 'deviceGroupName',
-            'deviceStatus', 'venueId', 'model' ],
-          filters: {
-            venueId: [venueId],
-            deviceStatusSeverity: ['2_Operational']
-          },
-          groupBy: 'deviceGroupName',
-          groupByFields: [
-            'name', 'apMac', 'serialNumber', 'deviceGroupName',
-            'deviceStatus', 'venueId', 'model' ],
-          page: 1,
-          pageSize: 10000,
-          sortField: 'name',
-          sortOrder: 'ASC',
-          total: 0
-        }
-
-        const { data } = await getApsByApGroup({ params: { tenantId }, payload }, true)
-        const treeData = converteToTreeData(data?.data as APExtendedGrouped[])
+        const { data } = await getApsByApGroup({ params: { tenantId, venueId } }, true)
+        const treeData = converteToTreeData(data as SupportCcdApGroup[])
 
         setApsTreeData(treeData as DataNode[])
       }

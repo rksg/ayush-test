@@ -1,15 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { serviceApi }       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { serviceApi }                               from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
   DpskUrls,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  convertDpskNewFlowUrl
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -25,12 +26,12 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskPassphrase,
-  mockedDpskPassphraseListWithPersona,
   mockedDpskPassphraseDevices
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
-const mockDownloadCsv = jest.fn()
+const mockedDownloadCsv = jest.fn()
+const mockedDownloadNewFlowCsv = jest.fn()
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -39,7 +40,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useDownloadPassphrasesMutation: () => ([ mockDownloadCsv ])
+  useDownloadPassphrasesMutation: () => ([ mockedDownloadCsv ]),
+  useLazyDownloadNewFlowPassphrasesQuery: () => ([ mockedDownloadNewFlowCsv ])
 }))
 
 describe('DpskPassphraseManagement', () => {
@@ -57,6 +59,10 @@ describe('DpskPassphraseManagement', () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
+      ),
+      rest.post(
+        convertDpskNewFlowUrl(DpskUrls.getEnhancedPassphraseList.url),
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
       rest.delete(
@@ -138,13 +144,6 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should not delete selected passphrase when it is mapped to Identity', async () => {
-    mockServer.use(
-      rest.post(
-        DpskUrls.getEnhancedPassphraseList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseListWithPersona }))
-      )
-    )
-
     render(
       <Provider>
         <DpskPassphraseManagement />
@@ -153,7 +152,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseListWithPersona.data[0]
+    const targetRecord = mockedDpskPassphraseList.data[3]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
@@ -210,11 +209,14 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should export the passphrases', async () => {
-    mockDownloadCsv.mockImplementation(() => ({
+    mockedDownloadCsv.mockImplementation(() => ({
+      unwrap: () => Promise.resolve()
+    }))
+    mockedDownloadNewFlowCsv.mockImplementation(() => ({
       unwrap: () => Promise.resolve()
     }))
 
-    render(
+    const { rerender } = render(
       <Provider>
         <DpskPassphraseManagement />
       </Provider>, {
@@ -224,9 +226,18 @@ describe('DpskPassphraseManagement', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
 
-    await waitFor(() => {
-      expect(mockDownloadCsv).toHaveBeenCalled()
-    })
+    await waitFor(() => expect(mockedDownloadCsv).toHaveBeenCalledTimes(1))
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+    rerender(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
+    await waitFor(() => expect(mockedDownloadNewFlowCsv).toHaveBeenCalledTimes(1))
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should render the edit passphrase view', async () => {
@@ -280,36 +291,70 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.data[0]
-    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    const revocableRecord = mockedDpskPassphraseList.data[0]
+    // eslint-disable-next-line max-len
+    const revocableRow = await screen.findByRole('row', { name: new RegExp(revocableRecord.username) })
 
-    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(within(revocableRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
 
-    const revokeTextElement = await screen.findByText('Revoke "' + targetRecord.username + '"?')
-    // eslint-disable-next-line testing-library/no-node-access
-    const dialog = revokeTextElement.closest('.ant-modal-confirm') as HTMLDivElement
+    const revokeDialog = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    const revokeInput = within(revokeDialog).getByRole('textbox', { name: /Type the reason to revoke/i })
 
-    await userEvent.type(
-      within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
-      '1234'
-    )
+    // Character limit validation
+    await userEvent.type(revokeInput, 'a'.repeat(256))
+    // eslint-disable-next-line max-len
+    expect((await within(revokeDialog).findByRole('alert')).textContent).toBe('Field exceeds 255 characters')
+    await userEvent.clear(revokeInput)
 
-    await userEvent.click(within(dialog).getByRole('button', { name: /OK/i }))
+    await userEvent.type(revokeInput, '1234')
+    await userEvent.click(within(revokeDialog).getByRole('button', { name: /OK/i }))
     await waitFor(() => {
       expect(revokeFn).toHaveBeenCalledWith({
-        ids: [targetRecord.id],
+        ids: [revocableRecord.id],
         changes: { revocationReason: '1234' }
       })
     })
 
-    await userEvent.click(await within(targetRow).findByRole('checkbox', { checked: false }))
+    await waitFor(() => {
+      expect(revokeDialog).not.toBeVisible()
+    })
+
+    await userEvent.click(await within(revocableRow).findByRole('checkbox', { checked: false }))
     await userEvent.click(await screen.findByRole('button', { name: 'Unrevoke' }))
     await waitFor(() => {
       expect(unrevokeFn).toHaveBeenCalledWith({
-        ids: [targetRecord.id],
+        ids: [revocableRecord.id],
         changes: { revocationReason: null }
       })
+    })
+  })
+
+  it('should not revoke/unrevoke the passphrases when it is mapped to Identity', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const unrevocableRecord = mockedDpskPassphraseList.data[3]
+    // eslint-disable-next-line max-len
+    const unrevocableRow = await screen.findByRole('row', { name: new RegExp(unrevocableRecord.username) })
+    await userEvent.click(within(unrevocableRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
+
+    const warningDialog = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    expect(within(warningDialog).getByText('You are unable to Revoke this record due to its usage in Identity')).toBeVisible()
+    await userEvent.click(within(warningDialog).getByRole('button', { name: /OK/i }))
+
+    await waitFor(() => {
+      expect(warningDialog).not.toBeVisible()
     })
   })
 
@@ -449,15 +494,8 @@ describe('DpskPassphraseManagement', () => {
     expect(await within(expiredRow).findByText('Expired')).toBeVisible()
   })
 
-  it('should not be edited when it is mapped to Persona', async () => {
+  it('should not be edited when it is mapped to Identity', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
-    mockServer.use(
-      rest.post(
-        DpskUrls.getEnhancedPassphraseList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseListWithPersona }))
-      )
-    )
 
     render(
       <Provider>
@@ -467,7 +505,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseListWithPersona.data[0]
+    const targetRecord = mockedDpskPassphraseList.data[3]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
