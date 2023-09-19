@@ -19,7 +19,7 @@ import { edgeApi } from './edge'
 
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdgeDhcpService: build.mutation<EdgeDhcpSetting, RequestPayload>({
+    addEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeDhcpUrls.addDhcpService)
         return {
@@ -133,7 +133,8 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDhcpStats: build.query<TableResult<DhcpStats>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -155,7 +156,8 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDhcpHostStats: build.query<TableResult<DhcpHostStats>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -165,7 +167,8 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getDhcpUeSummaryStats: build.query<TableResult<DhcpUeSummaryStats>, RequestPayload>({
       query: ({ payload, params }) => {

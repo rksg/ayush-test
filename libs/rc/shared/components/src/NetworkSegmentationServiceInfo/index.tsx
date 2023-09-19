@@ -124,9 +124,9 @@ export const NetworkSegmentationServiceInfo = styled((
       }
     },
     {
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       content: () => (
-        <TenantLink to={`users/persona-management/persona-group/${personaGroupData?.id}`}>
+        <TenantLink to={`users/identity-management/identity-group/${personaGroupData?.id}`}>
           {personaGroupData?.name}
         </TenantLink>
       )
@@ -137,7 +137,7 @@ export const NetworkSegmentationServiceInfo = styled((
         const edgeInfo = nsgViewData?.edgeInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeId}/edge-details/overview`}
+            to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}
           >
             {edgeInfo?.edgeName}
           </TenantLink>

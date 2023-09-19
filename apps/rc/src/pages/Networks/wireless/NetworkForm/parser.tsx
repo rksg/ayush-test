@@ -286,15 +286,20 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.applicationPolicyId = null
   }
 
-  if (!get(data, 'wlan.advancedCustomization.l2AclPolicyId')) {
+  if (!get(data, 'wlan.advancedCustomization.l2AclPolicyId') ||
+    !get(data, 'wlan.advancedCustomization.l2AclEnable')
+  ) {
     advancedCustomization.l2AclPolicyId = null
   }
 
-  if (!get(data, 'wlan.advancedCustomization.l3AclPolicyId')) {
+  if (!get(data, 'wlan.advancedCustomization.l3AclPolicyId') ||
+    !get(data, 'wlan.advancedCustomization.l3AclEnable')
+  ) {
     advancedCustomization.l3AclPolicyId = null
   }
 
-  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication')) {
+  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication') &&
+      !get(data, 'wlan.macAddressAuthentication')) {
     (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 

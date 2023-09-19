@@ -182,7 +182,7 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country',
+    defaultMessage: 'Cannot move AP to another venue in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
@@ -435,6 +435,10 @@ export const validationMessages = {
   exceptionDscpValueExists: defineMessage({
     defaultMessage: 'The exception DSCP already exists.',
     description: 'Validation - exception dscp value exists'
+  }),
+  switchDhcpOptionIpMaxSize: defineMessage({
+    defaultMessage: 'Max number of DHCP Option IPs is 3',
+    description: 'Validation - DHCP option IPs max size checks'
   })
 }
 

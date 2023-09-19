@@ -280,5 +280,25 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/mspCustomers/mspAdmins/associations',
     newApi: true
+  },
+  getMspAggregations: {
+    method: 'get',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  addMspAggregations: {
+    method: 'post',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  updateMspAggregations: {
+    method: 'put',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  deleteMspAggregations: {
+    method: 'delete',
+    url: '/tenants/notificationAggregations',
+    newApi: true
   }
 }

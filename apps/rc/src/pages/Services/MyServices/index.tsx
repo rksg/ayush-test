@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -34,16 +35,17 @@ export default function MyServices () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
@@ -79,7 +81,7 @@ export default function MyServices () {
     {
       type: ServiceType.DPSK,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDpskListQuery({})
+      tableQuery: useGetDpskListQuery({ params: dpskNewConfigFlowParams })
     },
     {
       type: ServiceType.WIFI_CALLING,

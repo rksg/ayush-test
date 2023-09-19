@@ -23,8 +23,8 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }         from '@acx-ui/react-router-dom'
-import { noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -115,8 +115,8 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
   </TenantLink>
 }
 
-export function IncidentTable ({ filters, systemNetwork }: {
-   filters: IncidentFilter, systemNetwork?: boolean }) {
+export function IncidentTable ({ filters }: {
+   filters: IncidentFilter }) {
   const intl = useIntl()
   const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
@@ -266,10 +266,11 @@ export function IncidentTable ({ filters, systemNetwork }: {
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={!systemNetwork && {
+        rowSelection={{
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

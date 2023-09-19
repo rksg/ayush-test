@@ -26,7 +26,7 @@ export const Button = styled(AntButton)`
     } }
   }
 
-  &[disabled] {
+  &[disabled], &.ant-btn-disabled {
     svg { path { stroke: var(--acx-primary-white); } }
 
     &.ant-btn-default,

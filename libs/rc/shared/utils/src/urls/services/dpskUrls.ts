@@ -8,17 +8,20 @@ export const DpskPassphraseBaseUrl = '/api/dpskServices/:serviceId/passphrases'
 
 export const DpskPassphraseBaseUrlWithId = DpskPassphraseBaseUrl + '/:passphraseId'
 
-export const DpskPassphraseDevices = DpskPassphraseBaseUrl + '/:passphraseId/devices'
+export const DpskPassphraseDevices = DpskPassphraseBaseUrlWithId + '/devices'
+
+// ======== New API ========
 
 export const NewDpskBaseUrl = '/dpskServices'
 
 export const NewDpskBaseUrlWithId = NewDpskBaseUrl + '/:serviceId'
 
-export const NewDpskPassphraseBaseUrl = '/dpskServices/:serviceId/passphrases'
+export const NewDpskPassphraseBaseUrl = NewDpskBaseUrlWithId + '/passphrases'
 
 export const NewDpskPassphraseBaseUrlWithId = NewDpskPassphraseBaseUrl + '/:passphraseId'
 
-export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrl + '/:passphraseId/devices'
+export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrlWithId + '/devices'
+
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -128,6 +131,21 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
     oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
+    newApi: true
+  },
+  getNewFlowPassphraseDevices: {
+    method: 'get',
+    url: '/v2' + NewDpskPassphraseDevices,
+    newApi: true
+  },
+  updateNewFlowPassphraseDevices: {
+    method: 'post',
+    url: '/v2' + NewDpskPassphraseDevices,
+    newApi: true
+  },
+  deleteNewFlowPassphraseDevices: {
+    method: 'delete',
+    url: '/v2' + NewDpskPassphraseDevices,
     newApi: true
   }
 }

@@ -2,10 +2,11 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }                     from '@acx-ui/analytics/utils'
+import { TimeSeriesChartData, getSeriesData }                                      from '@acx-ui/analytics/utils'
 import { calculateGranularity }                                                    from '@acx-ui/analytics/utils'
 import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
 import { TimeStamp }                                                               from '@acx-ui/types'
+import type { AnalyticsFilter }                                                    from '@acx-ui/utils'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'
@@ -35,12 +36,14 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
     return startEndTimes
   }, [] as [TimeStamp, string, TimeStamp, number | null, string][])
 }
-export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
+export function SwitchStatusByTime ({ filters, refreshInterval }:
+  { filters: AnalyticsFilter, refreshInterval?: number }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'isSwitchUp', name: $t({ defaultMessage: 'SwitchStatus' }) }
   ] as Array<{ key: Key; name: string }>
   const queryResults = useSwitchStatusQuery(filters, {
+    ...(refreshInterval ? { pollingInterval: refreshInterval } : {}),
     selectFromResult: ({ data, ...rest }) => {
       return {
         timeSeries: getStartAndEndTimes(

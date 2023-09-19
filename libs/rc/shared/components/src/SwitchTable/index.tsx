@@ -47,8 +47,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
+import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -365,7 +365,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
-    key: 'EnableCliSessionButton',
+    key: getShowWithoutRbacCheckKey('EnableCliSessionButton'),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -520,8 +520,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         }
       }
       ] : [])}
-      // eslint-disable-next-line max-len
-      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+      iconButton={exportDevice ? {
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+        onClick: exportCsv
+      } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}

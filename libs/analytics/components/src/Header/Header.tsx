@@ -1,11 +1,14 @@
 import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
 import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
 import { useDateFilter }                            from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
+const isMLISA = get('IS_MLISA_SA')
 export type SubTitle = {
   key: string
   value: (number | string)[]
@@ -19,7 +22,7 @@ export type HeaderData = {
 type useHeaderExtraProps = {
   shouldQuerySwitch?: boolean,
   withIncidents?: boolean,
-  excludeNetworkFilter?: boolean
+  excludeNetworkFilter?: boolean,
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
 
@@ -28,11 +31,13 @@ const Filter = (
 ) => {
   return excludeNetworkFilter
     ? null
-    : <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
-      withIncidents={withIncidents}
-    />
+    : isMLISA
+      ? <SANetworkFilter shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        withIncidents={withIncidents}
+      />
 }
 
 export const useHeaderExtra = (props: useHeaderExtraProps) => {

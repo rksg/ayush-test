@@ -1,9 +1,10 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Typography, Select, Space } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { Select, Space } from 'antd'
+import { useIntl }       from 'react-intl'
 
 import {
+  Button,
   Drawer,
   Loader,
   Subtitle,
@@ -166,7 +167,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
     return isLoaded && <Select defaultValue={role}
-      style={{ width: '200px' }}
+      style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
@@ -203,20 +204,24 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
             })
           }}
         />
-        {selectedRows.length === 0 &&
-        <Typography.Text
-          type='danger'
-          style={{ marginTop: '20px' }}>
-          Please select at least one MSP administrator
-        </Typography.Text>}
       </Loader>
     </Space>
 
-  const footer =
-    <Drawer.FormFooter
-      onCancel={resetFields}
-      onSave={async () => handleSave()}
-    />
+  const footer =<div>
+    <Button
+      disabled={selectedRows.length === 0}
+      onClick={() => handleSave()}
+      type='primary'
+    >
+      {$t({ defaultMessage: 'Save' })}
+    </Button>
+
+    <Button onClick={() => {
+      setVisible(false)
+    }}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  </div>
 
   return (
     <Drawer

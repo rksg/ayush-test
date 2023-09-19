@@ -17,7 +17,7 @@ import {
   useSwitchDetailHeaderQuery,
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
-import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SWITCH_SERIAL_PATTERN_SUPPORT_RODAN } from '@acx-ui/rc/utils'
+import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -102,7 +102,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const columns: TableProps<SwitchTable>['columns'] = [
@@ -172,8 +171,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }, [form, switchDetail])
 
   const validatorSwitchModel = (serialNumber: string) => {
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (serialNumber && !re.test(serialNumber)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

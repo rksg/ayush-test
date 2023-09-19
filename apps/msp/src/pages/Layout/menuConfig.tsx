@@ -70,13 +70,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
       activeIcon: MspSubscriptionSolid
     }]),
     ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
-      ? [{ label: '' }]
-      : [{
+      ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Settings' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: ConfigurationOutlined,
-        activeIcon: ConfigurationSolid
+        activeIcon: ConfigurationSolid,
+        adminItem: true
       }])
   ]
   return config

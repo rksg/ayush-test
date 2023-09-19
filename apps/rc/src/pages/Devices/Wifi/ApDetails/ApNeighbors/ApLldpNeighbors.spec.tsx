@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                                       from '@acx-ui/components'
-import { CatchErrorResponse, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }      from '@acx-ui/test-utils'
+import { ToastProps }                                  from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { ApContextProvider } from '../ApContextProvider'
 
@@ -14,8 +14,8 @@ import ApLldpNeighbors                                            from './ApLldp
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  initPokeSocket: (requestId: string, handler: () => void) => {
-    return mockedInitPokeSocketFn(requestId, handler)
+  initPokeSocket: (subscriptionId: string, handler: () => void) => {
+    return mockedInitPokeSocketFn(subscriptionId, handler)
   },
   closePokeSocket: () => jest.fn()
 }))
@@ -53,6 +53,14 @@ describe('ApLldpNeighbors', () => {
     )
   })
 
+  beforeEach(() => {
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
+  })
+
+  afterEach(() => {
+    mockedInitPokeSocketFn.mockRestore()
+  })
+
   it('should render LLDP Neighbors view', async () => {
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
       setTimeout(handler, 0) // Simulate receving the message from websocket
@@ -66,35 +74,32 @@ describe('ApLldpNeighbors', () => {
 
     await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
 
-    const targetNeighbor = mockedApLldpNeighbors.neighbors[0]
-    const targetInterface = new RegExp(targetNeighbor.lldpInterface)
-    const targetRow = await screen.findByRole('row', { name: targetInterface })
-    expect(targetRow).toBeVisible()
+    const targetInterface = new RegExp(mockedApLldpNeighbors.neighbors[0].lldpInterface)
+    const targetInterfaceButton = await screen.findByRole('button', { name: targetInterface })
+    expect(targetInterfaceButton).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(targetRow).getByRole('button', { name: targetNeighbor.lldpInterface }))
+    const managedNeighborSysName = new RegExp(mockedApLldpNeighbors.neighbors[1].lldpSysName)
+    const managedNeighborLink = await screen.findByRole('link', { name: managedNeighborSysName })
+    expect(managedNeighborLink).toBeVisible()
+
+    await userEvent.click(targetInterfaceButton)
 
     const detailsDrawer = await screen.findByRole('dialog')
     expect(detailsDrawer).toBeVisible()
 
     await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(detailsDrawer).not.toBeVisible())
-
-    mockedInitPokeSocketFn.mockRestore()
   })
 
   it('should handle error correctly', async () => {
-    const mockedError: CatchErrorResponse = {
-      data: {
-        errors: [
-          {
-            code: 'WIFI-56789',
-            message: 'error occurs'
-          }
-        ],
-        requestId: 'REQUEST_ID'
-      },
-      status: 400
+    const mockedError = {
+      errors: [
+        {
+          code: 'WIFI-56789',
+          message: 'error occurs'
+        }
+      ],
+      requestId: 'REQUEST_ID'
     }
 
     mockServer.use(

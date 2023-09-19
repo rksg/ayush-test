@@ -39,7 +39,8 @@ import {
   VenueLanPorts,
   BillingCycleType,
   ConnectionMetering,
-  PropertyDpskSetting
+  PropertyDpskSetting,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
@@ -56,14 +57,14 @@ function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
       <div><ArrowDownOutlined /></div>
       <div>
         <Info>
-          {downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}
+          {downloadRate ? downloadRate + 'Mbps' : $t({ defaultMessage: 'Unlimited' })}
         </Info>
       </div>
     </div>
     <div style={{ display: 'flex', marginLeft: '4px' }}>
       <div><ArrowUpOutlined /></div>
       <div>
-        <Info>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
+        <Info>{uploadRate ? uploadRate + 'Mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
       </div>
     </div>
   </div>)
@@ -119,7 +120,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
           <Info>{$t({ defaultMessage: 'MaxData:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
-          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
+          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'MB' :
             $t({ defaultMessage: 'Unlimited' })}</Info>
         </div>
       </div>
@@ -629,12 +630,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       dpsks: [
         {
           type: PropertyDpskType.UNIT,
-          passphrase: unitPersona?.dpskPassphrase,
+          passphrase: unitPersona?.dpskPassphrase === ''
+            ? undefined : unitPersona?.dpskPassphrase,
           vlan: unitPersona?.vlan
         },
         {
           type: PropertyDpskType.GUEST,
-          passphrase: guestPersona?.dpskPassphrase,
+          passphrase: guestPersona?.dpskPassphrase === ''
+            ? undefined : guestPersona?.dpskPassphrase,
           vlan: guestPersona?.vlan
         }
       ],
@@ -738,6 +741,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 // UnitName(235) -> PersonaName(255)
                 // ex. Rule = GUEST_{UnitName}-{timestamp} or UNIT_{UnitName}-{timestamp}
                 { max: 235 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) },
                 { validator: (_, value) => nameValidator(value) }
               ]}
             />
@@ -757,7 +761,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               }
               rules={[
                 { min: 8 },
-                { max: 63 }
+                { max: 63 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />
@@ -778,7 +783,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 }
                 rules={[
                   { min: 8 },
-                  { max: 63 }
+                  { max: 63 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) }
                 ]}
                 children={<Input />}
               />
@@ -832,7 +838,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Resident Name' })}
               rules={[
                 { required: true },
-                { max: 255 }
+                { max: 255 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewTabLink should render a Link with correct props 1`] = `
+<DocumentFragment>
+  <div>
+    {"to":"/some/url","target":"_blank","rel":"noreferrer noopener","children":"link text"}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NewTabLink should render an anchor with correct attributes 1`] = `
+<DocumentFragment>
+  <a
+    href="https://test.com"
+    rel="noreferrer noopener"
+    target="_blank"
+  >
+    link text
+  </a>
+</DocumentFragment>
+`;

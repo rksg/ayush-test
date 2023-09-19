@@ -27,7 +27,8 @@ import {
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
-  useNetworkVenueListQuery
+  useNetworkVenueListQuery,
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -39,7 +40,7 @@ import {
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
-  IsWPA3Security
+  IsSecuritySupport6g
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -97,6 +98,16 @@ export function NetworkVenuesTab () {
     useQuery: useNetworkVenueListQuery,
     defaultPayload
   })
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
+    })
+  })
+
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -153,7 +164,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
       setTableData(data)
@@ -171,7 +182,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
+    const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -221,7 +232,7 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = IsWPA3Security(network?.wlan?.wlanSecurity)
+      const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
       if (triBandRadioFeatureFlag && isWPA3security) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
@@ -305,12 +316,15 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       fixed: 'left'
     },
     {
       key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
+      filterKey: 'city',
+      filterable: cityFilterOptions || false,
       sorter: true
     },
     {
@@ -347,8 +361,11 @@ export function NetworkVenuesTab () {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled) || systemNetwork){
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
           disabled = true
+        } else if (systemNetwork) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
         }else{
           title = ''
         }
@@ -504,7 +521,10 @@ export function NetworkVenuesTab () {
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
+        enableApiFilter={true}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
       />
       <Form.Provider
         onFormFinish={handleFormFinish}

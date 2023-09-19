@@ -1142,7 +1142,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <button
-                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
+                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
                                 type="button"
                               >
                                 <span>
@@ -1163,7 +1163,7 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
+                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
                                 type="button"
                               >
                                 <span>
