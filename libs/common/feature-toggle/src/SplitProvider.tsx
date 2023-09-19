@@ -20,7 +20,6 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { data: userProfile } = useUserProfileContext()
   const prefixKey = isMLISA ? 'MLISA-' : 'ACX-'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
-  const splitProxy = isMLISA ? '' : splitProxyEndpoint
 
   if (!factory && tenantKey) {
     factory = SplitSdk({
@@ -31,11 +30,11 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         authorizationKey: splitKey,
         key: tenantKey
       },
-      urls: {
-        sdk: splitProxy,
-        events: splitProxy,
-        auth: splitProxy
-      },
+      ...(isMLISA ? {} : { urls: {
+        sdk: splitProxyEndpoint,
+        events: splitProxyEndpoint,
+        auth: splitProxyEndpoint
+      } }),
       storage: {
         type: 'LOCALSTORAGE',
         prefix: prefixKey + suffix
