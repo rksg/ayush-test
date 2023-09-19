@@ -623,6 +623,8 @@ export function StackForm () {
     if(venuesList){
       const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
       setCurrentFw(venueFw || '')
+      const miniMembers = venueFw?.includes('09010h') ? 4 : 2
+      setTableData(tableData.splice(0, miniMembers))
     }
     setApGroupOption(options as DefaultOptionType[])
   }
