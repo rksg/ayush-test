@@ -3,10 +3,10 @@
 import { BasePersonaTable } from 'apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable'
 import { useIntl }          from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { LineChartOutline, ListSolid }              from '@acx-ui/icons'
-import { ClientDualTable, SwitchClientsTable }      from '@acx-ui/rc/components'
+import { Tabs, Tooltip }                       from '@acx-ui/components'
+import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import { LineChartOutline, ListSolid }         from '@acx-ui/icons'
+import { ClientDualTable, SwitchClientsTable } from '@acx-ui/rc/components'
 import {
   useGetPersonaGroupByIdQuery,
   useGetQueriablePropertyConfigsQuery
@@ -82,17 +82,16 @@ export function VenueClientsTab () {
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wired' })}
-        key='switch'
-        disabled={!useIsSplitOn(Features.DEVICES)}>
+        key='switch'>
         <SwitchClientsTable filterBySwitch={true}/>
       </Tabs.TabPane>
       {(isCloudpathBetaEnabled && personaGroupData?.nsgId && personaGroupData?.id) &&
         <Tabs.TabPane
           tab={$t(
-            { defaultMessage: 'Persona ({count})' },
+            { defaultMessage: 'Identity ({count})' },
             { count: personaGroupData?.personas?.length ?? 0 }
           )}
-          key={'persona'}
+          key={'identity'}
         >
           <BasePersonaTable
             personaGroupId={personaGroupData.id}

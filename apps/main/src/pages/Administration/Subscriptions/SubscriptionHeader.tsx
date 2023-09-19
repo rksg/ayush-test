@@ -8,8 +8,7 @@ import {
 import { Features, useIsTierAllowed, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
-  useGetEntitlementSummaryQuery,
-  useGetAccountTierQuery
+  useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
@@ -17,9 +16,9 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { isDelegationMode }                from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
-import { getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
+import { useParams }                                         from '@acx-ui/react-router-dom'
+import { useGetAccountTierQuery }                            from '@acx-ui/user'
+import { getJwtTokenPayload, isDelegationMode, AccountTier } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 

@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import { waitFor } from '@testing-library/react'
 import { rest }    from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { PersonaUrls, PropertyUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -52,7 +52,6 @@ describe('VenueClientsTab', () => {
     )
   })
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true) // Features.DEVICES
     jest.mocked(useIsTierAllowed).mockReturnValue(true) // Features.CLOUDPATH_BETA
 
     const params = {
@@ -74,12 +73,12 @@ describe('VenueClientsTab', () => {
       search: ''
     })
 
-    const personaTab = await screen.findByRole('tab', { name: /Persona/i })
+    const personaTab = await screen.findByRole('tab', { name: /Identity/i })
     await waitFor(() => expect(personaTab).toHaveAttribute('aria-selected', 'false'))
     fireEvent.click(personaTab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/persona`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/identity`,
       hash: '',
       search: ''
     })
@@ -94,6 +93,6 @@ describe('VenueClientsTab', () => {
     render(<Provider><VenueClientsTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
     })
-    expect(screen.queryByRole('tab', { name: /Persona/i })).toBeNull()
+    expect(screen.queryByRole('tab', { name: /Identity/i })).toBeNull()
   })
 })

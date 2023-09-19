@@ -101,3 +101,57 @@ export const ContentDivider = styled(AntDivider).attrs({ type: 'horizontal' })`
   background: var(--acx-neutrals-20);
   margin: 16px 0px 28px !important
 `
+
+export const PortStatus = styled.div`
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  margin-bottom: 30px;
+  .profile{
+    font-weight: var(--acx-body-font-weight); 
+    margin-left: 4px;
+  }
+`
+
+export const VoiceVlan = styled.div`
+  font-size: var(--acx-subtitle-3-font-size);
+  .ant-form-item-control-input {
+    font-size: var(--acx-body-4-font-size);
+    min-height: var(--acx-body-4-font-size); 
+    .multiple {
+      .title{
+        margin-right: 5px;
+      }
+    }
+  }
+`
+
+export const TaggedVlanTab = styled.div`
+  display: flex;
+  align-items: center;
+  svg {
+    color: var(--acx-accents-orange-50);
+    margin-left: 5px;
+  }
+`
+
+export const FieldErrorMessage = styled.div`
+  font-size: var(--acx-body-3-font-size);
+  color: var(--acx-semantics-red-50);
+  margin-top: 10px;
+`
+
+export const VoiceVlanSwitch = styled.div`
+  margin-bottom: 10px;
+  .switch {
+    margin-left: 24px;
+    .ant-switch {
+      margin-left: 4px;
+    }
+  }
+  .invalid.ant-switch-checked {
+    border-color: var(--acx-semantics-red-50);
+    .ant-switch-handle::before {
+      background-color: var(--acx-semantics-red-50);
+    }
+  }
+`

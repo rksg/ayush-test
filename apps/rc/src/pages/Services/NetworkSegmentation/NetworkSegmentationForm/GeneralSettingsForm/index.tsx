@@ -51,7 +51,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   )
 
   useEffect(() => {
-    if(personaGroupId) {
+    if(!props.editMode && personaGroupId) {
       form.setFieldValue('personaGroupId', personaGroupId)
     }
   }, [personaGroupId])
@@ -115,7 +115,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           <UI.FieldTitle>
             {
               $t({
-                defaultMessage: 'Select the Venue where you want to segment the devices (personas):'
+                // eslint-disable-next-line max-len
+                defaultMessage: 'Select the Venue where you want to segment the devices (identities):'
               })
             }
           </UI.FieldTitle>

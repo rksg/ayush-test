@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { BulbOutlined }                       from '@acx-ui/icons'
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
@@ -190,11 +192,10 @@ describe('Drawer', () => {
       )
       const addAnother = screen.getByRole('checkbox', { name: 'Checkbox' })
       expect(addAnother).not.toBeChecked()
-      fireEvent.click(addAnother)
-      expect(addAnother).toBeChecked()
-      fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+      await userEvent.click(addAnother)
+      await userEvent.click(screen.getByRole('button', { name: 'OK' }))
       expect(mockOnSave).toBeCalledWith(true)
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Back' }))
       expect(mockOnCancel).toBeCalled()
     })
   })

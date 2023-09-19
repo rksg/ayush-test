@@ -109,11 +109,6 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/preferences',
     newApi: true
   },
-  getAccountTier: {
-    method: 'get',
-    url: '/tenants/accountTier',
-    newApi: true
-  },
   revokeInvitation: {
     method: 'delete',
     url: '/tenants/delegations/:delegationId',

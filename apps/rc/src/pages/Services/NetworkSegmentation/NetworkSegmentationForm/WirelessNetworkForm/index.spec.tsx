@@ -16,15 +16,14 @@ import {
   render,
   renderHook,
   screen,
-  waitFor,
-  within
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockNetworkGroup,
-  mockNsgStatsList,
-  mockVenueNetworkData
+  mockDeepNetworkList,
+  mockNetworkGroup, mockNetworkSaveData,
+  mockNsgStatsList
 } from '../../__tests__/fixtures'
 
 
@@ -60,7 +59,7 @@ const mockedFinishFn = jest.fn()
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('NetworkSegmentation - GeneralSettingsForm', () => {
+describe('NetworkSegmentation - WirelessNetworkForm', () => {
   let params: { tenantId: string, serviceId: string }
   const mockedGetNetworkDeepList = jest.fn()
 
@@ -73,8 +72,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -84,7 +83,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => {
           mockedGetNetworkDeepList()
-          return res(ctx.status(200))
+          return res(ctx.json(mockDeepNetworkList))
         }
       ),
       rest.post(
@@ -136,6 +135,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     const addButtons = await screen.findAllByRole('button', { name: 'Add' })
     await user.click(addButtons[1])
+    expect(mockedFinishFn).toBeCalledTimes(1)
   })
 
   it('Step3 - Wireless network will be not block by empty list', async () => {
@@ -162,42 +162,6 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     await screen.findByRole('checkbox', { name: 'Network 1' })
     const addButtons = await screen.findAllByRole('button', { name: 'Add' })
     await user.click(addButtons[1])
-  })
-
-  it('Add tunnel profile', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <StepsForm onFinish={mockedFinishFn}>
-          <StepsForm.StepForm>
-            <WirelessNetworkForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>,
-      { route: { params, path: createNsgPath } })
-    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
-    await user.click(addButtons[0])
-    const tunnelDialog = await screen.findByRole('dialog')
-    const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Profile Name' })
-    await user.type(policyNameField, 'TestTunnel')
-    await user.click(within(tunnelDialog).getByRole('radio', { name: 'Auto' }))
-    await user.click(within(tunnelDialog).getByRole('button', { name: 'Add' }))
-  })
-
-  it('Click cancel in dialog will close dialog', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <StepsForm onFinish={mockedFinishFn}>
-          <StepsForm.StepForm>
-            <WirelessNetworkForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>,
-      { route: { params, path: createNsgPath } })
-    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
-    await user.click(addButtons[0])
-    const tunnelDialog = await screen.findByRole('dialog')
-    await user.click(within(tunnelDialog).getByRole('button', { name: 'Cancel' }))
+    expect(mockedFinishFn).toBeCalledTimes(1)
   })
 })

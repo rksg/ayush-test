@@ -20,7 +20,8 @@ describe('Table Filters', () => {
         [{ name: 'john tan' }, { name: 'dragon den' }],
         { 'john tan': true as unknown as boolean[] },
         filterableCol,
-        false
+        false,
+        200
       ))
       const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
       fireEvent.mouseDown(select)
@@ -40,7 +41,8 @@ describe('Table Filters', () => {
         undefined,
         {},
         filterableCol,
-        false
+        false,
+        200
       ))
     })
 
@@ -57,7 +59,8 @@ describe('Table Filters', () => {
         undefined,
         {},
         filterableCol,
-        false
+        false,
+        200
       ))
     })
   })

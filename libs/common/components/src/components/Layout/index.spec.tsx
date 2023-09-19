@@ -112,7 +112,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
@@ -137,7 +137,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
@@ -163,12 +163,28 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/analytics/next/dashboard',
+        path: '/ai/dashboard',
         params: { page: 'dashboard' },
         wrapRoutes: false
       }
     })
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render IframeContent when location pathname has "dataStudio"', async () => {
+    render(<Layout
+      logo={<div />}
+      menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/some/path/dataStudio',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
   })
   it('should render correctly when innerWidth >= 1280', async () => {
     render(<Layout
