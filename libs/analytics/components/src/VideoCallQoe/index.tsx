@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react'
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Tooltip }                    from '@acx-ui/components'
+import { Tooltip, PageHeader }        from '@acx-ui/components'
 import { TenantLink }                 from '@acx-ui/react-router-dom'
 import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
 
@@ -56,4 +56,17 @@ export function useVideoCallQoe () {
     headerExtra,
     component
   }
+}
+
+export function VideoCallQoe () {
+  const { $t } = useIntl()
+  const { title, headerExtra, component } = useVideoCallQoe()
+  return <>
+    <PageHeader
+      breadcrumb={[{ text: $t({ defaultMessage: 'App Experience' }) }]}
+      title={title}
+      extra={headerExtra}
+    />
+    {component}
+  </>
 }
