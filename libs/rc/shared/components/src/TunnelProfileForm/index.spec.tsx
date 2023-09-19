@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { TunnelProfileForm } from './index'
 
@@ -52,34 +52,23 @@ describe('TunnelProfileForm', () => {
     expect(await screen.findByRole('spinbutton')).toBeVisible()
   })
 
-  it('should show error when ageTime is less than 5', async () => {
+  it('should show error when ageTime is invalid', async () => {
     render(
       <Form>
         <TunnelProfileForm />
       </Form>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
-    fireEvent.change(ageTimeInput, { target: { value: 1 } })
 
-    await waitFor(() => {
-      expect(screen.queryByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
-        .toBeVisible()
-    })
-  })
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '1')
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
 
-  it('should show error when ageTime is greater than 10080', async () => {
-    render(
-      <Form>
-        <TunnelProfileForm />
-      </Form>
-    )
-    const ageTimeInput = await screen.findByRole('spinbutton')
-    fireEvent.change(ageTimeInput, { target: { value: 10081 } })
-
-    await waitFor(() => {
-      expect(screen.queryByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
-        .toBeVisible()
-    })
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '10081')
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
   })
 
   it('should trigger ageTime validate when change unit', async () => {
@@ -89,17 +78,15 @@ describe('TunnelProfileForm', () => {
       </Form>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
-    fireEvent.change(ageTimeInput, { target: { value: 5 } })
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '5')
     const ageTimeUnitSelect = screen.getByRole('combobox')
     await userEvent.selectOptions(
       ageTimeUnitSelect,
       await screen.findByRole('option', { name: 'Week' })
     )
-
-    await waitFor(() => {
-      expect(screen.queryByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
-        .toBeVisible()
-    })
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
   })
 
   it('Input invalid profile name will show error message', async () => {
