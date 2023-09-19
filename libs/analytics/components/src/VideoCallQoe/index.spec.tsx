@@ -23,7 +23,7 @@ describe('VideoCallQoe', () => {
         return component
       }
       render(<Component/>, { wrapper: Provider, route: { params } })
-
+      expect(await screen.findByText('Test Call Name')).toBeVisible()
     })
 
     it('should render title with count correctly', async () => {
