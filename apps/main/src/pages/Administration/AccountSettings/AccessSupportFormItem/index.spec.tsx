@@ -11,7 +11,7 @@ import {
   fireEvent,
   waitFor
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps, setUserProfile, hasAccess } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakeTenantDelegation } from '../__tests__/fixtures'
 
