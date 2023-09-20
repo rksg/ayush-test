@@ -156,7 +156,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -374,7 +374,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -692,7 +692,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -1010,7 +1010,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -1383,7 +1383,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -1711,7 +1711,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
@@ -2039,7 +2039,7 @@ Array [
                 "value": "Wireless Clients Report",
               },
             ],
-            "uri": "/users/wifi/reports/clients",
+            "uri": "/users/wifi/reports",
           },
         ],
         "label": Array [
