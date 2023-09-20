@@ -367,13 +367,13 @@ export function RadioSettings () {
       title: string, dual5GName?: string) => {
 
       const content = dual5GName?
-      /* eslint-disable max-len */
         $t(
+          /* eslint-disable max-len */
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
+          /* eslint-enable max-len */
           { dual5GName, br: <br /> }
         ):
         $t({ defaultMessage: 'Please select at least two channels' })
-      /* eslint-enable max-len */
       if (Array.isArray(channels) && channels.length <2) {
         showActionModal({
           type: 'error',
