@@ -28,7 +28,7 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string| undefined }
       searchable: true,
       sorter: { compare: sortProp('hostname', defaultSort) },
       render: (_, row : Client, __, highlightFn) => (
-        <TenantLink to={`/users/wifi/clients/${row.mac}/details/troubleshooting`}>
+        <TenantLink to={`/users/wifi/clients/${row.mac}/details`}>
           {highlightFn(row.hostname || '--')}</TenantLink>
       )
     },
@@ -44,7 +44,6 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string| undefined }
       dataIndex: 'mac',
       searchable: true,
       key: 'mac',
-
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {

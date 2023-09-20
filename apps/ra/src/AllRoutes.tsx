@@ -61,7 +61,7 @@ function AllRoutes () {
       <Route path='users'>
         <Route path='wifi/clients'>
           <Route path=':clientId'>
-            <Route path=':activeTab' element={<ClientDetails />}>
+            <Route path=':activeTab'>
               <Route path='' element={<Navigate replace to='./overview' />} />
               <Route path=':activeTab' element={<ClientDetails />} />
               <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
