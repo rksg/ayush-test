@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedDevices
+  mockedDevices,
+  clientMeta
 } from './__tests__/fixtures'
 import ManageDevicesDrawer from './ManageDevicesDrawer'
 
@@ -52,7 +53,11 @@ describe('ManageDevicesDrawer', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json([]))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (req, res, ctx) => res(ctx.json(clientMeta))
       )
     )
   })
