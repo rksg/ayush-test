@@ -115,7 +115,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const isSupportAccessEnabled = Boolean(isAccessSupported)
 
   useEffect(() => {
-    if (expiryDate && !isUpdating && !isRevokeExpired.current) {
+    if (isRksSupportAllowed && expiryDate && !isUpdating && !isRevokeExpired.current) {
       const remainingDuration = moment.duration(
         moment(expiryDate).diff(moment.now()))
       const remainingSecs = remainingDuration.asSeconds()
@@ -131,7 +131,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
           })
       }
     }
-  }, [expiryDate, isUpdating])
+  }, [expiryDate, isUpdating, isRksSupportAllowed])
 
   return (
     <Row gutter={24} className={className}>
