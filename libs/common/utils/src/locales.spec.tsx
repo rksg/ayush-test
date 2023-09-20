@@ -306,7 +306,7 @@ describe('localePath', () => {
     const url = '/locales/compiled/:locale.json'
     mockServer.use(
       rest.get(url, (req, res, ctx) => {
-        return res(ctx.json({}))
+        return res(ctx.status(404), ctx.json({}))
       })
     )
     const result = await localePath('es')
