@@ -32,7 +32,7 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
           08.0.92d
         </span>
         <br />
-        If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to 09.0.10f (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.
+        If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to 09.0.10h (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.
         <br />
         <div
           class="styledComponents__Warning-sc-1yoazt9-6 euQKpb"

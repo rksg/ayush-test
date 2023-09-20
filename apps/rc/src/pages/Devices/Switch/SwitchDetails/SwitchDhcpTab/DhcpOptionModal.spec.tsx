@@ -13,6 +13,12 @@ const mockOptionData = {
   value: '1.2.3.4'
 }
 
+const mockOptionMultipleIpData = {
+  seq: 6,
+  type: DHCP_OPTION_TYPE.IP,
+  value: '1.2.3.4 4.5.6.7'
+}
+
 describe('DhcpOptionModal', () => {
   const params = {
     tenantId: ':tenantId',
@@ -43,5 +49,37 @@ describe('DhcpOptionModal', () => {
     input.focus()
 
     expect(await screen.findByDisplayValue('abc')).toBeVisible()
+  })
+
+  it('should validate IP correctly with error message', async () => {
+    // eslint-disable-next-line max-len
+    render(<Provider><DhcpOptionModal open={true} editRecord={mockOptionMultipleIpData}/></Provider>, {
+      route: { params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+      }
+    })
+    await screen.findByDisplayValue('1.2.3.4 4.5.6.7')
+
+    const radio = await screen.findByRole('radio', { name: 'IP' })
+    expect(radio).toBeEnabled()
+
+    const input = await screen.findByLabelText('Option Value')
+    await userEvent.type(input, ' 3.')
+    input.focus()
+
+    expect(await screen.findByDisplayValue('1.2.3.4 4.5.6.7 3.')).toBeVisible()
+    const invalidMessage = await screen.findByRole('alert', {
+      name: (_, el) => el.textContent === 'Please enter a valid IP address'
+    })
+    expect(invalidMessage).toBeVisible()
+
+
+    await userEvent.type(input, '4.4.4 8.8.8.8')
+    input.focus()
+    expect(await screen.findByDisplayValue('1.2.3.4 4.5.6.7 3.4.4.4 8.8.8.8')).toBeVisible()
+    const exceedMessage = await screen.findByRole('alert', {
+      name: (_, el) => el.textContent === 'Max number of DHCP Option IPs is 3'
+    })
+    expect(exceedMessage).toBeVisible()
   })
 })

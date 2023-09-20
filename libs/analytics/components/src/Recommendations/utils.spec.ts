@@ -159,19 +159,19 @@ describe('crrmText', () => {
   it('returns correct text for recommended configuration', () => {
     expect(crrmText({
       recommended: 'crrm'
-    })).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx power')
+    })).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx Power')
     expect(crrmText({
       recommended: 'crrm',
       txPowerAPCount: 0
-    })).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx power')
+    })).toMatch('AI-Driven RRM for channel and bandwidth plan with no change in AP Tx Power')
     expect(crrmText({
       recommended: 'crrm',
       txPowerAPCount: 1
-    })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx power in 1 AP') // eslint-disable-line max-len
+    })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx Power in 1 AP') // eslint-disable-line max-len
     expect(crrmText({
       recommended: 'crrm',
       txPowerAPCount: 2
-    })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx power in 2 APs') // eslint-disable-line max-len
+    })).toMatch('AI-Driven RRM for channel and bandwidth plan with static and reduced AP Tx Power in 2 APs') // eslint-disable-line max-len
   })
 })
 

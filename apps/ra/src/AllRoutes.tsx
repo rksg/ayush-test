@@ -10,6 +10,7 @@ import {
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
+import ClientDetails   from './pages/ClientDetails'
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
 import Incidents       from './pages/Incidents'
@@ -55,6 +56,17 @@ function AllRoutes () {
         <Route index={false}
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+      </Route>
+      <Route path='users'>
+        <Route path='wifi/clients'>
+          <Route path=':clientId'>
+            <Route path=':activeTab' element={<ClientDetails />}>
+              <Route path='' element={<Navigate replace to='./overview' />} />
+              <Route path=':activeTab' element={<ClientDetails />} />
+              <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
+            </Route>
+          </Route>
+        </Route>
       </Route>
     </Route>
   </Route>)

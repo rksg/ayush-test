@@ -44,7 +44,8 @@ export const residentPortalApi = baseResidentPortalApi.injectEndpoints({
       transformResponse (result: NewTableResult<ResidentPortal>) {
         return transferToTableResult<ResidentPortal>(result)
       },
-      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
       query: ({ params, payload }) => {

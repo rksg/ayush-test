@@ -119,6 +119,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Venue' }),
       content:
       <VenueLink
+        showNoData={true}
         name={venueDisplay?.name}
         venueId={venueDisplay?.id}
       />
@@ -131,6 +132,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'DPSK Service' }),
       content:
       <DpskPoolLink
+        showNoData={true}
         name={dpskPoolDisplay?.name}
         dpskPoolId={detailsQuery.data?.dpskPoolId}
       />
@@ -139,6 +141,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'MAC Registration' }),
       content:
         <MacRegistrationPoolLink
+          showNoData={true}
           name={macPoolDisplay?.name}
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
@@ -147,6 +150,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Network Segmentation' }),
       content:
         <NetworkSegmentationLink
+          showNoData={true}
           name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
         />

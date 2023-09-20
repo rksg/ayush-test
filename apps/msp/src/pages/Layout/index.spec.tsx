@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, FirmwareUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
 import Layout from '.'
 
@@ -133,6 +133,9 @@ describe('Layout', () => {
     services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
       return { data: mspEcProfile }
     })
+    services.useMspEntitlementListQuery = jest.fn().mockImplementation(() => {
+      return { data: entitlement }
+    })
     services.useGetAlarmCountQuery = jest.fn().mockImplementation(() => {
       return {}
     })
@@ -163,12 +166,30 @@ describe('Layout', () => {
           totalCount: 0
         }))
       ),
-      rest.get(
-        MspUrlsInfo.getMspEntitlement.url,
-        (req, res, ctx) => res(ctx.json(entitlement))
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json({
+          upgradeVenueViewList: []
+        }))
       ),
       rest.get(
         'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json',
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        UserUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        UserUrlsInfo.getCloudVersion.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        UserUrlsInfo.getCloudScheduleVersion.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )

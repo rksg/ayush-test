@@ -10107,7 +10107,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       style="margin-top: 10px;"
     >
       <div
-        class="ant-alert ant-alert-warning styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
+        class="ant-alert ant-alert-warning styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
         data-show="true"
         role="alert"
       >
@@ -11710,7 +11710,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
       style="margin-top: 10px;"
     >
       <div
-        class="ant-alert ant-alert-warning styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
+        class="ant-alert ant-alert-warning styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
         data-show="true"
         role="alert"
       >
