@@ -84,20 +84,15 @@ export function LowPowerBannerAndModal (props: {
     }
   }, [])
 
-  if (context === 'ap') {
-    return <></>
-  }
+  const isRenderNeed = ![
+    // This banner shouldn't appear in AP's single radio setting.
+    (context === 'ap'),
+    // No show when no low-power AP information or 0 low-power AP and under venue single radio setting
+    ((!lowPowerAPs || lowPowerAPs?.lowPowerAPCount === 0) && parent === 'venue')
+  ].some(Boolean)
 
-  if(!lowPowerAPs && parent === 'venue') {
-    return <></>
-  }
-
-  if(lowPowerAPs?.lowPowerAPCount === 0 && parent === 'venue') {
-    return <></>
-  }
-
-  return (
-    <>
+  return (<>
+    {isRenderNeed && <>
       <LowerPowerInstructionModal
         modelVisibility={displayLowPowerModeModal}
         modalOff={() => {setDisplayLowPowerModeModal(false)}}
@@ -125,8 +120,8 @@ export function LowPowerBannerAndModal (props: {
           </Button>
         </Col>
       </Row>
-    </>
-  )
+    </>}
+  </>)
 }
 
 function LowerPowerInstructionModal (props: {
