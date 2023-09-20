@@ -1,7 +1,6 @@
 import { gql } from 'graphql-request'
 
 import { dataApiSearch } from '@acx-ui/store'
-import { NetworkPath }   from '@acx-ui/utils'
 
 export interface RequestPayload {
   start: string
@@ -17,15 +16,6 @@ export interface Client {
   osType: string
   ipAddress: string
   lastActiveTime: string
-}
-
-export interface NetworkHierarchy {
-  name: string
-  root: string
-  type: string
-  apCount: number
-  networkPath: NetworkPath
-  switchCount: number
 }
 
 export interface ClientList {
