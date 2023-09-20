@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { dataApi }                             from '@acx-ui/store'
-import { NetworkPath, PathNode }               from '@acx-ui/utils'
+import { defaultNetworkPath }    from '@acx-ui/analytics/utils'
+import { dataApi }               from '@acx-ui/store'
+import { NetworkPath, PathNode } from '@acx-ui/utils'
+import type { AnalyticsFilter }  from '@acx-ui/utils'
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
@@ -22,6 +23,27 @@ interface Response {
     hierarchyNode: { children: Child[] }
   }
 }
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
+interface NetworkNode extends NetworkHierarchy<Child>{}
+interface HierarchyResponse {
+  network: {
+    apHierarchy: NetworkNode[]
+    switchHierarchy: NetworkNode[]
+  }
+}
+
+const mergeNodes = (children: NetworkNode[]): NetworkNode[] => {
+  return Object.values(children.reduce((nodes, node) => {
+    const key = node.type + node.name
+    if (nodes[key]) {
+      nodes[key].children!.push(...node.children!)
+    } else {
+      nodes[key] = node
+    }
+    return nodes
+  }, {} as { [key: string]: NetworkNode }))
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
@@ -106,8 +128,44 @@ export const api = dataApi.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
       transformResponse: (response: Response) => response.network.hierarchyNode.children
+    }),
+    networkHierarchy: build.query<NetworkNode, Omit<NetworkHierarchyFilter, 'filter'>>({
+      query: payload => ({
+        document: gql`
+          query Network($start: DateTime, $end: DateTime) {
+              network(start: $start, end: $end) {
+                apHierarchy
+                ${payload.shouldQuerySwitch ? 'switchHierarchy' : ''}
+            }
+          }
+        `,
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate
+        }
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_HIERARCHY' }],
+      transformResponse: ({ network: { apHierarchy, switchHierarchy } }: HierarchyResponse) => ({
+        name: 'Network',
+        type: 'network',
+        children: mergeNodes(apHierarchy.concat((switchHierarchy || [])))
+          .map((system: NetworkNode): NetworkNode => ({
+            ...system,
+            children: mergeNodes(system.children!.reduce(
+              (nodes, node) => nodes.concat(node.name === '1||Administration Domain'
+                ? node.children!
+                : [{ ...node, name: node.name.slice(3) }]
+              ),
+              [] as NetworkNode[]
+            ))
+          }))
+      } as NetworkNode)
     })
   })
 })
 
-export const { useNetworkFilterQuery, useRecentNetworkFilterQuery } = api
+export const {
+  useNetworkFilterQuery,
+  useRecentNetworkFilterQuery,
+  useNetworkHierarchyQuery
+} = api

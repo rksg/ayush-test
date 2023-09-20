@@ -3,7 +3,6 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { useDisconnectClientMutation, useGetClientDetailsQuery }         from '@acx-ui/rc/services'
 import { ClientStatusEnum, ClientUrlsInfo }                              from '@acx-ui/rc/utils'
 import {
@@ -40,7 +39,6 @@ function ClientDetailPageHeader () {
   const [disconnectClient] = useDisconnectClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -108,22 +106,24 @@ function ClientDetailPageHeader () {
           </Space>
         }
       </Space>}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Clients' }), link: '' },
         { text: $t({ defaultMessage: 'Wireless' }), link: '' },
         { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
-      ] : [{ text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }]}
-      extra={filterByAccess([
-        <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu}>{()=>
-          <Button type='primary'>
-            <Space>
-              {$t({ defaultMessage: 'Actions' })}
-              <CaretDownSolidIcon />
-            </Space>
-          </Button>
-        }</Dropdown>
-      ])}
+      ]}
+      extra={[
+        <DatePicker />,
+        ...filterByAccess([
+          <Dropdown overlay={menu}>{()=>
+            <Button type='primary'>
+              <Space>
+                {$t({ defaultMessage: 'Actions' })}
+                <CaretDownSolidIcon />
+              </Space>
+            </Button>
+          }</Dropdown>
+        ])
+      ]}
       footer={<ClientDetailTabs />}
     />
   )

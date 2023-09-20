@@ -64,7 +64,7 @@ describe('Persona Table', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       })
 
@@ -91,13 +91,13 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
 
-    const createButton = await screen.findByRole('button', { name: /Add Persona/i })
+    const createButton = await screen.findByRole('button', { name: /Add Identity/i })
     fireEvent.click(createButton)
 
-    const nameField = await screen.findByLabelText('Persona Name') as HTMLInputElement
+    const nameField = await screen.findByLabelText('Identity Name') as HTMLInputElement
     expect(nameField.value).toBe('')
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
@@ -120,14 +120,14 @@ describe('Persona Table', () => {
       <Provider><PersonaTable /></Provider>,
       { route: {
         params: { ...params, personaGroupId: mockPersonaGroupList.content[0].id },
-        path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
       } }
     )
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
 
     const dialog = await screen.findByRole('dialog')
 
-    const csvFile = new File([''], 'persona_import_template.csv', { type: 'text/csv' })
+    const csvFile = new File([''], 'identity_import_template.csv', { type: 'text/csv' })
 
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
@@ -154,9 +154,9 @@ describe('Persona Table', () => {
             exportFn()
 
             return res(ctx.set({
-              'content-disposition': 'attachment; filename=Personas_20230118100829.csv',
+              'content-disposition': 'attachment; filename=Identities_20230118100829.csv',
               'content-type': 'text/csv;charset=ISO-8859-1'
-            }), ctx.text('Persona'))
+            }), ctx.text('Identity'))
           }
         }
       )
@@ -167,7 +167,7 @@ describe('Persona Table', () => {
       {
         route: {
           params,
-          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId'
         }
       }
     )

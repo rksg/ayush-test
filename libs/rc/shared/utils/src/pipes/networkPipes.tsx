@@ -122,7 +122,8 @@ export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) 
   const map: { [key: string]: string } = {
     [WlanSecurityEnum.WPA2Personal]: 'WPA2',
     [WlanSecurityEnum.WEP]: 'WEP',
-    [WlanSecurityEnum.WPAPersonal]: 'WPA'
+    [WlanSecurityEnum.WPAPersonal]: 'WPA',
+    [WlanSecurityEnum.WPA23Mixed]: 'WPA3/WPA2 mixed mode'
   }
   return type ? map[type] : ''
 }
@@ -176,17 +177,13 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
     defaultMessage: 'OWE',
     description: 'Opportunistic Wireless Encryption - OWE'
   }),
-  [WlanSecurityEnum.None]: defineMessage({
-    defaultMessage: 'None',
-    description: 'WLAN security type - None'
-  }),
-  [WlanSecurityEnum.OWE]: defineMessage({
-    defaultMessage: 'OWE',
-    description: 'WLAN security type - OWE'
-  }),
   [WlanSecurityEnum.OWETransition]: defineMessage({
     defaultMessage: 'OWETransition',
     description: 'WLAN security type - OWETransition'
+  }),
+  [WlanSecurityEnum.None]: defineMessage({
+    defaultMessage: 'None',
+    description: 'WLAN security type - None'
   })
 }
 
@@ -224,11 +221,17 @@ export const NetworkType: React.FC<{
   const { $t } = useIntl()
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
+  const oweDisplay = wlan?.wlanSecurity === WlanSecurityEnum.OWE ?
+    ' - ' + $t(wlanSecurity[wlan?.wlanSecurity!]) : ''
 
   switch (networkType) {
     case NetworkTypeEnum.OPEN:
       return <FormattedMessage
-        {...networkTypes[NetworkTypeEnum.OPEN]}
+        defaultMessage={'{networkType}{oweSecurity}'}
+        values={{
+          networkType: $t(networkTypes[NetworkTypeEnum.OPEN]),
+          oweSecurity: oweDisplay
+        }}
       />
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
@@ -245,11 +248,12 @@ export const NetworkType: React.FC<{
         : <FormattedMessage {...message} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return <FormattedMessage
-        defaultMessage={'Captive Portal - {captiveNetworkType}'}
+        defaultMessage={'Captive Portal - {captiveNetworkType}{oweSecurity}'}
         values={{
           captiveNetworkType: $t(captiveNetworkTypes[
             captiveType || GuestNetworkTypeEnum.Cloudpath
-          ])
+          ]),
+          oweSecurity: oweDisplay
         }}
       />
   }

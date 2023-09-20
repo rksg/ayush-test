@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
@@ -32,17 +32,26 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const { wlanData } = props
 
+  const supportMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_DYNAMIC_VLAN_TOGGLE)
+
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
 
-  if (isPortalDefaultVLANId) {
-    delete data?.wlan?.vlanId
-    form.setFieldValue(['wlan', 'vlanId'], 3000)
-  }
+  useEffect(() => {
+    if (isPortalDefaultVLANId) {
+      delete data?.wlan?.vlanId
+      form.setFieldValue(['wlan', 'vlanId'], 3000)
+    }
+  }, [isPortalDefaultVLANId, form])
+
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
-    data?.type === NetworkTypeEnum.DPSK
+    data?.type === NetworkTypeEnum.DPSK ||
+    (supportMacAuthDynamicVlan &&
+      ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+        data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
+      (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
 
   const enableVxLan = hasVxLanTunnelProfile(wlanData)
 
@@ -81,7 +90,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           {$t({ defaultMessage: 'Dynamic VLAN' })}
           <Form.Item
             data-testid={'DynamicVLAN'}
-            name={['wlan', 'advancedCustomization', 'dynamicVlan']}
+            name={['wlan', 'advancedCustomization', 'enableAaaVlanOverride']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}

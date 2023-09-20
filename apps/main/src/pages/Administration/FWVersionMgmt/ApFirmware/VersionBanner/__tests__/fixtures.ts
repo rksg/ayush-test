@@ -1,20 +1,3 @@
-export const mockedLatestFirmwareList = [
-  {
-    name: '7.0.0.103.325',
-    category: 'RECOMMENDED',
-    id: '7.0.0.103.325',
-    createdDate: '2023-06-13T17:59:23.891+00:00',
-    updatedDate: '2023-06-13T17:59:23.891+00:00'
-  },
-  {
-    name: '6.2.2.103.82',
-    category: 'BETA',
-    id: '6.2.2.103.82',
-    createdDate: '2023-06-15T04:26:16.344+00:00',
-    updatedDate: '2023-06-15T04:26:16.344+00:00'
-  }
-]
-
 export const mockedAvailableABFList = [
   {
     id: '7.0.0.103.325',
@@ -36,7 +19,7 @@ export const mockedAvailableABFList = [
     id: '6.2.2.103.82',
     name: '6.2.2.103.82',
     abf: 'ABF2-3R',
-    releaseDate: '2023-06-15T04:26:16.344+00:00',
+    releaseDate: '2023-06-16T04:26:16.344+00:00',
     onboardDate: '2023-06-15T04:26:16.344+0000',
     category: 'Beta'
   },
@@ -60,7 +43,7 @@ export const mockedAvailableABFList = [
     id: '6.2.1.103.2579',
     name: '6.2.1.103.2579',
     abf: 'ABF2-3R',
-    releaseDate: '2023-07-27T03:17:11.504+00:00',
+    releaseDate: '2023-07-28T03:17:11.504+00:00',
     onboardDate: '2023-05-25T02:14:02.382+0000',
     category: 'RECOMMENDED'
   },
@@ -68,7 +51,7 @@ export const mockedAvailableABFList = [
     id: '6.2.0.103.518',
     name: '6.2.0.103.518',
     abf: 'eol-ap-2022-12',
-    releaseDate: '2023-07-27T03:13:02.158+00:00',
+    releaseDate: '2023-07-21T03:13:02.158+00:00',
     onboardDate: '2022-11-30T09:13:45.664+0000',
     category: 'RECOMMENDED'
   },
@@ -76,7 +59,7 @@ export const mockedAvailableABFList = [
     id: '6.2.0.103.514',
     name: '6.2.0.103.514',
     abf: 'eol-ap-2022-12',
-    releaseDate: '2023-07-27T03:12:59.484+00:00',
+    releaseDate: '2023-07-20T03:12:59.484+00:00',
     onboardDate: '2022-11-15T06:19:30.415+0000',
     category: 'RECOMMENDED'
   }

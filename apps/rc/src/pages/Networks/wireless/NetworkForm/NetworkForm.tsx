@@ -1,42 +1,31 @@
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {
-  PageHeader,
-  StepsForm,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
-} from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
-  useGetNetworkQuery,
-  useUpdateNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation,
   useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
-  NetworkTypeEnum,
-  NetworkSaveData,
-  GuestNetworkTypeEnum,
+  AuthRadiusEnum,
   Demo,
+  GuestNetworkTypeEnum,
   GuestPortal,
-  redirectPreviousPage,
   LocationExtended,
-  NetworkVenue,
   Network,
-  AuthRadiusEnum
+  NetworkSaveData,
+  NetworkTypeEnum,
+  NetworkVenue,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import {
-  useLocation,
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -54,8 +43,8 @@ import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
-  transferDetailToSave,
   tranferSettingsToSave,
+  transferDetailToSave,
   transferMoreSettingsToSave,
   transferVenuesToSave,
   updateClientIsolationAllowlist
@@ -106,7 +95,6 @@ export default function NetworkForm (props:{
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
@@ -140,7 +128,13 @@ export default function NetworkForm (props:{
   const { data } = useGetNetworkQuery({ params })
 
   useEffect(() => {
-    if(data && saveState.name === ''){
+    if(saveState){
+      saveContextRef.current = saveState
+    }
+  }, [saveState])
+
+  useEffect(() => {
+    if(data){
       let name = data.name
       if (cloneMode) {
         name = data.name + ' - copy'
@@ -160,11 +154,7 @@ export default function NetworkForm (props:{
         enableAccountingService: (data.accountingRadius||
           data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
-
-    if(saveState){
-      saveContextRef.current = saveState
-    }
-  }, [data, saveState])
+  }, [data])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -468,7 +458,9 @@ export default function NetworkForm (props:{
             'accountingRadiusId',
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }else{
@@ -476,7 +468,9 @@ export default function NetworkForm (props:{
           [
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }
@@ -504,12 +498,10 @@ export default function NetworkForm (props:{
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
           { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
           { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
-        ] : [
-          { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />}
       {(!editMode || cloneMode) &&

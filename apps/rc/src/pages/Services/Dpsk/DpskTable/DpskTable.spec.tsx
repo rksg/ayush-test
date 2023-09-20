@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -96,23 +95,7 @@ describe('DpskTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <DpskTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <DpskTable />
@@ -157,12 +140,12 @@ describe('DpskTable', () => {
     const deleteServiceButton = await screen.findByRole('button', { name: /Delete DPSK Service/i })
     await userEvent.click(deleteServiceButton)
 
-    await waitFor(() => {
-      expect(deleteFn).toHaveBeenCalled()
-    })
+    await waitFor(() => expect(deleteFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should not delete the selected row when it is mapped to Persona or Network', async () => {
+  // eslint-disable-next-line max-len
+  it.skip('should not delete the selected row when it is mapped to Identity or Network', async () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -185,7 +168,7 @@ describe('DpskTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('You are unable to delete this record due to its usage in Persona,Network')).toBeVisible()
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {

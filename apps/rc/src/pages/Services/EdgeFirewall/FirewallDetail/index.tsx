@@ -2,7 +2,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight }                        from '@acx-ui/rc/components'
 import { useGetEdgeFirewallViewDataListQuery }           from '@acx-ui/rc/services'
 import {
   ACLDirection,
@@ -23,7 +23,6 @@ const FirewallDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const getEdgeFirewallPayload = {
     filters: { id: [params.serviceId] }
   }
@@ -39,12 +38,11 @@ const FirewallDetail = () => {
 
   const firewallInfo = [
     {
-      title: $t({ defaultMessage: 'Service Status' }),
-      content: () => (<></>)
-    },
-    {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => (<></>)
+      content: () => ((edgeFirewallData.edgeIds?.length)
+        ? <EdgeServiceStatusLight data={edgeFirewallData.edgeAlarmSummary} />
+        :'--'
+      )
     },
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
@@ -81,17 +79,9 @@ const FirewallDetail = () => {
     <>
       <PageHeader
         title={edgeFirewallData.firewallName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Firewall' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_FIREWALL,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'Firewall' }),
             link: getServiceRoutePath({
@@ -127,7 +117,10 @@ const FirewallDetail = () => {
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
-            <EdgeTable edgeIds={edgeFirewallData.edgeIds || []} />
+            <EdgeTable
+              edgeIds={edgeFirewallData.edgeIds || []}
+              edgeAlarmSummary={edgeFirewallData.edgeAlarmSummary || []}
+            />
           </Card>
         </Space>
       </Loader>

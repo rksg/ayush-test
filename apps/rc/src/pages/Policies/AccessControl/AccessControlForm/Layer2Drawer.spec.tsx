@@ -18,6 +18,7 @@ const queryLayer2 = [
     id: 'dee8918e1c40474a9f779b39ee672c5b',
     name: 'block2layer',
     macAddressesCount: 1,
+    description: 'des',
     networksCount: 0
   },
   {

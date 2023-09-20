@@ -92,7 +92,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    const venueInput = screen.getByLabelText('Venue Name')
+    const venueInput = await screen.findByLabelText('Venue Name')
     fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
     fireEvent.blur(venueInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -106,8 +106,26 @@ describe('Venues Form', () => {
       { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
     })
 
-    fireEvent.click(screen.getByText('Add'))
+    await userEvent.click(await screen.findByText('Add'))
   })
+
+  it('venue name not allow white space only', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/venues/add' }
+      })
+
+    const venueInput = await screen.findByLabelText('Venue Name')
+    fireEvent.change(venueInput, { target: { value: '  ' } })
+    fireEvent.blur(venueInput)
+
+    expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
+  })
+
   it('should call address parser', async () => {
     const { address } = await addressParser(autocompleteResult)
 
@@ -131,7 +149,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    const addressInput = screen.getByTestId('address-input')
+    const addressInput = await screen.findByTestId('address-input')
     expect(addressInput).toBeEnabled()
   })
   it('google map is not enabled', async () => {
@@ -154,7 +172,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    await userEvent.click(screen.getByText('Cancel'))
+    await userEvent.click(await screen.findByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/venues`,
       hash: '',
@@ -177,12 +195,13 @@ describe('Venues Form', () => {
         route: { params }
       })
 
-    const venueInput = screen.getByLabelText('Venue Name')
+    const venueInput = await screen.findByLabelText('Venue Name')
     fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
     fireEvent.blur(venueInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByText('Save'))
+    const saveButton = screen.getByText('Save')
+    await userEvent.click(saveButton)
   })
 })

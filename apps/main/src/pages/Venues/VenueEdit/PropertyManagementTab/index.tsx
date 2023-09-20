@@ -20,9 +20,9 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                           from '@acx-ui/icons'
-import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector, PersonaGroupLink } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                            from '@acx-ui/icons'
+import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector, IdentityGroupLink } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -291,12 +291,12 @@ export function PropertyManagementTab () {
     const modal = AntModal['confirm']({})
 
     modal.update({
-      title: $t({ defaultMessage: 'Disable Property Management?' }),
+      title: $t({ defaultMessage: 'Delete Property Management?' }),
       content: <>
         {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
-        {confirmForm({ text: 'Disable', modal })}
+        {confirmForm({ text: 'Delete', modal })}
       </>,
-      okText: $t({ defaultMessage: 'Disable' }),
+      okText: $t({ defaultMessage: 'Delete' }),
       okButtonProps: { disabled: true },
       onOk: () => {callback()},
       icon: <> </>
@@ -376,16 +376,16 @@ export function PropertyManagementTab () {
                 <Form.Item
                   name='personaGroupId'
                   label={<>
-                    {$t({ defaultMessage: 'Persona Group' })}
+                    {$t({ defaultMessage: 'Identity Group' })}
                     <Tooltip.Question
-                      title={$t(EditPropertyConfigMessages.BIND_PERSONA_GROUP_TOOLTIP)}
+                      title={$t(EditPropertyConfigMessages.BIND_IDENTITY_GROUP_TOOLTIP)}
                       placement={'bottom'}
                     />
                   </>}
                   rules={[{ required: true }]}
                 >
                   {personaGroupHasBound
-                    ? <PersonaGroupLink
+                    ? <IdentityGroupLink
                       personaGroupId={selectedGroupId}
                       name={groupData?.name}
                     />
@@ -404,13 +404,14 @@ export function PropertyManagementTab () {
                     size={'small'}
                     onClick={() => setPersonaGroupVisible(true)}
                   >
-                    {$t({ defaultMessage: 'Add Persona Group' })}
+                    {$t({ defaultMessage: 'Add Identity Group' })}
                   </Button>
                 </Form.Item>
-                <Form.Item
-                  hidden
-                  name={['unitConfig', 'type']}
-                />
+
+                <Form.Item noStyle name={['unitConfig', 'type']}>
+                  <Input type='hidden' />
+                </Form.Item>
+
                 <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
@@ -490,8 +491,11 @@ export function PropertyManagementTab () {
                 {msgTemplateEnabled &&
                   <>
                     <Form.Item
-                      hidden
-                      name={['communicationConfig', 'type']}/>
+                      noStyle
+                      name={['communicationConfig', 'type']}
+                    >
+                      <Input type='hidden' />
+                    </Form.Item>
                     <Subtitle level={4} style={{ paddingTop: '8px' }}>
                       {$t({ defaultMessage: 'Communication Templates' })}
                     </Subtitle>

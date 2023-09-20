@@ -14,7 +14,7 @@ import Logo                      from '../../../../assets/images/portal-demo/Ruc
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalForm } from './PortalForm'
-const portalResponse: Portal = {
+export const portalResponse: Portal = {
   id: '1',
   serviceName: 'test111',
   network: [],

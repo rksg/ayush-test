@@ -5,11 +5,12 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames }                  from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
 import { noDataDisplay }                            from '@acx-ui/utils'
+import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 

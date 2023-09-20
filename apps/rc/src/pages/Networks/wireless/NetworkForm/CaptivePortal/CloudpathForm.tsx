@@ -46,7 +46,7 @@ export function CloudpathForm () {
       }
     }
   },[data])
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
@@ -69,7 +69,7 @@ export function CloudpathForm () {
           'Copy from your Cloudpath\'s configuration' })}
           />}
         />
-        <Form.Item>
+        <div style={{ display: 'flex' }}>
           <Form.Item
             name={['wlan','bypassCPUsingMacAddressAuthentication']}
             noStyle
@@ -86,19 +86,24 @@ export function CloudpathForm () {
           placement='bottom'>
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip>
-        </Form.Item>
+        </div>
         <BypassCaptiveNetworkAssistantCheckbox
           guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath} />
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath}
           enableDefaultWalledGarden={true} />
         <AuthAccServerSetting/>
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.Cloudpath}/>
       </GridCol>
     </GridRow>
+    {!(editMode) && <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
+      </GridCol>
+    </GridRow>}
+  </>
   )
 }

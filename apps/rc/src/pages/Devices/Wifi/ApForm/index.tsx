@@ -54,7 +54,8 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams, TenantLink
+  useParams, TenantLink,
+  useLocation
 } from '@acx-ui/react-router-dom'
 import { compareVersions, validationMessages } from '@acx-ui/utils'
 
@@ -63,7 +64,7 @@ import { ApEditContext } from '../ApEdit/index'
 import * as UI from './styledComponents'
 
 const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
+  fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -87,7 +88,6 @@ export function ApForm () {
   const {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
@@ -115,6 +115,10 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
+  const location = useLocation()
+
+  const venueFromNavigate = location.state as { venueId?: string }
+
 
   const BASE_VERSION = '6.2.1'
 
@@ -135,8 +139,8 @@ export function ApForm () {
         'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
-      apModels: triApModels.slice(0, -1).join(','),
-      lastApModel: triApModels[triApModels.length - 1],
+      apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
+      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
       baseVersion: BASE_VERSION,
       fwManagementLink: (<TenantLink
         to={'/administration/fwVersionMgmt'}>{
@@ -202,13 +206,22 @@ export function ApForm () {
       setVenueOption(venuesList?.data?.map(item => ({
         label: item.name, value: item.id
       })) ?? [])
+
+      if (venueFromNavigate?.venueId &&
+        venuesList?.data.find(venue => venue.id === venueFromNavigate?.venueId)
+      ) {
+        formRef?.current?.setFieldValue('venueId', venueFromNavigate?.venueId)
+        handleVenueChange(venueFromNavigate?.venueId)
+      }
     }
   }, [venuesList])
 
   useEffect(() => {
     if (selectedVenue.hasOwnProperty('id')) {
       const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
-      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+      setVenueFwVersion(venueInfo && venueInfo.hasOwnProperty('versions')
+        ? venueInfo.versions[0].version
+        : '-')
     }
   }, [selectedVenue, venueVersionList])
 
@@ -364,12 +377,10 @@ export function ApForm () {
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ] : [
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
     <StepsFormLegacy
@@ -418,7 +429,9 @@ export function ApForm () {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
                     const originalVenue = getVenueById(venues, apDetails?.venueId as string)
-                    if (selectVenue?.country && originalVenue?.country) {
+                    if (selectVenue?.countryCode && originalVenue?.countryCode) {
+                      return checkValues(selectVenue.countryCode, originalVenue.countryCode, true)
+                    } else if (selectVenue?.country && originalVenue?.country) {
                       return checkValues(selectVenue?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()
@@ -428,7 +441,7 @@ export function ApForm () {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
-                    if (!!selectVenue?.dhcp?.enabled) {
+                    if (!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
                         cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
                       )

@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react'
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { DownloadOutlined }                  from '@acx-ui/icons'
-import { Event, TableQuery }                 from '@acx-ui/rc/utils'
-import { RequestPayload }                    from '@acx-ui/types'
+import { Loader, Table, TableProps, Button }        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { DownloadOutlined }                         from '@acx-ui/icons'
+import { Event, TableQuery }                        from '@acx-ui/rc/utils'
+import { RequestPayload }                           from '@acx-ui/types'
+import { exportMessageMapping }                     from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -54,9 +55,15 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
+  const excludeEventType = [
+    ...(!isEdgeEnabled ? ['EDGE'] : []),
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+  ]
 
   const excludeProduct = [
     ...(!isEdgeEnabled ? ['EDGE'] : [])
@@ -95,7 +102,7 @@ export const EventTable = ({
       dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
-      filterable: filtersFrom(omit(eventTypeMap, excludeProduct), filterables, 'entity_type')
+      filterable: filtersFrom(omit(eventTypeMap, excludeEventType), filterables, 'entity_type')
     },
     {
       key: 'product',
@@ -174,9 +181,14 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
+      iconButton={{
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+        onClick: exportCsv
+      }}
     />
-    {visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
       visible={visible}
       onClose={() => setVisible(false)}

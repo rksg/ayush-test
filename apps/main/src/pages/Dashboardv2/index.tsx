@@ -37,9 +37,9 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
-import { filterByAccess }                    from '@acx-ui/user'
-import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
+import { TenantLink }                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter, useDashboardFilter }          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -141,20 +141,22 @@ function DashboardPageHeader () {
 
   return (
     <PageHeader
-      title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
-      extra={filterByAccess([
-        <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
-          <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
-        }</Dropdown>,
-        <VenueFilter key='hierarchy-filter'/>,
+      title={''}
+      extra={[
+        ...filterByAccess([
+          <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
+          }</Dropdown>
+        ]),
+        <VenueFilter key={getShowWithoutRbacCheckKey('hierarchy-filter')}/>,
         <RangePicker
-          key='range-picker'
+          key={getShowWithoutRbacCheckKey('range-picker')}
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />
-      ])}
+      ]}
     />
   )
 }

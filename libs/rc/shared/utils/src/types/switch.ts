@@ -8,10 +8,7 @@ import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 
 import { GridDataRow } from './'
 
-export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
-
-export const SWITCH_SERIAL_PATTERN_SUPPORT_RODAN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
-// export const SWITCH_SERIAL_PATTERN_SUPPORT_RODAN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNU|FNQ|FNP)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
 
 export enum IP_ADDRESS_TYPE {
   STATIC = 'static',
@@ -98,6 +95,7 @@ export class Switch {
   specifiedType?: string
   rearModule?: string
   serialNumber?: string
+  firmwareVersion?: string
 
   constructor () {
     this.name = ''
@@ -202,6 +200,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
+  unitId = 1
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -218,7 +217,6 @@ export class SwitchViewModel extends Switch {
   formStacking?: boolean
   suspendingDeployTime?: string
   syncDataEndTime?: string
-  firmwareVersion?: string
   portsStatus?: {
     Down?: number,
     Up?: number
@@ -670,6 +668,27 @@ export interface TrustedPort {
   trustedPortType: TrustedPortTypeEnum
 }
 
+export interface TaggedVlanPorts {
+  vlanId: string
+  taggedPorts: string[]
+}
+
+export interface VoiceVlanOption {
+  model: string
+  taggedVlans: TaggedVlanPorts[]
+}
+
+export interface VoiceVlanConfig {
+  model: string
+  voiceVlans: TaggedVlanPorts[]
+}
+
+export interface VoiceVlanPort {
+  taggedPort: string
+  voiceVlan: string
+  vlanOptions?: string[]
+}
+
 export interface SwitchConfigurationProfile {
   acls: Acl[]
   id: string
@@ -679,6 +698,8 @@ export interface SwitchConfigurationProfile {
   vlans: Vlan[]
   description: string
   trustedPorts: TrustedPort[]
+  voiceVlanOptions?: VoiceVlanOption[]
+  voiceVlanConfigs?: VoiceVlanConfig[]
 }
 
 export interface AclStandardRule {

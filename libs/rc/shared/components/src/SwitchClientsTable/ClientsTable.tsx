@@ -22,10 +22,10 @@ import * as UI                 from './styledComponents'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType',
+  searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
     'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
+    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName', 'vni',
     'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
     'dhcpClientOsVendorName', 'dhcpClientHostName',
     'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
@@ -43,6 +43,7 @@ export function ClientsTable (props: {
   const { searchable, filterableKeys } = props
   const { setSwitchCount } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -75,7 +76,7 @@ export function ClientsTable (props: {
       fixed: 'left',
       render: (_, row) => {
         return <TenantLink to={`users/switch/clients/${row.id}`}>{
-          row?.dhcpClientHostName || row?.clientName || '--'
+          row?.dhcpClientHostName || row?.clientName || row?.clientMac || '--'
         }</TenantLink>
       }
     }, {
@@ -165,7 +166,15 @@ export function ClientsTable (props: {
           ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
           : (row.clientVlan ?? '--')
       }
-    }, {
+    },
+    ...(networkSegmentationSwitchEnabled ? [{
+      key: 'vni',
+      title: intl.$t({ defaultMessage: 'VNI' }),
+      dataIndex: 'vni',
+      sorter: true,
+      searchable: searchable
+    }]: []),
+    {
       key: 'clientType',
       title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',

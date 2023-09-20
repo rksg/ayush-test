@@ -3,25 +3,18 @@ import { createContext, useEffect, useState } from 'react'
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, PageHeader, SuspenseBoundary, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { Tooltip }                    from '@acx-ui/components'
+import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
-
-const { DefaultFallback: Spinner } = SuspenseBoundary
 
 interface CountContextType {
   count: number,
   setCount: (count: number) => void
 }
 export const CountContext = createContext({} as CountContextType)
-
-export const VideoCallQoe = () => {
-  const { component } = useVideoCallQoe()
-  return component
-}
 
 export function useVideoCallQoe () {
   const { $t } = useIntl()
@@ -44,7 +37,7 @@ export function useVideoCallQoe () {
       :
       <Tooltip
         placement='left'
-        key='disableCallButton'
+        key={getShowWithoutRbacCheckKey('disableCallButton')}
         trigger='hover'
         title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
       >
@@ -54,18 +47,9 @@ export function useVideoCallQoe () {
       </Tooltip>
   ]
 
-  const noOfTestCalls = queryResults.data?.getAllCallQoeTests.length
-  const component = <>
-    {!useIsSplitOn(Features.NAVBAR_ENHANCEMENT) && <PageHeader
-      title={$t(title, { count: null })}
-      subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
-        {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
-      </Loader>}
-      extra={headerExtra}/>}
-    <CountContext.Provider value={{ count, setCount }}>
-      <VideoCallQoeTable />
-    </CountContext.Provider>
-  </>
+  const component = <CountContext.Provider value={{ count, setCount }}>
+    <VideoCallQoeTable />
+  </CountContext.Provider>
 
   return {
     title: $t(title, { count }),

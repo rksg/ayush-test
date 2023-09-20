@@ -21,8 +21,6 @@ import {
 
 import { VenueEdit } from './index'
 
-window.scrollTo = jest.fn()
-
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))
@@ -36,8 +34,8 @@ jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', (
 jest.mock('./WifiConfigTab/RadioTab/RadioSettings', () => ({
   RadioSettings: () => <div data-testid='RadioSettings' />
 }))
-jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControl', () => ({
-  ClientAdmissionControl: () => <div data-testid='ClientAdmissionControl' />
+jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControlSettings', () => ({
+  ClientAdmissionControlSettings: () => <div data-testid='ClientAdmissionControlSettings' />
 }))
 jest.mock('./WifiConfigTab/RadioTab/LoadBalancing', () => ({
   LoadBalancing: () => <div data-testid='LoadBalancing' />
@@ -394,7 +392,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await updateSyslogServer()
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Network Controls', buttonAction.DISCARD_CHANGES)
+        await showUnsavedChangesModal('Network Control', buttonAction.DISCARD_CHANGES)
       })
       it('should open unsaved changes modal and handle changes saved', async () => {
         render(<Provider><VenueEdit /></Provider>, {
@@ -405,7 +403,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await updateSyslogServer()
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Network Controls', buttonAction.SAVE_CHANGES)
+        await showUnsavedChangesModal('Network Control', buttonAction.SAVE_CHANGES)
       })
     })
   })

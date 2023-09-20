@@ -2,14 +2,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }    from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
   EdgeDhcpUrls,
   EdgeUrlsInfo,
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  getServiceRoutePath
+  getServiceRoutePath,
+  EdgeDhcpPool
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -52,6 +53,31 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PoolDrawer: (props: {
+    visible: boolean
+    setVisible: React.Dispatch<React.SetStateAction<boolean>>
+    onAddOrEdit: (item: EdgeDhcpPool) => void
+    allPool?: EdgeDhcpPool[]
+    isRelayOn: boolean
+  }) => {
+    const mockedNewPool = {
+      id: '_NEW_mocked',
+      poolName: 'newPool',
+      subnetMask: '255.255.255.0',
+      poolStartIp: '1.1.1.1',
+      poolEndIp: '1.1.1.5',
+      gatewayIp: '1.2.3.4'
+    }
+    return props.visible && <div data-testid='rc-PoolDrawer'>
+      <button onClick={() => {
+        props.onAddOrEdit(mockedNewPool)
+        props.setVisible(false)
+      }}>Add</button>
+    </div>
+  }
+}))
 
 const mockedFinishFn = jest.fn()
 
@@ -74,10 +100,6 @@ describe('SmartEdgeForm', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeData))
       ),
-      rest.post(
-        EdgeDhcpUrls.addDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
         (req, res, ctx) => res(ctx.status(404))
@@ -93,11 +115,14 @@ describe('SmartEdgeForm', () => {
     )
   })
 
-  it('Add DHCP service', async () => {
+  it('Add DHCP service button will show up when edge is not associated with any dhcp', async () => {
     const user = userEvent.setup()
+
     render(
       <Provider>
-        <StepsForm><SmartEdgeForm /></StepsForm>
+        <StepsForm buttonLabel={{ submit: 'mockedAdd' }}>
+          <SmartEdgeForm />
+        </StepsForm>
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -107,28 +132,7 @@ describe('SmartEdgeForm', () => {
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
 
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
-    const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
-    await user.type(dhcpServiceNameInput, 'myTest')
-    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-    await screen.findByText('Add DHCP for SmartEdge Service')
-    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
-    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    await user.type(poolNameInput, 'Pool1')
-    await user.type(subnetMaskInput, '255.255.255.0')
-    const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.0')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
-    await user.type(gatewayInput, '1.2.3.4')
-    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
-    const addDhcpModal = screen.getAllByRole('dialog')[0]
-    await user.click(within(addDhcpModal).getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(addDhcpModal).not.toBeVisible())
+    expect(await screen.findByRole('button', { name: 'Add' })).toBeVisible()
   })
 
   it('Add DHCP pool', async () => {
@@ -153,20 +157,9 @@ describe('SmartEdgeForm', () => {
     user.click(await screen.findByRole('button', { name: 'Select Pool' }))
 
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
-    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    await user.type(poolNameInput, 'Pool1')
-    await user.type(subnetMaskInput, '255.255.255.0')
-    const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.1')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
-    await user.type(gatewayInput, '1.2.3.4')
-    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
+    const drawer = await screen.findByTestId('rc-PoolDrawer')
+    await user.click(within(drawer).getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('Step2 - Smart edge success', async () => {
@@ -197,7 +190,8 @@ describe('SmartEdgeForm', () => {
     await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
     await user.click(await screen.findByText('PoolTest1'))
     await user.click(await screen.findByRole('button', { name: 'Select' }))
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await user.click(addButtons[1])
   })
 
   it('Step2 - Smart edge will be block by mandatory validation', async () => {
@@ -211,7 +205,7 @@ describe('SmartEdgeForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter SmartEdge')
     await screen.findByText('Please enter Number of Segments')
     await screen.findByText('Please enter Number of devices per Segment')

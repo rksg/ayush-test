@@ -30,7 +30,8 @@ import {
   useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
   SchedulingModalState,
-  RadioTypeEnum
+  RadioTypeEnum,
+  IsSecuritySupport6g
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -93,7 +94,7 @@ export function Venues () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = data?.wlan && data?.wlan.wlanSecurity === 'WPA3'
+  const isWPA3security = IsSecuritySupport6g(data?.wlan?.wlanSecurity)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -212,7 +213,8 @@ export function Venues () {
 
   useEffect(() => {
     if (data?.wlan) {
-      if (prevIsWPA3securityRef.current === true && data.wlan.wlanSecurity !== 'WPA3') {
+      const isSupport6G = IsSecuritySupport6g(data.wlan.wlanSecurity)
+      if (prevIsWPA3securityRef.current === true && !isSupport6G) {
         if (activatedNetworkVenues?.length > 0) {
           // remove radio 6g when wlanSecurity is changed from WPA3 to others
           const newActivatedNetworkVenues = activatedNetworkVenues.map(venue => {
@@ -234,8 +236,7 @@ export function Venues () {
           setTableDataActivate(tableData, newActivatedNetworkVenues.map(i=>i.venueId))
         }
       }
-      prevIsWPA3securityRef.current = (data.wlan.wlanSecurity === 'WPA3')
-
+      prevIsWPA3securityRef.current = isSupport6G
     }
   }, [data?.wlan])
 

@@ -7,7 +7,6 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
 import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
 import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }                         from '@acx-ui/rc/services'
@@ -61,7 +60,6 @@ function SwitchPageHeader () {
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -193,41 +191,42 @@ function SwitchPageHeader () {
         title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
         titleExtra={
           <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },
           { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-        ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
-        extra={filterByAccess([
+        ]}
+        extra={[
           !checkTimeFilterDisabled() && <RangePicker
-            key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu}>{() =>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
-          <Button
-            type='primary'
-            onClick={() =>
-              navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
-              }, {
-                state: {
-                  from: location
-                }
-              })
-            }
-          >{$t({ defaultMessage: 'Configure' })}</Button>
-        ])}
+          ...filterByAccess([
+            <Dropdown overlay={menu}>{() =>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>
+            }</Dropdown>,
+            <Button
+              type='primary'
+              onClick={() =>
+                navigate({
+                  ...basePath,
+                  pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
+                }, {
+                  state: {
+                    from: location
+                  }
+                })
+              }
+            >{$t({ defaultMessage: 'Configure' })}</Button>
+          ])
+        ]}
         footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
       />
       <SwitchCliSession

@@ -7,7 +7,6 @@ import { Features, useIsSplitOn }                                               
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                          from '@acx-ui/rc/services'
 import { exportCSV, getOsTypeIcon, getClientIpAddr, SwitchClient, SWITCH_CLIENT_TYPE } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                       from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                              from '@acx-ui/user'
 import { getCurrentDate }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -22,7 +21,6 @@ export function SwitchClientDetails () {
   const params = useParams()
   const [isManaged, setIsManaged] = useState(false)
   const [clientDetails, setClientDetails] = useState({} as SwitchClient)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const { data, isLoading } = useGetSwitchClientDetailsQuery({ params })
 
@@ -197,15 +195,18 @@ export function SwitchClientDetails () {
     <Loader states={[{ isLoading }]}>
       <PageHeader
         title={clientDetails?.clientName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Clients' }) },
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
-        ] : [{ text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }]}
-        extra={filterByAccess([
-          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
+        ]}
+        extra={
+          <Button
+            type='link'
+            onClick={exportClientToCSV}
+          >
             {$t({ defaultMessage: 'Download Information' })}</Button>
-        ])}
+        }
       />
 
       <GridRow>

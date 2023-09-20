@@ -1,10 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
 
+import { useConfigChange } from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
 import { useServiceGuard } from '../ServiceGuard'
@@ -13,6 +14,7 @@ import { useVideoCallQoe } from '../VideoCallQoe'
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
   SERVICE_GUARD = 'serviceGuard',
+  CONFIG_CHANGE = 'configChange',
   VIDEO_CALL_QOE = 'videoCallQoe'
 }
 
@@ -26,6 +28,8 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
+  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
@@ -37,6 +41,11 @@ const useTabs = () : Tab[] => {
     url: 'serviceValidation',
     ...useServiceGuard()
   }
+  const configChangeTab = {
+    key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
+    title: $t({ defaultMessage: 'Config Change' }),
+    ...useConfigChange()
+  }
   const videoCallQoeTab = {
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,
     ...useVideoCallQoe()
@@ -44,7 +53,8 @@ const useTabs = () : Tab[] => {
   return [
     healthTab,
     serviceGuardTab,
-    ...(useIsSplitOn(Features.VIDEO_CALL_QOE) ? [videoCallQoeTab] : [])
+    ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : []),
+    ...(get('IS_MLISA_SA') || videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 
@@ -68,7 +78,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </>

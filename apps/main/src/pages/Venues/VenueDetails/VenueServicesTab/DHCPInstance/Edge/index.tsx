@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                                                        from '@acx-ui/rc/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight }                                from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpHostStatus, ServiceOperation, ServiceType, getServiceDetailsLink }                     from '@acx-ui/rc/utils'
+import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink }      from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                   from '@acx-ui/react-router-dom'
 
 const EdgeDhcpTab = () => {
@@ -78,7 +78,10 @@ const EdgeDhcpTab = () => {
       value: 'leases',
       children: (
         <GridCol col={{ span: 24 }}>
-          <EdgeDhcpLeaseTable edgeId={edgeData?.serialNumber} />
+          <EdgeDhcpLeaseTable
+            edgeId={edgeData?.serialNumber}
+            isInfinite={dhcpData?.leaseTime === LeaseTimeType.INFINITE}
+          />
         </GridCol>
       )
     }
@@ -101,7 +104,10 @@ const EdgeDhcpTab = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: ''
+      content: dhcpData &&
+      (dhcpData.edgeNum ?? 0) ?
+        <EdgeServiceStatusLight data={dhcpData?.edgeAlarmSummary} /> :
+        '--'
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
@@ -122,7 +128,7 @@ const EdgeDhcpTab = () => {
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       content: (
-        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/edge-details/overview`}>
+        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
           {edgeData?.name}
         </TenantLink>
       )

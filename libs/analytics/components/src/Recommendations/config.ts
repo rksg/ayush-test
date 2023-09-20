@@ -4,9 +4,18 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { compareVersion } from '@acx-ui/analytics/utils'
 import { formatter }      from '@acx-ui/formatter'
 
-export type Priorities = { order: number, label: MessageDescriptor }
+import { crrmText } from './utils'
 
-const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
+export type IconValue = { order: number, label: MessageDescriptor }
+
+export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
+
+export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
+  optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
+  nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
+}
+
+const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
@@ -15,7 +24,7 @@ const priorities: Record<'low' | 'medium' | 'high', Priorities> = {
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
-  priority: Priorities
+  priority: IconValue
 }
 
 type RecommendationKPIConfig = {
@@ -38,7 +47,7 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: keyof typeof states, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
 }
 
 const categories = {
@@ -120,6 +129,8 @@ export const states = {
   }
 }
 
+export type StateType = keyof typeof states
+
 export const codes = {
   'c-bgscan24g-enable': {
     category: categories['Wi-Fi Client Experience'],
@@ -177,6 +188,33 @@ export const codes = {
     valueFormatter: formatter('durationFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan Timer (5 GHz)' }),
     actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
+    kpis: [{
+      key: 'avg-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'max-ap-channel-change-count',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
+      format: formatter('countFormat'),
+      deltaSign: '-'
+    }, {
+      key: 'co-channel-interference',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
+      format: formatter('percentFormat'),
+      deltaSign: '-'
+    }]
+  },
+  'c-bgscan6g-timer': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Background scan timer on 6 GHz radio' }),
+    priority: priorities.low,
+    valueFormatter: formatter('durationFormat'),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6 GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: '6 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
     reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{
@@ -290,7 +328,7 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: keyof typeof states, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -317,7 +355,7 @@ export const codes = {
   },
   'c-txpower-same': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Tx power setting for 2.4 GHz and 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz radio' }),
     priority: priorities.medium,
     valueFormatter: formatter('txFormat'),
     valueText: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
@@ -341,14 +379,14 @@ export const codes = {
   },
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 2.4 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -358,9 +396,9 @@ export const codes = {
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -375,14 +413,14 @@ export const codes = {
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 6 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
     priority: priorities.high,
-    valueFormatter: formatter('crrmFormat'),
+    valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -393,6 +431,6 @@ export const codes = {
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as keyof typeof states] = val.text
+  acc[key as StateType] = val.text
   return acc
-}, {} as Record<keyof typeof states, MessageDescriptor>)
+}, {} as Record<StateType, MessageDescriptor>)

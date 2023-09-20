@@ -1,35 +1,55 @@
 import { useState, useEffect } from 'react'
 
-import { get }                     from '@acx-ui/config'
-import { useAuthenticateMutation } from '@acx-ui/reports/services'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
+import { IFrame }                             from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { useAuthenticateMutation }            from '@acx-ui/reports/services'
+import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 
 export const getHostName = (origin: string) => {
-  if (process.env['NODE_ENV'] === 'development')
-    return get('IS_MLISA_SA') ?
-      'https://staging.mlisa.io'
-      :
-      'https://dev.ruckus.cloud'
-
+  if (process.env['NODE_ENV'] === 'development') {
+    return get('IS_MLISA_SA')
+      ? 'https://staging.mlisa.io'
+      : 'https://dev.ruckus.cloud'
+  }
   return origin
 }
 
 export function DataStudio () {
   const [url, setUrl] = useState<string>()
-  const [ authenticate ] = useAuthenticateMutation()
+  const [authenticate] = useAuthenticateMutation()
 
   useEffect(() => {
-    authenticate({}).unwrap().then(url => {
-      setUrl(url)
+    const { firstName, lastName, email } = get('IS_MLISA_SA')
+      ? getUserProfile()
+      : getUserProfileR1().profile
+
+    authenticate({
+      payload: {
+        user: {
+          firstName,
+          lastName,
+          email
+        }
+      }
     })
+      .unwrap()
+      .then(url => {
+        setUrl(url)
+      })
   }, [authenticate])
 
   return (
-    <div data-testid='data-studio'>
-      {url && (<iframe
-        title='data-studio'
-        src={`${getHostName(window.location.origin)}${url}`}
-        style={{ width: '100%', height: '85vh', border: 'none' }}
-      />
+    <div data-testid='data-studio'
+      style={{
+        height: 'calc(100vh - 100px)'
+      }}>
+      {url && (
+        <IFrame
+          title='data-studio'
+          src={`${getHostName(window.location.origin)}${url}`}
+          style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
+        />
       )}
     </div>
   )

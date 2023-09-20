@@ -65,5 +65,6 @@ describe('NetworkSegmentationServiceInfo', () => {
 
     expect(await screen.findByText(/TestDhcp-1/i)).toBeVisible()
     expect(await screen.findByText(/tunnelProfile1/i)).toBeVisible()
+    expect(await screen.findByText(/Poor/i)).toBeVisible()
   })
 })

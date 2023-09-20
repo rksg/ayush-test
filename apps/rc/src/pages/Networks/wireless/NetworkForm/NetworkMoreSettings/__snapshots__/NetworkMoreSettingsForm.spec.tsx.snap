@@ -7,7 +7,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
   >
     <div>
       <button
-        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
+        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
         type="button"
       >
         <span>
@@ -105,25 +105,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="ant-tabs-tab"
-              >
-                <div
-                  aria-controls="rc-tabs-test-panel-advanced"
-                  aria-selected="false"
-                  class="ant-tabs-tab-btn"
-                  id="rc-tabs-test-tab-advanced"
-                  role="tab"
-                  tabindex="0"
-                >
-                  <div
-                    class="styledComponents__TabLable-sc-ijp2z4-5 jckxcB"
-                    style="width: 37px;"
-                  >
-                    Advanced
-                  </div>
-                </div>
-              </div>
-              <div
                 class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
               />
             </div>
@@ -201,15 +182,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               aria-labelledby="rc-tabs-test-tab-networking"
               class="ant-tabs-tabpane"
               id="rc-tabs-test-panel-networking"
-              role="tabpanel"
-              style="display: none;"
-              tabindex="-1"
-            />
-            <div
-              aria-hidden="true"
-              aria-labelledby="rc-tabs-test-tab-advanced"
-              class="ant-tabs-tabpane"
-              id="rc-tabs-test-panel-advanced"
               role="tabpanel"
               style="display: none;"
               tabindex="-1"
@@ -735,7 +707,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               Access Control
             </h4>
             <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
+              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
               type="button"
             >
               <span>
@@ -743,7 +715,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </span>
             </button>
             <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
+              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
               type="button"
             >
               <span>
@@ -1965,7 +1937,13 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
       </div>
       <div
         style="display: none;"
-      />
+      >
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+        >
+          QoS
+        </h4>
+      </div>
     </div>
   </form>
 </DocumentFragment>

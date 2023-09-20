@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  checkObjectNotExists
+  checkObjectNotExists, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 
 import AccessPolicyTable from './AccessPolicyTable'
@@ -48,7 +48,9 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
           label={$t({ defaultMessage: 'Policy Set Name' })}
           rules={[
             { required: true },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { max: 255 },
+            { validator: (_, value) => trailingNorLeadingSpaces(value) }
           ]}
           validateFirst
           hasFeedback

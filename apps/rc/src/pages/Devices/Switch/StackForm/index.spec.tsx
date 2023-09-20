@@ -5,10 +5,10 @@ import { debounce }   from 'lodash'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { apApi, switchApi, venueApi }                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -19,13 +19,13 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venuelist,
   apGrouplist,
   successResponse,
   editStackData,
   editStackDetail,
   editStackMembers,
-  standaloneSwitches
+  standaloneSwitches,
+  switchFirmwareVenue
 } from '../__tests__/fixtures'
 import {
   vlansByVenueListResponse
@@ -72,8 +72,8 @@ describe('Switch Stack Form - Add', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(editStackData))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
@@ -208,7 +208,9 @@ describe('Switch Stack Form - Add', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
   })
+
   it('should handle add stack by stack switches', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
@@ -221,6 +223,7 @@ describe('Switch Stack Form - Add', () => {
     })
 
     expect(await screen.findByText('FEK3224R07X')).toBeVisible()
+    expect(await screen.findByText('FEK3224R07X_name')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
@@ -247,26 +250,7 @@ describe('Switch Stack Form - Add', () => {
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
-  it('should render correct breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
-
-    await changeVenue()
-    await fillInForm()
-
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-  })
-
-  it('should render correct breadcrumb when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render correct breadcrumb', async () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
@@ -299,8 +283,8 @@ describe('Switch Stack Form - Edit', () => {
         (_, res, ctx) => res(ctx.json(editStackData))),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(SwitchUrlsInfo.getMemberList.url,

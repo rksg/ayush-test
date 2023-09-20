@@ -23,14 +23,14 @@ import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
   useGetVenueQuery,
-  useUpdateVenueMutation,
-  useNewAddVenueMutation
+  useUpdateVenueMutation
 } from '@acx-ui/rc/services'
 import {
   Address,
   VenueExtended,
   checkObjectNotExists,
-  redirectPreviousPage
+  redirectPreviousPage,
+  whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -134,14 +134,13 @@ const defaultAddress: Address = {
 export function VenuesForm () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isNewApi = useIsSplitOn(Features.NEW_API)
+
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
   const [addVenue] = useAddVenueMutation()
-  const [newAddVenue] = useNewAddVenueMutation()
   const [updateVenue] = useUpdateVenueMutation()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
@@ -234,6 +233,14 @@ export function VenuesForm () {
       )
     }
 
+    if (address.country === address.city && address.city === address.addressLine) {
+      return Promise.reject(
+        intl.$t(
+          { defaultMessage: 'Make sure to include a city and country in the address' }
+        )
+      )
+    }
+
     if (isEdit && !_.isEmpty(value) && isSameValue && !isSameCountry) {
       return Promise.reject(
         intl.$t(
@@ -262,11 +269,7 @@ export function VenuesForm () {
     try {
       const formData = { ...values }
       formData.address = countryCode ? { ...address, countryCode } : address
-      if (isNewApi) {
-        await newAddVenue({ params, payload: formData }).unwrap() //Only for IT test
-      } else {
-        await addVenue({ params, payload: formData }).unwrap()
-      }
+      await addVenue({ params, payload: formData }).unwrap()
 
       navigate(linkToVenues, { replace: true })
     } catch (error) {
@@ -310,8 +313,9 @@ export function VenuesForm () {
                 label={intl.$t({ defaultMessage: 'Venue Name' })}
                 rules={[
                   { type: 'string', required: true },
-                  { min: 2 },
-                  { max: 32 },
+                  { min: 2, transform: (value) => value.trim() },
+                  { max: 32, transform: (value) => value.trim() },
+                  { validator: (_, value) => whitespaceOnlyRegExp(value) },
                   {
                     validator: (_, value) => nameValidator(value)
                   }

@@ -182,7 +182,7 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country',
+    defaultMessage: 'Cannot move AP to another venue in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
@@ -210,6 +210,14 @@ export const validationMessages = {
   ipNotInSubnetPool: defineMessage({
     defaultMessage: 'IP address is not in the subnet pool',
     description: 'Validation - Cellular IP pool size'
+  }),
+  multicastIpAddress: defineMessage({
+    defaultMessage: 'Please enter a valid multicast IP address',
+    description: 'Validation - multicast IP address'
+  }),
+  multicastIpAddressExcluded: defineMessage({
+    defaultMessage: 'Please exclude multicast IP address',
+    description: 'Validation - non-multicast IP address'
   }),
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
@@ -388,7 +396,7 @@ export const validationMessages = {
     description: 'Validation - tags'
   }),
   servicePolicyNameInvalid: defineMessage({
-    defaultMessage: 'Name is invalid',
+    defaultMessage: 'Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.',
     description: 'Validation - name for service and policy'
   }),
   specialCharacterNameInvalid: defineMessage({
@@ -398,6 +406,39 @@ export const validationMessages = {
   colonSeparatedMacInvalid: defineMessage({
     defaultMessage: 'Please provide a valid MAC address in colon-separated format.',
     description: 'Validation - colon separated MAC address checks'
+  }),
+  dscpRangeValue: defineMessage({
+    defaultMessage: '[DSCP Range] The DSCP Range value is between 0 and 63, or 255.',
+    description: 'Validation - dscp range value'
+  }),
+  dscpHighValue: defineMessage({
+    defaultMessage: '[DSCP Range] The DSCP High value must be large than DSCP Low value.',
+    description: 'Validation - dscp high value'
+  }),
+  dscp255Value: defineMessage({
+    defaultMessage: '[DSCP Range] If DSCP High or Low value is 255. Another value must be 255.',
+    description: 'Validation - dscp 255 value'
+  }),
+  dscpRangeOverlap: defineMessage({
+    defaultMessage: 'The DSCP range overlaps with user priority',
+    description: 'Validation - dscp range overlap'
+  }),
+  dscpAndExceptionDscpAlreadyMapped: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'A DSCP value that is already mapped to user priority cannot be set as the DSCP exception.',
+    description: 'Validation - dscp and exception dscp already mapped'
+  }),
+  exceptionDscpRangeValue: defineMessage({
+    defaultMessage: '[Exception DSCP Values] Type an integer between 0 and 63.',
+    description: 'Validation - exception dscp range value'
+  }),
+  exceptionDscpValueExists: defineMessage({
+    defaultMessage: 'The exception DSCP already exists.',
+    description: 'Validation - exception dscp value exists'
+  }),
+  switchDhcpOptionIpMaxSize: defineMessage({
+    defaultMessage: 'Max number of DHCP Option IPs is 3',
+    description: 'Validation - DHCP option IPs max size checks'
   })
 }
 

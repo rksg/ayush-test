@@ -1,33 +1,27 @@
-import { Drawer as AntDrawer } from 'antd'
-import styled                  from 'styled-components'
+import { Drawer as AntDrawer }       from 'antd'
+import styled, { createGlobalStyle } from 'styled-components'
 
-import { Header, ActionsContainer } from '../Table/styledComponents'
+import { disableStickyHeaders } from '../Table/styledComponents'
+
+export enum DrawerTypes {
+  Default = 'default',
+  FullHeight = 'fullHeight'
+}
+
+export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
+  ${props => props.$type === DrawerTypes.FullHeight ? `
+    .ant-drawer-content-wrapper {
+      height: 100vh;
+      margin-top: calc(-1 * var(--acx-drawer-top-space));
+    }` : ''}
+`
 
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
 
-    .ant-pro-table {
-      .ant-table {
-        .ant-table-sticky-holder {
-          &[style] {
-            position: relative;
-            top: unset !important;
-          }
-        }
-      }
-      &-list-toolbar,
-      &-alert {
-        position: relative;
-        top: unset;
-      }
-    }
-    ${Header},
-    ${ActionsContainer} {
-      position: relative;
-      top: unset;
-    }
+    ${disableStickyHeaders}
   }
 `
 

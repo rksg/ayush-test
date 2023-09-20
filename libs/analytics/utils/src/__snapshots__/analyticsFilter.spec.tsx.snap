@@ -3,7 +3,7 @@
 exports[`useAnalyticsFilter changes filter value 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{}} | []
   </div>
 </DocumentFragment>
 `;
@@ -11,7 +11,7 @@ exports[`useAnalyticsFilter changes filter value 1`] = `
 exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]]}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]]}} | [{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]
   </div>
 </DocumentFragment>
 `;
@@ -19,7 +19,7 @@ exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 exports[`useAnalyticsFilter imports dashboard filter with single venue 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"venueId1"}]],"switchNodes":[[{"type":"switchGroup","name":"venueId1"}]]}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"venueId1"}]],"switchNodes":[[{"type":"switchGroup","name":"venueId1"}]]}} | [{"type":"network","name":"Network"},{"type":"zone","name":"venueId1"}]
   </div>
 </DocumentFragment>
 `;
@@ -27,7 +27,7 @@ exports[`useAnalyticsFilter imports dashboard filter with single venue 1`] = `
 exports[`useAnalyticsFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{}} | [{"type":"network","name":"Network"}]
   </div>
 </DocumentFragment>
 `;
@@ -35,7 +35,7 @@ exports[`useAnalyticsFilter should render correctly 1`] = `
 exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"switchGroup"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"}]]}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"switchGroup"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"}]]}} | [{"type":"switchGroup","name":"switchGroup"}]
   </div>
 </DocumentFragment>
 `;
@@ -43,7 +43,15 @@ exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 exports[`useAnalyticsFilter should set filter with switches when search parameters has switches 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]]}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]]}} | [{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]
+  </div>
+</DocumentFragment>
+`;
+
+exports[`useAnalyticsFilter should set filters correctly for mlisa app 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"zone","name":"Zone"}]]}} | [{"type":"zone","name":"Zone"}]
   </div>
 </DocumentFragment>
 `;
@@ -51,7 +59,7 @@ exports[`useAnalyticsFilter should set filter with switches when search paramete
 exports[`useAnalyticsFilter should set filters correctly path is health and selected node is zone 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"switchGroup","name":"Zone"}]]}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"switchGroup","name":"Zone"}]]}} | [{"type":"zone","name":"Zone"}]
   </div>
 </DocumentFragment>
 `;
@@ -59,7 +67,7 @@ exports[`useAnalyticsFilter should set filters correctly path is health and sele
 exports[`useAnalyticsFilter should set path to default when path is health and selected node is switch 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}}
+    {"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours","filter":{}} | [{"type":"switchGroup","name":"switchGroup"}]
   </div>
 </DocumentFragment>
 `;

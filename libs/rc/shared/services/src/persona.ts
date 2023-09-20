@@ -13,9 +13,9 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { basePersonaApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { basePersonaApi }                      from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
@@ -62,7 +62,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         return transferToTableResult<PersonaGroup>(result)
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
+      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
       query: ({ params }) => {
@@ -113,7 +114,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'PersonaGroups.csv'
+              : 'IdentityGroups.csv'
             downloadFile(response, fileName)
           }
         }
@@ -134,6 +135,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     importPersonas: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.importPersonas, params, {
+          ...ignoreErrorModal,
           'Content-Type': undefined
         })
         return {
@@ -212,7 +214,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
         })
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Persona', id: 'LIST' }]
+      providesTags: [{ type: 'Persona', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
       query: ({ params, payload }) => {
@@ -247,7 +250,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params)
+        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -281,7 +286,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'Personas.csv'
+              : 'Identities.csv'
             downloadFile(response, fileName)
           }
         }

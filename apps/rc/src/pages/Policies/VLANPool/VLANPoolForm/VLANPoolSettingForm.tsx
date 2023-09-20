@@ -6,13 +6,14 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { useVlanPoolListQuery }                       from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMembers
+  checkVlanPoolMembers, servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
-  edit: boolean
+  edit: boolean,
+  networkView?: boolean,
 }
 
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
@@ -41,7 +42,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 8 }}>
+      <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
@@ -50,7 +51,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: nameValidator }
+            { validator: nameValidator },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
@@ -94,7 +96,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
           children={<Input/>}
         />
       </GridCol>
-      <GridCol col={{ span: 14 }}>
+      <GridCol col={props.networkView ? { span: 0 } :{ span: 14 }}>
       </GridCol>
     </GridRow>
   )

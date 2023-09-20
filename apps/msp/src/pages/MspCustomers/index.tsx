@@ -31,7 +31,8 @@ import {
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
-  MspEc
+  MspEc,
+  MSPUtils
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -57,9 +58,9 @@ const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
 }
 
-const transformApUtilization = (row: MspEc) => {
+const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+    en.entitlementDeviceType === deviceType)
   if (entitlement.length > 0) {
     const apEntitlement = entitlement[0]
     const quantity = parseInt(apEntitlement.quantity, 10)
@@ -108,22 +109,21 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const MAX_ALLOWED_SELECTED_EC = 200
 
-  const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
-  const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -132,6 +132,8 @@ export function MspCustomers () {
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
+  const mspUtils = MSPUtils()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -144,11 +146,19 @@ export function MspCustomers () {
   }
 
   const transformAdminCount = (data: MspEc) => {
-    if (data?.mspInstallerAdminCount)
-      return data.mspInstallerAdminCount
-    else if (data?.mspIntegratorAdminCount)
-      return data.mspIntegratorAdminCount
-    return isIntegrator ? 0 : data.mspAdminCount
+    const type = tenantDetailsData.data?.tenantType
+    return type === AccountType.MSP_INSTALLER
+      ? data.mspInstallerAdminCount || 0 : (type === AccountType.MSP_INTEGRATOR
+        ? data.mspIntegratorAdminCount || 0 : data.mspAdminCount || 0)
+  }
+
+  const transformAdminCountHeader = () => {
+    const type = tenantDetailsData.data?.tenantType
+    return type === AccountType.MSP_INSTALLER
+      ? $t({ defaultMessage: 'Installer Admin Count' })
+      : (type === AccountType.MSP_INTEGRATOR
+        ? $t({ defaultMessage: 'Integrator Admin Count' })
+        : $t({ defaultMessage: 'MSP Admin Count' }))
   }
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
@@ -156,6 +166,10 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
+      userProfile?.support === false) {
+    navigate(linkVarPath, { replace: true })
+  }
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -289,7 +303,7 @@ export function MspCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'MSP Admin Count' }),
+      title: transformAdminCountHeader(),
       dataIndex: 'mspAdminCount',
       align: 'center',
       key: 'mspAdminCount',
@@ -360,47 +374,76 @@ export function MspCustomers () {
         )
       }
     }]),
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicense',
-      key: 'wifiLicense',
-      align: 'center',
-      sorter: true,
-      render: function (_, row) {
-        return transformApEntitlement(row)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicenseInstalled',
+        key: 'apswLicenseInstalled',
+        sorter: true,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      align: 'center',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      render: function (_, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicense',
-      align: 'center',
-      key: 'switchLicense',
-      sorter: true,
-      render: function (_, row) {
-        return transformSwitchEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'SmartEdge Licenses' }),
-      dataIndex: 'edgeLicenses',
-      align: 'center',
-      key: 'edgeLicenses',
-      sorter: true,
-      show: edgeEnabled,
-      render: function (_, row) {
-        return row?.edgeLicenses ? row?.edgeLicenses : 0
-      }
-    },
+    ] : [
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'wifiLicense',
+        key: 'wifiLicense',
+        // align: 'center',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformApEntitlement(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+        dataIndex: 'wifiLicensesUtilization',
+        // align: 'center',
+        key: 'wifiLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchLicense',
+        // align: 'center',
+        key: 'switchLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return transformSwitchEntitlement(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'SmartEdge Licenses' }),
+        dataIndex: 'edgeLicenses',
+        // align: 'center',
+        key: 'edgeLicenses',
+        sorter: true,
+        show: edgeEnabled,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return row?.edgeLicenses ? row?.edgeLicenses : 0
+        }
+      }]),
     {
       title: $t({ defaultMessage: 'Active From' }),
       dataIndex: 'creationDate',
@@ -429,7 +472,10 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
-    const navigate = useNavigate()
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selTenantId, setSelTenantId] = useState('')
+    const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
+    const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -438,7 +484,6 @@ export function MspCustomers () {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       }
     })
-
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
@@ -446,7 +491,6 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
           navigate({
             ...basePath,
@@ -457,7 +501,8 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length >= 2)
+          const len = selectedRows.length
+          return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -471,7 +516,7 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
+          setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
         }
       },
@@ -568,6 +613,17 @@ export function MspCustomers () {
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
+        {modalVisible && <ResendInviteModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          tenantId={selTenantId}
+        />}
+        {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
+          visible={drawerAssignEcMspAdminsVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerAssignEcMspAdminsVisible}
+          setSelected={() => {}}
+        />}
       </Loader>
     )
   }
@@ -628,9 +684,7 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        breadcrumb={isNavbarEnhanced
-          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : undefined}
+        breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
@@ -649,11 +703,6 @@ export function MspCustomers () {
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && !isIntegrator && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
-      {modalVisible && <ResendInviteModal
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        tenantId={ecTenantId}
-      />}
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}
         setVisible={setDrawerAdminVisible}
@@ -665,12 +714,6 @@ export function MspCustomers () {
         tenantId={ecTenantId}
         tenantType={tenantType}
         setVisible={setDrawerIntegratorVisible}
-        setSelected={() => {}}
-      />}
-      {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
-        visible={drawerAssignEcMspAdminsVisible}
-        tenantIds={selEcTenantIds}
-        setVisible={setDrawerAssignEcMspAdminsVisible}
         setSelected={() => {}}
       />}
     </>

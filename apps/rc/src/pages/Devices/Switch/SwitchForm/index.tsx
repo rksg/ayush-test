@@ -40,7 +40,6 @@ import {
   isOperationalSwitch,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
   VenueMessages
 } from '@acx-ui/rc/utils'
 import {
@@ -54,7 +53,8 @@ import { store } from '@acx-ui/store'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
-import * as UI from './styledComponents'
+import {  getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from './blockListRelatedTsb.util'
+import * as UI                                                   from './styledComponents'
 
 const { Option } = Select
 
@@ -89,7 +89,6 @@ export function SwitchForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -111,7 +110,8 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
     searchString: '',
@@ -207,6 +207,13 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
+    if (isBlockingTsbSwitch) {
+      if (getTsbBlockedSwitch(values.id)?.length > 0) {
+        showTsbBlockedSwitchErrorDialog()
+        return
+      }
+    }
+
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
         if (isOnlyFirmware) { values.specifiedType = FIRMWARE.AUTO }
@@ -325,8 +332,7 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -365,12 +371,10 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wired' }) },
         { text: $t({ defaultMessage: 'Switches' }) },
         { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-      ] : [
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
     <StepsFormLegacy
@@ -584,9 +588,6 @@ export function SwitchForm () {
                   <>
                     <Form.Item name='id' hidden={true}><Input /></Form.Item>
                     <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
-                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
                     <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
               }

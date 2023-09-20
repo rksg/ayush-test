@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
@@ -15,11 +16,10 @@ import {
   severityMapping,
   statusMapping,
   CommonUrlsInfo,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }               from '@acx-ui/types'
-import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
+import { RequestPayload }                                                  from '@acx-ui/types'
+import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -200,10 +200,10 @@ const ActivityTable = ({
       enableApiFilter={true}
       columnState={columnState}
     />
-    {current && visible && <TimelineDrawer
+    {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
-      onClose={()=>setVisible(false)}
+      onClose={() => setVisible(false)}
       data={getDrawerData(current)}
       width={464}
       activity={current}

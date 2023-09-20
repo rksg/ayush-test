@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { mockConnectionDrillDown, mockTtcDrillDown } from './__tests__/fixtures'
@@ -58,7 +58,7 @@ describe('HealthDrillDown', () => {
     expect(await screen.findByText('Connection Failures')).toBeVisible()
   })
   it('should render Average Time To Connect chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockTtcDrillDown })
+    mockGraphqlQuery(dataApiURL, 'TTCDrilldown', { data: mockTtcDrillDown })
     render(
       <Provider>
         <HealthDrillDown

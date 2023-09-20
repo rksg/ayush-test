@@ -6,12 +6,35 @@ import {
   ApLanPortTypeEnum,
   ApModel,
   CapabilitiesApModel,
+  CapabilitiesLanPort,
   checkVlanMember,
   LanPort,
   VenueLanPorts,
   WifiApSetting,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
+
+
+export const ConvertPoeOutToFormData = (
+  lanPortsData: WifiApSetting | VenueLanPorts,
+  lanPortsCap: LanPort[] | CapabilitiesLanPort[]
+) => {
+  const newData = { ...lanPortsData }
+  const { poeOut, lanPorts = [] } = newData
+
+  if (poeOut === undefined) {
+    return undefined
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let poeOutObj: any = {}
+  for (let i=0; i<lanPorts.length; i++) {
+    if (lanPortsCap?.[i].isPoeOutPort) {
+      poeOutObj[i] = poeOut
+    }
+  }
+  return poeOutObj
+}
 
 export function LanPortSettings (props: {
   index: number,
@@ -21,6 +44,7 @@ export function LanPortSettings (props: {
   selectedModelCaps: ApModel | CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
+  isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
 }) {
@@ -33,6 +57,7 @@ export function LanPortSettings (props: {
     selectedModelCaps,
     onGUIChanged,
     isDhcpEnabled,
+    isTrunkPortUntaggedVlanEnabled,
     readOnly,
     useVenueSettings
   } = props
@@ -147,16 +172,17 @@ export function LanPortSettings (props: {
         disabled={readOnly
           || isDhcpEnabled
           || !lan?.enabled
-          || lan?.type === ApLanPortTypeEnum.TRUNK
+          || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
           || lan?.vni > 0
         }
         onChange={(value) => {
-          if (lan?.type !== ApLanPortTypeEnum.TRUNK) {
+          const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
+          if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
             const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
               index === idx ? {
                 ...lan,
                 untagId: value,
-                vlanMembers: value?.toString()
+                vlanMembers: isTrunkPort ? lan?.vlanMembers : value?.toString()
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)

@@ -2,11 +2,32 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, Loader, Tabs }                                                        from '@acx-ui/components'
-import { SwitchInfoWidget }                                                                      from '@acx-ui/rc/components'
-import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery }                 from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDeviceType, SwitchViewModel, isRouter, SWITCH_TYPE, StackMember } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
+import {
+  GridCol,
+  GridRow,
+  Loader,
+  Tabs
+} from '@acx-ui/components'
+import { SwitchInfoWidget }    from '@acx-ui/rc/components'
+import {
+  useGetVenueQuery,
+  useStackMemberListQuery,
+  useSwitchDetailHeaderQuery
+} from '@acx-ui/rc/services'
+import {
+  NetworkDevice,
+  NetworkDeviceType,
+  SwitchViewModel,
+  isRouter,
+  SWITCH_TYPE,
+  StackMember
+} from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useParams,
+  useTenantLink
+} from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { useSwitchFilter } from '../switchFilter'
 
@@ -23,7 +44,9 @@ export function SwitchOverviewTab () {
   const switchFilter = useSwitchFilter(switchDetail)
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
-  const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
+  const switchDetailQuery = useSwitchDetailHeaderQuery({ params }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+  })
   const { data: venue } = useGetVenueQuery({
     params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
   { skip: !switchDetailQuery.isSuccess })
@@ -85,7 +108,8 @@ export function SwitchOverviewTab () {
 
     <Tabs onChange={onTabChange}
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
+      scrollToTop={false}
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>

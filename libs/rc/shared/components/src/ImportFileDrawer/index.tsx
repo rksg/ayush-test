@@ -24,14 +24,14 @@ export enum ImportFileDrawerType {
   Switch,
   GuestPass,
   DPSK,
-  Persona,
+  Identity,
   CLI,
   PropertyUnit,
   EdgeDHCP,
   EdgeSubInterface
 }
 
-type ImportErrorRes = {
+export type ImportErrorRes = {
   errors: {
     code: number
     description?: string
@@ -51,10 +51,12 @@ interface ImportFileDrawerProps extends DrawerProps {
   importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object, content?: string)=>void
   readAsText?: boolean,
+  skipCsvTextConvert?: boolean,
   formDataName?: string,
   acceptType: string[]
   type: ImportFileDrawerType
-  extraDescription?: string[]
+  extraDescription?: string[],
+  validator?: (content: string) => Promise<void>
 }
 
 export const CsvSize = {
@@ -76,7 +78,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
   const { maxSize, maxEntries, isLoading, templateLink,
     importError, importRequest, readAsText, acceptType,
-    extraDescription, formDataName = 'file' } = props
+    extraDescription, formDataName = 'file', skipCsvTextConvert = false, validator } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -94,87 +96,106 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   }, [form, props.visible])
 
   useEffect(()=>{
-    const importErrorData = (importError?.data ?? {}) as object
-    if (Object.keys(importErrorData).length) {
-      const errorObj = importError?.data as ImportErrorRes
-      let errors, downloadUrl
-      let description = ''
+    if (!importError) return
 
-      if ('errors' in errorObj) {
-        errors = errorObj.errors
-        downloadUrl = errorObj.downloadUrl
-        description = errors[0].description || errors[0].message!
-      }
-      if ('error' in errorObj) { // narrowing to GuestErrorRes
-        errors = errorObj.error.rootCauseErrors
-        description = errors[0].message
-      }
-
+    if (typeof importError === 'string') {
       setFormData(undefined)
-      setFileDescription(<>
-        { errors && <Typography.Text type='danger'><WarningOutlined /> {$t(
-          { defaultMessage: `{count, plural,
-              one {{description}}
-              other {{count} errors found.}
-          }` },
-          { count: errors.length, description }
-        )}</Typography.Text>}
-        { downloadUrl && <Typography.Link href={downloadUrl}
-          onClick={(e)=>{
-            e.stopPropagation()
-          }}>
-          {$t({ defaultMessage: 'See errors' })}
-        </Typography.Link>}
-      </>)
+      setFileDescription(<Typography.Text type='danger'>
+        <WarningOutlined />
+        {importError}
+      </Typography.Text>)
+    } else {
+      const importErrorData = (importError?.data ?? {}) as object
+      if (Object.keys(importErrorData).length) {
+        const errorObj = importError?.data as ImportErrorRes
+        let errors, downloadUrl
+        let description = ''
+
+        if ('errors' in errorObj) {
+          errors = errorObj.errors
+          downloadUrl = errorObj.downloadUrl
+          description = errors[0].description || errors[0].message!
+        }
+        if ('error' in errorObj) { // narrowing to GuestErrorRes
+          errors = errorObj.error.rootCauseErrors
+          description = errors[0].message
+        }
+
+        setFormData(undefined)
+        setFileDescription(<>
+          { errors && <Typography.Text type='danger'>
+            <WarningOutlined /> {$t(
+              { defaultMessage: `{count, plural,
+                one {{description}}
+                other {{count} errors found.}
+            }` },
+              { count: errors.length, description }
+            )}</Typography.Text>}
+          { downloadUrl && <Typography.Link href={downloadUrl}
+            onClick={(e)=>{
+              e.stopPropagation()
+            }}>
+            {$t({ defaultMessage: 'See errors' })}
+          </Typography.Link>}
+        </>)
+      }
     }
+
   }, [$t, importError])
 
-  const beforeUpload = (file: File) => {
-    let errorMsg = ''
-    const acceptableFileType = acceptType.map(type =>
-      fileTypeMap[type as AcceptableType]).flat()
 
-    if (!acceptableFileType?.includes(file.type)) {
-      errorMsg = $t({ defaultMessage: 'Invalid file type.' })
-    }
-    if (file.size > maxSize) {
-      errorMsg = $t({ defaultMessage: 'File size ({fileSize}) is too big.' }, {
-        fileSize: bytesFormatter(file.size)
-      })
-    }
+  const beforeUpload = async (file: File) => {
+    try {
+      let errorMsg = ''
+      const acceptableFileType = acceptType.map(type =>
+        fileTypeMap[type as AcceptableType]).flat()
 
-    if (errorMsg) {
+      if (!acceptableFileType?.includes(file.type)) {
+        errorMsg = $t({ defaultMessage: 'Invalid file type.' })
+      }
+      if (file.size > maxSize) {
+        errorMsg = $t({ defaultMessage: 'File size ({fileSize}) is too big.' }, {
+          fileSize: bytesFormatter(file.size)
+        })
+      }
+
+      if (errorMsg) throw errorMsg
+
+      if (readAsText && validator) {
+        const content = await readFileContent(file, file.name, skipCsvTextConvert)
+        await validator(content)
+      }
+
+      const newFormData = new FormData()
+      newFormData.append(formDataName, file, file.name)
+
+      setFile(file)
+      setFileName(file.name)
+      setFormData(newFormData)
+      setFileDescription(<UI.FileNameText ellipsis={{ tooltip: file.name }}>
+        <FileTextOutlined /> {file.name}
+      </UI.FileNameText>)
+
+      return false
+    } catch(err) {
       setFormData(undefined)
       setFileDescription(
         <Typography.Text type='danger'>
-          <WarningOutlined /> {errorMsg}
+          <WarningOutlined /> {err as string}
         </Typography.Text>
       )
       return Upload.LIST_IGNORE
     }
-
-    const newFormData = new FormData()
-    newFormData.append(formDataName, file, file.name)
-
-    setFile(file)
-    setFileName(file.name)
-    setFormData(newFormData)
-    setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
-
-    return false
   }
 
   const okHandler = () => {
     if (readAsText) {
-      const fileReader = new FileReader()
-      fileReader.onload = () => {
-        let result = String(fileReader.result)
-        if (isCsvFile(fileName as string)) {
-          result = convertCsvToText(result)
-        }
-        importRequest(formData as FormData, {}, result)
-      }
-      fileReader.readAsText(file as Blob)
+      const fileObject = new File([file!], fileName!)
+      readFileContent(fileObject, fileName!, skipCsvTextConvert)
+        .then(result => {
+          importRequest(formData as FormData, {}, result)
+        })
+        .catch(() => {})
     } else {
       form.validateFields().then(values => {
         formData && importRequest(formData, values)
@@ -204,7 +225,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       maxCount={1}
       showUploadList={false}
       beforeUpload={beforeUpload} >
-      <Space style={{ height: '90px' }}>
+      <Space>
         { fileDescription ? fileDescription :
           <Typography.Text>
             {$t({ defaultMessage: 'Drag & drop file here or' })}
@@ -260,4 +281,25 @@ function convertCsvToText (csvData: string) {
     }
   }
   return text
+}
+
+const readFileContent = (
+  file: File,
+  fileName: string,
+  skipCsvTextConvert?: boolean):Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.onload = () => {
+      try {
+        let result = String(fileReader.result)
+        if (isCsvFile(fileName as string) && !skipCsvTextConvert) {
+          result = convertCsvToText(result)
+        }
+
+        resolve(result)
+      } catch(error) {reject(error)}
+    }
+
+    fileReader.readAsText(file as Blob)
+  })
 }

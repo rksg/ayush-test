@@ -44,7 +44,7 @@ export function WifiConfigTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       networking: $t({ defaultMessage: 'Networking' }),
       security: $t({ defaultMessage: 'Security' }),
-      servers: $t({ defaultMessage: 'Network Controls' }),
+      servers: $t({ defaultMessage: 'Network Control' }),
       settings: $t({ defaultMessage: 'Advanced' })
     }
 
@@ -58,7 +58,7 @@ export function WifiConfigTab () {
       onChange={onTabChange}
       defaultActiveKey='radio'
       activeKey={params.activeSubTab}
-      type='card'
+      type='second'
     >
       <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
         <RadioTab />

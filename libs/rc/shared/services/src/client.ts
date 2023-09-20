@@ -22,9 +22,9 @@ import {
   WifiUrlsInfo,
   RequestFormData, enableNewApi
 } from '@acx-ui/rc/utils'
-import { baseClientApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseClientApi }                       from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { latestTimeFilter } from './utils'
 
@@ -57,7 +57,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Client', id: 'LIST' }]
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -104,7 +105,8 @@ export const clientApi = baseClientApi.injectEndpoints({
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -157,7 +159,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
+        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req
         }
@@ -232,7 +236,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           }
         }
       },
-      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
       query: ({ params, payload }) => ({

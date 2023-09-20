@@ -99,7 +99,9 @@ jest.mock('@acx-ui/analytics/components', () => ({
   }),
   NetworkAssurance: () => <div data-testid='networkAssurance' />,
   ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
-  ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>
+  ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>,
+  RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
+  CrrmDetails: () => <div data-testid='CrrmDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -183,14 +185,41 @@ test('should navigate to analytics/serviceValidation by ServiceGuardSpecGuard', 
   const close = await screen.findByRole('img')
   fireEvent.click(close)
 })
-test('should navigate to analytics/recommendations', () => {
+test('should navigate to analytics/recommendations/crrm', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/tenantId/t/analytics/recommendations',
+      path: '/tenantId/t/analytics/recommendations/crrm',
       wrapRoutes: false
     }
   })
-  expect(screen.getByText('Recommendations')).toBeVisible()
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
+})
+test('should navigate to analytics/recommendations/crrm/:id', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/crrm/id',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
+})
+test('should navigate to analytics/recommendations/aiOps', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/aiOps',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
+})
+test('should navigate to analytics/recommendations/aiOps/:id', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/aiOps/id',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('RecommendationDetails')).toBeVisible()
 })
 test('should navigate to analytics/health page', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(false)
@@ -240,7 +269,7 @@ test('should navigate to analytics/configChange', () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
+  expect(screen.getByTestId('networkAssurance')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
@@ -335,115 +364,5 @@ describe('RBAC', () => {
     })
 
     expect(container).toBeEmptyDOMElement()
-  })
-})
-
-describe('should handle when feature flag NAVBAR_ENHANCEMENT is off', () => {
-  beforeEach(() => {
-    jest.resetAllMocks()
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-  })
-  test('should redirect analytics to analytics/incidents', async () => {
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('incidentListPageLegacy')).toBeVisible()
-  })
-  test('should navigate to analytics/incidents', async () => {
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('incidentListPageLegacy')).toBeVisible()
-  })
-  test('should navigate to analytics/serviceValidation', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/serviceValidation',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
-  })
-  test('should navigate to analytics/serviceValidation by ServiceGuardSpecGuard', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    mockGraphqlQuery(
-      serviceGuardApiURL, 'FetchServiceGuardSpec', { data: { serviceGuardSpec: null } })
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/serviceValidation/specId/edit',
-        wrapRoutes: false
-      }
-    })
-    await waitFor(()=>{
-      expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
-    })
-    expect(screen.getByText('Service Validation test does not exist')).toBeVisible()
-
-    const close = await screen.findByRole('img')
-    fireEvent.click(close)
-  })
-  test('should navigate to analytics/health page', () => {
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/health',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('healthPage')).toBeVisible()
-  })
-  test('should navigate to analytics/health/tab/overview tab', async () => {
-    render(< Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/health/tab/overview',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('healthPage')).toBeVisible()
-  })
-  test('should navigate to analytics/incidents/tab/overview', async () => {
-    render(< Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/incidents/tab/overview',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('incidentListPageLegacy')).toBeVisible()
-  })
-  test('should navigate to analytics/serviceValidation by ServiceGuardTestGuard', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    mockGraphqlQuery(
-      serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest: null } })
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/serviceValidation/1/tests/1/tab/overview',
-        wrapRoutes: false
-      }
-    })
-    await waitFor(()=>{
-      expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
-    })
-    expect(screen.getByText('Service Validation test does not exist')).toBeVisible()
-
-    const close = await screen.findByRole('img')
-    fireEvent.click(close)
-  })
-  test('should navigate to analytics/videoCallQoe', () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValueOnce(false)
-    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
-    render(<Provider><AnalyticsRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/analytics/videoCallQoe',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
   })
 })

@@ -4,9 +4,9 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
-import { get }                       from '@acx-ui/config'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { getIntl }                   from '@acx-ui/utils'
+import { get }                              from '@acx-ui/config'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
+import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { cssNumber, cssStr }   from '../../theme/helper'
 import { qualitativeColorSet } from '../Chart/helper'
@@ -16,6 +16,7 @@ import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export type ConfigChange = {
   id?: number
+  filterId?: number
   timestamp: string
   type: string
   name: string
@@ -24,15 +25,21 @@ export type ConfigChange = {
   newValues: string[]
 }
 
+type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
+
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: number,
-  onDotClick?: (params: unknown) => void,
-  onBrushPositionsChange?: (params: number[][]) => void
+  selectedData?: ConfigChange,
+  onDotClick?: (params: ConfigChange) => void,
+  onBrushPositionsChange?: (params: number[][]) => void,
+  chartZoom?: { start: number, end: number },
+  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setPagination?: (params: { current: number, pageSize: number }) => void
 }
-
-type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
@@ -279,11 +286,14 @@ export const draw = (
 export function useDataZoom (
   eChartsRef: RefObject<ReactECharts>,
   chartBoundary: number[],
-  setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>
+  setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>,
+  zoomBoundary?: { start: number, end: number },
+  setZoomBoundary?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 ) {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
-
   const onDatazoomCallback = useCallback((e: unknown) => {
+    setInitialZoom?.({ start: chartBoundary[0], end: chartBoundary[1] })
     const event = e as unknown as OnDatazoomEvent
     if (event.batch[0].startValue === chartBoundary[0] &&
       event.batch[0].endValue === chartBoundary[1]) {
@@ -295,7 +305,12 @@ export function useDataZoom (
       min: event.batch[0].startValue,
       max: event.batch[0].endValue
     })
-  }, [chartBoundary, setBoundary])
+
+    if (!zoomBoundary || (zoomBoundary && (event.batch[0].startValue !== zoomBoundary.start
+      || event.batch[0].endValue !== zoomBoundary.end))){
+      setZoomBoundary?.({ start: event.batch[0].startValue, end: event.batch[0].endValue })
+    }
+  }, [chartBoundary, setBoundary, zoomBoundary, setZoomBoundary])
 
   useEffect(() => {
     if (!eChartsRef?.current) return
@@ -313,6 +328,15 @@ export function useDataZoom (
     }
   }, [eChartsRef, onDatazoomCallback])
 
+  useEffect(() => {
+    if (!eChartsRef?.current || !zoomBoundary) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'dataZoom',
+      batch: [{ startValue: zoomBoundary.start, endValue: zoomBoundary.end }]
+    })
+  }, [eChartsRef, zoomBoundary])
+
   const resetZoomCallback = useCallback(() => {
     if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
@@ -322,15 +346,13 @@ export function useDataZoom (
     })
   }, [eChartsRef, chartBoundary ])
 
-  useEffect(() => { resetZoomCallback() }, [resetZoomCallback])
-
   return { canResetZoom, resetZoomCallback }
 }
 
 export function useDotClick (
   eChartsRef: RefObject<ReactECharts>,
   setSelected: Dispatch<SetStateAction<number | undefined>>,
-  onDotClick: ((param:unknown) => void) | undefined
+  onDotClick: ((param: ConfigChange) => void) | undefined
 ){
   const onDotClickCallback = useCallback(function (params: {
     componentSubType: string
@@ -381,6 +403,29 @@ export function useLegendSelectChanged (
       }
     }
   }, [eChartsRef, onLegendChangedCallback])
+}
+
+export function useLegendTableFilter (
+  selectedLegend: Record<string, boolean>,
+  data: ConfigChange[],
+  selectedData?: ConfigChange,
+  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setPagination?: (params: { current: number, pageSize: number }) => void
+){
+  useEffect(() => {
+    const chartRowMapping = getConfigChangeEntityTypeMapping()
+    setLegend?.(selectedLegend)
+    const selectedConfig = data.filter(i => i.id === selectedData?.id)
+    const selectedType = chartRowMapping.filter(
+      ({ key }) => key === selectedConfig[0]?.type)[0]?.label
+
+    selectedLegend[selectedType] === false && setSelectedData?.(null)
+    setPagination?.({
+      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / TABLE_DEFAULT_PAGE_SIZE),
+      pageSize: TABLE_DEFAULT_PAGE_SIZE
+    })
+  }, [selectedLegend, data.length])
 }
 
 export const useBoundaryChange = (

@@ -185,6 +185,18 @@ export const ApErrorHandlingMessages = {
   }),
   ERROR_OCCURRED: defineMessage({
     defaultMessage: 'Error occurred while {action} AP'
+  }),
+  FIRMWARE_IS_NOT_SUPPORTED: defineMessage({
+    defaultMessage: 'The version of AP firmware is not supported'
+  }),
+  IS_NOT_OPERATIONAL: defineMessage({
+    defaultMessage: 'The AP is not operational'
+  }),
+  IS_NOT_FOUND: defineMessage({
+    defaultMessage: 'The AP is not found'
+  }),
+  NO_DETECTED_NEIGHBOR_DATA: defineMessage({
+    defaultMessage: 'No detected neighbor data'
   })
 }
 
@@ -215,6 +227,12 @@ export const EditPortMessages = {
   }),
   PORT_SPEED_TOOLTIP: defineMessage({
     defaultMessage: 'Not support on this port'
+  }),
+  TAGGED_VLAN_VOICE_TOOLTIP: defineMessage({
+    defaultMessage: 'The port needs to be a tagged member of the VLAN  in order to use it as a Voice VLAN.'
+  }),
+  INVALID_VOICE_VLAN: defineMessage({
+    defaultMessage: 'Voice VLAN needs to be configured together with Tagged VLAN.'
   })
 }
 
@@ -340,6 +358,6 @@ export const EditPropertyConfigMessages = {
   /* eslint-disable max-len */
   DISABLE_PROPERTY_MESSAGE: defineMessage({ defaultMessage: 'This will delete all related configurations and currently connected clients will lose their connectivity to networking services.' }),
   ENABLE_PROPERTY_TOOLTIP: defineMessage({ defaultMessage: 'Switching property management OFF will delete the entire related configuration and will cause clients to lose their networking service.' }),
-  BIND_PERSONA_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the persona group is not allowed.' })
+  BIND_IDENTITY_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the identity group is not allowed.' })
   /* eslint-enable */
 }

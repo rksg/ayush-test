@@ -62,11 +62,12 @@ import {
   VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP,
-  VenueClientAdmissionControl
+  VenueClientAdmissionControl,
+  RogueApLocation
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }      from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseVenueApi }                        from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -100,21 +101,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
-    }),
-    newAddVenue: build.mutation<VenueExtended, RequestPayload>({ //Only for IT test
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.newAddVenue, params)
         return {
           ...req,
           body: payload
@@ -225,7 +217,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Device', id: 'MESH' }]
+      providesTags: [{ type: 'Device', id: 'MESH' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -493,7 +486,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AAA', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getAaaSetting: build.query<AAASetting, RequestPayload>({
       query: ({ params }) => {
@@ -700,6 +694,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getRogueApLocation: build.query<RogueApLocation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRogueApLocation, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
@@ -707,7 +709,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
       query: ({ params, payload }) => {
@@ -863,7 +866,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           totalCount: res.response.totalCount,
           page: arg.payload.page
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
       query: ({ params, payload }) => {
@@ -901,7 +905,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response &&
+              requestArgs.callback &&
+              msg.useCase === 'UpdateVenueLoadBalancing'
+            && ((msg.steps?.find((step) => {
+              return step.id === 'UpdateVenueLoadBalancing'
+            })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)()
+            }
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
+          }
+        })
+      }
     }),
     getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
       query: ({ params }) => {
@@ -978,7 +1000,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(
           PropertyUrlsInfo.getPropertyConfigs,
           params,
-          { Accept: 'application/hal+json' }
+          { ...ignoreErrorModal, Accept: 'application/hal+json' }
         )
         return {
           ...req
@@ -1010,7 +1032,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       transformResponse (result: NewTableResult<PropertyConfigs>) {
         return transferToTableResult<PropertyConfigs>(result)
       },
-      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }]
+      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1103,7 +1126,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     downloadPropertyUnits: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1192,7 +1216,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }]
+      invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response &&
+              requestArgs.callback &&
+              msg.useCase === 'UpdateVenueClientAdmissionControlSettings' &&
+              ((msg.steps?.find((step) => {
+                return step.id === 'UpdateVenueClientAdmissionControlSettings'
+              })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)()
+            }
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
+          }
+        })
+      }
     })
   })
 })
@@ -1201,7 +1243,6 @@ export const {
   useVenuesListQuery,
   useLazyVenuesListQuery,
   useAddVenueMutation,
-  useNewAddVenueMutation,
   useGetVenueQuery,
   useLazyGetVenueQuery,
   useGetVenuesQuery,
@@ -1243,6 +1284,7 @@ export const {
   useBulkDeleteAAAServerMutation,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
+  useGetRogueApLocationQuery,
   useGetVenueRogueApQuery,
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
@@ -1303,5 +1345,6 @@ export const {
   useGetVenueRadiusOptionsQuery,
   useUpdateVenueRadiusOptionsMutation,
   useGetVenueClientAdmissionControlQuery,
+  useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation
 } = venueApi

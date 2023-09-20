@@ -18,7 +18,6 @@ export const ArrowChevronRightIcon = styled(ArrowChevronRight)`
 export const MoreVerticalIcon = styled(MoreVertical)``
 
 export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
-  margin-bottom: -2px;
   width: 16px;
   height: 16px;
   path {
@@ -65,6 +64,12 @@ export const Wrapper = styled.div<WrapperProps>`
   }
   .ant-card-head-title {
     padding: 0;
+    .ant-space {
+      // icon
+      .ant-space-item:last-child {
+        line-height: 0;
+      }
+    }
   }
   .ant-card-head-wrapper {
     align-items: start;
@@ -96,6 +101,7 @@ export const SubTitle = styled.div`
   line-height: var(--acx-body-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-body-font-weight);
+  white-space: normal;
 `
 
 export const LinkButton = styled(Button).attrs({ size: 'small' })`

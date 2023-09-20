@@ -116,6 +116,8 @@ export interface NetworkSaveData {
   authRadius?: Radius;
   accountingRadius?: Radius;
   dpskServiceProfileId?: string;
+  isOweMaster?: boolean;
+  owePairNetworkId?: string;
 }
 export interface ExternalProviders{
   providers: Providers[]

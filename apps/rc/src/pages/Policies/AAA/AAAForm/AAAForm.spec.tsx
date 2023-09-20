@@ -2,8 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { AaaUrls }                                       from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
@@ -144,25 +142,12 @@ describe('AAAForm', () => {
       name: /ip address/i
     }))[1],
     'test1234')
-    await screen.findByText('Finish')
+    await screen.findByText('Add')
     // FIXME:
     // await userEvent.click(await screen.findByText('Finish'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
-      route: { params }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('Policies & Profiles')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'RADIUS Server'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
       route: { params }
     })
@@ -215,7 +200,7 @@ async function editAAA (){
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')
   await fillInProfileName('test1')
-  await userEvent.click(await screen.findByText('Finish'))
+  await userEvent.click(await screen.findByText('Add'))
   await userEvent.type(port2, '1812')
   await fillInProfileName('test2 update')
   // FIXME: Do not use "setTimeout"
