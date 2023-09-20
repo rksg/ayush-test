@@ -555,7 +555,7 @@ export function StackForm () {
       show: !editMode,
       render: function (_, row) {
         return (
-          <Form.Item name={'active'} initialValue={activeRow}>
+          <Form.Item name={`active${row.key}`} initialValue={activeRow}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
               <Radio
                 data-testid={`active${row.key}`}
