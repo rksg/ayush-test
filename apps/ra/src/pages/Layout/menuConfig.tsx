@@ -136,7 +136,7 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Wireless Clients List' })
               },
               {
-                uri: '/users/wifi/reports/clients',
+                uri: '/users/wifi/reports',
                 label: $t({ defaultMessage: 'Wireless Clients Report' })
               }
             ]
