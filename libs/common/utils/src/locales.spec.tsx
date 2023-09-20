@@ -258,6 +258,16 @@ describe('LocaleProvider', () => {
 })
 
 describe('useLocaleContext', () => {
+  const url = '/locales/compiled/:locale.json'
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(url, (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+  })
+
   it('returns locale', async () => {
     const TestUseLocaleContext = () => {
       const locale = useLocaleContext()
@@ -273,6 +283,15 @@ describe('useLocaleContext', () => {
 })
 
 describe('localePath', () => {
+  const url = '/locales/compiled/:locale.json'
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(url, (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+  })
   it('should throw an error if response is not ok', async () => {
     const locale = 'es-ES'
     try {
@@ -284,6 +303,12 @@ describe('localePath', () => {
   })
 
   it('should return empty object', async () => {
+    const url = '/locales/compiled/:locale.json'
+    mockServer.use(
+      rest.get(url, (req, res, ctx) => {
+        return res(ctx.json({}))
+      })
+    )
     const result = await localePath('es')
     expect(result).toEqual({})
   })
