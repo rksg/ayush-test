@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext } from 'react'
 
-import { Form, Switch } from 'antd'
-import { NamePath }     from 'antd/es/form/interface'
-import { useIntl }      from 'react-intl'
+import { Form, Switch, Row } from 'antd'
+import { NamePath }          from 'antd/es/form/interface'
+import { useIntl }           from 'react-intl'
 
 
 import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
@@ -48,8 +48,6 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
 
   /* eslint-disable max-len */
   const displayLowPowerMode = (data?: ApViewModel) => {
-
-    // TODO add Feature flag and pending for PLM
 
     if (!data || !data.apStatusData || !data.apStatusData.afcInfo) {}
     if (radioType !== ApRadioTypeEnum.Radio6G) return
@@ -101,19 +99,21 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             name={enabledFieldName}
             valuePropName='checked'
             style={{ marginTop: '16px' }}
-            children={<>
-              {/* eslint-disable max-len */}
-              <div style={{ width: '100%' }} key='switch-button'>
-                {isUseVenueSettings ?
-                  <span>{$t({ defaultMessage: 'On' })}</span>:
-                  <Switch onChange={handleEnableChanged} />
-                }
-              </div>
-              {displayLowPowerMode(apViewContextData)}
-            </>
+          >
+            {isUseVenueSettings ?
+              <span>{$t({ defaultMessage: 'On' })}</span> :
+              <Switch onChange={handleEnableChanged} />
             }
-          />
+          </Form.Item>
         </FieldLabel>
+        <Row>
+          {/* First div is for padding, match the field label width */}
+          <div style={{ width: '180px', height: '30px', float: 'left' }}></div>
+          <div style={{ width: '500px', height: '30px', float: 'left' }}>
+            { displayLowPowerMode(apViewContextData) }
+          </div>
+        </Row>
+
         { (!isEnabled && !isUseVenueSettings) ? (
           <DisabledDiv>
             {$t({ defaultMessage: '{radioTypeName} Radio is disabled' },
