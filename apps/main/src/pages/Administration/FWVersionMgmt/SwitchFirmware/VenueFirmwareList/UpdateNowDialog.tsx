@@ -106,7 +106,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={visible}
-      width={560}
+      width={630}
       okText={$t({ defaultMessage: 'Run Update' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}

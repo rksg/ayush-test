@@ -237,7 +237,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     <Modal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       visible={visible}
-      width={560}
+      width={630}
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
