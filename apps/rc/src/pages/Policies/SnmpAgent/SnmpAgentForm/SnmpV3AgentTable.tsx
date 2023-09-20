@@ -182,6 +182,7 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        stickyPagination={false}
       />
     </>
   )

@@ -135,6 +135,7 @@ const toolbarHeight = '45px'
 
 type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+  $stickyPagination?: boolean
 }
 
 export const ResizableHover = styled.div``
@@ -267,22 +268,11 @@ const tallStyle = css<StyledTable>`
     }
 
     .ant-pagination {
-      position: sticky;
-      bottom: 0;
+      position: relative;
       z-index: 4;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: var(--acx-primary-white);
       padding: 16px 0;
       margin: unset;
-      .ant-select-dropdown {
-        left: 0 !important;
-        top: -204px !important;
-        &[class*="enter-active"],
-        &[class*="appear-active"]
-        { animation-name: antSlideDownIn; }
-
-        &[class*="leave-active"]
-        { animation-name: antSlideDownOut; }
-      }
     }
   }
 `
@@ -563,6 +553,7 @@ export const Wrapper = styled.div<StyledTable>`
   }
 
   ${props => styles[props.$type]}
+  ${props => props.$stickyPagination && stickyPagination}
 `
 
 export const Divider = styled(AntDivider)`
@@ -616,5 +607,33 @@ export const disableStickyHeaders = css`
   ${ActionsContainer} {
     position: relative;
     top: unset;
+  }
+`
+
+const stickyPagination = css`
+  .ant-pro-table {
+    .ant-pagination {
+      position: sticky;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      .ant-select-dropdown {
+        left: 0 !important;
+        top: -204px !important;
+        &[class*="enter-active"],
+        &[class*="appear-active"]
+        { animation-name: antSlideDownIn; }
+
+        &[class*="leave-active"]
+        { animation-name: antSlideDownOut; }
+      }
+    }
+  }
+`
+export const disableStickyPagination = css`
+  .ant-pro-table {
+    .ant-pagination {
+      position: relative;
+      background-color: var(--acx-primary-white);
+    }
   }
 `

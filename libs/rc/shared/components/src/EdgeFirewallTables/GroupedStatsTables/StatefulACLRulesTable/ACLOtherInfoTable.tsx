@@ -65,6 +65,7 @@ export const ACLOtherInfoTable = (props: ACLOtherInfoTableProps) => {
   return <Table
     columns={ACLOtherInfoColumns}
     dataSource={dataSrc}
+    stickyPagination={false}
     rowKey='description'
   />
 }

@@ -156,6 +156,7 @@ export function HistoricalClientsTable
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
+            stickyPagination={false}
             rowKey='clientMac'
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{

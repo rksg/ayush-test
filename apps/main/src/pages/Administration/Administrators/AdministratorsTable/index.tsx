@@ -253,6 +253,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
             row: TooltipRow
           }
         }}
+        stickyPagination={false}
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}

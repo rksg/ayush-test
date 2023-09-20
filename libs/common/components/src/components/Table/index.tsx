@@ -81,6 +81,7 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number,
     searchableWidth?: number,
+    stickyPagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -133,6 +134,7 @@ function Table <RecordType extends Record<string, any>> ({
   onDisplayRowChange, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -151,6 +153,7 @@ function Table <RecordType extends Record<string, any>> ({
       return acc
     }, {} as Record<string, number>)
   )
+  const [isStickyPagination, setIsStickyPagination] = useState<boolean>()
   useDebugValue(colWidth)
   const getRowKey = (data: RecordType) => {
     return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
@@ -161,6 +164,16 @@ function Table <RecordType extends Record<string, any>> ({
   }, 1000)
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
+
+  useEffect(()=>{
+    if (props.stickyPagination === undefined && wrapperRef?.current?.closest('#root')) {
+      // this Table is under LayoutComponent (not in Modal or Drawer)
+      setIsStickyPagination(true)
+    }
+    else {
+      setIsStickyPagination(!!props.stickyPagination)
+    }
+  }, [props.stickyPagination])
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -510,7 +523,9 @@ function Table <RecordType extends Record<string, any>> ({
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}
+    ref={wrapperRef}
     $type={type}
+    $stickyPagination={isStickyPagination}
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <UI.ActionsContainer

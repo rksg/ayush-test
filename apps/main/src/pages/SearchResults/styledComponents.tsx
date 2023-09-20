@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Collapse as AcxCollapse } from '@acx-ui/components'
+import { Collapse as AcxCollapse, disableStickyPagination } from '@acx-ui/components'
 
 export const Collapse = styled(AcxCollapse)`
   .ant-collapse-content {
@@ -18,4 +18,6 @@ export const Panel = styled(AcxCollapse.Panel)`
   .ant-collapse-header > .ant-collapse-expand-icon > .ant-collapse-arrow {
     right: 18px !important;
   }
+
+  ${disableStickyPagination}
 `

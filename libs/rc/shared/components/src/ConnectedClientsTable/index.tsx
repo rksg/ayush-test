@@ -423,6 +423,7 @@ export const ConnectedClientsTable = (props: {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           floatRightFilters={true}
+          stickyPagination={false}
           rowKey='clientMac'
         />
       </Loader>

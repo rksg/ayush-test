@@ -1,8 +1,9 @@
 import { Typography, Steps as AntSteps, Space } from 'antd'
 import styled, { css }                          from 'styled-components/macro'
 
-import modifyVars   from '../../theme/modify-vars'
-import { Subtitle } from '../Subtitle'
+import modifyVars                  from '../../theme/modify-vars'
+import { Subtitle }                from '../Subtitle'
+import { disableStickyPagination } from '../Table/styledComponents'
 
 export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
@@ -20,6 +21,8 @@ export const Wrapper = styled.section`
   --acx-steps-form-actions-vertical-space: 12px;
 
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+
+  ${disableStickyPagination}
 `
 
 const stepCompletedStyle = css<{ $editMode?: boolean }>`

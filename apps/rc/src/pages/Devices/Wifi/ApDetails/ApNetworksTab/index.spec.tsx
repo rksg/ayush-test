@@ -1,12 +1,11 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import { ApNetworksTab } from '.'
@@ -55,14 +54,13 @@ describe('Networks Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApNetworksTab />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/networks' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByRole('row', { name: /network-01/ })).toBeVisible()
   })
 })
