@@ -10,14 +10,14 @@ import { useClientListQuery, Client } from './services'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function ClientsList ({ searchVal='' }: { searchVal?: string| undefined }) {
+export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
   const { $t } = useIntl()
   const timeRanges = defaultRanges()[DateRange.last24Hours]!
   const results = useClientListQuery({
     start: timeRanges[0].format(),
     end: timeRanges[1].format(),
     limit: 100,
-    query: searchVal!
+    query: searchVal
   })
   const clientTablecolumnHeaders: TableProps<Client>['columns'] = [
     {
@@ -75,7 +75,7 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string| undefined }
       columns={clientTablecolumnHeaders}
       dataSource={results.data?.clients as unknown as Client[]}
       pagination={pagination}
-      settingsId='clients-search-table'
+      settingsId='clients-list-table'
     />
   </Loader>
 }
