@@ -120,6 +120,53 @@ Array [
     },
     "children": Array [
       Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "label": Array [
           Object {
             "type": 0,
@@ -307,6 +354,53 @@ Array [
       Object {
         "type": 0,
         "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
       },
     ],
   },
@@ -614,6 +708,53 @@ Array [
     },
     "children": Array [
       Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "label": Array [
           Object {
             "type": 0,
@@ -901,6 +1042,53 @@ Array [
       Object {
         "type": 0,
         "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
       },
     ],
   },
@@ -1282,6 +1470,53 @@ Array [
     },
     "children": Array [
       Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "label": Array [
           Object {
             "type": 0,
@@ -1570,6 +1805,53 @@ Array [
       Object {
         "type": 0,
         "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
       },
     ],
   },
@@ -1877,6 +2159,53 @@ Array [
       Object {
         "type": 0,
         "value": "AI Assurance",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients List",
+              },
+            ],
+            "uri": "/users/wifi/clients",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Clients Report",
+              },
+            ],
+            "uri": "/users/wifi/reports",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wireless",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Clients",
       },
     ],
   },

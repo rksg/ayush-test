@@ -11,13 +11,14 @@ import {
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import ClientDetails   from './pages/ClientDetails'
-import ConfigChange    from './pages/ConfigChange'
-import IncidentDetails from './pages/IncidentDetails'
-import Incidents       from './pages/Incidents'
-import Layout          from './pages/Layout'
-import Recommendations from './pages/Recommendations'
-import SearchResults   from './pages/SearchResults'
+import ClientDetails                 from './pages/ClientDetails'
+import Clients, { AIClientsTabEnum } from './pages/Clients'
+import ConfigChange                  from './pages/ConfigChange'
+import IncidentDetails               from './pages/IncidentDetails'
+import Incidents                     from './pages/Incidents'
+import Layout                        from './pages/Layout'
+import Recommendations               from './pages/Recommendations'
+import SearchResults                 from './pages/SearchResults'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -59,13 +60,13 @@ function AllRoutes () {
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
       <Route path='users'>
-        <Route path='wifi/clients'>
-          <Route path=':clientId'>
-            <Route path=':activeTab' element={<ClientDetails />}>
-              <Route path='' element={<Navigate replace to='./overview' />} />
-              <Route path=':activeTab' element={<ClientDetails />} />
-              <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
-            </Route>
+        <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
+        <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
+        <Route path='wifi/clients/:clientId'>
+          <Route path=':activeTab' element={<ClientDetails />}>
+            <Route path='' element={<Navigate replace to='./overview' />} />
+            <Route path=':activeTab' element={<ClientDetails />} />
+            <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
         </Route>
       </Route>

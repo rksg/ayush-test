@@ -16,6 +16,8 @@ import { LayoutProps }  from '@acx-ui/components'
 import {
   AIOutlined,
   AISolid,
+  AccountCircleOutlined,
+  AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
   BulbOutlined,
@@ -126,6 +128,28 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
+    ...(hasViewAnalyticsPermissions
+      ? [{
+        label: $t({ defaultMessage: 'Clients' }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Wireless' }),
+            children: [
+              {
+                uri: '/users/wifi/clients',
+                label: $t({ defaultMessage: 'Wireless Clients List' })
+              },
+              {
+                uri: '/users/wifi/reports',
+                label: $t({ defaultMessage: 'Wireless Clients Report' })
+              }
+            ]
+          }
+        ]
+      }] : []),
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),
@@ -213,8 +237,8 @@ export function useMenuConfig () {
             }
           ]
         }
-      ] : []
-    )
+      ]
+      : [])
   ]
   return config
 }
