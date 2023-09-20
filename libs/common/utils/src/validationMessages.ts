@@ -435,6 +435,10 @@ export const validationMessages = {
   exceptionDscpValueExists: defineMessage({
     defaultMessage: 'The exception DSCP already exists.',
     description: 'Validation - exception dscp value exists'
+  }),
+  switchDhcpOptionIpMaxSize: defineMessage({
+    defaultMessage: 'Max number of DHCP Option IPs is 3',
+    description: 'Validation - DHCP option IPs max size checks'
   })
 }
 
