@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { DateRange, defaultRanges }              from '@acx-ui/utils'
+import { defaultSort, sortProp  }    from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
+import { DateRange, defaultRanges }  from '@acx-ui/utils'
 
 import { useClientListQuery, Client } from './services'
 
@@ -71,10 +71,6 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string| undefined }
     }
   ]
   return <Loader states={[results]}>
-    <PageHeader title={$t(
-      { defaultMessage: 'Clients list' }
-    )}
-    />
     <Table<Client>
       columns={clientTablecolumnHeaders}
       dataSource={results.data?.clients as unknown as Client[]}

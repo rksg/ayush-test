@@ -12,7 +12,6 @@ import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-rout
 
 import ClientDetails                 from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum } from './pages/Clients'
-import { ClientsList }               from './pages/ClientsList'
 import ConfigChange                  from './pages/ConfigChange'
 import IncidentDetails               from './pages/IncidentDetails'
 import Incidents                     from './pages/Incidents'
@@ -63,13 +62,12 @@ function AllRoutes () {
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
-          <Route path=':activeTab' element={<ClientDetails />}>
+          <Route path=':activeTab'>
             <Route path='' element={<Navigate replace to='./overview' />} />
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
         </Route>
-        <Route path='wifi/clients/list' element={<ClientsList />}/>
       </Route>
     </Route>
   </Route>)

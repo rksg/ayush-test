@@ -4,6 +4,8 @@ import { useHeaderExtra }             from '@acx-ui/analytics/components'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { ClientsList } from './ClientsList'
+
 
 export enum AIClientsTabEnum {
   CLIENTS = 'users/wifi/clients',
@@ -22,7 +24,7 @@ const useTabs = () : Tab[] => {
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List' }),
-    component: <div>Client list content</div>,
+    component: <ClientsList/>,
     headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
   }
   const reportsTab = {
