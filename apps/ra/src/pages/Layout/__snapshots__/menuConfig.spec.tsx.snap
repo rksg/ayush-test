@@ -120,6 +120,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -157,41 +192,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -364,6 +364,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -401,41 +436,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -708,6 +708,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -745,41 +780,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -1052,6 +1052,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -1089,41 +1124,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -1470,6 +1470,32 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -1507,32 +1533,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -1815,6 +1815,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -1852,41 +1887,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
@@ -2169,6 +2169,41 @@ Array [
     },
     "children": Array [
       Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "App Insights (coming soon)",
+          },
+        ],
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -2206,41 +2241,6 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "App Insights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
       },
     ],
   },
