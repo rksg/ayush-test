@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import {
   Form,
-  Radio,
-  Row,
-  Col,
   Space,
-  Select,
-  Input,
-  Tooltip
+  Input
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Modal, showActionModal }    from '@acx-ui/components'
+import { Modal, showActionModal, Tooltip } from '@acx-ui/components'
 import {
   useAddAdminMutation,
-  useGetRegisteredUsersListQuery,
   useGetTenantAuthenticationsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -65,7 +57,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const userType = Form.useWatch('userType', form)
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
@@ -73,16 +64,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const tenantAuthenticationData =
     useGetTenantAuthenticationsQuery({ params })
-
-  const {
-    data: registerUsersList,
-    isLoading: isRegisterUsersListLoading
-  } = useGetRegisteredUsersListQuery({ params })
-
-  const isRegisteredUser = (email: string): boolean => {
-    if (!registerUsersList) return false
-    return Boolean(_.find(registerUsersList, { email }))
-  }
 
   const handleSubmitFailed = (error: CommonErrorsResult<CatchErrorDetails>) => {
     const errData = error.data.errors
@@ -118,23 +99,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const handleSubmit = async () => {
     const formValues = form.getFieldsValue(true)
-    const { userType, newEmail } = formValues
-
-    // check duplicate with UI cached data if choose "invite new"
-    if (userType === 'new') {
-      const isExistedUser = isRegisteredUser(newEmail)
-
-      if (isExistedUser) {
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Admin could not be added' }),
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'The email address belongs to a registered user in this account. Please select him using the "Registered User" option' })
-        })
-
-        return
-      }
-    }
 
     try {
       const payload = {
@@ -153,16 +117,11 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         }
       }
 
-      if (userType === 'new') {
-        payload.email = formValues.newEmail
-        if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
-          payload.authenticationId = authenticationData.id
-          payload.lastName = formValues.lastName ?? ''
-          payload.firstName = formValues.firstName ?? ''
-        }
-      } else {
-        payload.email = formValues.email
-        payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
+      payload.email = formValues.newEmail
+      if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
+        payload.authenticationId = authenticationData.id
+        payload.lastName = formValues.lastName ?? ''
+        payload.firstName = formValues.firstName ?? ''
       }
 
       await addAdmin({ params, payload }).unwrap()
@@ -179,9 +138,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   }
 
   useEffect(() => {
-    if (form && registerUsersList) {
-      form.setFieldValue('userType', registerUsersList.length > 0 ? 'existing' : 'new')
-    }
     if (tenantAuthenticationData) {
       const ssoData = tenantAuthenticationData.data?.filter(n =>
         n.authenticationType === TenantAuthenticationType.saml)
@@ -190,14 +146,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         setAuthenticationData(ssoData[0])
       }
     }
-  }, [form, registerUsersList])
-
-  const registerUsersSelectOpts = registerUsersList ? registerUsersList.map((item) => ({
-    label: item.email,
-    value: item.email
-  })): []
-
-  const isNoExistingUser = registerUsersSelectOpts.length === 0
+  }, [form])
 
   return (
     <Modal
@@ -222,118 +171,57 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
             ssoConfigured={isSsoConfigured}
             setSelected={setSelectedAuth}
           />
+          {selectedAuth === AuthTypeRadioButtonEnum.sso &&
+          <div>
+            <Form.Item
+              name='firstName'
+              label={$t({ defaultMessage: 'First Name' })}
+              initialValue=''
+              rules={[
+                { message: $t({ defaultMessage: 'Please enter first name' }) },
+                { min: 2 },
+                { max: 64 }
+              ]} >
+              <Input
+                placeholder={$t({ defaultMessage: 'Enter first name' })}
+              />
+            </Form.Item>
+            <Form.Item
+              name='lastName'
+              label={$t({ defaultMessage: 'Family Name' })}
+              initialValue=''
+              rules={[
+                { message: $t({ defaultMessage: 'Please enter family name' }) },
+                { min: 2 },
+                { max: 64 }
+              ]} >
+              <Input
+                placeholder={$t({ defaultMessage: 'Enter family name' })}
+              />
+            </Form.Item>
+          </div>}
 
-          <Form.Item name='userType' initialValue='new'>
-            <Radio.Group style={{ width: '100%' }}>
-              <Space direction='vertical' size='large' style={{ width: '100%' }} >
-                {isMspEc === false && (
-                  <Row justify='space-between'>
-                    <Radio
-                      value='existing'
-                      disabled={isRegisterUsersListLoading || isNoExistingUser}
-                    >
-                      {$t({ defaultMessage: 'Registered user' })}
-                      <Tooltip
-                        placement='topRight'
-                        // eslint-disable-next-line max-len
-                        title={$t({ defaultMessage: 'Select a registered user. Registered user is a user which has a Ruckus Support Account' })}
-                      >
-                        <QuestionCircleOutlined />
-                      </Tooltip>
-                    </Radio>
-                    <Form.Item
-                      name='email'
-                      noStyle
-                      rules={[
-                        { required: userType === 'existing' }
-                      ]}
-                    >
-                      <Select
-                        style={{ marginTop: '5px', marginBottom: '10px' }}
-                        options={registerUsersSelectOpts}
-                        disabled={isNoExistingUser}
-                        placeholder={$t({ defaultMessage: 'Select admin...' })}
-                      />
-                    </Form.Item>
-                  </Row>
-                )}
-
-                <Row justify='space-between'>
-                  <Radio value='new'>
-                    {$t({ defaultMessage: 'Invite new user' })}
-                    <Tooltip
-                      placement='topRight'
-                      // eslint-disable-next-line max-len
-                      title={$t({ defaultMessage: 'Email invitation will be sent to this Email address for registration.\n Once registered with this email, the invited user will become an administrator.' })}
-                    >
-                      <QuestionCircleOutlined />
-                    </Tooltip>
-                  </Radio>
-                  <Form.Item
-                    name='newEmail'
-                    rules={[
-                      {
-                        required: userType === 'new',
-                        message: $t({ defaultMessage: 'Please enter email' })
-                      },
-                      { validator: (_, value) => emailRegExp(value) }
-                    ]}
-                    noStyle
-                    initialValue=''
-                  >
-                    <Input
-                      style={{ marginTop: '5px', marginBottom: '10px' }}
-                      placeholder={$t({ defaultMessage: 'Enter email address' })}
-                    />
-                  </Form.Item>
-                </Row>
-
-                {selectedAuth === AuthTypeRadioButtonEnum.sso &&
-                <Row justify='space-between'>
-                  <Col span={24}>
-                    <Form.Item
-                      name='firstName'
-                      label={$t({ defaultMessage: 'First Name' })}
-                      rules={[
-                        {
-                          message: $t({ defaultMessage: 'Please enter first name' })
-                        },
-                        { min: 2 },
-                        { max: 64 }
-                      ]}
-                      initialValue=''
-                    >
-                      <Input
-                        placeholder={$t({ defaultMessage: 'Enter first name' })}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>}
-
-                {selectedAuth === AuthTypeRadioButtonEnum.sso &&
-                <Row justify='space-between'>
-                  <Col span={24}>
-                    <Form.Item
-                      name='lastName'
-                      label={$t({ defaultMessage: 'Family Name' })}
-                      rules={[
-                        {
-                          message: $t({ defaultMessage: 'Please enter family name' })
-                        },
-                        { min: 2 },
-                        { max: 64 }
-                      ]}
-                      initialValue=''
-                    >
-                      <Input
-                        placeholder={$t({ defaultMessage: 'Enter family name' })}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>}
-
-              </Space>
-            </Radio.Group>
+          <Form.Item
+            name='newEmail'
+            initialValue=''
+            label={<>
+              {$t({ defaultMessage: 'Invite new user' })}
+              <Tooltip.Question
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'Email invitation will be sent to this Email address for registration.\n Once registered with this email, the invited user will become an administrator.' })}
+                placement='right'
+              />
+            </>}
+            rules={[
+              {
+                required: true,
+                message: $t({ defaultMessage: 'Please enter email' })
+              },
+              { validator: (_, value) => emailRegExp(value) }
+            ]}>
+            <Input
+              placeholder={$t({ defaultMessage: 'Enter email address' })}
+            />
           </Form.Item>
 
           <RoleSelector />
