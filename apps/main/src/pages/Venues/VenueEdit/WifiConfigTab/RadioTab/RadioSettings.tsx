@@ -175,12 +175,10 @@ export function RadioSettings () {
       return ap.apRadioDeploy === '2-5-6' && ap.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER
     })
 
-    if (true||lowerPowerModeAP.length > 0) {
-      setLowPowerAPQuantity({
-        lowPowerAPCount: lowerPowerModeAP.length,
-        allAPCount: response.length
-      })
-    }
+    setLowPowerAPQuantity({
+      lowPowerAPCount: lowerPowerModeAP.length,
+      allAPCount: response.length
+    })
   }
   /* eslint-enable max-len */
 
