@@ -19,6 +19,7 @@ describe('Table', () => {
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
+  const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
@@ -29,6 +30,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
@@ -44,6 +46,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -65,6 +68,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -84,6 +88,37 @@ describe('Table', () => {
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
   })
 
+  it('should render table with legend filtered', async () => {
+    const filteredLegend = {
+      'AP': false,
+      'AP Group': true,
+      'Venue': true,
+      'WLAN': false,
+      'WLAN Group': true
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+        legend={filteredLegend}
+      />
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const body = within(tbody)
+    expect(await screen.findByRole('table')).toBeVisible()
+    expect(await body.findAllByRole('row')).toHaveLength(4)
+    expect(screen.queryByText('AP')).toBeNull()
+    expect(screen.queryByText('WLAN')).toBeNull()
+  })
+
   it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
@@ -94,6 +129,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -106,6 +142,7 @@ describe('Table', () => {
     expect(handleClick).toHaveBeenCalledWith({
       children: undefined,
       id: 0,
+      filterId: 0,
       key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
       name: '94:B3:4F:3D:21:80',
       newValues: ['480'],
@@ -125,6 +162,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -154,6 +192,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
@@ -180,6 +219,7 @@ describe('Table', () => {
         pagination={{ current: 1, pageSize: 10 }}
         setPagination={setPagination}
         dotSelect={null}
+        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
