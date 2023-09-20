@@ -10,6 +10,7 @@ import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/anal
 import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
 import { Dropdown, Button, CaretDownSolidIcon }               from '@acx-ui/components'
 import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
 import { DateRange, defaultRanges, dateRangeMap }             from '@acx-ui/utils'
 
 import NoData                                from './NoData'
@@ -101,7 +102,10 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-
+      render: (_, row : Client) => (
+        <TenantLink to={`/users/wifi/clients/${row.mac}/details`}>
+          {row.hostname}</TenantLink>
+      ),
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
     {
