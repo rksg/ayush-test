@@ -86,7 +86,7 @@ export const IncidientNotificationDrawer = ({
       })
   }
   return <Drawer
-    title={$t({ defaultMessage: 'Incident Notifications' })}
+    title={$t({ defaultMessage: 'AI Notifications' })}
     visible={showDrawer}
     onClose={onClose}
     destroyOnClose

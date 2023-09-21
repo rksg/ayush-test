@@ -173,7 +173,7 @@ export const NotificationsTable = () => {
     },
     ...(allowIncidentsEmail
       ? [{
-        label: $t({ defaultMessage: 'Incident Notifications' }),
+        label: $t({ defaultMessage: 'AI Notifications' }),
         onClick: handleEnableIncidents
       }]
       : [])
@@ -203,7 +203,7 @@ export const NotificationsTable = () => {
         editData={editData}
         isDuplicated={isDuplicated}
       />
-      {(showDrawer && allowIncidentsEmail)
+      {showDrawer
       && <IncidientNotificationDrawer
         showDrawer={showDrawer}
         setShowDrawer={setShowDrawer}
