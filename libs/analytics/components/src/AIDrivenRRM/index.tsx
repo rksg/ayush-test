@@ -29,7 +29,7 @@ function AIDrivenRRMWidget ({
 
   const total = data?.crrmCount?.total
   const optimized = data?.crrmCount?.optimized
-  const totalScenarios = countFormat(data?.crrmScenarios?.total)
+  const totalScenarios = countFormat(data?.crrmScenarios)
   // eslint-disable-next-line max-len
   const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenarios} possible RRM combinations. Currently {optimized} out of {total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenarios })
   // eslint-disable-next-line max-len

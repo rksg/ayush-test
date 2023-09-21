@@ -36,9 +36,7 @@ export const crrmListResult = {
     }
   ],
   crrmCount: [{ status: 'applied' }, { status: 'reverted' }, { status: 'new' }],
-  crrmScenarios: {
-    total: 100
-  }
+  crrmScenarios: 100
 }
 
 export const recommendationListResult = {

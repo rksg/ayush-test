@@ -49,9 +49,7 @@ export type Recommendation = {
 
 export type CrrmData = {
   recommendations: CrrmListItem[]
-  crrmScenarios: {
-    total: number
-  }
+  crrmScenarios: number
   crrmCount: {
     total: number
     optimized: number
@@ -239,9 +237,7 @@ export const api = recommendationApi.injectEndpoints({
           crrmCount(start: $start, end: $end, path: $path, crrm: true) {
             status
           }
-          crrmScenarios(start: $start, end: $end, path: $path) {
-            total
-          }
+          crrmScenarios(start: $start, end: $end, path: $path)
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
             id
             status
@@ -385,9 +381,7 @@ export const api = recommendationApi.injectEndpoints({
 
 export interface CrrmResponse {
   recommendations: CrrmListItem[],
-  crrmScenarios: {
-    total: number
-  },
+  crrmScenarios: number,
   crrmCount: Recommendation[]
 }
 
