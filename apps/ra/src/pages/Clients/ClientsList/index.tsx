@@ -4,7 +4,7 @@ import { defaultSort, sortProp  }    from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { TenantLink }                from '@acx-ui/react-router-dom'
-import { DateRange, defaultRanges }  from '@acx-ui/utils'
+import { useDateFilter }             from '@acx-ui/utils'
 
 import { useClientListQuery, Client } from './services'
 
@@ -12,10 +12,11 @@ const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
   const { $t } = useIntl()
-  const timeRanges = defaultRanges()[DateRange.last24Hours]!
+  const { startDate, endDate } = useDateFilter()
+
   const results = useClientListQuery({
-    start: timeRanges[0].format(),
-    end: timeRanges[1].format(),
+    start: startDate,
+    end: endDate,
     limit: 100,
     query: searchVal
   })
