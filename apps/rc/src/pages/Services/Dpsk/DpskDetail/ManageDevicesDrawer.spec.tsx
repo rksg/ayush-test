@@ -23,10 +23,15 @@ const managePassphraseInfo = {
   id: 'bed56dda739d4738b46c67cda01e5113',
   passphrase: '12345678',
   username: 'DPSK_User_356',
-  numberOfDevices: 29,
+  numberOfDevices: 6,
   createdDate: '2023-09-05T07:08:12.038034',
   expirationDate: null
 }
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
+}))
 
 describe('ManageDevicesDrawer', () => {
   beforeEach(() => {
@@ -81,5 +86,8 @@ describe('ManageDevicesDrawer', () => {
     )
 
     await screen.findByText('11:22:33:44:55:66')
+
+    // mockedDevices.length == managePassphraseInfo.numberOfDevices
+    expect(screen.getByRole('button', { name: /add device/i })).toBeDisabled()
   })
 })

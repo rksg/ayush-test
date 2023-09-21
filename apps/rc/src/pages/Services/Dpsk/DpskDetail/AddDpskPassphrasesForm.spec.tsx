@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { CreateDpskPassphrasesFormFields, DpskUrls, NewDpskBaseUrlWithId } from '@acx-ui/rc/utils'
 import { Provider }                                                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor }                 from '@acx-ui/test-utils'
@@ -108,4 +108,22 @@ describe('AddDpskPassphrasesForm', () => {
 
     jest.mocked(useIsTierAllowed).mockReset()
   })
+
+  it('should remove the mac address when new flow DPSK feature flag is open', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    expect(screen.queryByText(/mac address/i)).toBeNull()
+  })
 })
+
