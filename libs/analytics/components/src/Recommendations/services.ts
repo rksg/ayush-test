@@ -51,10 +51,7 @@ export type CrrmData = {
   recommendations: CrrmListItem[]
   crrmScenarios: number,
   recommendationCount: number,
-  crrmCount: {
-    total: number
-    optimized: number
-  }
+  totalCount: number
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -236,9 +233,6 @@ export const api = recommendationApi.injectEndpoints({
         query CrrmList(
           $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int, $status: [String]
         ) {
-          crrmCount(start: $start, end: $end, path: $path, crrm: true) {
-            status
-          }
           recommendationCount(
             start: $start,
             end: $end,
@@ -246,6 +240,7 @@ export const api = recommendationApi.injectEndpoints({
             crrm: true,
             status: $status
           )
+          totalCount(start: $start, end: $end, path: $path, crrm: true)
           crrmScenarios(start: $start, end: $end, path: $path)
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
             id
@@ -266,13 +261,9 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: CrrmResponse) => {
         return {
           recommendations: transformCrrmList(response.recommendations),
-          crrmCount: {
-            total: response.crrmCount?.length,
-            optimized: response.crrmCount
-              ?.filter(i => getCrrmOptimizedState(i.status as StateType).order === 0).length
-          },
           crrmScenarios: response.crrmScenarios,
-          recommendationCount: response.recommendationCount
+          recommendationCount: response.recommendationCount,
+          totalCount: response.totalCount
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
@@ -394,7 +385,7 @@ export interface CrrmResponse {
   recommendations: CrrmListItem[],
   crrmScenarios: number,
   recommendationCount: number,
-  crrmCount: Recommendation[]
+  totalCount: number
 }
 
 export interface Response<Recommendation> {
