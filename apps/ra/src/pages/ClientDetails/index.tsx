@@ -4,7 +4,6 @@ import { ClientDetailPageHeader }   from './ClientDetailPageHeader'
 import { ClientTroubleshootingTab } from './ClientTroubleshooting'
 
 const tabs = {
-  overview: () => <div>overview</div>,
   troubleshooting: ClientTroubleshootingTab,
   reports: () => <div>reports</div>
 }
