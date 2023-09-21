@@ -1,3 +1,5 @@
+import { forwardRef } from 'react'
+
 import {
   Breadcrumb,
   List,
@@ -7,7 +9,15 @@ import {
 import { keyframes }   from 'styled-components'
 import styled, { css } from 'styled-components/macro'
 
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
+import {
+  ArrowChevronLeft,
+  ArrowChevronRight,
+  CaretDownSolid as CaretDownSolidIcon,
+  Close as CloseIcon
+} from '@acx-ui/icons'
+
+import type { InputRef, InputProps } from 'antd'
+
 export type SeveritySpanProps = {
   severity: string
 }
@@ -28,6 +38,16 @@ const slideOut = keyframes`
   }
 `
 
+export const CaretDownSolid = styled(CaretDownSolidIcon)``
+export const Close = styled(CloseIcon)`
+  path {
+    stroke: var(--acx-primary-black);
+  }
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  margin-right: 2px;
+`
 export const ButtonDiv = styled.div`
   background-color: var(--acx-neutrals-10);
   text-align: right;
@@ -153,7 +173,7 @@ export const StyledMenu = styled(Menu)`
 }
 }
 `
-export const StyledInput = styled(Input)`
+const StyledInputNoRef = styled(Input)`
   border-color: var(--acx-primary-black);
   color: var(--acx-primary-black);
   width: 100%;
@@ -163,6 +183,11 @@ export const StyledInput = styled(Input)`
   .ant-input::placeholder {
     color: var(--acx-primary-black) !important;
   }
+  .ant-input-suffix {
+    margin-left: 0;
+    cursor: text;
+  }
 `
-export const DropdownWrapper = styled.div`
-`
+export const StyledInput = forwardRef<InputRef, InputProps>((props, ref) =>
+  <StyledInputNoRef ref={ref} {...props} />)
+export const DropdownWrapper = styled.div``

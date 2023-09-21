@@ -190,15 +190,22 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
     expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
-  it('should handle onClear correctly', async () => {
+  it('should handle onClose correctly', async () => {
     render(
       <IntlProvider locale='en'>
         <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByTestId('CloseSymbol'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    fireEvent.mouseEnter(await screen.findByText('Child1 (SZ Cluster)'))
+    await screen.findByTestId('Close')
+    fireEvent.mouseLeave(await screen.findByText('Child1 (SZ Cluster)'))
+    await screen.findByTestId('CaretDownSolid')
+    fireEvent.mouseEnter(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByTestId('Close'))
+    expect(await screen.findByPlaceholderText('Entire Organization')).toBeVisible()
   })
   it('should show no data', async () => {
     render(
