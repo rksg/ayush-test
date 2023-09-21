@@ -7,13 +7,14 @@ import {
   useAllowedOperationsQuery,
   useGetUserProfileQuery
 } from './services'
-import { UserProfile }              from './types'
-import { setUserProfile, hasRoles } from './userProfile'
+import { UserProfile }                         from './types'
+import { setUserProfile, hasRoles, hasAccess } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
   allowedOperations: string[]
   hasRole: typeof hasRoles
+  hasAccess: typeof hasAccess
   isPrimeAdmin: () => boolean
 }
 
@@ -39,7 +40,13 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   if (allowedOperations) setUserProfile({ profile: profile!, allowedOperations })
 
   return <UserProfileContext.Provider
-    value={{ data: profile, allowedOperations: allowedOperations || [], hasRole, isPrimeAdmin }}
+    value={{
+      data: profile,
+      allowedOperations: allowedOperations || [],
+      hasRole,
+      isPrimeAdmin,
+      hasAccess
+    }}
     children={props.children}
   />
 }
