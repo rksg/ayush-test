@@ -12,7 +12,9 @@ import {
   screen,
   fireEvent,
   waitForElementToBeRemoved,
-  within
+  within,
+  waitFor,
+  logRoles
 } from '@acx-ui/test-utils'
 
 
@@ -56,17 +58,20 @@ const venuelist = {
 }
 
 const gatewayResponse = {
-  rwgId: 'bbc41563473348d29a36b76e95c50381',
-  tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
-  venueId: '3f10af1401b44902a88723cb68c4bc77',
-  venueName: 'My-Venue',
-  name: 'ruckusdemos',
-  loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-  username: 'inigo',
-  password: 'Inigo123!',
-  status: null,
-  id: 'bbc41563473348d29a36b76e95c50381',
-  new: false
+  requestId: 'request-id',
+  response: {
+    rwgId: 'bbc41563473348d29a36b76e95c50381',
+    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
+    venueId: '3f10af1401b44902a88723cb68c4bc77',
+    venueName: 'My-Venue',
+    name: 'ruckusdemos',
+    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
+    username: 'inigo',
+    password: 'Inigo123!',
+    status: null,
+    id: 'bbc41563473348d29a36b76e95c50381',
+    new: false
+  }
 }
 
 const rwgList = {
@@ -94,9 +99,11 @@ jest.mock('react-router-dom', () => ({
 
 describe('Gateway Form', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
+  const mockedReqFn = jest.fn()
 
   beforeEach(() => {
     store.dispatch(rwgApi.util.resetApiState())
+    mockedReqFn.mockClear()
     initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -104,9 +111,15 @@ describe('Gateway Form', () => {
       rest.get(CommonUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))),
       rest.post(CommonUrlsInfo.addGateway.url,
-        (_, res, ctx) => res(ctx.status(200), ctx.json(successResponse))),
+        (_, res, ctx) => {
+          mockedReqFn()
+          return res(ctx.status(200), ctx.json(successResponse))
+        }),
       rest.post(CommonUrlsInfo.updateGateway.url,
-        (_, res, ctx) => res(ctx.status(200), ctx.json(successResponse)))
+        (_, res, ctx) => {
+          mockedReqFn()
+          return res(ctx.status(200), ctx.json(successResponse))
+        })
     )
   })
 
@@ -145,20 +158,26 @@ describe('Gateway Form', () => {
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
 
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
 
   })
 
   it('should edit gateway successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockFn = jest.fn()
 
     mockServer.use(
       rest.get(CommonUrlsInfo.getGateway.url,
-        (req, res, ctx) => res(ctx.json(gatewayResponse)))
+        (req, res, ctx) => {
+          mockFn()
+          return res(ctx.json(gatewayResponse))
+        })
     )
 
     const params = {
       tenantId: 'tenant-id',
-      action: 'edit'
+      action: 'edit',
+      gatewayId: gatewayResponse.response.id
     }
 
     render(
@@ -170,6 +189,8 @@ describe('Gateway Form', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
+    await waitFor(() => expect(mockFn).toBeCalled())
+
     const venueInput = await screen.findByLabelText('Gateway Name')
     fireEvent.change(venueInput, { target: { value: 'New Gateway' } })
     fireEvent.blur(venueInput)
@@ -178,6 +199,8 @@ describe('Gateway Form', () => {
 
     const saveButton = screen.getByText('Save')
     await userEvent.click(saveButton)
+
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
   })
 
   it('gateway field validations', async () => {
