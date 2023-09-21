@@ -13,8 +13,7 @@ import {
   fireEvent,
   waitForElementToBeRemoved,
   within,
-  waitFor,
-  logRoles
+  waitFor
 } from '@acx-ui/test-utils'
 
 
