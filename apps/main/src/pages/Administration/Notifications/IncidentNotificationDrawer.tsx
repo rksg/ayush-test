@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import { Drawer, Button }         from 'antd'
-import { isEqual }                from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { AnalyticsPreferences, IncidentStates, useSetIncidentNotificationMutation } from '@acx-ui/analytics/services'
@@ -86,7 +85,6 @@ export const IncidientNotificationDrawer = ({
         setShowDrawer(false)
       })
   }
-  const enableApply = isEqual(state, initialPref)
   return <Drawer
     title={$t({ defaultMessage: 'Incident Notifications' })}
     visible={showDrawer}
@@ -95,8 +93,7 @@ export const IncidientNotificationDrawer = ({
     footer={<>
       <Button
         type='primary'
-        onClick={() => onApply()}
-        disabled={enableApply}>
+        onClick={() => onApply()}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
       <Button type='default' onClick={() => onClose()}>{$t({ defaultMessage: 'Cancel' })}</Button>
