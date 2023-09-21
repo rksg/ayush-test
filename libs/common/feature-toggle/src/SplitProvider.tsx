@@ -18,7 +18,7 @@ const suffix = splitKey.substring(0, 5)
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { tenantId } = useParams() as { tenantId: string }
   const { data: userProfile } = useUserProfileContext()
-  const prefixKey = isMLISA ? 'MLISA-' : 'ACX-'
+  const prefixKey = isMLISA ? 'MLISA' : 'ACX'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
 
   if (!factory && tenantKey) {
@@ -37,7 +37,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
       } } : {}),
       storage: {
         type: 'LOCALSTORAGE',
-        prefix: prefixKey + suffix
+        prefix: `${prefixKey}-${suffix}`
       },
       debug: false // set this value to true for running in debug mode for debugging in local development only
     })
