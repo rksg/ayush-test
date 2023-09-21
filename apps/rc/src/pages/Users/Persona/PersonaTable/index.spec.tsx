@@ -187,6 +187,7 @@ describe('Persona Table', () => {
     // Teardown all dialogs
     await userEvent.click(await screen.findByRole('button', { name: /ok/i }))
     await userEvent.click(await within(dialog).findByRole('button', { name: /cancel/i }))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('should edit a persona', async () => {
