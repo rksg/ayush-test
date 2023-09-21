@@ -29,12 +29,11 @@ type settings = {
 }
 
 export function LowPowerBannerAndModal (props: {
-    context?: string,
     parent: string,
     lowPowerAPs?: LowPowerAPQuantity
 }) {
 
-  const { lowPowerAPs, parent, context } = props
+  const { lowPowerAPs, parent } = props
 
 
   const { $t } = useIntl()
@@ -84,43 +83,34 @@ export function LowPowerBannerAndModal (props: {
     }
   }, [])
 
-  const isRenderNeed = ![
-    // This banner shouldn't appear in AP's single radio setting.
-    (context === 'ap'),
-    // No show when no low-power AP information or 0 low-power AP and under venue single radio setting
-    ((!lowPowerAPs || lowPowerAPs?.lowPowerAPCount === 0) && parent === 'venue')
-  ].some(Boolean)
-
   return (<>
-    {isRenderNeed && <>
-      <LowerPowerInstructionModal
-        modelVisibility={displayLowPowerModeModal}
-        modalOff={() => {setDisplayLowPowerModeModal(false)}}
-      />
-      <Row
-        data-testid='low-power-banner'
-        style={{
-          marginTop: '10px',
-          marginBottom: '10px'
-        }}>
-        <Col span={bannerSettings.bannerColSpan}
-          style={bannerSettings.colStyle}>
-          {bannerText}
-        </Col>
-        <Col span={2}
-          style={bannerSettings.colStyle}>
-          <Button type='link'
-            data-testid='how-to-fix-this-button'
-            onClick={() => {
-              setDisplayLowPowerModeModal(true)
-            }}>
-            <span style={bannerSettings.buttonStyle}>
-              {$t({ defaultMessage: 'How to fix this' })}
-            </span>
-          </Button>
-        </Col>
-      </Row>
-    </>}
+    <LowerPowerInstructionModal
+      modelVisibility={displayLowPowerModeModal}
+      modalOff={() => {setDisplayLowPowerModeModal(false)}}
+    />
+    <Row
+      data-testid='low-power-banner'
+      style={{
+        marginTop: '10px',
+        marginBottom: '10px'
+      }}>
+      <Col span={bannerSettings.bannerColSpan}
+        style={bannerSettings.colStyle}>
+        {bannerText}
+      </Col>
+      <Col span={2}
+        style={bannerSettings.colStyle}>
+        <Button type='link'
+          data-testid='how-to-fix-this-button'
+          onClick={() => {
+            setDisplayLowPowerModeModal(true)
+          }}>
+          <span style={bannerSettings.buttonStyle}>
+            {$t({ defaultMessage: 'How to fix this' })}
+          </span>
+        </Button>
+      </Col>
+    </Row>
   </>)
 }
 

@@ -394,10 +394,12 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        <LowPowerBannerAndModal
-          context={context}
-          parent={'venue'}
-          lowPowerAPs={lowPowerAPs} />
+        {
+          (lowPowerAPs && lowPowerAPs?.lowPowerAPCount > 0 && context === 'venue') &&
+            <LowPowerBannerAndModal
+              parent={'venue'}
+              lowPowerAPs={lowPowerAPs} />
+        }
         <Row gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
