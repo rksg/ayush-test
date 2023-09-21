@@ -25,7 +25,7 @@ jest.mock('./ClientTroubleshooting', () => ({
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
-    activeTab: 'overview'
+    activeTab: 'reports'
   }
 
   it('should render correctly', async () => {
@@ -37,14 +37,11 @@ describe('ClientDetails', () => {
       }
     })
     expect(await screen.findByText(params.clientId)).toBeVisible()
-    expect(await screen.findByText('Unknown')).toBeVisible()
-    expect(await screen.findByRole('tab', { name: 'Overview', selected: true })).toBeVisible()
     expect(await screen.findByText('Troubleshooting')).toBeVisible()
     expect(await screen.findByText('Reports')).toBeVisible()
-
-    fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
+    fireEvent.click(await screen.findByRole('tab', { name: 'Troubleshooting' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/users/wifi/clients/${params.clientId}/details/reports`,
+      pathname: `/users/wifi/clients/${params.clientId}/details/troubleshooting`,
       hash: '',
       search: ''
     })
