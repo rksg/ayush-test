@@ -80,9 +80,12 @@ describe('Persona Group Drawer', () => {
     const addButtons = await screen.findAllByRole('button', { name: /add/i })
     const dialogAddBtn = addButtons.find(b => !b.hasAttribute('data-testid'))
 
-    expect(dialogAddBtn).not.toBe(undefined)
+    expect(dialogAddBtn).toBeTruthy()
 
-    // @ts-ignore
+    if (!dialogAddBtn) {
+      throw new Error('can not find add btn in PersonaGroupDrawer')
+    }
+
     await userEvent.click(dialogAddBtn)
 
     // Required fields
@@ -92,12 +95,10 @@ describe('Persona Group Drawer', () => {
     const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, mockPersonaGroupTableResult.content[0].name)
 
-    // @ts-ignore
     await userEvent.click(dialogAddBtn)
 
     // Name validator
-    await waitFor(async () =>
-      await screen.findByText('Identity Group with that name already exists'))
+    await screen.findByText('Identity Group with that name already exists')
   })
 
   it('should add a persona group', async () => {
