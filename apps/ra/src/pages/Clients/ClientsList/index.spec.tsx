@@ -94,10 +94,17 @@ describe('Clients List', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    userEvent.click(await screen.findByText('Search'))
-    userEvent.type(await screen.findByText('Search'), '18b43003e603')
-    expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
-    userEvent.type(await screen.findByText('Search'), '18b43003e603')
+    userEvent.click(
+      await screen.findByPlaceholderText(
+        'Search Hostname, Username, MAC Address, IP Address, OS Type'
+      )
+    )
+    userEvent.type(
+      await screen.findByPlaceholderText(
+        'Search Hostname, Username, MAC Address, IP Address, OS Type'
+      ),
+      '18b43003e603'
+    )
     expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
   })
 })
