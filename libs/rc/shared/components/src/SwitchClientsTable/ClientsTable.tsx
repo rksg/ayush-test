@@ -245,7 +245,7 @@ export function ClientsTable (props: {
           onChange={tableQuery.handleTableChange}
           onFilterChange={(filters, search, groupBy) => {
             const payload = { ...tableQuery.payload, filters }
-            setTableQueryFilters(filters)
+            setTableQueryFilters?.(filters)
             tableQuery.handleFilterChange(filters, search, groupBy)
             tableQuery.setPayload(payload as TableQueryPayload)
           }}

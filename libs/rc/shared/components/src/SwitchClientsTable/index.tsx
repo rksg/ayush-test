@@ -1,15 +1,13 @@
 import { useContext } from 'react'
 
+import { Filter }                                 from '@acx-ui/components'
 import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
 import { ClientsTable }        from './ClientsTable'
 import { SwitchClientContext } from './context'
 
-function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean, filters?: {
-  venueId?: string[]
-  switchId?: string[]
-}) {
+function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean, filters?: Filter) {
   const { tenantId, venueId } = useParams()
   const filterable: { [k: string]: boolean | { key: string; value: string }[] } = {}
 

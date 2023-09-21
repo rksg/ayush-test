@@ -1,13 +1,9 @@
 import { createContext } from 'react'
 
+import { Filter } from '@acx-ui/components'
+
 export const SwitchClientContext = createContext({} as {
   setSwitchCount: (data: number) => void
-  tableQueryFilters?: {
-    venueId?: string[]
-    switchId?: string[]
-  }
-  setTableQueryFilters: (data: {
-    venueId?: string[]
-    switchId?: string[]
-  }) => void
+  tableQueryFilters?: Filter
+  setTableQueryFilters: (data: Filter) => void
 })
