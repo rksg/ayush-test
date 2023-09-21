@@ -16,10 +16,14 @@ import { LayoutProps }  from '@acx-ui/components'
 import {
   AIOutlined,
   AISolid,
+  AccountCircleOutlined,
+  AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
   BulbOutlined,
   BulbSolid,
+  RocketOutlined,
+  RocketSolid,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
@@ -102,23 +106,50 @@ export function useMenuConfig () {
               {
                 uri: '/configChange',
                 label: $t({ defaultMessage: 'Config Change' })
-              },
-              ...(hasManageCallManagerPermissions ? [
-                {
-                  uri: '/videoCallQoe',
-                  label: $t({ defaultMessage: 'Video Call QoE' })
-                }
-              ] : []),
-              {
-                uri: '/analytics/occupancy',
-                label: $t({ defaultMessage: 'Occupancy' }),
-                openNewTab: true
               }
             ]
           }
         ]
+      },
+      {
+        label: $t({ defaultMessage: 'App Experience' }),
+        inactiveIcon: RocketOutlined,
+        activeIcon: RocketSolid,
+        children: [
+          {
+            label: $t({ defaultMessage: 'App Insights (coming soon)' })
+          },
+          ...(hasManageCallManagerPermissions ? [
+            {
+              uri: '/videoCallQoe',
+              label: $t({ defaultMessage: 'Video Call QoE' })
+            }
+          ] : [])
+        ]
       }
     ] : []),
+    ...(hasViewAnalyticsPermissions
+      ? [{
+        label: $t({ defaultMessage: 'Clients' }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Wireless' }),
+            children: [
+              {
+                uri: '/users/wifi/clients',
+                label: $t({ defaultMessage: 'Wireless Clients List' })
+              },
+              {
+                uri: '/users/wifi/reports',
+                label: $t({ defaultMessage: 'Wireless Clients Report' })
+              }
+            ]
+          }
+        ]
+      }] : []),
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),
@@ -129,7 +160,12 @@ export function useMenuConfig () {
             uri: '/dataStudio',
             label: $t({ defaultMessage: 'Data Studio' })
           },
-          { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
+          { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
+          {
+            uri: '/analytics/occupancy',
+            label: $t({ defaultMessage: 'Occupancy' }),
+            openNewTab: true
+          }
         ]
       }
     ] : []),
@@ -201,8 +237,8 @@ export function useMenuConfig () {
             }
           ]
         }
-      ] : []
-    )
+      ]
+      : [])
   ]
   return config
 }

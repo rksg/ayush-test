@@ -124,7 +124,7 @@ describe('Firmware Venues Table', () => {
     expect(article.innerHTML).toBe('Choose which version to update the venue to:')
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(3)
+    expect(notCheckedOptions).toHaveLength(5)
     expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
   })
 
