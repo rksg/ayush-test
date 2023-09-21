@@ -1,5 +1,5 @@
 #Username (Optional. If you haven't defined a user name prefix and leave it empty and - an auto-generated user name will be assigned),,,,,
-#Number of devices (Optional. If you leave it empty it will be set to 1. Maximal value is 50),,,,,
+"#Number of devices (Optional. If you leave it empty it will be set to 1. Maximal value is 50); To set Unlimited provide value -1",,,,,
 "#MAC Address (Optional. Number of Device must be 1 when MAC is mentioned. Valid formats: 12:34:56:78:90:ab, 12-34-56-78-90-ab, 123.456.789.0ab, 1234567890ab)",,,,,
 "#Passphrase (if empty, system generated passphrase will be used)",,,,,
 "#VLAN ID (if empty, network's default VLAN will be used)",,,,,
