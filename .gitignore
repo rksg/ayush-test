@@ -20,6 +20,7 @@ node_modules
 
 # testing
 /coverage
+run_flaky_tests.sh
 
 # IDEs and editors
 /.idea
