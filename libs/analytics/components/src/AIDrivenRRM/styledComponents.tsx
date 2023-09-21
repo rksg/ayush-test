@@ -4,7 +4,8 @@ import styled              from 'styled-components'
 export const List = styled(AntList)``
 
 List.Item = styled(AntList.Item)`
-  border-bottom-color: var(--acx-neutrals-25);
+  &:first-of-type { padding-top: 5px; }
+  border-bottom-color: var(--acx-neutrals-25) !important;
   padding: 10px 0;
   a {
     display: block;
