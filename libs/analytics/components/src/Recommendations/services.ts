@@ -49,7 +49,7 @@ export type Recommendation = {
 
 export type CrrmData = {
   recommendations: CrrmListItem[]
-  crrmScenario: {
+  crrmScenarios: {
     total: number
   }
   crrmCount: {
@@ -239,7 +239,7 @@ export const api = recommendationApi.injectEndpoints({
           crrmCount(start: $start, end: $end, path: $path, crrm: true) {
             status
           }
-          crrmScenario(start: $start, end: $end, path: $path, crrm: true) {
+          crrmScenarios(start: $start, end: $end, path: $path) {
             total
           }
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
@@ -265,7 +265,7 @@ export const api = recommendationApi.injectEndpoints({
             optimized: response.crrmCount
               ?.filter(i => getCrrmOptimizedState(i.status as StateType).order === 0).length
           },
-          crrmScenario: response.crrmScenario
+          crrmScenarios: response.crrmScenarios
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
@@ -385,7 +385,7 @@ export const api = recommendationApi.injectEndpoints({
 
 export interface CrrmResponse {
   recommendations: CrrmListItem[],
-  crrmScenario: {
+  crrmScenarios: {
     total: number
   },
   crrmCount: Recommendation[]

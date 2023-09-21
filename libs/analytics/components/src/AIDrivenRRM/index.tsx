@@ -29,11 +29,11 @@ function AIDrivenRRMWidget ({
 
   const total = data?.crrmCount?.total
   const optimized = data?.crrmCount?.optimized
-  const totalScenario = countFormat(data?.crrmScenario?.total)
+  const totalScenarios = countFormat(data?.crrmScenarios?.total)
   // eslint-disable-next-line max-len
-  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenario} possible RRM combinations. Currently {optimized} out of {total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenario })
+  const subtitle = $t({ defaultMessage: 'There are recommendations for {total} {total, plural, one {zone} other {zones}} covering {totalScenarios} possible RRM combinations. Currently {optimized} out of {total} {total, plural, one {zone} other {zones}} have been optimized.' }, { total, optimized, totalScenarios })
   // eslint-disable-next-line max-len
-  const noCrrmText = $t({ defaultMessage: 'RUCKUS AI has confirmed that all zones are currently operating with the optimal RRM onfigurations and no further recommendation is required.' })
+  const noCrrmText = $t({ defaultMessage: 'RUCKUS AI has confirmed that all zones are currently operating with the optimal RRM configurations and no further recommendation is required.' })
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={noData ? noCrrmText :subtitle}>{

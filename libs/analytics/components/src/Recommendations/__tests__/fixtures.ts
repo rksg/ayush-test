@@ -36,7 +36,7 @@ export const crrmListResult = {
     }
   ],
   crrmCount: [{ status: 'applied' }, { status: 'reverted' }, { status: 'new' }],
-  crrmScenario: {
+  crrmScenarios: {
     total: 100
   }
 }

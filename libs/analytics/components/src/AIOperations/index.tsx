@@ -33,7 +33,7 @@ function AIOperationsWidget ({
   }
   const noData = data?.length === 0
   const subtitle = $t({
-    defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations' })
+    defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
