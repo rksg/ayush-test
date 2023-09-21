@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { Provider, dataApiSearchURL }                                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -80,5 +82,22 @@ describe('Clients List', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.querySelectorAll('.ant-table-expanded-row-fixed')).toHaveLength(1)
+  })
+  it('should trigger onSearch function', async () => {
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: clientsList
+    })
+    render(<ClientsList />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    userEvent.click(await screen.findByText('Search'))
+    userEvent.type(await screen.findByText('Search'), '18b43003e603')
+    expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
+    userEvent.type(await screen.findByText('Search'), '18b43003e603')
+    expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
   })
 })
