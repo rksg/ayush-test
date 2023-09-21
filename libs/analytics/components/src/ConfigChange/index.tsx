@@ -10,7 +10,8 @@ import { get }                                                    from '@acx-ui/
 import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
 import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
@@ -19,9 +20,12 @@ import { Table }                from './Table'
 
 export function useConfigChange () {
   const { $t } = useIntl()
+  const isMLISA = get('IS_MLISA_SA')
+
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
+  const [legend, setLegend] = useState<Record<string, boolean>>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
@@ -44,7 +48,7 @@ export function useConfigChange () {
     setDotSelect(selected?.id ?? null)
     setPagination((prevPagination) => ({
       ...prevPagination,
-      current: Math.ceil((params.id! + 1) / prevPagination.pageSize)
+      current: Math.ceil((params.filterId! + 1) / prevPagination.pageSize)
     }))
   }
   const onRowClick = (params: ConfigChangeType) => {
@@ -53,11 +57,13 @@ export function useConfigChange () {
   }
 
   const headerExtra = [
-    <NetworkFilter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      shouldQuerySwitch={true}
-      withIncidents={false}
-    />,
+    isMLISA
+      ? <SANetworkFilter />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQuerySwitch={true}
+        withIncidents={false}
+      />,
     <Dropdown
       key={getShowWithoutRbacCheckKey('date-dropdown')}
       overlay={<Menu
@@ -76,13 +82,17 @@ export function useConfigChange () {
 
   const component = <ConfigChangeProvider dateRange={dateRange} setDateRange={setDateRange}>
     <GridRow>
-      <GridCol col={{ span: 24 }} style={{ minHeight: get('IS_MLISA_SA') ? '200px' : '170px' }}>
+      <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
         <Chart
           selected={selected}
           onClick={onDotClick}
           chartZoom={chartZoom}
           setChartZoom={setChartZoom}
           setInitialZoom={setInitialZoom}
+          setLegend={setLegend}
+          legend={legend}
+          setSelectedData={setSelected}
+          setPagination={setPagination}
         />
       </GridCol>
       <GridCol col={{ span: 8 }}><KPIs/></GridCol>
@@ -93,6 +103,7 @@ export function useConfigChange () {
           pagination={pagination}
           setPagination={setPagination}
           dotSelect={dotSelect}
+          legend={legend}
         />
       </GridCol>
     </GridRow>
