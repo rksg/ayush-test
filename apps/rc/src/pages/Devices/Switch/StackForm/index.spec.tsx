@@ -51,8 +51,10 @@ async function fillInForm () {
       await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
     fireEvent.change(
       await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
-    screen.getByTestId(/serialNumber1/i).focus()
-    screen.getByTestId(/serialNumber1/i).blur()
+    const serialNumber1 = await screen.findByTestId(/serialNumber1/i)
+    const serialNumber2 = await screen.findByTestId(/serialNumber1/i)
+    serialNumber1.focus()
+    serialNumber2.blur()
   })
 }
 
@@ -263,14 +265,13 @@ describe('Switch Stack Form - Add', () => {
 
     expect(await screen.findByText('Wired')).toBeVisible()
     expect(await screen.findByText('Switches')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: /switch list/i
-    })).toBeTruthy()
+    const link = await screen.findByRole('link', { name: /switch list/i })
+    expect(link).toBeTruthy()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 })
 
-describe('Switch Stack Form - Edit 1', () => {
+describe('Switch Stack Form - Edit', () => {
   const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -313,40 +314,13 @@ describe('Switch Stack Form - Edit 1', () => {
       fireEvent.mouseDown(src)
       fireEvent.mouseMove(dst)
 
-      debounce(() => {
+      debounce(async () => {
         fireEvent.mouseUp(dst)
+        const applyButton = await screen.findByRole('button', { name: /apply/i })
+        await userEvent.click(applyButton)
+        expect(applyButton).toHaveAttribute('ant-click-animating-without-extra-node')
       }, 100)
     })
-  })
-})
-
-
-describe('Switch Stack Form - Edit 2', () => {
-  const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
-  beforeEach(() => {
-    store.dispatch(apApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    store.dispatch(switchApi.util.resetApiState())
-    initialize()
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
-        (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.get(SwitchUrlsInfo.getSwitch.url,
-        (_, res, ctx) => res(ctx.json(editStackData))),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
-      rest.post(SwitchUrlsInfo.addSwitch.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.post(SwitchUrlsInfo.getMemberList.url,
-        (_, res, ctx) => res(ctx.json(editStackMembers))),
-      rest.put(SwitchUrlsInfo.updateSwitch.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
-    )
-  })
-  afterEach(() => {
-    Modal.destroyAll()
   })
   it('should render edit stack form with real module correctly', async () => {
     editStackDetail.model = 'ICX7650-C12P'
@@ -365,36 +339,7 @@ describe('Switch Stack Form - Edit 2', () => {
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
     await userEvent.click(applyButton)
-  })
-})
-
-
-describe('Switch Stack Form - Edit 3', () => {
-  const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
-  beforeEach(() => {
-    store.dispatch(apApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    store.dispatch(switchApi.util.resetApiState())
-    initialize()
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getApGroupList.url,
-        (_, res, ctx) => res(ctx.json(apGrouplist))),
-      rest.get(SwitchUrlsInfo.getSwitch.url,
-        (_, res, ctx) => res(ctx.json(editStackData))),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
-      rest.post(SwitchUrlsInfo.addSwitch.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.post(SwitchUrlsInfo.getMemberList.url,
-        (_, res, ctx) => res(ctx.json(editStackMembers))),
-      rest.put(SwitchUrlsInfo.updateSwitch.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
-    )
-  })
-  afterEach(() => {
-    Modal.destroyAll()
+    expect(applyButton).toHaveAttribute('ant-click-animating-without-extra-node')
   })
   it('should render edit stack form with readonly mode correctly', async () => {
     editStackDetail.cliApplied = true
@@ -411,5 +356,6 @@ describe('Switch Stack Form - Edit 3', () => {
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
     await userEvent.click(applyButton)
+    expect(applyButton).toHaveAttribute('ant-click-animating-without-extra-node')
   })
 })
