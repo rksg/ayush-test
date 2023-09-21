@@ -12,18 +12,15 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                                    from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
-  useLazyDownloadNewFlowPassphrasesQuery,
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
-  useUploadPassphrasesMutation,
-  getDisabledActionMessage,
-  showAppliedInstanceMessage
+  useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
   EXPIRATION_TIME_FORMAT,
@@ -38,10 +35,9 @@ import {
 import { useParams }                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                           from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
-import { getIntl, validationMessages }         from '@acx-ui/utils'
+import { getIntl }                             from '@acx-ui/utils'
 
-import NetworkForm                    from '../../../Networks/wireless/NetworkForm/NetworkForm'
-import { MAX_PASSPHRASES_PER_TENANT } from '../constants'
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -76,12 +72,10 @@ export default function DpskPassphraseManagement () {
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
   ] = useState<DpskPassphraseEditMode>({ isEdit: false })
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
-  const [ downloadNewFlowCsv ] = useLazyDownloadNewFlowPassphrasesQuery()
   const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
@@ -97,23 +91,10 @@ export default function DpskPassphraseManagement () {
     apiParams: dpskNewConfigFlowParams
   })
 
-  const downloadPassphrases = async () => {
-    const apiParams = { ...params, ...dpskNewConfigFlowParams }
-
-    try {
-      if (isNewConfigFlow) {
-        const payload = {
-          page: 1,
-          pageSize: MAX_PASSPHRASES_PER_TENANT,
-          ...tableQuery.search
-        }
-        downloadNewFlowCsv({ params: apiParams, payload }).unwrap()
-      } else {
-        downloadCsv({ params: apiParams }).unwrap()
-      }
-    } catch (error) {
+  const downloadPassphrases = () => {
+    downloadCsv({ params: { ...params, ...dpskNewConfigFlowParams } }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console
-    }
+    })
   }
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
@@ -227,22 +208,6 @@ export default function DpskPassphraseManagement () {
     )
   }
 
-  // eslint-disable-next-line max-len
-  const canRevoke = (type: 'revoke' | 'unrevoke', selectedRows: NewDpskPassphrase[], callback: () => void) => {
-    const disabledActionMessage = getDisabledActionMessage(
-      selectedRows,
-      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
-      // eslint-disable-next-line max-len
-      type === 'revoke' ? intl.$t({ defaultMessage: 'Revoke' }) : intl.$t({ defaultMessage: 'Unrevoke' })
-    )
-
-    if (disabledActionMessage) {
-      showAppliedInstanceMessage(disabledActionMessage)
-    } else {
-      callback()
-    }
-  }
-
   const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
     return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
   }
@@ -279,21 +244,15 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        canRevoke('revoke', selectedRows, () => {
-          showRevokeModal(
-            selectedRows.length,
-            selectedRows[0].username ?? '',
-            async (revocationReason: string) => {
-              await revokePassphrases({
-                params: { ...params, ...dpskNewConfigFlowParams },
-                payload: {
-                  ids: selectedRows.map(p => p.id),
-                  changes: { revocationReason }
-                }
-              })
-              clearSelection()
+        showRevokeModal(selectedRows, async (revocationReason: string) => {
+          await revokePassphrases({
+            params: { ...params, ...dpskNewConfigFlowParams },
+            payload: {
+              ids: selectedRows.map(p => p.id),
+              changes: { revocationReason }
             }
-          )
+          })
+          clearSelection()
         })
       }
     },
@@ -301,15 +260,13 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        canRevoke('unrevoke', selectedRows, () => {
-          revokePassphrases({
-            params: { ...params, ...dpskNewConfigFlowParams },
-            payload: {
-              ids: selectedRows.map(p => p.id),
-              changes: { revocationReason: null }
-            }
-          }).then(clearSelection)
-        })
+        revokePassphrases({
+          params: { ...params, ...dpskNewConfigFlowParams },
+          payload: {
+            ids: selectedRows.map(p => p.id),
+            changes: { revocationReason: null }
+          }
+        }).then(clearSelection)
       }
     },
     {
@@ -426,7 +383,7 @@ export default function DpskPassphraseManagement () {
 }
 
 // eslint-disable-next-line max-len
-function showRevokeModal (passphraseCount: number, entityValue: string, onFinish: (revocationReason: string) => Promise<void>) {
+function showRevokeModal (passphrases: NewDpskPassphrase[], onFinish: (revocationReason: string) => Promise<void>) {
   const modal = AntModal.confirm({})
   const { $t } = getIntl()
 
@@ -437,8 +394,8 @@ function showRevokeModal (passphraseCount: number, entityValue: string, onFinish
         other {{count} {formattedEntityName}}
       }"?`
     }, {
-      count: passphraseCount,
-      entityValue: entityValue,
+      count: passphrases.length,
+      entityValue: passphrases[0].username,
       formattedEntityName: $t({ defaultMessage: 'Passphrases' })
     })
   }
@@ -463,30 +420,25 @@ function RevokeForm (props: {
   const { $t } = getIntl()
   const { modal, onFinish } = props
   const [ form ] = Form.useForm()
-  const [ okButtonDisabled, setOkButtonDisabled ] = useState(true)
 
   modal.update({
     onOk: async () => {
       await onFinish(form.getFieldValue('reason'))
     },
-    okButtonProps: { disabled: okButtonDisabled }
+    okButtonProps: { disabled: true }
   })
 
-  const onFieldsChange = () => {
-    setOkButtonDisabled(form.getFieldsError().some(item => item.errors.length > 0))
-  }
-
   return (
-    <Form form={form} layout='horizontal' onFieldsChange={onFieldsChange}>
+    <Form form={form} layout='horizontal'>
       <Form.Item
         name='reason'
         label={$t({ defaultMessage: 'Type the reason to revoke' })}
-        rules={[
-          { required: true, message: $t({ defaultMessage: 'Reason is required' }) },
-          { max: 255, message: $t(validationMessages.maxStr) }
-        ]}
       >
-        <Input />
+        <Input onChange={(e) => {
+          modal.update({
+            okButtonProps: { disabled: !e.target.value }
+          })
+        }} />
       </Form.Item>
     </Form>
   )

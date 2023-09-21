@@ -33,12 +33,7 @@ import {
 
 import { FieldSpace } from './styledComponents'
 
-interface DpskSettingsFormProps {
-  modalMode?: boolean
-}
-
-export default function DpskSettingsForm (props: DpskSettingsFormProps) {
-  const { modalMode = false } = props
+export default function DpskSettingsForm () {
   const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
@@ -61,7 +56,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
 
   return (<>
     <GridRow>
-      <GridCol col={{ span: modalMode ? 8 : 6 }}>
+      <GridCol col={{ span: 6 }}>
         <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />

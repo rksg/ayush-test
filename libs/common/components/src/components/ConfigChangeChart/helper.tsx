@@ -4,9 +4,9 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
-import { get }                              from '@acx-ui/config'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { cssNumber, cssStr }   from '../../theme/helper'
 import { qualitativeColorSet } from '../Chart/helper'
@@ -16,7 +16,6 @@ import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export type ConfigChange = {
   id?: number
-  filterId?: number
   timestamp: string
   type: string
   name: string
@@ -30,15 +29,12 @@ type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: ConfigChange,
+  selectedData?: number,
   onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
-  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
-  setPagination?: (params: { current: number, pageSize: number }) => void
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
@@ -403,29 +399,6 @@ export function useLegendSelectChanged (
       }
     }
   }, [eChartsRef, onLegendChangedCallback])
-}
-
-export function useLegendTableFilter (
-  selectedLegend: Record<string, boolean>,
-  data: ConfigChange[],
-  selectedData?: ConfigChange,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
-  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
-  setPagination?: (params: { current: number, pageSize: number }) => void
-){
-  useEffect(() => {
-    const chartRowMapping = getConfigChangeEntityTypeMapping()
-    setLegend?.(selectedLegend)
-    const selectedConfig = data.filter(i => i.id === selectedData?.id)
-    const selectedType = chartRowMapping.filter(
-      ({ key }) => key === selectedConfig[0]?.type)[0]?.label
-
-    selectedLegend[selectedType] === false && setSelectedData?.(null)
-    setPagination?.({
-      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / TABLE_DEFAULT_PAGE_SIZE),
-      pageSize: TABLE_DEFAULT_PAGE_SIZE
-    })
-  }, [selectedLegend, data.length])
 }
 
 export const useBoundaryChange = (

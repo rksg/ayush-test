@@ -28,7 +28,6 @@ jest.mock('@acx-ui/components', () => {
 
 describe('Chart', () => {
   const handleClick = jest.fn()
-  const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
@@ -36,7 +35,6 @@ describe('Chart', () => {
       <Chart
         selected={null}
         onClick={handleClick}
-        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -48,7 +46,6 @@ describe('Chart', () => {
       <Chart
         selected={null}
         onClick={handleClick}
-        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -69,7 +66,6 @@ describe('Chart', () => {
       <Chart
         selected={selected}
         onClick={handleClick}
-        legend={legend}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -95,7 +91,6 @@ describe('Chart', () => {
         <Chart
           selected={null}
           onClick={handleClick}
-          legend={legend}
         />
       </KPIFilterContext.Provider>
     </ConfigChangeContext.Provider>, { wrapper: Provider, route: {} })

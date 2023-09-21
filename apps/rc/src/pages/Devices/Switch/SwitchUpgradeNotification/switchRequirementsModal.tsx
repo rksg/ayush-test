@@ -11,12 +11,10 @@ export function SwitchRequirementsModal (props: {
   const onClose = () => {
     props.setModalVisible(false)
   }
-  const switchImgUrl = 'https://support.ruckuswireless.com/software/3789-ruckus-icx-fastiron-09-0-10h-ga-software-release-zip'
+  const switchImgUrl = 'https://support.ruckuswireless.com/software_terms_and_conditions/3657-ruckus-icx-fastiron-09-0-10f-ga-software-release-zip'
   const usbUpgradeVedioUrl = 'https://www.youtube.com/watch?v=wDdeUBzwfNI'
-  const upgradeProcessUrl = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-C8148B03-D98C-4F4D-939C-9111CECB0601.html'
-  const imageDownloadUseUsb = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-6848A0EE-1480-4A6A-9A99-08DD64F969DF.html'
-  const firmwareVersion = '09.0.10h'
-
+  const upgradeProcessUrl = 'https://docs.commscope.com/bundle/fastiron-08092-upgradeguide/page/GUID-7C682CC8-B707-4B52-9A51-B49BF9985AA3.html'
+  const imageDownloadUseUsb = 'https://docs.commscope.com/en-US/bundle/fastiron-08092-upgradeguide/page/GUID-A66595C5-FDA6-4053-AC95-A122C4B28AC3.html'
   return (
 
     <Modal
@@ -40,10 +38,10 @@ export function SwitchRequirementsModal (props: {
       <Subtitle level={4}>
         {$t({ defaultMessage: 'Upgrading the switch' })}</Subtitle>
       <body>
-        {$t({ defaultMessage: 'For switches that do not have a ‘cloud ready label’ or switches running version older than FastIron 08.0.90d, use one of the following methods to upgrade the switches to {firmwareVersion} ( UFI router image for factory default switches).' }, { firmwareVersion })}
+        {$t({ defaultMessage: 'For switches that do not have a ‘cloud ready label’ or switches running version older than FastIron 08.0.90d, use one of the following methods to upgrade the switches to 09.0.10f ( UFI router image for factory default switches).' })}
         <UI.List>
           <UI.ListItems>
-            {$t({ defaultMessage: 'Download FastIron {firmwareVersion} firmware (use UFI router image) from the following link:' }, { firmwareVersion })}
+            {$t({ defaultMessage: 'Download FastIron 09.0.10f firmware (use UFI router image) from the following link:' })}
             <br />
             <a target='_blank'
               href={switchImgUrl}
@@ -96,12 +94,11 @@ export function SwitchRequirementsModal (props: {
           </UI.ListItems>
           <UI.OrderList type={'a'}>
             <UI.ListItems>
-              {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to {firmwareVersion} UFI router image' },
-                { firmwareVersion })}
+              {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to 09.0.10f UFI router image' })}
               <br />
               {$t({ defaultMessage: 'Example:' })}
               <UI.CommandRectengle>
-                copy tftp flash &lt;TFTP server IP address&gt; SPR09010hufi.bin primary
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010fufi.bin primary
               </UI.CommandRectengle>
             </UI.ListItems>
             <UI.ListItems>
@@ -113,7 +110,7 @@ export function SwitchRequirementsModal (props: {
                 <br />
                 reload
                 <br />
-                copy tftp flash &lt;TFTP server IP address&gt; SPR09010hufi.bin primary
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010fufi.bin primary
               </UI.CommandRectengle>
             </UI.ListItems>
           </UI.OrderList>
@@ -122,8 +119,8 @@ export function SwitchRequirementsModal (props: {
             <UI.CommandRectengle style={{ marginLeft: '20px' }}>
               SSH@7150-C12P#show version   <br />
               &copy; CommScope, Inc. All Rights Reserved.   <br />
-              UNIT 1: compiled on Sep 11 2023 at 22:09:51 labeled as SPR09010h  <br />
-              (33554432 bytes) from Primary SPR09010h.bin (UFI)
+              UNIT 1: compiled on May  2 2023 at 22:09:30 labeled as SPR09010f  <br />
+              (33554432 bytes) from Primary SPR09010f.bin (UFI)
             </UI.CommandRectengle>
           </UI.ListItems>
         </UI.OrderList>
@@ -182,8 +179,7 @@ export function SwitchRequirementsModal (props: {
       </UI.DescriptionBody>
 
       <UI.DescriptionBody style={{ color: cssStr('--acx-semantics-red-60') }}>
-        {$t({ defaultMessage: 'Switches must be kept on {firmwareVersion} release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically.' },
-          { firmwareVersion })}
+        {$t({ defaultMessage: 'Switches must be kept on 09.0.10f release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically.' })}
       </UI.DescriptionBody>
 
     </Modal>

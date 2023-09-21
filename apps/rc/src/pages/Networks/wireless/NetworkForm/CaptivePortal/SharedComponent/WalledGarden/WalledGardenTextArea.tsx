@@ -209,7 +209,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
                 fieldsValue: {
                   walledGardensString: rawWalledGardenText,
                   guestPortal: {
-                    walledGardens: rawWalledGardenText.split('\n').map(text=>text.trim()).filter(text=>text.length!==0)
+                    walledGardens: rawWalledGardenText.split('\n').map(text=>text.trim())
                   }
                 }
               } as WalledGardenState)

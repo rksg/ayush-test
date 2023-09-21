@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { TunnelProfileForm } from './index'
 
@@ -59,14 +59,12 @@ describe('TunnelProfileForm', () => {
       </Form>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
+    fireEvent.change(ageTimeInput, { target: { value: 1 } })
 
-    await userEvent.clear(ageTimeInput)
-    await userEvent.type(ageTimeInput, '1')
     expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
       .toBeVisible()
 
-    await userEvent.clear(ageTimeInput)
-    await userEvent.type(ageTimeInput, '10081')
+    fireEvent.change(ageTimeInput, { target: { value: 10081 } })
     expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
       .toBeVisible()
   })
@@ -78,8 +76,7 @@ describe('TunnelProfileForm', () => {
       </Form>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
-    await userEvent.clear(ageTimeInput)
-    await userEvent.type(ageTimeInput, '5')
+    fireEvent.change(ageTimeInput, { target: { value: 5 } })
     const ageTimeUnitSelect = screen.getByRole('combobox')
     await userEvent.selectOptions(
       ageTimeUnitSelect,

@@ -53,7 +53,7 @@ import {
   checkVlanOptions,
   checkLldpListEqual,
   checkAclIgnore,
-  checkPortEditStatusLegacy,
+  checkPortEditStatus,
   checkVlanIgnore,
   handlePortSpeedFor765048F,
   getAclOptions,
@@ -343,8 +343,7 @@ export function EditPortDrawer ({
     setVenueTaggedVlans(taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString())
     setVenueUntaggedVlan(untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString())
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
-    setPortEditStatus(
-      checkPortEditStatusLegacy(form, portSetting, portSetting?.revert, tagged, untagged))
+    setPortEditStatus(checkPortEditStatus(form, portSetting, portSetting?.revert, tagged, untagged))
 
     form.setFieldsValue({
       ...portSetting,
@@ -682,7 +681,7 @@ export function EditPortDrawer ({
       } else if (changedField === 'untaggedVlan' || changedField === 'taggedVlans') {
         const revert = changedValues?.revert ?? useVenueSettings
         // eslint-disable-next-line max-len
-        setPortEditStatus(checkPortEditStatusLegacy(form, form.getFieldsValue(), revert,
+        setPortEditStatus(checkPortEditStatus(form, form.getFieldsValue(), revert,
           venueTaggedVlans, venueUntaggedVlan, changedValues?.status))
         if (!revert) {
           updateVlanOptions()

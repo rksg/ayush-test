@@ -709,11 +709,8 @@ export function EditPortDrawer ({
   const checkIsVoiceVlanInvalid = () => {
     const voiceVlanField = form?.getFieldValue('voiceVlan')
     const taggedVlansField = form?.getFieldValue('taggedVlans')
-    let isInvalid = voiceVlanField &&
+    const isInvalid = voiceVlanField &&
     taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
-    if (useVenueSettings && voiceVlanField && !taggedVlansField) {
-      isInvalid = false
-    }
     setIsVoiceVlanInvalid(isInvalid)
   }
 

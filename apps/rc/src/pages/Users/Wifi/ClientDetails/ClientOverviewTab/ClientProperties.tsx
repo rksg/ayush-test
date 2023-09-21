@@ -597,7 +597,7 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
   const intl = getIntl()
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { passphraseClient } = useGetPassphraseClientQuery({
-    params: dpskNewConfigFlowParams,
+    param: dpskNewConfigFlowParams,
     payload: { networkId, mac: clientMac, username: username ?? '' }
   }, {
     selectFromResult: ({ data }) => {

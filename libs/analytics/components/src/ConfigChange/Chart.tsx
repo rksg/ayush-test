@@ -8,18 +8,14 @@ import type { ConfigChange }               from '@acx-ui/components'
 
 import { ConfigChangeContext, KPIFilterContext } from './context'
 import { useConfigChangeQuery }                  from './services'
-import { filterData }                            from './Table/util'
+import { filterKPIData }                         from './Table/util'
 
 function BasicChart (props: {
   selected: ConfigChange | null,
   onClick: (params: ConfigChange) => void,
   chartZoom?: { start: number, end: number },
-  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  legend: Record<string, boolean>,
-  setLegend: Dispatch<SetStateAction<Record<string, boolean>>>,
-  setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
-  setPagination?: (params: { current: number, pageSize: number }) => void
+  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }){
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const {
@@ -28,18 +24,17 @@ function BasicChart (props: {
     dateRange
   } = useContext(ConfigChangeContext)
   const {
-    selected, onClick, chartZoom, setChartZoom, setInitialZoom,
-    legend, setLegend, setSelectedData, setPagination
+    selected, onClick, chartZoom,
+    setChartZoom, setInitialZoom
   } = props
   const { path } = useAnalyticsFilter()
-  const legendList = Object.keys(legend).filter(key => legend[key])
   const queryResults = useConfigChangeQuery({
     path,
     start: startDate.toISOString(),
     end: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
+    data: filterKPIData(queryResults.data ?? [], kpiFilter)
   }) })
 
   useEffect(() => {
@@ -62,14 +57,11 @@ function BasicChart (props: {
             data={queryResults.data}
             chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
             onDotClick={onDotClick}
-            selectedData={selected!}
+            selectedData={selected?.id}
             onBrushPositionsChange={setKpiTimeRanges}
             chartZoom={chartZoom}
             setChartZoom={setChartZoom}
             setInitialZoom={setInitialZoom}
-            setLegend={setLegend}
-            setSelectedData={setSelectedData}
-            setPagination={setPagination}
           />}
       </AutoSizer>
     </Card>

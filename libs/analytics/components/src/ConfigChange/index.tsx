@@ -25,7 +25,6 @@ export function useConfigChange () {
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
-  const [legend, setLegend] = useState<Record<string, boolean>>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
@@ -48,7 +47,7 @@ export function useConfigChange () {
     setDotSelect(selected?.id ?? null)
     setPagination((prevPagination) => ({
       ...prevPagination,
-      current: Math.ceil((params.filterId! + 1) / prevPagination.pageSize)
+      current: Math.ceil((params.id! + 1) / prevPagination.pageSize)
     }))
   }
   const onRowClick = (params: ConfigChangeType) => {
@@ -89,10 +88,6 @@ export function useConfigChange () {
           chartZoom={chartZoom}
           setChartZoom={setChartZoom}
           setInitialZoom={setInitialZoom}
-          setLegend={setLegend}
-          legend={legend}
-          setSelectedData={setSelected}
-          setPagination={setPagination}
         />
       </GridCol>
       <GridCol col={{ span: 8 }}><KPIs/></GridCol>
@@ -103,7 +98,6 @@ export function useConfigChange () {
           pagination={pagination}
           setPagination={setPagination}
           dotSelect={dotSelect}
-          legend={legend}
         />
       </GridCol>
     </GridRow>

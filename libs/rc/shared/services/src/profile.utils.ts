@@ -3,8 +3,8 @@ import { defineMessage } from 'react-intl'
 import { showActionModal } from '@acx-ui/components'
 import { getIntl }         from '@acx-ui/utils'
 
-const profileInUsedMessage = defineMessage({
-  defaultMessage: `You are unable to {action} {count, plural,
+const profileInUsedMessageForDelete = defineMessage({
+  defaultMessage: `You are unable to delete {count, plural,
   one {this record}
   other {these records}
   } due to its usage in {serviceName}`
@@ -17,10 +17,11 @@ export function doProfileDelete<T> (
   instances: { fieldName: keyof T, fieldText: string }[],
   callback: () => Promise<void>
 ) {
-  // eslint-disable-next-line max-len
-  const disabledActionMessage = getDisabledActionMessage(selectedRows, instances, getIntl().$t({ defaultMessage: 'delete' }))
-  if (disabledActionMessage) {
-    showAppliedInstanceMessage(disabledActionMessage)
+  if (hasAppliedInstanceList(selectedRows, instances)) {
+    showActionModal({
+      type: 'error',
+      content: getDisabledDeleteMessage(selectedRows, instances)
+    })
   } else {
     showActionModal({
       type: 'confirm',
@@ -35,8 +36,11 @@ export function doProfileDelete<T> (
   }
 }
 
-export function showAppliedInstanceMessage (content: string) {
-  showActionModal({ type: 'error', content })
+function hasAppliedInstanceList<T> (
+  selectedRows: T[],
+  instances: { fieldName: keyof T, fieldText: string }[]
+): boolean {
+  return instances.some(instance => hasAppliedInstance(selectedRows, instance.fieldName))
 }
 
 function hasAppliedInstance<T> (
@@ -50,10 +54,9 @@ function hasAppliedInstance<T> (
   })
 }
 
-export function getDisabledActionMessage<T> (
+function getDisabledDeleteMessage<T> (
   selectedRows: T[],
-  instances: { fieldName: keyof T, fieldText: string }[],
-  action: string
+  instances: { fieldName: keyof T, fieldText: string }[]
 ): string | undefined {
   const { $t } = getIntl()
   const result: string[] = []
@@ -65,8 +68,7 @@ export function getDisabledActionMessage<T> (
   })
 
   return result.length > 0
-    ? $t(profileInUsedMessage, {
-      action,
+    ? $t(profileInUsedMessageForDelete, {
       count: selectedRows.length,
       serviceName: result.join(',')
     })

@@ -2,7 +2,7 @@ import { defineMessage } from 'react-intl'
 
 import { configChanges } from '../__tests__/fixtures'
 
-import { MappingType, json2keymap, filterData } from './util'
+import { MappingType, json2keymap, filterKPIData } from './util'
 
 
 describe('json2keymap', () => {
@@ -45,16 +45,9 @@ describe('json2keymap', () => {
   })
 })
 
-describe('filterData', () => {
+describe('filterKPIData', () => {
   it('should return correct data', () => {
-    const legend = ['AP', 'AP Group', 'Venue', 'WLAN', 'WLAN Group']
-    expect(filterData(configChanges, [], legend).length).toEqual(configChanges.length)
-    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(3)
-  })
-  it('should filter out legend', () => {
-    const noAPLegend = ['AP Group', 'Venue', 'WLAN', 'WLAN Group']
-    const noVenueLegend = ['AP', 'AP Group', 'WLAN', 'WLAN Group']
-    expect(filterData(configChanges, [], noAPLegend).length).toEqual(6)
-    expect(filterData(configChanges, [], noVenueLegend).length).toEqual(5)
+    expect(filterKPIData(configChanges, []).length).toEqual(configChanges.length)
+    expect(filterKPIData(configChanges, ['clientThroughput']).length).toEqual(3)
   })
 })

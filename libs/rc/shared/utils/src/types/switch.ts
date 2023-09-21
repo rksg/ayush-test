@@ -95,7 +95,6 @@ export class Switch {
   specifiedType?: string
   rearModule?: string
   serialNumber?: string
-  firmwareVersion?: string
 
   constructor () {
     this.name = ''
@@ -217,6 +216,7 @@ export class SwitchViewModel extends Switch {
   formStacking?: boolean
   suspendingDeployTime?: string
   syncDataEndTime?: string
+  firmwareVersion?: string
   portsStatus?: {
     Down?: number,
     Up?: number

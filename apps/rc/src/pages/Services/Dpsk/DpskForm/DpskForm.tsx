@@ -157,7 +157,7 @@ export default function DpskForm (props: DpskFormProps) {
             initialValues={initialValues}
             preserve={modalMode ? false : true}
           >
-            <DpskSettingsForm modalMode={modalMode} />
+            <DpskSettingsForm />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
       </Loader>
