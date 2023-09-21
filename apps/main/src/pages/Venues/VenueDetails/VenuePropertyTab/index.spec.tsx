@@ -164,6 +164,10 @@ describe('Property Unit Page', () => {
       rest.get(
         replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
         (_, res, ctx) => res(ctx.json(mockConnectionMeteringTableResult))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -178,13 +182,8 @@ describe('Property Unit Page', () => {
 
     await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
 
-    await waitFor(() => {
-      expect(screen.queryByText(/Access Point/i)).toBeNull()
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText(/unit name/i)).toBeInTheDocument()
-    })
+    expect(screen.queryByText(/Access Point/i)).toBeNull()
+    expect(screen.getByText(/unit name/i)).toBeInTheDocument()
 
     // Open add drawer
     const addUnitBtn = await screen.findByRole('button', { name: /add unit/i })
