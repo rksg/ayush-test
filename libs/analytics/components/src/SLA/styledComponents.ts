@@ -1,8 +1,9 @@
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
+  padding-top: 5px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 7fr 5fr;
   .ant-progress {
     grid-column: 1 / span 2;
   }

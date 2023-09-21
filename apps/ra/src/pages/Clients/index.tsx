@@ -39,7 +39,7 @@ const useTabs = () : Tab[] => {
 export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics')
+  const basePath = useTenantLink('')
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
