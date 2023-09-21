@@ -250,8 +250,8 @@ const FirewallTable = () => {
       disabled: isDeleteBtnDisable,
       tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' }
-        ) : undefined,
+        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' })
+        : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
