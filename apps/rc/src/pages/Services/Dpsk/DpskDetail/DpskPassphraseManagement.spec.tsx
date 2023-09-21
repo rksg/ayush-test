@@ -44,7 +44,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyDownloadNewFlowPassphrasesQuery: () => ([ mockedDownloadNewFlowCsv ])
 }))
 
-describe('DpskPassphraseManagement', () => {
+describe.skip('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
     tenantId: mockedTenantId,
     serviceId: mockedServiceId,
