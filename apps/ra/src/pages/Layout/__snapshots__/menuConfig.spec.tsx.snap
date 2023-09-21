@@ -92,25 +92,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -139,33 +120,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -175,7 +144,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -202,6 +171,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -310,25 +289,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -357,33 +317,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -393,7 +341,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -420,6 +368,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -628,25 +586,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -675,33 +614,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -711,7 +638,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -738,6 +665,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -946,25 +883,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -993,33 +911,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -1029,7 +935,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -1056,6 +962,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1147,6 +1063,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1328,16 +1254,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -1366,33 +1282,12 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
       },
     ],
     "inactiveIcon": Object {
@@ -1402,7 +1297,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -1429,6 +1324,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1647,25 +1552,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -1694,33 +1580,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -1730,7 +1604,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -1757,6 +1631,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1975,25 +1859,6 @@ Array [
             ],
             "uri": "/configChange",
           },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Video Call QoE",
-              },
-            ],
-            "uri": "/videoCallQoe",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Occupancy",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/occupancy",
-          },
         ],
         "label": Array [
           Object {
@@ -2022,33 +1887,21 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
         "label": Array [
           Object {
             "type": 0,
-            "value": "Wireless",
+            "value": "App Insights (coming soon)",
           },
         ],
-        "type": "group",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Video Call QoE",
+          },
+        ],
+        "uri": "/videoCallQoe",
       },
     ],
     "inactiveIcon": Object {
@@ -2058,7 +1911,7 @@ Array [
     "label": Array [
       Object {
         "type": 0,
-        "value": "Clients",
+        "value": "App Experience",
       },
     ],
   },
@@ -2085,6 +1938,16 @@ Array [
           },
         ],
         "uri": "/reports",
+      },
+      Object {
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Occupancy",
+          },
+        ],
+        "openNewTab": true,
+        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {

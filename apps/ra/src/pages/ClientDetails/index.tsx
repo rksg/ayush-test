@@ -14,7 +14,6 @@ const ClientReport = () => {
   )
 }
 const tabs = {
-  overview: () => <div>overview</div>,
   troubleshooting: ClientTroubleshootingTab,
   reports: ClientReport
 }
