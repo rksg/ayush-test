@@ -20,6 +20,15 @@ import { RequestPayload }        from '@acx-ui/types'
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
 
+type TableQueryPayload = React.SetStateAction<{
+  searchString: string;
+  searchTargetFields: string[];
+  fields: string[];
+  sortField: string;
+  sortOrder: string;
+  filters: {};
+}> & React.SetStateAction<RequestPayload<unknown>>
+
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
@@ -41,7 +50,7 @@ export function ClientsTable (props: {
 }) {
   const params = useParams()
   const { searchable, filterableKeys } = props
-  const { setSwitchCount } = useContext(SwitchClientContext)
+  const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
 
@@ -125,7 +134,10 @@ export function ClientsTable (props: {
       sorter: true,
       searchable: searchable,
       filterKey: 'venueId',
+      filterMultiple: false,
+      filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
+      coordinatedKeys: ['switchId'],
       render: (_: React.ReactNode, row: SwitchClient) => {
         const name = row.venueName ? row.venueName : '--'
         // eslint-disable-next-line max-len
@@ -139,6 +151,8 @@ export function ClientsTable (props: {
       sorter: true,
       searchable: searchable,
       filterKey: 'switchId',
+      filterMultiple: false,
+      filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
       render: (_: React.ReactNode, row: SwitchClient) => {
         const name = row.switchName ? row.switchName : '--'
@@ -229,7 +243,12 @@ export function ClientsTable (props: {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={(filters, search, groupBy) => {
+            const payload = { ...tableQuery.payload, filters }
+            setTableQueryFilters(filters)
+            tableQuery.handleFilterChange(filters, search, groupBy)
+            tableQuery.setPayload(payload as TableQueryPayload)
+          }}
           enableApiFilter={true}
           rowKey='id'
         />

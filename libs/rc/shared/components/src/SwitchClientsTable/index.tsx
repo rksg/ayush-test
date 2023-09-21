@@ -1,9 +1,15 @@
+import { useContext } from 'react'
+
 import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
-import { ClientsTable } from './ClientsTable'
+import { ClientsTable }        from './ClientsTable'
+import { SwitchClientContext } from './context'
 
-function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean) {
+function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean, filters?: {
+  venueId?: string[]
+  switchId?: string[]
+}) {
   const { tenantId, venueId } = useParams()
   const filterable: { [k: string]: boolean | { key: string; value: string }[] } = {}
 
@@ -27,7 +33,9 @@ function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean) {
     pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC',
-    filters: venueId ? { venueId: [venueId] } : {}
+    filters: venueId
+      ? { venueId: [venueId] }
+      : filters?.venueId ? { venueId: filters?.venueId } : {}
   } }, { skip: !filterBySwitch })
 
   if (filterBySwitch) {
@@ -44,12 +52,13 @@ export function SwitchClientsTable (props : {
   filterBySwitch?: boolean
 }) {
   const { filterByVenue, filterBySwitch } = props
+  const { tableQueryFilters } = useContext(SwitchClientContext)
 
   return (
     <div>
       <ClientsTable
         searchable={true}
-        filterableKeys={GetFilterable(!!filterByVenue, !!filterBySwitch)}
+        filterableKeys={GetFilterable(!!filterByVenue, !!filterBySwitch, tableQueryFilters)}
       />
     </div>
   )
