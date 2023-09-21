@@ -12,9 +12,12 @@ export type TabsProps = Omit<AntTabsProps, 'type'> & {
   stickyTop?: boolean
 }
 
-export function Tabs ({ type, stickyTop = true, ...props }: TabsProps) {
-  let $type: UI.styleTabsType = type ?? 'line'
-  if (type === 'card' && stickyTop) $type = 'second'
+export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
+  const $type = type = type ?? 'line'
+
+  if (type !== 'third' && stickyTop === undefined) {
+    stickyTop = true // stickyTop is true by default for card and line
+  }
   if (type === 'third') type = 'line'
 
   if (stickyTop) {
@@ -24,9 +27,12 @@ export function Tabs ({ type, stickyTop = true, ...props }: TabsProps) {
   }
 
   return <UI.Tabs
+    className={stickyTop ? 'sticky-top' : ''} // for PageHeader to count pageHeaderY
     {...props}
     type={type as AntTabsType}
-    $type={$type} />
+    $type={$type}
+    $stickyTop={stickyTop}
+  />
 }
 
 Tabs.TabPane = AntTabs.TabPane
