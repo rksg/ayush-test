@@ -34,6 +34,7 @@ export const Button = styled(AntButton)`
   &&&&.ant-btn-icon-only {
     width: 16px;
     height: 16px;
+    min-width: unset;
   }
 `
 
