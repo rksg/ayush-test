@@ -66,7 +66,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
   filterValueNullable?: boolean
   /**
    * Set the filter to be searchable
-   * @default false
+   * @default undefined
    */
   filterSearchable?: boolean
   /**
