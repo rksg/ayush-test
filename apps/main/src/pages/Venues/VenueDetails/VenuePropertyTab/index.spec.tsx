@@ -182,8 +182,10 @@ describe('Property Unit Page', () => {
 
     await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
 
-    expect(screen.queryByText(/Access Point/i)).toBeNull()
-    expect(screen.getByText(/unit name/i)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.queryByText(/Access Point/i)).toBeNull()
+    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
 
     // Open add drawer
     const addUnitBtn = await screen.findByRole('button', { name: /add unit/i })
@@ -234,10 +236,7 @@ describe('Property Unit Page', () => {
     await waitFor(() => {
       expect(screen.queryByText(/Access Point/i)).toBeNull()
     })
-
-    await waitFor(() => {
-      expect(screen.getByText(/unit name/i)).toBeInTheDocument()
-    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
 
     // Find first row
     const firstRowName = mockPropertyUnitList.content[0].name
