@@ -29,13 +29,7 @@ export interface APNetworkSettings extends IpSettings {
 export interface AP {
   IP?: string,
   apMac?: string,
-  apStatusData?: {
-    APRadio?: Array<RadioProperties>,
-    cellularInfo?: CelluarInfo,
-    APSystem?: APSystem,
-    lanPortStatus?: Array<LanPortStatusProperties>,
-    vxlanStatus?: VxlanStatus
-  },
+  apStatusData?: ApStatus,
   clients?: number,
   deviceGroupId: string,
   deviceGroupName?: string,
@@ -66,7 +60,8 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number
+  downLinkCount?: number,
+  apRadioDeploy?: string
 }
 
 export interface ApViewModel extends AP {
@@ -474,7 +469,6 @@ export enum UplinkModeEnum {
   MANUAL = 'MANUAL',
   SMART = 'SMART'
 }
-
 export type APMeshSettings = {
   venueMeshEnabled?: boolean, //read-only (get method only)
   meshMode: MeshModeEnum,
@@ -495,6 +489,37 @@ export type MeshUplinkAp = {
   neighbors: MeshApNeighbor[]
 }
 
+export type AFCInfo = {
+  powerMode?: AFCPowerMode,
+  afcStatus?: AFCStatus
+}
+
+export enum AFCPowerMode {
+  LOW_POWER = 'LOW_POWER',
+  STANDARD_POWER = 'STANDARD_POWER'
+}
+
+export enum AFCStatus {
+  AFC_NOT_REQUIRED = 'AFC_NOT_REQUIRED',
+  WAIT_FOR_LOCATION = 'WAIT_FOR_LOCATION',
+  WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
+  REJECTED = 'REJECTED',
+  PASSED = 'PASSED'
+}
+
+export interface LowPowerAPQuantity {
+  lowPowerAPCount: number,
+  allAPCount: number
+}
+
+export interface ApStatus {
+  APRadio?: Array<RadioProperties>,
+  cellularInfo?: CelluarInfo,
+  APSystem?: APSystem,
+  lanPortStatus?: Array<LanPortStatusProperties>,
+  vxlanStatus?: VxlanStatus,
+  afcInfo?: AFCInfo
+}
 export interface ApRfNeighbor {
   deviceName: string,
   apMac: string,
@@ -553,4 +578,12 @@ export interface ApLldpNeighborsResponse {
 export interface SupportCcdVenue {
   id: string,
   name: string
+}
+
+export interface SupportCcdApGroup {
+  apGroupId: string,
+  apGroupName: string,
+  venueId: string,
+  members: number,
+  aps: APExtended[]
 }

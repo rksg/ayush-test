@@ -51,7 +51,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   )
 
   useEffect(() => {
-    if(personaGroupId) {
+    if(!props.editMode && personaGroupId) {
       form.setFieldValue('personaGroupId', personaGroupId)
     }
   }, [personaGroupId])
