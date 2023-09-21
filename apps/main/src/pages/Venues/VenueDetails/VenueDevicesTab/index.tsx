@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                     from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features } from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { Tabs }                                  from '@acx-ui/components'
+import {  useIsTierAllowed, Features }           from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueSwitch } from './VenueSwitch'
@@ -33,8 +33,7 @@ export function VenueDevicesTab () {
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Switch' })}
-        key='switch'
-        disabled={!useIsSplitOn(Features.DEVICES)}>
+        key='switch'>
         <VenueSwitch />
       </Tabs.TabPane>
 

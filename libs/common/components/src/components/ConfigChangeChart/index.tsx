@@ -24,7 +24,8 @@ import {
   getSymbol,
   getChartLayoutConfig,
   tooltipFormatter,
-  getTooltipCoordinate
+  getTooltipCoordinate,
+  useLegendTableFilter
 } from './helper'
 import { ResetButton, ChartWrapper } from './styledComponents'
 
@@ -39,6 +40,9 @@ export function ConfigChangeChart ({
   chartZoom,
   setChartZoom,
   setInitialZoom,
+  setLegend,
+  setSelectedData,
+  setPagination,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -52,10 +56,10 @@ export function ConfigChangeChart ({
     xAxisHeight, brushWidth, symbolSize
   } = chartLayoutConfig
 
-  const [selected, setSelected] = useState<number|undefined>(selectedData)
+  const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
 
   useEffect(() => {
-    setSelected(selectedData)
+    setSelected(selectedData?.filterId)
   }, [selectedData])
 
   const [selectedLegend, setSelectedLegend] = useState(
@@ -66,6 +70,8 @@ export function ConfigChangeChart ({
 
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
+  useLegendTableFilter(
+    selectedLegend, data, selectedData, setLegend, setSelectedData, setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =

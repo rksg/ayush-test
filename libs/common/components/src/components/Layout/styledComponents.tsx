@@ -105,7 +105,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
             margin: 0;
-            &:hover { cursor: default; }
+            cursor: default;
             &:active { background: unset; }
           }
           &-open {
@@ -144,6 +144,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             border-left: 2px solid var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
+          &.menu-admin-item { margin-top: auto; }
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
@@ -152,7 +153,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               display: none;
             }`)}
           }
-          &.menu-admin-item { margin-top: auto; }
         }
         > div:first-child, .ant-layout-sider {
           flex: 0 0 var(--acx-sider-width) !important;
@@ -178,6 +178,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             padding-top: 8px;
             .ant-menu-item {
+              cursor: default;
               height: 40px;
               width: 100%;
               border-left: unset;

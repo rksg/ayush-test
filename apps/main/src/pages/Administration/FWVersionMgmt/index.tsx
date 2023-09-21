@@ -56,7 +56,6 @@ const FWVersionMgmt = () => {
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
 
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
       setIsAPPLibraryAvailable(true)
@@ -81,9 +80,8 @@ const FWVersionMgmt = () => {
       const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
       const hasOutdated09 = latest09 && switchVenueVersionList.data.some(fv=>
         compareSwitchVersion(latest09.id, fv.switchFirmwareVersion?.id))
-      const hasOutdated10 = enableSwitchRodanFirmware ?
-        (latest10 && switchVenueVersionList.data.some(fv =>
-          compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))) : false
+      const hasOutdated10 = latest10 && switchVenueVersionList.data.some(fv =>
+        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))
 
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }

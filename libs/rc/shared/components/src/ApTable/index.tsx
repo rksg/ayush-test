@@ -24,6 +24,8 @@ import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
+  AFCStatus,
+  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -62,7 +64,8 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.APSystem.secureBootEnabled'
+    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
+    'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -144,7 +147,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }, [tableQuery.data])
 
   const apAction = useApActions()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
@@ -182,7 +184,38 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (status: any, row : APExtended) => {
+        /* eslint-disable max-len */
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
+          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
+
+          const afcInfo = row.apStatusData?.afcInfo
+
+          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
+          }
+
+          return (
+            <span>
+              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
+                text={warningMessages}
+              />
+            </span>
+          )
+        } else {
+          return <APStatus status={status.props.children} />
+        }
+        /* eslint-enable max-len */
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -274,11 +307,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'clients',
       align: 'center',
       render: (_, row: APExtended) => {
-        return releaseTag ?
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-            {transformDisplayNumber(row.clients)}
-          </TenantLink>
-          : <>{transformDisplayNumber(row.clients)}</>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
       }
     }, {
       key: 'deviceGroupName',
