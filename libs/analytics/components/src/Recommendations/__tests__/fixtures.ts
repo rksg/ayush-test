@@ -35,7 +35,8 @@ export const crrmListResult = {
       }
     }
   ],
-  crrmCount: [{ status: 'applied' }, { status: 'reverted' }, { status: 'new' }],
+  optimizedCount: 1,
+  totalCount: 3,
   crrmScenarios: 100
 }
 
