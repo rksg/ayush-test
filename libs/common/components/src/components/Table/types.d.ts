@@ -70,8 +70,8 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterSearchable?: boolean
   /**
-   * Set the key for filters that have a hierarchical dependency
-   * the relevant filter will be reset when changing the value
+   * Set the key for Coordinated filters that have a hierarchical dependency
+   * the relevant filter will be reset by key when changing the value
    * @default undefined
    */
   coordinatedKeys?: string[]
