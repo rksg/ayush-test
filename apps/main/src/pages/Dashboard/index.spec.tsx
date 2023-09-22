@@ -28,6 +28,10 @@ jest.mock('@acx-ui/rc/components', () => ({
   MapWidget: () => <div data-testid={'rc-MapWidget'} title='MapWidget' />,
   VenuesDashboardWidget: () => <div data-testid={'rc-VenuesDashboardWidget'} title='VenuesDashboardWidget' />
 }))
+
+jest.mock('@acx-ui/main/components', () => ({
+  VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
+}))
 /* eslint-enable */
 
 jest.mock(
@@ -40,7 +44,7 @@ describe('Dashboard', () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
   })
 
   it('switches between tabs', async () => {
@@ -70,7 +74,7 @@ describe('Dashboard', () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
   })
   it('should show report link correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
