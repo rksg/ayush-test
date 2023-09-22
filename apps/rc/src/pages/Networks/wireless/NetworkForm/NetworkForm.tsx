@@ -411,11 +411,11 @@ export default function NetworkForm (props:{
         // omit id to handle clone
         _.omit(saveData,
           ['id',
-            'networkSecurity',
-            'enableOwe',
-            'pskProtocol',
-            'isOweMaster',
-            'owePairNetworkId']))
+           'networkSecurity',
+           'enableOwe',
+           'pskProtocol',
+           'isOweMaster',
+           'owePairNetworkId']))
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
