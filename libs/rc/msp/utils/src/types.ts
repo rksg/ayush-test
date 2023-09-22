@@ -388,3 +388,15 @@ export interface MspAggregations {
   aggregation: boolean,
   ecExclusionEnabled: boolean
 }
+
+export interface RecommendFirmwareUpgrade {
+  defaultABF: string,
+  defaultApBranchFamilyApFirmwares: UpgradeFirmwareVer[]
+}
+
+export interface UpgradeFirmwareVer {
+  seq: number,
+  name: string,
+  defaultApFirmware: string,
+  branches: string[]
+}

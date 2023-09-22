@@ -300,5 +300,15 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/notificationAggregations',
     newApi: true
+  },
+  getRecommandFirmwareUpgrade: {
+    method: 'get',
+    url: '/wifi/upgrade/default-abf-ap-firmware?type=RECOMMENDED',
+    newApi: true
+  },
+  mspEcFirmwareUpgradeSchedules: {
+    method: 'post',
+    url: '/mspCustomers/firmwareUpgradeSchedules',
+    newApi: true
   }
 }

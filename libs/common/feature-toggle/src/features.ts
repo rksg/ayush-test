@@ -101,7 +101,8 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
-  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle'
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
