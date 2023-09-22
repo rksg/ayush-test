@@ -16,7 +16,7 @@ interface TimeRangeDropDownProviderProps {
   children: React.ReactNode;
 }
 
-const defaultTimeRangeDropDownContextValue: TimeRangeDropDownContextType = {
+export const defaultTimeRangeDropDownContextValue: TimeRangeDropDownContextType = {
   timeRangeDropDownRange: DateRange.last24Hours,
   setTimeRangeDropDownRange: () => {}
 }
