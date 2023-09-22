@@ -31,13 +31,26 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddGateway',
-            'DeleteGateway'
+            'DeleteGateway',
+            'UpdateGateway'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(rwgApi.util.invalidateTags([{ type: 'RWG', id: 'LIST' }]))
           })
         })
       }
+    }),
+    getRwg: build.query<RWG, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGateway, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: ({ response }: { response: RWG }) => {
+        return response
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     }),
     deleteGateway: build.mutation<RWG, RequestPayload>({
       query: ({ params, payload }) => {
@@ -55,11 +68,35 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
+    }),
+    addGateway: build.mutation<RWG, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addGateway, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
+    }),
+    updateGateway: build.mutation<RWG, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateGateway, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
     })
   })
 })
 
 export const {
   useRwgListQuery,
-  useDeleteGatewayMutation
+  useLazyRwgListQuery,
+  useGetRwgQuery,
+  useDeleteGatewayMutation,
+  useAddGatewayMutation,
+  useUpdateGatewayMutation
 } = rwgApi
