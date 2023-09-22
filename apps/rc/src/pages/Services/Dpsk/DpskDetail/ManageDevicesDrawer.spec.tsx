@@ -15,7 +15,6 @@ import {
 
 import {
   mockedDevices,
-  clientMeta
 } from './__tests__/fixtures'
 import ManageDevicesDrawer from './ManageDevicesDrawer'
 
