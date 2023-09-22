@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { DatePicker, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
-import { useForm }                                                      from 'antd/lib/form/Form'
-import dayjs                                                            from 'dayjs'
-import _                                                                from 'lodash'
-import moment                                                           from 'moment-timezone'
-import { useIntl }                                                      from 'react-intl'
+import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
+import { useForm }                                          from 'antd/lib/form/Form'
+import dayjs                                                from 'dayjs'
+import _                                                    from 'lodash'
+import moment                                               from 'moment-timezone'
+import { useIntl }                                          from 'react-intl'
 
+import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AVAILABLE_SLOTS,
@@ -213,6 +214,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const onModalCancel = () => {
     form.resetFields()
     resetValues()
+    setSelectedDate('')
+    setSelectedTime('')
     onCancel()
   }
 
@@ -231,13 +234,14 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }
 
   return (
-    <UI.ScheduleModal
+    <Modal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       visible={visible}
-      width={560}
+      width={630}
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
+      destroyOnClose
       okButtonProps={{ disabled: disableSave }}
     >
       <Form
@@ -246,64 +250,82 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       >
         <Form.Item>
           <div>
-            {!enableSwitchTwoVersionUpgrade && <Typography>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Choose which version to update the venue to:' })}
-            </Typography>}
-            {!enableSwitchTwoVersionUpgrade && <Radio.Group
-              style={{ margin: 12 }}
-              // eslint-disable-next-line max-len
-              defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
-              onChange={handleChange}
-              value={selectedVersion}>
-              <Space direction={'vertical'}>
-                { availableVersions?.map(v =>
-                  <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
-              </Space>
-            </Radio.Group>}
-            {enableSwitchTwoVersionUpgrade && <Typography>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX-8200 Series' }) } ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-            </Typography>}
-            {enableSwitchTwoVersionUpgrade && <Radio.Group
-              style={{ margin: 12 }}
-              onChange={handleChangeForVersionAboveTen}
-              value={selectedAboveTenVersion}>
-              <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
-                  getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
-                    <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
-                <Radio value='' key='0'>
-                  {$t({ defaultMessage: 'Do not update firmware on these switches' })}
-                </Radio>
-              </Space>
-            </Radio.Group>}
-            {enableSwitchTwoVersionUpgrade && <UI.Section>
-              <Typography>
-                { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series Models' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
-              </Typography>
+
+            {!enableSwitchTwoVersionUpgrade && <>
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
+              </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
+                // eslint-disable-next-line max-len
+                defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
                 onChange={handleChange}
                 value={selectedVersion}>
                 <Space direction={'vertical'}>
+                  {availableVersions?.map(v =>
+                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                </Space>
+              </Radio.Group>
+            </>}
+
+            {enableSwitchTwoVersionUpgrade && <>
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+                &nbsp;
+                ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+              </Subtitle>
+              <Radio.Group
+                style={{ margin: 12 }}
+                onChange={handleChangeForVersionAboveTen}
+                value={selectedAboveTenVersion}>
+                <Space direction={'vertical'}>
                   { // eslint-disable-next-line max-len
-                    getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
-                      <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
+                    getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
+                      <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                        {getSwitchVersionLabel(intl, v)}</Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
                 </Space>
               </Radio.Group>
-            </UI.Section>}
+              <UI.Section>
+                <Subtitle level={4}>
+                  {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                  &nbsp;
+                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+                </Subtitle>
+                <Radio.Group
+                  style={{ margin: 12 }}
+                  onChange={handleChange}
+                  value={selectedVersion}>
+                  <Space direction={'vertical'}>
+                    { // eslint-disable-next-line max-len
+                      getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
+                        <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                          {getSwitchVersionLabel(intl, v)}</Radio>)}
+                    <Radio value='' key='0'>
+                      {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              </UI.Section>
+            </>}
           </div>
+
         </Form.Item>
-        <UI.TitleActive>When do you want the update to run?</UI.TitleActive>
-        { // eslint-disable-next-line max-len
-          <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
+        <Subtitle level={4}>
+          {$t({ defaultMessage: 'When do you want the update to run?' })}
+        </Subtitle>
+        {
+          <UI.TitleActive>
+            {$t({
+              defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+            })}
+          </UI.TitleActive>}
+
         <UI.DateContainer>
-          <label>Update date:</label>
+          <label>{$t({ defaultMessage: 'Update date:' })}</label>
           <DatePicker
             showToday={false}
             disabledDate={disabledDate}
@@ -311,13 +333,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             value={selectedDate ? moment(selectedDateMoment) : undefined}
           />
         </UI.DateContainer>
-        { selectedDate ?
+
+        {selectedDate ?
           <UI.DateContainer>
-            <label>Update time:</label>
+            <label>{$t({ defaultMessage: 'Update time:' })}</label>
             <Radio.Group
               style={{ margin: 12 }}
-              // eslint-disable-next-line max-len
-              // defaultValue={availableVersions && availableVersions[0] ? availableVersions[0].name : ''}
               onChange={onChangeRegular}
               value={selectedTime}>
               <Space direction={'vertical'}>
@@ -332,7 +353,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           checked={checked}
           setChecked={onPreDownloadChange}
         />
+
       </Form>
-    </UI.ScheduleModal>
+    </Modal>
   )
 }

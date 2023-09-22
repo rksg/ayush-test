@@ -94,7 +94,11 @@ describe('PageHeader', () => {
 
     const setPageHeaderY = jest.spyOn(result.current, 'setPageHeaderY').mockImplementation(() => {})
 
-    render(<PageHeader title='Title' />, { route: true })
+    render(<>
+      <PageHeader title='Title' />
+      <div></div>
+      <div className='sticky-top'></div>
+    </>, { route: true })
 
     await waitFor(() => expect(setPageHeaderY).toBeCalled())
   })
