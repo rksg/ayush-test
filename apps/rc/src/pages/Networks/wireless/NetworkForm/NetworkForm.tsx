@@ -408,7 +408,7 @@ export default function NetworkForm (props:{
       const dataConnection = handleUserConnection(saveState)
       const saveData = handleGuestMoreSetting(dataConnection)
       const payload = updateClientIsolationAllowlist(
-        _.omit(saveData, ['id', 'networkSecurity', 'enableOwe', 'pskProtocol'])) // omit id to handle clone
+        _.omit(saveData, ['id', 'networkSecurity', 'enableOwe', 'pskProtocol', 'isOweMaster', 'owePairNetworkId'])) // omit id to handle clone
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
