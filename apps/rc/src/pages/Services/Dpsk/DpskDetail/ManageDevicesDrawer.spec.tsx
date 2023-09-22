@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedDevices,
+  mockedDevices
 } from './__tests__/fixtures'
 import ManageDevicesDrawer from './ManageDevicesDrawer'
 
