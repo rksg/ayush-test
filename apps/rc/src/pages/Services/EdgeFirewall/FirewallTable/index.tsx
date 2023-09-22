@@ -221,6 +221,13 @@ const FirewallTable = () => {
     // }
   ]
 
+  const isDeleteBtnDisable = (selectedRows: EdgeFirewallViewData[]) => {
+    let isActivatedOnEdge = selectedRows
+      .filter(EdgeFirewallViewData => (EdgeFirewallViewData.edgeIds?.length ?? 0) > 0)
+      .length > 0
+    return isActivatedOnEdge
+  }
+
   const rowActions: TableProps<EdgeFirewallViewData>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
@@ -240,6 +247,11 @@ const FirewallTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: isDeleteBtnDisable,
+      tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' })
+        : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
