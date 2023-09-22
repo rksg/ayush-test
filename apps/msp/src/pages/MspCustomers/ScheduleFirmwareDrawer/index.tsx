@@ -5,10 +5,6 @@ import { useForm }                              from 'antd/lib/form/Form'
 import { useIntl }                              from 'react-intl'
 
 import {
-    Modal
-  } from '@acx-ui/components'
-  
-import {
   Button,
   Drawer,
   Subtitle
@@ -23,8 +19,8 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum } from '@acx-ui/types'
 
-import * as UI from './styledComponents'
 import { ChangeSlotDialog } from './ChangeSlotDialog'
+import * as UI              from './styledComponents'
 
 interface ScheduleFirmwareDrawerProps {
   visible: boolean
@@ -151,62 +147,62 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
 
   const contentScheduleFirmwareUpdate =
   <>
-  <Space size={18} direction='vertical'>
+    <Space size={18} direction='vertical'>
 
-    <h4>{$t({
-      defaultMessage:
+      <h4>{$t({
+        defaultMessage:
         `Any changes done to the Saved Schedule or a Manual option will overwrite previously 
         scheduled configurations in Preferences.`
-    })}</h4>
-    <Form
-      form={form}
-      name={'preferencesModalForm'}
-    >
-      <Form.Item
-        initialValue={ScheduleMode.Automatically}
+      })}</h4>
+      <Form
+        form={form}
+        name={'preferencesModalForm'}
       >
-        <Radio.Group
-          onChange={onScheduleModeChange}
-          value={scheduleMode}>
-          <Space direction={'vertical'}>
-            <Radio value={ScheduleMode.Automatically}>
-              {$t({ defaultMessage: 'Use saved schedule' })}
-              <UI.GreyTextSection>
-                <div>{$t({
-                  defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
-                <div>{$t({
-                  defaultMessage: '- Applies to all newly added venues automatically' })}</div>
-              </UI.GreyTextSection>
-              <UI.PreferencesSection>
-                <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>
-                <div>{valueDays.join(', ')}</div>
-                <div style={{ paddingBottom: 8 }}>
-                  {$t({ defaultMessage: 'at:' })} {valueTimes.join(', ')}</div>
-              </UI.PreferencesSection>
-              <UI.ChangeButton type='link' onClick={showSlotModal} block>
-                {$t({ defaultMessage: 'Change' })}
-              </UI.ChangeButton>
-            </Radio>
-            <Radio value={ScheduleMode.Manually}>
-              {$t({ defaultMessage: 'Schedule updates manually' })}
-              <UI.GreyTextSection>
-                <div>{$t({ defaultMessage:
+        <Form.Item
+          initialValue={ScheduleMode.Automatically}
+        >
+          <Radio.Group
+            onChange={onScheduleModeChange}
+            value={scheduleMode}>
+            <Space direction={'vertical'}>
+              <Radio value={ScheduleMode.Automatically}>
+                {$t({ defaultMessage: 'Use saved schedule' })}
+                <UI.GreyTextSection>
+                  <div>{$t({
+                    defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
+                  <div>{$t({
+                    defaultMessage: '- Applies to all newly added venues automatically' })}</div>
+                </UI.GreyTextSection>
+                <UI.PreferencesSection>
+                  <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>
+                  <div>{valueDays.join(', ')}</div>
+                  <div style={{ paddingBottom: 8 }}>
+                    {$t({ defaultMessage: 'at:' })} {valueTimes.join(', ')}</div>
+                </UI.PreferencesSection>
+                <UI.ChangeButton type='link' onClick={showSlotModal} block>
+                  {$t({ defaultMessage: 'Change' })}
+                </UI.ChangeButton>
+              </Radio>
+              <Radio value={ScheduleMode.Manually}>
+                {$t({ defaultMessage: 'Schedule updates manually' })}
+                <UI.GreyTextSection>
+                  <div>{$t({ defaultMessage:
                   '- Applies only to selected MSP Customers and their tennants.' })}</div>
-              </UI.GreyTextSection>
-            </Radio>
-          </Space>
-        </Radio.Group>
-      </Form.Item>
-    </Form>
-  </Space>
-  {/* </Modal> */}
-      <ChangeSlotDialog
-        visible={modelVisible}
-        onCancel={handleModalCancel}
-        onSubmit={handleModalSubmit}
-        // days={data.days as string[]}
-        // times={data.times as string[]}
-      />
+                </UI.GreyTextSection>
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+      </Form>
+    </Space>
+    {/* </Modal> */}
+    <ChangeSlotDialog
+      visible={modelVisible}
+      onCancel={handleModalCancel}
+      onSubmit={handleModalSubmit}
+      // days={data.days as string[]}
+      // times={data.times as string[]}
+    />
 
   </>
 

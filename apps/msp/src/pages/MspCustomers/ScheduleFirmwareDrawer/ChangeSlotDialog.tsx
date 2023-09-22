@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Space } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Form, Select } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import {
   Modal
@@ -11,7 +11,7 @@ import {
   AVAILABLE_SLOTS
 } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+// import * as UI from './styledComponents'
 
 import type { SelectProps  } from 'antd'
 
@@ -123,23 +123,23 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         // onFinish={handleSubmit}
       >
         <Form.Item
-        name='days'
-        label={$t({ defaultMessage: 'Scheduled Days' })}
+          name='days'
+          label={$t({ defaultMessage: 'Scheduled Days' })}
         // rules={[{ required: true }]}
         >
           <Select placeholder={$t({ defaultMessage: 'Selected 2 Days' })}
-           {...selectDaysProps} />
+            {...selectDaysProps} />
         </Form.Item>
 
         <Form.Item
-        name='days'
-        label={$t({ defaultMessage: 'Scheduled Time Slots' })}
+          name='days'
+          label={$t({ defaultMessage: 'Scheduled Time Slots' })}
         // rules={[{ required: true }]}
         >
           <Select {...selectTimesProps} />
         </Form.Item>
 
-      {/* <UI.FieldGroup>
+        {/* <UI.FieldGroup>
         <label>
           <div style={{ fontWeight: 600 }}>{$t({ defaultMessage: 'Preferred day(s):' })}</div>
           <div>{$t({ defaultMessage: 'Select up to 3 days' })}</div>
