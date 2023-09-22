@@ -22,6 +22,11 @@ jest.mock('./ClientTroubleshooting', () => ({
   ClientTroubleshootingTab: () => <div data-testid='troubleshooting'></div>
 }))
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid='report'></div>
+}))
+
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
