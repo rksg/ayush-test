@@ -109,7 +109,7 @@ export default function Dashboardv2 () {
 }
 
 function DashboardPageHeader () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter(true)
   const { $t } = useIntl()
 
   const addMenu = <Menu
@@ -155,6 +155,7 @@ function DashboardPageHeader () {
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
+          isDashBoard
         />
       ]}
     />

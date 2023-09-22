@@ -10,14 +10,20 @@ export interface DateFilter {
   initiated?: number // seconds
 }
 
-export const useDateFilter = () => {
+export const useDateFilter = ( isDashBoard?: boolean) => {
   const { read, write } = useEncodedParameter<DateFilter>('period')
-
   return useMemo(() => {
     const period = read()
+    const defaultRange = isDashBoard ? DateRange.last8Hours : DateRange.last24Hours
+    let adjustedRange
+    if(period.range !== DateRange.last8Hours)
+      adjustedRange =period.range
+    else {
+      adjustedRange = isDashBoard ? DateRange.last8Hours : DateRange.last24Hours
+    }
     const dateFilter = period
-      ? getDateRangeFilter(period.range, period.startDate, period.endDate)
-      : getDateRangeFilter(DateRange.last24Hours)
+      ? getDateRangeFilter(adjustedRange, period.startDate, period.endDate)
+      : getDateRangeFilter(defaultRange)
 
     const setDateFilter = (date: DateFilter) => {
       write({
@@ -25,10 +31,11 @@ export const useDateFilter = () => {
         initiated: (new Date()).getTime() // for when we click same relative date again
       })
     }
+
     return {
       dateFilter,
       setDateFilter,
       ...dateFilter
     } as const
-  }, [read, write])
+  }, [read, write, isDashBoard])
 }

@@ -73,7 +73,7 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter(true)
 
   const { $t } = useIntl()
   return (
@@ -86,6 +86,7 @@ function DashboardPageHeader () {
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
+          isDashBoard
         />
       ]}
     />

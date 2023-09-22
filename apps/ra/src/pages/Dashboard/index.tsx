@@ -46,7 +46,7 @@ export const useMonitorHeight = (minHeight: number): number => {
 
 export default function Dashboard () {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter(true)
   const { filters } = useDashboardFilter()
   const { filters: analyticsFilter, path } = useAnalyticsFilter()
 
@@ -64,6 +64,7 @@ export default function Dashboard () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            isDashBoard
           />
         </>
       ]}

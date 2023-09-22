@@ -3,6 +3,7 @@ import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 export enum DateRange {
+  last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
   last30Days = 'Last 30 Days',
@@ -40,6 +41,7 @@ export function getDateRangeFilter (
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+    [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
     [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
     [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
     [DateRange.last30Days]: [ceilMinute().subtract(30, 'days'), ceilMinute()],
@@ -86,6 +88,9 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.last8Hours]: defineMessage({
+    defaultMessage: 'Last 8 Hours'
+  }),
   [DateRange.last24Hours]: defineMessage({
     defaultMessage: 'Last 24 Hours'
   }),

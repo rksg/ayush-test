@@ -1,13 +1,16 @@
 import { TimePicker, Space } from 'antd'
 import styled                from 'styled-components/macro'
 
-import { DateRange, defaultRanges } from '@acx-ui/utils'
+import { DateRange } from '@acx-ui/utils'
+
+import { RangesType } from '.'
 
 type RangePickerWrapperProps = {
   rangeOptions?: DateRange[]
   selectionType: DateRange
   isCalendarOpen: boolean
   rangeText: string
+  timeRangesForSelection: RangesType
 }
 
 /* eslint-disable max-len */
@@ -189,7 +192,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
         li:nth-child(${
   (props) => props.rangeOptions
     ? props.rangeOptions.indexOf(props.selectionType) + 1
-    : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
+    : Object.keys(props.timeRangesForSelection).indexOf(props.selectionType) + 1}) {
           font-weight: var(--acx-body-font-weight-bold);
         }
         li {

@@ -34,7 +34,7 @@ export type DateRangeType = {
 }
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType = [Moment, Moment]
-type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
+export type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RangeRef = Component<RangePickerProps<Moment>, unknown, any> & CommonPickerMethods | null
 interface DatePickerProps {
@@ -44,6 +44,7 @@ interface DatePickerProps {
   onDateApply: Function;
   selectionType: DateRange;
   showAllTime?: boolean;
+  isDashBoard?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -53,7 +54,8 @@ export const RangePicker = ({
   selectedRange,
   onDateApply,
   showAllTime,
-  selectionType
+  selectionType,
+  isDashBoard
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -107,7 +109,8 @@ export const RangePicker = ({
     }
   }, [range, onDateApply, translatedOptions])
 
-  const allTimeKey = $t(dateRangeMap[DateRange.allTime])
+  const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
+  const last8HoursKey = isDashBoard ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
@@ -116,11 +119,11 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       <AntRangePicker
         ref={rangeRef}
-        ranges={showAllTime ? translatedRanges :
-          _.omit(translatedRanges, allTimeKey)}
+        ranges={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
