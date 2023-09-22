@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { useHeaderExtra }             from '@acx-ui/analytics/components'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { ClientsList } from './ClientsList'
-
+import { ClientsList }                                  from './ClientsList'
+import { TimeRangeDropDown, TimeRangeDropDownProvider } from './TimeRangeDropdown'
 
 export enum AIClientsTabEnum {
   CLIENTS = 'users/wifi/clients',
@@ -24,14 +23,12 @@ const useTabs = () : Tab[] => {
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List' }),
-    component: <ClientsList/>,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    component: <ClientsList/>
   }
   const reportsTab = {
     key: AIClientsTabEnum.REPORTS,
     title: $t({ defaultMessage: 'Wireless Clients Reports' }),
-    component: <div>Wireless Clients Reports content</div>,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    component: <div>Wireless Clients Reports content</div>
   }
   return [clientsTab, reportsTab]
 }
@@ -40,15 +37,15 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const tabs = useTabs()
+  const TabComp = tabs.find(({ key }) => key === tab)?.component
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
   }
-  const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider>
     <PageHeader
       title={$t({ defaultMessage: 'Wireless' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
@@ -57,9 +54,9 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
+      extra={[<TimeRangeDropDown/>]}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }
 export default AIClients
