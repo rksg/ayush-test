@@ -1,12 +1,13 @@
 import styled from 'styled-components/macro'
 
-import { Button, Modal } from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
 
 export const DateContainer = styled.div`
   height: auto;
   display: grid;
   grid-template-columns: 180px 280px;
   padding: 10px;
+  margin-top: 10px;
   background-color: #f7f7f7;
   label {
     margin-top: 4px;
@@ -37,27 +38,20 @@ export const ItemModel = styled.div`
 `
 
 export const Ul = styled.ul`
-  list-style-type: none;
-  padding-left: 1em;
+  padding-left: 35px;
+  li {
+    margin-bottom: 8px;
+  }
 `
 
 export const Li = styled.li`
   &:before {
-    content: "-";
     position: absolute;
     margin-left: -1em;
   }
   margin-top: 5px;
 `
 
-export const ScheduleModal = styled(Modal)`
-.ant-modal-body{
-  overflow: initial;
-}
-.ant-modal-content{
-  max-height: initial;
-}
-`
 export const ChangeButton = styled(Button)`
   position: absolute;
   top: 40px;
