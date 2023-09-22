@@ -6,9 +6,11 @@ import { Table, TableProps, Tooltip, Loader, ColumnType } from '@acx-ui/componen
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/services'
 import {
+  FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
   getClientIpAddr,
+  SEARCH,
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
@@ -73,6 +75,19 @@ export function ClientsTable (props: {
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  const handleFilterChange = (filters: FILTER, search: SEARCH, groupBy: string | undefined) => {
+    const payload = {
+      ...tableQuery.payload,
+      filters: {
+        ...defaultSwitchClientPayload.filters,
+        ...filters
+      }, ...search, groupBy
+    }
+    setTableQueryFilters?.(filters)
+    tableQuery.handleFilterChange(filters, search, groupBy)
+    tableQuery.setPayload(payload as TableQueryPayload)
+  }
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
@@ -243,12 +258,7 @@ export function ClientsTable (props: {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={(filters, search, groupBy) => {
-            const payload = { ...tableQuery.payload, filters, ...search, groupBy }
-            setTableQueryFilters?.(filters)
-            tableQuery.handleFilterChange(filters, search, groupBy)
-            tableQuery.setPayload(payload as TableQueryPayload)
-          }}
+          onFilterChange={handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
         />
