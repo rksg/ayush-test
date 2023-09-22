@@ -85,7 +85,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
-  
+
   const lang = userPreflang?? defaultLang
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
