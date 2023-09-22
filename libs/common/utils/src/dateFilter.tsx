@@ -16,7 +16,7 @@ export const useDateFilter = ( isDashBoard?: boolean) => {
     const period = read()
     const defaultRange = isDashBoard ? DateRange.last8Hours : DateRange.last24Hours
     let adjustedRange
-    if(period.range !== DateRange.last8Hours)
+    if(period && period.range !== DateRange.last8Hours)
       adjustedRange =period.range
     else {
       adjustedRange = isDashBoard ? DateRange.last8Hours : DateRange.last24Hours
