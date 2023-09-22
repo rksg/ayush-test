@@ -14,6 +14,10 @@ jest.mock('./ClientsList', () => ({
   ClientsList: () => <div>Client list content</div>
 }))
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid='report'></div>
+}))
 describe('Clients', () => {
   it('should render clients list tab', async () => {
     render(<Clients tab={AIClientsTabEnum.CLIENTS}/>,
