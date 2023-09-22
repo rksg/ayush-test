@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
-import { useForm }                                          from 'antd/lib/form/Form'
-import { useIntl }                                          from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space } from 'antd'
+import { useForm }                              from 'antd/lib/form/Form'
+import { useIntl }                              from 'react-intl'
 
 import {
-  Modal
+  Modal, Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -106,74 +106,97 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={visible}
-      width={560}
+      width={630}
       okText={$t({ defaultMessage: 'Run Update' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{ disabled: disableSave }}
+      destroyOnClose
     >
       <Form
         form={form}
         name={'updateModalForm'}
       >
         <Form.Item>
-          {!enableSwitchTwoVersionUpgrade && <Typography>
-            { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Choose which version to update the venue to:' })}
-          </Typography>}
-          {!enableSwitchTwoVersionUpgrade && <Radio.Group
-            style={{ margin: 12 }}
-            // eslint-disable-next-line max-len
-            defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
-            onChange={onChangeRegular}
-            value={selectedVersion}>
-            <Space direction={'vertical'}>
-              { availableVersions?.map(v =>
-                <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
-            </Space>
-          </Radio.Group>}
-          {enableSwitchTwoVersionUpgrade && <Typography>
-            { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Firmware available for ICX-8200 Series' })} ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-          </Typography>}
-          {enableSwitchTwoVersionUpgrade && <Radio.Group
-            style={{ margin: 12 }}
-            onChange={onChangeRegularForVersionAboveTen}
-            value={selectedAboveTenVersion}>
-            <Space direction={'vertical'}>
-              { firmware10AvailableVersions?.map(v =>
-                <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
-              <Radio value='' key='0'>
-                {$t({ defaultMessage: 'Do not update firmware on these switches' })}
-              </Radio>
-            </Space>
-          </Radio.Group>}
-          {enableSwitchTwoVersionUpgrade && <UI.Section>
-            <Typography>
-              { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series Models' })} ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
-            </Typography>
+          {!enableSwitchTwoVersionUpgrade && <>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
+            </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
+              // eslint-disable-next-line max-len
+              defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
               onChange={onChangeRegular}
               value={selectedVersion}>
               <Space direction={'vertical'}>
-                { firmware90AvailableVersions?.map(v =>
+                {availableVersions?.map(v =>
                   <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
+              </Space>
+            </Radio.Group>
+          </>
+          }
+          {enableSwitchTwoVersionUpgrade && <>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              &nbsp;
+              ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+            </Subtitle>
+
+            <Radio.Group
+              style={{ margin: 12 }}
+              onChange={onChangeRegularForVersionAboveTen}
+              value={selectedAboveTenVersion}>
+              <Space direction={'vertical'}>
+                {firmware10AvailableVersions?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    {getSwitchVersionLabel(intl, v)}</Radio>)}
                 <Radio value='' key='0'>
                   {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
             </Radio.Group>
-          </UI.Section>}
+            <UI.Section>
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                &nbsp;
+                ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+              </Subtitle>
+              <Radio.Group
+                style={{ margin: 12 }}
+                onChange={onChangeRegular}
+                value={selectedVersion}>
+                <Space direction={'vertical'}>
+                  {firmware90AvailableVersions?.map(v =>
+                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                  <Radio value='' key='0'>
+                    {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            </UI.Section>
+          </>}
+
           <UI.Section>
             <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'This action cannot be canceled once initiated.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'You will be notified once the update process has finished.' })}</UI.Li>}
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}
+                </label>
+              </li>
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'This action cannot be canceled once initiated.' })}
+                </label>
+              </li>
+              <li>
+                <label>
+                  { // eslint-disable-next-line max-len
+                    $t({ defaultMessage: 'You will be notified once the update process has finished.' })}
+                </label>
+              </li>
             </UI.Ul>
           </UI.Section>
         </Form.Item>

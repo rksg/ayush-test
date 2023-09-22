@@ -45,7 +45,7 @@ export function ApNeighborsTab () {
       onChange={onTabChange}
       destroyInactiveTabPane={true}
       activeKey={activeSubTab}
-      type='second'
+      type='card'
     >
       {tabs.map(({ key, title, component }) =>
         <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}

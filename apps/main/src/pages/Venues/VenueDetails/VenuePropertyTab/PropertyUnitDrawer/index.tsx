@@ -395,7 +395,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
-    { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
+    { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringEnabled }
   )
 
 
