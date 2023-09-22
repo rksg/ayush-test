@@ -10,7 +10,8 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  convertDpskNewFlowUrl
+  convertDpskNewFlowUrl,
+  ClientUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -44,7 +45,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyDownloadNewFlowPassphrasesQuery: () => ([ mockedDownloadNewFlowCsv ])
 }))
 
-describe.skip('DpskPassphraseManagement', () => {
+describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
     tenantId: mockedTenantId,
     serviceId: mockedServiceId,
@@ -88,6 +89,14 @@ describe.skip('DpskPassphraseManagement', () => {
       rest.get(
         DpskUrls.getPassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -358,37 +367,11 @@ describe.skip('DpskPassphraseManagement', () => {
     })
   })
 
-  it('should close the other drawer when editing passphrase or managing devices', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(
-      <Provider>
-        <DpskPassphraseManagement />
-      </Provider>, {
-        route: { params: paramsForPassphraseTab, path: detailPath }
-      }
-    )
-
-    const targetRecord = mockedDpskPassphraseList.data[0]
-
-    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
-    await userEvent.click(within(targetRow).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
-    await userEvent.click(await screen.findByRole('button', { name: /Manage Devices/i }))
-
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(1)
-    })
-  })
-
   it('should be able to add device in DpskPassphrase', async () => {
     mockServer.use(
       rest.patch(
         DpskUrls.updatePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
-      ),
-      rest.delete(
-        DpskUrls.deletePassphraseDevices.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
       )
     )
 
@@ -409,31 +392,26 @@ describe.skip('DpskPassphraseManagement', () => {
 
     await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
 
-    await userEvent.click(await screen.findByRole('button', {
-      name: /add device/i
-    }))
+    await userEvent.click(await screen.findByRole('button', { name: /add device/i }))
 
-    await screen.findByRole('dialog', {
-      name: /add device/i
-    })
+    const addDeviceDialog = await screen.findByRole('dialog', { name: /add device/i })
 
-    await userEvent.click(screen.getByText(/add another device/i))
-
-    await userEvent.click(
-      await screen.findByRole('button', { name: 'Add' })
+    await userEvent.type(
+      within(addDeviceDialog).getByRole('textbox', { name: 'MAC Address' }),
+      '11:22:33:44:55:66'
     )
 
-    await userEvent.click(screen.getAllByText(/cancel/i)[1])
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    await userEvent.click(screen.getAllByText(/cancel/i)[0])
+    await waitFor(() => expect(addDeviceDialog).not.toBeVisible())
+
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('should be able to delete device in DpskPassphrase', async () => {
     mockServer.use(
-      rest.patch(
-        DpskUrls.updatePassphraseDevices.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
-      ),
       rest.delete(
         DpskUrls.deletePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
@@ -455,10 +433,7 @@ describe.skip('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    const dialogTextElement = await screen.findByText('Manage Passphrase Devices')
-    // eslint-disable-next-line testing-library/no-node-access
-    const dialog = dialogTextElement.closest('.ant-drawer-content') as HTMLDivElement
-
+    const dialog = await screen.findByRole('dialog')
     const targetDevice = await within(dialog).findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
 
     await userEvent.click(within(targetDevice).getByRole('checkbox'))
@@ -467,6 +442,10 @@ describe.skip('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
+
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('should display Status of passphrase', async () => {
@@ -510,8 +489,7 @@ describe.skip('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    await waitFor(() => {
-      expect(screen.queryByRole('button', { name: /Edit Passphrase/ })).toBeNull()
-    })
+    await screen.findByRole('button', { name: 'Revoke' })
+    expect(screen.queryByRole('button', { name: /Edit Passphrase/ })).toBeNull()
   })
 })

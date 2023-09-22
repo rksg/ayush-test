@@ -58,11 +58,11 @@ describe('ManageDevicesDrawer', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
+        (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
       ),
       rest.post(
         ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json(clientMeta))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -77,11 +77,14 @@ describe('ManageDevicesDrawer', () => {
           setPassphraseInfo={() => {}}
         />
       </Provider>, {
-        route: { params: {
-          tenantId: 'fe8d6c89c852473ea343c9a0fa66829b',
-          serviceId: '89a09af4f9264145a97bef7014c3c8e9',
-          passphraseId: 'bed56dda739d4738b46c67cda01e5113'
-        } }
+        route: {
+          params: {
+            tenantId: 'fe8d6c89c852473ea343c9a0fa66829b',
+            serviceId: '89a09af4f9264145a97bef7014c3c8e9',
+            passphraseId: 'bed56dda739d4738b46c67cda01e5113'
+          },
+          path: '/:tenantId/:serviceId/:passphraseId'
+        }
       }
     )
 
