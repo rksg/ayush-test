@@ -64,7 +64,7 @@ function AllRoutes () {
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
           <Route path=':activeTab'>
-            <Route path='' element={<Navigate replace to='./overview' />} />
+            <Route path='' element={<Navigate replace to='./troubleshooting' />} />
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
