@@ -6,7 +6,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
