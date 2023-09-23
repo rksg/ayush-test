@@ -31,7 +31,9 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
     return () => timer.current && clearInterval(timer.current)
   }, [queryResults.data?.length])
 
-  const currentTile = queryResults.data?.[selected]!
+  useEffect(() => setSelected(0), [path])
+
+  const currentTile = queryResults.data?.[selected]
 
   return <Loader states={[queryResults]}>
     <Card>{queryResults.data
@@ -40,6 +42,8 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
           queryResults.data?.map(({ key }, index) => {
             return <Tile
               key={key}
+              role='radio'
+              aria-checked={selected === index}
               selected={index === (selected)}
               onClick={() => {
                 setSelected(index)
@@ -48,13 +52,13 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
             />
           })
         }</div>
-        <TenantLink to={currentTile.url}>
+        {currentTile && <TenantLink to={currentTile.url}>
           <Statistic
             title={$t(currentTile.text)}
             value={currentTile.value
               ? currentTile.format(currentTile.value)
               : noDataDisplay}/>
-        </TenantLink>
+        </TenantLink>}
       </ReportTileWrapper>
       : null}
     </Card>

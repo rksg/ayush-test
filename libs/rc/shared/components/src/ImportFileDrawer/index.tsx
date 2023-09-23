@@ -24,7 +24,7 @@ export enum ImportFileDrawerType {
   Switch,
   GuestPass,
   DPSK,
-  Persona,
+  Identity,
   CLI,
   PropertyUnit,
   EdgeDHCP,

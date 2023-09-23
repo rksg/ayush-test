@@ -6,7 +6,6 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
-  TenantAccountTierValue,
   Administrator,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -475,6 +474,13 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             ]))
           })
         })
+      },
+      transformResponse: (result: Entitlement[]) => {
+        result.forEach(item => {
+          item.effectiveDate = new Date(item.effectiveDate).toISOString()
+          item.expirationDate = new Date(item.expirationDate).toISOString()
+        })
+        return result
       }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
@@ -570,15 +576,6 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
-    }),
-    getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.getAccountTier, params)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Administration', id: 'ACCOUNT_TIER' }]
     })
   })
 })
@@ -634,6 +631,5 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation,
-  useGetAccountTierQuery
+  useUpdateTenantAuthenticationsMutation
 } = administrationApi

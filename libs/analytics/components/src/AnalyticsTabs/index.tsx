@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }                     from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 import { useDateFilter }                       from '@acx-ui/utils'
 
 import { IncidentTabContent, HealthPage } from '..'
@@ -30,7 +30,7 @@ export function AnalyticsTabs (props: {
     onChange={onTabChange}
     activeKey={activeSubTab}
     defaultActiveKey='incidents'
-    type='second'
+    type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents'>
       <IncidentTabContent filters={{ ...dateFilter, ...incidentFilter }} />

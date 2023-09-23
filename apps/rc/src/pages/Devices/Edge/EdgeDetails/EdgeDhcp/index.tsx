@@ -11,11 +11,13 @@ import {
   useGetDhcpByEdgeIdQuery,
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
+  useGetEdgeServiceListQuery,
   usePatchEdgeDhcpServiceMutation
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
   EdgeDhcpHostStatus,
+  EdgeServiceTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useTenantLink }  from '@acx-ui/react-router-dom'
@@ -70,6 +72,19 @@ export const EdgeDhcp = () => {
     payload: getDhcpHostStatsPayload
   },{
     skip: !isEdgeReady
+  })
+  const { hasNsg } = useGetEdgeServiceListQuery({
+    payload: {
+      fields: ['serviceType'],
+      filters: { edgeId: [serialNumber] }
+    }
+  }, {
+    skip: !isEdgeReady,
+    selectFromResult: ({ data, isLoading }) => ({
+      hasNsg: isLoading || data?.data.some(
+        service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION
+      )
+    })
   })
 
   useEffect(() => {
@@ -144,13 +159,14 @@ export const EdgeDhcp = () => {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         inUseService={poolTableQuery.data?.data[0]?.dhcpId || null}
+        hasNsg={hasNsg}
       />
       <Tabs
         onChange={onTabChange}
         defaultActiveKey='pools'
         activeKey={activeSubTab}
         tabBarExtraContent={tabBarExtraContent}
-        type='second'
+        type='card'
       >
         {Object.keys(tabs)
           .map((key) =>

@@ -400,6 +400,17 @@ export function ManageIntegrator () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          licAssignment.push({
+            quantity: quantityApsw,
+            action: AssignActionEnum.ADD,
+            isTrial: false,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         customer.licenses = { assignments: licAssignment }
       }
@@ -458,7 +469,19 @@ export function ManageIntegrator () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
-
+      if (isDeviceAgnosticEnabled) {
+        if (_.isString(ecFormData.apswLicense)) {
+          const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+          const quantityApsw = parseInt(ecFormData.apswLicense, 10)
+          const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantityApsw,
+            assignmentId: apswAssignId,
+            action: actionApsw,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+        }
+      }
       if (licAssignment.length > 0) {
         let assignLicense = {
           subscription_start_date: today,
@@ -636,14 +659,20 @@ export function ManageIntegrator () {
       <Form.Item
         name='admin_firstname'
         label={intl.$t({ defaultMessage: 'First Name' })}
-        rules={[{ required: true }]}
+        rules={[
+          { required: true },
+          { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        ]}
         children={<Input />}
         style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
       />
       <Form.Item
         name='admin_lastname'
         label={intl.$t({ defaultMessage: 'Last Name' })}
-        rules={[ { required: true } ]}
+        rules={[
+          { required: true },
+          { validator: (_, value) => whitespaceOnlyRegExp(value) }
+        ]}
         children={<Input />}
         style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
       />
@@ -724,17 +753,21 @@ export function ManageIntegrator () {
               <Form.Item
                 name='number_of_days'
                 initialValue={'7'}
-                rules={[{ validator: (_, value) =>
-                {
-                  if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
-                    return Promise.reject(
-                      `${intl.$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
-                    )
+                rules={[
+                  { required: !unlimitSelected,
+                    message: intl.$t({ defaultMessage: 'Please enter number of days' })
+                  },
+                  { validator: (_, value) =>
+                  {
+                    if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+                      return Promise.reject(
+                        `${intl.$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
+                      )
+                    }
+                    return Promise.resolve()
                   }
-                  return Promise.resolve()
-                }
-                }]}
-                children={<Input disabled={unlimitSelected} type='number'/>}
+                  }]}
+                children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
               <label>Day(s)</label>
@@ -794,6 +827,7 @@ export function ManageIntegrator () {
           children={
             <DatePicker
               format={formatter(DateFormatEnum.DateFormat)}
+              allowClear={false}
               disabled={!customDate}
               defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               onChange={expirationDateOnChange}
@@ -921,16 +955,24 @@ export function ManageIntegrator () {
           <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
         </Form.Item>
 
-        <Form.Item
-          label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+        {!isDeviceAgnosticEnabled && <div>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+          >
+            <Paragraph>{formData.wifiLicense}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+          >
+            <Paragraph>{formData.switchLicense}</Paragraph>
+          </Form.Item>
+        </div>}
+        {isDeviceAgnosticEnabled && <Form.Item
+          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
-          <Paragraph>{formData.wifiLicense}</Paragraph>
-        </Form.Item>
-        <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
-        >
-          <Paragraph>{formData.switchLicense}</Paragraph>
-        </Form.Item>
+          <Paragraph>{formData.apswLicense}</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >

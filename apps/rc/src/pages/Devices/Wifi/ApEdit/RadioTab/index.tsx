@@ -3,10 +3,11 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '..'
 
@@ -66,6 +67,13 @@ export function RadioTab () {
       <>
         <StepsFormLegacy.SectionTitle id='client-Admission'>
           { clientAdmissionCtlTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+              'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined style={{ height: '18px', marginBottom: -3 }}
+            />
+          </Tooltip>
         </StepsFormLegacy.SectionTitle>
         {
           <ClientAdmissionControlSettings />
@@ -147,7 +155,7 @@ export function RadioTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} />
+        <AnchorLayout items={anchorItems} offsetTop={60} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

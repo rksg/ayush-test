@@ -1,41 +1,31 @@
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {
-  PageHeader,
-  StepsForm,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
-} from '@acx-ui/components'
+import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
-  useGetNetworkQuery,
-  useUpdateNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation,
   useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
-  NetworkTypeEnum,
-  NetworkSaveData,
-  GuestNetworkTypeEnum,
+  AuthRadiusEnum,
   Demo,
+  GuestNetworkTypeEnum,
   GuestPortal,
-  redirectPreviousPage,
   LocationExtended,
-  NetworkVenue,
   Network,
-  AuthRadiusEnum
+  NetworkSaveData,
+  NetworkTypeEnum,
+  NetworkVenue,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import {
-  useLocation,
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -53,8 +43,8 @@ import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
-  transferDetailToSave,
   tranferSettingsToSave,
+  transferDetailToSave,
   transferMoreSettingsToSave,
   transferVenuesToSave,
   updateClientIsolationAllowlist
@@ -418,7 +408,14 @@ export default function NetworkForm (props:{
       const dataConnection = handleUserConnection(saveState)
       const saveData = handleGuestMoreSetting(dataConnection)
       const payload = updateClientIsolationAllowlist(
-        _.omit(saveData, ['id', 'networkSecurity', 'enableOwe', 'pskProtocol'])) // omit id to handle clone
+        // omit id to handle clone
+        _.omit(saveData,
+          ['id',
+            'networkSecurity',
+            'enableOwe',
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId']))
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
@@ -468,7 +465,9 @@ export default function NetworkForm (props:{
             'accountingRadiusId',
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }else{
@@ -476,7 +475,9 @@ export default function NetworkForm (props:{
           [
             'enableOwe',
             'networkSecurity',
-            'pskProtocol'
+            'pskProtocol',
+            'isOweMaster',
+            'owePairNetworkId'
           ]
         )
       }

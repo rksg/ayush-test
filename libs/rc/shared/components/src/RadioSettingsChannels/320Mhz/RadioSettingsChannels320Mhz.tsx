@@ -112,10 +112,10 @@ export function RadioSettingsChannels320Mhz (props: {
     let isolatedChannel = [] as CheckboxValueType[]
 
     /**
-     * Once user click 320Mhz group botton, depends on the intersection with channel160Groups,
+     * Once user click 320Mhz group button, depends on the intersection with channel160Groups,
      * unselect when both two checkbox(160Mhz) is selected.
      *
-     * On the contray, no matter only 1 or none heckbox is selected, both 160Mhz checkbox in the
+     * On the contrary, no matter only 1 or none checkbox is selected, both 160Mhz checkbox in the
      * channel160Groups will be selected.
      */
     if(intersection.length === 2) {

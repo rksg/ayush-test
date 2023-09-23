@@ -1,16 +1,19 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { BulbOutlined, InformationSolid } from '@acx-ui/icons'
 
-import { Subtitle }            from '../../IncidentDetails/Insights/styledComponents'
-import { withDottedUnderline } from '../styledComponents'
+import { Subtitle } from '../../IncidentDetails/Insights/styledComponents'
 
-export const DetailsHeader = styled.div`
+export const detailsHeaderFontStyles = css`
   color: var(--acx-primary-black);
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-3-font-size);
   line-height: var(--acx-headline-3-line-height);
   font-weight: var(--acx-headline-3-font-weight);
+`
+
+export const DetailsHeader = styled.div`
+  ${detailsHeaderFontStyles}
   margin-bottom: 12px;
 `
 
@@ -74,14 +77,9 @@ export const StatusTrailItemWrapper = styled.div`
 `
 
 export const StatusTrailWrapper = styled.div`
-  height: 400px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
-`
-
-export const RecommendationApImpacted = styled.span`
-  cursor: pointer;
-  ${withDottedUnderline}
 `
 
 export const KpiContentWrapper = styled.div`

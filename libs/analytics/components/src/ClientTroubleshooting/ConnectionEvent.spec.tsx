@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DisplayEvent }           from './config'
@@ -21,7 +22,7 @@ const successEvent: DisplayEvent = {
       name: 'No group (inherit from Venue)'
     },
     {
-      type: 'ap',
+      type: 'AP',
       name: '94:B3:4F:3D:15:B0'
     }
   ],
@@ -64,7 +65,7 @@ const disconnectEvent: DisplayEvent = {
       name: 'No group (inherit from Venue)'
     },
     {
-      type: 'ap',
+      type: 'AP',
       name: '94:B3:4F:3D:15:B0'
     }
   ],
@@ -94,7 +95,7 @@ const failureEvent: DisplayEvent = {
       name: 'No group (inherit from Venue)'
     },
     {
-      type: 'ap',
+      type: 'AP',
       name: '94:B3:4F:3D:15:B0'
     }
   ],
@@ -132,6 +133,12 @@ const nullMsgIds = {
   ...failureEvent,
   messageIds: null as unknown as undefined,
   key: 'nullMsgKey'
+}
+
+const pcapFailure = {
+  ...failureEvent,
+  key: 'pcapFailure',
+  pcapFilename: 'test.pcap'
 }
 
 describe('ConnectionEvent', () => {
@@ -208,6 +215,16 @@ describe('ConnectionEvent', () => {
   it('renders correctly for null messageId', () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={nullMsgIds}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(0)
+  })
+
+  it('renders correctly for pcap downloads', () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={pcapFailure}>test</ConnectionEventPopover>,
+        { wrapper: Provider }
+      )
     fireEvent.click(screen.getByText(/test/i))
     const test = asFragment().querySelectorAll('section')
     expect(test).toHaveLength(0)

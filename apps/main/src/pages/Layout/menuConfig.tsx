@@ -21,7 +21,9 @@ import {
   SpeedIndicatorSolid,
   SwitchOutlined,
   SwitchSolid,
-  WiFi
+  WiFi,
+  DevicesOutlined,
+  DevicesSolid
 } from '@acx-ui/icons'
 import {
   getServiceCatalogRoutePath,
@@ -50,6 +52,7 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -71,7 +74,7 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(isAnltAdvTier && recommendationsEnabled ? [{
+            ...(recommendationsEnabled ? [{
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
             }, {
@@ -145,16 +148,16 @@ export function useMenuConfig () {
         },
         ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
-          label: $t({ defaultMessage: 'Persona Management' }),
+          label: $t({ defaultMessage: 'Identity Management' }),
           children: [
             {
-              uri: '/users/persona-management/persona-group',
-              label: $t({ defaultMessage: 'Persona Groups' })
+              uri: '/users/identity-management/identity-group',
+              label: $t({ defaultMessage: 'Identity Groups' })
             },
             {
-              uri: '/users/persona-management/persona',
-              isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
-              label: $t({ defaultMessage: 'Personas List' })
+              uri: '/users/identity-management/identity',
+              isActiveCheck: new RegExp('^/users/identity-management/identity($|/)'),
+              label: $t({ defaultMessage: 'Identities List' })
             }
           ]
         }] : [])
@@ -208,6 +211,12 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(showRwgUI ? [{
+      uri: '/ruckus-wan-gateway',
+      label: $t({ defaultMessage: 'RWG' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: SwitchOutlined,
@@ -285,6 +294,7 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
+      adminItem: true,
       children: [
         {
           type: 'group' as const,

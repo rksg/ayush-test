@@ -24,6 +24,8 @@ import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
+  AFCStatus,
+  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -41,6 +43,7 @@ import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/ut
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { exportMessageMapping }                              from '@acx-ui/utils'
 
 import { seriesMappingAP }                                 from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -61,7 +64,8 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.APSystem.secureBootEnabled'
+    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
+    'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -111,6 +115,7 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
+  enableGroups?: boolean
 }
 
 export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
@@ -118,7 +123,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, enableGroups=true } = props
   const { setApsCount } = useContext(ApsTabContext)
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
@@ -142,7 +147,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }, [tableQuery.data])
 
   const apAction = useApActions()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
@@ -178,15 +182,48 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (status: any, row : APExtended) => {
+        /* eslint-disable max-len */
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
+          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
+
+          const afcInfo = row.apStatusData?.afcInfo
+
+          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
+          }
+
+          return (
+            <span>
+              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
+                text={warningMessages}
+              />
+            </span>
+          )
+        } else {
+          return <APStatus status={status.props.children} />
+        }
+        /* eslint-enable max-len */
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: filterables && getGroupableConfig()?.modelGroupableOptions
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -270,11 +307,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'clients',
       align: 'center',
       render: (_, row: APExtended) => {
-        return releaseTag ?
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-            {transformDisplayNumber(row.clients)}
-          </TenantLink>
-          : <>{transformDisplayNumber(row.clients)}</>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
       }
     }, {
       key: 'deviceGroupName',
@@ -283,8 +318,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: filterables &&
-        getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+      groupable: enableGroups
+        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+        : undefined
     }, {
       key: 'rf-channels',
       dataIndex: 'rf-channels',
@@ -516,8 +552,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
-        // eslint-disable-next-line max-len
-        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          onClick: exportCsv,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
+        } : undefined
+        }
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.AP}

@@ -58,6 +58,7 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+import { exportMessageMapping } from '@acx-ui/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
@@ -88,6 +89,7 @@ function ConnectionMeteringLink (props:{
     if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
+      tooltip = $t({ defaultMessage: 'The Data Consumption date has expired' })
     } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
@@ -544,6 +546,7 @@ export function VenuePropertyTab () {
         rowSelection={{ type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadUnit
         }}
       />

@@ -150,7 +150,9 @@ export function StepsFormLegacy <FormValue = any> (
         return stepCount > 1
           ? [
             cancelButton,
-            <Space align='center' size={12} key='back-submit'>{[backButton, submitButton]}</Space>
+            <Space align='center' size={12} key='back-submit'>
+              {props.step === 0 ? submitButton : [backButton, submitButton]}
+            </Space>
           ]
           : [submitButton, cancelButton]
       }

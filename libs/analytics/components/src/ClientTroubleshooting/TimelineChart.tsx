@@ -36,6 +36,7 @@ import {
   cssNumber,
   toolboxDataZoomOptions
 } from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TimeStampRange }        from '@acx-ui/types'
 import { hasAccess }                  from '@acx-ui/user'
@@ -190,8 +191,7 @@ export const useDotClick = (
           y: -calcY
         }))
       }
-
-      if (hasAccess() &&
+      if ((get('IS_MLISA_SA') || hasAccess()) &&
         params.componentSubType === 'custom' &&
         typedParams.seriesName === 'incidents'
       ) {
@@ -525,7 +525,7 @@ export function TimelineChart ({
   return (
     <UI.ChartWrapper
       $selected={mapping[0].series === INCIDENTS}
-      $hasAccess={hasAccess()} >
+      $hasAccess={Boolean(get('IS_MLISA_SA')) || hasAccess()} >
       <ReactECharts
         {...{
           ...props,

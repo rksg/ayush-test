@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl'
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
 import {
-  ExpirationDateSelector
+  ExpirationDateSelector, useDpskNewConfigFlowParams
 } from '@acx-ui/rc/components'
 import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery } from '@acx-ui/rc/services'
 import {
@@ -33,17 +33,23 @@ import {
 
 import { FieldSpace } from './styledComponents'
 
-export default function DpskSettingsForm () {
+interface DpskSettingsFormProps {
+  modalMode?: boolean
+}
+
+export default function DpskSettingsForm (props: DpskSettingsFormProps) {
+  const { modalMode = false } = props
   const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ dpskList ] = useLazyGetDpskListQuery()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({}).unwrap()).data
+    const list = (await dpskList({ params: dpskNewConfigFlowParams }).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))
@@ -55,7 +61,7 @@ export default function DpskSettingsForm () {
 
   return (<>
     <GridRow>
-      <GridCol col={{ span: 6 }}>
+      <GridCol col={{ span: modalMode ? 8 : 6 }}>
         <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />

@@ -27,8 +27,8 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { AccountType }           from '@acx-ui/utils'
+import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { AccountType, exportMessageMapping } from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -44,6 +44,10 @@ const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) =>
       return $t({ defaultMessage: 'Switch' })
   }
   return ''
+}
+
+const transformMacaddressString = (row: EcDeviceInventory) => {
+  return row.apMac ? row.apMac : (row.switchMac ? row.switchMac : '')
 }
 
 function transformDeviceOperStatus (row: EcDeviceInventory, intl: IntlShape) {
@@ -148,7 +152,10 @@ export function DeviceInventory () {
       dataIndex: 'apMac',
       sorter: true,
       key: 'apMac',
-      defaultSortOrder: 'ascend' as SortOrder
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (_, row) {
+        return transformMacaddressString(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -220,7 +227,7 @@ export function DeviceInventory () {
 
   const actions = [
     {
-      label: $t({ defaultMessage: 'Export To CSV' }),
+      label: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: () => ExportInventory(),
       disabled: (list && list.totalCount === 0)
     }

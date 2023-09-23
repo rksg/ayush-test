@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
+import { ArrowChevronLeft, ArrowChevronRight, LogOut } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
 
@@ -21,6 +21,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);
@@ -104,7 +105,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
             margin: 0;
-            &:hover { cursor: default; }
+            cursor: default;
             &:active { background: unset; }
           }
           &-open {
@@ -117,8 +118,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
-          &:last-child { margin-top: auto; }
-          &:only-child { margin-top: unset; }
+          &.menu-admin-item { margin-top: auto; }
         }
         .ant-menu-item {
           height: 48px;
@@ -144,6 +144,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             border-left: 2px solid var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
+          &.menu-admin-item { margin-top: auto; }
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
@@ -151,9 +152,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             `@media screen and (max-width: 1279px) {
               display: none;
             }`)}
-          }
-          &:last-child {
-            margin-top: auto;
           }
         }
         > div:first-child, .ant-layout-sider {
@@ -180,6 +178,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             padding-top: 8px;
             .ant-menu-item {
+              cursor: default;
               height: 40px;
               width: 100%;
               border-left: unset;
@@ -296,6 +295,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
         color: var(--acx-primary-white);
         padding: 0 20px 0 var(--acx-sider-width);
         font-size: var(--acx-body-4-font-size);
+        gap: var(--acx-header-item-margin);
       }
     }
 
@@ -372,6 +372,10 @@ export const Content = styled.div`
   }
 `
 
+export const IframeContent = styled(Content)`
+  margin: 15px 20px 25px 20px !important;
+`
+
 export const ResponsiveContent = styled.div`
   min-width: 100%;
   min-height: 100vh;
@@ -391,7 +395,7 @@ export const LeftHeaderContentWrapper = styled.div`
 
 export const RightHeaderContentWrapper = styled.div`
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   justify-content: end;
   flex-direction: row;
   align-items: center;
@@ -431,6 +435,17 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
     }
   }
 `
+const ButtonSolid = styled(Button)`
+  > svg {
+    stroke: var(--acx-neutrals-70);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  &:hover, &:focus {
+    > svg {
+      stroke: var(--acx-accents-orange-55);
+    }
+  }
+`
 export const LayoutUI = {
   Icon: styled.span`
     > svg {
@@ -462,17 +477,7 @@ export const LayoutUI = {
       stroke: var(--acx-primary-white);
     }
   `,
-  ButtonSolid: styled(Button)`
-    > svg {
-      stroke: var(--acx-neutrals-70);
-      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-    }
-    &:hover, &:focus {
-      > svg {
-        stroke: var(--acx-accents-orange-55);
-      }
-    }
-  `,
+  ButtonSolid,
   Divider: styled(AntDivider).attrs({ type: 'vertical' })`
     border-right: 1px solid var(--acx-neutrals-70);
     height: 32px;
@@ -485,6 +490,7 @@ export const LayoutUI = {
     font-size: var(--acx-body-4-font-size);
     font-weight: var(--acx-body-font-weight);
     text-align: right;
+    flex-shrink: 0;
     max-width: var(--acx-header-company-name-width);
     min-width: var(--acx-header-company-name-min-width);
     max-height: calc(2 * var(--acx-body-4-line-height));
@@ -494,5 +500,19 @@ export const LayoutUI = {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  `,
+  UserNameButton: styled(ButtonSolid)`
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: var(--acx-headline-5-font-weight-bold);
+    font-family: var(--acx-accent-brand-font);
+    font-size: var(--acx-headline-5-font-size);
+  `,
+  LogOutIcon: styled(LogOut)`
+    width: 16px;
+    height: 16px;
   `
 }

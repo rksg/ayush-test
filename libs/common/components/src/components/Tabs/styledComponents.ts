@@ -1,7 +1,7 @@
 import { Tabs as AntTabs, TabsProps }              from 'antd'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
-import type { TabsType } from '.'
+import { TabsType } from '.'
 
 const lineStyle = css`
   &.ant-tabs-top > .ant-tabs-nav {
@@ -53,18 +53,13 @@ const cardStyle = css`
 `
 
 const secondStyle = css`
-  ${cardStyle}
   &.ant-tabs-top > .ant-tabs-nav {
+    // height: calc(57px - 16px);
     position: sticky;
-    top: calc(
-      var(--acx-header-height) +
-      var(--acx-content-vertical-space) +
-      var(--acx-pageheader-height) +
-      (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
-    );
+    top: calc(var(--acx-pageheader-height) - 57px);
     background: var(--acx-primary-white);
     z-index: 6;
-    box-shadow: var(--acx-primary-white) 0px 10px 10px;
+    box-shadow: 0px 16px 0 var(--acx-primary-white);
   }
 `
 
@@ -134,10 +129,12 @@ const thirdStyle = css`
 const styles: Record<TabsType, FlattenSimpleInterpolation> = {
   line: lineStyle,
   card: cardStyle,
-  second: secondStyle,
   third: thirdStyle
 }
 
 export const Tabs = styled(AntTabs)<
-  TabsProps & { $type: TabsType }
->`${props => styles[props.$type]}`
+  TabsProps & { $type: TabsType, $stickyTop?: boolean }
+>`
+  ${props => styles[props.$type]}}
+  ${props => (props.$type === 'card' && props.$stickyTop) ? secondStyle : ''}}
+`

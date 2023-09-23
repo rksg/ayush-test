@@ -43,6 +43,21 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = oweTransFlag && oweMaster === false ?
           intl.$t({ defaultMessage: 'OWE' }) : ''
         break
+      case WlanSecurityEnum.WPA3:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA3' })
+        break
+      case WlanSecurityEnum.WPA2Enterprise:
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2 Enterprise' })
+        break
+      case WlanSecurityEnum.WEP:
+        _securityProtocol = intl.$t({ defaultMessage: 'WEP' })
+        break
+      case WlanSecurityEnum.Open:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open' })
+        break
+      case WlanSecurityEnum.OpenCaptivePortal:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open Captive Portal' })
+        break
     }
     return _securityProtocol
   }
@@ -160,6 +175,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
+      show: false,
       render: (data, row) =>
         getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
         noDataDisplay
@@ -220,7 +236,8 @@ const rowSelection = (supportOweTransition: boolean) => {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition && record?.isOweMaster === false)
+        || (supportOweTransition &&
+          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
@@ -303,7 +320,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
-      }
+      },
+      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -339,7 +357,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
           onOk: () => deleteNetwork({ params: { tenantId, networkId: selected.id } })
             .then(clearSelection)
         })
-      }
+      },
+      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
     }
   ]
 

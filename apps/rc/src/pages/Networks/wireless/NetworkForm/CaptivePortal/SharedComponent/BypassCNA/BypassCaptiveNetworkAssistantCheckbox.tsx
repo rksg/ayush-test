@@ -73,7 +73,7 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
       />
       <Tooltip title={$t({ defaultMessage: 'When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.' })}
         placement='bottom'>
-        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+        <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
     </div>
   )

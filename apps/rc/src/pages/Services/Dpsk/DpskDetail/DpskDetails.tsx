@@ -3,6 +3,7 @@ import { Path, useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                               from '@acx-ui/components'
 import { Features, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                             from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -17,6 +18,8 @@ import {
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
 
+import { MAX_PASSPHRASES_PER_TENANT } from '../constants'
+
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
@@ -25,11 +28,13 @@ export default function DpskDetails () {
   const { tenantId, activeTab, serviceId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { data: dpskDetail } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  // eslint-disable-next-line max-len
+  const { data: dpskDetail } = useGetDpskQuery({ params: { tenantId, serviceId, ...dpskNewConfigFlowParams } })
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
-    params: { tenantId, serviceId },
-    payload: { filters: {}, page: 1, pageSize: 75000 }
+    params: { tenantId, serviceId, ...dpskNewConfigFlowParams },
+    payload: { filters: {}, page: 1, pageSize: MAX_PASSPHRASES_PER_TENANT }
   }, {
     selectFromResult: ({ data }) => {
       return {
