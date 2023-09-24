@@ -1,4 +1,5 @@
 import { gql }                              from 'graphql-request'
+import _                                    from 'lodash'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { formatter }          from '@acx-ui/formatter'
@@ -11,7 +12,7 @@ type TileMapType = {
   format: ReturnType<typeof formatter>,
 }
 
-const tileMap: Record<string, TileMapType> = {
+export const tileMap: Record<string, TileMapType> = {
   apCount: {
     text: defineMessage({ defaultMessage: 'AP Count' }),
     url: '/reports/aps',
@@ -203,16 +204,26 @@ export const genNetworkSummaryInfoQuery = (
   return { document: queryGenerator(attributes), variables }
 }
 
+type NetworkSummaryResponse = {
+  network: { node: Record<string, string|number|null> }
+}
+
+type NetworkSummaryInfo = {
+  key: string,
+  value: string|number|null
+} & Omit<TileMapType, 'format'>
+
 export const { useNetworkSummaryInfoQuery } = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkSummaryInfo: build.query<
-      ({ key: string, value: string|number|null } & TileMapType)[], NetworkSummaryInfoProps>({
-        query: (payload) => (genNetworkSummaryInfoQuery(payload)),
-        transformResponse: (
-          response: { network: { node: Record<string, string|number|null> } }
-        ) => Object.entries(response.network.node)
-          .filter(([key]) => tileMap[key as keyof typeof tileMap])
-          .map(([key, value]) => ({ key, value, ...tileMap[key as keyof typeof tileMap] }))
-      })
+    networkSummaryInfo: build.query<NetworkSummaryInfo[], NetworkSummaryInfoProps>({
+      query: (payload) => (genNetworkSummaryInfoQuery(payload)),
+      transformResponse: (response: NetworkSummaryResponse) => Object.entries(response.network.node)
+        .filter(([key]) => tileMap[key as keyof typeof tileMap])
+        .map(([key, value]) => ({
+          key,
+          value,
+          ...(_.omit(tileMap[key as keyof typeof tileMap], 'format'))
+        }))
+    })
   })
 })

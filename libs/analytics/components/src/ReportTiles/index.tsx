@@ -7,8 +7,8 @@ import { Card, Loader }                              from '@acx-ui/components'
 import { TenantLink }                                from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter, NetworkPath } from '@acx-ui/utils'
 
-import { useNetworkSummaryInfoQuery } from './services'
-import { ReportTileWrapper, Tile }    from './styledComponents'
+import { useNetworkSummaryInfoQuery, tileMap } from './services'
+import { ReportTileWrapper, Tile }             from './styledComponents'
 
 export const ReportTile = ({ path }: { path: NetworkPath }) => {
   const { $t } = useIntl()
@@ -56,7 +56,7 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
           <Statistic
             title={$t(currentTile.text)}
             value={currentTile.value
-              ? currentTile.format(currentTile.value)
+              ? tileMap[currentTile.key].format(currentTile.value)
               : noDataDisplay}/>
         </TenantLink>}
       </ReportTileWrapper>
