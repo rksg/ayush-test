@@ -150,6 +150,17 @@ describe('crrmText', () => {
           }
         ],
         expectedText: 'Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Tx Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on' // eslint-disable-line max-len
+      },
+      {
+        config: [
+          {
+            channelMode: undefined,
+            channelWidth: undefined,
+            radio: '2.4',
+            autoCellSizing: undefined
+          }
+        ],
+        expectedText: 'Unknown and Unknown MHz for 2.4 GHz with static AP Tx Power'
       }
     ]
     testCases.forEach(({ config, expectedText }) => {

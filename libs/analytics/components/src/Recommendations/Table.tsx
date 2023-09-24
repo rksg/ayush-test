@@ -6,14 +6,13 @@ import { useIntl, defineMessage } from 'react-intl'
 import {
   defaultSort,
   dateSort,
-  sortProp,
-  IncidentFilter
+  sortProp
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { noDataDisplay }               from '@acx-ui/utils'
+import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
 import { RecommendationActions }  from './RecommendationActions'
 import {
@@ -46,12 +45,13 @@ export const crrmStateSort = (itemA: RecommendationListItem, itemB: Recommendati
   return defaultSort(stateA.order, stateB.order)
 }
 
-export function RecommendationTable ({ filters, showCrrm }:
-  { filters: IncidentFilter, showCrrm?: boolean }) {
+export function RecommendationTable (
+  { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
+) {
   const intl = useIntl()
   const { $t } = intl
 
-  const queryResults = useRecommendationListQuery({ ...filters, crrm: showCrrm })
+  const queryResults = useRecommendationListQuery({ ...pathFilters, crrm: showCrrm })
 
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
 

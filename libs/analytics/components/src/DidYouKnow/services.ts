@@ -1,9 +1,10 @@
 import { gql } from 'graphql-request'
+import _       from 'lodash'
 import moment  from 'moment'
 
-import { getFilterPayload }     from '@acx-ui/analytics/utils'
-import { dataApi }              from '@acx-ui/store'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { getFilterPayload }                 from '@acx-ui/analytics/utils'
+import { dataApi }                          from '@acx-ui/store'
+import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
 import { DidYouKnowData } from './facts'
 
@@ -19,31 +20,40 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     facts: build.query<
       DidYouKnowData[],
-      AnalyticsFilter
+      PathFilter | DashboardFilter
     >({
-      query: (payload) => ({
-        document: gql`
-        query Facts(
-          $path: [HierarchyNodeInput],
-          $start: DateTime,
-          $end: DateTime,
-          $filter: FilterInput
-        ) {
-          network(start: $start, end: $end, filter : $filter) {
-            hierarchyNode(path: $path) {
-              facts(n: 9, timeZone: "${moment.tz.guess()}") {
-                key values labels
+      query: (payload) => {
+        const useFilter = 'filter' in payload
+        let variables: Partial<PathFilter> | Partial<DashboardFilter>
+        if (useFilter) {
+          variables = {
+            startDate: payload.startDate,
+            endDate: payload.endDate,
+            ...getFilterPayload(payload)
+          }
+        } else {
+          variables = _.pick(payload, ['path', 'startDate', 'endDate'])
+        }
+        return {
+          document: gql`
+          query Facts(
+            ${useFilter ? '$filter: FilterInput' : ''},
+            $path: [HierarchyNodeInput]
+            $startDate: DateTime,
+            $endDate: DateTime
+          ) {
+            network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
+              hierarchyNode(path: $path) {
+                facts(n: 9, timeZone: "${moment.tz.guess()}") {
+                  key values labels
+                }
               }
             }
           }
+          `,
+          variables
         }
-        `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          ...getFilterPayload(payload)
-        }
-      }),
+      },
       transformResponse: (response: Response<DidYouKnowData[]>) =>
         response.network.hierarchyNode.facts
     })

@@ -21,7 +21,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { useDashboardFilter, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -47,8 +47,7 @@ export const useMonitorHeight = (minHeight: number): number => {
 export default function Dashboard () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { filters } = useDashboardFilter()
-  const { filters: analyticsFilter, path } = useAnalyticsFilter()
+  const { filters, pathFilters } = useAnalyticsFilter()
 
   const height = useMonitorHeight(536)
 
@@ -70,25 +69,25 @@ export default function Dashboard () {
     />
     <UI.Grid style={{ height }}>
       <div style={{ gridArea: 'a1' }}>
-        <ReportTile path={path} />
+        <ReportTile pathFilters={pathFilters} />
       </div>
       <div style={{ gridArea: 'a2' }}>
-        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
+        <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
       </div>
       <div style={{ gridArea: 'a3' }}>
-        <SLA filters={analyticsFilter}/>
+        <SLA filters={filters}/>
       </div>
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
       <div style={{ gridArea: 'b2' }}>
-        <AIDrivenRRM filters={filters} />
+        <AIDrivenRRM pathFilters={pathFilters} />
       </div>
       <div style={{ gridArea: 'c2' }}>
-        <AIOperations filters={filters} />
+        <AIOperations pathFilters={pathFilters} />
       </div>
       <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow filters={filters} maxFactPerSlide={3} maxSlideChar={290} />
+        <DidYouKnow filters={pathFilters} maxFactPerSlide={3} maxSlideChar={290} />
       </div>
       <div style={{ gridArea: 'd2' }}>
         <ChatWithMelissa />

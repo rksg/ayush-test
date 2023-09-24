@@ -3,21 +3,20 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Statistic } from 'antd'
 import { useIntl }   from 'react-intl'
 
-import { Card, Loader }                              from '@acx-ui/components'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
-import { noDataDisplay, useDateFilter, NetworkPath } from '@acx-ui/utils'
+import { Card, Loader }              from '@acx-ui/components'
+import { TenantLink }                from '@acx-ui/react-router-dom'
+import { noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { useNetworkSummaryInfoQuery, tileMap } from './services'
 import { ReportTileWrapper, Tile }             from './styledComponents'
 
-export const ReportTile = ({ path }: { path: NetworkPath }) => {
+export const ReportTile = ({ pathFilters }: { pathFilters: PathFilter }) => {
   const { $t } = useIntl()
 
   const [ selected, setSelected ] = useState<number>(0)
   const timer = useRef<ReturnType<typeof setInterval>>()
 
-  const { startDate, endDate } = useDateFilter()
-  const queryResults = useNetworkSummaryInfoQuery({ path, startDate, endDate })
+  const queryResults = useNetworkSummaryInfoQuery(pathFilters)
 
   const startTimer = useCallback((interval: number, numOfTile: number) => {
     timer.current && clearInterval(timer.current)
@@ -31,7 +30,7 @@ export const ReportTile = ({ path }: { path: NetworkPath }) => {
     return () => timer.current && clearInterval(timer.current)
   }, [queryResults.data?.length])
 
-  useEffect(() => setSelected(0), [path])
+  useEffect(() => setSelected(0), [pathFilters.path])
 
   const currentTile = queryResults.data?.[selected]
 

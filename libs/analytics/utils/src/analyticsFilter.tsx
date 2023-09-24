@@ -4,6 +4,7 @@ import { get }         from '@acx-ui/config'
 import { useLocation } from '@acx-ui/react-router-dom'
 import {
   AnalyticsFilter,
+  PathFilter,
   NodeType,
   NodeFilter,
   NodesFilter,
@@ -42,7 +43,7 @@ export function useAnalyticsFilter () {
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
-      path,
+      pathFilters: { ...dateFilter, path } as PathFilter,
       setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
   }, [dateFilter, pathname, read, write])
@@ -52,7 +53,7 @@ export const getFilterPayload = (
   { filter }: { filter: NodesFilter & SSIDFilter }
 ): { path: NetworkPath, filter: NodesFilter & SSIDFilter } => {
   return {
-    path: defaultNetworkPath, // to avoid error from legacy api
+    path: defaultNetworkPath, // needed mainly for hierarchyNode even when filter used
     filter
   }
 }

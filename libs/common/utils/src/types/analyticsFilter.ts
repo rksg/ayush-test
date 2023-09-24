@@ -1,7 +1,15 @@
 import {
   DateFilter,
   NodesFilter,
-  SSIDFilter
+  SSIDFilter,
+  NetworkPath
 } from '../index'
 
-export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
+export type AnalyticsFilter = DateFilter & {
+  filter: NodesFilter & SSIDFilter
+  mac?: string
+}
+
+export type PathFilter = DateFilter & {
+  path: NetworkPath
+}

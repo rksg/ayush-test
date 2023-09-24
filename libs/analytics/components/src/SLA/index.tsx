@@ -2,7 +2,7 @@ import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { KpiThresholdType, useApCountForNodeQuery } from '@acx-ui/analytics/services'
-import { kpiConfig, useAnalyticsFilter }            from '@acx-ui/analytics/utils'
+import { kpiConfig }                                from '@acx-ui/analytics/utils'
 import { Card, Loader, ProgressBarV2 }              from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { AnalyticsFilter }                     from '@acx-ui/utils'
@@ -42,9 +42,9 @@ const SLAComponent = ({ kpi, threshold, filters } : SLABarChartProps) => {
 
 export const SLA = (props: { filters: AnalyticsFilter }) => {
   const { $t } = useIntl()
+  const { filters } = props
 
   const kpis= [ 'connectionSuccess', 'timeToConnect', 'clientThroughput']
-  const { filters } = useAnalyticsFilter()
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
 
   return <Loader states={[kpiThresholdsQueryResults]}>
@@ -54,7 +54,7 @@ export const SLA = (props: { filters: AnalyticsFilter }) => {
           key={`SLA${index}`}
           kpi={kpi}
           threshold={thresholds[kpi as keyof KpiThresholdType]}
-          filters={props.filters}
+          filters={filters}
         />)}
     </Card>
   </Loader>

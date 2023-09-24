@@ -1,23 +1,23 @@
-import { IncidentFilter }                     from '@acx-ui/analytics/utils'
+import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
   waitForElementToBeRemoved
-}                    from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+} from '@acx-ui/test-utils'
+import { PathFilter, DateRange } from '@acx-ui/utils'
 
 import { crrmListResult } from '../Recommendations/__tests__/fixtures'
 import { api }            from '../Recommendations/services'
 
 import { AIDrivenRRM } from '.'
 
-const filters : IncidentFilter = {
+const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   range: DateRange.last24Hours,
-  filter: {}
+  path: defaultNetworkPath
 }
 
 describe('AIDrivenRRM dashboard', () => {
@@ -27,7 +27,7 @@ describe('AIDrivenRRM dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: crrmListResult
     })
-    render(<AIDrivenRRM filters={filters} />, {
+    render(<AIDrivenRRM pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })
@@ -49,7 +49,7 @@ describe('AIDrivenRRM dashboard', () => {
         recommendations: []
       }
     })
-    render(<AIDrivenRRM filters={filters} />, {
+    render(<AIDrivenRRM pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })

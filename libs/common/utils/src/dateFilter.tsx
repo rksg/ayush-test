@@ -1,12 +1,9 @@
 import { useMemo } from 'react'
 
-import { DateRange, getDateRangeFilter } from './dateUtil'
-import { useEncodedParameter }           from './encodedParameter'
+import { DateRangeFilter, DateRange, getDateRangeFilter } from './dateUtil'
+import { useEncodedParameter }                            from './encodedParameter'
 
-export interface DateFilter {
-  range: DateRange
-  startDate: string
-  endDate: string
+export interface DateFilter extends DateRangeFilter {
   initiated?: number // seconds
 }
 

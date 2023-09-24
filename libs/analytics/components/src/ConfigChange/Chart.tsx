@@ -31,12 +31,12 @@ function BasicChart (props: {
     selected, onClick, chartZoom, setChartZoom, setInitialZoom,
     legend, setLegend, setSelectedData, setPagination
   } = props
-  const { path } = useAnalyticsFilter()
+  const { pathFilters } = useAnalyticsFilter()
   const legendList = Object.keys(legend).filter(key => legend[key])
   const queryResults = useConfigChangeQuery({
-    path,
-    start: startDate.toISOString(),
-    end: endDate.toISOString()
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
     data: filterData(queryResults.data ?? [], kpiFilter, legendList)

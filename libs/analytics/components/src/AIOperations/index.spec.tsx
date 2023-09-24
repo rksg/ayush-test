@@ -1,12 +1,12 @@
-import { IncidentFilter }                     from '@acx-ui/analytics/utils'
+import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
   waitForElementToBeRemoved
-}                    from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+} from '@acx-ui/test-utils'
+import { PathFilter, DateRange } from '@acx-ui/utils'
 
 import { api } from '../Recommendations/services'
 
@@ -14,11 +14,11 @@ import { expectedData } from './__tests__/fixtures'
 
 import { AIOperations } from '.'
 
-const filters : IncidentFilter = {
+const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   range: DateRange.last24Hours,
-  filter: {}
+  path: defaultNetworkPath
 }
 
 describe('AIOperations dashboard', () => {
@@ -28,7 +28,7 @@ describe('AIOperations dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: expectedData
     })
-    render(<AIOperations filters={filters} />, {
+    render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })
@@ -49,7 +49,7 @@ describe('AIOperations dashboard', () => {
         recommendations: []
       }
     })
-    render(<AIOperations filters={filters} />, {
+    render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })

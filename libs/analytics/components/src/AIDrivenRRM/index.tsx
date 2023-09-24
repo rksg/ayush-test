@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Card, NoData }          from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import type { PathFilter }               from '@acx-ui/utils'
 
 import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                  from '../Recommendations/styledComponents'
@@ -12,15 +12,15 @@ import * as UI from './styledComponents'
 export { AIDrivenRRMWidget as AIDrivenRRM }
 
 type AIDrivenRRMProps = {
-  filters: AnalyticsFilter
+  pathFilters: PathFilter
 }
 
 function AIDrivenRRMWidget ({
-  filters
+  pathFilters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...filters, n: 5 })
+  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 })
   const data = queryResults?.data
   const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const noData = data?.length === 0

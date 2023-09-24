@@ -8,7 +8,12 @@ import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
 
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
-  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: string }>
+  | Array<{
+    radio: string,
+    channelMode: string | undefined,
+    channelWidth: string | undefined,
+    autoCellSizing: string | undefined
+  }>
 
 const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
 const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'

@@ -2,9 +2,10 @@
 import '@testing-library/jest-dom'
 import { defineMessage } from 'react-intl'
 
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import { DateRange, NetworkPath }                                          from '@acx-ui/utils'
+import { PathFilter, DateRange }                                           from '@acx-ui/utils'
 
 import { crrmListResult, recommendationListResult } from './__tests__/fixtures'
 import { crrmStates }                               from './config'
@@ -97,9 +98,8 @@ describe('Recommendation services', () => {
     startDate: '2023-06-10T00:00:00+08:00',
     endDate: '2023-06-17T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
-    filter: {}
-  } as const
+    path: defaultNetworkPath
+  } as PathFilter
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())

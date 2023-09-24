@@ -32,7 +32,12 @@ describe('useAnalyticsFilter', () => {
       endDate: '2022-01-01T00:01:00+00:00',
       range: 'Last 24 Hours'
     })
-    expect(result.current.path).toEqual(defaultNetworkPath)
+    expect(result.current.pathFilters).toEqual({
+      path: defaultNetworkPath,
+      startDate: '2021-12-31T00:01:00+00:00',
+      endDate: '2022-01-01T00:01:00+00:00',
+      range: 'Last 24 Hours'
+    })
   })
 
   const filter = {
@@ -46,10 +51,10 @@ describe('useAnalyticsFilter', () => {
 
   it('should render correctly', () => {
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
+      const { filters, pathFilters } = useAnalyticsFilter()
       return (
         <div>
-          {JSON.stringify(filters)} | {JSON.stringify(path)}
+          {JSON.stringify(filters)} | {JSON.stringify(pathFilters)}
         </div>
       )
     }
@@ -68,14 +73,14 @@ describe('useAnalyticsFilter', () => {
   })
   it('changes filter value', () => {
     function Component () {
-      const { filters, path, raw, setNetworkPath } = useAnalyticsFilter()
+      const { filters, pathFilters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
         setNetworkPath([], raw)
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
       return (
         <div>
-          {JSON.stringify(filters)} | {JSON.stringify(path)}
+          {JSON.stringify(filters)} | {JSON.stringify(pathFilters)}
         </div>
       )
     }
@@ -94,8 +99,8 @@ describe('useAnalyticsFilter', () => {
   })
   it('gets initial value from search parameters', () => {
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -117,8 +122,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -139,8 +144,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -162,8 +167,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -184,8 +189,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -206,8 +211,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -229,8 +234,8 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
@@ -247,8 +252,8 @@ describe('useAnalyticsFilter', () => {
       nodes: [['venueId1']]
     }))
     function Component () {
-      const { filters, path } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
