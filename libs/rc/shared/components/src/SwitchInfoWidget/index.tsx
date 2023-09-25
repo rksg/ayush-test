@@ -15,9 +15,9 @@ import {
   getPoeUsage,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }                            from '@acx-ui/utils'
+import { CommonUrlsInfo, SwitchStatusEnum, SWITCH_DISCONNECTED, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                                                 from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 
@@ -201,9 +201,7 @@ export function SwitchInfoWidget (props:{
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '6px' }}>
                   {isDisconnected
-                    ? <UI.DisconnectedText>{
-                      $t({ defaultMessage: 'Switch disconnected' })
-                    }</UI.DisconnectedText>
+                    ? <UI.DisconnectedText>{$t(SWITCH_DISCONNECTED)}</UI.DisconnectedText>
                     : <UI.TenantLinkBlack
                     // eslint-disable-next-line max-len
                       to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
@@ -229,9 +227,7 @@ export function SwitchInfoWidget (props:{
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '6px' }}>
                   {isDisconnected
-                    ? <UI.DisconnectedText>{
-                      $t({ defaultMessage: 'Switch disconnected' })
-                    }</UI.DisconnectedText>
+                    ? <UI.DisconnectedText>{$t(SWITCH_DISCONNECTED)}</UI.DisconnectedText>
                     : <UI.LargeText>
                       {poeUsage?.used}W/{poeUsage?.total}W
                       <Typography.Title level={3}>{
