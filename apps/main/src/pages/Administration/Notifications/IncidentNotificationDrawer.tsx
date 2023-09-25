@@ -3,12 +3,38 @@ import { useState, useEffect } from 'react'
 import { Drawer, Button }         from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { AnalyticsPreferences, IncidentStates, useSetIncidentNotificationMutation } from '@acx-ui/analytics/services'
-import { useGetPreferencesQuery }                                                   from '@acx-ui/analytics/services'
-import { showToast, Loader }                                                        from '@acx-ui/components'
-import { getUserProfile }                                                           from '@acx-ui/user'
+import {
+  AnalyticsPreferences,
+  IncidentStates,
+  useSetIncidentNotificationMutation,
+  RecommendationStates
+} from '@acx-ui/analytics/services'
+import { useGetPreferencesQuery } from '@acx-ui/analytics/services'
+import { showToast, Loader }      from '@acx-ui/components'
+import { getUserProfile }         from '@acx-ui/user'
 
 import * as UI from './styledComponents'
+
+type ListLabel = {
+  label: string
+  key: string
+  checked: boolean
+}
+
+const getRecommendationPreferences = (pref?: AnalyticsPreferences): RecommendationStates => {
+  const base: RecommendationStates = {
+    crrm: false,
+    aiOps: false
+  }
+  if (!pref || !pref.recommendation) return base
+  const { recommendation } = pref
+  Object.entries(recommendation).forEach(([key, method]) => {
+    if (method.includes('email')) {
+      base[key as unknown as keyof RecommendationStates] = true
+    }
+  })
+  return base
+}
 
 const getIncidentsPreferences = (pref?: AnalyticsPreferences): IncidentStates => {
   const base: IncidentStates = {
@@ -27,10 +53,51 @@ const getIncidentsPreferences = (pref?: AnalyticsPreferences): IncidentStates =>
   return base
 }
 
+const useIncidentsList = (state: IncidentStates): ListLabel[] => {
+  const { $t } = useIntl()
+  const labels: Record<keyof IncidentStates, ListLabel['label']> = {
+    P1: $t({ defaultMessage: 'P1 Incidents' }),
+    P2: $t({ defaultMessage: 'P2 Incidents' }),
+    P3: $t({ defaultMessage: 'P3 Incidents' }),
+    P4: $t({ defaultMessage: 'P4 Incidents' })
+  }
+  return Object.entries(state).map(([key, checked]) => ({
+    key,
+    checked,
+    label: labels[key as keyof IncidentStates]
+  }))
+}
+
+const useRecommendationList = (state: RecommendationStates): ListLabel[] => {
+  const { $t } = useIntl()
+  const labels: Record<keyof RecommendationStates, ListLabel['label']> = {
+    crrm: $t({ defaultMessage: 'Cloud RRM' }),
+    aiOps: $t({ defaultMessage: 'AI Operations' })
+  }
+  return Object.entries(state).map(([key, checked]) => ({
+    key,
+    checked,
+    label: labels[key as keyof RecommendationStates]
+  }))
+}
+
 const getSuccessMsg = (success?: boolean) => {
   return success
     ? defineMessage({ defaultMessage: 'Incident notifications updated succesfully.' })
     : defineMessage({ defaultMessage: 'Update failed, please try again later.' })
+}
+
+function OptionsList ({ labels, setState }:
+  { labels: ListLabel[], setState: CallableFunction }) {
+  return <UI.List bordered={false}>
+    {labels.map((({ label, key, checked }) => <UI.List.Item key={key}>
+      <UI.Checkbox
+        checked={checked}
+        onChange={(e) => setState((s: { [x: string]: boolean }) =>
+          ({ ...s, [key]: e.target.checked }))} />
+      {label}
+    </UI.List.Item>))}
+  </UI.List>
 }
 
 export const IncidientNotificationDrawer = ({
@@ -46,18 +113,17 @@ export const IncidientNotificationDrawer = ({
   const query = useGetPreferencesQuery({
     tenantId: tenantId
   })
-  const initialPref = getIncidentsPreferences(query.data)
-  const [state, setState] = useState<IncidentStates>(initialPref)
+  const initIncidentPref = getIncidentsPreferences(query.data)
+  const [state, setState] = useState<IncidentStates>(initIncidentPref)
+  const initRecPref = getRecommendationPreferences(query.data)
+  const [recState, setRecState] = useState<RecommendationStates>(initRecPref)
   useEffect(() => {
     setState(getIncidentsPreferences(query.data))
+    setRecState(getRecommendationPreferences(query.data))
   }, [query.data])
   const [updatePrefrences] = useSetIncidentNotificationMutation()
-  const priorities = [
-    { label: $t({ defaultMessage: 'P1 Incidents' }), key: 'P1', checked: state.P1 },
-    { label: $t({ defaultMessage: 'P2 Incidents' }), key: 'P2', checked: state.P2 },
-    { label: $t({ defaultMessage: 'P3 Incidents' }), key: 'P3', checked: state.P3 },
-    { label: $t({ defaultMessage: 'P4 Incidents' }), key: 'P4', checked: state.P4 }
-  ]
+  const priorities = useIncidentsList(state)
+  const recommendations = useRecommendationList(recState)
   const title =
     $t({ defaultMessage: 'Select the incident priority levels to receive notifications about:' })
   const afterMsg =
@@ -65,7 +131,7 @@ export const IncidientNotificationDrawer = ({
   const onClose = () => setShowDrawer(false)
   const onApply = () => {
     updatePrefrences({
-      state,
+      states: [state, recState],
       tenantId,
       preferences: query.data!
     })
@@ -102,15 +168,8 @@ export const IncidientNotificationDrawer = ({
     <Loader states={[query]}>
       <UI.IncidentNotificationWrapper>
         {title}
-        <UI.List bordered={false}>
-          {priorities.map((({ label, key, checked }) => <UI.List.Item key={key}>
-            <UI.Checkbox
-              checked={checked}
-              onChange={(e) => setState(s => ({ ...s, [key]: e.target.checked }))}
-            />
-            {label}
-          </UI.List.Item>))}
-        </UI.List>
+        <OptionsList labels={priorities} setState={setState} />
+        <OptionsList labels={recommendations} setState={setRecState} />
         <UI.AfterMsg>{afterMsg}</UI.AfterMsg>
       </UI.IncidentNotificationWrapper>
     </Loader>
