@@ -16,6 +16,7 @@ import { MFACheck }     from './pages/Layout/MFACheck'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import ReportsBase      from './pages/Reports'
+import { RWGForm }      from './pages/RWG/RWGForm'
 import { RWGTable }     from './pages/RWG/RWGTable'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
@@ -135,8 +136,8 @@ function RWGRoutes () {
     <Route path='/:tenantId/t/ruckus-wan-gateway'>
       <Route index element={<RWGTable />} />
       <Route path='*' element={<PageNotFound />} />
-      {/* <Route path='add' element={<VenuesForm />} /> */}
-      {/* <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} /> */}
+      <Route path='add' element={<RWGForm />} />
+      <Route path=':gatewayId/:action' element={<RWGForm />} />
     </Route>
   )
 }

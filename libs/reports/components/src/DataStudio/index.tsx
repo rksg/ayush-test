@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import { IFrame }                             from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
+import {  useLocaleContext }                  from '@acx-ui/utils'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
@@ -19,6 +21,13 @@ export function DataStudio () {
   const [url, setUrl] = useState<string>()
   const [authenticate] = useAuthenticateMutation()
 
+  const defaultLocale = 'en'
+  const i18nDataStudioEnabled = useIsSplitOn(Features.I18N_DATA_STUDIO_TOGGLE)
+  const localeContext = useLocaleContext()
+  const locale = i18nDataStudioEnabled
+    ? localeContext.messages?.locale ?? defaultLocale
+    : defaultLocale
+
   useEffect(() => {
     const { firstName, lastName, email } = get('IS_MLISA_SA')
       ? getUserProfile()
@@ -31,13 +40,16 @@ export function DataStudio () {
           lastName,
           email
         }
+      },
+      params: {
+        locale
       }
     })
       .unwrap()
       .then(url => {
         setUrl(url)
       })
-  }, [authenticate])
+  }, [authenticate, locale])
 
   return (
     <div data-testid='data-studio'

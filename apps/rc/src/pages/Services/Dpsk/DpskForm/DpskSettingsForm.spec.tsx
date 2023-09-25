@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed }                        from '@acx-ui/feature-toggle'
-import { NewDpskBaseUrl, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
+import { useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { DpskUrls, RulesManagementUrlsInfo }                 from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockedDpskList, mockedGetFormData, mockedPolicySet } from './__tests__/fixtures'
 import DpskSettingsForm                                       from './DpskSettingsForm'
@@ -15,7 +15,7 @@ describe('DpskSettingsForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        NewDpskBaseUrl,
+        DpskUrls.getDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
       )
     )
@@ -24,10 +24,9 @@ describe('DpskSettingsForm', () => {
   it('should render the form with the giving data', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldsValue(transferSaveDataToFormFields(mockedGetFormData))
       return form
     })
-
-    formRef.current.setFieldsValue(transferSaveDataToFormFields(mockedGetFormData))
 
     render(
       <Provider>
@@ -43,15 +42,19 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should validate the service name', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <Form form={formRef.current}><DpskSettingsForm /></Form>
       </Provider>
     )
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedDpskList.content[0].name)
-    nameInput.blur()
+    fireEvent.blur(nameInput)
 
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('alert')).toHaveTextContent('DPSK service with that name already exists')
