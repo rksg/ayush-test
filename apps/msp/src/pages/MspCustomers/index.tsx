@@ -643,7 +643,7 @@ export function MspCustomers () {
           visible={drawerScheduleFirmwareVisible}
           tenantIds={selEcTenantIds}
           setVisible={setDrawerScheduleFirmwareVisible}
-          setSelected={() => {}}
+          // setSelected={() => {}}
         />}
       </Loader>
     )

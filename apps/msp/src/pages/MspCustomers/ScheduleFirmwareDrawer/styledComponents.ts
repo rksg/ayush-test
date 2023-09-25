@@ -27,13 +27,13 @@ export const BannerType = styled.div`
 `
 
 export const DateContainer = styled.div`
-  height: auto;
-  display: grid;
-  grid-template-columns: 180px 280px;
-  padding: 10px;
-  background-color: #f7f7f7;
+  // height: auto;
+  // display: grid;
+  // grid-template-columns: 180px 280px;
+  // padding: 10px;
+  // background-color: #f7f7f7;
   label {
-    margin-top: 4px;
+    margin-bottom: 14px;
   }
 `
 
