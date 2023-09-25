@@ -2,9 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CreateDpskPassphrasesFormFields, DpskUrls, NewDpskBaseUrlWithId } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor }                 from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { CreateDpskPassphrasesFormFields, DpskUrls }       from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockedCloudpathDpsk,
@@ -14,6 +15,18 @@ import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
 
 describe('AddDpskPassphrasesForm', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCloudpathDpsk }))
+      ),
+      rest.get(
+        DpskUrls.getPassphrase.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseMultipleDevices }))
+      )
+    )
+  })
   it('should hide the MAC Address field when selecting Unlimited option', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
@@ -33,16 +46,8 @@ describe('AddDpskPassphrasesForm', () => {
   })
 
   it('should show the MAC Address field and do validation', async () => {
-    mockServer.use(
-      rest.get(
-        NewDpskBaseUrlWithId,
-        (req, res, ctx) => res(ctx.json({ ...mockedCloudpathDpsk }))
-      )
-    )
-
     const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-      return form
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
     })
 
     render(
@@ -61,16 +66,8 @@ describe('AddDpskPassphrasesForm', () => {
   })
 
   it('should disallow decreasing the number of devices when editing', async () => {
-    mockServer.use(
-      rest.get(
-        DpskUrls.getPassphrase.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseMultipleDevices }))
-      )
-    )
-
     const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-      return form
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
     })
 
     render(
@@ -87,9 +84,50 @@ describe('AddDpskPassphrasesForm', () => {
     const existingNumberOfDevices = mockedDpskPassphraseMultipleDevices.numberOfDevices
     await userEvent.clear(numberOfDevicesElem)
     await userEvent.type(numberOfDevicesElem, (existingNumberOfDevices - 1).toString())
+
+    // eslint-disable-next-line max-len
+    const alertMessage = `Please enter a number equal to or greater than the existing value: ${existingNumberOfDevices}`
+
     await waitFor(() => {
       // eslint-disable-next-line max-len
-      expect(screen.queryByRole('alert')).toHaveTextContent(`Please enter a number equal to or greater than the existing value: ${existingNumberOfDevices}`)
+      const targetAlert = screen.queryAllByRole('alert').find(element => element.textContent?.includes(alertMessage))
+      expect(targetAlert).toBeVisible()
     })
+  })
+
+  it('should validate the contact email address', async () => {
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.CLOUDPATH_BETA)
+
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    await userEvent.click(await screen.findByLabelText('Contact Email Address'))
+
+    jest.mocked(useIsTierAllowed).mockReset()
+  })
+
+  it('should remove the mac address when new flow DPSK feature flag is open', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    expect(screen.queryByText(/mac address/i)).toBeNull()
   })
 })

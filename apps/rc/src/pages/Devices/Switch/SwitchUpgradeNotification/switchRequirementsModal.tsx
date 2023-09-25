@@ -13,8 +13,10 @@ export function SwitchRequirementsModal (props: {
   }
   const switchImgUrl = 'https://support.ruckuswireless.com/software_terms_and_conditions/3657-ruckus-icx-fastiron-09-0-10f-ga-software-release-zip'
   const usbUpgradeVedioUrl = 'https://www.youtube.com/watch?v=wDdeUBzwfNI'
-  const upgradeProcessUrl = 'https://docs.commscope.com/bundle/fastiron-08092-upgradeguide/page/GUID-7C682CC8-B707-4B52-9A51-B49BF9985AA3.html'
-  const imageDownloadUseUsb = 'https://docs.commscope.com/en-US/bundle/fastiron-08092-upgradeguide/page/GUID-A66595C5-FDA6-4053-AC95-A122C4B28AC3.html'
+  const upgradeProcessUrl = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-C8148B03-D98C-4F4D-939C-9111CECB0601.html'
+  const imageDownloadUseUsb = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-6848A0EE-1480-4A6A-9A99-08DD64F969DF.html'
+  const firmwareVersion = '09.0.10f'
+
   return (
 
     <Modal
@@ -38,10 +40,10 @@ export function SwitchRequirementsModal (props: {
       <Subtitle level={4}>
         {$t({ defaultMessage: 'Upgrading the switch' })}</Subtitle>
       <body>
-        {$t({ defaultMessage: 'For switches that do not have a ‘cloud ready label’ or switches running version older than FastIron 08.0.90d, use one of the following methods to upgrade the switches to 09.0.10f ( UFI router image for factory default switches).' })}
+        {$t({ defaultMessage: 'For switches that do not have a ‘cloud ready label’ or switches running version older than FastIron 08.0.90d, use one of the following methods to upgrade the switches to {firmwareVersion} ( UFI router image for factory default switches).' }, { firmwareVersion })}
         <UI.List>
           <UI.ListItems>
-            {$t({ defaultMessage: 'Download FastIron 09.0.10f firmware (use UFI router image) from the following link:' })}
+            {$t({ defaultMessage: 'Download FastIron {firmwareVersion} firmware (use UFI router image) from the following link:' }, { firmwareVersion })}
             <br />
             <a target='_blank'
               href={switchImgUrl}
@@ -94,7 +96,8 @@ export function SwitchRequirementsModal (props: {
           </UI.ListItems>
           <UI.OrderList type={'a'}>
             <UI.ListItems>
-              {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to 09.0.10f UFI router image' })}
+              {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to {firmwareVersion} UFI router image' },
+                { firmwareVersion })}
               <br />
               {$t({ defaultMessage: 'Example:' })}
               <UI.CommandRectengle>
@@ -179,7 +182,8 @@ export function SwitchRequirementsModal (props: {
       </UI.DescriptionBody>
 
       <UI.DescriptionBody style={{ color: cssStr('--acx-semantics-red-60') }}>
-        {$t({ defaultMessage: 'Switches must be kept on 09.0.10f release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically.' })}
+        {$t({ defaultMessage: 'Switches must be kept on {firmwareVersion} release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically.' },
+          { firmwareVersion })}
       </UI.DescriptionBody>
 
     </Modal>

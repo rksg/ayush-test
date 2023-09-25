@@ -54,7 +54,7 @@ const useTabs = () : Tab[] => {
     healthTab,
     serviceGuardTab,
     ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : []),
-    ...(get('IS_MLISA_SA') || videoCallQoeEnabled ? [videoCallQoeTab] : [])
+    ...(!get('IS_MLISA_SA') && videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 

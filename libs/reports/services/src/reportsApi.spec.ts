@@ -67,7 +67,12 @@ describe('reportsApi', () => {
     expect(response).toEqual(guestTokenReponse.token)
   })
   it('should return redirect url', async () => {
-    const response = await store.dispatch(reportsApi.endpoints.authenticate.initiate({})).unwrap()
+    const response = await store.dispatch(
+      reportsApi.endpoints.authenticate.initiate({
+        params: {
+          locale: 'en'
+        }
+      })).unwrap()
     expect(response).toEqual(AuthenticateResponse.redirect_url)
   })
 })

@@ -29,7 +29,7 @@ describe('useTenantLink', () => {
       () => useTenantLink({ pathname: undefined }),
       { wrapper: getWrapper('') }
     )
-    expect(result.current.pathname).toEqual('/analytics/next')
+    expect(result.current.pathname).toEqual('/ai')
   })
 
   it('returns path without "analytics" for MLISA', () => {
@@ -38,7 +38,7 @@ describe('useTenantLink', () => {
       () => useTenantLink('/analytics/networks'),
       { wrapper: getWrapper('') }
     )
-    expect(result.current.pathname).toEqual('/analytics/next/networks')
+    expect(result.current.pathname).toEqual('/ai/networks')
   })
 
   it('returns pathname without "analytics" for MLISA', () => {
@@ -47,7 +47,7 @@ describe('useTenantLink', () => {
       () => useTenantLink({ pathname: '/analytics/networks' }),
       { wrapper: getWrapper('') }
     )
-    expect(result.current.pathname).toEqual('/analytics/next/networks')
+    expect(result.current.pathname).toEqual('/ai/networks')
   })
   it('returns path prepend with :tenantId/t', () => {
     const { result } = renderHook(
