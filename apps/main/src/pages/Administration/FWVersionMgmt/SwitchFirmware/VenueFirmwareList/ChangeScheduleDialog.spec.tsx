@@ -130,11 +130,12 @@ describe('Firmware Venues Table', () => {
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     fireEvent.click(changeButton)
 
-    const article = screen.getByRole('article')
-    expect(article.innerHTML).toBe('Choose which version to update the venue to:')
+    expect(screen.getByRole('heading', {
+      name: /Choose which version to update the venue to:/i
+    })).toBeVisible()
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(notCheckedOptions).toHaveLength(5)
+    expect(notCheckedOptions).toHaveLength(7)
 
     await screen.findByText('Selected time will apply to each venue according to own time-zone')
     expect(screen.getByRole('button', { name: /Save/i })).toBeDisabled()
@@ -162,7 +163,7 @@ describe('Firmware Venues Table', () => {
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
     // eslint-disable-next-line max-len
     const versionNotCheckedOptions = notCheckedOptions.filter(o => !(o as HTMLInputElement).value.includes('-'))
-    expect(versionNotCheckedOptions).toHaveLength(5)
+    expect(versionNotCheckedOptions).toHaveLength(7)
 
     const checkedOptions = await screen.findAllByRole('radio', { hidden: false, checked: true })
     // eslint-disable-next-line max-len
@@ -197,10 +198,11 @@ describe('Firmware Venues Table', () => {
     const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
     fireEvent.click(changeButton)
 
-    const article = await screen.findAllByRole('article')
-    expect(article).toHaveLength(2)
-    expect(article[0].innerHTML).toBe('Firmware available for ICX-8200 Series (4 switches)')
-    // eslint-disable-next-line max-len
-    expect(article[1]?.innerHTML).toBe('Firmware available for ICX 7150/7550/7650/7850 Series Models (3 switches)')
+    expect(screen.getByRole('heading', {
+      name: /firmware available for icx 7150\/7550\/7650\/7850 series \(3 switches\)/i
+    })).toBeVisible()
+    expect(screen.getByRole('heading', {
+      name: /firmware available for icx 8200 series \(4 switches\)/i
+    })).toBeVisible()
   })
 })
