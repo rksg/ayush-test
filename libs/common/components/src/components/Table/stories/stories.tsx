@@ -13,6 +13,7 @@ import { MultiSelectTable }        from './MultiSelectTable'
 import { NoSelectedBarTable }      from './NoSelectedBarTable'
 import { SelectAllPagesTable }     from './SelectAllPagesTable'
 import { SingleSelectTable }       from './SingleSelectTable'
+import { TableNoStickyPagination } from './TableNoStickyPagination'
 import { TableWithIconButton }     from './TableWithIconButton'
 
 storiesOf('Table', module)
@@ -30,4 +31,5 @@ storiesOf('Table', module)
   .add('Form Table', FormTable)
   .add('Group Table', GroupTable)
   .add('Table With Icon Button', TableWithIconButton)
+  .add('Table Without stickyPagination', TableNoStickyPagination)
 export {}

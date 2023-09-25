@@ -174,7 +174,6 @@ const SnmpAgentV2Table = (props: SnmpAgentV2TableProps) => {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
-        stickyPagination={false}
       />
     </>
   )

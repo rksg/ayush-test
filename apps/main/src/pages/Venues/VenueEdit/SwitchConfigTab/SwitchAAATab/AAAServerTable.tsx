@@ -325,7 +325,6 @@ export const AAAServerTable = (props: {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        stickyPagination={false}
         actions={filterByAccess(actions)}
         rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
         rowSelection={cliApplied || !hasAccess()
