@@ -32,13 +32,14 @@ describe('Threshold Histogram chart', () => {
   it('should return correct intl for ACX', async () => {
     expect(getDisabledToolTip(true, undefined)).toEqual(defineMessage({
       defaultMessage:
-      'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.'
+      'Cannot save threshold at organization level. Please select a Venue or AP to set a threshold.'
     }))
   })
   it('should return correct intl for RA', async () => {
     expect(getDisabledToolTip(true, 'true')).toEqual(defineMessage({
       defaultMessage:
-      'Cannot save threshold at network level. Please select a Zone or AP to set a threshold.'
+      // eslint-disable-next-line max-len
+      'Cannot save threshold at organization level. Please select a SZ or any other network node to set a threshold.'
     }))
   })
 })
