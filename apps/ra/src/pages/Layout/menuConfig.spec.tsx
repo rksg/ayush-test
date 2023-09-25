@@ -1,5 +1,5 @@
-import { useUserProfileContext } from '@acx-ui/analytics/utils'
-import { renderHook }            from '@acx-ui/test-utils'
+import { getUserProfile } from '@acx-ui/analytics/utils'
+import { renderHook }     from '@acx-ui/test-utils'
 
 
 import { useMenuConfig } from './menuConfig'
@@ -17,7 +17,7 @@ jest.mock('react-intl', () => {
 jest.mock('@acx-ui/analytics/utils', () => (
   {
     ...jest.requireActual('@acx-ui/analytics/utils'),
-    useUserProfileContext: jest.fn()
+    getUserProfile: jest.fn()
   }))
 const defaultMockPermissions = {
   'view-analytics': true,
@@ -29,63 +29,63 @@ const defaultMockPermissions = {
   'manage-occupancy': true,
   'manage-label': true,
   'manage-tenant-settings': true,
-  'manage-config-recommendation': true
+  'manage-config-recommendation': true,
+  'franchisor': true
 }
-const mockSettings = { franchisor: true }
 const defaultMockUserProfile = {
-  data: {
-    accountId: 'accountId',
-    tenants: [
-      {
-        id: 'accountId',
-        permissions: defaultMockPermissions,
-        settings: mockSettings
-      },
-      {
-        id: 'accountId2',
-        permissions: defaultMockPermissions,
-        settings: mockSettings
-      }
-    ]
-  }
+  accountId: 'accountId',
+  selectedTenant: {
+    permissions: defaultMockPermissions,
+    id: 'accountId'
+  },
+  tenants: [
+    {
+      id: 'accountId',
+      permissions: defaultMockPermissions
+    },
+    {
+      id: 'accountId2',
+      permissions: defaultMockPermissions
+    }
+  ]
 }
+
 describe('useMenuConfig', () => {
   it('should return an array of menu items based on user permissions', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should return nothing for empty/no user permission', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Analytics-related menu items', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
       'view-analytics': false
     }
     const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
-          }
-        ]
-      }
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
     }
+
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Config Change, Service Validation & Video Call QoE', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
       'manage-service-guard': false,
@@ -93,102 +93,101 @@ describe('useMenuConfig', () => {
       'manage-config-recommendation': false
     }
     const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
-          }
-        ]
-      }
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
     }
+
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Administration menu item', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
       'manage-mlisa': false,
-      'manage-label': false
+      'manage-label': false,
+      'franchisor': false
     }
     const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions,
-            settings: { franchisor: false }
-          }
-        ]
-      }
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
     }
+
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Administration-related menu items for manage-mlisa', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
       'manage-mlisa': false
     }
     const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
-          }
-        ]
-      }
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Administration-related menu items for manage-label', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
       'manage-label': false
     }
     const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
-          }
-        ]
-      }
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
     }
+
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()
   })
   it('should not return Administration-related menu items for franchisor setting', () => {
-    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
-    const mockUserProfile = {
-      data: {
-        accountId: 'accountId',
-        tenants: [
-          {
-            id: 'accountId',
-            permissions: defaultMockPermissions,
-            settings: { franchisor: false }
-          }
-        ]
-      }
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    const mockPermissions = {
+      ...defaultMockPermissions,
+      franchisor: false
     }
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
+    }
+
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toMatchSnapshot()

@@ -439,6 +439,62 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   }
 } as unknown as RecommendationDetails
 
+export const mockedRecommendationCRRMApplied = { // this fixture is used to test applied crrm recommendation
+  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
+  code: 'c-crrm-channel5g-auto',
+  status: 'applied',
+  appliedTime: '2023-06-25T00:00:25.772Z',
+  originalValue: [
+    {
+      channelMode: 'CHANNEL_FLY',
+      channelWidth: '_80MHZ',
+      radio: '5'
+    }
+  ],
+  currentValue: 'crrm',
+  recommendedValue: 'crrm',
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: '21_US_Beta_Samsung',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '21_US_Beta_Samsung'
+    },
+    {
+      type: 'zone',
+      name: '21_US_Beta_Samsung'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'applied',
+      createdAt: '2023-06-23T00:00:22.849Z'
+    },
+    {
+      status: 'applyscheduleinprogress',
+      createdAt: '2023-05-23T00:00:02.528Z'
+    },
+    {
+      status: 'applyscheduled',
+      createdAt: '2023-05-22T23:30:30.753Z'
+    },
+    {
+      status: 'new',
+      createdAt: '2023-05-17T07:04:11.663Z'
+    }
+  ],
+  kpi_number_of_interfering_links: {
+    current: 0,
+    previous: 2,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
 export const mockedCRRMGraphs = {
   graph: {
     current: {
@@ -482,6 +538,52 @@ export const mockedCRRMGraphs = {
       interferingLinks: null
     },
     previous: null
+  }
+}
+
+export const mockedCRRMGraphsApplied = {
+  graph: {
+    current: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 149 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 36 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: null
+    },
+    previous: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 128 ],
+          channelWidth: [ 80 ],
+          txPower: [ '_FULL' ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 120 ],
+          channelWidth: [ 80],
+          txPower: [ '_FULL' ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+    },
+    projected: null
   }
 }
 

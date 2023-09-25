@@ -19,7 +19,7 @@ import { edgeApi } from './edge'
 
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdgeDhcpService: build.mutation<EdgeDhcpSetting, RequestPayload>({
+    addEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeDhcpUrls.addDhcpService)
         return {

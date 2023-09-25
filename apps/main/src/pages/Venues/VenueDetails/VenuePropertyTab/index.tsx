@@ -58,16 +58,17 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+import { exportMessageMapping } from '@acx-ui/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
 const WarningTriangle = styled(WarningTriangleSolid)
-  .attrs((props: { expired: boolean }) => props)`
+  .attrs((props: { $expired: boolean }) => props)`
 path:nth-child(1) {
-  fill: ${props => props.expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
+  fill: ${props => props.$expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 path:nth-child(3) {
-  stroke: ${props => props.expired ?
+  stroke: ${props => props.$expired ?
     'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 `
@@ -109,7 +110,7 @@ function ConnectionMeteringLink (props:{
       </div>
       {showWarning &&
         <div style={{ float: 'left' }} title={tooltip}>
-          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
+          <WarningTriangle $expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
@@ -471,7 +472,7 @@ export function VenuePropertyTab () {
           }
         })
 
-        return switchList.map(s => <div>{s}</div>)
+        return switchList.map((s, index) => <div key={index}>{s}</div>)
       }
     },
     {
@@ -540,11 +541,12 @@ export function VenuePropertyTab () {
         dataSource={queryUnitList.data?.data}
         pagination={queryUnitList.pagination}
         onChange={queryUnitList.handleTableChange}
-        actions={actions}
+        actions={hasAssociation ? actions : []}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadUnit
         }}
       />

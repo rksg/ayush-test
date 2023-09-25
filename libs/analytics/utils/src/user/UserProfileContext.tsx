@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext } from 'react'
 
 import { UserProfile }    from './types'
-import { setUserProfile } from './userProfile'
+import { getUserProfile } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile
@@ -11,8 +11,8 @@ export interface UserProfileContextProps {
 export const UserProfileContext = createContext<UserProfileContextProps>({} as UserProfileContextProps)
 export const useUserProfileContext = () => useContext(UserProfileContext)
 
-export function UserProfileProvider (props: { profile: UserProfile, children: ReactNode }) {
-  const { profile, children } = props
-  setUserProfile(profile)
-  return <UserProfileContext.Provider value={{ data: profile }} children={children} />
+export function UserProfileProvider (props: { children: ReactNode }) {
+  const { children } = props
+
+  return <UserProfileContext.Provider value={{ data: getUserProfile() }} children={children} />
 }

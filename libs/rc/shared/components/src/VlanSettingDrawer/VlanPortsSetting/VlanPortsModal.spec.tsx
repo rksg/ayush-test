@@ -482,7 +482,7 @@ describe('VlanPortsModal', () => {
     </IntlProvider>)
 
     await screen.findByText(
-      /Select the untagged ports \(access ports\) for this model \(ICX7150-48\)/i
+      /Select the untagged ports \(trunk ports\) for this model \(ICX7150-48\)/i
     )
   })
 
@@ -511,7 +511,7 @@ describe('VlanPortsModal', () => {
     </IntlProvider>)
 
     await screen.findByText(
-      /Select the tagged ports \(access ports\) for this model \(ICX7150-48\)/i
+      /Select the tagged ports \(trunk ports\) for this model \(ICX7150-48\)/i
     )
   })
 

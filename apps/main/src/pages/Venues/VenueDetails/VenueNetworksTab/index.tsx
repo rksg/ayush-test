@@ -194,7 +194,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row?.isOweMaster === false
+    return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
   // TODO: Waiting for API support

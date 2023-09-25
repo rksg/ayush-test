@@ -1,8 +1,9 @@
 import { ElementType } from 'react'
 
+import { Spin }        from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
+import {  PlusSquareOutlined, MinusSquareOutlined, DownloadOutlined } from '@acx-ui/icons'
 
 const eventIconStyle = css`
   display: flex;
@@ -319,4 +320,24 @@ export const ErrorContainer = styled.div`
   align-items: center;
   flex-grow: 1;
   align-self: center;
+`
+
+export const Download = styled(DownloadOutlined)`
+  position: absolute;
+  left: -4px;
+  margin-top: 3px;
+`
+
+export const PcapWrapper = styled.div`
+  margin-top: 12px;
+`
+
+export const PcapText = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-5-line-height);
+`
+
+export const PcapSpin = styled(Spin)`
+  position: relative;
+  left: 15%;
 `

@@ -63,7 +63,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     if (saveState && edit) {
       stateValue = isPrimary
         ? `${saveState.primary!.ip}:${saveState.primary!.port}`
-        : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+        : `${saveState.secondary?.ip}:${saveState.secondary?.port}`
     }
 
     if (aaaPolicyIpList

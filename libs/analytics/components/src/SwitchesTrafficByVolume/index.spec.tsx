@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }             from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
+import { DateRange, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -69,6 +69,18 @@ describe('SwitchesTrafficByVolumeWidget', () => {
     })
     const { asFragment } = render(
       <Provider><SwitchesTrafficByVolume filters={filters} vizType={'area'}/></Provider>)
+    await screen.findByText('Traffic by Volume')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render area chart and refresh interval', async () => {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } = render(
+      <Provider><SwitchesTrafficByVolume filters={filters}
+        vizType={'area'}
+        refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} /></Provider>)
     await screen.findByText('Traffic by Volume')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()

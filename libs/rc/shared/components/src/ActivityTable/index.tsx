@@ -16,11 +16,10 @@ import {
   severityMapping,
   statusMapping,
   CommonUrlsInfo,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }               from '@acx-ui/types'
-import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
+import { RequestPayload }                                                  from '@acx-ui/types'
+import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

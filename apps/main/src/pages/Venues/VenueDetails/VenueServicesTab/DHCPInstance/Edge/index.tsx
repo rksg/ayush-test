@@ -128,7 +128,7 @@ const EdgeDhcpTab = () => {
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       content: (
-        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/edge-details/overview`}>
+        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
           {edgeData?.name}
         </TenantLink>
       )

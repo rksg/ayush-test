@@ -1,5 +1,6 @@
 import React, { RefObject } from 'react'
 
+import { scalePow } from 'd3-scale'
 import ReactECharts from 'echarts-for-react'
 
 import { mockDOMSize, render, waitFor } from '@acx-ui/test-utils'
@@ -10,6 +11,11 @@ import { BandEnum, ProcessedCloudRRMGraph } from './type'
 
 import { Graph } from '.'
 
+const zoomScale = scalePow()
+  .exponent(0.01)
+  .domain([3, 10, 63, 125, 250, 375, 500])
+  .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.1])
+
 describe('Graph', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
@@ -19,7 +25,9 @@ describe('Graph', () => {
     const { asFragment } = render(<Graph
       chartRef={() => {}}
       title='Current'
-      data={deriveInterfering(sample, BandEnum._5_GHz)} />)
+      data={deriveInterfering(sample, BandEnum._5_GHz)}
+      zoomScale={zoomScale}
+    />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
     fragment.querySelectorAll('path').forEach(path => path?.removeAttribute('transform'))
@@ -36,13 +44,19 @@ describe('Graph', () => {
     render(<Graph
       chartRef={mockCallbackRef}
       title='Current'
-      data={deriveInterfering(sample, BandEnum._5_GHz)} />)
+      data={deriveInterfering(sample, BandEnum._5_GHz)}
+      zoomScale={zoomScale}
+    />)
     await waitFor(() => { expect(createHandleCallback()).not.toBeNull() })
   })
 
   it('should match snapshot when there are no nodes or links', () => {
-    const { asFragment } = render(
-      <Graph chartRef={() => {}} title='Current' data={{} as ProcessedCloudRRMGraph}/>)
+    const { asFragment } = render(<Graph
+      chartRef={() => {}}
+      title='Current'
+      data={{} as ProcessedCloudRRMGraph}
+      zoomScale={zoomScale}
+    />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
     fragment.querySelectorAll('path').forEach(path => path?.removeAttribute('transform'))
@@ -54,7 +68,9 @@ describe('Graph', () => {
       chartRef={() => {}}
       title='Current'
       subtext='Subtext'
-      data={{} as ProcessedCloudRRMGraph}/>)
+      data={{} as ProcessedCloudRRMGraph}
+      zoomScale={zoomScale}
+    />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
     fragment.querySelectorAll('path').forEach(path => path?.removeAttribute('transform'))

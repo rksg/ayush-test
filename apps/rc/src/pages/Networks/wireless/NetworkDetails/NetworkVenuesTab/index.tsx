@@ -79,7 +79,8 @@ const defaultPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 const defaultArray: Venue[] = []
@@ -96,7 +97,10 @@ export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
@@ -164,7 +168,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
       setTableData(data)

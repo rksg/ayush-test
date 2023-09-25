@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Demo } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
@@ -11,11 +12,30 @@ export default function PortalViewSelfSignRegister (props:{
     color?:string, text?:string }) => void
 }) {
   const { demoValue, updateBtn, isPreview, portalLang } = props
+  const { componentDisplay } = demoValue
+  const renderTermsConditionsView = (activeKey:string) => {
+    if (componentDisplay.termsConditions && portalLang?.acceptTermsMsg2 && portalLang?.acceptTermsMsgHostApproval) {
+      const { acceptTermsMsg2, acceptTermsMsgHostApproval } = portalLang
+      let acceptTermsTxt = (activeKey === 'register') ? acceptTermsMsgHostApproval : acceptTermsMsg2
+      const acceptTermsMsg = acceptTermsTxt.replace('<1>{{linkText}}</1>','#')
+      const linkIndex = acceptTermsMsg.indexOf('#')
+      return (<span style={{ display: 'inline-block' }}>
+        {(linkIndex !== 0) &&
+          <UI.FieldText style={{ display: 'inline' }}>{acceptTermsMsg.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
+        <UI.FieldLabelLink>{props.portalLang.acceptTermsLink}</UI.FieldLabelLink>
+        {(linkIndex !== acceptTermsMsg.length - 1) &&
+          <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsMsg.substring(linkIndex +1, acceptTermsMsg.length -1)}</UI.FieldText>}
+      </span>)
+
+    }
+    return []
+  }
   return (
     <UI.ViewSectionNoBorder>
       <UI.ViewSectionTabs
         defaultActiveKey='register'
         type='card'
+        stickyTop={false}
         size={'middle'}
       >
         <UI.ViewSectionTabs.TabPane tab={portalLang.register} key='register'>
@@ -41,12 +61,9 @@ export default function PortalViewSelfSignRegister (props:{
             demoValue={demoValue}
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.register}</PortalButtonContent>
-          <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>{
-            portalLang.acceptTermsMsgHostSelfSign?.replace('{0}','')
-          }&nbsp;
-          <UI.FieldLabelLink>
-            {portalLang.acceptTermsLink}
-          </UI.FieldLabelLink></UI.ViewSectionText>
+          <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>
+            {renderTermsConditionsView('register')}
+          </UI.ViewSectionText>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
           <UI.FieldTextMiddle>{portalLang.loginNote}</UI.FieldTextMiddle>
@@ -58,6 +75,9 @@ export default function PortalViewSelfSignRegister (props:{
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.connectToWifi}</PortalButtonContent>
+          <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>
+            {renderTermsConditionsView('login')}
+          </UI.ViewSectionText>
         </UI.ViewSectionTabs.TabPane>
       </UI.ViewSectionTabs>
       <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>

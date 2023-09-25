@@ -11,6 +11,7 @@ import {
   within,
   waitFor
 } from '@acx-ui/test-utils'
+import { AccountType } from '@acx-ui/utils'
 
 import { DeviceInventory } from '.'
 
@@ -115,7 +116,7 @@ const list = {
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
     },
     {
-      apMac: '89:28:38:22:77:31',
+      swichMac: '89:28:38:22:77:31',
       serialNumber: '892838227723',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'R720',
@@ -127,7 +128,6 @@ const list = {
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
     },
     {
-      apMac: '89:28:38:22:77:32',
       serialNumber: '892838227723',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'R720',
@@ -167,6 +167,30 @@ const fakeTenantDetails = {
   isActivated: true,
   status: 'active',
   tenantType: 'REC'
+}
+
+const fakeIntegratorTenantDetails = {
+  id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: '["825910","333815","825720","919107","836842"]' },
+  preferences: '{"global":{"mapRegion":"UA"}}',
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: AccountType.MSP_INTEGRATOR,
+  mspEc: {
+    parentMspId: 'fcc2d7cf9d2342fdb31ae0e24958fdbd',
+    serviceEffectiveDate: '2023-01-31T04:19:00.241+00:00',
+    serviceExpirationDate: '2024-01-31T04:19:00.241+00:00'
+  }
 }
 
 describe('Device Inventory Table', () => {
@@ -222,9 +246,6 @@ describe('Device Inventory Table', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
-    list.data.forEach((item, index) => {
-      expect(within(rows[index]).getByText(item.apMac)).toBeVisible()
-    })
     expect(screen.getAllByText('Never contacted cloud')).toHaveLength(3)
     expect(screen.getByText('Never contacted Active Switch')).toBeVisible()
     expect(screen.getByText('Initializing')).toBeVisible()
@@ -243,7 +264,7 @@ describe('Device Inventory Table', () => {
         route: { params, path: '/:tenantId/deviceinventory' }
       })
 
-    const button = screen.getByRole('button', { name: 'Export To CSV' })
+    const button = screen.getByRole('button', { name: 'Export to CSV' })
     expect(button).toBeVisible()
     await userEvent.click(button)
 
@@ -277,5 +298,48 @@ describe('Device Inventory Table', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(1)
+  })
+  it('should retrieve data correctly when is integrator', async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getTenantDetail.url,
+        (req, res, ctx) => res(ctx.json(fakeIntegratorTenantDetails))
+      )
+    )
+    render(
+      <Provider>
+        <DeviceInventory />
+      </Provider>, {
+        route: { params, path: '/:tenantId/deviceinventory' }
+      })
+
+    await waitFor(() => {
+      expect(utils.useTableQuery).toHaveBeenLastCalledWith(expect.objectContaining({
+        apiParams: { tenantId: 'fcc2d7cf9d2342fdb31ae0e24958fdbd' },
+        defaultPayload: expect.objectContaining({
+          filters: {
+            id: [ params.tenantId ]
+          }
+        })
+      }))
+    })
+
+    const button = screen.getByRole('button', { name: 'Export to CSV' })
+    expect(button).toBeVisible()
+    await userEvent.click(button)
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: {},
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(services.useExportDeviceInventoryMutation).toHaveLastReturnedWith(value)
+    })
   })
 })

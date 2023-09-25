@@ -8,8 +8,8 @@ import { Header, useHeaderExtra } from '.'
 jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div data-testid='NetworkFilter'>network filter</div>
 }))
-jest.mock('../NetworkFilter/MlisaNetworkFilter', () => ({
-  MlisaNetworkFilter: () => <div data-testid='mlisaNetworkFilter'>Mlisa network filter</div>
+jest.mock('../NetworkFilter/SANetworkFilter', () => ({
+  SANetworkFilter: () => <div data-testid='mlisaNetworkFilter'>Mlisa network filter</div>
 }))
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),

@@ -8,8 +8,9 @@ import { TenantLink }                                                           
 
 import { getEdgeServiceTypeString } from '../utils'
 
-import { DhcpDetails }     from './DhcpDetails'
-import { FirewallDetails } from './FirewallDetails'
+import { DhcpDetails }                from './DhcpDetails'
+import { FirewallDetails }            from './FirewallDetails'
+import { NetworkSegmentationDetails } from './NetworkSegmentationDetails'
 
 interface ServiceDetailDrawerProps {
   visible: boolean
@@ -20,7 +21,7 @@ interface ServiceDetailDrawerProps {
 const drawerWidthMap = {
   [EdgeServiceTypeEnum.DHCP]: 500,
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
-  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '55%'
+  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '50%'
 }
 
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
@@ -100,8 +101,8 @@ const getContentByType = (serviceData: EdgeService) => {
     case EdgeServiceTypeEnum.FIREWALL:
       return <FirewallDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
-      return <>Nsg Details</>
+      return <NetworkSegmentationDetails serviceData={serviceData} />
     default:
-      return <></>
+      return
   }
 }

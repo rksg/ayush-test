@@ -76,30 +76,12 @@ export const mockedDpskPassphraseList = {
       vlanId: 4,
       mac: 'AA:BB:CC:11:22:44',
       numberOfDevices: 1,
-      createdDate: '2022-12-08T09:00:00'
-    }
-  ],
-  page: 1,
-  totalCount: 4,
-  totalPages: 1
-}
-
-export const mockedDpskPassphraseListWithPersona = {
-  data: [
-    {
-      id: '__PASSPHRASE_ID_99__',
-      passphrase: 'abced12345',
-      username: 'DPSK_USER_1_With_Persona',
-      vlanId: 1,
-      mac: null,
-      numberOfDevices: 3,
-      createdDate: '2022-12-07T21:39:00',
-      expirationDate: '2022-12-08T08:39:00',
+      createdDate: '2022-12-08T09:00:00',
       identityId: '123456789'
     }
   ],
   page: 1,
-  totalCount: 1,
+  totalCount: 4,
   totalPages: 1
 }
 
@@ -251,3 +233,23 @@ export const mockedDevices = [
     deviceConnectivity: 'CONNECTED'
   }
 ]
+
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
+    }
+  ]
+}

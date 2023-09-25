@@ -2,8 +2,8 @@ import { createGlobalStyle } from 'styled-components/macro'
 
 export const TooltipGlobalStyle = createGlobalStyle`
   .ant-tooltip {
-    font-size: var(--acx-body-5-font-size);
-    line-height: var(--acx-body-5-line-height);
+    font-size: var(--acx-body-4-font-size); 
+    line-height: var(--acx-body-4-line-height);
     filter: drop-shadow(0px 4px 8px rgba(51, 51, 51, 0.08));
 
     &-arrow {

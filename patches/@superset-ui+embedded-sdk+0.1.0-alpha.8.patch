@@ -1,41 +1,43 @@
 diff --git a/node_modules/@superset-ui/embedded-sdk/.DS_Store b/node_modules/@superset-ui/embedded-sdk/.DS_Store
 new file mode 100644
-index 0000000..c88a062
-Binary files /dev/null and b/node_modules/@superset-ui/embedded-sdk/.DS_Store differ
+index 0000000..e69de29
 diff --git a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts b/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
-index b8bf5ad..0ad406e 100644
+index b8bf5ad..bcdf90c 100644
 --- a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
 +++ b/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
-@@ -27,6 +27,8 @@ export declare type EmbedDashboardParams = {
+@@ -27,6 +27,10 @@ export declare type EmbedDashboardParams = {
      dashboardUiConfig?: UiConfigType;
      /** Are we in debug mode? */
      debug?: boolean;
 +    /** Custom header for all the xhr requests **/
 +    authToken?: string;
++    /** locale for i18n */
++    locale?: string;
  };
  export declare type Size = {
      width: number;
-@@ -41,4 +43,4 @@ export declare type EmbeddedDashboard = {
+@@ -41,4 +45,4 @@ export declare type EmbeddedDashboard = {
  /**
   * Embeds a Superset dashboard into the page using an iframe.
   */
 -export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 +export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 diff --git a/node_modules/@superset-ui/embedded-sdk/lib/index.js b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-index 5c8591d..ea333d8 100644
+index 5c8591d..9e2ef28 100644
 --- a/node_modules/@superset-ui/embedded-sdk/lib/index.js
 +++ b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-@@ -41,7 +41,8 @@ async function embedDashboard(_ref) {
+@@ -41,7 +41,9 @@ async function embedDashboard(_ref) {
      mountPoint,
      fetchGuestToken,
      dashboardUiConfig,
 -    debug = false
 +    debug = false,
 +    authToken,
++    locale
    } = _ref;
  
    function log() {
-@@ -83,6 +84,11 @@ async function embedDashboard(_ref) {
+@@ -83,6 +85,12 @@ async function embedDashboard(_ref) {
        const filterConfig = dashboardUiConfig?.filters || {};
        const filterConfigKeys = Object.keys(filterConfig);
        const filterConfigUrlParams = filterConfigKeys.length > 0 ? "&" + filterConfigKeys.map(key => _const.DASHBOARD_UI_FILTER_CONFIG_URL_PARAM_KEY[key] + '=' + filterConfig[key]).join('&') : ""; // set up the iframe's sandbox configuration
@@ -44,15 +46,16 @@ index 5c8591d..ea333d8 100644
 +      const isReadOnlyParam = jwtTokenPayload.roleName ? `&isReadOnly=${
 +        !(jwtTokenPayload.roleName.includes('PRIME_ADMIN') || jwtTokenPayload.roleName.includes('ADMIN'))
 +      }` : ''
++      const localeParam = locale ? `&locale=${locale}` : ''
  
        iframe.sandbox.add("allow-same-origin"); // needed for postMessage to work
  
-@@ -120,22 +126,29 @@ async function embedDashboard(_ref) {
+@@ -120,22 +128,29 @@ async function embedDashboard(_ref) {
            debug
          }));
        });
 -      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}`;
-+      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}${userNameParam}${isReadOnlyParam}`;
++      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}${userNameParam}${isReadOnlyParam}${localeParam}`;
        mountPoint.replaceChildren(iframe);
        log('placed the iframe');
      });

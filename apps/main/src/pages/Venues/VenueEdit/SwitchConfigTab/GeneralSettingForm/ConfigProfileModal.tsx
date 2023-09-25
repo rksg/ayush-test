@@ -116,9 +116,11 @@ export function ConfigProfileModal (props: {
       </Tooltip>
     ]}
   >
-    <Tabs defaultActiveKey={formState.cliApplied
-      ? ProfileTypeEnum.CLI
-      : ProfileTypeEnum.REGULAR}>
+    <Tabs type='line'
+      stickyTop={false}
+      defaultActiveKey={formState.cliApplied
+        ? ProfileTypeEnum.CLI
+        : ProfileTypeEnum.REGULAR}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Regular Profiles' })}
         key={ProfileTypeEnum.REGULAR}

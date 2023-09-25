@@ -18,6 +18,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
   EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
 }))

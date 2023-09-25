@@ -31,9 +31,11 @@ describe('process.env', () => {
   it('should handle mlisa-sa flag', () => {
     process.env.NX_IS_MLISA_SA = 'true'
     const config = require('./index')
+    expect(config.get('IS_MLISA_SA')).toBe('true')
     expect(config.get('IS_MLISA_SA')).toBeTruthy()
     process.env.NX_IS_MLISA_SA = undefined
-    expect(config.get('IS_MLISA_SA')).toBeUndefined()
+    expect(config.get('IS_MLISA_SA')).toBe('')
+    expect(config.get('IS_MLISA_SA')).toBeFalsy()
   })
 })
 

@@ -96,7 +96,8 @@ describe('EditEdgeDhcp', () => {
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
     await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
-    const usedForNSG = await screen.findByRole('switch', { name: 'Use for Network Segmentation' })
+    // eslint-disable-next-line max-len
+    const usedForNSG = await screen.findByRole('switch', { name: 'Use for Personal Identity Network' })
     const poolsRow = screen.queryAllByRole('row')
     expect(usedForNSG).not.toBeChecked()
     expect(poolsRow.length).toBe(0)

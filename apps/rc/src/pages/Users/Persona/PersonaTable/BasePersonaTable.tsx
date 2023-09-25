@@ -36,6 +36,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { IdentitiesContext }  from '..'
 import { PersonaDrawer }      from '../PersonaDrawer'
@@ -430,19 +431,20 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersona
         }}
       />
 
-      <PersonaDrawer
+      {drawerState.visible && <PersonaDrawer
+        visible
         data={drawerState.data}
         isEdit={drawerState.isEdit}
-        visible={drawerState.visible}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
-      />
-      <ImportFileDrawer
+      />}
+      {uploadCsvDrawerVisible && <ImportFileDrawer
         title={$t({ defaultMessage: 'Import from file' })}
-        visible={uploadCsvDrawerVisible}
+        visible={true}
         isLoading={uploadCsvResult.isLoading}
         type={ImportFileDrawerType.Identity}
         acceptType={['csv']}
@@ -460,7 +462,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         >
           <PersonaGroupSelect disabled={!!personaGroupId}/>
         </Form.Item>
-      </ImportFileDrawer>
+      </ImportFileDrawer>}
     </Loader>
   )
 }

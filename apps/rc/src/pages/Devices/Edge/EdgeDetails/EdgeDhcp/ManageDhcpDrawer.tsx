@@ -7,6 +7,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Drawer, Loader, Table, TableProps }                        from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                  from '@acx-ui/rc/components'
 import { useGetEdgeDhcpListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-ui/rc/utils'
 
@@ -110,8 +111,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
               disabled={hasNsg}
             />
           </Form.Item>
-          {/* TODO Add button not ready for test */}
-          {/* <Button type='link' children={$t({ defaultMessage: 'Add' })} /> */}
+          <AddEdgeDhcpServiceModal />
         </Space>
       </Form.Item>
     </Form>

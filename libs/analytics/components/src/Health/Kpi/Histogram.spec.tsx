@@ -104,7 +104,7 @@ describe('Threshold Histogram chart', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.hover(button.parentElement!)
     await waitFor(async () => {
-      expect(await screen.findByText(/Cannot save threshold at organisation level/))
+      expect(await screen.findByText(/Cannot save threshold at organization level/))
         .toBeInTheDocument()
     })
   })

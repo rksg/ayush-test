@@ -100,7 +100,12 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenues.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => {

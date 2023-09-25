@@ -21,9 +21,10 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
 } from '@acx-ui/rc/services'
 import {
+  AFCStatus,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -41,6 +42,7 @@ import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/ut
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { exportMessageMapping }                              from '@acx-ui/utils'
 
 import { seriesMappingAP }                                 from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -61,7 +63,8 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.APSystem.secureBootEnabled'
+    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
+    'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -143,7 +146,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   }, [tableQuery.data])
 
   const apAction = useApActions()
-  const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: name, label: <Badge color={color} text={name} />
   }))
@@ -181,7 +183,38 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (status: any, row : APExtended) => {
+        /* eslint-disable max-len */
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
+        )) {
+
+          const afcInfo = row.apStatusData?.afcInfo
+
+          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
+          }
+
+          return (
+            <span>
+              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
+                text={warningMessages}
+              />
+            </span>
+          )
+        } else {
+          return <APStatus status={status.props.children} />
+        }
+        /* eslint-enable max-len */
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -273,11 +306,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'clients',
       align: 'center',
       render: (_, row: APExtended) => {
-        return releaseTag ?
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-            {transformDisplayNumber(row.clients)}
-          </TenantLink>
-          : <>{transformDisplayNumber(row.clients)}</>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
       }
     }, {
       key: 'deviceGroupName',
@@ -520,8 +551,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
-        // eslint-disable-next-line max-len
-        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          onClick: exportCsv,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
+        } : undefined
+        }
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.AP}

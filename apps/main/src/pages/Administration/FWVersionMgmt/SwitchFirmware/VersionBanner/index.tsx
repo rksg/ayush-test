@@ -1,7 +1,6 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -16,13 +15,12 @@ export const VersionBanner = () => {
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions.filter(v => v.id.startsWith('090'))[0]
   const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
-  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   if (!firmware && !rodanFirmware) return null
 
   const versionInfo = []
 
-  if(enableSwitchRodanFirmware && rodanFirmware) {
+  if(rodanFirmware) {
     versionInfo.push({
       label: $t({ defaultMessage: 'For ICX Models (8200):' }),
       firmware: {

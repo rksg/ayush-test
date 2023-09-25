@@ -10,7 +10,7 @@
         "compiler": "babel",
         "outputPath": "dist/apps/ra",
         "index": "apps/ra/src/index.html",
-        "baseHref": "/analytics/next/",
+        "baseHref": "/ai/",
         "main": "apps/ra/src/main.tsx",
         "polyfills": "apps/ra/src/polyfills.ts",
         "tsConfig": "apps/ra/tsconfig.app.json",

@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl }                  from 'react-intl'
 import { useNavigate, useParams }                     from 'react-router-dom'
 
 import { Alert, Button, StepsForm, Tooltip, useStepFormContext }                 from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                               from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool, ServiceOperation, ServiceType, getServiceDetailsLink }    from '@acx-ui/rc/utils'
 import { useTenantLink }                                                         from '@acx-ui/react-router-dom'
@@ -12,7 +13,6 @@ import { useTenantLink }                                                        
 import { NetworkSegmentationGroupFormData } from '..'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
-import { DhcpServiceModal }     from './DhcpServiceModal'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
 interface SmartEdgeFormProps {
@@ -116,19 +116,23 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const onEdgeChange = (value: string) => {
     const edgeItem = edgeOptions?.find(item => item.value === value)
-    form.setFieldValue('edgeName', edgeItem?.label)
-    form.setFieldValue('dhcpId', null)
-    form.setFieldValue('poolId', null)
-    form.setFieldValue('poolName', null)
-    form.setFieldValue('dhcpRelay', false)
+    form.setFieldsValue({
+      edgeName: edgeItem?.label,
+      dhcpId: undefined,
+      poolId: undefined,
+      poolName: undefined,
+      dhcpRelay: false
+    })
   }
 
   const onDhcpChange = (value: string) => {
     const dhcpPorilfe = dhcpProfles?.find(item => item.id === value)
-    form.setFieldValue('poolId', null)
-    form.setFieldValue('poolName', null)
-    form.setFieldValue('dhcpName', dhcpPorilfe?.serviceName)
-    form.setFieldValue('dhcpRelay', dhcpPorilfe?.dhcpRelay)
+    form.setFieldsValue({
+      poolId: undefined,
+      poolName: undefined,
+      dhcpName: dhcpPorilfe?.serviceName,
+      dhcpRelay: dhcpPorilfe?.dhcpRelay
+    })
   }
 
   const openDrawer = () => {
@@ -136,8 +140,10 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   }
 
   const selectPool = (poolId?: string, poolName?: string) => {
-    form.setFieldValue('poolId', poolId)
-    form.setFieldValue('poolName', poolName)
+    form.setFieldsValue({
+      poolId,
+      poolName
+    })
     form.validateFields(['poolId'])
   }
 
@@ -263,7 +269,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         </Col>
         {
           !shouldDhcpDisabled && (
-            <Col ><DhcpServiceModal /></Col>
+            <Col ><AddEdgeDhcpServiceModal /></Col>
           )
         }
       </Row>

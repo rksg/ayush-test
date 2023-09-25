@@ -4,35 +4,50 @@ import { useParams } from 'react-router-dom'
 
 import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import {
+  PageHeader,
+  Loader,
+  Table,
+  TableProps,
+  Tooltip,
+  TimeRangeDropDown,
+  useDateRange,
+  TimeRangeDropDownProvider
+} from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
+import { TenantLink, resolvePath }                                         from '@acx-ui/react-router-dom'
+import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
 const pagination = { pageSize: 5, defaultPageSize: 5 }
 
-const params = {
-  start: moment().subtract(1, 'days').seconds(0).format(),
-  end: moment().format(),
-  limit: 100
-}
-
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
-  const results = useSearchQuery({ ...params, query: searchVal! })
+  const { timeRange } = useDateRange()
+  const results = useSearchQuery({
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
+    limit: 100,
+    query: searchVal!
+
+  })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
     count += (value as []).length || 0
   })
-
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'apName',
       key: 'apName',
       width: 130,
-      sorter: { compare: sortProp('apName', defaultSort) }
+      sorter: { compare: sortProp('apName', defaultSort) },
+      render: (_, row : AP) => (
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
+          {row.apName}</TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -53,7 +68,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'ipAddress',
       key: 'ipAddress',
       width: 80,
-
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
@@ -61,7 +75,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 70,
       dataIndex: 'version',
       key: 'version',
-
       sorter: { compare: sortProp('version', defaultSort) }
     },
     {
@@ -90,14 +103,24 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-
+      render: (_, row : Client) => {
+        const { lastActiveTime, mac, hostname } = row
+        const period = encodeParameter<DateFilter>({
+          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
+          endDate: lastActiveTime,
+          range: DateRange.custom
+        })
+        return <TenantLink
+          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
+        >{hostname}
+        </TenantLink>
+      },
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Username' }),
       dataIndex: 'username',
       key: 'username',
-
       sorter: { compare: sortProp('username', defaultSort) }
     },
     {
@@ -105,7 +128,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'mac',
       key: 'mac',
-
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -113,26 +135,23 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
-
       sorter: { compare: sortProp('osType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Last Connection' }),
       dataIndex: 'lastActiveTime',
       key: 'lastActiveTime',
-      render: (value: unknown) => {
-        return formatter(DateFormatEnum.DateTimeFormat)(value)
+      render: (_, { lastActiveTime }) => {
+        return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
     }
-
   ]
 
   const switchTablecolumnHeaders: TableProps<Switch>['columns'] = [
@@ -140,7 +159,10 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-
+      render: (_, row : Switch) => (
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+          {row.switchName}</TenantLink>
+      ),
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
@@ -154,14 +176,12 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'switchModel',
       key: 'switchModel',
-
       sorter: { compare: sortProp('switchModel', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Version' }),
       dataIndex: 'switchVersion',
       key: 'switchVersion',
-
       sorter: { compare: sortProp('switchVersion', defaultSort) }
     }
   ]
@@ -172,7 +192,14 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-
+      render: (_, row : NetworkHierarchy) => (
+        <TenantLink
+          to={resolvePath(`/incidents?analyticsNetworkFilter=${
+            fixedEncodeURIComponent(
+              JSON.stringify({ raw: row.networkPath, path: row.networkPath }))}`)}>
+          {row.name}
+        </TenantLink>
+      ),
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -180,7 +207,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'type',
       key: 'type',
       fixed: 'left',
-
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
@@ -188,7 +214,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'root',
       key: 'root',
       fixed: 'left',
-
       sorter: { compare: sortProp('root', defaultSort) }
     },
     {
@@ -203,7 +228,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 120,
       dataIndex: 'switchCount',
       key: 'switchCount',
-
       sorter: { compare: sortProp('switchCount', defaultSort) }
     },
     {
@@ -225,13 +249,16 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     }
   ]
 
+  const extra = [<TimeRangeDropDown/>]
   return <Loader states={[results]}>
     {count
       ? <>
         <PageHeader title={$t(
           { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
           { searchVal, count }
-        )} />
+        )}
+        extra={extra}
+        />
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
         >
@@ -293,15 +320,22 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         <PageHeader title={$t(
           { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
-        )} />
+        )}
+        extra={extra}
+        />
         <NoData />
       </>
     }
-
   </Loader>
 }
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal} searchVal={searchVal} />
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
+    <SearchResult key={searchVal} searchVal={searchVal} />
+  </TimeRangeDropDownProvider>
 }

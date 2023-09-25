@@ -48,7 +48,11 @@ import {
   ApRfNeighborsResponse,
   ApLldpNeighborsResponse,
   SupportCcdVenue,
-  ApClientAdmissionControl
+  SupportCcdApGroup,
+  ApClientAdmissionControl,
+  AFCInfo,
+  AFCPowerMode,
+  AFCStatus
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -796,7 +800,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
+        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -805,14 +811,25 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
       query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
         return {
-          ...createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+          ...req
+        }
+      }
+    }),
+    getCcdSupportApGroups: build.query<SupportCcdApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportApGroups, params)
+        return {
+          ...req
         }
       }
     }),
     runCcd: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -923,6 +940,8 @@ export const {
   useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
   useGetCcdSupportVenuesQuery,
+  useGetCcdSupportApGroupsQuery,
+  useLazyGetCcdSupportApGroupsQuery,
   useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
@@ -1074,4 +1093,12 @@ const transformApViewModel = (result: ApViewModel) => {
     } as RadioProperties
   }
   return ap
+}
+
+
+export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
+  if (!afcInfo) return false
+  return (
+    afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+    afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
 }

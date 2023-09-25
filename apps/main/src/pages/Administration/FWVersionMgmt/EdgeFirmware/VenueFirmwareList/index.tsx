@@ -161,7 +161,7 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
       visible: (selectedRows) => {
-        const hasOutdatedFw = selectedRows?.some(
+        const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
           ((item.versions?.[0].id
             && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)

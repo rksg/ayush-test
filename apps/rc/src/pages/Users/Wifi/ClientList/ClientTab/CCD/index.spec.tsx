@@ -1,13 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
+import { WifiUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { ClientContext } from '..'
+
 import { mockApListByApGroup, mockVenueList } from './__tests__/fixtures'
 
-import { ClientConnectionDiagnosis } from '.'
+import ClientConnectionDiagnosis from '.'
 
 
 const params = {
@@ -27,10 +29,10 @@ describe('CCD', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApGroupsListByGroup.url,
+        WifiUrlsInfo.getCcdSupportApGroups.url.replace('?venueId=:venueId', ''),
         (_, res, ctx) => {
           mockGetApGroupFn()
-          return res(ctx.json({ ...mockApListByApGroup }))
+          return res(ctx.json([ ...mockApListByApGroup ]))
         }
       ),
       rest.post(
@@ -46,7 +48,14 @@ describe('CCD', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ClientConnectionDiagnosis />
+        <ClientContext.Provider value={{
+          ccdControlContext: {
+            isTracing: false,
+            viewStatus: {}
+          },
+          setCcdControlContext: jest.fn() }}>
+          <ClientConnectionDiagnosis />
+        </ClientContext.Provider>
       </Provider>, { route: { params } }
     )
 
@@ -73,7 +82,14 @@ describe('CCD', () => {
   it('should show AP Group selecter Drawer', async () => {
     render(
       <Provider>
-        <ClientConnectionDiagnosis />
+        <ClientContext.Provider value={{
+          ccdControlContext: {
+            isTracing: false,
+            viewStatus: {}
+          },
+          setCcdControlContext: jest.fn() }}>
+          <ClientConnectionDiagnosis />
+        </ClientContext.Provider>
       </Provider>, { route: { params } }
     )
 
