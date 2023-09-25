@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { TenantLink }                from '@acx-ui/react-router-dom'
+import { DateRange }                 from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -237,6 +238,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     }
   ]
 
+  const extra = [<TimeRangeDropDown/>]
   return <Loader states={[results]}>
     {count
       ? <>
@@ -244,7 +246,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
           { searchVal, count }
         )}
-        extra={[<TimeRangeDropDown/>]}
+        extra={extra}
         />
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
@@ -308,7 +310,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )}
-        extra={[<TimeRangeDropDown/>]}
+        extra={extra}
         />
         <NoData />
       </>
@@ -319,7 +321,11 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <TimeRangeDropDownProvider>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <SearchResult key={searchVal} searchVal={searchVal} />
   </TimeRangeDropDownProvider>
 }

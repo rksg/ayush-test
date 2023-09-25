@@ -12,13 +12,18 @@ import {
 } from '.'
 
 describe('TimeRangeDropDown', () => {
+  const ranges = [
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]
   it('TimeRangeDropDownProvider provides default value', async () => {
     const TestComponent = () => {
-      const { timeRangeDropDownRange } = useDateRange()
-      return <div>{timeRangeDropDownRange}</div>
+      const { selectedRange } = useDateRange()
+      return <div>{selectedRange}</div>
     }
     render(
-      <TimeRangeDropDownProvider>
+      <TimeRangeDropDownProvider availableRanges={ranges}>
         <TestComponent />
       </TimeRangeDropDownProvider>
       ,{ wrapper: Provider })
@@ -28,7 +33,7 @@ describe('TimeRangeDropDown', () => {
   it('TimeRangeDropDown displays and updates range', async () => {
     render(
       <IntlProvider locale='en'>
-        <TimeRangeDropDownProvider>
+        <TimeRangeDropDownProvider availableRanges={ranges}>
           <TimeRangeDropDown />
         </TimeRangeDropDownProvider>
       </IntlProvider>,
@@ -42,10 +47,10 @@ describe('TimeRangeDropDown', () => {
 
   it('TimeRangeDropDownContext updates value', async () => {
     const TestComponent = () => {
-      const { timeRangeDropDownRange, setTimeRangeDropDownRange } = useDateRange()
+      const { selectedRange, setTimeRangeDropDownRange } = useDateRange()
       return (
         <div>
-          <div>{timeRangeDropDownRange}</div>
+          <div>{selectedRange}</div>
           <button onClick={() => setTimeRangeDropDownRange(DateRange.last7Days)}>
             Update Range
           </button>
@@ -53,7 +58,7 @@ describe('TimeRangeDropDown', () => {
       )
     }
     render(
-      <TimeRangeDropDownProvider>
+      <TimeRangeDropDownProvider availableRanges={ranges}>
         <TestComponent />
       </TimeRangeDropDownProvider>,
       { wrapper: Provider }
@@ -65,6 +70,6 @@ describe('TimeRangeDropDown', () => {
   it('should have a no-op setTimeRangeDropDownRange function', () => {
     expect(() => defaultTimeRangeDropDownContextValue
       .setTimeRangeDropDownRange(DateRange.last7Days)).not.toThrow()
-    expect(defaultTimeRangeDropDownContextValue.timeRangeDropDownRange).toBe(DateRange.last24Hours)
+    expect(defaultTimeRangeDropDownContextValue.selectedRange).toBe(DateRange.last24Hours)
   })
 })

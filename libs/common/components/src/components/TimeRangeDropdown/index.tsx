@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 
-import { Menu, Space, MenuProps } from 'antd'
-import { ItemType }               from 'antd/lib/menu/hooks/useItems'
-import { useIntl }                from 'react-intl'
+import { Menu, Space } from 'antd'
+import { ItemType }    from 'antd/lib/menu/hooks/useItems'
+import { useIntl }     from 'react-intl'
 
 import { DateRange, dateRangeMap, defaultRanges } from '@acx-ui/utils'
 
@@ -11,18 +11,16 @@ import { Dropdown, Button, CaretDownSolidIcon } from '../..'
 import type { Moment } from 'moment'
 
 interface TimeRangeDropDownContextType {
+  availableRanges: DateRange[]
   timeRange: Moment[]
-  timeRangeDropDownRange: DateRange
+  selectedRange: DateRange
   setTimeRangeDropDownRange: React.Dispatch<React.SetStateAction<DateRange>>
 }
 
-interface TimeRangeDropDownProviderProps {
-  children: React.ReactNode
-}
-
 export const defaultTimeRangeDropDownContextValue: TimeRangeDropDownContextType = {
+  availableRanges: [DateRange.last24Hours],
   timeRange: defaultRanges()[DateRange.last24Hours]!,
-  timeRangeDropDownRange: DateRange.last24Hours,
+  selectedRange: DateRange.last24Hours,
   setTimeRangeDropDownRange: () => {}
 }
 
@@ -35,16 +33,23 @@ export const useDateRange = () => {
   return context
 }
 
+interface TimeRangeDropDownProviderProps {
+  availableRanges: DateRange[]
+  children: React.ReactNode
+}
+
+
 export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps> = ({
+  availableRanges,
   children
 }) => {
-  const [timeRangeDropDownRange, setTimeRangeDropDownRange] = useState<DateRange>(
-    DateRange.last24Hours
+  const [selectedRange, setTimeRangeDropDownRange] = useState<DateRange>(
+    availableRanges[0]
   )
-  const timeRange = defaultRanges()[timeRangeDropDownRange]!
+  const timeRange = defaultRanges()[selectedRange]!
   return (
     <TimeRangeDropDownContext.Provider
-      value={{ timeRange, timeRangeDropDownRange, setTimeRangeDropDownRange }}>
+      value={{ availableRanges, timeRange, selectedRange, setTimeRangeDropDownRange }}>
       {children}
     </TimeRangeDropDownContext.Provider>
   )
@@ -52,20 +57,15 @@ export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps>
 
 export const TimeRangeDropDown: React.FC = () => {
   const { $t } = useIntl()
-  const { timeRangeDropDownRange, setTimeRangeDropDownRange } = useDateRange()
-
-  const handleClick: MenuProps['onClick'] = (e) => {
-    setTimeRangeDropDownRange(e.key as DateRange)
-  }
-
+  const { availableRanges, selectedRange, setTimeRangeDropDownRange } = useDateRange()
   return (
     <Dropdown
       key='timerange-dropdown'
       overlay={
         <Menu
-          onClick={handleClick}
+          onClick={(e) => setTimeRangeDropDownRange(e.key as DateRange)}
           items={
-            [DateRange.last24Hours, DateRange.last7Days, DateRange.last30Days].map((key) => ({
+            availableRanges.map((key) => ({
               key,
               label: $t(dateRangeMap[key])
             })) as ItemType[]
@@ -75,7 +75,7 @@ export const TimeRangeDropDown: React.FC = () => {
       {() => (
         <Button>
           <Space>
-            {timeRangeDropDownRange}
+            {selectedRange}
             <CaretDownSolidIcon />
           </Space>
         </Button>

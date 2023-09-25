@@ -4,6 +4,7 @@ import { useHeaderExtra }                                                  from 
 import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider  } from '@acx-ui/components'
 import { useNavigate, useTenantLink }                                      from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }                                      from '@acx-ui/reports/components'
+import { DateRange }                                                       from '@acx-ui/utils'
 
 import { ClientsList } from './ClientsList'
 
@@ -50,7 +51,11 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
       pathname: `${basePath.pathname}/${tab}`
     })
   }
-  return <TimeRangeDropDownProvider>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'Wireless' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
