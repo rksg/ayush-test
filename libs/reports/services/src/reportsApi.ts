@@ -36,7 +36,7 @@ export const ReportUrlsInfo: { [key: string]: ApiInfo } = {
   },
   authenticate: {
     method: 'post',
-    url: `${BASE_RELATIVE_URL}/authenticate/`
+    url: `${BASE_RELATIVE_URL}/authenticate/?locale=:locale`
   }
 }
 

@@ -16,6 +16,7 @@ export default function PortalViewHostApproval (props:{
       <UI.ViewSectionTabs
         defaultActiveKey='register'
         type='card'
+        stickyTop={false}
         size={'middle'}
       >
         <UI.ViewSectionTabs.TabPane tab={portalLang.register} key='register'>
