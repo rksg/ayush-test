@@ -491,3 +491,114 @@ export const fakeIncidentChannelDist = fakeIncident({
   vlanCount: -1,
   connectedPowerDeviceCount: -1
 })
+
+export const fakeIncidentNetTime = fakeIncident({
+  severity: 1,
+  startTime: '2023-07-09T00:00:00.000Z',
+  endTime: '2023-07-10T00:00:00.000Z',
+  code: 'i-net-time-past',
+  sliceType: 'system',
+  sliceValue: 'AP-MEM-vSZ-61',
+  id: '0ba74912-cc80-4bfa-957d-7f176409eb42',
+  path: [
+    {
+      type: 'system',
+      name: 'AP-MEM-vSZ-61'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    apRadioDeploy: '2-5',
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})
+
+export const fakeIncidentNetSzNetLatency = fakeIncident({
+  severity: 1,
+  startTime: '2023-07-09T00:00:00.000Z',
+  endTime: '2023-07-10T00:00:00.000Z',
+  code: 'i-net-sz-net-latency',
+  sliceType: 'system',
+  sliceValue: 'AP-MEM-vSZ-61',
+  id: '0ba74912-cc80-4bfa-957d-7f176409eb42',
+  path: [
+    {
+      type: 'system',
+      name: 'AP-MEM-vSZ-61'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    apRadioDeploy: '2-5',
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})
+
+export const fakeIncidentLoadSzCpuLoad = fakeIncident({
+  severity: 0.9,
+  startTime: '2022-09-28T04:00:00.000Z',
+  endTime: '2022-09-28T05:00:10.000Z',
+  code: 'p-switch-memory-high',
+  sliceType: 'switch',
+  sliceValue: 'ICX8200-24 Router',
+  id: '7a58f892-880d-42fe-a97c-7455a2ec51f9',
+  path: [
+    {
+      type: 'switchGroup',
+      name: 'BDC_ICX'
+    },
+    {
+      type: 'switch',
+      name: '38:45:3B:3C:EC:70'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: 0,
+  impactedApCount: -1,
+  switchCount: 0,
+  vlanCount: 0,
+  connectedPowerDeviceCount: 0
+})
