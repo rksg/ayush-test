@@ -100,15 +100,12 @@ export const FieldGroup = styled.div`
 
 export const ValueContainer = styled.div`
   margin: 12px 12px 4px 32px;
-  &.disabled * {
-    color: rgba(0, 0, 0, 0.25)
-  }
   .ant-radio-group {
     font-size: unset;
   }
 `
 export const ApModelsContainer = styled.div`
-  margin-left: 24px;
+  margin-left: 2px;
   .empty {
     color: var(--acx-neutrals-50);
     font-style: italic;

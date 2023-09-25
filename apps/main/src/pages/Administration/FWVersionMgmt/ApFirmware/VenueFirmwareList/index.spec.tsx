@@ -63,6 +63,10 @@ describe('Firmware Venues Table', () => {
     )
   })
 
+  afterEach(() => {
+    jest.mocked(useIsSplitOn).mockRestore()
+  })
+
   it('should render table', async () => {
     render(
       <Provider>
@@ -154,12 +158,19 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device/i }))
     const confirmDialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
 
+    const targetActiveAbfVersion = availableABFList.filter(item => item.abf === 'active')[0]
     await waitFor(() => {
-      expect(updateNowFn).toHaveBeenCalled()
+      expect(updateNowFn).toHaveBeenCalledWith([{
+        firmwareCategoryId: 'active',
+        firmwareVersion: targetActiveAbfVersion.id,
+        venueIds: [
+          '02b81f0e31e34921be5cf47e6dce1f3f', // The venue ID of My-Venue
+          '8ee8acc996734a5dbe43777b72469857' // The venue ID of Ben-Venue-US
+        ]
+      }])
     })
 
     await waitFor(() => expect(confirmDialog).not.toBeVisible())

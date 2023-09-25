@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Select, Radio, RadioChangeEvent, Space, Typography, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                          from 'antd/lib/checkbox'
-import { DefaultOptionType }                                            from 'antd/lib/select'
-import { useIntl }                                                      from 'react-intl'
+import { Select, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { DefaultOptionType }                                  from 'antd/lib/select'
+import { useIntl }                                            from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal }      from '@acx-ui/components'
 import {
   EolApFirmware,
   FirmwareCategory,
@@ -188,27 +187,34 @@ function ABFSelector (props: ABFSelectorProps) {
   const { categoryId, abfLabel, defaultChecked = false, defaultVersionId, defaultVersionLabel,
     otherVersions = [], update, apModels = '' } = props
   const { $t } = useIntl()
-  const [ isChecked, setIsChecked ] = useState(defaultChecked)
-  const [ selectMode, setSelectMode ] = useState(VersionsSelectMode.Radio)
+  // eslint-disable-next-line max-len
+  const [ selectMode, setSelectMode ] = useState(defaultChecked ? VersionsSelectMode.Radio : VersionsSelectMode.Radio_None)
   const [ selectedOtherVersion, setSelectedOtherVersion ] = useState('')
 
-  const getSelectedActiveVersion = (): string => {
-    return selectMode === VersionsSelectMode.Radio ? defaultVersionId : selectedOtherVersion
+  const getSelectedVersion = (): string => {
+    switch (selectMode) {
+      case VersionsSelectMode.Radio:
+        return defaultVersionId
+      case VersionsSelectMode.Dropdown:
+        return selectedOtherVersion
+      default:
+        return ''
+    }
   }
 
-  const getFirmwareResult = (): UpdateNowRequestWithoutVenues => {
+  const getFirmwareResult = (): UpdateNowRequestWithoutVenues | null => {
+    const selectedVersion = getSelectedVersion()
+
+    if (!selectedVersion) return null
+
     return {
       firmwareCategoryId: categoryId,
-      firmwareVersion: getSelectedActiveVersion()
+      firmwareVersion: selectedVersion
     } as UpdateNowRequestWithoutVenues
   }
 
-  const doUpdate = (checked: boolean) => {
-    update(categoryId, checked ? getFirmwareResult() : null)
-  }
-
-  const onEnabledABFChange = (e: CheckboxChangeEvent) => {
-    setIsChecked(e.target.checked)
+  const doUpdate = () => {
+    update(categoryId, getFirmwareResult())
   }
 
   const onSelectModeChange = (e: RadioChangeEvent) => {
@@ -220,35 +226,36 @@ function ABFSelector (props: ABFSelectorProps) {
   }
 
   useEffect(() => {
-    doUpdate(isChecked)
-  }, [isChecked, selectMode, selectedOtherVersion])
+    doUpdate()
+  }, [selectMode, selectedOtherVersion])
 
   return (<>
-    <Checkbox value={isChecked} checked={isChecked} onChange={onEnabledABFChange}>
-      <UI.TitleActive>{abfLabel}</UI.TitleActive>
-    </Checkbox>
-    <UI.ValueContainer className={isChecked ? '' : 'disabled'}>
+    <UI.TitleActive>{abfLabel}</UI.TitleActive>
+    <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectModeChange}
         value={selectMode}
-        disabled={!isChecked}
       >
         <Space direction={'vertical'}>
-          <Radio value={VersionsSelectMode.Radio}>{defaultVersionLabel}</Radio>
+          <Radio key={VersionsSelectMode.Radio} value={VersionsSelectMode.Radio}>
+            {defaultVersionLabel}
+          </Radio>
           { otherVersions.length > 0 ?
             <UI.SelectDiv>
-              <Radio value={VersionsSelectMode.Dropdown} />
+              <Radio key={VersionsSelectMode.Dropdown} value={VersionsSelectMode.Dropdown} />
               <Select
                 style={{ width: '420px', fontSize: '12px' }}
                 placeholder={$t({ defaultMessage: 'Select other version...' })}
                 value={selectedOtherVersion}
                 onChange={onOtherVersionChange}
                 options={otherVersions}
-                disabled={!isChecked}
               />
             </UI.SelectDiv>
             : null
           }
+          <Radio key={VersionsSelectMode.Radio_None} value={VersionsSelectMode.Radio_None}>
+            {$t({ defaultMessage: 'Do not update firmware on selected venue(s)' })}
+          </Radio>
           <UI.ApModelsContainer>
             <span>{ $t({ defaultMessage: 'AP Models:' }) }&nbsp;</span>
             <span className={apModels ? '' : 'empty'}>
