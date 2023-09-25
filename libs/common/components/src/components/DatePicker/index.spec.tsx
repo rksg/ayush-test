@@ -392,7 +392,22 @@ describe('RangePicker', () => {
     await user.click(calenderSelect)
     expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
   })
-
+  it('should display last 8 hours option', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{ startDate: null, endDate: null }}
+          onDateApply={() => {}}
+          isDashBoard={true}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect(await screen.findByText('Last 8 Hours')).toBeInTheDocument()
+  })
   it('should from all time change to last 24 hours correctly', async () => {
     mockUseDateFilter.mockReturnValue({
       startDate: '2022-01-01T00:00:00+08:00',
