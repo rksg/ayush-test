@@ -142,8 +142,8 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Last Connection' }),
       dataIndex: 'lastActiveTime',
       key: 'lastActiveTime',
-      render: (value: unknown) => {
-        return formatter(DateFormatEnum.DateTimeFormat)(value)
+      render: (_, { lastActiveTime }) => {
+        return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
     }
