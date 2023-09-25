@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from 'react'
 
 import { Menu, Space } from 'antd'
 import { ItemType }    from 'antd/lib/menu/hooks/useItems'
+import moment          from 'moment'
 import { useIntl }     from 'react-intl'
 
 import { DateRange, dateRangeMap, defaultRanges } from '@acx-ui/utils'
@@ -19,7 +20,7 @@ interface TimeRangeDropDownContextType {
 
 export const defaultTimeRangeDropDownContextValue: TimeRangeDropDownContextType = {
   availableRanges: [DateRange.last24Hours],
-  timeRange: defaultRanges()[DateRange.last24Hours]!,
+  timeRange: [moment(), moment()],
   selectedRange: DateRange.last24Hours,
   setTimeRangeDropDownRange: () => {}
 }
