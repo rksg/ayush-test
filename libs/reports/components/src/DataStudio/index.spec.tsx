@@ -1,12 +1,11 @@
 import { rest } from 'msw'
 
-import * as config                     from '@acx-ui/config'
-import {  ReportUrlsInfo, reportsApi } from '@acx-ui/reports/services'
-import type { UrlInfo }                from '@acx-ui/reports/services'
-import { Provider }                    from '@acx-ui/store'
-import { store }                       from '@acx-ui/store'
-import { render, screen, waitFor }     from '@acx-ui/test-utils'
-import { mockServer }                  from '@acx-ui/test-utils'
+import * as config                             from '@acx-ui/config'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { ReportUrlsInfo, reportsApi }          from '@acx-ui/reports/services'
+import type { UrlInfo }                        from '@acx-ui/reports/services'
+import { Provider, store }                     from '@acx-ui/store'
+import { render, screen, waitFor, mockServer } from '@acx-ui/test-utils'
 
 import { DataStudio, getHostName } from '.'
 
@@ -15,8 +14,13 @@ const response = {
 } as UrlInfo
 
 jest.mock('@acx-ui/utils', () => ({
+  __esModule: true,
   ...jest.requireActual('@acx-ui/utils'),
-  isMSP: jest.fn()
+  useLocaleContext: () => ({
+    messages: {
+      locale: 'en'
+    }
+  })
 }))
 
 jest.mock('@acx-ui/config')
@@ -38,6 +42,8 @@ describe('DataStudio', () => {
 
   const params = { tenantId: 'tenant-id' }
   it('should render the data studio for ALTO', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider>
       <DataStudio/>
     </Provider>, { route: { params } })
@@ -53,6 +59,8 @@ describe('DataStudio', () => {
   })
 
   it('should render the data studio for MLISA SA', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     get.mockReturnValue('true')
     render(<Provider>
       <DataStudio/>

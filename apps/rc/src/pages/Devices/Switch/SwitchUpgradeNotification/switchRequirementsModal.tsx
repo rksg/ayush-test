@@ -11,11 +11,11 @@ export function SwitchRequirementsModal (props: {
   const onClose = () => {
     props.setModalVisible(false)
   }
-  const switchImgUrl = 'https://support.ruckuswireless.com/software/3789-ruckus-icx-fastiron-09-0-10h-ga-software-release-zip'
+  const switchImgUrl = 'https://support.ruckuswireless.com/software_terms_and_conditions/3657-ruckus-icx-fastiron-09-0-10f-ga-software-release-zip'
   const usbUpgradeVedioUrl = 'https://www.youtube.com/watch?v=wDdeUBzwfNI'
   const upgradeProcessUrl = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-C8148B03-D98C-4F4D-939C-9111CECB0601.html'
   const imageDownloadUseUsb = 'https://docs.commscope.com/bundle/fastiron-09010-upgradeguide/page/GUID-6848A0EE-1480-4A6A-9A99-08DD64F969DF.html'
-  const firmwareVersion = '09.0.10h'
+  const firmwareVersion = '09.0.10f'
 
   return (
 
@@ -101,7 +101,7 @@ export function SwitchRequirementsModal (props: {
               <br />
               {$t({ defaultMessage: 'Example:' })}
               <UI.CommandRectengle>
-                copy tftp flash &lt;TFTP server IP address&gt; SPR09010hufi.bin primary
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010fufi.bin primary
               </UI.CommandRectengle>
             </UI.ListItems>
             <UI.ListItems>
@@ -113,7 +113,7 @@ export function SwitchRequirementsModal (props: {
                 <br />
                 reload
                 <br />
-                copy tftp flash &lt;TFTP server IP address&gt; SPR09010hufi.bin primary
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010fufi.bin primary
               </UI.CommandRectengle>
             </UI.ListItems>
           </UI.OrderList>
@@ -122,8 +122,8 @@ export function SwitchRequirementsModal (props: {
             <UI.CommandRectengle style={{ marginLeft: '20px' }}>
               SSH@7150-C12P#show version   <br />
               &copy; CommScope, Inc. All Rights Reserved.   <br />
-              UNIT 1: compiled on Sep 11 2023 at 22:09:51 labeled as SPR09010h  <br />
-              (33554432 bytes) from Primary SPR09010h.bin (UFI)
+              UNIT 1: compiled on May  2 2023 at 22:09:30 labeled as SPR09010f  <br />
+              (33554432 bytes) from Primary SPR09010f.bin (UFI)
             </UI.CommandRectengle>
           </UI.ListItems>
         </UI.OrderList>

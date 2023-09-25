@@ -997,6 +997,7 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format={formatter(DateFormatEnum.DateFormat)}
+                allowClear={false}
                 disabled={!customDate}
                 defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
@@ -1110,6 +1111,7 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format={formatter(DateFormatEnum.DateFormat)}
+                allowClear={false}
                 disabled={!customDate}
                 defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}

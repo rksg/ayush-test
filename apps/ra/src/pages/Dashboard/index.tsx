@@ -6,15 +6,16 @@ import { useIntl } from 'react-intl'
 import {
   DidYouKnow,
   IncidentsCountBySeverities,
+  NetworkHistory,
   SLA,
   ReportTile,
   SANetworkFilter,
   AIDrivenRRM,
-  AIOperations
+  AIOperations,
+  ChatWithMelissa
 } from '@acx-ui/analytics/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
   PageHeader,
   RangePicker,
   cssNumber,
@@ -72,9 +73,9 @@ export default function Dashboard () {
         <ReportTile path={path} />
       </div>
       <div style={{ gridArea: 'a2' }}>
-        <Card />
+        <NetworkHistory hideLegend historicalIcon={false} filters={analyticsFilter} />
       </div>
-      <div style={{ gridArea: 'd2' }}>
+      <div style={{ gridArea: 'a3' }}>
         <SLA filters={analyticsFilter}/>
       </div>
       <div style={{ gridArea: 'b1' }}>
@@ -83,11 +84,14 @@ export default function Dashboard () {
       <div style={{ gridArea: 'b2' }}>
         <AIDrivenRRM filters={filters} />
       </div>
-      <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow filters={filters} maxFactPerSlide={4} maxSlideChar={340} />
-      </div>
-      <div style={{ gridArea: 'c1' }}>
+      <div style={{ gridArea: 'c2' }}>
         <AIOperations filters={filters} />
+      </div>
+      <div style={{ gridArea: 'd1' }}>
+        <DidYouKnow filters={filters} maxFactPerSlide={3} maxSlideChar={290} />
+      </div>
+      <div style={{ gridArea: 'd2' }}>
+        <ChatWithMelissa />
       </div>
     </UI.Grid>
   </>
