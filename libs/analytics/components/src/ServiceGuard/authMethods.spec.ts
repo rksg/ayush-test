@@ -1,27 +1,52 @@
 import {
-  authMethodsByClientType,
-  authMethodsByCode
-} from './authMethods'
-import {
   AuthenticationMethod,
   ClientType
 } from './types'
 
-
-describe('authMethodsByClientType', () => {
-  it('matches snapshot', () => {
+describe('R1', () => {
+  describe('authMethodsByClientType', () => {
+    const { authMethodsByClientType } = require('./authMethods')
     Object.values(ClientType).forEach(type => {
-      const result = authMethodsByClientType[type]
-      expect(result).toMatchSnapshot()
+      it(`${type} matches snapshot`, () => {
+        const result = authMethodsByClientType[type]
+        expect(result).toMatchSnapshot()
+      })
+    })
+  })
+
+  describe('authMethodsByCode', () => {
+    const { authMethodsByCode } = require('./authMethods')
+    Object.values(AuthenticationMethod).forEach(method => {
+      it(`${method} matches snapshot`, () => {
+        const result = authMethodsByCode[method]
+        expect(result).toMatchSnapshot()
+      })
     })
   })
 })
 
-describe('authMethodsByCode', () => {
-  it('matches snapshot', () => {
+describe('SA', () => {
+  describe('authMethodsByClientType', () => {
+    jest.resetModules()
+    jest.doMock('@acx-ui/config', () => ({ get: jest.fn().mockReturnValue('true') }))
+    const { authMethodsByClientType } = require('./authMethods')
+    Object.values(ClientType).forEach(type => {
+      it(`${type} matches snapshot`, () => {
+        const result = authMethodsByClientType[type]
+        expect(result).toMatchSnapshot()
+      })
+    })
+  })
+
+  describe('authMethodsByCode', () => {
+    jest.resetModules()
+    jest.doMock('@acx-ui/config', () => ({ get: jest.fn().mockReturnValue('true') }))
+    const { authMethodsByCode } = require('./authMethods')
     Object.values(AuthenticationMethod).forEach(method => {
-      const result = authMethodsByCode[method]
-      expect(result).toMatchSnapshot()
+      it(`${method} matches snapshot`, () => {
+        const result = authMethodsByCode[method]
+        expect(result).toMatchSnapshot()
+      })
     })
   })
 })

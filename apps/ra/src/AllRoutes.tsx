@@ -7,7 +7,11 @@ import {
   CrrmDetails,
   VideoCallQoe,
   VideoCallQoeForm,
-  VideoCallQoeDetails
+  VideoCallQoeDetails,
+  ServiceGuardForm,
+  ServiceGuardSpecGuard,
+  ServiceGuardTestGuard,
+  ServiceGuardDetails
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
@@ -44,7 +48,27 @@ function AllRoutes () {
       <Route path='configChange' element={<ConfigChange />} />
       <Route path='reports/*' element={<ReportsRoutes />} />
       <Route path='dataStudio/*' element={<ReportsRoutes />} />
-      <Route path='serviceValidation' element={<div>Service Validation</div>} />
+      <Route path='serviceValidation/*'>
+        <Route index
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />} />
+        <Route path='add' element={<ServiceGuardForm />} />
+        <Route path=':specId'>
+          <Route
+            path='edit'
+            element={<ServiceGuardSpecGuard children={<ServiceGuardForm />} />}
+          />
+          <Route path='tests/:testId'>
+            <Route
+              index
+              element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+            />
+            <Route
+              path='tab/:activeTab'
+              element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+            />
+          </Route>
+        </Route>
+      </Route>
       <Route path='videoCallQoe' >
         <Route index element={<VideoCallQoe />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />

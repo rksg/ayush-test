@@ -1,10 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`authMethodsByClientType matches snapshot 1`] = `
+exports[`R1 authMethodsByClientType virtual-client matches snapshot 1`] = `
 Array [
   Object {
     "clientType": "virtual-client",
     "code": "WPA2_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanPassword",
@@ -74,6 +78,10 @@ Array [
   Object {
     "clientType": "virtual-client",
     "code": "WPA2_ENTERPRISE",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanUsername",
@@ -157,6 +165,10 @@ Array [
   Object {
     "clientType": "virtual-client",
     "code": "OPEN_AUTH",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [],
     "stages": Array [
       Object {
@@ -209,11 +221,15 @@ Array [
 ]
 `;
 
-exports[`authMethodsByClientType matches snapshot 2`] = `
+exports[`R1 authMethodsByClientType virtual-wireless-client matches snapshot 1`] = `
 Array [
   Object {
     "clientType": "virtual-wireless-client",
     "code": "WPA2_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanPassword",
@@ -283,6 +299,10 @@ Array [
   Object {
     "clientType": "virtual-wireless-client",
     "code": "WPA3_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanPassword",
@@ -352,6 +372,10 @@ Array [
   Object {
     "clientType": "virtual-wireless-client",
     "code": "WPA2_WPA3_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanPassword",
@@ -421,6 +445,10 @@ Array [
   Object {
     "clientType": "virtual-wireless-client",
     "code": "WPA2_ENTERPRISE",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [
       Object {
         "key": "wlanUsername",
@@ -504,6 +532,10 @@ Array [
   Object {
     "clientType": "virtual-wireless-client",
     "code": "OPEN_AUTH",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
     "fields": Array [],
     "stages": Array [
       Object {
@@ -556,19 +588,20 @@ Array [
 ]
 `;
 
-exports[`authMethodsByCode matches snapshot 1`] = `
+exports[`R1 authMethodsByCode GUEST_ACCESS matches snapshot 1`] = `undefined`;
+
+exports[`R1 authMethodsByCode OPEN_AUTH matches snapshot 1`] = `
 Object {
   "clientTypes": Array [
     "virtual-client",
     "virtual-wireless-client",
   ],
-  "code": "WPA2_PERSONAL",
-  "fields": Array [
-    Object {
-      "key": "wlanPassword",
-      "preConfigured": true,
-    },
+  "code": "OPEN_AUTH",
+  "deployments": Array [
+    "SA",
+    "R1",
   ],
+  "fields": Array [],
   "stages": Array [
     Object {
       "key": "auth",
@@ -595,18 +628,6 @@ Object {
       },
     },
     Object {
-      "key": "eap",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "PSK",
-          },
-        ],
-        "id": "HJp6oV",
-      },
-    },
-    Object {
       "key": "dhcp",
       "title": Object {
         "defaultMessage": Array [
@@ -623,169 +644,31 @@ Object {
     "defaultMessage": Array [
       Object {
         "type": 0,
-        "value": "Pre-Shared Key (PSK)",
+        "value": "Open Network",
       },
     ],
-    "id": "rXq1Sc",
+    "id": "cp8inc",
   },
 }
 `;
 
-exports[`authMethodsByCode matches snapshot 2`] = `
-Object {
-  "clientTypes": Array [
-    "virtual-wireless-client",
-  ],
-  "code": "WPA3_PERSONAL",
-  "fields": Array [
-    Object {
-      "key": "wlanPassword",
-      "preConfigured": true,
-    },
-  ],
-  "stages": Array [
-    Object {
-      "key": "auth",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "802.11 Auth",
-          },
-        ],
-        "id": "khUcMo",
-      },
-    },
-    Object {
-      "key": "assoc",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Association",
-          },
-        ],
-        "id": "voFdJV",
-      },
-    },
-    Object {
-      "key": "eap",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "PSK",
-          },
-        ],
-        "id": "HJp6oV",
-      },
-    },
-    Object {
-      "key": "dhcp",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "DHCP",
-          },
-        ],
-        "id": "IqBkBl",
-      },
-    },
-  ],
-  "title": Object {
-    "defaultMessage": Array [
-      Object {
-        "type": 0,
-        "value": "WPA3-Personal",
-      },
-    ],
-    "id": "k3Df8M",
-  },
-}
-`;
+exports[`R1 authMethodsByCode WEB_AUTHENTICATION matches snapshot 1`] = `undefined`;
 
-exports[`authMethodsByCode matches snapshot 3`] = `
-Object {
-  "clientTypes": Array [
-    "virtual-wireless-client",
-  ],
-  "code": "WPA2_WPA3_PERSONAL",
-  "fields": Array [
-    Object {
-      "key": "wlanPassword",
-      "preConfigured": true,
-    },
-  ],
-  "stages": Array [
-    Object {
-      "key": "auth",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "802.11 Auth",
-          },
-        ],
-        "id": "khUcMo",
-      },
-    },
-    Object {
-      "key": "assoc",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Association",
-          },
-        ],
-        "id": "voFdJV",
-      },
-    },
-    Object {
-      "key": "eap",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "PSK",
-          },
-        ],
-        "id": "HJp6oV",
-      },
-    },
-    Object {
-      "key": "dhcp",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "DHCP",
-          },
-        ],
-        "id": "IqBkBl",
-      },
-    },
-  ],
-  "title": Object {
-    "defaultMessage": Array [
-      Object {
-        "type": 0,
-        "value": "WPA2/WPA3-Personal",
-      },
-    ],
-    "id": "52g3Uu",
-  },
-}
-`;
+exports[`R1 authMethodsByCode WISPR matches snapshot 1`] = `undefined`;
 
-exports[`authMethodsByCode matches snapshot 4`] = `
+exports[`R1 authMethodsByCode WISPR_8021X matches snapshot 1`] = `undefined`;
+
+exports[`R1 authMethodsByCode WPA2_ENTERPRISE matches snapshot 1`] = `
 Object {
   "clientTypes": Array [
     "virtual-client",
     "virtual-wireless-client",
   ],
   "code": "WPA2_ENTERPRISE",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
   "fields": Array [
     Object {
       "key": "wlanUsername",
@@ -868,13 +751,1551 @@ Object {
 }
 `;
 
-exports[`authMethodsByCode matches snapshot 5`] = `
+exports[`R1 authMethodsByCode WPA2_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WPA2_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Pre-Shared Key (PSK)",
+      },
+    ],
+    "id": "rXq1Sc",
+  },
+}
+`;
+
+exports[`R1 authMethodsByCode WPA2_WPA3_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-wireless-client",
+  ],
+  "code": "WPA2_WPA3_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA2/WPA3-Personal",
+      },
+    ],
+    "id": "52g3Uu",
+  },
+}
+`;
+
+exports[`R1 authMethodsByCode WPA3_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-wireless-client",
+  ],
+  "code": "WPA3_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA3-Personal",
+      },
+    ],
+    "id": "k3Df8M",
+  },
+}
+`;
+
+exports[`SA authMethodsByClientType virtual-client matches snapshot 1`] = `
+Array [
+  Object {
+    "clientType": "virtual-client",
+    "code": "WPA2_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+        "preConfigured": true,
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "PSK",
+            },
+          ],
+          "id": "HJp6oV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA2-Personal",
+        },
+      ],
+      "id": "ErvqA+",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "WPA2_ENTERPRISE",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "EAP",
+            },
+          ],
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA2-Enterprise",
+        },
+      ],
+      "id": "OFwtpt",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "OPEN_AUTH",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Open Network",
+        },
+      ],
+      "id": "cp8inc",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "WISPR_8021X",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "EAP",
+            },
+          ],
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "802.1X with WISPr",
+        },
+      ],
+      "id": "30eRNE",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "WISPR",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WISPr",
+        },
+      ],
+      "id": "On+J6T",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "WEB_AUTHENTICATION",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Web Authentication",
+        },
+      ],
+      "id": "Nhf+lh",
+    },
+  },
+  Object {
+    "clientType": "virtual-client",
+    "code": "GUEST_ACCESS",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Guest Access",
+        },
+      ],
+      "id": "22vv7R",
+    },
+  },
+]
+`;
+
+exports[`SA authMethodsByClientType virtual-wireless-client matches snapshot 1`] = `
+Array [
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WPA2_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+        "preConfigured": true,
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "PSK",
+            },
+          ],
+          "id": "HJp6oV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA2-Personal",
+        },
+      ],
+      "id": "ErvqA+",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WPA3_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+        "preConfigured": true,
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "PSK",
+            },
+          ],
+          "id": "HJp6oV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA3-Personal",
+        },
+      ],
+      "id": "k3Df8M",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WPA2_WPA3_PERSONAL",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+        "preConfigured": true,
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "PSK",
+            },
+          ],
+          "id": "HJp6oV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA2/WPA3-Personal",
+        },
+      ],
+      "id": "52g3Uu",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WPA2_ENTERPRISE",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "EAP",
+            },
+          ],
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WPA2-Enterprise",
+        },
+      ],
+      "id": "OFwtpt",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "OPEN_AUTH",
+    "deployments": Array [
+      "SA",
+      "R1",
+    ],
+    "fields": Array [],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Open Network",
+        },
+      ],
+      "id": "cp8inc",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WISPR_8021X",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "eap",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "EAP",
+            },
+          ],
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "802.1X with WISPr",
+        },
+      ],
+      "id": "30eRNE",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WISPR",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WISPr",
+        },
+      ],
+      "id": "On+J6T",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "WEB_AUTHENTICATION",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanUsername",
+      },
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Web Authentication",
+        },
+      ],
+      "id": "Nhf+lh",
+    },
+  },
+  Object {
+    "clientType": "virtual-wireless-client",
+    "code": "GUEST_ACCESS",
+    "deployments": Array [
+      "SA",
+    ],
+    "fields": Array [
+      Object {
+        "key": "wlanPassword",
+      },
+    ],
+    "stages": Array [
+      Object {
+        "key": "auth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "802.11 Auth",
+            },
+          ],
+          "id": "khUcMo",
+        },
+      },
+      Object {
+        "key": "assoc",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "Association",
+            },
+          ],
+          "id": "voFdJV",
+        },
+      },
+      Object {
+        "key": "dhcp",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "DHCP",
+            },
+          ],
+          "id": "IqBkBl",
+        },
+      },
+      Object {
+        "key": "userAuth",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "L3 Authentication",
+            },
+          ],
+          "id": "F1bMju",
+        },
+      },
+    ],
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Guest Access",
+        },
+      ],
+      "id": "22vv7R",
+    },
+  },
+]
+`;
+
+exports[`SA authMethodsByCode GUEST_ACCESS matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "GUEST_ACCESS",
+  "deployments": Array [
+    "SA",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+    Object {
+      "key": "userAuth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "L3 Authentication",
+          },
+        ],
+        "id": "F1bMju",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Guest Access",
+      },
+    ],
+    "id": "22vv7R",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode OPEN_AUTH matches snapshot 1`] = `
 Object {
   "clientTypes": Array [
     "virtual-client",
     "virtual-wireless-client",
   ],
   "code": "OPEN_AUTH",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
   "fields": Array [],
   "stages": Array [
     Object {
@@ -922,6 +2343,598 @@ Object {
       },
     ],
     "id": "cp8inc",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WEB_AUTHENTICATION matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WEB_AUTHENTICATION",
+  "deployments": Array [
+    "SA",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanUsername",
+    },
+    Object {
+      "key": "wlanPassword",
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+    Object {
+      "key": "userAuth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "L3 Authentication",
+          },
+        ],
+        "id": "F1bMju",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Web Authentication",
+      },
+    ],
+    "id": "Nhf+lh",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WISPR matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WISPR",
+  "deployments": Array [
+    "SA",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanUsername",
+    },
+    Object {
+      "key": "wlanPassword",
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+    Object {
+      "key": "userAuth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "L3 Authentication",
+          },
+        ],
+        "id": "F1bMju",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WISPr",
+      },
+    ],
+    "id": "On+J6T",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WISPR_8021X matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WISPR_8021X",
+  "deployments": Array [
+    "SA",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanUsername",
+    },
+    Object {
+      "key": "wlanPassword",
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP",
+          },
+        ],
+        "id": "QBomBf",
+      },
+    },
+    Object {
+      "key": "radius",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "RADIUS",
+          },
+        ],
+        "id": "pS5Lez",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+    Object {
+      "key": "userAuth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "L3 Authentication",
+          },
+        ],
+        "id": "F1bMju",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "802.1X with WISPr",
+      },
+    ],
+    "id": "30eRNE",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WPA2_ENTERPRISE matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WPA2_ENTERPRISE",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanUsername",
+    },
+    Object {
+      "key": "wlanPassword",
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP",
+          },
+        ],
+        "id": "QBomBf",
+      },
+    },
+    Object {
+      "key": "radius",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "RADIUS",
+          },
+        ],
+        "id": "pS5Lez",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA2-Enterprise",
+      },
+    ],
+    "id": "OFwtpt",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WPA2_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-client",
+    "virtual-wireless-client",
+  ],
+  "code": "WPA2_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA2-Personal",
+      },
+    ],
+    "id": "ErvqA+",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WPA2_WPA3_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-wireless-client",
+  ],
+  "code": "WPA2_WPA3_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA2/WPA3-Personal",
+      },
+    ],
+    "id": "52g3Uu",
+  },
+}
+`;
+
+exports[`SA authMethodsByCode WPA3_PERSONAL matches snapshot 1`] = `
+Object {
+  "clientTypes": Array [
+    "virtual-wireless-client",
+  ],
+  "code": "WPA3_PERSONAL",
+  "deployments": Array [
+    "SA",
+    "R1",
+  ],
+  "fields": Array [
+    Object {
+      "key": "wlanPassword",
+      "preConfigured": true,
+    },
+  ],
+  "stages": Array [
+    Object {
+      "key": "auth",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "802.11 Auth",
+          },
+        ],
+        "id": "khUcMo",
+      },
+    },
+    Object {
+      "key": "assoc",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Association",
+          },
+        ],
+        "id": "voFdJV",
+      },
+    },
+    Object {
+      "key": "eap",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "PSK",
+          },
+        ],
+        "id": "HJp6oV",
+      },
+    },
+    Object {
+      "key": "dhcp",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "DHCP",
+          },
+        ],
+        "id": "IqBkBl",
+      },
+    },
+  ],
+  "title": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "WPA3-Personal",
+      },
+    ],
+    "id": "k3Df8M",
   },
 }
 `;
