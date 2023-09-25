@@ -10,9 +10,9 @@ import { json2keymap } from '../ConfigChange/Table/util'
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
   | Array<{
     radio: string,
-    channelMode: string | undefined,
-    channelWidth: string | undefined,
-    autoCellSizing: string | undefined
+    channelMode: string | null,
+    channelWidth: string | null,
+    autoCellSizing: string | null
   }>
 
 const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)

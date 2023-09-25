@@ -154,10 +154,10 @@ describe('crrmText', () => {
       {
         config: [
           {
-            channelMode: undefined,
-            channelWidth: undefined,
+            channelMode: null,
+            channelWidth: null,
             radio: '2.4',
-            autoCellSizing: undefined
+            autoCellSizing: null
           }
         ],
         expectedText: 'Unknown and Unknown MHz for 2.4 GHz with static AP Tx Power'
