@@ -179,10 +179,10 @@ export const AINotificationDrawer = ({
     <Loader states={[query]}>
       <UI.IncidentNotificationWrapper>
         <div>{title}</div>
-        <div>{$t({ defaultMessage: 'Incidents' })}</div>
+        <UI.SectionTitle>{$t({ defaultMessage: 'Incidents' })}</UI.SectionTitle>
         <OptionsList labels={priorities} setState={setState} />
         { allowRecommandations && <>
-          <div>{$t({ defaultMessage: 'Recommendations' })}</div>
+          <UI.SectionTitle>{$t({ defaultMessage: 'Recommendations' })}</UI.SectionTitle>
           <OptionsList labels={recommendations} setState={setRecState} />
         </>}
         <UI.AfterMsg>{afterMsg}</UI.AfterMsg>
