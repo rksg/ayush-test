@@ -72,7 +72,7 @@ const Ports = () => {
       onChange={onTabChange}
       defaultActiveKey='ports-general'
       activeKey={activeSubTab}
-      type='second'
+      type='card'
     >
       {Object.keys(tabs)
         .map((key) =>
