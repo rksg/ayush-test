@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
+import { defaultNetworkPath }                          from '@acx-ui/analytics/utils'
 import { SearchOutlined, CloseSymbol, CaretDownSolid } from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
@@ -48,16 +49,19 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const { $t } = useIntl()
   const { data: rootNode, setNetworkPath, defaultSelectedNode: selectedNode } = props
   const defaultPath = [{ name: 'Network', type: 'network' }]
-  const initialBreadcrumb = findMatchingNode(
+  const availableNode = findMatchingNode(
     rootNode,
     selectedNode?.[selectedNode.length - 1]
-  )?.path || [rootNode]
+  )
+  const initialBreadcrumb = availableNode?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
     useBreadcrumbState(initialBreadcrumb, setIsAnimationSlideIn)
   const nodeToInputValue = (node: Node[]) => node.slice(1).map(node => node.name).join(' / ')
   const [searchText, setSearchText] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>(nodeToInputValue(selectedNode))
+  const [inputValue, setInputValue] = useState<string>(
+    nodeToInputValue(availableNode?.path || defaultNetworkPath)
+  )
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
 
