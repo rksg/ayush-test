@@ -97,6 +97,7 @@ export interface FirmwareVersion {
   createdDate?: string; // onboardDate
   onboardDate?: string;
   releaseDate?: string;
+  inUse?: boolean;
 }
 
 export interface ABFVersion {

@@ -34,13 +34,12 @@ export const ClientDetailPageHeader = () => {
       title={<Space size={4}>{clientId}
         {<HostnameSpace size={4}>
           {/* TODO: use client detail query to get hostname */}
-          ({$t({ defaultMessage: 'Unknown' })})
         </HostnameSpace>}
       </Space>}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Clients' }), link: '' },
-        { text: $t({ defaultMessage: 'Wireless' }), link: '' },
-        { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
+        { text: $t({ defaultMessage: 'Wireless' }), link: '' }// ,
+        // { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ]}
       extra={[
         <DatePicker />

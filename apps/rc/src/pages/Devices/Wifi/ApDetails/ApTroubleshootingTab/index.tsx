@@ -30,7 +30,7 @@ export function ApTroubleshootingTab () {
       onChange={onTabChange}
       defaultActiveKey='ping'
       activeKey={params.activeSubTab}
-      type='second'
+      type='card'
     >
       <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
         <ApPingForm/>

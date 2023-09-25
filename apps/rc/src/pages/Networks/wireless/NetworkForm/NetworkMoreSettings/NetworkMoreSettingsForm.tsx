@@ -100,6 +100,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
 
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
+  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
 
   const [currentTab, setCurrentTab] = useState('vlan')
 
@@ -127,9 +128,9 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       display: defineMessage({ defaultMessage: 'Networking' }),
       style: { width: '38px' }
     },
-    ...((qosMapSetFlag || qosMirroringFlag)? [ {
+    ...((qosMapSetFlag || qosMirroringFlag || dtimFlag)? [ {
       key: 'advanced',
-      display: defineMessage({ defaultMessage: 'QoS' }),
+      display: defineMessage({ defaultMessage: 'Advanced' }),
       style: { width: '37px' }
     }] : [])
   ]

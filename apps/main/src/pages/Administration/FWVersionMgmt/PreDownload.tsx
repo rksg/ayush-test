@@ -5,6 +5,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Subtitle } from '@acx-ui/components'
+
 import * as UI from './styledComponents'
 
 interface PreDownloadProps {
@@ -19,19 +21,19 @@ export function PreDownload (props: PreDownloadProps) {
   return (
     <Row align='middle' justify='space-between'>
       <Col span={16}>
-        <UI.PreDownloadLabel>
+        <Subtitle level={4} style={{ marginTop: '10px' }}>
           {$t({ defaultMessage: 'Pre-download the firmware:' })}
-        </UI.PreDownloadLabel>
+        </Subtitle>
       </Col>
       <Col span={8}>
         <Switch checked={checked} onChange={setChecked} />
       </Col>
       <Col>
-        <span>
+        <UI.TitleActive>
           {$t({ defaultMessage: `If enabled, the firmware will be downloaded to the
           switch in the background before the scheduled upgrade time,
           leading to a shorter update time` })}
-        </span>
+        </UI.TitleActive>
       </Col>
     </Row>
   )
