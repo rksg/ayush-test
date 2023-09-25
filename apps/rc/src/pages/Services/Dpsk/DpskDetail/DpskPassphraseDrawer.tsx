@@ -85,7 +85,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     try {
       const isMacDuplicated = await checkMacDuplication()
 
-      if (isMacDuplicated && !isNewConfigFlow) {
+      if (isMacDuplicated) {
         showActionModal({
           type: 'confirm',
           width: 450,
@@ -100,6 +100,14 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
       } else {
         await onManualSettingFormSave()
       }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const onIsNewFlowSave = async () => {
+    try {
+      await onManualSettingFormSave()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -122,7 +130,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
             save: editMode.isEdit ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
-          onSave={onSave}
+          onSave={isNewConfigFlow ? onIsNewFlowSave : onSave}
         />
       }
       width={'500px'}
