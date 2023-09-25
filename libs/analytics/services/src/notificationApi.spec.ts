@@ -55,26 +55,34 @@ describe('Services for notification apis', () => {
   describe('setIncidentNotification', () => {
     const mutateProps = {
       tenantId: 'mutate-tenant-id',
-      state: {
-        P1: false,
-        P2: false,
-        P3: false,
-        P4: false
+      states: {
+        incident: {
+          P1: false,
+          P2: false,
+          P3: false,
+          P4: false
+        },
+        configRecommendation: {
+          aiOps: false,
+          crrm: false
+        }
       },
       preferences: {}
     }
-    it('should return correct value on mutation', async () => {
+    it('should return correct value on preferences mutation', async () => {
       mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
         data: { success: true }
       })
       const data = await store.dispatch(
-        preferencesApi.endpoints.setIncidentNotification.initiate({
+        preferencesApi.endpoints.setNotification.initiate({
           ...mutateProps,
-          state: {
-            ...mutateProps.state,
-            P1: false,
-            P2: true,
-            P3: true
+          states: {
+            incident: {
+              ...mutateProps.states.incident,
+              P1: false,
+              P2: true,
+              P3: true
+            }
           },
           preferences: {
             incident: {
@@ -90,18 +98,20 @@ describe('Services for notification apis', () => {
         }
       })
     })
-    it('should return correctly for undefined incidents', async () => {
+    it('should return correctly for undefined preferences', async () => {
       mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
         data: { success: true }
       })
       const data = await store.dispatch(
-        preferencesApi.endpoints.setIncidentNotification.initiate({
+        preferencesApi.endpoints.setNotification.initiate({
           ...mutateProps,
-          state: {
-            ...mutateProps.state,
-            P1: false,
-            P2: true,
-            P3: true
+          states: {
+            incident: {
+              ...mutateProps.states.incident,
+              P1: false,
+              P2: true,
+              P3: true
+            }
           },
           preferences: {
             incident: undefined

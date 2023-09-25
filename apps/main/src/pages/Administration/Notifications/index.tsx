@@ -27,10 +27,10 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { IncidientNotificationDrawer } from './IncidentNotificationDrawer'
-import { PreferenceDrawer }            from './PreferenceDrawer'
-import RecipientDialog                 from './RecipientDialog'
-import * as UI                         from './styledComponents'
+import { AINotificationDrawer } from './AINotificationDrawer'
+import { PreferenceDrawer }     from './PreferenceDrawer'
+import RecipientDialog          from './RecipientDialog'
+import * as UI                  from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -204,7 +204,7 @@ export const NotificationsTable = () => {
         isDuplicated={isDuplicated}
       />
       {showDrawer
-      && <IncidientNotificationDrawer
+      && <AINotificationDrawer
         showDrawer={showDrawer}
         setShowDrawer={setShowDrawer}
       />}

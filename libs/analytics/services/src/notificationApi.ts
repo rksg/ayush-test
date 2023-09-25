@@ -13,7 +13,7 @@ export type AnalyticsPreferences = {
     P3?: NotificationMethod[]
     P4?: NotificationMethod[]
   }
-  recommendation?: {
+  configRecommendation?: {
     crrm: NotificationMethod[]
     aiOps: NotificationMethod[]
   }
@@ -26,15 +26,19 @@ export type IncidentStates = {
   P4: boolean
 }
 
-type IncidentPreferencePayload = {
-  states: Record<string, boolean>[],
-  preferences: AnalyticsPreferences,
-  tenantId: string
-}
-
 export type RecommendationStates = {
   crrm: boolean,
   aiOps: boolean,
+}
+
+
+type IncidentPreferencePayload = {
+  states: {
+    incident?: IncidentStates,
+    configRecommendation?: RecommendationStates
+  },
+  preferences: AnalyticsPreferences,
+  tenantId: string
 }
 
 export const preferencesApi = notificationApi.injectEndpoints({
@@ -57,13 +61,13 @@ export const preferencesApi = notificationApi.injectEndpoints({
       providesTags: [{ type: 'Notification', id: 'GET_PREFERENCES' }],
       transformResponse: (response: AnalyticsPreferences) => response
     }),
-    setIncidentNotification: build.mutation<{ success: boolean }, IncidentPreferencePayload>({
+    setNotification: build.mutation<{ success: boolean }, IncidentPreferencePayload>({
       query: ({ preferences, tenantId, states }) => {
         return {
           url: 'preferences',
           method: 'post',
           credentials: 'include',
-          body: setIncidentPreferences(states, preferences),
+          body: setPreferences(states, preferences),
           headers: {
             ...getJwtHeaders(),
             'x-mlisa-tenant-id': tenantId,
@@ -79,31 +83,32 @@ export const preferencesApi = notificationApi.injectEndpoints({
 
 export const {
   useGetPreferencesQuery,
-  useSetIncidentNotificationMutation
+  useSetNotificationMutation
 } = preferencesApi
 
 
-const setIncidentPreferences = (
-  states: Record<string, boolean>[],
+const setPreferences = (
+  states: Record<string, Record<string, boolean>>,
   ogPref: AnalyticsPreferences
 ): string => {
   const cp = cloneDeep(ogPref)
-  for (let state in states) {
-    Object.entries(state).forEach(([key, val]) => {
-      let incidentPref: NotificationMethod[] | undefined = get(cp.incident, key, undefined)
+  Object.keys(states).forEach(type => {
+    Object.entries(states[type]).forEach(([key, val]) => {
+      let pref: NotificationMethod[] | undefined = get(cp[type as keyof typeof cp], key, undefined)
       if (val) {
-        if (!cp.incident) {
-          cp.incident = {}
+        if (!get(cp, type, undefined)) {
+          set(cp, type, {})
         }
-        const method: NotificationMethod[] = Array.isArray(incidentPref)
-          ? incidentPref.concat(['email'])
+        if (Array.isArray(pref) && pref.includes('email')) return
+        const method: NotificationMethod[] = Array.isArray(pref)
+          ? pref.concat(['email'])
           : ['email']
-        set(cp.incident, key, method)
+        set(cp, [type, key], method)
       } else {
-        (cp.incident && incidentPref)
-          && set(cp.incident, key, incidentPref.filter(pref => pref !== 'email'))
+        (get(cp, [type, key], undefined) && pref)
+          && set(cp, [type, key], pref.filter(pref => pref !== 'email'))
       }
     })
-  }
+  })
   return JSON.stringify(cp)
 }

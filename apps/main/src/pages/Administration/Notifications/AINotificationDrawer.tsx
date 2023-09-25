@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 
-import { Drawer, Button }         from 'antd'
+import { Button }                 from 'antd'
+import { forOwn }                 from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
   AnalyticsPreferences,
   IncidentStates,
-  useSetIncidentNotificationMutation,
+  useGetPreferencesQuery,
+  useSetNotificationMutation,
   RecommendationStates
 } from '@acx-ui/analytics/services'
-import { useGetPreferencesQuery } from '@acx-ui/analytics/services'
-import { showToast, Loader }      from '@acx-ui/components'
-import { getUserProfile }         from '@acx-ui/user'
+import { showToast, Loader, Drawer } from '@acx-ui/components'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { getUserProfile }            from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -26,10 +28,10 @@ const getRecommendationPreferences = (pref?: AnalyticsPreferences): Recommendati
     crrm: false,
     aiOps: false
   }
-  if (!pref || !pref.recommendation) return base
-  const { recommendation } = pref
-  Object.entries(recommendation).forEach(([key, method]) => {
-    if (method.includes('email')) {
+  if (!pref || !pref.configRecommendation) return base
+  const { configRecommendation } = pref
+  forOwn(configRecommendation, (method, key) => {
+    if (method && method.includes('email')) {
       base[key as unknown as keyof RecommendationStates] = true
     }
   })
@@ -45,8 +47,8 @@ const getIncidentsPreferences = (pref?: AnalyticsPreferences): IncidentStates =>
   }
   if (!pref || !pref.incident) return base
   const { incident } = pref
-  Object.entries(incident).forEach(([key, method]) => {
-    if (method.includes('email')) {
+  forOwn(incident, (method, key) => {
+    if (method && method.includes('email')) {
       base[key as unknown as keyof IncidentStates] = true
     }
   })
@@ -55,7 +57,7 @@ const getIncidentsPreferences = (pref?: AnalyticsPreferences): IncidentStates =>
 
 const useIncidentsList = (state: IncidentStates): ListLabel[] => {
   const { $t } = useIntl()
-  const labels: Record<keyof IncidentStates, ListLabel['label']> = {
+  const labels = {
     P1: $t({ defaultMessage: 'P1 Incidents' }),
     P2: $t({ defaultMessage: 'P2 Incidents' }),
     P3: $t({ defaultMessage: 'P3 Incidents' }),
@@ -70,8 +72,8 @@ const useIncidentsList = (state: IncidentStates): ListLabel[] => {
 
 const useRecommendationList = (state: RecommendationStates): ListLabel[] => {
   const { $t } = useIntl()
-  const labels: Record<keyof RecommendationStates, ListLabel['label']> = {
-    crrm: $t({ defaultMessage: 'Cloud RRM' }),
+  const labels = {
+    crrm: $t({ defaultMessage: 'AI-Driven RRM' }),
     aiOps: $t({ defaultMessage: 'AI Operations' })
   }
   return Object.entries(state).map(([key, checked]) => ({
@@ -91,16 +93,20 @@ function OptionsList ({ labels, setState }:
   { labels: ListLabel[], setState: CallableFunction }) {
   return <UI.List bordered={false}>
     {labels.map((({ label, key, checked }) => <UI.List.Item key={key}>
-      <UI.Checkbox
-        checked={checked}
-        onChange={(e) => setState((s: { [x: string]: boolean }) =>
-          ({ ...s, [key]: e.target.checked }))} />
-      {label}
+      <span>
+        <UI.Checkbox
+          id={key}
+          name={key}
+          checked={checked}
+          onChange={(e) => setState((s: { [x: string]: boolean }) =>
+            ({ ...s, [key]: e.target.checked }))} />
+        <label htmlFor={key}>{label}</label>
+      </span>
     </UI.List.Item>))}
   </UI.List>
 }
 
-export const IncidientNotificationDrawer = ({
+export const AINotificationDrawer = ({
   showDrawer,
   setShowDrawer
 }: {
@@ -121,17 +127,22 @@ export const IncidientNotificationDrawer = ({
     setState(getIncidentsPreferences(query.data))
     setRecState(getRecommendationPreferences(query.data))
   }, [query.data])
-  const [updatePrefrences] = useSetIncidentNotificationMutation()
+  const [updatePrefrences] = useSetNotificationMutation()
   const priorities = useIncidentsList(state)
   const recommendations = useRecommendationList(recState)
+  const allowRecommandations = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
   const title =
-    $t({ defaultMessage: 'Select the incident priority levels to receive notifications about:' })
+    // eslint-disable-next-line max-len
+    $t({ defaultMessage: 'Set your AI notification preferences. These notifications are only sent through email:' })
   const afterMsg =
     $t({ defaultMessage: 'This will apply to all the recipients defined for this account.' })
   const onClose = () => setShowDrawer(false)
   const onApply = () => {
     updatePrefrences({
-      states: [state, recState],
+      states: {
+        incident: state,
+        configRecommendation: recState
+      },
       tenantId,
       preferences: query.data!
     })
@@ -167,9 +178,13 @@ export const IncidientNotificationDrawer = ({
   >
     <Loader states={[query]}>
       <UI.IncidentNotificationWrapper>
-        {title}
+        <div>{title}</div>
+        <div>{$t({ defaultMessage: 'Incidents' })}</div>
         <OptionsList labels={priorities} setState={setState} />
-        <OptionsList labels={recommendations} setState={setRecState} />
+        { allowRecommandations && <>
+          <div>{$t({ defaultMessage: 'Recommendations' })}</div>
+          <OptionsList labels={recommendations} setState={setRecState} />
+        </>}
         <UI.AfterMsg>{afterMsg}</UI.AfterMsg>
       </UI.IncidentNotificationWrapper>
     </Loader>
