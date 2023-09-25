@@ -69,7 +69,8 @@ function useColumns (
       render: function (_, row) {
         return row.name
       }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
@@ -87,7 +88,8 @@ function useColumns (
         }
         return versionList.length > 0 ? versionList.join(', ') : '--'
       }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
@@ -95,31 +97,8 @@ function useColumns (
       render: function (_, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
-    }, {
-      title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableFw',
-      dataIndex: 'availableFw',
-      sorter: { compare: sortProp('availableFw', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status',
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Last Update' }),
-      key: 'lastUpdate',
-      dataIndex: 'lastUpdate',
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
@@ -446,7 +425,7 @@ export const VenueFirmwareTable = (
   )
 }
 
-export function VenueFirmwareList () {
+export function VenueFirmwareListLegacy () {
   const venuePayload = useDefaultVenuePayload()
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
