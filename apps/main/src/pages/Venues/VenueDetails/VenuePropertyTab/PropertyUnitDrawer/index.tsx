@@ -531,14 +531,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception for more detail information
     const { name, resident, personaId, unitPersona, guestPersona,
-      ports, accessAp, apName, meteringProfileId, expirationDate } = formValues
+      ports, accessAp, apName, meteringProfileId, expirationDate, enableGuestVlan } = formValues
     const { name: rawName, resident: rawResident, unitPersona: rawUnitPersona,
-      guestPersona: rawGuestPersona } = rawFormValues
+      guestPersona: rawGuestPersona, enableGuestVlan: rawEnableGuestVlan } = rawFormValues
 
     const diffName = name !== rawName && name
     const diffResident = _.omitBy(resident, (value, key) =>
       _.isEqual(value, rawResident?.hasOwnProperty(key)
-        ? rawResident[key as keyof typeof resident] : {}))
+        ? rawResident[key as keyof typeof resident] : undefined))
     const diffUnitPersona = _.omitBy(unitPersona, (value, key) =>
       _.isEqual(value, rawUnitPersona?.hasOwnProperty(key)
         ? rawUnitPersona[key as keyof typeof unitPersona] : {}))
@@ -546,17 +546,31 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       _.isEqual(value, rawGuestPersona?.hasOwnProperty(key)
         ? rawGuestPersona[key as keyof typeof guestPersona] : {}))
 
+    if (rawEnableGuestVlan && rawEnableGuestVlan !== enableGuestVlan) {
+      // Disable the Guest vlan at first time -> follow the unit vlan
+      Object.assign(diffGuestPersona, { vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan })
+    } else if (!rawEnableGuestVlan
+      && rawEnableGuestVlan === enableGuestVlan
+      && diffUnitPersona?.vlan
+    ) {
+      // Disable the Guest vlan -> keep following the unit vlan
+      Object.assign(diffGuestPersona, { vlan: diffUnitPersona?.vlan })
+    }
+
+
     const dpsks: PropertyDpskSetting[] = [
-      {
-        type: PropertyDpskType.UNIT,
-        passphrase: diffUnitPersona?.dpskPassphrase,
-        vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
-      },
-      {
-        type: PropertyDpskType.GUEST,
-        passphrase: diffGuestPersona?.dpskPassphrase,
-        vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan ?? unitPersona?.vlan
-      }
+      ...(Object.keys(diffUnitPersona).length !== 0 ?
+        [{
+          type: PropertyDpskType.UNIT,
+          passphrase: diffUnitPersona?.dpskPassphrase,
+          vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
+        }] : []),
+      ...(Object.keys(diffGuestPersona).length !== 0
+        ? [{
+          type: PropertyDpskType.GUEST,
+          passphrase: diffGuestPersona?.dpskPassphrase,
+          vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan
+        }] : [])
     ]
 
     const profileId = isConnectionMeteringEnabled ?
@@ -571,14 +585,15 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       : undefined
 
     // Update Unit
-    const unitUpdateResult = await updateUnitMutation({
-      params: { venueId, unitId },
-      payload: {
+    const unitUpdateResult = await patchUnit(
+      venueId,
+      unitId,
+      {
         ...(diffName && { name: diffName }),
         ...(!_.isEmpty(diffResident) && { resident: diffResident }),
-        dpsks
-      }
-    })
+        ...(dpsks.length !== 0 && { dpsks })
+      } as PropertyUnit
+    )
 
     // Update UnitPersona only when AP data or Qos profile changes
     const personaUpdateResult = await patchPersona(personaId, {
@@ -595,6 +610,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     })
 
     return Promise.all([unitUpdateResult, personaUpdateResult])
+  }
+
+  const patchUnit = async (venueId?: string, unitId?: string, payload?: PropertyUnit) => {
+    return (venueId && unitId && !_.isEmpty(payload))
+      ? await updateUnitMutation({ params: { venueId, unitId }, payload }).unwrap()
+      : Promise.resolve()
   }
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
@@ -821,6 +842,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               <Form.Item
                 name={['guestPersona', 'vlan']}
                 rules={[{
+                  required: true,
                   type: 'number',
                   min: 1,
                   max: 4094,
