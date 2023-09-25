@@ -38,7 +38,6 @@ interface TimeRangeDropDownProviderProps {
   children: React.ReactNode
 }
 
-
 export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps> = ({
   availableRanges,
   children
