@@ -5,12 +5,13 @@ import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
-import { Dropdown, Button, CaretDownSolidIcon }               from '@acx-ui/components'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
-import { DateRange, defaultRanges, dateRangeMap }             from '@acx-ui/utils'
+import { useSearchQuery, AP, Client, NetworkHierarchy, Switch } from '@acx-ui/analytics/services'
+import { defaultSort, sortProp ,formattedPath }                 from '@acx-ui/analytics/utils'
+import { PageHeader, Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { Dropdown, Button, CaretDownSolidIcon }                 from '@acx-ui/components'
+import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
+import { TenantLink }                                           from '@acx-ui/react-router-dom'
+import { DateRange, defaultRanges, dateRangeMap }               from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -151,7 +152,10 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-
+      render: (_, row : Switch) => (
+        <TenantLink to={`/devices/switch/${row.switchMac}/details`}>
+          {row.switchName}</TenantLink>
+      ),
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
