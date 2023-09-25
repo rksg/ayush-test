@@ -2,10 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }            from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps } from '@acx-ui/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
-import { useDateFilter }                     from '@acx-ui/utils'
+import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
 
 import { useSwitchtListQuery, Switch } from './services'
 
@@ -13,12 +12,12 @@ const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function SwitchList ({ searchVal='' }: { searchVal?: string }) {
   const { $t } = useIntl()
-  const { startDate, endDate } = useDateFilter()
+  const { timeRange } = useDateRange()
   const [searchString, setSearchString] = useState(searchVal)
 
   const results = useSwitchtListQuery({
-    start: startDate,
-    end: endDate,
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
     limit: 100,
     query: searchString,
     metric: 'traffic'

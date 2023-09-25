@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { useHeaderExtra }                                 from '@acx-ui/analytics/components'
-import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider } from '@acx-ui/components'
+import { useNavigate, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra }                 from '@acx-ui/reports/components'
+import { DateRange }                                                      from '@acx-ui/utils'
 
 import { SwitchList } from './SwitchList'
 
@@ -20,18 +20,13 @@ interface SwitchTab {
   headerExtra: JSX.Element[]
 }
 
-function isElementArray (data: JSX.Element | JSX.Element[]
-): data is JSX.Element[] {
-  return Array.isArray(data)
-}
-
 const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
-  const listTab = {
+  const switchListTab = {
     key: AISwitchTabsEnum.LIST,
     title: $t({ defaultMessage: 'Switch List' }),
     component: <SwitchList />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    headerExtra: [<TimeRangeDropDown/>]
   }
   const wiredReportTab = {
     key: AISwitchTabsEnum.WIRED_REPORT,
@@ -42,21 +37,27 @@ const useTabs = () : SwitchTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.WIRED)
   }
-  return [listTab, wiredReportTab]
+  return [switchListTab, wiredReportTab]
 }
 
 export function AISwitches ({ tab }: { tab: AISwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const tabs = useTabs()
+  const TabComp = tabs.find(({ key }) => key === tab)?.component
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
-  const tabs = useTabs()
-  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
-  return <>
+
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
@@ -65,10 +66,10 @@ export function AISwitches ({ tab }: { tab: AISwitchTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
-    {component}
-  </>
+    {TabComp}
+  </TimeRangeDropDownProvider>
 }
 
 export default AISwitches

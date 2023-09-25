@@ -130,6 +130,28 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
+    {
+      label: $t({ defaultMessage: 'Wired' }),
+      inactiveIcon: SwitchOutlined,
+      activeIcon: SwitchSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Switches' }),
+          children: [
+            {
+              uri: '/devices/switch',
+              label: $t({ defaultMessage: 'Switch List' }),
+              isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
+            },
+            {
+              uri: '/devices/switch/reports/wired',
+              label: $t({ defaultMessage: 'Wired Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewAnalyticsPermissions
       ? [{
         label: $t({ defaultMessage: 'Clients' }),
