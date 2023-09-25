@@ -8,7 +8,6 @@ import {
 } from '@acx-ui/analytics/components'
 import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
 import type { DonutChartData }                                     from '@acx-ui/components'
-import { Client }                                                  from '@acx-ui/icons'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import {
   Alarm,
@@ -16,9 +15,9 @@ import {
   getPoeUsage,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }         from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import { CommonUrlsInfo, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                           from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                            from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 
@@ -85,6 +84,9 @@ export function SwitchInfoWidget (props:{
   const [visible, setVisible] = useState(false)
   const [alarmDrawerVisible, setAlarmDrawerVisible] = useState(false)
 
+  const isDisconnected
+    = switchDetail?.deviceStatus === SwitchStatusEnum.DISCONNECTED
+
   // Alarms list query
   const alarmQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
@@ -128,7 +130,9 @@ export function SwitchInfoWidget (props:{
       <UI.DonutChartWidget
         title={$t({ defaultMessage: 'Ports' })}
         style={{ width: 100, height: 100 }}
-        data={data}
+        data={isDisconnected ? [] : data}
+        value={isDisconnected
+          ? $t({ defaultMessage: 'Switch {br} disconnected' }, { br: '\n' }) : ''}
       />
     )
   }
@@ -186,23 +190,28 @@ export function SwitchInfoWidget (props:{
             <GridRow>
               <GridCol col={{ span: 24 }} >
                 <UI.Wrapper style={{ minHeight: '31px' }}>
-                  <Client />
+                  <UI.ClientIcon className={isDisconnected ? 'disconnected' : ''}/>
                 </UI.Wrapper>
                 <UI.Wrapper>
-                  <UI.ChartTopTitle>
+                  <UI.ChartTopTitle className={isDisconnected ? 'disconnected' : ''}>
                     {$t({ defaultMessage: '{clients, plural, one {Client} other {Clients}}' },
                       { clients: switchDetail?.clientCount }
                     )}
                   </UI.ChartTopTitle>
                 </UI.Wrapper>
-                <UI.Wrapper style={{ marginTop: '5px' }}>
-                  <UI.TenantLinkBlack
-                    to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
-                  >
-                    <UI.LargeText style={{ minHeight: '38px' }}>
-                      {switchDetail?.clientCount || 0}
-                    </UI.LargeText>
-                  </UI.TenantLinkBlack>
+                <UI.Wrapper style={{ marginTop: '6px' }}>
+                  {isDisconnected
+                    ? <UI.DisconnectedText>{
+                      $t({ defaultMessage: 'Switch disconnected' })
+                    }</UI.DisconnectedText>
+                    : <UI.TenantLinkBlack
+                    // eslint-disable-next-line max-len
+                      to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
+                    >
+                      <UI.LargeText>
+                        {switchDetail?.clientCount || 0}
+                      </UI.LargeText>
+                    </UI.TenantLinkBlack>}
                 </UI.Wrapper>
               </GridCol>
             </GridRow>
@@ -211,20 +220,24 @@ export function SwitchInfoWidget (props:{
             <GridRow>
               <GridCol col={{ span: 24 }} >
                 <UI.Wrapper style={{ minHeight: '31px' }}>
-                  <UI.PoeUsageIcon />
+                  <UI.PoeUsageIcon className={isDisconnected ? 'disconnected' : ''} />
                 </UI.Wrapper>
                 <UI.Wrapper>
-                  <UI.ChartTopTitle>
+                  <UI.ChartTopTitle className={isDisconnected ? 'disconnected' : ''}>
                     {$t({ defaultMessage: 'PoE Usage' })}
                   </UI.ChartTopTitle>
                 </UI.Wrapper>
-                <UI.Wrapper style={{ marginTop: '5px' }}>
-                  <UI.LargeText style={{ minHeight: '38px' }}>
-                    {poeUsage?.used}W/{poeUsage?.total}W
-                    <Typography.Title level={3}>
-                    ({poeUsage?.percentage})
-                    </Typography.Title>
-                  </UI.LargeText>
+                <UI.Wrapper style={{ marginTop: '6px' }}>
+                  {isDisconnected
+                    ? <UI.DisconnectedText>{
+                      $t({ defaultMessage: 'Switch disconnected' })
+                    }</UI.DisconnectedText>
+                    : <UI.LargeText>
+                      {poeUsage?.used}W/{poeUsage?.total}W
+                      <Typography.Title level={3}>{
+                        poeUsage?.percentage
+                      }</Typography.Title>
+                    </UI.LargeText>}
                 </UI.Wrapper>
               </GridCol>
             </GridRow>
