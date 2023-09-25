@@ -4,8 +4,9 @@ import { Menu, Space, MenuProps } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
-import { DateRange, dateRangeMap }              from '@acx-ui/utils'
+import { DateRange, dateRangeMap } from '@acx-ui/utils'
+
+import { Dropdown, Button, CaretDownSolidIcon } from '../..'
 
 interface TimeRangeDropDownContextType {
   timeRangeDropDownRange: DateRange;

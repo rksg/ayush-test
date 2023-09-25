@@ -9,7 +9,7 @@ import {
   useDateRange,
   TimeRangeDropDown ,
   defaultTimeRangeDropDownContextValue
-} from './TimeRangeDropdown'
+} from '.'
 
 describe('TimeRangeDropDown', () => {
   it('TimeRangeDropDownProvider provides default value', async () => {

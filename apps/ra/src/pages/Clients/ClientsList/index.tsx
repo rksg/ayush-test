@@ -2,13 +2,11 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }            from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
-import { defaultRanges }                     from '@acx-ui/utils'
-
-import { useDateRange } from '../TimeRangeDropdown'
+import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import { defaultRanges }                                   from '@acx-ui/utils'
 
 import { useClientListQuery, Client } from './services'
 
