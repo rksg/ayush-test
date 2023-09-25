@@ -123,6 +123,7 @@ export function PersonaGroupForm (props: {
           <Col span={2}>
             {!defaultValue?.dpskPoolId &&
               <Button
+                data-testid='addDpskButton'
                 type={'link'}
                 onClick={() => setDpskModalVisible(true)}
               >
@@ -155,6 +156,7 @@ export function PersonaGroupForm (props: {
           <Col span={2}>
             {!defaultValue?.macRegistrationPoolId &&
               <Button
+                data-testid='addMacPoolButton'
                 type={'link'}
                 onClick={() => setMacModalVisible(true)}
               >
