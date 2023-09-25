@@ -253,7 +253,7 @@ export default function DpskPassphraseManagement () {
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
     if (isNewConfigFlow) {
-      return !(!isCloudpathEnabled || selectedRows.length !== 1)
+      return isCloudpathEnabled && selectedRows.length === 1
     }
 
     if (!isCloudpathEnabled || selectedRows.length !== 1) return false
