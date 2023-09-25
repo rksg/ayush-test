@@ -4,20 +4,24 @@ import { Menu, Space, MenuProps } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                from 'react-intl'
 
-import { DateRange, dateRangeMap } from '@acx-ui/utils'
+import { DateRange, dateRangeMap, defaultRanges } from '@acx-ui/utils'
 
 import { Dropdown, Button, CaretDownSolidIcon } from '../..'
 
+import type { Moment } from 'moment'
+
 interface TimeRangeDropDownContextType {
-  timeRangeDropDownRange: DateRange;
-  setTimeRangeDropDownRange: React.Dispatch<React.SetStateAction<DateRange>>;
+  timeRange: Moment[]
+  timeRangeDropDownRange: DateRange
+  setTimeRangeDropDownRange: React.Dispatch<React.SetStateAction<DateRange>>
 }
 
 interface TimeRangeDropDownProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export const defaultTimeRangeDropDownContextValue: TimeRangeDropDownContextType = {
+  timeRange: defaultRanges()[DateRange.last24Hours]!,
   timeRangeDropDownRange: DateRange.last24Hours,
   setTimeRangeDropDownRange: () => {}
 }
@@ -37,9 +41,10 @@ export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps>
   const [timeRangeDropDownRange, setTimeRangeDropDownRange] = useState<DateRange>(
     DateRange.last24Hours
   )
+  const timeRange = defaultRanges()[timeRangeDropDownRange]!
   return (
     <TimeRangeDropDownContext.Provider
-      value={{ timeRangeDropDownRange, setTimeRangeDropDownRange }}>
+      value={{ timeRange, timeRangeDropDownRange, setTimeRangeDropDownRange }}>
       {children}
     </TimeRangeDropDownContext.Provider>
   )

@@ -1,17 +1,20 @@
-import { useState } from 'react'
-
-import { Menu, MenuProps, Space } from 'antd'
-import { ItemType }               from 'antd/lib/menu/hooks/useItems'
-import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
-import { Dropdown, Button, CaretDownSolidIcon }               from '@acx-ui/components'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
-import { TenantLink }                                         from '@acx-ui/react-router-dom'
-import { DateRange, defaultRanges, dateRangeMap }             from '@acx-ui/utils'
+import {
+  PageHeader,
+  Loader,
+  Table,
+  TableProps,
+  Tooltip,
+  TimeRangeDropDown,
+  useDateRange,
+  TimeRangeDropDownProvider
+} from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -20,11 +23,10 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
-  const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last24Hours)
-  const timeRanges = defaultRanges()[dateRange]!
+  const { timeRange } = useDateRange()
   const results = useSearchQuery({
-    start: timeRanges[0].format(),
-    end: timeRanges[1].format(),
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
     limit: 100,
     query: searchVal!
 
@@ -33,11 +35,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   results.data && Object.entries(results.data).forEach(([, value]) => {
     count += (value as []).length || 0
   })
-
-  const handleClick: MenuProps['onClick'] = (e) => {
-    setDateRange(e.key as DateRange)
-  }
-
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
@@ -240,18 +237,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     }
   ]
 
-  const timeRangeDropDown = <Dropdown
-    key='timerange-dropdown'
-    overlay={<Menu
-      onClick={handleClick}
-      items={[DateRange.last24Hours, DateRange.last7Days, DateRange.last30Days
-      ].map((key) => ({ key, label: $t(dateRangeMap[key]) })) as ItemType[]} />}>{() => <Button>
-      <Space>
-        {dateRange}
-        <CaretDownSolidIcon />
-      </Space>
-    </Button>}
-  </Dropdown>
   return <Loader states={[results]}>
     {count
       ? <>
@@ -259,7 +244,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
           { searchVal, count }
         )}
-        extra={[timeRangeDropDown]}
+        extra={[<TimeRangeDropDown/>]}
         />
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
@@ -323,7 +308,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
           { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )}
-        extra={[timeRangeDropDown]}
+        extra={[<TimeRangeDropDown/>]}
         />
         <NoData />
       </>
@@ -334,5 +319,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal} searchVal={searchVal} />
+  return <TimeRangeDropDownProvider>
+    <SearchResult key={searchVal} searchVal={searchVal} />
+  </TimeRangeDropDownProvider>
 }

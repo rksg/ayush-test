@@ -6,7 +6,6 @@ import { defaultSort, sortProp  }                          from '@acx-ui/analyti
 import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { TenantLink }                                      from '@acx-ui/react-router-dom'
-import { defaultRanges }                                   from '@acx-ui/utils'
 
 import { useClientListQuery, Client } from './services'
 
@@ -15,13 +14,11 @@ const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
   const { $t } = useIntl()
-  const { timeRangeDropDownRange } = useDateRange()
-  const timeRanges = defaultRanges()[timeRangeDropDownRange]!
-
+  const { timeRange } = useDateRange()
   const [searchString, setSearchString] = useState(searchVal)
   const results = useClientListQuery({
-    start: timeRanges[0].format(),
-    end: timeRanges[1].format(),
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
     limit: 100,
     query: searchString
   })
