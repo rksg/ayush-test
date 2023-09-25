@@ -528,5 +528,20 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/rwgs/:rwgId',
     newApi: true
+  },
+  getGateway: {
+    method: 'get',
+    url: '/rwgs/:gatewayId',
+    newApi: true
+  },
+  updateGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
+  },
+  addGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
   }
 }
