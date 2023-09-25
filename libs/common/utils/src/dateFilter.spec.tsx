@@ -5,7 +5,7 @@ import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
-import { fixedEncodeURIComponent, useEncodedParameter }              from './encodedParameter'
+import { useEncodedParameter }                                       from './encodedParameter'
 jest.mock('./encodedParameter', () => ({
   ...jest.requireActual('./encodedParameter'),
   useEncodedParameter: jest.fn()
