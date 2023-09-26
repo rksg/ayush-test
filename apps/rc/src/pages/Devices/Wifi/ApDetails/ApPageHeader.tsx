@@ -7,14 +7,15 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { APStatus }                                                      from '@acx-ui/rc/components'
+import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
-  useApContext
+  useApContext,
+  ApStatus,
+  AFCPowerMode
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -30,11 +31,10 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber } = useApContext()
+  const { tenantId, serialNumber, apStatusData } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -43,7 +43,7 @@ function ApPageHeader () {
 
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
-
+  const ApStatusData = apStatusData as ApStatus
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!serialNumber) return
 
@@ -90,11 +90,11 @@ function ApPageHeader () {
     <PageHeader
       title={data?.title || ''}
       titleExtra={<APStatus status={status} showText={!currentApOperational} />}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
         { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
-      ] : [{ text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }]}
+      ]}
       extra={[
         enableTimeFilter()
           ? <RangePicker
@@ -128,7 +128,11 @@ function ApPageHeader () {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
-      footer={<ApTabs apDetail={data as ApDetailHeader} />}
+      footer={<>
+        {(ApStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
+          <LowPowerBannerAndModal parent='ap' />}
+        <ApTabs apDetail={data as ApDetailHeader} />
+      </>}
     />
   )
 }

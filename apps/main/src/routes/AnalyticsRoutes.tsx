@@ -6,18 +6,16 @@ import {
   HealthPage,
   IncidentDetails,
   IncidentListPage,
-  IncidentListPageLegacy,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   RecommendationDetails,
-  ServiceGuard,
   ServiceGuardDetails,
   ServiceGuardForm,
   ServiceGuardSpecGuard,
   ServiceGuardTestGuard,
-  VideoCallQoe,
   VideoCallQoeForm,
-  VideoCallQoeDetails
+  VideoCallQoeDetails,
+  CrrmDetails
 }                                                   from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -27,7 +25,6 @@ import { hasAccess }                                from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
@@ -39,41 +36,34 @@ export default function AnalyticsRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={isNavbarEnhanced
-          ? (!canUseAnltAdv
-            ? <IncidentListPage />
-            : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)
-          : <IncidentListPageLegacy />}
+        element={(!canUseAnltAdv
+          ? <IncidentListPage />
+          : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)}
       />
-      {!isNavbarEnhanced &&
-        <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPageLegacy />} />}
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
       <Route path='analytics/health'
-        element={isNavbarEnhanced
-          ? (!canUseAnltAdv
-            ? <HealthPage/>
-            : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
-          : <HealthPage/>} />
+        element={(!canUseAnltAdv
+          ? <HealthPage/>
+          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)}
+      />
       <Route path='analytics/health/tab/:categoryTab'
-        element={isNavbarEnhanced
-          ? (!canUseAnltAdv
-            ? <HealthPage/>
-            : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
-          : <HealthPage/>} />
-      {isNavbarEnhanced && canUseAnltAdv && recommendationsEnabled &&
+        element={(!canUseAnltAdv
+          ? <HealthPage/>
+          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
+        } />
+      {recommendationsEnabled &&
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>}
-      {isNavbarEnhanced && canUseAnltAdv && isConfigChangeEnabled &&
+      {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
-          element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index
-            element={isNavbarEnhanced
-              ? <NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />
-              : <ServiceGuard/>} />
+            element={<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />} />
           <Route path='add' element={<ServiceGuardForm />} />
           <Route path=':specId'>
             <Route
@@ -94,9 +84,7 @@ export default function AnalyticsRoutes () {
         </Route>
         {isVideoCallQoeEnabled && <Route path='analytics/videoCallQoe/*' >
           <Route index
-            element={isNavbarEnhanced
-              ? <NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />
-              : <VideoCallQoe/>} />
+            element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />
           <Route path='add' element={<VideoCallQoeForm />} />
         </Route>}

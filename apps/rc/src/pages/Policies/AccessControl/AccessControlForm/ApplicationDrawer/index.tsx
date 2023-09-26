@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, FormItemProps, Input, Select } from 'antd'
+import TextArea                               from 'antd/lib/input/TextArea'
 import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 import { useParams }                          from 'react-router-dom'
@@ -32,6 +33,7 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
+import { useScrollLock }                        from '../../ScrollLock'
 import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
@@ -41,7 +43,8 @@ import {
 } from './ApplicationDrawerUtils'
 import ApplicationRuleContent, {
   appRateStrategyLabelMapping,
-  appRateTypeLabelMapping, RateStrategyEnum,
+  appRateTypeLabelMapping,
+  RateStrategyEnum,
   RateTypeEnum
 } from './ApplicationRuleContent'
 
@@ -174,11 +177,15 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const [
     policyName,
+    description,
     applicationPolicyId
   ] = [
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
@@ -231,6 +238,15 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     return avcSelectOptions &&
     avcSelectOptions.length > 0 &&
     avcSelectOptions[0].catName === 'All'
+  }
+
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
   }
 
   useEffect(() => {
@@ -291,7 +307,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
@@ -299,6 +315,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   useEffect(() => {
     if (appPolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
+      contentForm.setFieldValue('description', appPolicyInfo.description)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
       )] as ApplicationsRule[])
@@ -323,7 +340,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -375,6 +392,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     setApplicationsRule({} as ApplicationsRule)
     setApplicationsRuleList([] as ApplicationsRule[])
   }
@@ -386,7 +404,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }
 
   const handleApplicationsDrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -448,7 +466,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           payload: {
             name: policyName,
             rules: transformedRules,
-            description: null,
+            description: description,
             tenantId: params.tenantId
           }
         }).unwrap()
@@ -466,7 +484,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             id: queryPolicyId,
             name: policyName,
             rules: transformedRules,
-            description: null,
+            description: description,
             tenantId: params.tenantId
           }
         }).unwrap()
@@ -539,6 +557,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       children={<Input disabled={isViewMode()}/>}
     />
     <DrawerFormItem
+      name='description'
+      label={$t({ defaultMessage: 'Description' })}
+      rules={[
+        { max: 255 }
+      ]}
+      children={<TextArea disabled={isViewMode()} />}
+    />
+    <DrawerFormItem
       name='applicationsRule'
       label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
       rules={[
@@ -569,7 +595,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -602,7 +628,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           disabled={!applicationPolicyId}
           onClick={() => {
             if (applicationPolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(applicationPolicyId)
               setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
             }
@@ -615,7 +641,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         <Button type='link'
           disabled={appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
           }}>
           {$t({ defaultMessage: 'Add New' })}

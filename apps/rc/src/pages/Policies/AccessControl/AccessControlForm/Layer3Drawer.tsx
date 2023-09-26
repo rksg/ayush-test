@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import TextArea                                                        from 'antd/lib/input/TextArea'
 import _                                                               from 'lodash'
 import { DndProvider, useDrag, useDrop }                               from 'react-dnd'
 import { HTML5Backend }                                                from 'react-dnd-html5-backend'
@@ -39,6 +40,7 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping }      from '../../contentsMap'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
+import { useScrollLock }                   from '../ScrollLock'
 
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
@@ -184,16 +186,20 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const AnyText = $t({ defaultMessage: 'Any' })
   const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
   const [
     accessStatus,
     policyName,
+    description,
     l3AclPolicyId
   ] = [
     useWatch<string>('layer3DefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
+    useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
 
@@ -235,20 +241,31 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     return !_.isNil(layer3PolicyInfo)
   }
 
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
+  }
+
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
   }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
 
   useEffect(() => {
-    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+    if (contentForm && layer3PolicyInfo &&
+      (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
+      contentForm.setFieldValue('description', layer3PolicyInfo.description)
       contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
         return {
@@ -261,11 +278,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       }).sort((a, b) => a.priority - b.priority)] as Layer3Rule[])
     }
-  }, [layer3PolicyInfo, queryPolicyId])
+  }, [contentForm, layer3PolicyInfo, queryPolicyId])
 
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
-    if (requestId && queryPolicyName) {
+    if (form && requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
@@ -277,11 +294,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       })
     }
-  }, [layer3SelectOptions, requestId, policyName])
+  }, [form, layer3SelectOptions, requestId, policyName])
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -329,6 +346,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       dataIndex: 'sort',
       key: 'sort',
+      fixed: 'right',
       width: 60,
       render: (_, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
@@ -340,7 +358,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const NetworkColumnComponent = (props: { network: Layer3NetworkCol, row: Layer3Rule }) => {
     const { network, row } = props
-    const { access, protocol } = row
+    const { protocol } = row
 
     let ipString = RuleSourceType.ANY as string
     if (network.type === RuleSourceType.SUBNET) {
@@ -361,7 +379,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
       <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
-      { (access !== 'BLOCK' && protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
+      { (protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
         {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
       </span> }
     </div>
@@ -390,12 +408,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('description', undefined)
     contentForm.setFieldValue('layer3DefaultAccess', undefined)
     setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
 
   const handleLayer3DrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -503,7 +522,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
         }
       })],
-      description: null
+      description: description
     }
 
     return {
@@ -746,6 +765,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       children={<Input disabled={isViewMode()}/>}
     />
     <DrawerFormItem
+      name='description'
+      label={$t({ defaultMessage: 'Description' })}
+      rules={[
+        { max: 255 }
+      ]}
+      children={<TextArea disabled={isViewMode()} />}
+    />
+    <DrawerFormItem
       name='layer3DefaultAccess'
       label={<div style={{ textAlign: 'left' }}>
         <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -889,7 +916,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -975,7 +1002,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
       </Radio.Group>
       {/* eslint-disable-next-line max-len */}
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
+      { ruleDrawerVisible && drawerForm && drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -999,7 +1026,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -1032,7 +1059,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           disabled={!l3AclPolicyId}
           onClick={() => {
             if (l3AclPolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(l3AclPolicyId)
               setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
             }
@@ -1045,7 +1072,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Button type='link'
           disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
           }}>
           {$t({ defaultMessage: 'Add New' })}

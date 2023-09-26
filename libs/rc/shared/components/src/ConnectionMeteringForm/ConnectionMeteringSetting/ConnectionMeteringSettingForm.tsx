@@ -17,8 +17,7 @@ export function ConnectionMeteringSettingForm () {
   const nameValidator = async (name: string) => {
     try {
       const list = (await searchConnectionMeteringList({
-        params: { pageSize: '2147483647', page: '0' },
-        payload: { keyword: name }
+        payload: { keyword: name, pageSize: '2147483647', page: '1' }
       }, true)
         .unwrap()).data.filter(g => g.id !== form.getFieldValue('id') ?? '')
         .map(g => ({ name: g.name }))
@@ -33,7 +32,7 @@ export function ConnectionMeteringSettingForm () {
       <GridRow>
         <GridCol col={{ span: 8 }}>
           <Form.Item
-            name='name'
+            name={'name'}
             label={$t({ defaultMessage: 'Profile Name' })}
             validateFirst
             validateTrigger={['onBlur']}

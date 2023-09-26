@@ -5,9 +5,11 @@ import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
+import { Button, Drawer, Modal, Table, TableProps }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { defaultClientPayload, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
-  useDeleteDpskPassphraseDevicesMutation,
+  useDeleteDpskPassphraseDevicesMutation, useGetClientListQuery,
   useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
   useUpdateDpskPassphraseDevicesMutation
 } from '@acx-ui/rc/services'
@@ -16,7 +18,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp, useTableQuery
+  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery, sortProp, defaultSort
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -31,7 +33,6 @@ const { useWatch } = Form
 
 const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const { $t } = useIntl()
-  const ONLINE = 'Online'
 
   const { visible, setVisible, passphraseInfo } = props
   const params = useParams()
@@ -41,15 +42,49 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const [form] = Form.useForm()
 
   const macAddress = useWatch<string>('macAddress', form)
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const [deviceOnlineList, setDeviceOnlineList] = useState({} as { [key: string]: boolean })
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const { data: devicesData } = useGetDpskPassphraseDevicesQuery({
     params: {
       ...params,
-      passphraseId: passphraseInfo.id
+      passphraseId: passphraseInfo.id,
+      ...dpskNewConfigFlowParams
     }
   })
 
-  const { data } = useGetDpskQuery({ params: params })
+  const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
+
+  const clientTableQuery = usePollingTableQuery({
+    useQuery: useGetClientListQuery,
+    defaultPayload: {
+      ...defaultClientPayload,
+      filters: {
+        clientMac: devicesData && devicesData?.filter(device =>
+          device.deviceConnectivity === 'CONNECTED'
+        ).length > 0
+          ? devicesData?.filter(device => device.deviceConnectivity === 'CONNECTED')
+            .map(device => device.mac)
+          : []
+      }
+    },
+    pagination: {
+      pageSize: 10000
+    },
+    search: {
+      searchTargetFields: defaultClientPayload.searchTargetFields
+    }
+  })
+
+  useEffect(() => {
+    if (clientTableQuery.data) {
+      setDeviceOnlineList(clientTableQuery.data.data.reduce((o, client) => {
+        if (!o.hasOwnProperty(client.clientMac)) o[client.clientMac] = true
+        return o
+      }, {} as { [key: string]: boolean }))
+    }
+  }, [clientTableQuery.data])
 
   useEffect(() => {
     if (data?.networkIds?.length) {
@@ -78,6 +113,24 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     return ''
   }
 
+  const getOnlineStatus = (row: DPSKDeviceInfo) => {
+    if (isNewConfigFlow) {
+      const dateContent = row.lastConnectedTime
+        ? new Date(row.lastConnectedTime).toLocaleString()
+        : '-'
+      return deviceOnlineList.hasOwnProperty(row.mac)
+        ? $t({ defaultMessage: 'Online' })
+        : dateContent
+    } else {
+      const dateContent = row.lastConnected
+        ? new Date(row.lastConnected + ' GMT').toLocaleString()
+        : '-'
+      return row.online
+        ? $t({ defaultMessage: 'Online' })
+        : dateContent
+    }
+  }
+
   const [updateDevicesData] = useUpdateDpskPassphraseDevicesMutation()
   const [deleteDevicesData] = useDeleteDpskPassphraseDevicesMutation()
 
@@ -86,12 +139,12 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: true,
+      sorter: { compare: sortProp('mac', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (_, row) => {
-        return row.lastConnected === ONLINE ? <TenantLink
+        return row.lastConnected === 'Online' ? <TenantLink
           to={`/users/wifi/clients/${row.mac}/details/`}>
           {row.mac}
         </TenantLink>: row.mac
@@ -101,18 +154,18 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
-      sorter: true,
+      sorter: { compare: sortProp('online', defaultSort) },
       render: (_, row) => {
-        return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
+        return getOnlineStatus(row)
       }
     },
     {
       key: 'lastConnectedNetwork',
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
-      sorter: true,
+      sorter: { compare: sortProp('lastConnectedNetwork', defaultSort) },
       render: (_, row) => {
-        return row.lastConnectedNetwork ? <TenantLink
+        return row.lastConnectedNetwork? <TenantLink
           // eslint-disable-next-line max-len
           to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>
           {row.lastConnectedNetwork}
@@ -139,14 +192,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
         await deleteDevicesData({
           params: {
             ...params,
-            passphraseId: passphraseInfo.id
+            passphraseId: passphraseInfo.id,
+            ...dpskNewConfigFlowParams
           },
-          payload: {
-            id: passphraseInfo.id,
-            devicesMac: rows.map(row => row.mac),
-            poolId: params.serviceId,
-            tenantId: params.tenantId
-          }
+          payload: isNewConfigFlow
+            ? rows.map(row => row.mac)
+            : {
+              id: passphraseInfo.id,
+              devicesMac: rows.map(row => row.mac),
+              poolId: params.serviceId,
+              tenantId: params.tenantId
+            }
         })
         clearSelection()
       }
@@ -168,16 +224,19 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       await updateDevicesData({
         params: {
           ...params,
-          passphraseId: passphraseInfo.id
+          passphraseId: passphraseInfo.id,
+          ...dpskNewConfigFlowParams
         },
-        payload: {
-          id: passphraseInfo.id,
-          devicesMac: [
-            macAddress
-          ],
-          poolId: params.serviceId,
-          tenantId: params.tenantId
-        }
+        payload: isNewConfigFlow
+          ? [macAddress]
+          : {
+            id: passphraseInfo.id,
+            devicesMac: [
+              macAddress
+            ],
+            poolId: params.serviceId,
+            tenantId: params.tenantId
+          }
       })
 
       if (!addAnother) {
@@ -215,7 +274,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     dataSource={devicesData?.filter(data => {
       return searchString ? data.mac.toLowerCase().includes(searchString) : true
     })}
-    enableApiFilter={true}
+    enableApiFilter={false}
+    pagination={{ defaultPageSize: 10000, hideOnSinglePage: true }}
     rowKey='mac'
     rowActions={rowActions}
     rowSelection={{ type: 'checkbox' }}

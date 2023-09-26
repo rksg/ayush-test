@@ -131,7 +131,12 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   const versionName = parseSwitchVersion(version?.name)
   const versionType = transform(version?.category)
 
-  return `${versionName} (${versionType})`
+  let displayVersion = `${versionName} (${versionType})`
+  if(version.inUse){
+    // eslint-disable-next-line max-len
+    displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
+  }
+  return displayVersion
 }
 
 export const toUserDate = (date: string): string => {
@@ -240,9 +245,12 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
 }
 
 export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = ['09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36']
+  const defaultVersion = [
+    '09010f_b19', '09010e_b392', '10010_rc3', '10010a_b36',
+    '09010h_rc1', '10010a_cd3_b11']
+
   if (defaultVersion.includes(version)) {
-    return convertSwitchVersionFormat(version.split('_')[0])
+    return convertSwitchVersionFormat(version.replace(/_[^_]*$/, ''))
   }
   return convertSwitchVersionFormat(version)
 }

@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }                     from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 import { useDateFilter }                       from '@acx-ui/utils'
 
 import { IncidentTabContent, HealthPage } from '..'

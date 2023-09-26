@@ -1,17 +1,12 @@
-import { Divider, Space } from 'antd'
-import { useIntl }        from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
   useGetAvailableABFListQuery
 } from '@acx-ui/rc/services'
-import {
-  firmwareTypeTrans,
-  FirmwareCategory,
-  ABFVersion
-} from '@acx-ui/rc/utils'
+import { ABFVersion, FirmwareCategory } from '@acx-ui/rc/utils'
 
-import * as UI              from '../../styledComponents'
+import { FirmwareBanner }   from '../../FirmwareBanner'
+import { compareVersions }  from '../../FirmwareUtils'
 import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
@@ -22,7 +17,9 @@ export const VersionBanner = () => {
     selectFromResult: ({ data }) => {
       return {
         latestActiveVersions: data
-          ? data.filter(abfVersion => abfVersion.abf === 'active')
+          ? data
+            .filter(abfVersion => abfVersion.abf === 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
           : []
       }
     }
@@ -32,67 +29,36 @@ export const VersionBanner = () => {
 
   if (!firmware) return null
 
+  const versionInfo = [
+    {
+      label: $t({ defaultMessage: 'For Active Device:' }),
+      firmware: {
+        version: firmware.name,
+        category: firmware.category,
+        releaseDate: firmware.releaseDate ?? firmware.createdDate
+      }
+    },
+    ...(latestEolVersionByABFs.map(item => ({
+      label: $t({ defaultMessage: 'For Legacy Device:' }),
+      firmware: {
+        version: item.name,
+        category: item.category,
+        releaseDate: item.releaseDate
+      }
+    })))
+  ]
+
   return (
-    <UI.BannerVersion>
-      <UI.LatestVersion>
-        {$t({ defaultMessage: 'Latest Version' })}
-      </UI.LatestVersion>
-      <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
-        <FirmwareBanner
-          key='active'
-          label={$t({ defaultMessage: 'For Active Device:' })}
-          firmware={firmware}
-        />
-        {latestEolVersionByABFs.map((abfVersion: ABFVersion) => {
-          return <FirmwareBanner
-            key={abfVersion.abf}
-            label={$t({ defaultMessage: 'For Legacy Device:' })}
-            firmware={abfVersion}
-          />
-        })}
-      </Space>
-    </UI.BannerVersion>
+    <FirmwareBanner data={versionInfo} />
   )
 }
 
 export default VersionBanner
 
-function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []): ABFVersion[] {
+function getRecommendedFirmware (firmwareVersions: ABFVersion[] = []):
+(ABFVersion & { createdDate: string })[] {
   return firmwareVersions.filter((abf: ABFVersion) => {
     // eslint-disable-next-line max-len
     return abf.category === FirmwareCategory.RECOMMENDED || abf.category === FirmwareCategory.CRITICAL
-  })
-}
-
-interface FirmwareBannerProps {
-  label: string
-  firmware: {
-    name: string
-    category: FirmwareCategory
-    createdDate?: string
-    releaseDate?: string
-  }
-}
-
-const FirmwareBanner = (props: FirmwareBannerProps) => {
-  const { $t } = useIntl()
-  const transform = firmwareTypeTrans($t)
-  const { label, firmware } = props
-  const releaseDate = firmware.releaseDate ?? firmware.createdDate
-
-  return (
-    <UI.FwContainer>
-      <div>
-        <span>{ label } </span>
-        <UI.BannerVersionName>{firmware.name}</UI.BannerVersionName>
-      </div>
-      <UI.TypeSpace split={<Divider type='vertical' />}>
-        <div>
-          <span>{transform(firmware.category, 'type')} </span>
-          <span>({transform(firmware.category, 'subType')})</span>
-        </div>
-        {releaseDate && formatter(DateFormatEnum.DateFormat)(releaseDate)}
-      </UI.TypeSpace>
-    </UI.FwContainer>
-  )
+  }) as (ABFVersion & { createdDate: string })[] // createdDate is for legacy usage
 }

@@ -1,26 +1,27 @@
 import { useMemo } from 'react'
 
-import { useLocation }  from '@acx-ui/react-router-dom'
+import { get }         from '@acx-ui/config'
+import { useLocation } from '@acx-ui/react-router-dom'
 import {
-  DateFilter,
+  AnalyticsFilter,
   NodeType,
   NodeFilter,
   NodesFilter,
   SSIDFilter,
   NetworkPath,
   useDateFilter,
-  useEncodedParameter
+  useEncodedParameter,
+  FilterNameNode,
+  FilterListNode
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
-export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
-
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()
@@ -31,9 +32,10 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
-    const { path, raw: rawPath } = read() || { path: [], raw: [] }
+    const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
     const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
-    const isHealthPage = pathname.includes('/analytics/health')
+    const isHealthPage = pathname.includes('/analytics/health') // R1
+      || pathname.includes('/ai/health') //RAI
     const { filter, raw } = (isHealthPage && isSwitchPath)
       ? { filter: {}, raw: [] }
       : { filter: pathToFilter(path), raw: rawPath }
@@ -56,7 +58,16 @@ export const getFilterPayload = (
 }
 
 export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
+  const isMLISA = get('IS_MLISA_SA')
   const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
+  if(isMLISA) {
+    if(path.length === 0)
+      return {}
+    return {
+      networkNodes: [path as NodeFilter],
+      switchNodes: [path as NodeFilter]
+    }
+  }
   switch (path.length) {
     case 0:
       return {}
@@ -89,12 +100,12 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
   const { networkNodes, switchNodes } = filter
   return (networkNodes?.[0] || switchNodes?.[0] || []).reduce((path, node) => {
     const { type } = node
-    if (type === 'zone' || type === 'switchGroup') {
-      path.push({ type, name: node.name })
-    } else if (type === 'apMac') {
-      path.push({ type: 'AP', name: node.list[0] })
+    if (type === 'apMac') {
+      path.push({ type: 'AP', name: (node as FilterListNode).list[0] })
     } else if (type === 'switch') {
-      path.push({ type, name: node.list[0] })
+      path.push({ type, name: (node as FilterListNode).list[0] })
+    } else {
+      path.push({ type, name: (node as FilterNameNode).name })
     }
     return path
   }, defaultNetworkPath.slice())

@@ -1,5 +1,5 @@
-import { Anchor as AntAnchor } from 'antd'
-import styled, { css }         from 'styled-components/macro'
+import { Anchor as AntAnchor, Col } from 'antd'
+import styled, { css }              from 'styled-components/macro'
 
 export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
   ${props => props.$customType === 'layout' ? css`
@@ -50,7 +50,19 @@ export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
     line-height: var(--acx-subtitle-5-line-height);
   }
 `
+export const AnchorLayoutSidebar = styled(Col)<{ $offsetTop?: number }>`
+  > div > [aria-hidden] + .ant-affix {
+    position: fixed;
+    top: ${props => props.$offsetTop || 0}px !important;
+  }
+  > div .ant-anchor-wrapper .ant-anchor-ink-ball {
+    top: 13.5px;
+  }
+`
 
 export const Container = styled.div`
-  min-height: 100vh;
+  margin: 12px 0 60px;
+  &:last-child{
+    min-height: 100vh;
+  }
 `

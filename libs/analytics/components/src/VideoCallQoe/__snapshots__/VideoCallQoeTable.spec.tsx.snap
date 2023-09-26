@@ -34,6 +34,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                 <input
                   class="ant-input"
                   placeholder="Search Test Call Name"
+                  title="Search Test Call Name"
                   type="text"
                   value=""
                 />
@@ -841,7 +842,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
                                   type="button"
                                 >
                                   <span>
@@ -1472,7 +1473,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="sc-ftvSup blkwvB"
+                                  class="sc-ftvSup cYsZHL"
                                 >
                                   Invalid
                                 </span>
@@ -1556,7 +1557,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+                                  class="styledComponents__Pill-sc-j61ge1-0 igIonA"
                                   type="negative"
                                 >
                                   Bad
@@ -1634,7 +1635,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo"
+                                  class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
                                   type="positive"
                                 >
                                   Good

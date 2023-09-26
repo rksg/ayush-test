@@ -1,9 +1,11 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, AnalyticsFilter }                           from '@acx-ui/analytics/utils'
+import { getSeriesData }                                            from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                                from '@acx-ui/formatter'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                        from '@acx-ui/utils'
+import type { AnalyticsFilter }                                     from '@acx-ui/utils'
 
 import {
   useResourceUtilizationQuery,
@@ -23,6 +25,7 @@ function ResourceUtilizationWidget ({ filters }: { filters : AnalyticsFilter }) 
     { key: 'poePercent', name: $t({ defaultMessage: 'PoE' }) }
   ] as Array<{ key: Key, name: string }>
   const queryResults = useResourceUtilizationQuery(filters, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest

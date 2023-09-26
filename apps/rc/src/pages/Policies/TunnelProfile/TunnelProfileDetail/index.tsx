@@ -2,7 +2,6 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   MtuTypeEnum,
@@ -16,6 +15,8 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
 
+import { ageTimeUnitConversion } from '../util'
+
 import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
 
@@ -23,7 +24,6 @@ const TunnelProfileDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tablePath = getPolicyRoutePath({
     type: PolicyType.TUNNEL_PROFILE,
     oper: PolicyOperation.LIST
@@ -51,19 +51,26 @@ const TunnelProfileDetail = () => {
     // },
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
-      content: () => (
-        MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
-          $t({ defaultMessage: 'Auto' }) :
-          `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
-      )
+      content: MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
+        $t({ defaultMessage: 'Auto' }) :
+        `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
     },
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
-      content: () => (
-        tunnelProfileData.forceFragmentation ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' })
-      )
+      content: tunnelProfileData.forceFragmentation ?
+        $t({ defaultMessage: 'ON' }) :
+        $t({ defaultMessage: 'OFF' })
+    },
+    {
+      title: $t({ defaultMessage: 'Idle Period' }),
+      content: () => {
+        if(!tunnelProfileData.ageTimeMinutes) return
+        const result = ageTimeUnitConversion(tunnelProfileData.ageTimeMinutes)
+        return $t({ defaultMessage: '{value} {unit}' }, {
+          value: result?.value,
+          unit: result?.unit
+        })
+      }
     }
   ]
 
@@ -71,17 +78,8 @@ const TunnelProfileDetail = () => {
     <>
       <PageHeader
         title={tunnelProfileData.name}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)

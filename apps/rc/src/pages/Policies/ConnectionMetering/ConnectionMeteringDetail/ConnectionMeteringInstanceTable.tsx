@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, QosStats } from '@acx-ui/rc/utils'
 
-import { PersonaDetailsLink, PropertyUnitLink, VenueLink } from '../LinkHelper'
+import { IdentityDetailsLink, PropertyUnitLink, VenueLink } from '../LinkHelper'
 
 const defaultVenueListPayload = {
   fields: [
@@ -130,11 +130,12 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   }
 
   const statsPayload = useMemo(() => {
-    return [props.data.map(persona => ({ field: 'personaId', value: persona.id }))] }
+    return props.data.map(persona => ([{ field: 'personaId', value: persona.id }]))
+  }
   ,[props.data])
 
   const qosStats = useGetQosStatsQuery( { payload: statsPayload }, {
-    pollingInterval: 30 * 1000
+    pollingInterval: 60 * 1000
   })
 
   useEffect(()=> {
@@ -178,12 +179,12 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
         />
     },
     {
-      title: $t({ defaultMessage: 'Persona' }),
+      title: $t({ defaultMessage: 'Identity' }),
       dataIndex: 'personas',
       key: 'personas',
       render: (_, { personas })=>
         personas
-          .map<ReactNode>(persona=> <PersonaDetailsLink key={persona.id} {...persona}/>)
+          .map<ReactNode>(persona=> <IdentityDetailsLink key={persona.id} {...persona}/>)
           .reduce((prev, curr) => [prev, ', ', curr])
     },
     {

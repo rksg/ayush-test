@@ -66,11 +66,13 @@ export function renderSearch <RecordType> (
   setSearchValue: Function,
   width: number
 ): React.ReactNode {
+  const placeHolderText = intl.$t({ defaultMessage: 'Search {searchables}' }, {
+    searchables: searchables.map(column => column.title).join(', ')
+  })
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
-    placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
-      searchables: searchables.map(column => column.title).join(', ')
-    })}
+    placeholder={placeHolderText}
+    title={placeHolderText}
     style={{ width }}
     value={searchValue}
     allowClear
@@ -111,16 +113,25 @@ export function renderFilter <RecordType> (
     key={index}
     maxTagCount='responsive'
     mode={column.filterMultiple === false ? undefined : 'multiple'}
+    showSearch={column?.filterSearchable ?? undefined}
     value={filterValues[key as keyof Filter]}
     onChange={(value: unknown) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
       const filterValue = Array.isArray(value) ? value : [value]
+      let filters = {} as Filter
+
       if (column.filterValueNullable === false &&
         filterValue.filter(v => v != null).length === 0) {
-        setFilterValues({ ...filterValues, [key]: undefined })
+        filters = { ...filterValues, [key]: undefined } as Filter
       } else {
-        setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
+        filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
       }
+
+      column?.coordinatedKeys?.forEach(key => {
+        delete filters[key]
+      })
+
+      setFilterValues(filters)
     }}
     filterOption={filterOption}
     placeholder={column.title as string}

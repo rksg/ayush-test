@@ -1,8 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, DHCPUrls, DpskUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                      from '@acx-ui/store'
+import { DHCPUrls, DpskUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -10,88 +9,11 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mockedPortalList } from './__tests__/fixtures'
+
 import MyServices from '.'
 
-const mockedServiceList = {
-  fields: [
-    'scope',
-    'name',
-    'cog',
-    'id',
-    'check-all',
-    'type'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '1b85a320a58d4ae299e2260e926bb6eb',
-      name: 'Jeff-mDNS-for-Jacky',
-      type: 'mDNS Proxy',
-      technology: 'WI-FI',
-      scope: 1
-    },
-    {
-      id: '2411047466e146699a7bb1bff406c180',
-      name: 'Test123',
-      type: 'Wi-Fi Calling',
-      technology: 'WI-FI',
-      scope: 2
-    }
-  ]
-}
 
-const mockWifiCallingTableResult = {
-  fields: [
-    'ePDGs',
-    'epdg',
-    'qosPriority',
-    'networkIds',
-    'epdgs',
-    'name',
-    'tenantId',
-    'id'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: 'b6ebccae545c44c1935ddaf746f5b048',
-      name: 'wifi-1',
-      qosPriority: 'WIFICALLING_PRI_VOICE',
-      networkIds: [],
-      tenantId: '1977de24c7824b0b975c4d02806e081f',
-      epdgs: [
-        {
-          domain: 'a.b.comd'
-        }
-      ]
-    }
-  ]
-}
-
-
-const mockedTableResult = {
-  totalCount: 0,
-  page: 0,
-  data: []
-}
-
-const dpskListResponse = {
-  content: [],
-  totalElements: 0,
-  totalPages: 0,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
-}
-
-const mockedPortalList = {
-  content: [],
-  paging: { page: 1, pageSize: 10, totalCount: 0 }
-}
 
 describe('MyServices', () => {
   const params = {
@@ -102,10 +24,6 @@ describe('MyServices', () => {
   const getEnhancedMdnsProxyRequestSpy = jest.fn()
   beforeEach(() => {
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getServicesList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
-      ),
       rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
@@ -149,20 +67,7 @@ describe('MyServices', () => {
     expect(await screen.findByRole('link', { name: 'Add Service' })).toHaveAttribute('href', createPageLink)
   })
 
-  it('should not render breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <MyServices />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-    expect(screen.queryByText('Network Control')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <MyServices />

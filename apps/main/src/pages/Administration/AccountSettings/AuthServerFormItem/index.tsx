@@ -130,7 +130,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col style={{ width: '190px' }}>
+        {hasSsoConfigured && <Col style={{ width: '190px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <Form.Item
               colon={false}
@@ -139,14 +139,17 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
             <div style={{ marginTop: '-10px' }}><Button type='link'
               key='viewxml'
               onClick={async () => {
-                const url = authenticationData?.samlFileType === SamlFileType.direct_url
-                  ? authenticationData?.samlFileURL
-                  : await loadImageWithJWT(authenticationData?.samlFileURL as string)
-                await fetch(url)
-                  .then((response) => response.text())
-                  .then((text) => {
-                    setXmlData(text)
-                  })
+                const isDirectUrl = authenticationData?.samlFileType === SamlFileType.direct_url
+                if (isDirectUrl) {
+                  setXmlData(authenticationData?.samlFileURL || '')
+                } else {
+                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string)
+                  await fetch(url)
+                    .then((response) => response.text())
+                    .then((text) => {
+                      setXmlData(text)
+                    })
+                }
                 setModalVisible(true)
               }}>
               {$t({ defaultMessage: 'View XML code' })}

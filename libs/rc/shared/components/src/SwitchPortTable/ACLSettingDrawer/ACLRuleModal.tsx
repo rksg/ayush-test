@@ -63,6 +63,7 @@ export function ACLRuleModal (props: {
         form={form}
         onFinish={props.onSave}
       >
+        <Form.Item name='id' initialValue='' noStyle children={<Input type='hidden' />} />
         <Form.Item name='sequence'
           label={$t({ defaultMessage: 'Sequence' })}
           rules={[

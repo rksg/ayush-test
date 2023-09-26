@@ -76,30 +76,12 @@ export const mockedDpskPassphraseList = {
       vlanId: 4,
       mac: 'AA:BB:CC:11:22:44',
       numberOfDevices: 1,
-      createdDate: '2022-12-08T09:00:00'
-    }
-  ],
-  page: 1,
-  totalCount: 4,
-  totalPages: 1
-}
-
-export const mockedDpskPassphraseListWithPersona = {
-  data: [
-    {
-      id: '__PASSPHRASE_ID_99__',
-      passphrase: 'abced12345',
-      username: 'DPSK_USER_1_With_Persona',
-      vlanId: 1,
-      mac: null,
-      numberOfDevices: 3,
-      createdDate: '2022-12-07T21:39:00',
-      expirationDate: '2022-12-08T08:39:00',
+      createdDate: '2022-12-08T09:00:00',
       identityId: '123456789'
     }
   ],
   page: 1,
-  totalCount: 1,
+  totalCount: 4,
   totalPages: 1
 }
 
@@ -195,6 +177,79 @@ export const mockedNetworks = {
       aps: 1,
       clients: 0,
       tunnelWlanEnable: false
+    }
+  ]
+}
+
+export const mockedDpskPassphraseMultipleDevices = {
+  id: '9e7a4796ff0c47b580644f1442e254c0',
+  passphrase: 'pvH`/k3k1iv2=xjoHR',
+  username: 'DPSK_User_347',
+  numberOfDevices: 5,
+  createdDate: '2023-09-01T02:55:36.357257'
+}
+
+export const mockedDevices = [
+  {
+    mac: '11:22:33:44:55:66',
+    lastConnectedNetwork: null,
+    lastConnectedNetworkId: null,
+    lastConnectedTime: null,
+    deviceConnectivity: 'CONFIGURED'
+  },
+  {
+    mac: '36:29:3f:06:15:15',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:09:08.695762',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'b6:d8:e3:ad:e0:37',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:27:54.475295',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'e6:f9:c7:0a:5a:20',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T07:50:00.169552',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'c2:05:ec:c1:dc:a1',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-05T08:39:42.73776',
+    deviceConnectivity: 'CONNECTED'
+  },
+  {
+    mac: 'c8:89:f3:de:99:f2',
+    lastConnectedNetwork: '0905dsae',
+    lastConnectedNetworkId: 'cc304058648342c18be8adc65169ca97',
+    lastConnectedTime: '2023-09-07T02:09:39.672192',
+    deviceConnectivity: 'CONNECTED'
+  }
+]
+
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
     }
   ]
 }

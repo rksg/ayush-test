@@ -17,13 +17,16 @@ export enum EntitlementDeviceType {
   ANALYTICS='ANALYTICS',
   MSP_WIFI='MSP_WIFI',
   MSP_SWITCH='MSP_SWITCH',
-  EDGE='EDGE'
+  EDGE='EDGE',
+  MSP_APSW='MSP_APSW',
+  APSW='APSW'
 }
 
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
   WIFI = 'DVCNWTYPE_WIFI',
-  LTE = 'DVCNWTYPE_LTE'
+  LTE = 'DVCNWTYPE_LTE',
+  APSW = 'APSW'
 }
 
 export enum EntitlementDeviceSubType {

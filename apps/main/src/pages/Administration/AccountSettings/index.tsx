@@ -6,12 +6,11 @@ import { Features, useIsSplitOn }                                          from 
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
-import { isDelegationMode }                                                from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { useTenantId } from '@acx-ui/utils'
+import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
@@ -42,16 +41,26 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
+  const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
+  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
+  const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
+    && canMSPDelegation && !isMspEc
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && !isDogfood
+    && canMSPDelegation && !isMspEc
+
+
   const authenticationData =
-    useGetTenantAuthenticationsQuery({ params }, { skip: !isIdmDecoupling })
+    useGetTenantAuthenticationsQuery({ params },
+      { skip: !isIdmDecoupling || !isPrimeAdminUser || isDogfood })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
@@ -97,7 +106,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && (
+        { showSsoSupport && (
           <>
             <Divider />
             <AuthServerFormItem
@@ -106,7 +115,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           </>
         )}
 
-        { isPrimeAdminUser && isIdmDecoupling && (
+        { showApiKeySupport && (
           <>
             <Divider />
             <AppTokenFormItem

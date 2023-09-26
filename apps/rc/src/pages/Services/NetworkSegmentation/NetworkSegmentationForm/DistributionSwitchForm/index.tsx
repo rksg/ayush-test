@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useGetAvailableSwitchesQuery }              from '@acx-ui/rc/services'
-import { DistributionSwitch }                        from '@acx-ui/rc/utils'
+import { AccessSwitch, DistributionSwitch }          from '@acx-ui/rc/utils'
 import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupFormData } from '..'
-import { useWatch }                         from '../../useWatch'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 import { DistributionSwitchTable }  from './DistributionSwitchTable'
@@ -22,8 +21,9 @@ export function DistributionSwitchForm () {
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
-  const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
-  const accessSwitchInfos = useWatch('accessSwitchInfos', form)
+  const distributionSwitchInfos = Form.useWatch('distributionSwitchInfos', form) ||
+    form.getFieldValue('distributionSwitchInfos')
+  const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
   const venueId = form.getFieldValue('venueId')
 
   const { availableSwitches, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({

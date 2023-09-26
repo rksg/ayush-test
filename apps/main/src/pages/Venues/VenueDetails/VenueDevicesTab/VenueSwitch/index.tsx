@@ -32,15 +32,6 @@ export function VenueSwitch () {
 
   return (
     <IconThirdTab>
-      <Tabs.TabPane key='overview'
-        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
-          <LineChartOutline />
-        </Tooltip>}>
-        <EmbeddedReport
-          reportName={ReportType.SWITCH}
-          rlsClause={`"switchGroupLevelOneName" in ('${params?.venueId}')`}
-        />
-      </Tabs.TabPane>
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
@@ -54,6 +45,15 @@ export function VenueSwitch () {
           <PortSolid />
         </Tooltip>}>
         <SwitchPortTable isVenueLevel={true} />
+      </Tabs.TabPane>
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
+        <EmbeddedReport
+          reportName={ReportType.SWITCH}
+          rlsClause={`"switchGroupLevelOneName" in ('${params?.venueId}')`}
+        />
       </Tabs.TabPane>
     </IconThirdTab>
   )

@@ -42,6 +42,23 @@ export function generalIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function multicastIpAddressRegExp (value: string, isInverted?: boolean) {
+  const { $t } = getIntl()
+
+  if (value) {
+    const ipLong = convertIpToLong(value)
+
+    // outside 224.0.0.0 ~ 239.255.255.255
+    if (ipLong < 3758096384 || ipLong > 4026531839) {
+      return isInverted ? Promise.resolve() : Promise.reject($t(validationMessages.multicastIpAddress))
+    } else {
+      return isInverted ? Promise.reject($t(validationMessages.multicastIpAddressExcluded)) : Promise.resolve()
+    }
+  }
+
+  return Promise.resolve()
+}
+
 export function networkWifiPortRegExp (value: number) {
   const { $t } = getIntl()
   if (value && value <= 0){
@@ -74,9 +91,8 @@ export function URLRegExp (value: string) {
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\\p{N}\\p{L}]+)?(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
+  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
+  if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -476,6 +492,20 @@ export function colonSeparatedMacAddressRegExp (value: string){
   const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.colonSeparatedMacInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function MacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  const regex = (includes(value, ':') || includes(value, '-'))
+    ? /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+    : (includes(value, '.'))
+      ? /^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/
+      : /^([0-9A-F]{12})$/
+
+  if (value && !regex.test(value.toUpperCase())) {
+    return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
 }

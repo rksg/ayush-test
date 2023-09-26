@@ -7,23 +7,35 @@ import { ActionModalType, ErrorDetailsProps, showActionModal }                  
 import { CatchErrorResponse }                                                     from '@acx-ui/rc/utils'
 import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal } from '@acx-ui/utils'
 
+type QueryMeta = {
+  response?: Response,
+  request: Request
+}
 export type ErrorAction = {
   type: string,
-  meta: {
-    baseQueryMeta: {
-      response: Response,
-      request: Request
-    },
+  meta?: {
+    baseQueryMeta?: QueryMeta,
     arg?: {
       endpointName: string
     }
-  },
-  payload: {
-    data?: ErrorDetailsProps
+  }
+} & ({
+  payload: ({
+    // fetchBaseQuery
+    data?: ErrorDetailsProps | CatchErrorResponse['data']
     originalStatus?: number
     status?: number
-  }
-}
+  } | {
+    // GraphQL
+    message: string
+    name: string
+    stack: string
+  } | {
+    // FETCH_ERROR
+    error: string
+    status: string
+  } | string)
+})
 
 interface ErrorMessageType {
   title: { defaultMessage: string },
@@ -33,7 +45,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo', 'detectApNeighbors'
+  'clientInfo'
 ]
 
 export const errorMessage = {
@@ -101,20 +113,32 @@ export const getErrorContent = (action: ErrorAction) => {
     intl = getIntl()
   }
   const { $t } = intl
-  const status = action.meta.baseQueryMeta?.response?.status
-   ?? action.payload?.originalStatus
-   ?? action.payload?.status
-  const request = action.meta.baseQueryMeta?.request
+  const queryMeta = action.meta?.baseQueryMeta
+  const status = (queryMeta?.response) ? queryMeta.response.status :
+    (typeof action.payload === 'string') ? undefined :
+      ('originalStatus' in action.payload) ? action.payload.originalStatus :
+        ('status' in action.payload) ? action.payload.status : undefined
+  const request = queryMeta?.request
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
-  let errors = action.payload.data
+  let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
+  if (typeof action.payload === 'string') {
+    errors = action.payload
+  } else if('data' in action.payload) {
+    errors = action.payload.data
+  } else if ('error' in action.payload) {
+    errors = action.payload.error
+  } else if ('message' in action.payload) {
+    errors = action.payload.message
+  }
   let needLogout = false
   let callback = undefined
 
   switch (status) {
     case 400:
-      if (errors?.error === 'API-KEY not present') {
+      if (errors && typeof errors !== 'string' && 'error' in errors &&
+      errors.error === 'API-KEY not present') { //ErrorDetailsProps
         needLogout = true
       }
       errorMsg = errorMessage.BAD_REQUEST
@@ -125,15 +149,12 @@ export const getErrorContent = (action: ErrorAction) => {
       type = 'info'
       needLogout = true
       break
-    case 404:
-      errorMsg = errorMessage.VALIDATION_ERROR
-      break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
       break
     case 423:
       errorMsg = errorMessage.REQUEST_IN_PROGRESS
-      errors = '' as ErrorDetailsProps
+      errors = ''
       break
     case 504: // no connection [development mode]
     case 0:   // no connection
@@ -149,7 +170,7 @@ export const getErrorContent = (action: ErrorAction) => {
       if (countryInvalid) {
         errorMsg = errorMessage.COUNTRY_INVALID
       } else {
-        errorMsg = errorMessage.SERVER_ERROR
+        errorMsg = errorMessage.VALIDATION_ERROR
       }
       break
     default:
@@ -160,10 +181,10 @@ export const getErrorContent = (action: ErrorAction) => {
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
   if (errors && isShowApiError(request)) {
     if (typeof errors === 'string') {
-      content = errors // Cannot use 'in' operator for string
+      content = <p>{errors}</p>
     }
-    else if ('errors' in errors) {
-      const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
+    else if ('errors' in errors) { // CatchErrorDetails
+      const errorsMessageList = errors.errors.map(err=>err.message)
       content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
     }
   }
@@ -172,7 +193,7 @@ export const getErrorContent = (action: ErrorAction) => {
     title: $t(errorMsg?.title),
     content,
     type,
-    errors,
+    errors: errors as ErrorDetailsProps,
     callback,
     needLogout
   }
@@ -212,6 +233,15 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
+
+  if (action?.payload && typeof action.payload !== 'string' && 'meta' in action.payload
+    && action.meta && !action.meta?.baseQueryMeta) {
+    // baseQuery (for retry API)
+    const payload = action.payload as { meta?: QueryMeta }
+    action.meta.baseQueryMeta = payload.meta
+    delete payload.meta
+  }
+
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
     if (!shouldIgnoreErrorModal(action)) {

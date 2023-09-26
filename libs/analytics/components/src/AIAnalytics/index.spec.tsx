@@ -33,14 +33,6 @@ jest.mock('../Recommendations', () => ({
   RecommendationTabContent: () => <div data-testid='Recommendations' />
 }))
 
-jest.mock('../ConfigChange', () => ({
-  ...jest.requireActual('../ConfigChange'),
-  useConfigChange: () => ({
-    headerExtra: [<div data-testid='HeaderExtra' />],
-    component: <div data-testid='ConfigChange' />
-  })
-}))
-
 describe('NetworkAssurance', () => {
   it('should render incidents', async () => {
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
@@ -50,34 +42,6 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('Incidents')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
-  it('should render config change', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByText('AI Assurance')).toBeVisible()
-    expect(await screen.findByText('AI Analytics')).toBeVisible()
-    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
-    expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
-  })
-  it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('Config Change')).toBeNull()
-
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('Config Change')).toBeNull()
-  })
-  it('should handle tab click', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('Config Change'))
-    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/tenant-id/t/analytics/configChange', hash: '', search: ''
-    }))
-  })
   it('should handle recommendation tab click in RA SA', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockGet.mockReturnValue(true)
@@ -85,7 +49,7 @@ describe('NetworkAssurance', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('AI-Driven RRM'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/analytics/next/recommendations/crrm', hash: '', search: ''
+      pathname: '/ai/recommendations/crrm', hash: '', search: ''
     }))
   })
   it('should render config recommendation tab for RA SA', async () => {

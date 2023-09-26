@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '@acx-ui/rc/components'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }                                           from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                                                            from '@acx-ui/feature-toggle'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -26,7 +26,6 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const extra = filterByAccess([
     <Button type={'primary'} onClick={onClick}>
@@ -38,21 +37,16 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={extra}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' })
+          text: $t({ defaultMessage: 'Identity Management' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Groups' }),
-          link: 'users/persona-management'
-        }
-      ] : [
-        {
-          text: $t({ defaultMessage: 'Persona Group' }),
-          link: 'users/persona-management'
+          text: $t({ defaultMessage: 'Identity Groups' }),
+          link: 'users/identity-management'
         }
       ]}
     />
@@ -77,6 +71,7 @@ function PersonaGroupDetails () {
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
@@ -94,7 +89,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })
@@ -124,18 +119,20 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Venue' }),
       content:
       <VenueLink
+        showNoData={true}
         name={venueDisplay?.name}
         venueId={venueDisplay?.id}
       />
     },
     {
-      title: $t({ defaultMessage: 'Personas' }),
+      title: $t({ defaultMessage: 'Identities' }),
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
       content:
       <DpskPoolLink
+        showNoData={true}
         name={dpskPoolDisplay?.name}
         dpskPoolId={detailsQuery.data?.dpskPoolId}
       />
@@ -144,6 +141,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'MAC Registration' }),
       content:
         <MacRegistrationPoolLink
+          showNoData={true}
           name={macPoolDisplay?.name}
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
@@ -152,6 +150,7 @@ function PersonaGroupDetails () {
       title: $t({ defaultMessage: 'Network Segmentation' }),
       content:
         <NetworkSegmentationLink
+          showNoData={true}
           name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
         />
@@ -176,7 +175,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

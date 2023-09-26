@@ -133,7 +133,7 @@ export function AdvancedTab () {
     >
       <StepsFormLegacy.StepForm>
         {/*
-        <AnchorLayout items={anchorItems} offsetTop={275} />
+        <AnchorLayout items={anchorItems} offsetTop={60} />
         */}
         {
           anchorItems.map(item => (

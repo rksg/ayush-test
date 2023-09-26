@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { Loader, Carousel } from '@acx-ui/components'
+import { Loader, Carousel }     from '@acx-ui/components'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { getFactsData } from './facts'
 import {
@@ -11,13 +11,21 @@ import {
 
 export { DidYouKnowWidget as DidYouKnow }
 
+type DidYouKnowWidgetProps = {
+  filters: AnalyticsFilter
+  maxFactPerSlide?: number
+  maxSlideChar?: number
+}
+
 function DidYouKnowWidget ({
-  filters
-}: { filters : AnalyticsFilter }) {
+  filters,
+  maxFactPerSlide,
+  maxSlideChar
+}: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const queryResults = useFactsQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getFactsData(data!, intl),
+      data: getFactsData(data!, { maxFactPerSlide, maxSlideChar }),
       ...rest
     })
   })

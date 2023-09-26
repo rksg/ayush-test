@@ -33,7 +33,7 @@ export function OnboardingForm () {
       }
     }
   }, [data])
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
@@ -44,13 +44,18 @@ export function OnboardingForm () {
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.ClickThrough}
           enableDefaultWalledGarden={false} />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.ClickThrough} />
       </GridCol>
     </GridRow>
+    {!(editMode) && <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
+      </GridCol>
+    </GridRow>}
+  </>
   )
 }
 

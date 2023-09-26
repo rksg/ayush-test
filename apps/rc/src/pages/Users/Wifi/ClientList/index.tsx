@@ -3,16 +3,16 @@ import { useState, useEffect } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker, Tabs }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui/rc/components'
-import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
-import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra }          from '@acx-ui/reports/components'
-import { filterByAccess }                                          from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                           from '@acx-ui/utils'
+import { PageHeader, RangePicker, Tabs }                  from '@acx-ui/components'
+import { ClientTabContext, defaultClientPayload }         from '@acx-ui/rc/components'
+import { useGetClientListQuery, useGetGuestsListQuery }   from '@acx-ui/rc/services'
+import { usePollingTableQuery }                           from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { filterByAccess }                                 from '@acx-ui/user'
+import { DateRange, getDateRangeFilter }                  from '@acx-ui/utils'
 
+import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
 import { defaultGuestPayload } from './GuestsTab/GuestsDetail'
 import { GuestTabContext }     from './GuestsTab/GuestsTable/context'
@@ -50,7 +50,6 @@ const useTabs = () : WirelessTab[] => {
   const [range, setRange] = useState(DateRange.allTime)
   const [startDate, setStartDate] = useState(moment(undefined).toString())
   const [endDate, setEndDate] = useState(moment(undefined).toString())
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const dateFilter = {
     range,
     setRange,
@@ -102,21 +101,15 @@ const useTabs = () : WirelessTab[] => {
   const { $t } = useIntl()
   const clientsTab = {
     key: WirelessTabsEnum.CLIENTS,
-    title: isNavbarEnhanced
-      ? $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount })
-      : $t({ defaultMessage: 'Clients ({clientCount})' }, { clientCount })
-    ,
+    title: $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount }),
     component: <ClientTabContext.Provider value={{ setClientCount }}>
-      <ClientDualTable />
+      <ClientTab />
     </ClientTabContext.Provider>,
     headerExtra: []
   }
   const guestTab = {
     key: WirelessTabsEnum.GUESTS,
-    title: isNavbarEnhanced
-      ? $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount })
-      : $t({ defaultMessage: 'Guest Pass Credentials' })
-    ,
+    title: $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount }),
     component: <GuestTabContext.Provider value={{ setGuestCount }}>
       <GuestsTab dateFilter={dateFilter}/>
     </GuestTabContext.Provider>,
@@ -136,17 +129,12 @@ const useTabs = () : WirelessTab[] => {
     />,
     headerExtra: usePageHeaderExtra(ReportType.CLIENT)
   }
-  return [
-    clientsTab,
-    guestTab,
-    ...(isNavbarEnhanced ? [wirelessClientReportTab] : [])
-  ]
+  return [clientsTab, guestTab, wirelessClientReportTab]
 }
 
 export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const basePath = useTenantLink('/users/wifi/')
   const onTabChange = (tab: string) =>
     navigate({
@@ -157,14 +145,8 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
   const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
-      title={isNavbarEnhanced
-        ? $t({ defaultMessage: 'Wireless' })
-        : $t({ defaultMessage: 'Wi-Fi' })
-      }
-      breadcrumb={isNavbarEnhanced
-        ? [{ text: $t({ defaultMessage: 'Clients' }) }]
-        : undefined
-      }
+      title={$t({ defaultMessage: 'Wireless' })}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

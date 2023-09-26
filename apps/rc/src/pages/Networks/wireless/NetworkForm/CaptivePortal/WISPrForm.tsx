@@ -212,7 +212,6 @@ export function WISPrForm () {
         form.setFieldValue('networkSecurity', 'OWE')
       } else {
         form.setFieldValue('networkSecurity', 'PSK')
-        form.setFieldValue('enablePreShared', true)
         setEnablePreShared(true)
         form.setFieldValue('pskProtocol', wlanSecurity)
       }
@@ -325,7 +324,7 @@ export function WISPrForm () {
 
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
@@ -336,8 +335,8 @@ export function WISPrForm () {
           }
           label={$t({ defaultMessage: 'Portal Provider' })}
           initialValue=''
-          children={(!isMspEc||(externalProviders && externalProviders.length>1))?
-            <Select onChange={(value)=>{
+          children={(!isMspEc||(externalProviders && externalProviders.length>1))
+            ? <Select onChange={(value)=>{
               const regions = _.find(externalProviders,{ name: value })?.regions
               setProvider(value, regions)
             }}>
@@ -352,7 +351,8 @@ export function WISPrForm () {
               <Select.Option value={'Custom Provider'}>
                 {$t({ defaultMessage: 'Custom Provider' })}
               </Select.Option>
-            </Select>:externalProviders?.[0].name}
+            </Select>
+            : externalProviders?.[0].name}
         />
         {isOtherProvider&&<Form.Item
           name={['guestPortal','wisprPage','providerName']}
@@ -383,6 +383,7 @@ export function WISPrForm () {
         />}
         {!(regionOption && regionOption.length>1)&&<Form.Item
           name={['guestPortal','wisprPage','externalProviderRegion']}
+          children={<></>}
           hidden
         />
 
@@ -403,9 +404,11 @@ export function WISPrForm () {
           'Tip: Copy this from your vendor\'s configuration' })}
           />}
         />
-        <RedirectUrlInput></RedirectUrlInput>
-        <Form.Item name={['guestPortal','wisprPage','customExternalProvider']}
+        <RedirectUrlInput />
+        <Form.Item
+          name={['guestPortal','wisprPage','customExternalProvider']}
           hidden
+          children={<></>}
           initialValue={false}
         />
         <Form.Item
@@ -430,7 +433,8 @@ export function WISPrForm () {
           children={<Input readOnly style={{ width: 200 }} ref={inputKey}/>}
         />
         {!enableOweEncryption && <Form.Item>
-          <Form.Item name='enablePreShared'
+          <Form.Item
+            name='enablePreShared'
             noStyle
             valuePropName='checked'
             initialValue={false}
@@ -447,12 +451,12 @@ export function WISPrForm () {
         </Form.Item>}
         {enableOweEncryption && <Form.Item
           name='networkSecurity'
+          initialValue={'NONE'}
           label={$t({ defaultMessage: 'Secure your network' })}
           extra={networkSecurityDescription()}
           children={
             <Select
               placeholder={$t({ defaultMessage: 'Select...' })}
-              defaultValue={'NONE'}
               options={networkSecurityOptions}
               onChange={(selected: string) => {
                 let security = data?.wlan?.wlanSecurity
@@ -603,12 +607,17 @@ export function WISPrForm () {
            : <AuthAccServerSetting/>)
         }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.WISPr}/>
       </GridCol>
     </GridRow>
+    {!(editMode) && <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
+      </GridCol>
+    </GridRow>}
+  </>
   )
 }

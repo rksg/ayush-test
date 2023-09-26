@@ -12,6 +12,7 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useDpskNewConfigFlowParams }                from '@acx-ui/rc/components'
 import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -51,7 +52,7 @@ export function DpskSettingsForm () {
     }
   }, [data])
 
-  return (
+  return (<>
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
@@ -60,7 +61,13 @@ export function DpskSettingsForm () {
         <NetworkDiagram />
       </Col>
     </Row>
-  )
+    {!(editMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
+
 }
 
 function SettingsForm () {
@@ -68,6 +75,7 @@ function SettingsForm () {
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
+  const dpskWlanSecurity = useWatch('dpskWlanSecurity')
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
     form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
@@ -78,47 +86,59 @@ function SettingsForm () {
     form.setFieldsValue({ ...data })
   },[data])
   const disableAAA = !useIsSplitOn(Features.POLICIES)
-  return (
-    <>
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <div>
-          <StepsFormLegacy.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsFormLegacy.Title>
-          <Form.Item
-            label={$t({ defaultMessage: 'Security Protocol' })}
-            name='dpskWlanSecurity'
-            initialValue={WlanSecurityEnum.WPA2Personal}
-          >
-            <Select>
-              <Option value={WlanSecurityEnum.WPA2Personal}>
-                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
-              </Option>
-              <Option value={WlanSecurityEnum.WPAPersonal}>
-                { $t({ defaultMessage: 'WPA' }) }</Option>
-            </Select>
-          </Form.Item>
+  const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
 
-          <Form.Item
-            name='isCloudpathEnabled'
-            initialValue={false}
-          >
-            <Radio.Group onChange={onCloudPathChange}>
-              <Space direction='vertical'>
-                <Radio value={false} disabled={editMode}>
-                  { $t({ defaultMessage: 'Use the DPSK Service' }) }
-                </Radio>
-                <Radio value={true} disabled={editMode||disableAAA}>
-                  { $t({ defaultMessage: 'Use RADIUS Server' }) }
-                </Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-        </div>
-        <div>
-          {isCloudpathEnabled ? <CloudpathServerForm /> : <DpskServiceSelector />}
-        </div>
-      </Space>
-      {!editMode && <NetworkMoreSettingsForm wlanData={data} />}
-    </>
+  // eslint-disable-next-line max-len
+  const securityDescription = <> { $t({ defaultMessage: 'WPA3/WPA2 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA3/WPA2 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
+
+  return (
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <StepsFormLegacy.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsFormLegacy.Title>
+        <Form.Item
+          label={$t({ defaultMessage: 'Security Protocol' })}
+          name='dpskWlanSecurity'
+          initialValue={WlanSecurityEnum.WPA2Personal}
+          extra={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed ? securityDescription : null}
+        >
+          <Select>
+            <Option value={WlanSecurityEnum.WPA2Personal}>
+              { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+            </Option>
+            <Option value={WlanSecurityEnum.WPAPersonal}>
+              { $t({ defaultMessage: 'WPA' }) }</Option>
+            {
+              isWpaDsae3Toggle && <Option value={WlanSecurityEnum.WPA23Mixed}>
+                { $t({ defaultMessage: 'WPA3/WPA2 mixed mode' }) }</Option>
+            }
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name='isCloudpathEnabled'
+          initialValue={false}
+        >
+          <Radio.Group onChange={onCloudPathChange}>
+            <Space direction='vertical'>
+              <Radio value={false} disabled={editMode}>
+                { $t({ defaultMessage: 'Use the DPSK Service' }) }
+              </Radio>
+              <Radio
+                value={true}
+                disabled={
+                  (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
+                    || editMode
+                    || disableAAA}>
+                { $t({ defaultMessage: 'Use RADIUS Server' }) }
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+      </div>
+      <div>
+        {isCloudpathEnabled ? <CloudpathServerForm /> : <DpskServiceSelector />}
+      </div>
+    </Space>
   )
 }
 
@@ -129,7 +149,8 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const { data: dpskList } = useGetDpskListQuery({})
+  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {

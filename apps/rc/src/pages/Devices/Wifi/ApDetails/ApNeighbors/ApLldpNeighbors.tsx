@@ -1,54 +1,34 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps }       from '@acx-ui/components'
-import { useLazyGetApLldpNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { useLazyGetApLldpNeighborsQuery }                         from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
-  ApLldpNeighborsResponse,
   CatchErrorResponse,
   defaultSort,
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { emtpyRenderer }                   from './ApRfNeighbors'
-import { lldpNeighborsFieldLabelMapping }  from './contents'
-import { DetectionStatus, useApNeighbors } from './useApNeighbors'
+import { emtpyRenderer }                  from './ApRfNeighbors'
+import { defaultPagination }              from './constants'
+import { lldpNeighborsFieldLabelMapping } from './contents'
+import { handleError, useApNeighbors }    from './useApNeighbors'
 
 import type { LldpNeighborsDisplayFields } from './contents'
 
 export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
-  // eslint-disable-next-line max-len
-  const [ getApLldpNeighbors, { isLoading: isLoadingApLldpNeighbors }] = useLazyGetApLldpNeighborsQuery()
-  const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
-  const { setRequestId, detectionStatus, handleError } = useApNeighbors('', socketHandler)
-  const [ tableData, setTableData ] = useState<ApLldpNeighborsResponse>()
+  const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
+  const { doDetect, isDetecting } = useApNeighbors('lldp', serialNumber!, socketHandler)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
-
-  useEffect(() => {
-    doDetect()
-  }, [])
-
-  const doDetect = async () => {
-    try {
-      const result = await detectApNeighbors({
-        params: { serialNumber },
-        payload: { action: 'DETECT_LLDP_NEIGHBOR' }
-      }).unwrap()
-
-      setRequestId(result.requestId)
-    } catch (error) {
-      setRequestId('')
-      handleError(error as CatchErrorResponse)
-    }
-  }
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
@@ -56,29 +36,32 @@ export default function ApLldpNeighbors () {
     onClick: doDetect
   }]
 
-  async function socketHandler () {
+  function socketHandler () {
     try {
-      const data = await getApLldpNeighbors({ params: { serialNumber } }).unwrap()
-      setTableData(data)
+      getApLldpNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
       handleError(error as CatchErrorResponse)
     }
   }
 
-  const isTableLoading = (): boolean => {
-    return isLoadingApLldpNeighbors || detectionStatus === DetectionStatus.FETCHING
+  const isTableFetching = () => {
+    return getApLldpNeighborsStates.isFetching || isDetecting
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
     return record.lldpTime + (record.lldpPortID ?? '') + (record.lldpChassisID ?? '')
   }
 
-  return <Loader states={[{ isLoading: isTableLoading() }]}>
+  return <Loader states={[{
+    isLoading: getApLldpNeighborsStates.isLoading,
+    isFetching: isTableFetching()
+  }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
       rowKey={getRowKey}
       columns={useColumns(setDetailsDrawerVisible, setSelectedApLldpNeighbor)}
-      dataSource={tableData?.neighbors ?? []}
+      dataSource={getApLldpNeighborsStates.data?.neighbors ?? []}
+      pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />
     <ApLldpNeighborDetailsDrawer
@@ -107,44 +90,69 @@ function useColumns (
             setSelectedApLldpNeighbor(row)
             setDetailsDrawerVisible(true)
           }}
-          children={data}
+          children={row.lldpInterface}
         />
       }
     },
     {
       key: 'lldpTime',
-      dataIndex: 'lldpTime',
-      title: $t({ defaultMessage: 'Time' })
+      dataIndex: 'lldpTime'
     },
     {
       key: 'lldpSysName',
       dataIndex: 'lldpSysName',
-      title: $t({ defaultMessage: 'System Name' })
+      render: (data, row) => {
+        if (!row.neighborManaged) return data
+
+        const mac: string | undefined = row.lldpChassisID?.split(' ')[1]
+
+        return <TenantLink
+          // eslint-disable-next-line max-len
+          to={`/devices/switch/${mac || row.neighborSerialNumber}/${row.neighborSerialNumber}/details/overview`}
+          style={{ lineHeight: '20px' }}
+          children={data}
+        />
+      }
     },
     {
       key: 'lldpSysDesc',
-      dataIndex: 'lldpSysDesc',
-      title: $t({ defaultMessage: 'System Description' })
+      dataIndex: 'lldpSysDesc'
     },
     {
       key: 'lldpChassisID',
-      dataIndex: 'lldpChassisID',
-      title: $t({ defaultMessage: 'Chassis ID' })
+      dataIndex: 'lldpChassisID'
     },
     {
       key: 'lldpMgmtIP',
-      dataIndex: 'lldpMgmtIP',
-      title: $t({ defaultMessage: 'Mgmt IP' })
+      dataIndex: 'lldpMgmtIP'
+    },
+    {
+      key: 'lldpCapability',
+      dataIndex: 'lldpCapability'
+    },
+    {
+      key: 'lldpPortDesc',
+      dataIndex: 'lldpPortDesc'
     },
     {
       key: 'lldpPortID',
-      dataIndex: 'lldpPortID',
-      title: $t({ defaultMessage: 'Port ID' })
+      dataIndex: 'lldpPortID'
+    },
+    {
+      key: 'lldpDeviceType',
+      dataIndex: 'lldpDeviceType'
     },
     {
       key: 'lldpClass',
-      dataIndex: 'lldpClass',
-      title: $t({ defaultMessage: 'Power Class' })
+      dataIndex: 'lldpClass'
+    },
+    {
+      key: 'lldpPDReqPowerVal',
+      dataIndex: 'lldpPDReqPowerVal'
+    },
+    {
+      key: 'lldpPSEAllocPowerVal',
+      dataIndex: 'lldpPSEAllocPowerVal'
     }
   ]
 

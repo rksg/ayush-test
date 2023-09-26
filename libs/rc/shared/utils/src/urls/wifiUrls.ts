@@ -497,6 +497,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/clientAdmissionControlSettings',
     newApi: true
   },
+  getApClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateApClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
+  deleteApClientAdmissionControl: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    newApi: true
+  },
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/aps/:serialNumber/networkSettings',
@@ -543,6 +558,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   detectApNeighbors: {
     method: 'PATCH',
     url: '/venues/aps/:serialNumber/neighbors',
+    newApi: true
+  },
+  getCcdSupportVenues: {
+    method: 'post',
+    url: '/venues/clientConnectionDiagnosis/query',
+    newApi: true
+  },
+  getCcdSupportApGroups: {
+    method: 'post',
+    url: '/apGroups/clientConnectionDiagnosis/query?venueId=:venueId',
+    newApi: true
+  },
+  runCcd: {
+    method: 'post',
+    url: '/venues/:venueId/clientConnectionDiagnosis',
     newApi: true
   }
 }

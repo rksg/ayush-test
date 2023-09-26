@@ -1,40 +1,61 @@
 import { useContext } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Form, Slider } from 'antd'
+import { useIntl }      from 'react-intl'
 
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
-import NetworkFormContext     from '../../NetworkFormContext'
-import * as UI                from '../styledComponents'
-import { UserConnectionForm } from '../UserConnectionForm'
+import NetworkFormContext from '../../NetworkFormContext'
+import * as UI            from '../styledComponents'
+
+import QoS from './QoS'
 
 
 export function AdvancedTab () {
-  const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
+  const { $t } = useIntl()
 
-  const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
+  const dtimTooltipContent =
+   'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.'
+  const labelWidth = '250px'
 
-
-  const UserConnectionComponent = () => {
-    return (
-      <div style={{ maxWidth: '600px' }}>
-        <UserConnectionForm />
-      </div>
-    )
-  }
+  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
+  const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
+  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
 
   return (
     <>
-      {isSupportQosMap &&
-      <>
-        <UI.Subtitle>{$t({ defaultMessage: 'QoS Map' })}</UI.Subtitle>
-        <div> implementing... </div>
-      </>}
-
-      {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-        <UserConnectionComponent/>
+      {dtimFlag &&
+      <UI.FieldLabel width={labelWidth}>
+        <Form.Item
+          name={['wlan','advancedCustomization','dtimInterval']}
+          initialValue={1}
+          label={
+            <>
+              {$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
+              <Tooltip
+                title={$t({ defaultMessage: dtimTooltipContent })}
+                placement='bottom'>
+                <QuestionMarkCircleOutlined/>
+              </Tooltip>
+            </>
+          }
+          style={{ marginBottom: '15px', width: '300px' }}
+          children={<Slider
+            tooltipVisible={false}
+            style={{ width: '240px' }}
+            defaultValue={1}
+            min={1}
+            max={255}
+            marks={{ 1: 'Lower latency', 255: 'Longer client battery life' }}
+          />}
+        />
+      </UI.FieldLabel>
       }
+
+      {(qosMapSetFlag || qosMirroringFlag) && <QoS wlanData={data} />}
     </>
   )
 }

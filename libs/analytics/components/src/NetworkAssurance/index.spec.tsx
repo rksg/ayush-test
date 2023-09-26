@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import * as config                 from '@acx-ui/config'
 import { useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
@@ -39,18 +40,34 @@ jest.mock('../VideoCallQoe', () => ({
   })
 }))
 
+jest.mock('../ConfigChange', () => ({
+  ConfigChange: () => <div data-testid='ConfigChange' />
+}))
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 describe('NetworkAssurance', () => {
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
   it('should render health', async () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('HealthPage')).toBeVisible()
   })
-  it('should render serivce guard', async () => {
+  it('should render service guard', async () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('ServiceGuard')).toBeVisible()
   })
-  it('should render video call qoe', async () => {
+  it('should hide video call qoe when IS_MLISA_SA', async () => {
+    get.mockReturnValue('')
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('VideoCallQoe')).toBeNull()
+  })
+  it('should render video call qoe when feature flag VIDEO_CALL_QOE is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -82,5 +99,30 @@ describe('NetworkAssurance', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/analytics/videoCallQoe', hash: '', search: ''
     }))
+  })
+  it('should render config change when IS_MLISA_SA', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    get.mockReturnValue('true')
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
+    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
+  })
+  it('should render config change when feature flag CONFIG_CHANGE is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
+  })
+  it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
+
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
   })
 })

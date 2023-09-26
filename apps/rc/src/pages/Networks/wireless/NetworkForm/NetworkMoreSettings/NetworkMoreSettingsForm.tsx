@@ -7,6 +7,7 @@ import { get }                    from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                     from '@acx-ui/components'
+import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -16,7 +17,9 @@ import { NetworkControlTab } from './NetworkControlTab'
 import { NetworkingTab }     from './NetworkingTab'
 import { RadioTab }          from './RadioTab'
 import * as UI               from './styledComponents'
+import { UserConnectionTab } from './UserConnectionTab'
 import { VlanTab }           from './VlanTab'
+
 
 
 export function NetworkMoreSettingsForm (props: {
@@ -95,7 +98,9 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
-  const isSupportQosMap = false //useIsSplitOn(Features.xxxx)
+  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
+  const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
+  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
 
   const [currentTab, setCurrentTab] = useState('vlan')
 
@@ -104,7 +109,13 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       key: 'vlan',
       display: defineMessage({ defaultMessage: 'VLAN' }),
       style: { width: '10px' }
-    }, {
+    },
+    ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL)? [{
+      key: 'userConnection',
+      display: defineMessage({ defaultMessage: 'User Connection' }),
+      style: { width: '71px' }
+    }] : []),
+    {
       key: 'networkControl',
       display: defineMessage({ defaultMessage: 'Network Control' }),
       style: { width: '71px' }
@@ -117,7 +128,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       display: defineMessage({ defaultMessage: 'Networking' }),
       style: { width: '38px' }
     },
-    ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL || isSupportQosMap)? [ {
+    ...((qosMapSetFlag || qosMirroringFlag || dtimFlag)? [ {
       key: 'advanced',
       display: defineMessage({ defaultMessage: 'Advanced' }),
       style: { width: '37px' }
@@ -140,6 +151,11 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
     <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
       <VlanTab wlanData={wlanData} />
     </div>
+    {(data?.type === NetworkTypeEnum.CAPTIVEPORTAL) &&
+    <div style={{ display: currentTab === 'userConnection' ? 'block' : 'none' }}>
+      <UserConnectionTab />
+    </div>
+    }
     <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
       <NetworkControlTab wlanData={wlanData} />
     </div>

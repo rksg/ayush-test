@@ -46,7 +46,10 @@ import {
   APMeshSettings,
   MeshUplinkAp,
   ApRfNeighborsResponse,
-  ApLldpNeighborsResponse
+  ApLldpNeighborsResponse,
+  SupportCcdVenue,
+  SupportCcdApGroup,
+  ApClientAdmissionControl
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -98,7 +101,8 @@ export const apApi = baseApApi.injectEndpoints({
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
@@ -793,12 +797,67 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
+        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
         }
       }
+    }),
+    getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getCcdSupportApGroups: build.query<SupportCcdApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportApGroups, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    runCcd: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getApClientAdmissionControl: build.query<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    updateApClientAdmissionControl: build.mutation<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApClientAdmissionControl, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
+    }),
+    deleteApClientAdmissionControl: build.mutation<ApClientAdmissionControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApClientAdmissionControl, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ClientAdmissionControl' }]
     })
   })
 })
@@ -874,7 +933,14 @@ export const {
   useDownloadApsCSVMutation,
   useLazyGetApRfNeighborsQuery,
   useLazyGetApLldpNeighborsQuery,
-  useDetectApNeighborsMutation
+  useDetectApNeighborsMutation,
+  useGetCcdSupportVenuesQuery,
+  useGetCcdSupportApGroupsQuery,
+  useLazyGetCcdSupportApGroupsQuery,
+  useRunCcdMutation,
+  useGetApClientAdmissionControlQuery,
+  useUpdateApClientAdmissionControlMutation,
+  useDeleteApClientAdmissionControlMutation
 } = apApi
 
 

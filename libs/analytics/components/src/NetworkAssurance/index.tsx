@@ -1,17 +1,29 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
+import {
+  PageHeader,
+  Tabs,
+  TimeRangeDropDownProvider,
+  TimeRangeDropDown
+} from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { DateRange }                  from '@acx-ui/utils'
 
+import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
   SERVICE_GUARD = 'serviceGuard',
+  CONFIG_CHANGE = 'configChange',
   VIDEO_CALL_QOE = 'videoCallQoe'
 }
 
@@ -25,6 +37,8 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
+  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
@@ -36,6 +50,21 @@ const useTabs = () : Tab[] => {
     url: 'serviceValidation',
     ...useServiceGuard()
   }
+  const configChangeTab = {
+    key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
+    title: $t({ defaultMessage: 'Config Change' }),
+    component: <ConfigChange/>,
+    headerExtra: [
+      get('IS_MLISA_SA')
+        ? <SANetworkFilter />
+        : <NetworkFilter
+          key={getShowWithoutRbacCheckKey('network-filter')}
+          shouldQuerySwitch={true}
+          withIncidents={false}
+        />,
+      <TimeRangeDropDown/>
+    ]
+  }
   const videoCallQoeTab = {
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,
     ...useVideoCallQoe()
@@ -43,7 +72,8 @@ const useTabs = () : Tab[] => {
   return [
     healthTab,
     serviceGuardTab,
-    ...(useIsSplitOn(Features.VIDEO_CALL_QOE) ? [videoCallQoeTab] : [])
+    ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : []),
+    ...(!get('IS_MLISA_SA') && videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 
@@ -58,7 +88,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
     })
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[DateRange.last7Days, DateRange.last30Days]}>
     <PageHeader
       title={$t({ defaultMessage: 'Network Assurance' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
@@ -70,5 +100,5 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
       extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }

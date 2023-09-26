@@ -3,8 +3,8 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
-import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 
+import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
@@ -13,7 +13,6 @@ import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
-import * as UI      from './styledComponents'
 
 export const ApservHighNumReboots = (incident: Incident) => {
   const { $t } = useIntl()
@@ -64,10 +63,8 @@ export const ApservHighNumReboots = (incident: Incident) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'AI Analytics' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'AI Analytics' }) },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
@@ -75,11 +72,11 @@ export const ApservHighNumReboots = (incident: Incident) => {
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
-          <UI.FixedAutoSizer>
+          <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
-          </UI.FixedAutoSizer>
+          </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />

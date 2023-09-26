@@ -5,7 +5,9 @@ import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
 
 import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
-import { Anchor, Container } from './styledComponents'
+import { useLayoutContext } from '../Layout'
+
+import { Anchor, Container, AnchorLayoutSidebar } from './styledComponents'
 
 export { Anchor } from './styledComponents'
 
@@ -16,13 +18,14 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
-export const AnchorLayout = ({ items, offsetTop } : {
+export const AnchorLayout = ({ items, offsetTop = 0 } : {
   items: AnchorPageItem[],
   offsetTop?: number
 }) => {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
   const location = useLocation()
+  const layout = useLayoutContext()
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -39,9 +42,10 @@ export const AnchorLayout = ({ items, offsetTop } : {
   }, [])
 
   return <Row gutter={20}>
-    <Col span={4}>
+    <AnchorLayoutSidebar span={4}
+      $offsetTop={offsetTop + layout.pageHeaderY}>
       <Anchor ref={anchorRef}
-        offsetTop={offsetTop}
+        offsetTop={offsetTop + layout.pageHeaderY}
         onClick={(e) => handleClick(e)}
         $customType='layout'>
         {items.map(item => {
@@ -49,7 +53,7 @@ export const AnchorLayout = ({ items, offsetTop } : {
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />
         })}
       </Anchor>
-    </Col>
+    </AnchorLayoutSidebar>
     <Col span={20}>{
       items.map(item => {
         const linkId = item.title.split(' ').join('-')

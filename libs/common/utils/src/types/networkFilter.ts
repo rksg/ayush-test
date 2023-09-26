@@ -3,7 +3,7 @@ export type NodeType = 'network'
   | 'system'
   | 'controller'
   | 'domain'
-  | 'zone' | 'switchGroup'
+  | 'zone' | 'switchGroup' | 'switchSubGroup'
   | 'apGroup'
   | 'switch' | 'AP'
 
@@ -15,7 +15,7 @@ export type NetworkPath = PathNode[]
 
 // filter sent to data api (xNodes + SSIDs), uses resource group format
 export type FilterNameNode = {
-  type: 'zone' | 'switchGroup'
+  type: 'zone' | 'switchGroup' | 'system' | 'domain' | 'apGroup'
   name: string
 }
 export type FilterListNode = {

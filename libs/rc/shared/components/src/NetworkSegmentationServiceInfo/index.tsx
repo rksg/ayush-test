@@ -13,7 +13,8 @@ import {
 import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
 
-import { defaultApPayload } from '../NetworkSegmentationDetailTableGroup/ApsTable'
+import { EdgeServiceStatusLight } from '../EdgeServiceStatusLight'
+import { defaultApPayload }       from '../NetworkSegmentationDetailTableGroup/ApsTable'
 
 import * as UI from './styledComponents'
 
@@ -104,7 +105,10 @@ export const NetworkSegmentationServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
-      content: () => (<></>)
+      content: () => ((nsgViewData?.edgeInfos?.length)
+        ? <EdgeServiceStatusLight data={nsgViewData.edgeAlarmSummary} />
+        : '--'
+      )
     },
     {
       title: $t({ defaultMessage: 'Venue' }),
@@ -120,9 +124,9 @@ export const NetworkSegmentationServiceInfo = styled((
       }
     },
     {
-      title: $t({ defaultMessage: 'Persona Group' }),
+      title: $t({ defaultMessage: 'Identity Group' }),
       content: () => (
-        <TenantLink to={`users/persona-management/persona-group/${personaGroupData?.id}`}>
+        <TenantLink to={`users/identity-management/identity-group/${personaGroupData?.id}`}>
           {personaGroupData?.name}
         </TenantLink>
       )
@@ -133,7 +137,7 @@ export const NetworkSegmentationServiceInfo = styled((
         const edgeInfo = nsgViewData?.edgeInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeId}/edge-details/overview`}
+            to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}
           >
             {edgeInfo?.edgeName}
           </TenantLink>

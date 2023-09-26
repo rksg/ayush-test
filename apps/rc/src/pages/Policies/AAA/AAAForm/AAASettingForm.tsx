@@ -16,7 +16,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 type AAASettingFormProps = {
   edit: boolean,
   saveState: AAAPolicyType,
-  type?: string
+  type?: string,
+  networkView?: boolean
 }
 
 const AAASettingForm = (props: AAASettingFormProps) => {
@@ -62,7 +63,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     if (saveState && edit) {
       stateValue = isPrimary
         ? `${saveState.primary!.ip}:${saveState.primary!.port}`
-        : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+        : `${saveState.secondary?.ip}:${saveState.secondary?.port}`
     }
 
     if (aaaPolicyIpList
@@ -99,7 +100,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 8 }}>
+      <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
@@ -251,7 +252,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             /></Fieldset>}
         </Space>
       </GridCol>
-      <GridCol col={{ span: 14 }}>
+      <GridCol col={props.networkView ? { span: 0 } :{ span: 14 }}>
       </GridCol>
     </GridRow>
   )

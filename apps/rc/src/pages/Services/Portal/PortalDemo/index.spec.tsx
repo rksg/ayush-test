@@ -50,6 +50,11 @@ const mockDemo = {
   }
 }
 
+jest.mock('./PortalViewContentPreview', () => ({
+  ...jest.requireActual('./PortalViewContentPreview'),
+  default: () => <div data-testid='PortalViewContentPreviewTestId' />
+}))
+
 describe('PortalDemo', () => {
   beforeEach(async () => {
     mockServer.use(
@@ -99,38 +104,39 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByTitle('#F5A623'))
     fireEvent.click(await screen.findByText('Reset'))
     fireEvent.click(await screen.findByText('Preview'))
+
+    expect(await screen.findByTestId('PortalViewContentPreviewTestId')).toBeVisible()
   })
 
   it('should render portal demo preview successfully', async () => {
-    await demoPreview()
+    render(
+      <Provider>
+        <Form>
+          <PortalDemo value={mockDemo}
+            isPreview={true}
+            networkSocial={{ smsEnabled: true, facebookEnabled: true,
+              googleEnabled: true, twitterEnabled: true, linkedInEnabled: true }} />
+        </Form>
+      </Provider>
+    )
+
+    await userEvent.click((await screen.findAllByTitle('Click Through'))[0])
+    await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
+    await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
+    await userEvent.click((await screen.findAllByTitle('Guest Pass - Forgot password'))[0])
+    await userEvent.click((await screen.findAllByTitle('Guest Pass - Forgot password'))[0])
+    await userEvent.click((await screen.findAllByTitle('Self Sign In - Connect'))[0])
+    await userEvent.click((await screen.findAllByTitle('Self Sign In - Connect'))[0])
+    await userEvent.click((await screen.findAllByTitle('Self Sign In - Register/Confirm'))[0])
+    await userEvent.click((await screen.findAllByTitle('Self Sign In - Register/Confirm'))[0])
+    await userEvent.click((await screen.findAllByTitle('Host Approval - Register/Confirm'))[0])
+    await userEvent.click((await screen.findAllByTitle('Host Approval - Register/Confirm'))[0])
+    await userEvent.click((await screen.findAllByTitle('Connection confirmed'))[0])
+    await userEvent.click((await screen.findAllByTitle('Connection confirmed'))[0])
+    fireEvent.click((await screen.findAllByTitle('Terms & Conditions'))[0])
+
+    expect(await screen.findAllByText(
+      'Terms & conditions is enabled but not configured!'
+    )).not.toBeNull()
   })
 })
-async function demoPreview () {
-  render(
-    <Provider>
-      <Form>
-        <PortalDemo value={mockDemo}
-          isPreview={true}
-          networkSocial={{ smsEnabled: true, facebookEnabled: true,
-            googleEnabled: true, twitterEnabled: true, linkedInEnabled: true }} />
-      </Form>
-    </Provider>
-  )
-  await changeView()
-}
-async function changeView () {
-  await userEvent.click((await screen.findAllByTitle('Click Through'))[0])
-  await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
-  await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
-  await userEvent.click((await screen.findAllByTitle('Guest Pass - Forgot password'))[0])
-  await userEvent.click((await screen.findAllByTitle('Guest Pass - Forgot password'))[0])
-  await userEvent.click((await screen.findAllByTitle('Self Sign In - Connect'))[0])
-  await userEvent.click((await screen.findAllByTitle('Self Sign In - Connect'))[0])
-  await userEvent.click((await screen.findAllByTitle('Self Sign In - Register/Confirm'))[0])
-  await userEvent.click((await screen.findAllByTitle('Self Sign In - Register/Confirm'))[0])
-  await userEvent.click((await screen.findAllByTitle('Host Approval - Register/Confirm'))[0])
-  await userEvent.click((await screen.findAllByTitle('Host Approval - Register/Confirm'))[0])
-  await userEvent.click((await screen.findAllByTitle('Connection confirmed'))[0])
-  await userEvent.click((await screen.findAllByTitle('Connection confirmed'))[0])
-  fireEvent.click((await screen.findAllByTitle('Terms & Conditions'))[0])
-}

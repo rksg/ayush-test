@@ -16,6 +16,8 @@ import { MFACheck }     from './pages/Layout/MFACheck'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import ReportsBase      from './pages/Reports'
+import { RWGForm }      from './pages/RWG/RWGForm'
+import { RWGTable }     from './pages/RWG/RWGTable'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
 import TimelineBase     from './pages/Timeline'
@@ -73,6 +75,7 @@ function AllRoutes () {
           </Route>
           <Route path='venues/*' element={<VenuesRoutes />} />
           <Route path='administration/*' element={<AdministrationRoutes />} />
+          <Route path='ruckus-wan-gateway/*' element={<RWGRoutes />} />
         </Route>
       </Route>
       <Route path=':tenantId/v/*' element={<MFACheck />}>
@@ -124,6 +127,17 @@ function AdministrationRoutes () {
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
+    </Route>
+  )
+}
+
+function RWGRoutes () {
+  return rootRoutes(
+    <Route path='/:tenantId/t/ruckus-wan-gateway'>
+      <Route index element={<RWGTable />} />
+      <Route path='*' element={<PageNotFound />} />
+      <Route path='add' element={<RWGForm />} />
+      <Route path=':gatewayId/:action' element={<RWGForm />} />
     </Route>
   )
 }

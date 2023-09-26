@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
 
 import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
@@ -54,10 +53,11 @@ describe('Firewall Table', () => {
       }
     )
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
-    expect(row.length).toBe(2)
+    expect(row.length).toBe(3)
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 Poor No 1.0.0.100, 1.0.0.210' })
     await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 -- No --' })
+    await screen.findByRole('row', { name: 'TestFirewall3 -- -- 0 -- No --' })
     const ddosInfo = await screen.findByTestId('ddos-info-1')
     await user.hover(ddosInfo)
     await screen.findByText('All: 220')
@@ -94,23 +94,7 @@ describe('Firewall Table', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <FirewallTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/firewall/list' }
-      }
-    )
-    expect(await screen.findByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.queryByText('Network Control')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <FirewallTable />
@@ -148,10 +132,10 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    const row = await screen.findByRole('row', { name: /TestFirewall1/i })
+    const row = await screen.findByRole('row', { name: /TestFirewall2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    const dialogTitle = await screen.findByText('Delete "TestFirewall1"?')
+    const dialogTitle = await screen.findByText('Delete "TestFirewall2"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -166,8 +150,8 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    const row1 = await screen.findByRole('row', { name: /TestFirewall1/i })
-    const row2 = await screen.findByRole('row', { name: /TestFirewall2/i })
+    const row1 = await screen.findByRole('row', { name: /TestFirewall2/i })
+    const row2 = await screen.findByRole('row', { name: /TestFirewall3/i })
     await user.click(within(row1).getByRole('checkbox'))
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
@@ -176,4 +160,28 @@ describe('Firewall Table', () => {
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
   })
+
+  it('should disable delete button and show tooltip', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+
+    const row1 = await screen.findByRole('row', { name: /TestFirewall1/i })
+    const row2 = await screen.findByRole('row', { name: /TestFirewall2/i })
+    await user.click(within(row1).getByRole('checkbox'))
+    await user.click(within(row2).getByRole('checkbox'))
+
+    const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteBtn).toBeDisabled()
+
+    fireEvent.mouseOver(deleteBtn)
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Please deactivate the SmartEdge Firewall Service')
+  })
+
 })

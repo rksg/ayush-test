@@ -301,8 +301,9 @@ export interface VenueExtended {
   disableByMaxReached?: boolean
   mesh: MeshOptions
   dhcp: DhcpOptions
-	id?: string,
-	country: string,
+  id?: string
+  country: string
+  countryCode?: string
   version?: string
 }
 
@@ -381,7 +382,8 @@ export interface SwitchModel {
 	model: string,
 	slots: SwitchModelSlot[],
   taggedPorts?: string,
-  untaggedPorts?: string
+	untaggedPorts?: string,
+	voicePorts?: string
 }
 
 export interface Vlan {
@@ -715,17 +717,6 @@ export interface VenueLoadBalancing {
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum
-}
-
-export interface VenueClientAdmissionControl {
-	enable24G: boolean,
-	enable50G: boolean,
-	minClientCount24G?: number,
-	minClientCount50G?: number,
-	maxRadioLoad24G?: number,
-	maxRadioLoad50G?: number,
-	minClientThroughput24G?: number,
-	minClientThroughput50G?: number
 }
 
 export interface VenueBssColoring {

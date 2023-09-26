@@ -33,7 +33,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               style="margin-right: 4px;"
             >
               <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
                 data-testid="AddEditLinks"
                 type="button"
               >
@@ -64,7 +64,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
                 type="button"
               >
                 <span>
@@ -148,7 +148,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-bottom: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="image-zoom-in"
             type="button"
           >
@@ -172,7 +172,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-bottom: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="image-zoom-out"
             type="button"
           >
@@ -196,7 +196,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-bottom: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="image-zoom-original"
             type="button"
           >
@@ -219,7 +219,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="image-zoom-fit"
             type="button"
           >
@@ -239,7 +239,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 edRCi sc-fnykZs hJyCci"
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup sc-fnykZs hJyCci"
               data-testid="galleryIcon"
               type="button"
             >
@@ -359,7 +359,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-cxabCf sc-gicCDI kksEMP cZszz"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-cxabCf sc-gicCDI kksEMP cZszz"
             type="button"
           >
             <svg
@@ -375,7 +375,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="AddEditLinks"
             type="button"
           >
@@ -398,7 +398,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
             type="button"
           >
             <span>
@@ -434,7 +434,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="padding: 10px 8px 10px 8px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
             type="default"
           >
             <div
@@ -538,7 +538,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="padding: 10px 8px 10px 8px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
             type="default"
           >
             <div
@@ -612,7 +612,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-cxabCf sc-gicCDI kksEMP cZszz"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-cxabCf sc-gicCDI kksEMP cZszz"
             type="button"
           >
             <svg
@@ -628,7 +628,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="AddEditLinks"
             type="button"
           >
@@ -651,7 +651,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi ant-dropdown-trigger"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
             disabled=""
             type="button"
           >
