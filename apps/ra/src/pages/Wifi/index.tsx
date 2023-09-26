@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
-//import { filterByAccess }                                 from '@acx-ui/user'
+import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider } from '@acx-ui/components'
+import { useNavigate, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra }                 from '@acx-ui/reports/components'
+import { DateRange }                                                      from '@acx-ui/utils'
 
-import useApsTable from './ApsTable'
+import { APList } from './ApsTable'
 
 export enum WifiTabsEnum {
   LIST = 'wifi',
@@ -30,7 +30,9 @@ const useTabs = () : WifiTab[] => {
   const { $t } = useIntl()
   const listTab = {
     key: WifiTabsEnum.LIST,
-    ...useApsTable()
+    component: <APList/>,
+    title: $t({ defaultMessage: 'AP List' }),
+    headerExtra: [<TimeRangeDropDown/>]
   }
   const apReportTab = {
     key: WifiTabsEnum.AP_REPORT,
@@ -53,7 +55,7 @@ const useTabs = () : WifiTab[] => {
   return [listTab, apReportTab, airtimeReportTab]
 }
 
-export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
+export function WiFiPage ({ tab }: { tab: WifiTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/')
@@ -64,7 +66,11 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
     })
   const tabs = useTabs()
   const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'Access Points' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wi-Fi' }) }]}
@@ -76,5 +82,5 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
       extra={isElementArray(headerExtra!) ? headerExtra : [headerExtra]}
     />
     {component}
-  </>
+  </TimeRangeDropDownProvider>
 }
