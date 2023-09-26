@@ -25,7 +25,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AFCStatus,
-  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -37,7 +36,8 @@ import {
   transformDisplayText,
   TableQuery,
   usePollingTableQuery,
-  APExtendedGrouped
+  APExtendedGrouped,
+  isAPLowPower
 } from '@acx-ui/rc/utils'
 import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -187,9 +187,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
-          row.apStatusData?.afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
         )) {
 
           const afcInfo = row.apStatusData?.afcInfo

@@ -15,8 +15,7 @@ import {
   ApDeviceStatusEnum,
   useApContext,
   ApStatus,
-  AFCStatus,
-  AFCPowerMode
+  isAPLowPower
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -130,9 +129,7 @@ function ApPageHeader () {
         ])
       ]}
       footer={<>
-        {(ApStatusData?.afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED &&
-          ApStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
-          <LowPowerBannerAndModal parent='ap' />}
+        {isAPLowPower(ApStatusData?.afcInfo) && <LowPowerBannerAndModal parent='ap' />}
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
     />

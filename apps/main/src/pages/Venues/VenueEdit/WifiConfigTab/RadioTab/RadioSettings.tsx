@@ -38,10 +38,9 @@ import {
   APExtended,
   APExtendedGrouped,
   VenueRadioCustomization,
-  AFCPowerMode,
   LowPowerAPQuantity,
   ChannelBandwidth6GEnum,
-  AFCStatus
+  isAPLowPower
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -173,9 +172,7 @@ export function RadioSettings () {
   /* eslint-disable max-len */
   const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
     const lowerPowerModeAP = response.filter((ap) => {
-      return ap.apRadioDeploy === '2-5-6' &&
-      ap.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
-      ap.apStatusData?.afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED
+      return ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
     })
 
     setLowPowerAPQuantity({
