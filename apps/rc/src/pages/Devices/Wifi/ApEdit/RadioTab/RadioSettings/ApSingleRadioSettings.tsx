@@ -55,7 +55,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     const afcInfo = data?.apStatusData?.afcInfo ?? {}
     const warningMessages = [] as JSX.Element[]
 
-    if(afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
+    if(afcInfo.powerMode === AFCPowerMode.LOW_POWER && afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED) {
       warningMessages.push(
         <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='main-warning-message'>
           {$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}

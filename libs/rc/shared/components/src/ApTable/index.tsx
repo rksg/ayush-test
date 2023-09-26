@@ -188,7 +188,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
         if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
+          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+          row.apStatusData?.afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED
+        )) {
 
           const afcInfo = row.apStatusData?.afcInfo
 
