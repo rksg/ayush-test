@@ -169,7 +169,7 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => {
         const impactedClientQuery = (type : string, stage : string) => {
           return `impactedClients: ${type}(n: ${
-            payload.topImpactedClientLimit + 1
+            payload.topImpactedClientLimit
           }, stage: "${stage}") {
                 mac
                 manufacturer

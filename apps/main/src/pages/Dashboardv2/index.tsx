@@ -1,3 +1,4 @@
+import React, { createContext, useState, useContext, ReactElement, Dispatch, SetStateAction  } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
@@ -37,12 +38,43 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter, useDashboardFilter }          from '@acx-ui/utils'
+import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
+import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+interface DashboardFilterContextProps {
+  dashboardFilters: AnalyticsFilter;
+  setDateFilterState: Dispatch<SetStateAction<DateFilter>>;
+}
+
+const DashboardFilterContext = createContext<DashboardFilterContextProps>({
+  dashboardFilters: getDateRangeFilter(DateRange.last8Hours) as AnalyticsFilter,
+  setDateFilterState: () => {}
+})
+
+export const DashboardFilterProvider = ({ children }: { children : ReactElement[] }) => {
+  const [dateFilterState, setDateFilterState] = useState<DateFilter>(
+    getDateRangeFilter(DateRange.last8Hours)
+  )
+  const { filters } = useDashboardFilter()
+  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
+    ? getDateRangeFilter(dateFilterState.range)
+    : dateFilterState
+  const dashboardFilters = { ...filters, startDate, endDate, range }
+
+  return (
+    <DashboardFilterContext.Provider value={{ dashboardFilters, setDateFilterState }}>
+      {children}
+    </DashboardFilterContext.Provider>
+  )
+}
+
+export const useDashBoardUpdatedFilter = () => {
+  const context = useContext(DashboardFilterContext)
+  return context
+}
 export default function Dashboardv2 () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
@@ -79,7 +111,7 @@ export default function Dashboardv2 () {
   }
 
   return (
-    <>
+    <DashboardFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
       <Divider dashed
@@ -104,12 +136,13 @@ export default function Dashboardv2 () {
           borderColor: 'var(--acx-neutrals-30)',
           margin: '20px 0px' }}/>
       <DashboardMapWidget />
-    </>
+    </DashboardFilterProvider>
   )
 }
 
 function DashboardPageHeader () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter(true)
+  const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
+  const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
 
   const addMenu = <Menu
@@ -152,7 +185,7 @@ function DashboardPageHeader () {
         <RangePicker
           key={getShowWithoutRbacCheckKey('range-picker')}
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
+          onDateApply={setDateFilterState as CallableFunction}
           showTimePicker
           selectionType={range}
           isDashBoard
@@ -163,20 +196,20 @@ function DashboardPageHeader () {
 }
 
 function ApWidgets () {
-  const { filters } = useDashboardFilter()
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TrafficByVolume filters={filters} vizType={'area'} />
+        <TrafficByVolume filters={dashboardFilters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <ConnectedClientsOverTime filters={filters} vizType={'area'} />
+        <ConnectedClientsOverTime filters={dashboardFilters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopWiFiNetworks filters={filters}/>
+        <TopWiFiNetworks filters={dashboardFilters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopAppsByTraffic filters={filters}/>
+        <TopAppsByTraffic filters={dashboardFilters}/>
       </GridCol>
     </GridRow>
   )
@@ -193,44 +226,44 @@ function DashboardMapWidget () {
 }
 
 function SwitchWidgets () {
-  const { filters } = useDashboardFilter()
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters} vizType={'area'} />
+        <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSwitchesByPoEUsage filters={filters}/>
+        <TopSwitchesByPoEUsage filters={dashboardFilters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSwitchesByTraffic filters={filters}/>
+        <TopSwitchesByTraffic filters={dashboardFilters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSwitchesByError filters={filters} />
+        <TopSwitchesByError filters={dashboardFilters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSwitchModels filters={filters}/>
+        <TopSwitchModels filters={dashboardFilters}/>
       </GridCol>
     </GridRow>
   )
 }
 
 function EdgeWidgets () {
-  const { filters } = useDashboardFilter()
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopEdgesByTraffic filters={filters} />
+        <TopEdgesByTraffic filters={dashboardFilters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopEdgesByResources filters={filters} />
+        <TopEdgesByResources filters={dashboardFilters} />
       </GridCol>
     </GridRow>
   )
 }
 
 function CommonDashboardWidgets () {
-  const { filters } = useDashboardFilter()
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
 
   return (
     <GridRow>
@@ -240,10 +273,10 @@ function CommonDashboardWidgets () {
             <AlarmWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <IncidentsDashboardv2 filters={filters} />
+            <IncidentsDashboardv2 filters={dashboardFilters} />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <ClientExperience filters={filters}/>
+            <ClientExperience filters={dashboardFilters}/>
           </GridCol>
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
@@ -259,7 +292,7 @@ function CommonDashboardWidgets () {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
-        <DidYouKnow filters={filters}/>
+        <DidYouKnow filters={dashboardFilters}/>
       </GridCol>
     </GridRow>
   )
