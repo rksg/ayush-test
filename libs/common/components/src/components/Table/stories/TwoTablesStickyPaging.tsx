@@ -34,13 +34,16 @@ for (let i = 1; i <= 30; i++) {
   })
 }
 
-export function TableNoStickyPagination () {
+export function TwoTablesStickyPaging () {
   return (<>
-    Table without StickyPagination
+    Two Tables with stickyPagination
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      stickyPagination={false}
+    />
+    <Table
+      columns={basicColumns}
+      dataSource={basicData}
     />
   </>)
 }

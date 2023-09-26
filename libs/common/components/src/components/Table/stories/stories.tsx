@@ -15,6 +15,7 @@ import { SelectAllPagesTable }     from './SelectAllPagesTable'
 import { SingleSelectTable }       from './SingleSelectTable'
 import { TableNoStickyPagination } from './TableNoStickyPagination'
 import { TableWithIconButton }     from './TableWithIconButton'
+import { TwoTablesStickyPaging }   from './TwoTablesStickyPaging'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
@@ -31,5 +32,6 @@ storiesOf('Table', module)
   .add('Form Table', FormTable)
   .add('Group Table', GroupTable)
   .add('Table With Icon Button', TableWithIconButton)
+  .add('Two Tables with stickyPagination', TwoTablesStickyPaging)
   .add('Table Without stickyPagination', TableNoStickyPagination)
 export {}
