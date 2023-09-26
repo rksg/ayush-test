@@ -57,6 +57,8 @@ export function ApFloorplan (props: {
 
   const { data: extendedApList } = useApListQuery({
     params, payload: {
+      pageSize: 10000,
+      page: 1,
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }
