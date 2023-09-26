@@ -59,7 +59,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
                     title="Expand"
                     type="button"
                   >
@@ -178,7 +178,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
                     title="Expand"
                     type="button"
                   >
@@ -384,31 +384,35 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                                              class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress-steps-outer"
+                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item"
-                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item"
-                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                />
+                                                  class="ant-progress-steps-outer"
+                                                >
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item"
+                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item"
+                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                  />
+                                                </div>
                                               </div>
                                             </div>
                                           </td>
@@ -507,31 +511,35 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                                              class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress-steps-outer"
+                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item"
-                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                />
+                                                  class="ant-progress-steps-outer"
+                                                >
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item"
+                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                  />
+                                                </div>
                                               </div>
                                             </div>
                                           </td>
@@ -630,31 +638,35 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                                              class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress-steps-outer"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
+                                                  class="ant-progress-steps-outer"
+                                                >
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                </div>
                                               </div>
                                             </div>
                                           </td>
@@ -744,31 +756,35 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                                              class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress-steps-outer"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
+                                                  class="ant-progress-steps-outer"
+                                                >
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                </div>
                                               </div>
                                             </div>
                                           </td>
@@ -849,31 +865,35 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                                              class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress-steps-outer"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
-                                                <div
-                                                  class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                />
+                                                  class="ant-progress-steps-outer"
+                                                >
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                  <div
+                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                  />
+                                                </div>
                                               </div>
                                             </div>
                                           </td>

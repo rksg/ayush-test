@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Card, NoData }          from '@acx-ui/components'
+import { Loader, Card, Tooltip, NoData } from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 import type { PathFilter }               from '@acx-ui/utils'
 
@@ -33,14 +33,20 @@ function AIDrivenRRMWidget ({
           dataSource={data}
           renderItem={item => {
             const recommendation = item as CrrmListItem
-            const { sliceValue, id, crrmOptimizedState, crrmInterferingLinksText } = recommendation
+            const { sliceValue, id, crrmOptimizedState, crrmInterferingLinksText, summary }
+              = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/crrm/${id}`}>
-                <UI.List.Item.Meta
-                  avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                  title={sliceValue}
-                  description={crrmInterferingLinksText}
-                />
+                <Tooltip
+                  placement='top'
+                  title={summary}
+                >
+                  <UI.List.Item.Meta
+                    avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                    title={sliceValue}
+                    description={crrmInterferingLinksText}
+                  />
+                </Tooltip>
               </TenantLink>
             </UI.List.Item>
           }}

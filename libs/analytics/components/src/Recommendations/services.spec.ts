@@ -118,17 +118,20 @@ describe('Recommendation services', () => {
       {
         ...crrmListResult.recommendations[0],
         crrmInterferingLinksText: 'From 3 to 0 interfering links',
-        crrmOptimizedState: crrmStates.optimized
+        crrmOptimizedState: crrmStates.optimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio'
       },
       {
         ...crrmListResult.recommendations[1],
         crrmInterferingLinksText: 'Reverted',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: crrmStates.nonOptimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio'
       },
       {
         ...crrmListResult.recommendations[2],
         crrmInterferingLinksText: '2 interfering links can be optimized to 0',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: crrmStates.nonOptimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 6 GHz radio'
       }
     ]
     expect(error).toBe(undefined)

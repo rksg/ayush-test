@@ -75,7 +75,7 @@ export default function Dashboard () {
         <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
       </div>
       <div style={{ gridArea: 'a3' }}>
-        <SLA filters={filters}/>
+        <SLA filters={filters} />
       </div>
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />

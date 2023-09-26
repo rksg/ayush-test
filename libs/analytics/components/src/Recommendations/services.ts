@@ -25,11 +25,13 @@ import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 export type CrrmListItem = {
   id: string
+  code: string
   status: StateType
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
+  summary?: string
 } & Partial<RecommendationKpi>
 
 export type Recommendation = {
@@ -178,15 +180,17 @@ export const getCrrmInterferingLinksText = (
 }
 
 export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
+  const { $t } = getIntl()
   return recommendations.map(recommendation => {
-    const { status, kpi_number_of_interfering_links } = recommendation
+    const { code, status, kpi_number_of_interfering_links } = recommendation
     return {
       ...recommendation,
-      crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
+      crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(
         status,
         kpi_number_of_interfering_links!
-      )
+      ),
+      summary: $t(codes[code as keyof typeof codes].summary)
     } as unknown as CrrmListItem
   })
 }
@@ -227,6 +231,7 @@ export const api = recommendationApi.injectEndpoints({
         ) {
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
             id
+            code
             status
             sliceValue
             ${kpiHelper('c-crrm-channel24g-auto')}
