@@ -26,10 +26,10 @@ describe('FirmwareUtils parser', () => {
 
     // compare rc with others
     expect(compareSwitchVersion('10010_rc2', '10010_rc3')).toBe(-1)
-    expect(compareSwitchVersion('10010_b3', '10010_rc2')).toBe(-1)
-    expect(compareSwitchVersion('10010_rc2', '10010e')).toBe(0)
-    expect(compareSwitchVersion('10010_cd2', '10010_rc2')).toBe(0)
-    expect(compareSwitchVersion('RDR10010', '10010_rc2')).toBe(0)
+    expect(compareSwitchVersion('10010_rc2', '10010_b3')).toBe(1)
+    expect(compareSwitchVersion('10010_rc2', '10010e')).toBe(-1)
+    expect(compareSwitchVersion('10010_rc2', '10010_cd2')).toBe(-1)
+    expect(compareSwitchVersion('10010_rc2', 'RDR10010')).toBe(0)
 
     expect(compareSwitchVersion('10010_cd2', '10010_b10')).toBe(1)
     expect(compareSwitchVersion('10010_cd2_b11', '10010_cd3_b10')).toBe(-1)
@@ -47,13 +47,12 @@ describe('FirmwareUtils parser', () => {
     expect(compareSwitchVersion('10010b_b36', '10000')).toBe(1)
 
     expect(compareSwitchVersion('09010h_rc80', '9010h')).toBe(0)
-    expect(compareSwitchVersion('09010h_rc80', '9010i')).toBe(0)
+    expect(compareSwitchVersion('09010h_rc80', '9010i')).toBe(-1)
     expect(compareSwitchVersion('09010h_rc80', '09010h_b28')).toBe(1)
     expect(compareSwitchVersion('09010h_rc80', '09010h_rc3')).toBe(1)
-    expect(compareSwitchVersion('09010h_b28', '09010h_rc80')).toBe(-1)
-    expect(compareSwitchVersion('09010h_rc200', '09010h_rc80')).toBe(1)
+    expect(compareSwitchVersion('09010h_rc80', '09010h_rc200')).toBe(-1)
     expect(compareSwitchVersion('09010h_b333', '09010h_b28')).toBe(1)
-    expect(compareSwitchVersion('09010h_rc80', '09010h_cd1_b2')).toBe(1)
+    expect(compareSwitchVersion('09010h_rc80', '09010h_cd1_b2')).toBe(-1)
     expect(compareSwitchVersion('09010h_cd1_rc80', '09010h_cd1_b2')).toBe(1)
   })
 

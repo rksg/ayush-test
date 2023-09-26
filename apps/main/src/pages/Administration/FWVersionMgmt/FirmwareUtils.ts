@@ -73,7 +73,7 @@ export const compareSwitchVersion = (a: string, b: string): number => {
   const group2 = b?.match(switchVersionReg)?.groups
   if (group1 && group2) {
     let res = 0
-    const keys = ['major', 'rcbuild', 'minor', 'candidate', 'build']
+    const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']
     keys.every(key=>{
       const initValue = (key === 'candidate') ? '0' : (key === 'build') ? '999' : ''
       const aValue = group1[key] || initValue
@@ -83,7 +83,7 @@ export const compareSwitchVersion = (a: string, b: string): number => {
       if (key === 'rcbuild' && (
         (aValue && bValue === '' && !group2['build']) ||
         (aValue === '' && !group1['build'] && bValue)
-      )) { // '10010xxx' == '10010_rc2'
+      )) { // '10010' == '10010_rc2'
         res = 0
         return false
       }
