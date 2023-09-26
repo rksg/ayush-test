@@ -1,33 +1,41 @@
-import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
-import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
-import { TenantLink }                                         from '@acx-ui/react-router-dom'
-import { DateRange, defaultRanges, dateRangeMap }             from '@acx-ui/utils'
+import {
+  PageHeader,
+  Loader,
+  Table,
+  TableProps,
+  Tooltip,
+  TimeRangeDropDown,
+  useDateRange,
+  TimeRangeDropDownProvider
+} from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
+import { DateRange }                 from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
 
 const pagination = { pageSize: 5, defaultPageSize: 5 }
 
-const params = {
-  start: moment().subtract(1, 'days').seconds(0).format(),
-  end: moment().format(),
-  limit: 100
-}
-
 function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
   const { $t } = useIntl()
-  const results = useSearchQuery({ ...params, query: searchVal! })
+  const { timeRange } = useDateRange()
+  const results = useSearchQuery({
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
+    limit: 100,
+    query: searchVal!
+
+  })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
     count += (value as []).length || 0
   })
-
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
@@ -96,7 +104,10 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-
+      render: (_, row : Client) => (
+        <TenantLink to={`/users/wifi/clients/${row.mac}/details`}>
+          {row.hostname}</TenantLink>
+      ),
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
     {
@@ -133,8 +144,8 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Last Connection' }),
       dataIndex: 'lastActiveTime',
       key: 'lastActiveTime',
-      render: (value: unknown) => {
-        return formatter(DateFormatEnum.DateTimeFormat)(value)
+      render: (_, { lastActiveTime }) => {
+        return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
     }
@@ -231,13 +242,16 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     }
   ]
 
+  const extra = [<TimeRangeDropDown/>]
   return <Loader states={[results]}>
     {count
       ? <>
         <PageHeader title={$t(
           { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
           { searchVal, count }
-        )} />
+        )}
+        extra={extra}
+        />
         <Collapse
           defaultActiveKey={Object.keys(results.data!)}
         >
@@ -299,7 +313,9 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         <PageHeader title={$t(
           { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
-        )} />
+        )}
+        extra={extra}
+        />
         <NoData />
       </>
     }
@@ -309,5 +325,11 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal} searchVal={searchVal} />
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
+    <SearchResult key={searchVal} searchVal={searchVal} />
+  </TimeRangeDropDownProvider>
 }

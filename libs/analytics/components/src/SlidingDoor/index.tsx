@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
+import { defaultNetworkPath }                          from '@acx-ui/analytics/utils'
 import { SearchOutlined, CloseSymbol, CaretDownSolid } from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
