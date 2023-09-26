@@ -29,7 +29,7 @@ import {
 import type { PendoParameters } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
-import { LoadMessages }    from './BrowserDialog/BrowserDialog'
+import { useBrowserLang }  from './BrowserDialog/BrowserDialog'
 import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
@@ -67,13 +67,15 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
-  const userPreflang = LoadMessages(userProfile as UserProfileInterface) as LangKey// browser detection + user profile lang
-  const lang = userPreflang?? defaultLang
+  const userPreflang = useBrowserLang(userProfile as UserProfileInterface) // browser detection + user profile lang
+  // console.log(userPreflang)
+  const lang = userPreflang.lang?? defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: result.isLoading || result.isFetching
-        || request.isLoading || request.isFetching }]}
+        || request.isLoading || request.isFetching
+        || userPreflang.isLoading }]}
     children={<ConfigProvider {...props} lang={lang} />}
   />
 }
