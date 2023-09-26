@@ -1,4 +1,5 @@
 import { IncidentFilter }                     from '@acx-ui/analytics/utils'
+import { get }                                from '@acx-ui/config'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -19,6 +20,12 @@ const filters : IncidentFilter = {
   range: DateRange.last24Hours,
   filter: {}
 }
+
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+beforeEach(() => mockGet.mockReturnValue(''))
 
 describe('AIDrivenRRM dashboard', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
@@ -41,6 +48,19 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
     expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('There are recommendations for 3 venues covering 100 possible RRM combinations. Currently 1 out of 3 venues have been optimized.')).toBeVisible()
+  })
+  it('renders correctly when IS_MLISA_SA', async () => {
+    mockGet.mockReturnValue('true')
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
+      data: crrmListResult
+    })
+    render(<AIDrivenRRM filters={filters} />, {
+      route: true,
+      wrapper: Provider
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are recommendations for 3 zones covering 100 possible RRM combinations. Currently 1 out of 3 zones have been optimized.')).toBeVisible()
   })

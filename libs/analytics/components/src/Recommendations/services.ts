@@ -13,7 +13,8 @@ import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
 import type { AnalyticsFilter }           from '@acx-ui/utils'
 
-import { states,
+import {
+  states,
   codes,
   StatusTrail,
   IconValue,
@@ -47,7 +48,7 @@ export type Recommendation = {
   path: NetworkPath
 }
 
-export type CrrmData = {
+export type CrrmList = {
   recommendations: CrrmListItem[]
   crrmScenarios: number,
   optimizedCount: number,
@@ -224,7 +225,7 @@ function transformRecommendationList (recommendations: Recommendation[]): Recomm
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
-      CrrmData,
+      CrrmList,
       AnalyticsFilter & { n: number }
     >({
       query: (payload) => ({
@@ -258,7 +259,7 @@ export const api = recommendationApi.injectEndpoints({
           ...getFilterPayload(payload)
         }
       }),
-      transformResponse: (response: CrrmResponse) => {
+      transformResponse: (response: CrrmList) => {
         return {
           recommendations: transformCrrmList(response.recommendations),
           crrmScenarios: response.crrmScenarios,
@@ -381,12 +382,6 @@ export const api = recommendationApi.injectEndpoints({
   })
 })
 
-export interface CrrmResponse {
-  recommendations: CrrmListItem[],
-  crrmScenarios: number,
-  optimizedCount: number,
-  totalCount: number
-}
 
 export interface Response<Recommendation> {
   recommendations: Recommendation[]
