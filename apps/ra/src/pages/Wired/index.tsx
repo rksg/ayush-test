@@ -8,7 +8,7 @@ import { DateRange }                                                      from '
 import { SwitchList } from './SwitchList'
 
 export enum AISwitchTabsEnum {
-  LIST = 'switch',
+  SWITCH_LIST = 'switch',
   WIRED_REPORT = 'switch/reports/wired'
 }
 
@@ -23,7 +23,7 @@ interface SwitchTab {
 const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
   const switchListTab = {
-    key: AISwitchTabsEnum.LIST,
+    key: AISwitchTabsEnum.SWITCH_LIST,
     title: $t({ defaultMessage: 'Switch List' }),
     component: <SwitchList />,
     headerExtra: [<TimeRangeDropDown/>]

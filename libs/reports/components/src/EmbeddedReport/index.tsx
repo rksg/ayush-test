@@ -152,9 +152,10 @@ export function EmbeddedReport (props: ReportProps) {
   const HOST_NAME =
     process.env['NODE_ENV'] === 'development'
       ? get('IS_MLISA_SA')
-        // ? 'https://staging.mlisa.io'
-        ? 'https://local.mlisa.io'
+        ? 'https://staging.mlisa.io'
+        // ? 'https://local.mlisa.io'
         : 'https://dev.ruckus.cloud'
+        // : 'https://alto.local.mlisa.io'
       : window.location.origin // Production
 
   useEffect(() => {

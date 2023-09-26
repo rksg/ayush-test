@@ -61,7 +61,7 @@ function AllRoutes () {
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
-      <Route path='devices/switch' element={<Wired tab={AISwitchTabsEnum.LIST}/>} />
+      <Route path='devices/switch' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
       <Route path='devices/switch/reports/wired'
         element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
       <Route path='devices/switch/:switchId/details' element={<SwitchDetails/>} />

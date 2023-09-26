@@ -1,8 +1,7 @@
-import { useHeaderExtra } from '@acx-ui/analytics/components'
-import { PageHeader }     from '@acx-ui/components'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { EmbeddedReport } from '@acx-ui/reports/components'
-import { ReportType }     from '@acx-ui/reports/components'
+import { useHeaderExtra }             from '@acx-ui/analytics/components'
+import { PageHeader }                 from '@acx-ui/components'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
 
 const SwitchDetails = () => {
 

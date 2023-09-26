@@ -1,34 +1,25 @@
-import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
-import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import { defaultSort, sortProp  }                  from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
 
 import { useSwitchtListQuery, Switch } from './services'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function SwitchList ({ searchVal='' }: { searchVal?: string }) {
+export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
   const { $t } = useIntl()
   const { timeRange } = useDateRange()
-  const [searchString, setSearchString] = useState(searchVal)
 
   const results = useSwitchtListQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: searchString,
+    query: searchVal,
     metric: 'traffic'
   })
-
-  const onSearch = (
-    _: Filter,
-    search: { searchString?: string }
-  ) => {
-    setSearchString(search.searchString!)
-  }
 
   const switchesTablecolumnHeaders: TableProps<Switch>['columns'] = [
     {
@@ -71,7 +62,6 @@ export function SwitchList ({ searchVal='' }: { searchVal?: string }) {
       dataSource={results.data?.switches as unknown as Switch[]}
       pagination={pagination}
       settingsId='switches-list-table'
-      onFilterChange={onSearch}
     />
   </Loader>
 }
