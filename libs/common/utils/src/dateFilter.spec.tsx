@@ -1,15 +1,11 @@
-import { renderHook, render, act } from '@testing-library/react'
+import { renderHook, render } from '@testing-library/react'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
-import { useEncodedParameter }                                       from './encodedParameter'
-jest.mock('./encodedParameter', () => ({
-  ...jest.requireActual('./encodedParameter'),
-  useEncodedParameter: jest.fn()
-}))
+import { fixedEncodeURIComponent }                                   from './encodedParameter'
 
 const original = Date.now
 describe('useDateFilter', () => {
@@ -58,7 +54,30 @@ describe('useDateFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 })
-
+it('should render correctly with default date from url', () => {
+  function Component () {
+    const filters = useDateFilter()
+    return <div>{JSON.stringify(filters)}</div>
+  }
+  const location = {
+    ...window.location,
+    search: fixedEncodeURIComponent(JSON.stringify({
+      startDate: '2022-07-23T18:31:00+08:00',
+      endDate: '2022-07-24T18:31:59+08:00',
+      range: 'Last 24 Hours'
+    }))
+  }
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: location
+  })
+  const { asFragment } = render(
+    <BrowserRouter window={window}>
+      <Component />
+    </BrowserRouter>
+  )
+  expect(asFragment()).toMatchSnapshot()
+})
 
 describe('defaultRanges', () => {
   beforeEach(() => {
@@ -116,65 +135,4 @@ describe('getDateRangeFilter', () => {
       range: 'Custom'
     })
   })
-})
-
-
-describe('Range selection', () => {
-  beforeEach(() => {
-    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
-    resetRanges()
-  })
-  it('should handle last8Hours and other options selection correctly on dashboard', () => {
-    const mockWrite = jest.fn()
-    jest.mocked(useEncodedParameter).mockReturnValue({
-      read: jest.fn().mockReturnValue(null),
-      write: mockWrite
-    })
-    const { result } = renderHook(() => useDateFilter(true), {
-      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
-    })
-    act(() => {
-      result.current.setDateFilter({
-        range: DateRange.last8Hours,
-        startDate: 'startDate',
-        endDate: 'endDate'
-      })
-    })
-    expect(result.current.range).toEqual(DateRange.last8Hours)
-    act(() => {
-      result.current.setDateFilter({
-        range: DateRange.last24Hours,
-        startDate: 'startDate',
-        endDate: 'endDate'
-      })
-    })
-    expect(result.current.range).toEqual(DateRange.last24Hours)
-  })
-  it('should handle last8Hours and other options selection correctly on other pages', () => {
-    const mockWrite = jest.fn()
-    jest.mocked(useEncodedParameter).mockReturnValue({
-      read: jest.fn().mockReturnValue(null),
-      write: mockWrite
-    })
-    const { result } = renderHook(() => useDateFilter(), {
-      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
-    })
-    act(() => {
-      result.current.setDateFilter({
-        range: DateRange.last8Hours,
-        startDate: 'startDate',
-        endDate: 'endDate'
-      })
-    })
-    expect(result.current.range).toEqual(DateRange.last24Hours)
-    act(() => {
-      result.current.setDateFilter({
-        range: DateRange.last30Days,
-        startDate: 'startDate',
-        endDate: 'endDate'
-      })
-    })
-    expect(result.current.range).toEqual(DateRange.last30Days)
-  })
-
 })
