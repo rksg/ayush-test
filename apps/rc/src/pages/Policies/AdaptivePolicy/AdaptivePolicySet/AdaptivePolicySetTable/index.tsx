@@ -109,31 +109,19 @@ export default function AdaptivePolicySetTable () {
         sorter: true,
         render: (_, row) => {
           if(row.assignmentCount === 0) return 0
-          // eslint-disable-next-line max-len
           const macAssignments = row.externalAssignments
             .map(assignment => assignment.identityId).flat()
             .filter(id => macRegList.has(id))
             .map(id => macRegList.get(id) ?? '') ?? []
 
-          // eslint-disable-next-line max-len
           const dpskAssignments = row.externalAssignments
             .map(assignment => assignment.identityId).flat()
             .filter(id => dpskList.has(id))
             .map(id => dpskList.get(id) ?? '') ?? []
 
-          let assignments = [] as string []
-          if(macAssignments.length > 0) {
-            // eslint-disable-next-line max-len
-            assignments = [...assignments, $t({ defaultMessage: 'DPSK Pools ({size})' }, { size: dpskAssignments.length }), ...dpskAssignments]
-          }
-          if(dpskAssignments.length > 0){
-            // eslint-disable-next-line max-len
-            assignments = [...assignments, $t({ defaultMessage: 'Mac Registration Lists ({size})' }, { size: macAssignments.length }), ...macAssignments]
-          }
-
-          return <SimpleListTooltip items={assignments}
+          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments]}
             displayText={row.assignmentCount}
-            totalCountOfItems={row.assignmentCount + 2}/>
+            totalCountOfItems={row.assignmentCount}/>
         }
       }
     ]
@@ -159,7 +147,7 @@ export default function AdaptivePolicySetTable () {
       const name = selectedRow.name
       doProfileDelete(
         [selectedRow],
-        $t({ defaultMessage: 'Policy' }),
+        $t({ defaultMessage: 'policy set' }),
         name,
         [
           // eslint-disable-next-line max-len

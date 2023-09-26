@@ -89,12 +89,12 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: /group1/ })
+    const row = await screen.findByRole('row', { name: /group2/ })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    expect(await screen.findByText('Delete "' + groupList.content[0].name + '"?')).toBeVisible()
+    expect(await screen.findByText('Delete "' + groupList.content[1].name + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete group/i }))
 

@@ -66,7 +66,7 @@ export default function RadiusAttributeGroupTable () {
         const name = selectedRow.name
         doProfileDelete(
           [selectedRow],
-          $t({ defaultMessage: 'Attribute Group' }),
+          $t({ defaultMessage: 'group' }),
           name,
           [
             // eslint-disable-next-line max-len

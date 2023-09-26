@@ -119,7 +119,7 @@ export default function AdaptivePolicyTable () {
       const name = selectedRow.name
       doProfileDelete(
         [selectedRow],
-        $t({ defaultMessage: 'Policy' }),
+        $t({ defaultMessage: 'policy' }),
         name,
         [
           { fieldName: 'policySetNames', fieldText: $t({ defaultMessage: 'Adaptive Policy Sets' }) }

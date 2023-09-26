@@ -19,7 +19,16 @@ export const groupList = {
         }
       ],
       attributeCount: 2,
-      externalAssignmentsCount: 2
+      externalAssignmentsCount: 2,
+      externalServiceAssignments: [
+        {
+          serviceName: 'policy-management',
+          externalAssignmentIdentifier: [
+            '0c641adc-2053-43e1-a684-0fddc3382e1a',
+            'd4973820-0d43-4a1a-8110-53b11761da9d'
+          ]
+        }
+      ]
     },
     {
       name: 'group2',
@@ -40,7 +49,8 @@ export const groupList = {
         }
       ],
       attributeCount: 2,
-      externalAssignmentsCount: 0
+      externalAssignmentsCount: 0,
+      externalServiceAssignments: []
     }
   ],
   pageable: {
