@@ -1,10 +1,19 @@
-import { Select }     from 'antd'
+import React from 'react'
+
+import { Checkbox, Select }    from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
-import { FilterValue } from 'antd/lib/table/interface'
-import { IntlShape }   from 'react-intl'
+import { FilterValue }        from 'antd/lib/table/interface'
+import { IntlShape, useIntl } from 'react-intl'
+
+import {
+  DateRange,
+  dateRangeMap,
+  defaultRanges
+} from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -87,6 +96,75 @@ export function renderFilter <RecordType> (
   enableApiFilter: boolean,
   width: number
 ) {
+  const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
+    return <Checkbox
+      key={index}
+      defaultChecked={(column?.defaultFilteredValue &&
+        column?.defaultFilteredValue[0] as boolean) || false}
+      onChange={(e: CheckboxChangeEvent) => {
+        const isChecked = e.target.checked.toString() ||
+          (column?.defaultFilteredValue && column?.defaultFilteredValue[0])
+        if (column.filterValueNullable === false) {
+          setFilterValues({ ...filterValues, [key]: undefined })
+        } else {
+          setFilterValues({ ...filterValues, [key]: [isChecked] })
+        }
+      }}>{column?.filterComponent?.label}</Checkbox>
+  }
+
+  const renderDatepicker = (column: TableColumn<RecordType, 'text'>, intl: IntlShape) => {
+
+    const timeRange = () => [
+      { key: '', text: intl.$t(dateRangeMap[DateRange.allTime]) },
+      { key: DateRange.last24Hours, text: intl.$t(dateRangeMap[DateRange.last24Hours]) },
+      { key: DateRange.last7Days, text: intl.$t(dateRangeMap[DateRange.last7Days]) },
+      { key: DateRange.last30Days, text: intl.$t(dateRangeMap[DateRange.last30Days]) },
+      { key: DateRange.custom, text: intl.$t(dateRangeMap[DateRange.custom]) }
+    ] as Array<{ key: string, text: string }>
+
+    const showtimeRangeOptions = timeRange().map(({ key, text }) => ({
+      key, value: text
+    }))
+    return <UI.FilterSelect
+      key={index}
+      maxTagCount='responsive'
+      mode={column.filterMultiple === false ? undefined : 'multiple'}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onChange={(value: any) => {
+        const ranges = defaultRanges()
+        const range = ranges[value as DateRange]
+        const result = {
+          fromTime: range?.[0] ?? undefined,
+          toTime: range?.[1] ?? undefined
+        }
+        setFilterValues({ ...filterValues, ...result })
+      }}
+      filterOption={filterOption}
+      placeholder={column.title as string}
+      showArrow
+      allowClear
+      style={{ width }}
+    >
+      {showtimeRangeOptions?.map((option, index) =>
+        <Select.Option
+          value={option.key}
+          key={option.key ?? index}
+          data-testid={`option-${option.key}`}
+          title={option.value}
+          children={option.value}
+        />
+      )}
+    </UI.FilterSelect>
+  }
+
+  const filterTypeComp = {
+    checkbox: renderCheckbox(column),
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    datepicker: renderDatepicker(column, useIntl())
+  }
+  type Type = keyof typeof filterTypeComp
+
+
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (typeof value !== 'undefined' && !data.includes(value)) {
@@ -108,38 +186,40 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
-  return <UI.FilterSelect
-    data-testid='options-selector'
-    key={index}
-    maxTagCount='responsive'
-    mode={column.filterMultiple === false ? undefined : 'multiple'}
-    value={filterValues[key as keyof Filter]}
-    onChange={(value: unknown) => {
-      const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-      const filterValue = Array.isArray(value) ? value : [value]
-      if (column.filterValueNullable === false &&
+
+  return filterTypeComp[column.filterComponent?.type as Type] ||
+    <UI.FilterSelect
+      data-testid='options-selector'
+      key={index}
+      maxTagCount='responsive'
+      mode={column.filterMultiple === false ? undefined : 'multiple'}
+      value={filterValues[key as keyof Filter]}
+      onChange={(value: unknown) => {
+        const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+        const filterValue = Array.isArray(value) ? value : [value]
+        if (column.filterValueNullable === false &&
         filterValue.filter(v => v != null).length === 0) {
-        setFilterValues({ ...filterValues, [key]: undefined })
-      } else {
-        setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
-      }
-    }}
-    filterOption={filterOption}
-    placeholder={column.title as string}
-    showArrow
-    allowClear
-    style={{ width }}
-  >
-    {options?.map((option, index) =>
-      <Select.Option
-        value={option.key}
-        key={option.key ?? index}
-        data-testid={`option-${option.key}`}
-        title={option.value}
-        children={option.label ?? option.value}
-      />
-    )}
-  </UI.FilterSelect>
+          setFilterValues({ ...filterValues, [key]: undefined })
+        } else {
+          setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
+        }
+      }}
+      filterOption={filterOption}
+      placeholder={column.title as string}
+      showArrow
+      allowClear
+      style={{ width }}
+    >
+      {options?.map((option, index) =>
+        <Select.Option
+          value={option.key}
+          key={option.key ?? index}
+          data-testid={`option-${option.key}`}
+          title={option.value}
+          children={option.label ?? option.value}
+        />
+      )}
+    </UI.FilterSelect>
 }
 
 export function filterOption (

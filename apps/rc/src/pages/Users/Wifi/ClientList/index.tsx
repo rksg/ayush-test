@@ -50,14 +50,6 @@ const useTabs = () : WirelessTab[] => {
   const [range, setRange] = useState(DateRange.allTime)
   const [startDate, setStartDate] = useState(moment(undefined).toString())
   const [endDate, setEndDate] = useState(moment(undefined).toString())
-  const dateFilter = {
-    range,
-    setRange,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate
-  }
   const setDateFilter = function (data: {
     range: DateRange,
     startDate?: string,
@@ -111,7 +103,7 @@ const useTabs = () : WirelessTab[] => {
     key: WirelessTabsEnum.GUESTS,
     title: $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount }),
     component: <GuestTabContext.Provider value={{ setGuestCount }}>
-      <GuestsTab dateFilter={dateFilter}/>
+      <GuestsTab />
     </GuestTabContext.Provider>,
     headerExtra: [<RangePicker
       selectionType={range}

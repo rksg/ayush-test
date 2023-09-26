@@ -43,15 +43,6 @@ export default function GuestManagerPage () {
     setEndDate(period.endDate)
   }
 
-  const dateFilter = {
-    range,
-    setRange,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate
-  }
-
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Guest Management' })}
@@ -63,6 +54,6 @@ export default function GuestManagerPage () {
           onDateApply={setDateFilter as CallableFunction}
         />}
     />
-    <GuestsTable dateFilter={dateFilter}/>
+    <GuestsTable />
   </>
 }

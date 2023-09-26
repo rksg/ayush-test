@@ -51,7 +51,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * the table will show a multi select dropdown to filter the column
    * @default false
    */
-  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode })[]
+  filterable?: boolean | string | ({ key: string, value: string, label?: React.ReactNode })[]
   /**
    * Set the key in filters of payload
    * It is useful when the dataIndex is different from the filter key
@@ -68,6 +68,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */
+  filterComponent?: ({ type: string, label?: string })
   render?: (
     dom: ReactNode,
     entity: RecordType,
