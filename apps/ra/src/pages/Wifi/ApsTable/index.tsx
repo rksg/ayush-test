@@ -1,63 +1,24 @@
-import { useEffect, useState } from 'react'
 
-import { Menu, MenuProps, Space } from 'antd'
-import { ItemType }               from 'antd/lib/menu/hooks/useItems'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { AP, useApListQuery }                     from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath }   from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip }             from '@acx-ui/components'
-import { Dropdown, Button, CaretDownSolidIcon }   from '@acx-ui/components'
-import { TenantLink }                             from '@acx-ui/react-router-dom'
-import { DateRange, defaultRanges, dateRangeMap } from '@acx-ui/utils'
-
+import { AP, useApListQuery }                              from '@acx-ui/analytics/services'
+import { defaultSort, sortProp ,formattedPath }            from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip,useDateRange, Loader } from '@acx-ui/components'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
 
 import {  Ul, Chevron, Li } from './styledComponents'
-export default function useApsTable () {
+export  function APList () {
   const { $t } = useIntl()
 
-  const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last24Hours)
-  const timeRanges = defaultRanges()[dateRange]!
-  console.log('time range: ', timeRanges)
-
-  const [ apsCount, setApsCount ] = useState(0)
+  const { timeRange } = useDateRange()
   const pagination = { pageSize: 10, defaultPageSize: 10 }
 
   const results = useApListQuery({
-    start: timeRanges[0].format(),
-    end: timeRanges[1].format(),
+    start: timeRange[0].format(),
+    end: timeRange[1].format(),
     limit: 100,
-    metric: 'traffic'
+    query: 'est'
   })
-
-  const count = results.data?.aps?.length || 0
-  useEffect(() => {
-    setApsCount(count)
-  },[count])
-
-  const title = defineMessage({
-    defaultMessage: 'AP List {count, select, null {} other {({count})}}',
-    description: 'Translation strings - AP List'
-  })
-
-
-  const handleClick: MenuProps['onClick'] = (e) => {
-    setDateRange(e.key as DateRange)
-  }
-  const timeRangeDropDown = <Dropdown
-    key='timerange-dropdown-1'
-    overlay={<Menu
-      onClick={handleClick}
-      items={[DateRange.last24Hours, DateRange.last7Days, DateRange.last30Days
-      ].map((key) => ({ key, label: $t(dateRangeMap[key]) })) as ItemType[]} />}>{() => <Button>
-      <Space>
-        {dateRange}
-        <CaretDownSolidIcon />
-      </Space>
-    </Button>}
-  </Dropdown>
-
-  const extra = [timeRangeDropDown]
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
@@ -121,30 +82,12 @@ export default function useApsTable () {
     }
   ]
 
-  const component =
-  <Table<AP>
-    columns={apTablecolumnHeaders}
-    //dataSource={apListResult as unknown as AP[]}
-    dataSource={results.data?.aps as unknown as AP[]}
-    pagination={pagination}
-    settingsId='ap-search-table'
-  />
-  // <ApsTabContext.Provider value={{ setApsCount }}>
-  //   <ApTable ref={apTableRef}
-  //     searchable={true}
-  //     filterables={{
-  //       venueId: venueFilterOptions,
-  //       deviceGroupId: apgroupFilterOptions
-  //     }}
-  //     rowSelection={{
-  //       type: 'checkbox'
-  //     }}
-  //   />
-  // </ApsTabContext.Provider>
-
-  return {
-    title: $t(title, { count: apsCount || 0 }),
-    headerExtra: extra,
-    component
-  }
+  return <Loader states={[results]}>
+    <Table<AP>
+      columns={apTablecolumnHeaders}
+      dataSource={results.data?.aps as unknown as AP[]}
+      pagination={pagination}
+      settingsId='ap-search-table'
+    />
+  </Loader>
 }

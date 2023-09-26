@@ -5,20 +5,22 @@ import {
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   CrrmDetails,
+  VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import ClientDetails                     from './pages/ClientDetails'
-import ConfigChange                      from './pages/ConfigChange'
-import IncidentDetails                   from './pages/IncidentDetails'
-import Incidents                         from './pages/Incidents'
-import Layout                            from './pages/Layout'
-import Recommendations                   from './pages/Recommendations'
-import SearchResults                     from './pages/SearchResults'
-import { AccessPointList, WifiTabsEnum } from './pages/Wifi'
-import ApDetails                         from './pages/Wifi/ApDetails'
+import ClientDetails                 from './pages/ClientDetails'
+import Clients, { AIClientsTabEnum } from './pages/Clients'
+import ConfigChange                  from './pages/ConfigChange'
+import IncidentDetails               from './pages/IncidentDetails'
+import Incidents                     from './pages/Incidents'
+import Layout                        from './pages/Layout'
+import Recommendations               from './pages/Recommendations'
+import SearchResults                 from './pages/SearchResults'
+import { WiFiPage, WifiTabsEnum }    from './pages/Wifi'
+import ApDetails                     from './pages/Wifi/ApDetails'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -43,13 +45,13 @@ function AllRoutes () {
       </Route>
       <Route path='wifi'>
         <Route index={true}
-          element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
+          element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
           path='reports/aps'
-          element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
+          element={<WiFiPage tab={WifiTabsEnum.AP_REPORT} />} />
         <Route
           path='reports/airtime'
-          element={<AccessPointList tab={WifiTabsEnum.AIRTIME_REPORT} />} />
+          element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
           path=':apId/details/reports'
           element={<ApDetails />} />
@@ -59,7 +61,7 @@ function AllRoutes () {
       <Route path='dataStudio/*' element={<ReportsRoutes />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
       <Route path='videoCallQoe' >
-        <Route index element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
+        <Route index element={<VideoCallQoe />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>
@@ -71,6 +73,17 @@ function AllRoutes () {
         <Route index={false}
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+      </Route>
+      <Route path='users'>
+        <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
+        <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
+        <Route path='wifi/clients/:clientId'>
+          <Route path=':activeTab'>
+            <Route path='' element={<Navigate replace to='./troubleshooting' />} />
+            <Route path=':activeTab' element={<ClientDetails />} />
+            <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
+          </Route>
+        </Route>
       </Route>
     </Route>
   </Route>)
