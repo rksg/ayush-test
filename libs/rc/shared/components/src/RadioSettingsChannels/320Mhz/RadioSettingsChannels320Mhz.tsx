@@ -62,7 +62,8 @@ export function RadioSettingsChannels320Mhz (props: {
 
 
 
-    // Display condition
+    // hide 160Mhz Button if channel not available, the available channels are
+    // chosen by backend
     let clone160MHz = _.cloneDeep(complexGroupChannelState.ChannelGroup_160MHz)
     _.forIn(clone160MHz, (settings, key) => {
       let unsavedSetting = _.cloneDeep(settings)
@@ -76,8 +77,8 @@ export function RadioSettingsChannels320Mhz (props: {
 
       _.set(clone160MHz, key, unsavedSetting)
     })
-    // End Display condition
-    // Display condition
+
+    // Same as 160Mhz, but 320Mhz needs to have more than 8 channels(which means over half)
     let clone320MHz = _.cloneDeep(complexGroupChannelState.ChannelGroup_320MHz)
     _.forIn(clone320MHz, (settings, key) => {
       let unsavedSetting = _.cloneDeep(settings)
