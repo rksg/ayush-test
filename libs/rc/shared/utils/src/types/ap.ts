@@ -507,6 +507,13 @@ export enum AFCStatus {
   PASSED = 'PASSED'
 }
 
+export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
+  if (!afcInfo) return false
+  return (
+    afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+    afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
+}
+
 export interface LowPowerAPQuantity {
   lowPowerAPCount: number,
   allAPCount: number
