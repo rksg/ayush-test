@@ -5,11 +5,13 @@ import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
+
 import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
 import { PageHeader, Loader, Table, TableProps, Tooltip }     from '@acx-ui/components'
 import { Dropdown, Button, CaretDownSolidIcon }               from '@acx-ui/components'
 import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
 import { DateRange, defaultRanges, dateRangeMap }             from '@acx-ui/utils'
 
 import NoData                                from './NoData'
@@ -43,7 +45,11 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'apName',
       key: 'apName',
       width: 130,
-      sorter: { compare: sortProp('apName', defaultSort) }
+      sorter: { compare: sortProp('apName', defaultSort) },
+      render: (_, row : AP) => (
+        <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
+          {row.apName}</TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),

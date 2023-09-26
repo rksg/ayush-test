@@ -11,6 +11,11 @@ export interface RequestPayload {
   limit: number
 }
 
+export interface ListPayload extends Omit<RequestPayload, 'query'>{
+  metric: string
+}
+
+
 export interface Client {
   hostname: string
   username: string
@@ -103,10 +108,39 @@ export const searchApi = dataApiSearch.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
+    }),
+    apList: build.query<SearchResponse, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Search(
+          $start: DateTime,
+          $end: DateTime,
+          $metric: String,
+          $limit: Int
+        ) {
+          search(start: $start, end: $end, metric: $metric, limit: $limit) {
+            aps {
+              apName,
+              macAddress,
+              apModel,
+              ipAddress,
+              version,
+              apZone
+              networkPath {name type}
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
+      transformResponse: (response: { search: SearchResponse }) => response.search
     })
   })
 })
 
 export const {
-  useSearchQuery
+  useSearchQuery,
+  useApListQuery
+
 } = searchApi

@@ -10,13 +10,15 @@ import {
 }                                                       from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import ClientDetails   from './pages/ClientDetails'
-import ConfigChange    from './pages/ConfigChange'
-import IncidentDetails from './pages/IncidentDetails'
-import Incidents       from './pages/Incidents'
-import Layout          from './pages/Layout'
-import Recommendations from './pages/Recommendations'
-import SearchResults   from './pages/SearchResults'
+import ClientDetails                     from './pages/ClientDetails'
+import ConfigChange                      from './pages/ConfigChange'
+import IncidentDetails                   from './pages/IncidentDetails'
+import Incidents                         from './pages/Incidents'
+import Layout                            from './pages/Layout'
+import Recommendations                   from './pages/Recommendations'
+import SearchResults                     from './pages/SearchResults'
+import { AccessPointList, WifiTabsEnum } from './pages/Wifi'
+import ApDetails                         from './pages/Wifi/ApDetails'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -38,6 +40,19 @@ function AllRoutes () {
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
+      </Route>
+      <Route path='wifi'>
+        <Route index={true}
+          element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
+        <Route
+          path='reports/aps'
+          element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
+        <Route
+          path='reports/airtime'
+          element={<AccessPointList tab={WifiTabsEnum.AIRTIME_REPORT} />} />
+        <Route
+          path=':apId/details/reports'
+          element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
       <Route path='reports/*' element={<ReportsRoutes />} />
