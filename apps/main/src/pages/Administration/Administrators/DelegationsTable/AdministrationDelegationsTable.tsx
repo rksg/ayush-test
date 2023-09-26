@@ -51,10 +51,10 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
 
-  const isMultiVarSupported =
+  const shouldInvite3rdPartyEnabled =
   (isMultipleVarEnabled && data?.length && data.length < MAX_VAR_INVITATIONS ) || false
 
-  const hasDelegations = Boolean(data?.length) || isMultiVarSupported
+  const hasDelegations = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
   const handleClickInviteDelegation = () => {
     setShowDialog(true)
