@@ -203,7 +203,7 @@ export const searchFixture = {
 }
 
 
-export const apListFixtures = {
+export const apListFixture = {
   search: {
     aps: [
       {
