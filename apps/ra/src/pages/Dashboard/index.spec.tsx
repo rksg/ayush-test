@@ -1,6 +1,10 @@
-import { act, render, renderHook, screen } from '@acx-ui/test-utils'
+import { useEffect } from 'react'
 
-import Dashboard, { useMonitorHeight } from '.'
+import { BrowserRouter }                   from '@acx-ui/react-router-dom'
+import { act, render, renderHook, screen } from '@acx-ui/test-utils'
+import { DateRange }                       from '@acx-ui/utils'
+
+import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters } from '.'
 
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object
@@ -55,6 +59,34 @@ describe('Dashboard', () => {
       expect(result.current).toEqual(1000 - 100 - 20)
       Object.defineProperty(window, 'innerHeight',
         { writable: true, configurable: true, value: innerHeight })
+    })
+  })
+  describe('useDashBoardUpdatedFilters', () => {
+    it('should provide default values', async () => {
+      const { result } = renderHook(() => useDashBoardUpdatedFilters(),
+        {
+          wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
+        })
+      expect(result.current.range).toEqual(DateRange.last8Hours)
+    })
+    it('should provide startDate and endDate when custome range is selected', async () => {
+      const TestComponent = () => {
+        const { startDate, setDateFilterState } = useDashBoardUpdatedFilters()
+        useEffect(()=>{
+          setDateFilterState({
+            range: DateRange.custom,
+            startDate: '2021-12-31T00:01:00+00:00',
+            endDate: '2022-01-01T00:01:00+00:00'
+          })
+        },[])
+        return <div>{startDate}</div>
+      }
+      render(
+        <BrowserRouter>
+          <TestComponent />
+        </BrowserRouter>
+      )
+      expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
     })
   })
 })

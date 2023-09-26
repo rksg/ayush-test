@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactElement, Dispatch, SetStateAction  } from 'react'
+import React, { createContext, useState, useContext, Dispatch, SetStateAction  } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
@@ -54,7 +54,7 @@ const DashboardFilterContext = createContext<DashboardFilterContextProps>({
   setDateFilterState: () => {}
 })
 
-export const DashboardFilterProvider = ({ children }: { children : ReactElement[] }) => {
+export const DashboardFilterProvider = ({ children }: { children : React.ReactNode }) => {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )

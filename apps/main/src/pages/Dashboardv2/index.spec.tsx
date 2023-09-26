@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom'
+import { useEffect } from 'react'
+
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { BrowserRouter }                  from '@acx-ui/react-router-dom'
 import { Provider }                       from '@acx-ui/store'
 import { fireEvent, render, screen }      from '@acx-ui/test-utils'
+import {  DateRange }                     from '@acx-ui/utils'
 
-import Dashboard from '.'
+import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -109,5 +112,40 @@ describe('Dashboard', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(await screen.findAllByRole('radio')).toHaveLength(2)
+  })
+  it('DashboardFilterProvider provides default value', async () => {
+    const TestComponent = () => {
+      const { dashboardFilters } = useDashBoardUpdatedFilter()
+      return <div>{dashboardFilters.range}</div>
+    }
+    render(
+      <BrowserRouter>
+        <DashboardFilterProvider>
+          <TestComponent />
+        </DashboardFilterProvider>
+      </BrowserRouter>
+      ,{ wrapper: Provider })
+    expect(screen.getByText(DateRange.last8Hours)).toBeInTheDocument()
+  })
+  it('DashboardFilterProvider provides selected date range for custom range', async () => {
+    const TestComponent = () => {
+      const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
+      useEffect(()=>{
+        setDateFilterState({
+          range: DateRange.custom,
+          startDate: '2021-12-31T00:01:00+00:00',
+          endDate: '2022-01-01T00:01:00+00:00'
+        })
+      },[])
+      return <div>{dashboardFilters.startDate}</div>
+    }
+    render(
+      <BrowserRouter>
+        <DashboardFilterProvider>
+          <TestComponent />
+        </DashboardFilterProvider>
+      </BrowserRouter>
+      ,{ wrapper: Provider })
+    expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
   })
 })

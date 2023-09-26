@@ -44,17 +44,37 @@ export const useMonitorHeight = (minHeight: number): number => {
   return height
 }
 
-export default function Dashboard () {
-  const { $t } = useIntl()
+export const useDashBoardUpdatedFilters = () => {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
     ? getDateRangeFilter(dateFilterState.range)
     : dateFilterState
-
   const { filters } = useDashboardFilter()
   const { filters: analyticsFilter, path } = useAnalyticsFilter()
+  return {
+    analyticsFilter: { ...analyticsFilter, startDate, endDate, range },
+    filters: { ...filters, startDate, endDate, range },
+    startDate,
+    endDate,
+    range,
+    setDateFilterState,
+    path
+  }
+}
+
+export default function Dashboard () {
+  const { $t } = useIntl()
+  const {
+    analyticsFilter,
+    filters,
+    startDate,
+    endDate,
+    range,
+    setDateFilterState,
+    path
+  }= useDashBoardUpdatedFilters()
   const height = useMonitorHeight(536)
   return (
     <>
