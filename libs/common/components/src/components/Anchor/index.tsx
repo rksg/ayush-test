@@ -5,7 +5,7 @@ import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
 
 import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
-import { cssNumber } from '../../theme/helper'
+import { useLayoutContext } from '../Layout'
 
 import { Anchor, Container, AnchorLayoutSidebar } from './styledComponents'
 
@@ -25,6 +25,7 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
   const location = useLocation()
+  const layout = useLayoutContext()
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -41,9 +42,10 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
   }, [])
 
   return <Row gutter={20}>
-    <AnchorLayoutSidebar span={4} $offsetTop={offsetTop}>
+    <AnchorLayoutSidebar span={4}
+      $offsetTop={offsetTop + layout.pageHeaderY}>
       <Anchor ref={anchorRef}
-        offsetTop={offsetTop + getTopWithPageheaderTab()}
+        offsetTop={offsetTop + layout.pageHeaderY}
         onClick={(e) => handleClick(e)}
         $customType='layout'>
         {items.map(item => {
@@ -61,17 +63,4 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
       })
     }</Col>
   </Row>
-}
-
-
-export const getTopWithPageheaderTab = () => {
-  const headerHeight = cssNumber('--acx-header-height')
-  const spaceHeight = cssNumber('--acx-content-vertical-space')
-  const pageheaderHeight = cssNumber('--acx-pageheader-height')
-  const tabsHeight = cssNumber('--acx-cartablist-height')
-
-  // eslint-disable-next-line max-len
-  const bannerHeight = cssNumber('--acx-cloudmessagebanner-height')*cssNumber('--acx-has-cloudmessagebanner')
-
-  return headerHeight + spaceHeight + pageheaderHeight+ tabsHeight + bannerHeight
 }

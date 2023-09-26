@@ -116,6 +116,15 @@ export default function DpskPassphraseManagement () {
     }
   }
 
+  const macColumn = isNewConfigFlow ? [] : [
+    {
+      key: 'mac',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'mac',
+      sorter: true
+    }
+  ]
+
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
       key: 'createdDate',
@@ -146,12 +155,7 @@ export default function DpskPassphraseManagement () {
           : $t(unlimitedNumberOfDeviceLabel)
       }
     },
-    {
-      key: 'mac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'mac',
-      sorter: true
-    },
+    ...macColumn,
     {
       key: 'passphrase',
       title: $t({ defaultMessage: 'Passphrase' }),
@@ -248,6 +252,10 @@ export default function DpskPassphraseManagement () {
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
+    if (isNewConfigFlow) {
+      return isCloudpathEnabled && selectedRows.length === 1
+    }
+
     if (!isCloudpathEnabled || selectedRows.length !== 1) return false
 
     const row = selectedRows[0]
