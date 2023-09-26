@@ -3,7 +3,11 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   TableResult,
-  RWG
+  RWG,
+  GatewayAlarms,
+  GatewayDashboard,
+  GatewayTopProcess,
+  GatewayFileSystem
 } from '@acx-ui/rc/utils'
 import { baseRWGApi }        from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -47,8 +51,8 @@ export const rwgApi = baseRWGApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse: ({ response }: { response: RWG }) => {
-        return response
+      transformResponse: (data: { response: RWG }) => {
+        return data?.response
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     }),
@@ -88,6 +92,54 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
+    }),
+    getGatewayAlarms: build.query<GatewayAlarms, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGatewayAlarms, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: GatewayAlarms }) => {
+        return data?.response || {}
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getGatewayDashboard: build.query<GatewayDashboard, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGatewayDashboard, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: GatewayDashboard }) => {
+        return data?.response || {}
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getGatewayTopProcess: build.query<GatewayTopProcess[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGatewayTopProcess, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: GatewayTopProcess[] }) => {
+        return data?.response || {}
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getGatewayFileSystems: build.query<GatewayFileSystem[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGatewayFileSystems, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: GatewayFileSystem[] }) => {
+        return data?.response
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
   })
 })
@@ -98,5 +150,9 @@ export const {
   useGetRwgQuery,
   useDeleteGatewayMutation,
   useAddGatewayMutation,
-  useUpdateGatewayMutation
+  useUpdateGatewayMutation,
+  useGetGatewayAlarmsQuery,
+  useGetGatewayDashboardQuery,
+  useGetGatewayTopProcessQuery,
+  useGetGatewayFileSystemsQuery
 } = rwgApi

@@ -172,6 +172,37 @@ export interface RWG {
   tenantId: string
 }
 
+export interface GatewayAlarms {
+  total: number
+}
+export interface MinMaxValue {
+  max: number,
+  value: number,
+  min: number
+}
+
+export interface GatewayDashboard {
+  cpuPercentage: MinMaxValue,
+  memoryInMb: MinMaxValue,
+  temperatureInCelsius: MinMaxValue,
+  storageInGb: MinMaxValue
+}
+
+export interface GatewayTopProcess {
+  processName: string,
+  cpu: string,
+  memory: string,
+  time: string
+}
+
+export interface GatewayFileSystem {
+  partition: string,
+  size: number,
+  used: number,
+  free: number,
+  capacity: string
+}
+
 export type Alarm = AlarmBase & AlarmMeta
 
 export enum EventSeverityEnum {
