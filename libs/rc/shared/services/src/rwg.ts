@@ -7,7 +7,8 @@ import {
   GatewayAlarms,
   GatewayDashboard,
   GatewayTopProcess,
-  GatewayFileSystem
+  GatewayFileSystem,
+  GatewayDetails
 } from '@acx-ui/rc/utils'
 import { baseRWGApi }        from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -140,6 +141,18 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         return data?.response
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getGatewayDetails: build.query<GatewayDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getGatewayDetails, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: GatewayDetails }) => {
+        return data?.response
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
   })
 })
@@ -154,5 +167,6 @@ export const {
   useGetGatewayAlarmsQuery,
   useGetGatewayDashboardQuery,
   useGetGatewayTopProcessQuery,
-  useGetGatewayFileSystemsQuery
+  useGetGatewayFileSystemsQuery,
+  useGetGatewayDetailsQuery
 } = rwgApi

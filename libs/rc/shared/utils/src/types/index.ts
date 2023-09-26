@@ -202,6 +202,64 @@ export interface GatewayFileSystem {
   free: number,
   capacity: string
 }
+export interface GatewayDetailsGeneral {
+  venueName: string,
+  hostname: string,
+  username: string,
+  password: string,
+  uptimeInSeconds: string,
+  bootedAt: string,
+  temperature: string,
+  created: string,
+  updated: string
+}
+
+export interface GatewayDetailsHardware {
+  baseboardManufacturer: string,
+  baseboardProductName: string,
+  baseboardSerialNumber: string,
+  baseboardVersion: string,
+  biosVendor: string,
+  biosVersion: string,
+  biosReleaseDate: string,
+  chassisManufacturer: string,
+  chassisSerialNumber: string,
+  chassisType: string,
+  chassisVersion: string,
+  processorFamily: string,
+  processorFrequency: string,
+  systemManufacturer: string,
+  systemProductName: string,
+  systemSerialNumber: string,
+  systemUuid: string,
+  systemVersion: string,
+  systemFamily: string
+}
+
+export interface GatewayDetailsOs {
+  architecture: string,
+  branch: string,
+  kernel: string,
+  name: string,
+  release: string,
+  version: string
+}
+
+export interface GatewayDetailsDiskMemory {
+  diskDevice: string,
+  diskTotalSpaceInGb: number,
+  memoryTotalSpaceInMb: number,
+  memoryUsedSpaceInMb: number,
+  memoryFreeSpaceInMb: number,
+  processorCount: number
+}
+
+export interface GatewayDetails {
+  gatewayDetailsGeneral: GatewayDetailsGeneral
+  gatewayDetailsHardware: GatewayDetailsHardware
+  gatewayDetailsOs: GatewayDetailsOs
+  gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
+}
 
 export type Alarm = AlarmBase & AlarmMeta
 

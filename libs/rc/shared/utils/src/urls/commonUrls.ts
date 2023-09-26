@@ -563,5 +563,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/rwgs/:gatewayId/filesystems',
     newApi: true
+  },
+  getGatewayDetails: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/details',
+    newApi: true
   }
 }

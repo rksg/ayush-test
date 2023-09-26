@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { venueApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { venueApi }                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { DashboardStatistics } from '.'
 
@@ -95,6 +95,27 @@ describe('RWG Dashboard statistics', () => {
     expect(await screen.findByText('Temperature')).toBeInTheDocument()
     expect(await screen.findByText('Storage')).toBeInTheDocument()
     expect(await screen.findByText('Memory Usage')).toBeInTheDocument()
+
+  })
+
+  it('should show more details', async () => {
+
+    render(<Provider><DashboardStatistics /> </Provider>, {
+      route: { params }
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+
+    await fireEvent.click(await screen.findByRole('button', { name: 'More Details' }))
+
+    expect(await screen.findByText('More Details')).toBeInTheDocument()
+
+    expect(await screen.findByRole('radio', { name: 'General' })).toBeInTheDocument()
+    expect(await screen.findByRole('radio', { name: 'Hardware' })).toBeInTheDocument()
+    expect(await screen.findByRole('radio', { name: 'OS' })).toBeInTheDocument()
+    expect(await screen.findByRole('radio', { name: 'Disk & Memory' })).toBeInTheDocument()
 
   })
 

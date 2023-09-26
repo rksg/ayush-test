@@ -93,8 +93,10 @@ export default function DiskFileSystemUtilization () {
           dataSource={fileSystemData}
           rowKey='partition'
           pagination={{
+            defaultPageSize: 4,
             pageSize: 4,
-            showSizeChanger: false
+            showSizeChanger: false,
+            showQuickJumper: false
           }}/>
         : <UI.Wrapper
           style={{
