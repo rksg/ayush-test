@@ -16,8 +16,8 @@ import { LayoutProps }  from '@acx-ui/components'
 import {
   AIOutlined,
   AISolid,
-  // AccountCircleOutlined,
-  // AccountCircleSolid,
+  AccountCircleOutlined,
+  AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
   BulbOutlined,
@@ -128,7 +128,6 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    /*
     ...(hasViewAnalyticsPermissions
       ? [{
         label: $t({ defaultMessage: 'Clients' }),
@@ -151,7 +150,6 @@ export function useMenuConfig () {
           }
         ]
       }] : []),
-    */
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),

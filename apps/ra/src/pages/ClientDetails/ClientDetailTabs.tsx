@@ -21,7 +21,6 @@ function ClientDetailTabs () {
         key='troubleshooting'
       />
       <Tabs.TabPane
-        disabled
         tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
