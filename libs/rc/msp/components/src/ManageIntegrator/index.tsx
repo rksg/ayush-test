@@ -829,7 +829,7 @@ export function ManageIntegrator () {
               format={formatter(DateFormatEnum.DateFormat)}
               allowClear={false}
               disabled={!customDate}
-              defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
+              defaultValue={moment(subscriptionEndDate)}
               onChange={expirationDateOnChange}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
