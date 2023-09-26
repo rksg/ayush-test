@@ -103,7 +103,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
 
     _.set(manualChannels, '320MHz-1', shouldDisplay320MhzGroup1)
     _.set(manualChannels, '320MHz-2', shouldDisplay320MhzGroup2)
-    // setManualGroupChannelState(manualChannels)
+    setManualGroupChannelState(manualChannels)
 
   }, [form, props.formName])
 
