@@ -87,7 +87,7 @@ const allMultipleEditableFields = [
   'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
   'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected'
+  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected', 'arpInspectionTrust'
 ]
 
 interface ProfileVlans {
