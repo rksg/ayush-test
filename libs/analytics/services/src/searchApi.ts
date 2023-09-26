@@ -41,6 +41,10 @@ export interface SearchResponse {
   switches: Switch[]
 }
 
+export interface APListResponse {
+  aps: AP[]
+}
+
 
 export interface AP {
   apName: string
@@ -109,7 +113,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
     }),
-    apList: build.query<SearchResponse, RequestPayload>({
+    apList: build.query<APListResponse, RequestPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
@@ -134,7 +138,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
-      transformResponse: (response: { search: SearchResponse }) => response.search
+      transformResponse: (response: { search: APListResponse }) => response.search
     })
   })
 })

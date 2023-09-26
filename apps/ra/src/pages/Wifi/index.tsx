@@ -21,11 +21,6 @@ interface WifiTab {
   headerExtra: JSX.Element[]
 }
 
-function isElementArray (data: JSX.Element | JSX.Element[]
-): data is JSX.Element[] {
-  return data ? Array.isArray(data) : false
-}
-
 const useTabs = () : WifiTab[] => {
   const { $t } = useIntl()
   const listTab = {
@@ -79,7 +74,7 @@ export function WiFiPage ({ tab }: { tab: WifiTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={isElementArray(headerExtra!) ? headerExtra : [headerExtra]}
+      extra={headerExtra}
     />
     {component}
   </TimeRangeDropDownProvider>
