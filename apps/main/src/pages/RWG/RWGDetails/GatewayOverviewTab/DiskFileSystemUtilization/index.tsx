@@ -3,6 +3,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { cssStr, Loader, NoActiveContent, Table, TableProps } from '@acx-ui/components'
+import { formatter }                                          from '@acx-ui/formatter'
 import { useGetGatewayFileSystemsQuery }                      from '@acx-ui/rc/services'
 import { GatewayFileSystem }                                  from '@acx-ui/rc/utils'
 
@@ -17,13 +18,15 @@ export default function DiskFileSystemUtilization () {
     isLoading: isFileSystemDataLoading, isFetching: isFileSystemDataFetching } =
   useGetGatewayFileSystemsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
 
+  const bytesFormatter = formatter('bytesFormat')
+
   const getCapicityWithPercent = function (capacity: string) {
     const capacityNumber = capacity ? Number(capacity.split('%')[0]) : 0
     return capacityNumber
   }
 
-  const getStorageInGb = function (numberInMb: number) {
-    return Number(numberInMb / 1000).toFixed(2)
+  const getBytesFormat = function (numberInMb: number) {
+    return bytesFormatter(numberInMb)
   }
 
   const columns: TableProps<GatewayFileSystem>['columns'] = [
@@ -40,7 +43,7 @@ export default function DiskFileSystemUtilization () {
       dataIndex: 'size',
       key: 'size',
       render: function (_, row) {
-        return getStorageInGb(row?.size)
+        return getBytesFormat(row?.size)
       }
     },
     {
@@ -48,7 +51,7 @@ export default function DiskFileSystemUtilization () {
       dataIndex: 'used',
       key: 'used',
       render: function (_, row) {
-        return getStorageInGb(row?.used)
+        return getBytesFormat(row?.used)
       }
     },
     {
@@ -56,7 +59,7 @@ export default function DiskFileSystemUtilization () {
       dataIndex: 'free',
       key: 'free',
       render: function (_, row) {
-        return getStorageInGb(row?.free)
+        return getBytesFormat(row?.free)
       }
     },
     {
