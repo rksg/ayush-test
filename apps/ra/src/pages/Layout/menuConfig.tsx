@@ -117,7 +117,7 @@ export function useMenuConfig () {
         activeIcon: RocketSolid,
         children: [
           {
-            label: $t({ defaultMessage: 'App Insights (coming soon)' })
+            label: $t({ defaultMessage: 'AppInsights (coming soon)' })
           },
           ...(hasManageCallManagerPermissions ? [
             {
