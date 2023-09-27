@@ -22,7 +22,7 @@ export default function GatewayDetailsGeneralContent (props: {
     <Descriptions.Item
       label={$t({ defaultMessage: 'Venue' })}
       children={
-        <TenantLink to={'/'}>
+        <TenantLink to={`venues/${gatewayDetails.venueId}/venue-details/overview`}>
           {gatewayDetails?.venueName}
         </TenantLink>
       }

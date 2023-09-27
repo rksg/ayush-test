@@ -204,6 +204,7 @@ export interface GatewayFileSystem {
 }
 export interface GatewayDetailsGeneral {
   venueName: string,
+  venueId: string,
   hostname: string,
   username: string,
   password: string,
