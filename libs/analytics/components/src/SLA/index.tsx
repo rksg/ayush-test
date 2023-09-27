@@ -2,10 +2,10 @@ import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { KpiThresholdType, useApCountForNodeQuery } from '@acx-ui/analytics/services'
-import { kpiConfig }                                from '@acx-ui/analytics/utils'
-import { Card, Loader, ProgressBarV2 }              from '@acx-ui/components'
+import { kpiConfig, pathToFilter, isSwitchPath }    from '@acx-ui/analytics/utils'
+import { Card, Loader, ProgressBarV2, NoData }      from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import type { PathFilter, AnalyticsFilter }         from '@acx-ui/utils'
 
 import { useKpiThresholdsQuery } from '../Health/Kpi'
 import { usePillQuery }          from '../Health/Kpi/Pill'
@@ -40,22 +40,29 @@ const SLAComponent = ({ kpi, threshold, filters } : SLABarChartProps) => {
   </Loader>
 }
 
-export const SLA = (props: { filters: AnalyticsFilter }) => {
+export const SLA = (props: { pathFilters: PathFilter }) => {
   const { $t } = useIntl()
-  const { filters } = props
+  const { path, ...otherFilters } = props.pathFilters
+  const filters = {
+    ...otherFilters,
+    filter: pathToFilter(path)
+  }
+  const switchPath = isSwitchPath(path)
 
   const kpis= [ 'connectionSuccess', 'timeToConnect', 'clientThroughput']
-  const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
+  const { thresholds, kpiThresholdsQueryResults } =
+    useKpiThresholdsQuery({ filters }, { skip: switchPath })
 
   return <Loader states={[kpiThresholdsQueryResults]}>
-    <Card title={$t({ defaultMessage: 'SLA' })} >
-      {kpis.map((kpi, index)=>
+    <Card title={$t({ defaultMessage: 'SLA' })}>{switchPath
+      ? <NoData/>
+      : kpis.map((kpi, index) =>
         <SLAComponent
           key={`SLA${index}`}
           kpi={kpi}
           threshold={thresholds[kpi as keyof KpiThresholdType]}
           filters={filters}
-        />)}
-    </Card>
+        />)
+    }</Card>
   </Loader>
 }

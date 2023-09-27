@@ -3,10 +3,17 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { get }                                  from '@acx-ui/config'
-import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { get }                                               from '@acx-ui/config'
+import { resetRanges, fixedEncodeURIComponent, NetworkPath } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter, defaultNetworkPath } from './analyticsFilter'
+import {
+  useAnalyticsFilter,
+  getFilterPayload,
+  getSelectedNodePath,
+  pathToFilter,
+  defaultNetworkPath,
+  isSwitchPath
+} from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
 const original = Date.now
@@ -333,5 +340,20 @@ describe('pathToFilter', () => {
     expect(pathToFilter(
       []
     )).toEqual({})
+  })
+})
+describe('isSwitchPath', () => {
+  it('returns true if is switch path', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'switchGroup', name: 'sg1' },
+      { type: 'switch', name: 'sw1', list: ['60:9C:9F:FE:64:14'] }
+    ] as NetworkPath
+    expect(isSwitchPath(path)).toBe(true)
+  })
+  it('returns false if not switch path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isSwitchPath(path)).toBe(false)
   })
 })

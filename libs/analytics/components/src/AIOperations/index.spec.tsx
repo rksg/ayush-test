@@ -6,7 +6,7 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { PathFilter, DateRange } from '@acx-ui/utils'
+import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
 import { api } from '../Recommendations/services'
 
@@ -43,12 +43,25 @@ describe('AIOperations dashboard', () => {
     expect(await screen.findByText('07/06/2023')).toBeVisible()
   })
 
-  it('handles no data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: {
-        recommendations: []
-      }
+  it('renders no data for switch path', async () => {
+    const switchPathFilters = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 's1' },
+        { type: 'switchGroup', name: 'sg1' }
+      ] as NetworkPath
+    }
+    render(<AIOperations pathFilters={switchPathFilters} />, {
+      route: true,
+      wrapper: Provider
     })
+
+    expect(await screen.findByText('No recommendations')).toBeVisible()
+  })
+
+  it('handles no data', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [] } })
     render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider

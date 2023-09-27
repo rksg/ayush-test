@@ -4,6 +4,7 @@ import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
+  isSwitchPath,
   defaultSort,
   dateSort,
   sortProp
@@ -51,9 +52,7 @@ export function RecommendationTable (
   const intl = useIntl()
   const { $t } = intl
 
-  const queryResults = useRecommendationListQuery({ ...pathFilters, crrm: showCrrm })
-
-  const [ showMuted, setShowMuted ] = useState<boolean>(false)
+  const [showMuted, setShowMuted] = useState<boolean>(false)
 
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
@@ -63,8 +62,6 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
-  const data = queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
 
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
@@ -82,6 +79,11 @@ export function RecommendationTable (
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
+
+  const switchPath = isSwitchPath(pathFilters.path)
+  const queryResults =
+    useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
+  const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
 
   useEffect(() => {
     setSelectedRowData([])

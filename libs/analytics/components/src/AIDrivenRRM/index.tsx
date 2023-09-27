@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { isSwitchPath }                  from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoData } from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 import type { PathFilter }               from '@acx-ui/utils'
@@ -19,9 +20,10 @@ function AIDrivenRRMWidget ({
   pathFilters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
+  const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 })
-  const data = queryResults?.data
+  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const data = switchPath ? [] : queryResults?.data
   const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const noData = data?.length === 0
 

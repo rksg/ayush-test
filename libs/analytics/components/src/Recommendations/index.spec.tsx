@@ -2,29 +2,32 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { get }                                from '@acx-ui/config'
-import { BrowserRouter as Router, Link }      from '@acx-ui/react-router-dom'
-import { recommendationUrl, Provider, store } from '@acx-ui/store'
+import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { get }                                    from '@acx-ui/config'
+import { BrowserRouter as Router, Link }          from '@acx-ui/react-router-dom'
+import { recommendationUrl, Provider, store }     from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { setUpIntl } from '@acx-ui/utils'
+import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
 import { recommendationListResult }           from './__tests__/fixtures'
 import { api, useMuteRecommendationMutation } from './services'
 
 import { RecommendationTabContent } from './index'
 
-const mockGet = get as jest.Mock
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: jest.fn()
+}))
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-const mockedUseMuteRecommendationMutation = useMuteRecommendationMutation as jest.Mock
 const mockedMuteRecommendation = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
@@ -32,6 +35,12 @@ jest.mock('./services', () => ({
 }))
 
 describe('RecommendationTabContent', () => {
+  const filters = {
+    startDate: '2022-01-01T00:00:00+08:00',
+    endDate: '2022-01-02T00:00:00+08:00',
+    range: DateRange.last24Hours,
+    filter: {}
+  }
 
   beforeEach(() => {
     setUpIntl({
@@ -39,11 +48,21 @@ describe('RecommendationTabContent', () => {
       messages: {}
     })
     store.dispatch(api.util.resetApiState())
-    mockedUseMuteRecommendationMutation.mockImplementation(() => [mockedMuteRecommendation])
-  })
-  afterEach(() => {
-    mockGet.mockClear()
-    mockedUseMuteRecommendationMutation.mockClear()
+
+    const pathFilters = { ...filters, path: defaultNetworkPath }
+    jest.mocked(useAnalyticsFilter).mockReturnValue({
+      filters,
+      pathFilters,
+      setNetworkPath: jest.fn(),
+      raw: []
+    })
+
+    jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
+
+    jest.mocked(useMuteRecommendationMutation).mockImplementation(() => [
+      mockedMuteRecommendation,
+      { reset: jest.fn() }
+    ])
   })
 
   it('should render loader', () => {
@@ -59,7 +78,6 @@ describe('RecommendationTabContent', () => {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(false) // get('IS_MLISA_SA') => false
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
@@ -77,7 +95,7 @@ describe('RecommendationTabContent', () => {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
       wrapper: Provider
@@ -95,7 +113,6 @@ describe('RecommendationTabContent', () => {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => !r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(false) // get('IS_MLISA_SA') => false
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
       wrapper: Provider
@@ -113,7 +130,7 @@ describe('RecommendationTabContent', () => {
       .filter(r => !r.code.includes('crrm'))]
     recommendations[1].status = 'applywarning' // coverage for Status styled-component
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
-    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
       wrapper: Provider
@@ -126,12 +143,36 @@ describe('RecommendationTabContent', () => {
     expect(screen.getByText('Zone')).toBeVisible()
   })
 
+  it('renders no data for switch path', async () => {
+    const pathFilters = {
+      ...filters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 's1' },
+        { type: 'switchGroup', name: 'sg1' }
+      ] as NetworkPath
+    }
+    jest.mocked(useAnalyticsFilter).mockReturnValue({
+      filters,
+      pathFilters,
+      setNetworkPath: jest.fn(),
+      raw: []
+    })
+    render(<RecommendationTabContent />, {
+      route: { params: { activeTab: 'aiOps' } },
+      wrapper: Provider
+    })
+
+    expect(screen.queryByText('Medium')).toBe(null)
+    jest.clearAllMocks()
+  })
+
   it('switches from aiops to crrm without error', async () => {
     const recommendations = [...recommendationListResult.recommendations
       .filter(r => !r.code.includes('crrm'))]
     const crrm = [...recommendationListResult.recommendations
       .filter(r => r.code.includes('crrm'))]
-    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    jest.mocked(get).mockReturnValue('true')
 
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
     render(
@@ -152,7 +193,7 @@ describe('RecommendationTabContent', () => {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => !r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    jest.mocked(get).mockReturnValue('true')
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
         path: '/ai/recommendations/aiOps',
@@ -192,7 +233,7 @@ describe('RecommendationTabContent', () => {
       data: { recommendations: recommendationListResult.recommendations
         .filter(r => !r.code.includes('crrm')) }
     })
-    mockGet.mockReturnValue(true) // get('IS_MLISA_SA') => true
+    jest.mocked(get).mockReturnValue('true')
     mockedMuteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
         toggleMute: { success: true, errorCode: '', errorMsg: '' }

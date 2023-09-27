@@ -41,9 +41,13 @@ type KpiThresholdsQueryProps = {
   filters: AnalyticsFilter
 }
 
-export const useKpiThresholdsQuery = ({ filters }: KpiThresholdsQueryProps) => {
+export const useKpiThresholdsQuery = (
+  { filters }: KpiThresholdsQueryProps,
+  options?: { skip?: boolean }
+) => {
   const kpis = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const kpiThresholdsQueryResults = healthApi.useGetKpiThresholdsQuery({ ...filters, kpis })
+  const kpiThresholdsQueryResults =
+    healthApi.useGetKpiThresholdsQuery({ ...filters, kpis }, options)
   const thresholds = kpis.reduce((agg, kpi) => {
     agg[kpi] = kpiThresholdsQueryResults.data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return agg

@@ -34,10 +34,10 @@ export function useAnalyticsFilter () {
 
   return useMemo(() => {
     const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
-    const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
-    const isHealthPage = pathname.includes('/analytics/health') // R1
-      || pathname.includes('/ai/health') //RAI
-    const { filter, raw } = (isHealthPage && isSwitchPath)
+    const switchPath = isSwitchPath(path)
+    const healthPage = pathname.includes('/analytics/health') // R1
+      || pathname.includes('/ai/health') // RAI
+    const { filter, raw } = (healthPage && switchPath)
       ? { filter: {}, raw: [] }
       : { filter: pathToFilter(path), raw: rawPath }
     return {
@@ -110,4 +110,8 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
     }
     return path
   }, defaultNetworkPath.slice())
+}
+
+export const isSwitchPath = (path: NetworkPath) => {
+  return Boolean(path.find(({ type }) => type === 'switchGroup'))
 }
