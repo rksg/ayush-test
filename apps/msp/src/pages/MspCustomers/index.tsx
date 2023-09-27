@@ -167,7 +167,7 @@ export function MspCustomers () {
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
   if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
-      userProfile?.support === false) {
+      (userProfile?.support === false || isDelegationMode())) {
     navigate(linkVarPath, { replace: true })
   }
 
@@ -273,7 +273,7 @@ export function MspCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend',
       onCell: (data) => {
-        return (data.status === 'Active') ? {
+        return (data.status === 'Active' && !isDelegationMode()) ? {
           onClick: () => {
             userProfile?.support
               ? delegateToMspEcPath(data.id)
@@ -283,7 +283,8 @@ export function MspCustomers () {
       },
       render: function (_, row, __, highlightFn) {
         return (
-          (row.status === 'Active') ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
+          (row.status === 'Active' && !isDelegationMode())
+            ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
         )
       }
     },

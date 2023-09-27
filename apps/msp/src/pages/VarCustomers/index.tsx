@@ -211,13 +211,14 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return (!isDelegationMode()) ? {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
-        }
+        } : {}
       },
       render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(tenantName)}</Link>
+          (!isDelegationMode())
+            ? <Link to=''>{highlightFn(tenantName)}</Link> : tenantName
         )
       }
     },
@@ -370,7 +371,7 @@ export function VarCustomers () {
         }
       />
 
-      {(!userProfile?.support || isDelegationMode()) && isAdmin && <InvitationList />}
+      {!userProfile?.support && isAdmin && <InvitationList />}
       <VarCustomerTable />
     </>
   )

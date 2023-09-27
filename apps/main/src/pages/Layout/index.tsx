@@ -52,8 +52,9 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  const isSupport = userProfile?.support && isDelegationMode()
-  const isMspVar = userProfile?.var || tenantType === AccountType.MSP_NON_VAR
+  const isSupportDelegation = userProfile?.support && isDelegationMode()
+  const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
+  tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -93,13 +94,15 @@ function Layout () {
           <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
-              {isSupport ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
+              {isSupportDelegation
+                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
           <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
-              {isSupport ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
+              {isSupportDelegation
+                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a>)
         }
@@ -114,7 +117,7 @@ function Layout () {
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
           <GlobalSearchBar />
-          {isSupport && isMspVar &&
+          {showMspHomeButton &&
             <MspTenantLink to='/dashboard'>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
