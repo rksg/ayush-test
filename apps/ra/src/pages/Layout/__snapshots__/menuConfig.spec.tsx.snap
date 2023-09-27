@@ -210,6 +210,54 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
             "label": Array [
               Object {
                 "type": 0,
@@ -495,6 +543,54 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -904,6 +1000,54 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
             "label": Array [
               Object {
                 "type": 0,
@@ -1301,6 +1445,54 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
             "label": Array [
               Object {
                 "type": 0,
@@ -1440,6 +1632,54 @@ Array [
 
 exports[`useMenuConfig should not return Analytics-related menu items 1`] = `
 Array [
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
+      },
+    ],
+  },
   Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -1751,6 +1991,54 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -2170,6 +2458,54 @@ Array [
       Object {
         "children": Array [
           Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
             "label": Array [
               Object {
                 "type": 0,
@@ -2565,6 +2901,54 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
