@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   RecommendationDetails,
@@ -8,8 +8,10 @@ import {
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails
-}                                                       from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+} from '@acx-ui/analytics/components'
+import { useUserProfileContext, PERMISSION_VIEW_ANALYTICS, Tenant }      from '@acx-ui/analytics/utils'
+import { showToast }                                                     from '@acx-ui/components'
+import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ClientDetails                 from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum } from './pages/Clients'
@@ -23,13 +25,40 @@ import SearchResults                 from './pages/SearchResults'
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
+function Init () {
+  const { data: user } = useUserProfileContext()
+  const [ search ] = useSearchParams()
+  const tenant = user.tenants?.filter(
+    (tenant: Tenant) => tenant.id === user.accountId
+  )[0]
+  const previousURL = search.get('return')!
+  useEffect(() => {
+    if (user.invitations.length > 0 /*|| user.tenants.length > 1*/) {
+      showToast({ // TODO open account drawer instead
+        type: 'success',
+        content: <div>
+          You have pending invitations,&nbsp;
+          <u><a href='/analytics/profile/tenants' target='_blank' style={{ color: 'white' }}>
+            please click here to view them
+          </a></u>
+        </div>
+      })
+    }
+  })
+  return <Navigate
+    replace
+    to={previousURL
+      ? decodeURIComponent(previousURL)
+      : tenant?.permissions[PERMISSION_VIEW_ANALYTICS]
+        ? `${MLISA_BASE_PATH}/dashboard`
+        : `${MLISA_BASE_PATH}/reports`
+    } />
+}
+
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
-    <Route path='/' element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />} />
-    <Route
-      path={MLISA_BASE_PATH}
-      element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />}
-    />
+    <Route path='/' element={<Init />} />
+    <Route path={MLISA_BASE_PATH} element={<Init />} />
     <Route path={MLISA_BASE_PATH}>
       <Route path='dashboard' element={<Dashboard />} />
       <Route path='recommendations'>
