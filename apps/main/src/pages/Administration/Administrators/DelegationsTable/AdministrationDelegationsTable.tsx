@@ -113,6 +113,15 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       }
     },
     {
+      title: $t({ defaultMessage: 'Email' }),
+      key: 'delegatedToAdmin',
+      dataIndex: 'delegatedToAdmin',
+      sorter: { compare: sortProp('delegatedToAdmin', defaultSort) },
+      render: (_, row) => {
+        return row.delegatedToAdmin
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'status',
