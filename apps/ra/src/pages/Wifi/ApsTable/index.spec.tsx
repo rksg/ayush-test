@@ -1,27 +1,15 @@
-import { rest } from 'msw'
-
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, dataApiSearchURL }   from '@acx-ui/store'
+import { Provider, dataApiSearchURL } from '@acx-ui/store'
 import {
-  logRoles,
   mockGraphqlQuery,
-  mockServer,
   render,
-  screen
+  screen,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import useApsTable from '.'
-
-jest.mock('@acx-ui/rc/components', () => {
-  const { forwardRef } = jest.requireActual('react')
-  return {
-    ...jest.requireActual('@acx-ui/rc/components'),
-    ApTable: forwardRef(() => <div data-testid={'ApTable'}></div>)
-  }
-})
+import { APList } from '.'
 
 describe('AP List Table', () => {
-  const apList = {
+  const apList = { search: {
     aps: [
       {
         apName: 'AL-Guest-R610',
@@ -123,60 +111,16 @@ describe('AP List Table', () => {
       }
     ]
   }
+  }
 
-  // beforeEach(() => {
-  //   mockServer.use(
-  //     rest.post(
-  //       CommonUrlsInfo.getApsList.url,
-  //       (req, res, ctx) => res(ctx.json(list))
-  //     ),
-  //     rest.post(
-  //       WifiUrlsInfo.addAp.url,
-  //       (req, res, ctx) => res(ctx.json({
-  //         txId: 'f83cdf6e-df01-466d-88ba-58e2f2c211c6'
-  //       }))
-  //     ),
-  //     rest.post(
-  //       WifiUrlsInfo.getApGroupsList.url,
-  //       (req, res, ctx) => res(ctx.json({ data: [] }))
-  //     ),
-  //     rest.post(
-  //       CommonUrlsInfo.getVenuesList.url,
-  //       (req, res, ctx) => res(ctx.json({ data: [] }))
-  //     )
-  //   )
-  // })
-
-  it('should render page correctly', async () => {
+  it('should render the ap table correctly', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: apList
     })
-    const Component = () => {
-      const { component } = useApsTable()
-      return component
-    }
 
-    const { container } = render(<Component/>, { wrapper: Provider, route: {} })
-    screen.logTestingPlaygroundURL(container)
-    logRoles(container)
-    expect(screen.getByText(/ap name/i)).toBeVisible()
+    render(<APList/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByText(/AL-Guest-R610/i)).toBeVisible()
   })
 
-  // it('should render title with count correctly', async () => {
-  //   const Title = () => {
-  //     const { title } = useApsTable()
-  //     return <span>{title}</span>
-  //   }
-  //   render(<Title/>, { wrapper: Provider, route: {} })
-  //   expect(await screen.findByText('AP List (2)')).toBeVisible()
-  // })
-
-  // it.skip('should render extra header correctly', async () => {
-  //   const Component = () => {
-  //     const { headerExtra } = useApsTable()
-  //     return <span>{headerExtra}</span>
-  //   }
-  //   render(<Component/>, { wrapper: Provider, route: {} })
-  //   expect(await screen.findByText('Add')).toBeVisible()
-  // })
 })
