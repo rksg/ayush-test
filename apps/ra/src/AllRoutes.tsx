@@ -9,7 +9,7 @@ import {
   VideoCallQoeForm,
   VideoCallQoeDetails
 } from '@acx-ui/analytics/components'
-import { useUserProfileContext, PERMISSION_VIEW_ANALYTICS, Tenant }      from '@acx-ui/analytics/utils'
+import { useUserProfileContext, PERMISSION_VIEW_ANALYTICS }              from '@acx-ui/analytics/utils'
 import { showToast }                                                     from '@acx-ui/components'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
@@ -28,9 +28,6 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function Init () {
   const { data: user } = useUserProfileContext()
   const [ search ] = useSearchParams()
-  const tenant = user.tenants?.filter(
-    (tenant: Tenant) => tenant.id === user.accountId
-  )[0]
   const previousURL = search.get('return')!
   useEffect(() => {
     if (user.invitations.length > 0 /*|| user.tenants.length > 1*/) {
@@ -49,7 +46,7 @@ function Init () {
     replace
     to={previousURL
       ? decodeURIComponent(previousURL)
-      : tenant?.permissions[PERMISSION_VIEW_ANALYTICS]
+      : user.permissions[PERMISSION_VIEW_ANALYTICS]
         ? `${MLISA_BASE_PATH}/dashboard`
         : `${MLISA_BASE_PATH}/reports`
     } />

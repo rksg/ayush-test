@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext } from 'react'
 
-import { UserProfile }    from './types'
-import { setUserProfile } from './userProfile'
+import { Tenant, UserProfile } from './types'
+import { setUserProfile }      from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile
@@ -13,6 +13,10 @@ export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: { profile: UserProfile, children: ReactNode }) {
   const { profile, children } = props
-  setUserProfile(profile)
-  return <UserProfileContext.Provider value={{ data: profile }} children={children} />
+  const permissions = profile.tenants?.filter(
+    (tenant: Tenant) => tenant.id === profile.accountId
+  )[0]!.permissions
+  const data = { ...profile, permissions }
+  setUserProfile(data)
+  return <UserProfileContext.Provider value={{ data }} children={children} />
 }

@@ -7,6 +7,7 @@ export type UserProfile = {
   userId: string
   invitations: Tenant[]
   tenants: Tenant[]
+  permissions: Permissions
 }
 
 export type Tenant = {
@@ -33,6 +34,7 @@ export type Permissions = {
   'manage-label': boolean
   'manage-tenant-settings': boolean
   'manage-config-recommendation': boolean
+  'franchisor': boolean
 }
 
 export type Settings = {

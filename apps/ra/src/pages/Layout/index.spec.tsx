@@ -7,6 +7,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useUserProfileContext: () => ({ data: {
     accountId: '0015000000GlI7SAAV',
+    permissions: {},
     tenants: [
       { id: '0012h00000NrljgAAB', name: 'Company 1' },
       { id: '0015000000GlI7SAAV', name: 'Company 2' }

@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import {
   useUserProfileContext,
-  Tenant,
   PERMISSION_VIEW_ANALYTICS,
   PERMISSION_VIEW_DATA_EXPLORER,
   PERMISSION_MANAGE_SERVICE_GUARD,
@@ -30,13 +29,7 @@ import {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const tenant = userProfile?.tenants?.filter(
-    // Hardcoded to current account for now
-    (tenant : Tenant) => tenant.id === userProfile?.accountId
-  )[0]
-  const currentAccountPermissions = tenant?.permissions
-  const currentAccountSetting = tenant?.settings
-
+  const currentAccountPermissions = userProfile.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =
@@ -52,7 +45,7 @@ export function useMenuConfig () {
   const hasManageLabelPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_LABEL]
 
-  const hasFranchisorSetting = currentAccountSetting?.[PERMISSION_FRANCHISOR]
+  const hasFranchisorSetting = currentAccountPermissions?.[PERMISSION_FRANCHISOR]
 
   const config: LayoutProps['menuConfig'] = [
     ...(hasViewAnalyticsPermissions ? [

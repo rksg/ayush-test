@@ -28,6 +28,7 @@ const mockUserProfile = {
   accountId: 'accountId',
   firstName: 'firstName',
   lastName: 'lastName',
+  permissions: mockPermissions,
   tenants: [
     { id: 'accountId', permissions: mockPermissions },
     { id: 'accountId2', permissions: [] }
@@ -83,10 +84,12 @@ describe('UserButton', () => {
   })
 
   it('should not render My Profile if view-analytics is false', async () => {
+    const permissions = { ...mockPermissions, 'view-analytics': false }
     const mockUserProfileNotViewAnalytics = {
       ...mockUserProfile,
+      permissions,
       tenants: [
-        { id: 'accountId', permissions: { ...mockPermissions, 'view-analytics': false } }
+        { id: 'accountId', permissions }
       ]
     }
     render(
