@@ -124,15 +124,12 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
-    const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = form.getFieldValue('enableAccountingService')
     const onProxyChange = (value: boolean, fieldName: string) => {
-      setData && setData({ ...data, [fieldName]: value })
+      form.setFieldValue(fieldName, value)
     }
-    useEffect(()=>{
-      form.setFieldsValue(data)
-    },[data])
+
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionMarkCircleOutlined />}
