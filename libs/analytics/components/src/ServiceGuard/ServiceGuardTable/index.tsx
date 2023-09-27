@@ -6,6 +6,7 @@ import { useNavigate }            from 'react-router-dom'
 
 import { sortProp, defaultSort, dateSort }                              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                                        from '@acx-ui/user'
