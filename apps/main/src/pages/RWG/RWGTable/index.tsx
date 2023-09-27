@@ -26,7 +26,7 @@ function useColumns (
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
         return (
-          <TenantLink to={'/'}>
+          <TenantLink to={`/ruckus-wan-gateway/${row.id}/gateway-details/overview`}>
             {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
