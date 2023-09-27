@@ -17,7 +17,7 @@ export  function APList () {
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: 'est'
+    metric: 'traffic'
   })
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [

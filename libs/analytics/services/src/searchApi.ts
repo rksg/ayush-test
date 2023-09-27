@@ -113,16 +113,16 @@ export const searchApi = dataApiSearch.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
     }),
-    apList: build.query<APListResponse, RequestPayload>({
+    apList: build.query<APListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
           $start: DateTime,
           $end: DateTime,
-          $query: String,
+          $metric: String,
           $limit: Int
         ) {
-          search(start: $start, end: $end, query: $query, limit: $limit) {
+          search(start: $start, end: $end, metric: $metric, limit: $limit) {
             aps {
               apName,
               macAddress,
