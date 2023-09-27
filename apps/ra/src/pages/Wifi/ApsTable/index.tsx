@@ -26,10 +26,11 @@ export  function APList () {
       dataIndex: 'apName',
       key: 'apName',
       width: 130,
+      searchable: true,
       sorter: { compare: sortProp('apName', defaultSort) },
-      render: (_, row : AP) => (
+      render: (_, row : AP, __, highlightFn) => (
         <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
-          {row.apName}</TenantLink>
+          {highlightFn(row.apName)}</TenantLink>
       )
     },
     {
@@ -37,6 +38,7 @@ export  function APList () {
       dataIndex: 'macAddress',
       key: 'mac',
       width: 130,
+      searchable: true,
       sorter: { compare: sortProp('macAddress', defaultSort) }
     },
     {
@@ -44,12 +46,14 @@ export  function APList () {
       dataIndex: 'apModel',
       key: 'apModel',
       width: 80,
+      searchable: true,
       sorter: { compare: sortProp('apModel', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
+      searchable: true,
       width: 100,
 
       sorter: { compare: sortProp('ipAddress', defaultSort) }
@@ -59,7 +63,7 @@ export  function APList () {
       width: 90,
       dataIndex: 'version',
       key: 'version',
-
+      searchable: true,
       sorter: { compare: sortProp('version', defaultSort) }
     },
     {
