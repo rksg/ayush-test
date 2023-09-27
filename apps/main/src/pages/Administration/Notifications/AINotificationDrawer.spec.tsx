@@ -62,6 +62,10 @@ const MockDrawer = () => {
 }
 
 describe('IncidentNotificationDrawer', () => {
+  beforeEach(() => {
+    // this is needed since rtk caches responses across test calls in store...
+    store.dispatch(notificationApi.util.resetApiState())
+  })
   afterEach(() => {
     mockSetShowDrawer.mockClear()
     mockedPrefMutation.mockClear()
@@ -69,8 +73,6 @@ describe('IncidentNotificationDrawer', () => {
     mockServer.resetHandlers()
     mockServer.restoreHandlers()
     jest.mocked(useIsSplitOn).mockClear()
-    // this is needed since rtk caches responses across test calls in store...
-    store.dispatch(notificationApi.util.resetApiState())
     cleanup()
   })
   it('should render drawer open & close correctly', async () => {
