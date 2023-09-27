@@ -259,7 +259,7 @@ export function RadioSettingsChannels320Mhz (props: {
       onChange={handleClick160MhzGroupChannels}
       value={complexGroupChannelState.enabledCheckbox}
     >
-      <div style={{ marginTop: '10px' }}>
+      <div style={{ marginTop: '10px', width: '1150px' }}>
         <Row style={
           { height: '30px' }}>
           <Col span={2}>

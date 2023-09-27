@@ -9,13 +9,12 @@ import { useIntl } from 'react-intl'
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
+import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus,
-  isAPLowPower
+  ApStatus
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
