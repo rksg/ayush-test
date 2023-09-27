@@ -97,13 +97,17 @@ export function ServiceGuardTable () {
         navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
       },
       disabled: ([selectedRow]) => {
+        if (get('IS_MLISA_SA')) return true
         return selectedRow?.userId === userProfile?.externalId
           ? false
           : true
       },
-      tooltip: ([selectedRow]) => selectedRow?.userId === userProfile?.externalId
-        ? undefined
-        : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
+      tooltip: ([selectedRow]) => {
+        if (get('IS_MLISA_SA')) return undefined
+        return selectedRow?.userId === userProfile?.externalId
+          ? undefined
+          : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
+      }
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { get }                          from '@acx-ui/config'
 import { serviceGuardApiURL, Provider } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -16,6 +17,8 @@ import * as fixtures            from '../__tests__/fixtures'
 import { ServiceGuardTableRow } from '../services'
 
 import { ServiceGuardTable, lastResultSort } from '.'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -196,6 +199,23 @@ describe('Service Validation Table', () => {
     })
     it('should return 0 when comparing undefined', () => {
       expect(lastResultSort(row3, row3)).toEqual(0)
+    })
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('disable edit button for now', async () => {
+      mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
+        { data: fixtures.fetchAllServiceGuardSpecs })
+      render(<ServiceGuardTable/>, {
+        wrapper: Provider,
+        route: { params: { tenantId: 'tenant-id' } }
+      })
+      const radio = await screen.findAllByRole('radio')
+
+      await userEvent.click(radio[0])
+      expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()
     })
   })
 })

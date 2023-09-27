@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { get }                              from '@acx-ui/config'
 import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, serviceGuardApiURL }     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
@@ -9,6 +10,8 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import * as fixtures from './__tests__/fixtures'
 
 import { useServiceGuard } from '.'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 describe('Service Validation', () => {
   beforeEach(() => {
@@ -52,5 +55,18 @@ describe('Service Validation', () => {
     const input = await screen.findByPlaceholderText('Search Test Name')
     await userEvent.type(input, 'anything')
     expect(await screen.findByText('Service Validation (0)')).toBeVisible()
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('disable create test button', async () => {
+      const Component = () => {
+        const { headerExtra } = useServiceGuard()
+        return <span>{headerExtra}</span>
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
+      expect(await screen.findByRole('button', { name: 'Create Test' })).toBeDisabled()
+    })
   })
 })
