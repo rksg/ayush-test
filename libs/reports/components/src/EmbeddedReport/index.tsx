@@ -6,6 +6,7 @@ import moment                                from 'moment'
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import { RadioBand, Loader }                  from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import {
   useGuestTokenMutation,
@@ -15,6 +16,7 @@ import { useReportsFilter }                        from '@acx-ui/reports/utils'
 import { REPORT_BASE_RELATIVE_URL }                from '@acx-ui/store'
 import { getUserProfile as getUserProfileR1 }      from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath } from '@acx-ui/utils'
+import {  useLocaleContext }                       from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
@@ -134,6 +136,12 @@ export function EmbeddedReport (props: ReportProps) {
   const { firstName, lastName, email } = get('IS_MLISA_SA')
     ? getUserProfileRA()
     : getUserProfileR1().profile
+  const i18nDataStudioEnabled = useIsSplitOn(Features.I18N_DATA_STUDIO_TOGGLE)
+  const defaultLocale = 'en'
+  const localeContext = useLocaleContext()
+  const locale = i18nDataStudioEnabled
+    ? localeContext.messages?.locale ?? defaultLocale
+    : defaultLocale
 
   /**
    * Hostname - Backend service where superset is running.
@@ -145,7 +153,9 @@ export function EmbeddedReport (props: ReportProps) {
     process.env['NODE_ENV'] === 'development'
       ? get('IS_MLISA_SA')
         ? 'https://staging.mlisa.io'
+        // ? 'https://local.mlisa.io'
         : 'https://dev.ruckus.cloud'
+        // : 'https://alto.local.mlisa.io'
       : window.location.origin // Production
 
   useEffect(() => {
@@ -181,8 +191,7 @@ export function EmbeddedReport (props: ReportProps) {
           '"__time"',
           '<',
           `'${convertDateTimeToSqlFormat(endDate)}'`,
-          'AND',
-          `'${params?.tenantId}' = '${params?.tenantId}'`
+          ...(params?.tenantId ? ['AND', `'${params?.tenantId}' = '${params?.tenantId}'`] : [])
         ].join(' ')
       },
       ...(networkClause || radioBandClause || rlsClause
@@ -230,7 +239,8 @@ export function EmbeddedReport (props: ReportProps) {
           hideTitle: hideHeader ?? true
         },
         // debug: true
-        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
+        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
+        locale // i18n locale from R1
       })
       embeddedObj.then(async (embObj) => {
         timer = setInterval(async () => {

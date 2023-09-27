@@ -1,13 +1,22 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
+import {
+  PageHeader,
+  Tabs,
+  TimeRangeDropDownProvider,
+  TimeRangeDropDown
+} from '@acx-ui/components'
 import { get }                        from '@acx-ui/config'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { DateRange }                  from '@acx-ui/utils'
 
-import { useConfigChange } from '../ConfigChange'
+import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
+import { NetworkFilter }   from '../NetworkFilter'
+import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
 
@@ -44,7 +53,17 @@ const useTabs = () : Tab[] => {
   const configChangeTab = {
     key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
-    ...useConfigChange()
+    component: <ConfigChange/>,
+    headerExtra: [
+      get('IS_MLISA_SA')
+        ? <SANetworkFilter />
+        : <NetworkFilter
+          key={getShowWithoutRbacCheckKey('network-filter')}
+          shouldQuerySwitch={true}
+          withIncidents={false}
+        />,
+      <TimeRangeDropDown/>
+    ]
   }
   const videoCallQoeTab = {
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,
@@ -54,7 +73,7 @@ const useTabs = () : Tab[] => {
     healthTab,
     serviceGuardTab,
     ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : []),
-    ...(get('IS_MLISA_SA') || videoCallQoeEnabled ? [videoCallQoeTab] : [])
+    ...(!get('IS_MLISA_SA') && videoCallQoeEnabled ? [videoCallQoeTab] : [])
   ]
 }
 
@@ -69,7 +88,7 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
     })
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[DateRange.last7Days, DateRange.last30Days]}>
     <PageHeader
       title={$t({ defaultMessage: 'Network Assurance' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
@@ -81,5 +100,5 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
       extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }

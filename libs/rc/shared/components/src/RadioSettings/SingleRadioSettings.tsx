@@ -8,6 +8,7 @@ import { useIntl }                from 'react-intl'
 
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -17,6 +18,7 @@ import {
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
+import { LowPowerBannerAndModal }   from './LowPowerBannerAndModal'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -61,7 +63,8 @@ export function SingleRadioSettings (props:{
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any
+  supportDfsChannels?: any,
+  lowPowerAPs?: LowPowerAPQuantity
 }) {
 
   const { $t } = useIntl()
@@ -71,7 +74,9 @@ export function SingleRadioSettings (props:{
     inherit5G = false,
     context = 'venue',
     isUseVenueSettings = false,
-    testId } = props
+    testId,
+    lowPowerAPs
+  } = props
 
   const {
     radioType,
@@ -144,16 +149,14 @@ export function SingleRadioSettings (props:{
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels,
-    combinChannels,
-    channelBandwidth320MhzGroup
+    combinChannels
   ] = [
     useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
     useWatch<string[]>(allowedOutdoorChannelsFieldName),
-    useWatch<boolean>(combinChannelsFieldName),
-    useWatch<string>(channelBandwidth320MhzGroupFieldName)
+    useWatch<boolean>(combinChannelsFieldName)
   ]
 
   useEffect(() => {
@@ -178,16 +181,6 @@ export function SingleRadioSettings (props:{
     if (channelBandwidth !== 'AUTO' &&
         !bandwidthOptions.find(option => option.value === channelBandwidth)) {
       form.setFieldValue(channelBandwidthFieldName, 'AUTO')
-    }
-
-    if (radioType === ApRadioTypeEnum.Radio6G) {
-      if (channelBandwidth === '320MHz' && channelMethod === 'MANUAL') {
-        if (!channelBandwidth320MhzGroup || channelBandwidth320MhzGroup === 'AUTO') {
-          form.setFieldValue(channelBandwidth320MhzGroupFieldName, '320MHz-1')
-        }
-      } else {
-        form.setFieldValue(channelBandwidth320MhzGroupFieldName, 'AUTO')
-      }
     }
 
     const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -389,6 +382,12 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
+        {
+          (lowPowerAPs && lowPowerAPs?.lowPowerAPCount > 0 && context === 'venue') &&
+            <LowPowerBannerAndModal
+              parent={'venue'}
+              lowPowerAPs={lowPowerAPs} />
+        }
         <Row gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm

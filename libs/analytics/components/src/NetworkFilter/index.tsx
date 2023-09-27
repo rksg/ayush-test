@@ -38,7 +38,7 @@ type ConnectedNetworkFilterProps = {
     defaultRadioBand?: RadioBand[],
     isRadioBandDisabled?: boolean,
     radioBandDisabledReason?: string
-   }
+  }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>

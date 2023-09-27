@@ -26,7 +26,7 @@ function useColumns (
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
         return (
-          <TenantLink to={'/'}>
+          <TenantLink to={`/ruckus-wan-gateway/${row.id}/gateway-details/overview`}>
             {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
@@ -78,7 +78,11 @@ function useColumns (
       filterable: filterables ? filterables['venueName'] : false,
       sorter: { compare: sortProp('venueName', defaultSort) },
       render: function (_, row) {
-        return row.venueName
+        return (
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+            {row.venueName}
+          </TenantLink>
+        )
       }
     }
   ]
@@ -146,9 +150,8 @@ export function RWGTable () {
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
-    },
-    disabled: true // TODO
+      navigate(`${selectedRows[0].id}/edit`, { replace: false })
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -185,7 +188,7 @@ export function RWGTable () {
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
         extra={filterByAccess([
           <TenantLink to='/ruckus-wan-gateway/add'>
-            <Button disabled type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
         ])}
       />

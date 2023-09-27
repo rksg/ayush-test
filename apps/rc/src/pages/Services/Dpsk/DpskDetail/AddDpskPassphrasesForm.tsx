@@ -29,7 +29,7 @@ import {
   validateVlanId
 } from '@acx-ui/rc/utils'
 
-import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
+import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES_PER_ADDITION } from '../constants'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'
@@ -52,6 +52,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
@@ -124,7 +125,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         label={$t({
           defaultMessage: 'Number of Passphrases (Up to {maximum} passphrases)'
         }, {
-          maximum: MAX_PASSPHRASES
+          maximum: MAX_PASSPHRASES_PER_ADDITION
         })}
         name='numberOfPassphrases'
         initialValue={1}
@@ -133,9 +134,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           {
             type: 'number',
             min: 1,
-            max: MAX_PASSPHRASES,
+            max: MAX_PASSPHRASES_PER_ADDITION,
             // eslint-disable-next-line max-len
-            message: $t({ defaultMessage: 'Number of Passphrases must be between 1 and {max}' }, { max: MAX_PASSPHRASES })
+            message: $t({ defaultMessage: 'Number of Passphrases must be between 1 and {max}' }, { max: MAX_PASSPHRASES_PER_ADDITION })
           }
         ]}
         children={<InputNumber />}
@@ -257,7 +258,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         ]}
         children={<Input />}
       />
-      {isMacAddressEnabled() &&
+      {isMacAddressEnabled() && !isNewConfigFlow &&
         <Form.Item
           label={
             <>
@@ -325,7 +326,8 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           label={$t({ defaultMessage: 'Contact Email Address' })}
           name='email'
           rules={[
-            { validator: (_, value) => emailRegExp(value) }
+            { validator: (_, value) => emailRegExp(value) },
+            { max: 255 }
           ]}
           children={<Input placeholder={$t({ defaultMessage: 'Enter email address' })} />}
         />
@@ -338,8 +340,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           children={
             <PhoneInput
               name={'phoneNumber'}
-              callback={(value) => form.setFieldValue('phoneNumber', value)}
-              onTop={true}
+              callback={value => {
+                form.setFieldValue('phoneNumber', value)
+                form.validateFields(['phoneNumber'])
+              }}
+              onTop={false}
             />
           }
         />

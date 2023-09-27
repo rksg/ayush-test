@@ -34,18 +34,18 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
+import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
-  useVenuesListQuery,
   useConvertToStackMutation,
   useSaveSwitchMutation,
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
   useLazyGetStackMemberListQuery,
-  useLazyGetSwitchListQuery
+  useLazyGetSwitchListQuery,
+  useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   Switch,
@@ -80,10 +80,9 @@ import {
 } from './styledComponents'
 
 const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
+  firmwareType: '',
+  firmwareVersion: '',
+  search: '', updateAvailable: ''
 }
 
 export function StackForm () {
@@ -99,7 +98,7 @@ export function StackForm () {
   const isStackSwitches = stackSwitches?.length > 0
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
-    useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
+  useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
@@ -119,6 +118,7 @@ export function StackForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
+  const [currentFW, setCurrentFw] = useState('')
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
@@ -144,7 +144,7 @@ export function StackForm () {
         })) ?? []
       )
     }
-    if (switchData && switchDetail) {
+    if (switchData && switchDetail && venuesList) {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
@@ -156,6 +156,11 @@ export function StackForm () {
         isOperationalSwitch(
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
+
+      const switchFw = switchData.firmwareVersion
+      const venueFw = venuesList.data.find(
+        venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+      setCurrentFw(switchFw || venueFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModule',
@@ -194,11 +199,11 @@ export function StackForm () {
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
           (item: { id: string; model: undefined }, index: number) => {
-            const key: number = _.get(item, 'unitId') || (index + 1)
+            const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
               formRef?.current?.setFieldValue('active', key)
-              setActiveRow(key.toString())
+              setActiveRow(key)
             }
             setVisibleNotification(true)
             return {
@@ -214,12 +219,7 @@ export function StackForm () {
           })
 
         setTableData(stackMembers)
-        const largestRowKey = stackMembers.reduce(
-          (maxUnitId: number, currentItem: { unitId: number }) => {
-            const unitId = currentItem.unitId
-            return unitId > maxUnitId ? unitId : maxUnitId
-          }, stackMembers.length)
-        setRowKey(largestRowKey)
+        setRowKey(stackMembers.length)
       }
 
       getStackMembersList()
@@ -297,7 +297,6 @@ export function StackForm () {
 
   const handleAddRow = () => {
     const newRowKey = rowKey + 1
-    formRef.current?.resetFields([`serialNumber${newRowKey}`])
     setRowKey(newRowKey)
     setTableData([
       ...tableData,
@@ -418,14 +417,8 @@ export function StackForm () {
     }
   }
 
-  const handleDelete = (index: number, row: SwitchTable) => {
-    const tmpTableData = tableData.filter((item) => item.key !== row.key)
-    const largestKey: number = tmpTableData.reduce((maxKey, currentItem) => {
-      const key: number = parseInt(currentItem.key, 10)
-      return key > maxKey ? key : maxKey
-    }, tmpTableData.length)
-    setRowKey(largestKey)
-    setTableData(tmpTableData)
+  const handleDelete = (row: SwitchTable) => {
+    setTableData(tableData.filter((item) => item.key !== row.key))
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
@@ -488,8 +481,8 @@ export function StackForm () {
       }
     },
     {
-      dataIndex: 'key',
-      key: 'key',
+      dataIndex: 'unitId',
+      key: 'unitId',
       showSorterTooltip: false,
       show: editMode
     },
@@ -562,9 +555,14 @@ export function StackForm () {
       show: !editMode,
       render: function (_, row) {
         return (
-          <Form.Item name={'active'}>
+          <Form.Item name={`active${row.key}`} initialValue={activeRow}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
-              <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
+              <Radio
+                data-testid={`active${row.key}`}
+                key={row.key}
+                value={row.key}
+                checked={activeRow === row.key}
+              />
             </Radio.Group>
           </Form.Item>
         )
@@ -573,7 +571,7 @@ export function StackForm () {
     {
       key: 'action',
       dataIndex: 'action',
-      render: (_, row, index) => (
+      render: (_, row) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -588,7 +586,7 @@ export function StackForm () {
           }
           disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
           hidden={row.disabled}
-          onClick={() => handleDelete(index, row)}
+          onClick={() => handleDelete(row)}
         />
       )
     }
@@ -602,7 +600,7 @@ export function StackForm () {
     return (
       venueId &&
       list &&
-      list.map((item) => ({
+      list.map((item: { vlanId: number }) => ({
         label: item.vlanId,
         value: item.vlanId
       }))
@@ -613,6 +611,19 @@ export function StackForm () {
     const options = (await getApGroupOptions(value)) || []
     if (options.length === 0) {
       formRef.current?.setFieldValue('initialVlanId', null)
+    }
+
+    if(venuesList){
+      const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      setCurrentFw(venueFw || '')
+
+      const switchModel =
+        getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+        (venueFw?.includes('09010h') ? 4 : 2) :
+        (venueFw?.includes('09010h') ? 8 : 4))
+
+      setTableData(tableData.splice(0, miniMembers))
     }
     setApGroupOption(options as DefaultOptionType[])
   }
@@ -664,16 +675,18 @@ export function StackForm () {
     }
 
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < 2
+      return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
     } else {
-      return tableData.length < 4
+      return tableData.length < (currentFW.includes('09010h') ? 8 : 4)
     }
   }
 
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-    return switchModel?.includes('ICX7150') ? 2 : 4
+    return switchModel?.includes('ICX7150') ?
+      (currentFW.includes('09010h') ? 4 : 2) :
+      (currentFW.includes('09010h') ? 8 : 4)
   }
 
   return (

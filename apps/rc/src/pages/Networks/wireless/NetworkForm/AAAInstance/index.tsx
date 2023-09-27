@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
 import { get }                 from 'lodash'
@@ -9,7 +9,8 @@ import { Tooltip, PasswordInput }          from '@acx-ui/components'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 
-import * as contents from '../contentsMap'
+import * as contents      from '../contentsMap'
+import NetworkFormContext from '../NetworkFormContext'
 
 import AAAPolicyModal from './AAAPolicyModal'
 const radiusType: { [key:string]:string }={
@@ -28,6 +29,8 @@ const AAAInstance = (props:{
   const aaaServices = aaaListQuery?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [aaaList, setAaaList]= useState(aaaServices)
   const [aaaData, setAaaData]= useState([] as AAATempType[])
+  const { data, setData } = useContext(NetworkFormContext)
+
   useEffect(()=>{
     if(aaaListQuery?.data){
       setAaaData([...aaaListQuery.data])
@@ -35,6 +38,16 @@ const AAAInstance = (props:{
         .map(m => ({ label: m.name, value: m.id })))
     }
   },[aaaListQuery])
+
+  useEffect(() => {
+    if (radiusValue && radiusValue.name) {
+      setData && setData({
+        ...data,
+        [props.type]: radiusValue
+      })
+    }
+
+  }, [radiusValue])
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>

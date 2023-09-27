@@ -1,53 +1,47 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Menu, MenuProps, Space } from 'antd'
-import { ItemType }               from 'antd/lib/menu/hooks/useItems'
-import { useIntl }                from 'react-intl'
-
-import type { ConfigChange as ConfigChangeType }                  from '@acx-ui/components'
-import { GridRow, GridCol, Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { getShowWithoutRbacCheckKey }                             from '@acx-ui/user'
-import { DateRange, dateRangeMap }                                from '@acx-ui/utils'
-
-import { NetworkFilter }   from '../NetworkFilter'
-import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
+import {
+  ConfigChange as ConfigChangeType,
+  useDateRange,
+  GridRow,
+  GridCol
+} from '@acx-ui/components'
+import { get } from '@acx-ui/config'
 
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
 import { KPIs }                 from './KPI'
 import { Table }                from './Table'
 
-export function useConfigChange () {
-  const { $t } = useIntl()
+export function ConfigChange () {
   const isMLISA = get('IS_MLISA_SA')
 
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
+  const [legend, setLegend] = useState<Record<string, boolean>>({})
   const [initialZoom, setInitialZoom] = useState<{
     start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10
   })
-  const [ dateRange, setDateRange ] = useState<DateRange>(DateRange.last7Days)
+  const { selectedRange: dateRange } = useDateRange()
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
+  useEffect(() => {
     setPagination({
       current: 1,
       pageSize: 10
     })
     setSelected(null)
-    setDateRange(e.key as DateRange)
-  }
+  }, [dateRange])
 
   const onDotClick = (params: ConfigChangeType) => {
     setSelected(params)
     setDotSelect(selected?.id ?? null)
     setPagination((prevPagination) => ({
       ...prevPagination,
-      current: Math.ceil((params.id! + 1) / prevPagination.pageSize)
+      current: Math.ceil((params.filterId! + 1) / prevPagination.pageSize)
     }))
   }
   const onRowClick = (params: ConfigChangeType) => {
@@ -55,31 +49,7 @@ export function useConfigChange () {
     setChartZoom(initialZoom)
   }
 
-  const headerExtra = [
-    isMLISA
-      ? <SANetworkFilter />
-      : <NetworkFilter
-        key={getShowWithoutRbacCheckKey('network-filter')}
-        shouldQuerySwitch={true}
-        withIncidents={false}
-      />,
-    <Dropdown
-      key={getShowWithoutRbacCheckKey('date-dropdown')}
-      overlay={<Menu
-        onClick={handleMenuClick}
-        items={[DateRange.last7Days, DateRange.last30Days
-        ].map((key)=>({ key, label: $t(dateRangeMap[key]) })) as ItemType[]}
-      />}>{() =>
-        <Button>
-          <Space>
-            {dateRange}
-            <CaretDownSolidIcon />
-          </Space>
-        </Button>
-      }</Dropdown>
-  ]
-
-  const component = <ConfigChangeProvider dateRange={dateRange} setDateRange={setDateRange}>
+  return <ConfigChangeProvider dateRange={dateRange}>
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
         <Chart
@@ -88,6 +58,10 @@ export function useConfigChange () {
           chartZoom={chartZoom}
           setChartZoom={setChartZoom}
           setInitialZoom={setInitialZoom}
+          setLegend={setLegend}
+          legend={legend}
+          setSelectedData={setSelected}
+          setPagination={setPagination}
         />
       </GridCol>
       <GridCol col={{ span: 8 }}><KPIs/></GridCol>
@@ -98,10 +72,9 @@ export function useConfigChange () {
           pagination={pagination}
           setPagination={setPagination}
           dotSelect={dotSelect}
+          legend={legend}
         />
       </GridCol>
     </GridRow>
   </ConfigChangeProvider>
-
-  return { headerExtra, component }
 }

@@ -45,7 +45,7 @@ describe('AllRoutes', () => {
   it('should render video call qoe correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/videoCallQoe' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('NetworkAssurance')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
   })
   it('should render video call qoe details correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/videoCallQoe/id' }, wrapper: Provider })

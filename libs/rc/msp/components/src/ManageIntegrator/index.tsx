@@ -821,21 +821,16 @@ export function ManageIntegrator () {
             </Select>
           }
         />
-        <Form.Item
-          name='service_expiration_date'
-          label=''
-          children={
-            <DatePicker
-              format={formatter(DateFormatEnum.DateFormat)}
-              disabled={!customDate}
-              defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-              onChange={expirationDateOnChange}
-              disabledDate={(current) => {
-                return current && current < moment().endOf('day')
-              }}
-              style={{ marginLeft: '4px' }}
-            />
-          }
+        <DatePicker
+          format={formatter(DateFormatEnum.DateFormat)}
+          allowClear={false}
+          disabled={!customDate}
+          defaultValue={moment(subscriptionEndDate)}
+          onChange={expirationDateOnChange}
+          disabledDate={(current) => {
+            return current && current < moment().endOf('day')
+          }}
+          style={{ marginLeft: '4px' }}
         />
       </UI.FieldLabeServiceDate></div>
   }
