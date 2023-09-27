@@ -69,7 +69,7 @@ describe('ImpactedClientsTable', () => {
       data: {
         network: {
           hierarchyNode: {
-            impactedClients: range(0, 101).map(() => {
+            impactedClients: range(0, 11).map(() => {
               return {
                 mac: uniqueId(),
                 manufacturer: 'Intel Corporate',

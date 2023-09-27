@@ -135,7 +135,7 @@ export const ImpactedClientsTable = ({
       </TableHeading>
       <Table
         columns={columns}
-        dataSource={queryResults.data as ImpactedClient[]}
+        dataSource={(queryResults.data)?.slice(0, topImpactedClientLimit) as ImpactedClient[]}
         rowKey='id'
         type='compactBordered'
       />
