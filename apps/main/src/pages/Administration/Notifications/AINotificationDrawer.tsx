@@ -130,7 +130,7 @@ export const AINotificationDrawer = ({
   const [updatePrefrences] = useSetNotificationMutation()
   const priorities = useIncidentsList(state)
   const recommendations = useRecommendationList(recState)
-  const allowRecommandations = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
+  const allowRecommandations = useIsSplitOn(Features.RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE)
   const title =
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'Set your AI notification preferences. These notifications are only sent through email:' })
