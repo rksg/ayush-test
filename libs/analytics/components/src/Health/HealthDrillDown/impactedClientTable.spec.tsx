@@ -98,6 +98,7 @@ describe('ImpactedClientsTable', () => {
       }
     )
     expect(await screen.findByText('Top 10 Impacted Clients')).toBeVisible()
+    expect(await screen.findAllByText('Intel Corporate')).toHaveLength(10)
   })
 })
 
