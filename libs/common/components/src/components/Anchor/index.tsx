@@ -33,14 +33,6 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
     navigate({ pathname: `${location.pathname}`, hash: hash })
   }
 
-  useEffect(()=>{
-    if (location.hash) {
-      setTimeout(() =>
-        anchorRef?.current?.handleScrollTo(`${location.hash}`)
-      , 500)
-    }
-  }, [])
-
   return <Row gutter={20}>
     <AnchorLayoutSidebar span={4}
       $offsetTop={offsetTop + layout.pageHeaderY}>

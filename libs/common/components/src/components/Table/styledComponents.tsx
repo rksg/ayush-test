@@ -615,7 +615,6 @@ const stickyPagination = css`
     .ant-pagination {
       position: sticky;
       bottom: 0;
-      background-color: rgba(255, 255, 255, 0.8);
       .ant-select-dropdown {
         left: 0 !important;
         top: -204px !important;
