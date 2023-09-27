@@ -1,6 +1,5 @@
 export class PortSettingModel {
   dhcpSnoopingTrust: boolean
-  arpInspectionTrust: boolean
   id: string
   ipsg: boolean
   lldpEnable: boolean
@@ -30,7 +29,6 @@ export class PortSettingModel {
 
   constructor () {
     this.dhcpSnoopingTrust = false
-    this.arpInspectionTrust = false
     this.id = ''
     this.ipsg = false
     this.lldpEnable = false
