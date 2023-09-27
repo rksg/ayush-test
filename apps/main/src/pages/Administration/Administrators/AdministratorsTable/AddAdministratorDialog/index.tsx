@@ -146,7 +146,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         setAuthenticationData(ssoData[0])
       }
     }
-  }, [form])
+  }, [form, tenantAuthenticationData])
 
   return (
     <Modal
