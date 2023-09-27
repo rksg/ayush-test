@@ -18,7 +18,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery, sortProp, defaultSort
+  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery, sortProp, defaultSort, dateSort
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -154,7 +154,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
-      sorter: { compare: sortProp('online', defaultSort) },
+      sorter: { compare: sortProp(isNewConfigFlow ? 'lastConnectedTime' : 'online', dateSort) },
       render: (_, row) => {
         return getOnlineStatus(row)
       }
