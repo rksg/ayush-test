@@ -1,5 +1,9 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Navigate, useSearchParams } from 'react-router-dom'
+
+import { useUserProfileContext } from '@acx-ui/analytics/utils'
+import { showToast }             from '@acx-ui/components'
+import { Provider }              from '@acx-ui/store'
+import { render, screen }        from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -13,11 +17,83 @@ jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  Navigate: jest.fn(() => <div />),
+  useSearchParams: jest.fn(() => [new URLSearchParams()])
+}))
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useUserProfileContext: jest.fn()
+}))
+const profileContext = useUserProfileContext as jest.Mock
 
 describe('AllRoutes', () => {
   beforeEach(() => {
+    profileContext.mockReturnValue({
+      data: {
+        tenants: [],
+        invitations: [],
+        permissions: { 'view-analytics': true }
+      }
+    })
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
+  })
+
+  it('redirects analytics users to dashboard', async () => {
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/dashboard' }, {})
+  })
+
+  it('redirects report users to reports', async () => {
+    profileContext.mockReturnValue({
+      data: {
+        tenants: [],
+        invitations: [],
+        permissions: { 'view-analytics': false }
+      }
+    })
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/reports' }, {})
+  })
+
+  it('shows toast for invitations', async () => {
+    profileContext.mockReturnValue({
+      data: {
+        tenants: [],
+        invitations: ['some invitations'],
+        permissions: { 'view-analytics': false }
+      }
+    })
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(showToast).toHaveBeenCalledWith({
+      content: <div>
+        You have pending invitations,&nbsp;
+        <u>
+          <a
+            href='/analytics/profile/tenants'
+            style={{ color: 'white' }}
+            target='_blank'
+          >
+           please click here to view them
+          </a>
+        </u>
+      </div>,
+      type: 'success'
+    })
+  })
+
+  it('redirects to return url', async () => {
+    const search = new URLSearchParams()
+    search.set('return', '/ai/incidents')
+    jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/incidents' }, {})
   })
 
   it('should render incidents correctly', async () => {
