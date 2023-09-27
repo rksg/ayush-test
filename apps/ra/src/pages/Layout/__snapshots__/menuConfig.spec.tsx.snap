@@ -20,6 +20,59 @@ Array [
     "uri": "/dashboard",
   },
   Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -310,6 +363,59 @@ Array [
       },
     ],
     "uri": "/dashboard",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
   },
   Object {
     "activeIcon": Object {
@@ -704,6 +810,59 @@ Array [
     "uri": "/dashboard",
   },
   Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -1094,6 +1253,59 @@ Array [
       },
     ],
     "uri": "/dashboard",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
   },
   Object {
     "activeIcon": Object {
@@ -1637,6 +1849,59 @@ Array [
     "uri": "/dashboard",
   },
   Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -2001,6 +2266,59 @@ Array [
       },
     ],
     "uri": "/dashboard",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
   },
   Object {
     "activeIcon": Object {
@@ -2403,6 +2721,59 @@ Array [
       },
     ],
     "uri": "/dashboard",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
   },
   Object {
     "activeIcon": Object {

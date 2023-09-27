@@ -19,6 +19,8 @@ import Incidents                     from './pages/Incidents'
 import Layout                        from './pages/Layout'
 import Recommendations               from './pages/Recommendations'
 import SearchResults                 from './pages/SearchResults'
+import { WiFiPage, WifiTabsEnum }    from './pages/Wifi'
+import ApDetails                     from './pages/Wifi/ApDetails'
 import Wired, { AISwitchTabsEnum }   from './pages/Wired'
 import SwitchDetails                 from './pages/Wired/SwitchDetails'
 
@@ -42,6 +44,19 @@ function AllRoutes () {
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
+      </Route>
+      <Route path='wifi'>
+        <Route index={true}
+          element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
+        <Route
+          path='reports/aps'
+          element={<WiFiPage tab={WifiTabsEnum.AP_REPORT} />} />
+        <Route
+          path='reports/airtime'
+          element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
+        <Route
+          path=':apId/details/reports'
+          element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
       <Route path='reports/*' element={<ReportsRoutes />} />

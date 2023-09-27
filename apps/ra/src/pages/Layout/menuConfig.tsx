@@ -27,7 +27,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid,
   SwitchOutlined,
-  SwitchSolid
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -63,6 +64,33 @@ export function useMenuConfig () {
         label: $t({ defaultMessage: 'Dashboard' }),
         inactiveIcon: SpeedIndicatorOutlined,
         activeIcon: SpeedIndicatorSolid
+      }
+    ] : []),
+    ...(hasViewAnalyticsPermissions ? [
+      {
+        label: $t({ defaultMessage: 'Wi-Fi' }),
+        inactiveIcon: WiFi,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Access Points' }),
+            children: [
+              {
+                uri: '/wifi',
+                label: $t({ defaultMessage: 'Access Points List' }),
+                isActiveCheck: new RegExp('^/wifi(?!(/reports))')
+              },
+              {
+                uri: '/wifi/reports/aps',
+                label: $t({ defaultMessage: 'Access Points Report' })
+              },
+              {
+                uri: '/wifi/reports/airtime',
+                label: $t({ defaultMessage: 'Airtime Utilization Report' })
+              }
+            ]
+          }
+        ]
       }
     ] : []),
     ...(hasViewAnalyticsPermissions ? [

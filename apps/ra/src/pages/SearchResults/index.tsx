@@ -42,7 +42,11 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'apName',
       key: 'apName',
       width: 130,
-      sorter: { compare: sortProp('apName', defaultSort) }
+      sorter: { compare: sortProp('apName', defaultSort) },
+      render: (_, row : AP) => (
+        <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
+          {row.apName}</TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
