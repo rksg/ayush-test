@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
 
-import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker, Tabs }                  from '@acx-ui/components'
+import { PageHeader, Tabs }                               from '@acx-ui/components'
 import { ClientTabContext, defaultClientPayload }         from '@acx-ui/rc/components'
 import { useGetClientListQuery, useGetGuestsListQuery }   from '@acx-ui/rc/services'
 import { usePollingTableQuery }                           from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                  from '@acx-ui/utils'
+import { DateRange }                                      from '@acx-ui/utils'
 
 import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
@@ -47,20 +46,6 @@ export interface GuestDateFilter {
 }
 
 const useTabs = () : WirelessTab[] => {
-  const [range, setRange] = useState(DateRange.allTime)
-  const [startDate, setStartDate] = useState(moment(undefined).toString())
-  const [endDate, setEndDate] = useState(moment(undefined).toString())
-  const setDateFilter = function (data: {
-    range: DateRange,
-    startDate?: string,
-    endDate?: string
-  }) {
-    const period = getDateRangeFilter(data.range, data.startDate, data.endDate)
-    setRange(period.range)
-    setStartDate(period.startDate)
-    setEndDate(period.endDate)
-  }
-
   const clientTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: { ...defaultClientPayload },
@@ -105,12 +90,7 @@ const useTabs = () : WirelessTab[] => {
     component: <GuestTabContext.Provider value={{ setGuestCount }}>
       <GuestsTab />
     </GuestTabContext.Provider>,
-    headerExtra: [<RangePicker
-      selectionType={range}
-      showAllTime={true}
-      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      onDateApply={setDateFilter as CallableFunction}
-    />]
+    headerExtra: []
   }
   const wirelessClientReportTab = {
     key: WirelessTabsEnum.CLIENT_REPORT,

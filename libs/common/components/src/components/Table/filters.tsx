@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Checkbox, Select }    from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { Checkbox, Select, DatePicker } from 'antd'
+import { CheckboxChangeEvent }          from 'antd/lib/checkbox'
 import {
   BaseOptionType,
   DefaultOptionType
@@ -18,6 +18,7 @@ import {
 import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
+const { RangePicker } = DatePicker
 
 export interface Filter extends Record<string, FilterValue|null> {}
 
@@ -112,8 +113,9 @@ export function renderFilter <RecordType> (
       }}>{column?.filterComponent?.label}</Checkbox>
   }
 
-  const renderDatepicker = (column: TableColumn<RecordType, 'text'>, intl: IntlShape) => {
+  const DatepickerComp = (column: TableColumn<RecordType, 'text'>, intl: IntlShape) => {
 
+    const [option, setOption] = useState('')
     const timeRange = () => [
       { key: '', text: intl.$t(dateRangeMap[DateRange.allTime]) },
       { key: DateRange.last24Hours, text: intl.$t(dateRangeMap[DateRange.last24Hours]) },
@@ -125,42 +127,57 @@ export function renderFilter <RecordType> (
     const showtimeRangeOptions = timeRange().map(({ key, text }) => ({
       key, value: text
     }))
-    return <UI.FilterSelect
-      key={index}
-      maxTagCount='responsive'
-      mode={column.filterMultiple === false ? undefined : 'multiple'}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onChange={(value: any) => {
-        const ranges = defaultRanges()
-        const range = ranges[value as DateRange]
-        const result = {
-          fromTime: range?.[0] ?? undefined,
-          toTime: range?.[1] ?? undefined
-        }
-        setFilterValues({ ...filterValues, ...result })
-      }}
-      filterOption={filterOption}
-      placeholder={column.title as string}
-      showArrow
-      allowClear
-      style={{ width }}
-    >
-      {showtimeRangeOptions?.map((option, index) =>
-        <Select.Option
-          value={option.key}
-          key={option.key ?? index}
-          data-testid={`option-${option.key}`}
-          title={option.value}
-          children={option.value}
-        />
-      )}
-    </UI.FilterSelect>
+    return <>
+      <UI.FilterSelect
+        key={index}
+        maxTagCount='responsive'
+        mode={column.filterMultiple === false ? undefined : 'multiple'}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange={(value: any) => {
+          setOption(value)
+          const ranges = defaultRanges()
+          const range = ranges[value as DateRange]
+          const result = {
+            fromTime: range?.[0] ?? undefined,
+            toTime: range?.[1] ?? undefined
+          }
+          setFilterValues({ ...filterValues, ...result })
+        }}
+        filterOption={filterOption}
+        placeholder={column.title as string}
+        showArrow
+        allowClear
+        style={{ width }}
+      >
+        {showtimeRangeOptions?.map((option, index) =>
+          <Select.Option
+            value={option.key}
+            key={option.key ?? index}
+            data-testid={`option-${option.key}`}
+            title={option.value}
+            children={option.value}
+          />
+        )}
+      </UI.FilterSelect>
+      {option === DateRange.custom &&
+      <RangePicker
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange={(value: any) => {
+          const result = {
+            fromTime: value?.[0] ?? undefined,
+            toTime: value?.[1] ?? undefined
+          }
+          setFilterValues({ ...filterValues, ...result })
+        }}
+        style={{ width: '220px' }}
+      />}
+    </>
   }
 
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    datepicker: renderDatepicker(column, useIntl())
+    datepicker: DatepickerComp(column, useIntl())
   }
   type Type = keyof typeof filterTypeComp
 
