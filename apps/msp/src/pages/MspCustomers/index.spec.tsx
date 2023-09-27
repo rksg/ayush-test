@@ -536,11 +536,48 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
-  it('should render table for integrator', async () => {
+  it('should render table for installer', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
     const tenantDetails = { tenantType: AccountType.MSP_INSTALLER }
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    expect(screen.queryByText('Integrator')).toBeNull()
+
+    // Assert MSP Admin Count link works
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+  })
+  it('should render table for integrator', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    const tenantDetails = { tenantType: AccountType.MSP_INTEGRATOR }
     rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: tenantDetails }
     })
