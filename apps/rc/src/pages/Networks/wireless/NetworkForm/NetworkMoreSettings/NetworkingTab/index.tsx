@@ -27,11 +27,12 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const labelWidth = '250px'
 
   const agileMultibandTooltipContent = $t({ defaultMessage:
-    `Agile Multiband prioritizes roaming performance in indoor environments,
-     supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
+    `Enabling Agile Multi Band configures the WLAN to send an IE Multi Band Operation announcement 
+    including beacon report, channel non-preference, cellular capability, and association disallow.
+    Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w 
+    are enabled or disabled separately.` })
 
   const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
-  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
@@ -387,23 +388,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
             initialValue={false}
             children={<Switch/>}/>
         </UI.FieldLabel>
-      }
-
-      {dtimFlag &&
-        <Form.Item
-          name={['wlan','advancedCustomization','dtimInterval']}
-          label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
-          initialValue={1}
-          rules={[{
-            type: 'number', max: 255, min: 1,
-            message: $t({
-              defaultMessage:
-                  'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
-            })
-          }]}
-          style={{ marginBottom: '15px', width: '300px' }}
-          children={<InputNumber style={{ width: '150px' }} />}
-        />
       }
 
       {gtkRekeyFlag &&

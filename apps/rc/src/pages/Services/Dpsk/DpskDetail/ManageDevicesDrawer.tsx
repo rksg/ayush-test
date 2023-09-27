@@ -18,7 +18,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery
+  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery, sortProp, defaultSort, dateSort
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -139,7 +139,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: true,
+      sorter: { compare: sortProp('mac', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
@@ -154,7 +154,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
-      sorter: true,
+      sorter: { compare: sortProp(isNewConfigFlow ? 'lastConnectedTime' : 'online', dateSort) },
       render: (_, row) => {
         return getOnlineStatus(row)
       }
@@ -163,7 +163,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'lastConnectedNetwork',
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
-      sorter: true,
+      sorter: { compare: sortProp('lastConnectedNetwork', defaultSort) },
       render: (_, row) => {
         return row.lastConnectedNetwork? <TenantLink
           // eslint-disable-next-line max-len
@@ -274,7 +274,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     dataSource={devicesData?.filter(data => {
       return searchString ? data.mac.toLowerCase().includes(searchString) : true
     })}
-    enableApiFilter={true}
+    enableApiFilter={false}
+    pagination={{ defaultPageSize: 10000, hideOnSinglePage: true }}
     rowKey='mac'
     rowActions={rowActions}
     rowSelection={{ type: 'checkbox' }}

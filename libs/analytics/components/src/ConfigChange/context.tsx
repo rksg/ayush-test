@@ -26,7 +26,6 @@ export function KPIFilterProvider (props: {
 
 export interface ConfigChangeContextType {
   dateRange: DateRange,
-  setDateRange: (dateRange: DateRange) => void,
   timeRanges: moment.Moment[],
   kpiTimeRanges: number[][],
   setKpiTimeRanges: (kpiTimeRanges: number[][]) => void
@@ -37,7 +36,7 @@ export const ConfigChangeContext =
 
 export function ConfigChangeProvider (props: {
   children: ReactElement
-} & Pick<ConfigChangeContextType, 'dateRange' | 'setDateRange'>) {
+} & Pick<ConfigChangeContextType, 'dateRange'>) {
   const timeRanges = defaultRanges()[props.dateRange]!
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([
     [timeRanges[0].valueOf(), timeRanges[0].clone().add(brushPeriod, 'ms').valueOf()],
@@ -47,7 +46,6 @@ export function ConfigChangeProvider (props: {
   const context = {
     dateRange: props.dateRange,
     timeRanges,
-    setDateRange: props.setDateRange,
     kpiTimeRanges,
     setKpiTimeRanges
   }
