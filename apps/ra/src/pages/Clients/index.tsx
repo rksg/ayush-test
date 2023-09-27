@@ -1,10 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { useHeaderExtra }             from '@acx-ui/analytics/components'
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
+import { useHeaderExtra }                                                  from '@acx-ui/analytics/components'
+import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider  } from '@acx-ui/components'
+import { useNavigate, useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType }                                      from '@acx-ui/reports/components'
+import { DateRange }                                                       from '@acx-ui/utils'
 
+import { ClientsList } from './ClientsList'
 
 export enum AIClientsTabEnum {
   CLIENTS = 'users/wifi/clients',
@@ -23,8 +25,7 @@ const useTabs = () : Tab[] => {
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List' }),
-    component: <div>Client list content</div>,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    component: <ClientsList/>
   }
   const reportsTab = {
     key: AIClientsTabEnum.REPORTS,
@@ -42,15 +43,19 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const tabs = useTabs()
+  const TabComp = tabs.find(({ key }) => key === tab)?.component
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
   }
-  const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last24Hours,
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'Wireless' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
@@ -59,9 +64,9 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
+      extra={[<TimeRangeDropDown/>]}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }
 export default AIClients
