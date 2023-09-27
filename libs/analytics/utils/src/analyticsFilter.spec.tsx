@@ -153,7 +153,7 @@ describe('useAnalyticsFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should set path to default when path is health and selected node is switch', () => {
+  it('should set path to default when path is health and selected node is switch for R1', () => {
     const filter = {
       path: [
         { type: 'switchGroup', name: 'switchGroup' }
@@ -168,6 +168,28 @@ describe('useAnalyticsFilter', () => {
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is health and selected node is switch for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, path } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(path)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/health',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <Component />
@@ -263,7 +285,7 @@ describe('getSelectedNodePath', () => {
     })).toEqual([network, { type: 'switchGroup', name: 'Switches' }])
     expect(getSelectedNodePath({
       networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apGroup', name: 'a1' }]]
-    })).toEqual([network, { type: 'zone', name: 'Zone' }]) // TODO , { type: 'apGroup', name: 'a1' }
+    })).toEqual([network, { type: 'zone', name: 'Zone' }, { type: 'apGroup', name: 'a1' }])
     expect(getSelectedNodePath({
       networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apMac', list: ['m1'] }]]
     })).toEqual([network, { type: 'zone', name: 'Zone' }, { type: 'AP', name: 'm1' }])

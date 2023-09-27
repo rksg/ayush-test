@@ -12,8 +12,8 @@ import {
   PropertyUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   mockEnabledNoNSGPropertyConfig,
@@ -69,15 +69,36 @@ const mockPersona: Persona = {
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
   expirationDate: moment().add(-8, 'days').toISOString()
 }
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  onSave: () => void
+  onClose: () => void
+}>
+
+jest.mock('./PropertyUnitDrawer', () => ({
+  PropertyUnitDrawer: ({ onSave, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'PropertyUnitDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSave()
+      }}>Save</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
 
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
 const enableNsgParams = { tenantId, venueId: '23edaec8639a42c89ce0a52143c64f15' }
 const updateUnitFn = jest.fn()
+const getPersonaGroupSpy = jest.fn()
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()
+    getPersonaGroupSpy.mockClear()
 
     mockServer.use(
       rest.get(
@@ -101,6 +122,7 @@ describe('Property Unit Page', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => {
+          getPersonaGroupSpy()
           return res(ctx.json(
             req.params.groupId === 'persona-group-id-noNSG'
               ? mockPersonaGroupWithoutNSG
@@ -142,22 +164,36 @@ describe('Property Unit Page', () => {
       rest.get(
         replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
         (_, res, ctx) => res(ctx.json(mockConnectionMeteringTableResult))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
 
-  it.skip('show render Unit table', async () => {
-    render(<Provider><VenuePropertyTab /></Provider>, { route: { params } })
+  it('show render Unit table', async () => {
+    render(<Provider><VenuePropertyTab /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Access Point/i)).toBeNull()
+    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
 
     // Open add drawer
     const addUnitBtn = await screen.findByRole('button', { name: /add unit/i })
     await userEvent.click(addUnitBtn)
 
-    const unitDialog = await screen.findByRole('dialog')
-    await within(unitDialog).findByText(/add unit/i)
+    const unitDialog = await screen.findByTestId('PropertyUnitDrawer')
     await userEvent.click(await within(unitDialog).findByRole('button', { name: /cancel/i }))
+    expect(screen.queryByRole('dialog')).toBeNull()
 
     // select one of row and open edit drawer
     const firstRowName = mockPropertyUnitList.content[0].name
@@ -166,20 +202,41 @@ describe('Property Unit Page', () => {
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
+    const editDialog = await screen.findByTestId('PropertyUnitDrawer')
+    await userEvent.click(await within(editDialog).findByRole('button', { name: /cancel/i }))
+
+    // teardown
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it.skip('show render Unit table withNsg', async () => {
-    render(<Provider><VenuePropertyTab /></Provider>, { route: { params: enableNsgParams } })
+    render(<Provider><VenuePropertyTab /></Provider>, {
+      route: {
+        params: enableNsgParams,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
 
     const firstRowName = mockPropertyUnitList.content[0].name
     await screen.findByRole('cell', { name: firstRowName })
-    await screen.findByRole('cell', { name: /switchName/i })
+    await waitFor(async () => await screen.findByRole('cell', { name: /switchName/i }))
+    await waitFor(async () => await screen.findByRole('columnheader', { name: /Access Point/i }))
   })
 
   it('should support Suspend, View Portal, Delete actions', async () => {
-    render(<Provider><VenuePropertyTab /></Provider>, { route: { params } })
+    render(<Provider><VenuePropertyTab /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Access Point/i)).toBeNull()
+    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
 
     // Find first row
     const firstRowName = mockPropertyUnitList.content[0].name
@@ -222,7 +279,12 @@ describe('Property Unit Page', () => {
 
     render(
       <Provider><VenuePropertyTab /></Provider>,
-      { route: { params } }
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/units'
+        }
+      }
     )
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
@@ -268,8 +330,12 @@ describe('Property Unit Page', () => {
 
     render(
       <Provider><VenuePropertyTab /></Provider>,
-      { route: { params } }
-    )
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/units'
+        }
+      })
 
     const exportBtn = await screen.findByTestId('export-unit')
     await userEvent.click(exportBtn)
