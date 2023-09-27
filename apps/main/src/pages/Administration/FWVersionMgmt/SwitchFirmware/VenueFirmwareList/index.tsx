@@ -258,6 +258,14 @@ export const VenueFirmwareTable = (
 
   // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
+  const columns2 = columns.map(obj => {
+    const newObj = { ...obj }
+    delete newObj['searchable']
+    delete newObj['filterable']
+
+
+    return newObj
+  })
 
   const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -404,6 +412,22 @@ export const VenueFirmwareTable = (
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        expandable={{ expandedRowRender: () => { return <Table
+          columns={columns2}
+          style={{ paddingLeft: '0px !important' }}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          sticky={false}
+          tableAlertRender={false}
+          showHeader={false}
+          expandIcon={
+            () => <></>
+          }
+          expandable={{ expandedRowRender: () => { return <></> } }}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        /> } }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

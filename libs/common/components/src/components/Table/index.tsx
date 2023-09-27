@@ -569,7 +569,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={expandable}
+      expandable={props.expandable || expandable}
       onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
