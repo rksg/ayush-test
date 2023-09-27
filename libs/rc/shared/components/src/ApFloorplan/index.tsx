@@ -207,7 +207,7 @@ export function ApFloorplan (props: {
                 key={device?.serialNumber}
                 galleryMode={false}
                 contextAlbum={false}
-                showRogueAp={true}
+                showRogueAp={!!rogueApMac}
                 perRogueApModel={!!rogueApMac}
                 context={FloorplanContext['ap']}
                 device={device}
