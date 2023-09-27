@@ -66,10 +66,8 @@ export function useMenuConfig () {
     ] : []),
     ...(hasViewAnalyticsPermissions ? [
       {
-        //uri: '/wifi',
         label: $t({ defaultMessage: 'Wi-Fi' }),
         inactiveIcon: WiFi,
-        //activeIcon: WiFi
         children: [
           {
             type: 'group' as const,
