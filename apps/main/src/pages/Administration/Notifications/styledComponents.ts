@@ -30,8 +30,7 @@ export const IncidentNotificationWrapper = styled.div`
   padding-top: var(--acx-content-vertical-space);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
-  overflow: hidden;
-  height: 500px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -75,4 +74,5 @@ export const ButtonFooterWrapper = styled.div`
   align-items: flex-start;
   flex-wrap: nowrap;
   justify-content: space-between;
+  gap: 100%;
 `

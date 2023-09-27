@@ -1,6 +1,5 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-import { Button }                                    from 'antd'
 import {  get, isEmpty }                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -10,9 +9,9 @@ import {
   useSetNotificationMutation,
   NotificationMethod
 } from '@acx-ui/analytics/services'
-import { showToast, Loader, Drawer } from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { getUserProfile }            from '@acx-ui/user'
+import { showToast, Loader, Drawer, Button } from '@acx-ui/components'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
+import { getUserProfile }                    from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
