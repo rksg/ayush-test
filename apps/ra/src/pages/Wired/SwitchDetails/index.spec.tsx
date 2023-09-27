@@ -17,8 +17,9 @@ describe('Switch Details', () => {
       }
     })
     expect(screen.getByText('Wired')).toBeVisible()
+    expect(screen.getByText('Switches')).toBeVisible()
     expect(screen.getByText('Report Content')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Switches' }))
-      .toHaveAttribute('href', '/ai/devices/switch')
+    expect(screen.getByRole('link', { name: 'Switch List' }))
+      .toHaveAttribute('href', '/ai/switch')
   })
 })

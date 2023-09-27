@@ -44,7 +44,7 @@ const useTabs = () : SwitchTab[] => {
 export function AISwitches ({ tab }: { tab: AISwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/')
+  const basePath = useTenantLink('/')
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
 

@@ -157,14 +157,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -173,7 +173,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -449,14 +449,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -465,7 +465,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -841,14 +841,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -857,7 +857,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -1233,14 +1233,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -1249,7 +1249,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -1429,14 +1429,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -1445,7 +1445,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -1738,14 +1738,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -1754,7 +1754,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -2140,14 +2140,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -2156,7 +2156,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -2542,14 +2542,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/devices/switch",
+            "uri": "/switch",
           },
           Object {
             "label": Array [
@@ -2558,7 +2558,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/devices/switch/reports/wired",
+            "uri": "/switch/reports/wired",
           },
         ],
         "label": Array [

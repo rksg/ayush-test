@@ -13,7 +13,8 @@ const SwitchDetails = () => {
         title={switchId}
         breadcrumb={[
           { text: 'Wired' },
-          { text: 'Switches', link: '/devices/switch' }
+          { text: 'Switches' },
+          { text: 'Switch List', link: '/switch' }
         ]}
         extra={useHeaderExtra({ excludeNetworkFilter: true })}
         footer={false}

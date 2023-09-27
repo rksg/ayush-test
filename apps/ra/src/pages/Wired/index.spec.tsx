@@ -31,7 +31,7 @@ describe('Clients', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Wired Report'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/ai/devices/switch/reports/wired', hash: '', search: ''
+      pathname: '/ai/switch/reports/wired', hash: '', search: ''
     })
   })
 })

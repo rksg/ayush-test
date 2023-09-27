@@ -140,12 +140,12 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Switches' }),
           children: [
             {
-              uri: '/devices/switch',
+              uri: '/switch',
               label: $t({ defaultMessage: 'Switch List' }),
-              isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
+              isActiveCheck: new RegExp('^/switch(?!(/reports))')
             },
             {
-              uri: '/devices/switch/reports/wired',
+              uri: '/switch/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' })
             }
           ]
