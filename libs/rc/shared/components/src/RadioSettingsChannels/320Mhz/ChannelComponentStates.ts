@@ -1,7 +1,8 @@
 import _ from 'lodash'
 
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
+import { RadioChannel } from '../../RadioSettings/RadioSettingsContents'
 
+import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 export const ChannelGroup160MHzModel = [
   { value: '15', selected: true },
@@ -12,6 +13,16 @@ export const ChannelGroup160MHzModel = [
   { value: '175', selected: true },
   { value: '205', selected: true }
 ]
+
+export const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
+  const selectedChannels = [] as string[]
+  channels.forEach((channel)=> {
+    if (channel.selected === true) {
+      selectedChannels.push(channel.value)
+    }
+  })
+  return selectedChannels
+}
 
 /**
  * This function is used for SingleRadioSettings, SingleRadioSettings will only pass selected channels into function.
@@ -83,12 +94,18 @@ export enum ChannelGroup320MhzEnum {
   Group2
 }
 
+export enum ButtonDisplayStatusEnum {
+  Display,
+  Hide
+}
+
 type ChannelGroup = {
     [key: string]: {
         channels: string[];
         channel160Groups?: string[]
         isolated?: boolean
-        group?: ChannelGroup320MhzEnum
+        group?: ChannelGroup320MhzEnum,
+        display?: ButtonDisplayStatusEnum
     }
 }
 
@@ -105,62 +122,75 @@ export const defaultStates : ChannelGroupType = {
     31: {
       channels: ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61'],
       channel160Groups: ['15', '47'],
-      group: ChannelGroup320MhzEnum.Group1
+      group: ChannelGroup320MhzEnum.Group1,
+      display: ButtonDisplayStatusEnum.Display
     },
     63: {
       channels: ['33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93'],
       channel160Groups: ['47', '79'],
-      group: ChannelGroup320MhzEnum.Group2
+      group: ChannelGroup320MhzEnum.Group2,
+      display: ButtonDisplayStatusEnum.Display
     },
     95: {
       channels: ['65', '69', '73', '77', '81', '85', '89', '93', '97', '101', '105', '109', '113', '117', '121', '125'],
       channel160Groups: ['79', '111'],
-      group: ChannelGroup320MhzEnum.Group1
+      group: ChannelGroup320MhzEnum.Group1,
+      display: ButtonDisplayStatusEnum.Display
     },
     127: {
       channels: ['97', '101', '105', '109', '113', '117', '121', '125', '129', '133', '137', '141', '145', '149', '153', '157'],
       channel160Groups: ['111', '143'],
-      group: ChannelGroup320MhzEnum.Group2
+      group: ChannelGroup320MhzEnum.Group2,
+      display: ButtonDisplayStatusEnum.Display
     },
     159: {
       channels: ['129', '133', '137', '141', '145', '149', '153', '157', '161', '165', '169', '173', '177', '181', '185', '189'],
       channel160Groups: ['143', '175'],
-      group: ChannelGroup320MhzEnum.Group1
+      group: ChannelGroup320MhzEnum.Group1,
+      display: ButtonDisplayStatusEnum.Display
     },
     191: {
       channels: ['161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221'],
       channel160Groups: ['175', '205'],
-      group: ChannelGroup320MhzEnum.Group2
+      group: ChannelGroup320MhzEnum.Group2,
+      display: ButtonDisplayStatusEnum.Display
     }
   },
   ChannelGroup_160MHz: {
     15: {
       channels: [ '1', '5', '9', '13', '17', '21', '25', '29'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     47: {
       channels: [ '33', '37', '41', '45', '49', '53', '57', '61'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     79: {
       channels: [ '65', '69', '73', '77', '81', '85', '89', '93'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     111: {
       channels: [ '97', '101', '105', '109', '113', '117', '121', '125'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     143: {
       channels: [ '129', '133', '137', '141', '145', '149', '153', '157'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     175: {
       channels: [ '161', '165', '169', '173', '177', '181', '185', '189'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     },
     205: {
       channels: [ '193', '197', '201', '205', '209', '213', '217', '221'],
-      isolated: false
+      isolated: false,
+      display: ButtonDisplayStatusEnum.Display
     }
   },
   // Control RadioSettingsChannels320Mhz checkbox displaying
