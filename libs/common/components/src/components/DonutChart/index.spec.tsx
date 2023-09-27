@@ -44,7 +44,7 @@ describe('DonutChart - small', () => {
       title='Donut Chart'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
-      .toEqual("font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;")
+      .toEqual("font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;")
     expect(screen.getByText('5095').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
     const numbers = await screen.findAllByText(/\d+/)
