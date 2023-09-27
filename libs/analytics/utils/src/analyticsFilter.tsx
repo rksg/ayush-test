@@ -19,6 +19,13 @@ import {
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 type NetworkFilter = { path: NetworkPath, raw: object }
 
+const noSwitchSupport = [
+  '/analytics/health',
+  '/ai/health',
+  '/analytics/configChange',
+  '/ai/configChange'
+]
+
 export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
@@ -33,13 +40,13 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
-    const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
-    const switchPath = isSwitchPath(path)
-    const healthPage = pathname.includes('/analytics/health') // R1
-      || pathname.includes('/ai/health') // RAI
-    const { filter, raw } = (healthPage && switchPath)
-      ? { filter: {}, raw: [] }
-      : { filter: pathToFilter(path), raw: rawPath }
+    const defaultPath = { raw: [], path: defaultNetworkPath }
+    const { raw: rawPath, path: readPath } = read() || defaultPath
+    const revertToDefault = Boolean(noSwitchSupport.find(url => pathname.includes(url))) &&
+      isSwitchPath(readPath)
+    const { raw, path, filter } = revertToDefault
+      ? { ...defaultPath, filter: {} }
+      : { raw: rawPath, path: readPath, filter: pathToFilter(readPath) }
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
