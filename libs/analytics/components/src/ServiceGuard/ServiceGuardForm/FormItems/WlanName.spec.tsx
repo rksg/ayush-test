@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { get }                   from '@acx-ui/config'
 import { networkApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo }        from '@acx-ui/rc/utils'
 import {
@@ -16,6 +17,7 @@ import { AuthenticationMethod, ClientType } from '../../types'
 
 import { WlanName } from './WlanName'
 
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
@@ -194,5 +196,30 @@ describe('WlanName', () => {
     // reset when historical doesn't have value
     expect(await screen.findByTestId('form-values'))
       .toHaveTextContent(JSON.stringify({ wlanName: 'Network 1' }))
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('renders field', async () => {
+      mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
+
+      renderForm(<WlanName />, {
+        params,
+        initialValues: { clientType: ClientType.VirtualClient }
+      })
+
+      const dropdown = await screen.findByRole('combobox')
+
+      expect(dropdown).toHaveAttribute('placeholder', 'Select a network')
+      expect(screen.getAllByRole('option', {
+        name: (_, el) => Boolean((el as HTMLInputElement).value)
+      })).toHaveLength(items.length)
+
+      await selectOptions(dropdown, 'Network 1')
+
+      await click(screen.getByRole('button', { name: 'Submit' }))
+      expect(await screen.findByTestId('form-values')).toHaveTextContent('Network 1')
+    })
   })
 })

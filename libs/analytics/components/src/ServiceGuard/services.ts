@@ -8,6 +8,9 @@ import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
 import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
+import { get }                                       from '@acx-ui/config'
+import { useNetworkListQuery }                       from '@acx-ui/rc/services'
+import { Network, TableResult }                      from '@acx-ui/rc/utils'
 import { useParams }                                 from '@acx-ui/react-router-dom'
 import { serviceGuardApi }                           from '@acx-ui/store'
 import { TABLE_DEFAULT_PAGE_SIZE, noDataDisplay }    from '@acx-ui/utils'
@@ -29,7 +32,8 @@ import type {
   MutationUserError,
   MutationResponse,
   ClientType,
-  AuthenticationMethod
+  AuthenticationMethod,
+  Wlan
 } from './types'
 
 const fetchServiceGuardSpec = gql`
@@ -209,7 +213,7 @@ export const {
   useServiceGuardTestQuery,
   useServiceGuardRelatedTestsQuery,
   useServiceGuardTestResultsQuery,
-  useWlan2AuthMethodsQuery
+  useWlansQuery
 } = serviceGuardApi.injectEndpoints({
   endpoints: (build) => ({
     allServiceGuardSpecs: build.query<ServiceGuardTableRow[], void>({
@@ -266,12 +270,12 @@ export const {
       transformResponse: (result: { serviceGuardTest: ServiceGuardTestResults }) =>
         result.serviceGuardTest
     }),
-    wlan2AuthMethods: build.query<Record<string, AuthenticationMethod[]>, ClientType>({
+    wlans: build.query<Wlan[], ClientType>({
       query: (clientType) => ({
-        variables: { clientType, paths: [] },
+        variables: { clientType },
         document: gql`
-          query Wlans ($paths: [JSON!]!, $clientType: String!) {
-            wlans(paths: $paths, clientType: $clientType) { name authMethods }
+          query Wlans ($clientType: String!) {
+            wlans(paths: [], clientType: $clientType) { name authMethods }
           }
         `
       }),
@@ -282,10 +286,13 @@ export const {
         }>
       }, meta, clientType) => {
         const methods = authMethodsByClientType[clientType].map(item => item.code)
-        return Object.fromEntries(result.wlans.map(item => [
-          item.name,
-          item.authMethods.filter(method => methods.includes(method))
-        ]))
+        return result.wlans.map(item => ({
+          id: item.name,
+          name: item.name,
+          ready: true,
+          associated: true,
+          authMethods: item.authMethods.filter(method => methods.includes(method))
+        })) as Wlan[]
       }
     })
   })
@@ -346,10 +353,47 @@ export function useServiceGuardTestResults () {
   }
 }
 
-export function useWlanAuthMethodsMap () {
+const payload = {
+  fields: ['id', 'name', 'venues', 'aps'],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10_000 // TODO: handle client with networks more than this
+}
+export function useNetworks (skipR1 = false) {
   const { form } = useStepFormContext<ServiceGuardFormDto>()
   const clientType = Form.useWatch('clientType', form)
-  return useWlan2AuthMethodsQuery(clientType, { skip: !clientType })
+  const wlans = useWlansQuery(clientType, { skip: !clientType })
+
+  const networks = useNetworkListQuery({ payload, params: useParams() }, {
+    skip: Boolean(get('IS_MLISA_SA')) || skipR1,
+    selectFromResult: (response) => {
+      const data = response.isUninitialized
+        ? { data: [], page: 1, totalCount: 0 } as TableResult<Network>
+        : response.data
+
+
+      return {
+        ...response,
+        data: data?.data.map(network => ({
+          ..._.pick(network, ['id', 'name']),
+          associated: Boolean(network.aps && network.venues.count)
+        })) as Wlan[]
+      }
+    }
+  })
+
+  const map = _.merge(
+    {},
+    _.keyBy(wlans.data, 'name'),
+    _.keyBy(networks.data, 'name')
+  )
+
+  return {
+    states: [networks, wlans],
+    map: map,
+    networks: Object.values(map).filter(network => network.associated)
+  }
 }
 
 export function processDtoToPayload (dto: ServiceGuardFormDto) {

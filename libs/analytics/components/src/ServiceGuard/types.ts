@@ -67,6 +67,14 @@ export enum Band {
   Band6 = '6',
 }
 
+export type Wlan = {
+  id: string
+  name: string
+  associated: boolean
+  ready: boolean
+  authMethods: AuthenticationMethod[]
+}
+
 export type ServiceGuardSpec = {
   id: UUID
   name: string
