@@ -5,7 +5,8 @@ import { useParams } from 'react-router-dom'
 
 import {
   ContentSwitcher,
-  ContentSwitcherProps
+  ContentSwitcherProps,
+  Loader
 } from '@acx-ui/components'
 import { useGetGatewayDetailsQuery }                                                                 from '@acx-ui/rc/services'
 import { GatewayDetailsDiskMemory, GatewayDetailsGeneral, GatewayDetailsHardware, GatewayDetailsOs } from '@acx-ui/rc/utils'
@@ -20,7 +21,7 @@ export default function GatewayDetailsContentSwitch () {
   const { $t } = useIntl()
   const { tenantId, gatewayId } = useParams()
 
-  const { data: gatewayDetails } =
+  const { data: gatewayDetails, isLoading: isDetailsLoading } =
       useGetGatewayDetailsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -54,10 +55,14 @@ export default function GatewayDetailsContentSwitch () {
     }
   ]
   return (
-    <ContentSwitcher
-      tabDetails={tabDetails}
-      size='small'
-      align='left'
-    />
+    <Loader states={[{
+      isLoading: isDetailsLoading
+    }]}>
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='small'
+        align='left'
+      />
+    </Loader>
   )
 }
