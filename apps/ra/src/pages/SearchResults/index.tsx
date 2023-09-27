@@ -13,9 +13,9 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { TenantLink }                from '@acx-ui/react-router-dom'
-import { DateRange }                 from '@acx-ui/utils'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { TenantLink, resolvePath }            from '@acx-ui/react-router-dom'
+import { DateRange, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -63,7 +63,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'ipAddress',
       key: 'ipAddress',
       width: 80,
-
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
@@ -71,7 +70,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 70,
       dataIndex: 'version',
       key: 'version',
-
       sorter: { compare: sortProp('version', defaultSort) }
     },
     {
@@ -110,7 +108,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Username' }),
       dataIndex: 'username',
       key: 'username',
-
       sorter: { compare: sortProp('username', defaultSort) }
     },
     {
@@ -118,7 +115,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'mac',
       key: 'mac',
-
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -126,14 +122,12 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 100,
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
-
       sorter: { compare: sortProp('osType', defaultSort) }
     },
     {
@@ -145,7 +139,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
     }
-
   ]
 
   const switchTablecolumnHeaders: TableProps<Switch>['columns'] = [
@@ -153,7 +146,10 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-
+      render: (_, row : Switch) => (
+        <TenantLink to={`/switch/${row.switchMac}/details`}>
+          {row.switchName}</TenantLink>
+      ),
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
@@ -167,14 +163,12 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'switchModel',
       key: 'switchModel',
-
       sorter: { compare: sortProp('switchModel', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Version' }),
       dataIndex: 'switchVersion',
       key: 'switchVersion',
-
       sorter: { compare: sortProp('switchVersion', defaultSort) }
     }
   ]
@@ -185,7 +179,14 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-
+      render: (_, row : NetworkHierarchy) => (
+        <TenantLink
+          to={resolvePath(`/incidents?analyticsNetworkFilter=${
+            fixedEncodeURIComponent(
+              JSON.stringify({ raw: row.networkPath, path: row.networkPath }))}`)}>
+          {row.name}
+        </TenantLink>
+      ),
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -193,7 +194,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'type',
       key: 'type',
       fixed: 'left',
-
       sorter: { compare: sortProp('type', defaultSort) }
     },
     {
@@ -201,7 +201,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'root',
       key: 'root',
       fixed: 'left',
-
       sorter: { compare: sortProp('root', defaultSort) }
     },
     {
@@ -216,7 +215,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 120,
       dataIndex: 'switchCount',
       key: 'switchCount',
-
       sorter: { compare: sortProp('switchCount', defaultSort) }
     },
     {
@@ -315,7 +313,6 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
         <NoData />
       </>
     }
-
   </Loader>
 }
 

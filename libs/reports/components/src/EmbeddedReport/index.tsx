@@ -153,7 +153,9 @@ export function EmbeddedReport (props: ReportProps) {
     process.env['NODE_ENV'] === 'development'
       ? get('IS_MLISA_SA')
         ? 'https://staging.mlisa.io'
+        // ? 'https://local.mlisa.io'
         : 'https://dev.ruckus.cloud'
+        // : 'https://alto.local.mlisa.io'
       : window.location.origin // Production
 
   useEffect(() => {
@@ -189,8 +191,7 @@ export function EmbeddedReport (props: ReportProps) {
           '"__time"',
           '<',
           `'${convertDateTimeToSqlFormat(endDate)}'`,
-          'AND',
-          `'${params?.tenantId}' = '${params?.tenantId}'`
+          ...(params?.tenantId ? ['AND', `'${params?.tenantId}' = '${params?.tenantId}'`] : [])
         ].join(' ')
       },
       ...(networkClause || radioBandClause || rlsClause
