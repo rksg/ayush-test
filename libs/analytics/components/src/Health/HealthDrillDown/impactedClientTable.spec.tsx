@@ -64,7 +64,7 @@ describe('ImpactedClientsTable', () => {
     )
     expect(await screen.findByText('0 Impacted Clients')).toBeVisible()
   })
-  it('should show only top 100 impacted clients', async () => {
+  it('should show only top 10 impacted clients', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: {
         network: {
@@ -97,7 +97,7 @@ describe('ImpactedClientsTable', () => {
         }
       }
     )
-    expect(await screen.findByText('Top 100 Impacted Clients')).toBeVisible()
+    expect(await screen.findByText('Top 10 Impacted Clients')).toBeVisible()
   })
 })
 
