@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
+import { useHeaderExtra }                                                 from '@acx-ui/analytics/components'
 import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { useNavigate, useTenantLink }                                     from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType, usePageHeaderExtra }                 from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType }                                     from '@acx-ui/reports/components'
 import { DateRange }                                                      from '@acx-ui/utils'
 
 import { SwitchList } from './SwitchList'
@@ -35,7 +36,7 @@ const useTabs = () : SwitchTab[] => {
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
-    headerExtra: usePageHeaderExtra(ReportType.WIRED)
+    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
   }
   return [switchListTab, wiredReportTab]
 }
