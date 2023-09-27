@@ -53,41 +53,23 @@ describe('Services for notification apis', () => {
   })
 
   describe('setIncidentNotification', () => {
-    const mutateProps = {
-      tenantId: 'mutate-tenant-id',
-      states: {
-        incident: {
-          P1: false,
-          P2: false,
-          P3: false,
-          P4: false
-        },
-        configRecommendation: {
-          aiOps: false,
-          crrm: false
-        }
-      },
-      preferences: {}
-    }
     it('should return correct value on preferences mutation', async () => {
       mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
         data: { success: true }
-      })
+      }, false, true)
       const data = await store.dispatch(
         preferencesApi.endpoints.setNotification.initiate({
-          ...mutateProps,
-          states: {
-            incident: {
-              ...mutateProps.states.incident,
-              P1: false,
-              P2: true,
-              P3: true
-            }
-          },
+          tenantId: 'mutate-tenant-id',
           preferences: {
             incident: {
-              P1: ['email'],
-              P2: []
+              P1: [],
+              P2: ['email'],
+              P3: ['email'],
+              P4: []
+            },
+            configRecommendation: {
+              crrm: [],
+              aiOps: []
             }
           }
         })
@@ -101,21 +83,11 @@ describe('Services for notification apis', () => {
     it('should return correctly for undefined preferences', async () => {
       mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
         data: { success: true }
-      })
+      }, false, true)
       const data = await store.dispatch(
         preferencesApi.endpoints.setNotification.initiate({
-          ...mutateProps,
-          states: {
-            incident: {
-              ...mutateProps.states.incident,
-              P1: false,
-              P2: true,
-              P3: true
-            }
-          },
-          preferences: {
-            incident: undefined
-          }
+          tenantId: 'mutate-tenant-id',
+          preferences: {}
         })
       )
       expect(data).toStrictEqual({

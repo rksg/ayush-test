@@ -177,19 +177,17 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test-tenant',
-        states: {
+        preferences: {
           incident: {
-            P1: false,
-            P2: true,
-            P3: true,
-            P4: false
+            P1: [],
+            P2: ['email'],
+            P3: ['email']
           },
           configRecommendation: {
-            crrm: true,
-            aiOps: false
+            crrm: ['email'],
+            aiOps: []
           }
-        },
-        preferences: mockedPref
+        }
       })
     })
     await waitFor(async () => {
@@ -218,7 +216,6 @@ describe('IncidentNotificationDrawer', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUnwrap.mockResolvedValueOnce({ success: false })
     render(<MockDrawer />, { wrapper: Provider })
-
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
@@ -243,19 +240,17 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test-tenant',
-        states: {
+        preferences: {
           incident: {
-            P1: false,
-            P2: true,
-            P3: true,
-            P4: false
+            P1: [],
+            P2: ['email'],
+            P3: ['email']
           },
           configRecommendation: {
-            crrm: true,
-            aiOps: true
+            crrm: ['email'],
+            aiOps: ['email']
           }
-        },
-        preferences: mockedPref
+        }
       })
     })
     await waitFor(async () => {
@@ -293,26 +288,28 @@ describe('IncidentNotificationDrawer', () => {
     const inputs = await screen.findAllByRole('checkbox')
     expect(inputs).toHaveLength(6)
     await waitFor(async () => {
-      expect(inputs[0]).not.toBeChecked()
+      expect(inputs[5]).not.toBeChecked()
+    })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(inputs[5])
+    })
+    await waitFor(async () => {
+      expect(inputs[5]).toBeChecked()
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
     await waitFor(() => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test-tenant',
-        states: {
+        preferences: {
           incident: {
-            P1: false,
-            P2: false,
-            P3: false,
-            P4: false
+            P1: []
           },
           configRecommendation: {
-            crrm: false,
-            aiOps: false
+            aiOps: ['web', 'email']
           }
-        },
-        preferences: mockedPref
+        }
       })
     })
     await waitFor(async () => {

@@ -1,10 +1,8 @@
-import { cloneDeep, get, set } from 'lodash'
-
 import { notificationApi } from '@acx-ui/store'
 import { getJwtHeaders }   from '@acx-ui/utils'
 
-type NotificationMethod = 'web' | 'email'
-
+export type NotificationMethod = 'web' | 'email'
+export type AnalyticsPreferenceType = 'incident' | 'configRecommendation'
 
 export type AnalyticsPreferences = {
   incident?: {
@@ -19,24 +17,7 @@ export type AnalyticsPreferences = {
   }
 }
 
-export type IncidentStates = {
-  P1: boolean
-  P2: boolean
-  P3: boolean
-  P4: boolean
-}
-
-export type RecommendationStates = {
-  crrm: boolean,
-  aiOps: boolean,
-}
-
-
 type IncidentPreferencePayload = {
-  states: {
-    incident?: IncidentStates,
-    configRecommendation?: RecommendationStates
-  },
   preferences: AnalyticsPreferences,
   tenantId: string
 }
@@ -62,12 +43,12 @@ export const preferencesApi = notificationApi.injectEndpoints({
       transformResponse: (response: AnalyticsPreferences) => response
     }),
     setNotification: build.mutation<{ success: boolean }, IncidentPreferencePayload>({
-      query: ({ preferences, tenantId, states }) => {
+      query: ({ preferences, tenantId }) => {
         return {
           url: 'preferences',
           method: 'post',
           credentials: 'include',
-          body: setPreferences(states, preferences),
+          body: JSON.stringify(preferences),
           headers: {
             ...getJwtHeaders(),
             'x-mlisa-tenant-id': tenantId,
@@ -85,30 +66,3 @@ export const {
   useGetPreferencesQuery,
   useSetNotificationMutation
 } = preferencesApi
-
-
-const setPreferences = (
-  states: Record<string, Record<string, boolean>>,
-  ogPref: AnalyticsPreferences
-): string => {
-  const cp = cloneDeep(ogPref)
-  Object.keys(states).forEach(type => {
-    Object.entries(states[type]).forEach(([key, val]) => {
-      let pref: NotificationMethod[] | undefined = get(cp[type as keyof typeof cp], key, undefined)
-      if (val) {
-        if (!get(cp, type, undefined)) {
-          set(cp, type, {})
-        }
-        if (Array.isArray(pref) && pref.includes('email')) return
-        const method: NotificationMethod[] = Array.isArray(pref)
-          ? pref.concat(['email'])
-          : ['email']
-        set(cp, [type, key], method)
-      } else {
-        (get(cp, [type, key], undefined) && pref)
-          && set(cp, [type, key], pref.filter(pref => pref !== 'email'))
-      }
-    })
-  })
-  return JSON.stringify(cp)
-}

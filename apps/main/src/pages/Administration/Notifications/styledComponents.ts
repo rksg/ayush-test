@@ -30,6 +30,12 @@ export const IncidentNotificationWrapper = styled.div`
   padding-top: var(--acx-content-vertical-space);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
+  overflow: hidden;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: nowrap;
 `
 
 export const Checkbox = styled(AntCheckbox)`
@@ -38,8 +44,7 @@ export const Checkbox = styled(AntCheckbox)`
 
 export const AfterMsg = styled.div`
   color: var(--acx-neutrals-60);
-  position: absolute;
-  bottom: var(--acx-descriptions-space);
+  padding-bottom: var(--acx-content-vertical-space);
 `
 
 export const List = styled(AntList)`
@@ -55,4 +60,19 @@ export const List = styled(AntList)`
 export const SectionTitle = styled.div`
   font-weight: var(--acx-subtitle-6-font-weight-bold);
   margin-top: var(--acx-descriptions-space);
+`
+
+export const FooterWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+`
+
+export const ButtonFooterWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 `

@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-import { Button }                 from 'antd'
-import { forOwn }                 from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Button }                                    from 'antd'
+import {  get, isEmpty }                             from 'lodash'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import {
   AnalyticsPreferences,
-  IncidentStates,
   useGetPreferencesQuery,
   useSetNotificationMutation,
-  RecommendationStates
+  NotificationMethod
 } from '@acx-ui/analytics/services'
 import { showToast, Loader, Drawer } from '@acx-ui/components'
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
@@ -18,89 +17,81 @@ import { getUserProfile }            from '@acx-ui/user'
 import * as UI from './styledComponents'
 
 type ListLabel = {
-  label: string
+  label: MessageDescriptor
   key: string
-  checked: boolean
+  checked: NotificationMethod[]
 }
 
-const getRecommendationPreferences = (pref?: AnalyticsPreferences): RecommendationStates => {
-  const base: RecommendationStates = {
-    crrm: false,
-    aiOps: false
+const labels = {
+  incident: {
+    P1: defineMessage({ defaultMessage: 'P1 Incidents' }),
+    P2: defineMessage({ defaultMessage: 'P2 Incidents' }),
+    P3: defineMessage({ defaultMessage: 'P3 Incidents' }),
+    P4: defineMessage({ defaultMessage: 'P4 Incidents' })
+  },
+  configRecommendation: {
+    crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+    aiOps: defineMessage({ defaultMessage: 'AI Operations' })
   }
-  if (!pref || !pref.configRecommendation) return base
-  const { configRecommendation } = pref
-  forOwn(configRecommendation, (method, key) => {
-    if (method && method.includes('email')) {
-      base[key as unknown as keyof RecommendationStates] = true
-    }
-  })
-  return base
 }
 
-const getIncidentsPreferences = (pref?: AnalyticsPreferences): IncidentStates => {
-  const base: IncidentStates = {
-    P1: false,
-    P2: false,
-    P3: false,
-    P4: false
-  }
-  if (!pref || !pref.incident) return base
-  const { incident } = pref
-  forOwn(incident, (method, key) => {
-    if (method && method.includes('email')) {
-      base[key as unknown as keyof IncidentStates] = true
-    }
-  })
-  return base
-}
+function getPreferenceLabel (
+  pref: AnalyticsPreferences,
+  type: 'incident' | 'configRecommendation'
+): ListLabel[] {
 
-const useIncidentsList = (state: IncidentStates): ListLabel[] => {
-  const { $t } = useIntl()
-  const labels = {
-    P1: $t({ defaultMessage: 'P1 Incidents' }),
-    P2: $t({ defaultMessage: 'P2 Incidents' }),
-    P3: $t({ defaultMessage: 'P3 Incidents' }),
-    P4: $t({ defaultMessage: 'P4 Incidents' })
-  }
-  return Object.entries(state).map(([key, checked]) => ({
+  return Object.keys(get(labels, type)).map((key) => ({
     key,
-    checked,
-    label: labels[key as keyof IncidentStates]
+    label: get(labels, [type, key]),
+    checked: get(pref, [type, key], [])
   }))
 }
 
-const useRecommendationList = (state: RecommendationStates): ListLabel[] => {
-  const { $t } = useIntl()
-  const labels = {
-    crrm: $t({ defaultMessage: 'AI-Driven RRM' }),
-    aiOps: $t({ defaultMessage: 'AI Operations' })
-  }
-  return Object.entries(state).map(([key, checked]) => ({
-    key,
-    checked,
-    label: labels[key as keyof RecommendationStates]
-  }))
-}
-
-const getSuccessMsg = (success?: boolean) => {
+const getApplyMsg = (success?: boolean) => {
   return success
     ? defineMessage({ defaultMessage: 'Incident notifications updated succesfully.' })
     : defineMessage({ defaultMessage: 'Update failed, please try again later.' })
 }
 
-function OptionsList ({ labels, setState }:
-  { labels: ListLabel[], setState: CallableFunction }) {
+const title = defineMessage({
+  // eslint-disable-next-line max-len
+  defaultMessage: 'Set your AI notification preferences. These notifications are only sent through email:'
+})
+const afterMsg = defineMessage({
+  defaultMessage: 'This will apply to all the recipients defined for this account.'
+})
+
+function OptionsList ({ labels, setState, type }:
+  {
+    labels: ListLabel[],
+    setState: Dispatch<SetStateAction<AnalyticsPreferences>>,
+    type: 'incident' | 'configRecommendation'
+  }) {
+  const { $t } = useIntl()
   return <UI.List bordered={false}>
     {labels.map((({ label, key, checked }) => <UI.List.Item key={key}>
       <span>
         <UI.Checkbox
           id={key}
           name={key}
-          checked={checked}
-          onChange={(e) => setState((s: { [x: string]: boolean }) =>
-            ({ ...s, [key]: e.target.checked }))} />
-        <label htmlFor={key}>{label}</label>
+          checked={checked.includes('email')}
+          onChange={(e) => setState((currPref: AnalyticsPreferences) => {
+            const config = get(currPref, type, undefined)
+            let method: NotificationMethod[] = get(currPref, [type, key], [])
+            if (e.target.checked) {
+              method = method.concat(['email'])
+            } else {
+              method = method.filter(m => m !== 'email')
+            }
+            return {
+              ...(!isEmpty(currPref) ? currPref : {}),
+              [type]: {
+                ...(!isEmpty(config) ? currPref[type] : {}),
+                [key]: method
+              }
+            }
+          })} />
+        <label htmlFor={key}>{$t(label)}</label>
       </span>
     </UI.List.Item>))}
   </UI.List>
@@ -116,76 +107,69 @@ export const AINotificationDrawer = ({
   const { $t } = useIntl()
   const user = getUserProfile()
   const { tenantId } = user.profile
-  const query = useGetPreferencesQuery({
-    tenantId: tenantId
-  })
-  const initIncidentPref = getIncidentsPreferences(query.data)
-  const [state, setState] = useState<IncidentStates>(initIncidentPref)
-  const initRecPref = getRecommendationPreferences(query.data)
-  const [recState, setRecState] = useState<RecommendationStates>(initRecPref)
-  useEffect(() => {
-    setState(getIncidentsPreferences(query.data))
-    setRecState(getRecommendationPreferences(query.data))
-  }, [query.data])
+  const query = useGetPreferencesQuery({ tenantId: tenantId })
+  const [state, setState] = useState<AnalyticsPreferences>({})
+  useEffect(() => { setState(query.data!) }, [query.data])
   const [updatePrefrences] = useSetNotificationMutation()
-  const priorities = useIncidentsList(state)
-  const recommendations = useRecommendationList(recState)
   const allowRecommandations = useIsSplitOn(Features.RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE)
-  const title =
-    // eslint-disable-next-line max-len
-    $t({ defaultMessage: 'Set your AI notification preferences. These notifications are only sent through email:' })
-  const afterMsg =
-    $t({ defaultMessage: 'This will apply to all the recipients defined for this account.' })
   const onClose = () => setShowDrawer(false)
   const onApply = () => {
     updatePrefrences({
-      states: {
-        incident: state,
-        configRecommendation: recState
-      },
       tenantId,
-      preferences: query.data!
+      preferences: {
+        ...query.data!,
+        ...state
+      }
     })
       .unwrap()
       .then(({ success }) => {
         showToast({
           type: success ? 'success' : 'error',
-          content: $t(getSuccessMsg(success))
+          content: $t(getApplyMsg(success))
         })
         setShowDrawer(false)
       })
       .catch(() => {
         showToast({
           type: 'error',
-          content: $t(getSuccessMsg())
+          content: $t(getApplyMsg())
         })
         setShowDrawer(false)
       })
   }
+  const incidentLabels = getPreferenceLabel(state, 'incident')
+  const recommendationLabels = getPreferenceLabel(state, 'configRecommendation')
   return <Drawer
     title={$t({ defaultMessage: 'AI Notifications' })}
     visible={showDrawer}
     onClose={onClose}
     destroyOnClose
-    footer={<>
-      <Button
-        type='primary'
-        onClick={() => onApply()}>
-        {$t({ defaultMessage: 'Apply' })}
-      </Button>
-      <Button type='default' onClick={() => onClose()}>{$t({ defaultMessage: 'Cancel' })}</Button>
-    </>}
+    footer={<UI.FooterWrapper>
+      <UI.AfterMsg>{$t(afterMsg)}</UI.AfterMsg>
+      <UI.ButtonFooterWrapper>
+        <Button
+          type='primary'
+          onClick={() => onApply()}>
+          {$t({ defaultMessage: 'Apply' })}
+        </Button>
+        <Button type='default' onClick={() => onClose()}>
+          {$t({ defaultMessage: 'Cancel' })}
+        </Button>
+      </UI.ButtonFooterWrapper>
+    </UI.FooterWrapper>}
   >
     <Loader states={[query]}>
       <UI.IncidentNotificationWrapper>
-        <div>{title}</div>
+        <div>{$t(title)}</div>
         <UI.SectionTitle>{$t({ defaultMessage: 'Incidents' })}</UI.SectionTitle>
-        <OptionsList labels={priorities} setState={setState} />
+        <OptionsList labels={incidentLabels} setState={setState} type='incident' />
         { allowRecommandations && <>
           <UI.SectionTitle>{$t({ defaultMessage: 'Recommendations' })}</UI.SectionTitle>
-          <OptionsList labels={recommendations} setState={setRecState} />
+          <OptionsList
+            labels={recommendationLabels}
+            setState={setState}
+            type='configRecommendation' />
         </>}
-        <UI.AfterMsg>{afterMsg}</UI.AfterMsg>
       </UI.IncidentNotificationWrapper>
     </Loader>
   </Drawer>

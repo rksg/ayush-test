@@ -41,10 +41,14 @@ export const mockRestApiQuery = (
   url: string,
   type: 'get' | 'post' | 'delete',
   result: { status?: number, data?: any, error?: any, totalCount?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
-  omitData?: boolean
+  omitData?: boolean,
+  matchQuery?: boolean
 ) => {
   mockServer.use(
     rest[type](url, (req, res, ctx)=>{
+      if (matchQuery) {
+        expect(req.body).toMatchSnapshot()
+      }
       return result.error
         ? res(ctx.status(result.status||500), ctx.json({ error: result.error }))
         : omitData
