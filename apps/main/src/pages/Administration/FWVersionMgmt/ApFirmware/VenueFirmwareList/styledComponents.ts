@@ -2,12 +2,6 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
-export const SelectDiv = styled.div`
-  .ant-select-selector {
-    // padding: 0 2px !important;
-  }
-`
-
 export const DateContainer = styled.div`
   height: auto;
   display: grid;
@@ -37,6 +31,10 @@ export const TitleActive = styled.div`
   color: #333333;
   font-weight: 600;
   margin: 12px 10px 0;
+  .empty {
+    color: var(--acx-neutrals-50);
+    font-style: italic;
+  }
 `
 
 export const Title2Active = styled.div`
@@ -102,12 +100,5 @@ export const ValueContainer = styled.div`
   margin: 12px 12px 4px 32px;
   .ant-radio-group {
     font-size: unset;
-  }
-`
-export const ApModelsContainer = styled.div`
-  margin-left: 2px;
-  .empty {
-    color: var(--acx-neutrals-50);
-    font-style: italic;
   }
 `
