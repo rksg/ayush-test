@@ -147,7 +147,7 @@ export default function AdaptivePolicySetTable () {
       const name = selectedRow.name
       doProfileDelete(
         [selectedRow],
-        $t({ defaultMessage: 'policy set' }),
+        $t({ defaultMessage: 'Policy Set' }),
         name,
         [
           // eslint-disable-next-line max-len
