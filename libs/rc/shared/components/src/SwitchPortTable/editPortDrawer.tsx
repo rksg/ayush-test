@@ -217,7 +217,7 @@ export function EditPortDrawer ({
     return switches.length > 1
       // eslint-disable-next-line max-len
       // isVenueLevel && enableSwitchLevelVlan
-      ? await getSwitchesVlan({ 
+      ? await getSwitchesVlan({
         params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
       : await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
   }
