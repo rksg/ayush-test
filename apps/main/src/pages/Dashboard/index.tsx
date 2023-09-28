@@ -75,7 +75,7 @@ export const useDashBoardUpdatedFilter = () => {
   const context = useContext(DashboardFilterContext)
   return context
 }
-export default function Dashboardv2 () {
+export default function Dashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
