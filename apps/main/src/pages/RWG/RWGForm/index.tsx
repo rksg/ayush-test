@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Input, Select } from 'antd'
-import { DefaultOptionType }             from 'antd/lib/select'
-import { useIntl }                       from 'react-intl'
+import { Row, Col, Form, Input, Select, Badge } from 'antd'
+import { DefaultOptionType }                    from 'antd/lib/select'
+import { useIntl }                              from 'react-intl'
 
 import {
   Button,
@@ -112,17 +112,27 @@ export function RWGForm () {
         title={action !== 'edit'
           ? $t({ defaultMessage: 'Add Gateway' })
           : data?.name}
+        titleExtra={
+          action === 'edit' &&
+          <span>
+            <Badge
+              color={`var(${data?.status === 'Operational'
+                ? '--acx-semantics-green-50'
+                : '--acx-neutrals-50'})`}
+            />
+          </span>
+        }
         breadcrumb={[
           { text: $t({ defaultMessage: 'RUCKUS WAN Gateway' }), link: '/ruckus-wan-gateway' }
         ]}
         extra={action === 'edit' ? [
           <Button
             type='primary'
-            disabled={true} // TODO
+            disabled={!gatewayId}
             onClick={() =>
               navigate({
                 ...basePath,
-                pathname: basePath.pathname
+                pathname: `${basePath.pathname}/overview`
               })
             }>{ $t({ defaultMessage: 'Back to Gateway details' }) }</Button>
         ] : []}
