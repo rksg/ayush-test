@@ -164,7 +164,7 @@ function Table <RecordType extends Record<string, any>> ({
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
 
-  if (stickyPagination === undefined && wrapperRef?.current?.closest('#root')) {
+  if (stickyPagination === undefined && type === 'tall' && wrapperRef?.current?.closest('#root')) {
     // stickyPagination is true by default while this Table is under LayoutComponent (not in Modal or Drawer)
     stickyPagination = true
   }
