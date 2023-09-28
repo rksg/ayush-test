@@ -824,7 +824,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     runCcd: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
