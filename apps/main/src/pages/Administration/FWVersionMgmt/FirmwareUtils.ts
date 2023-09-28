@@ -67,14 +67,26 @@ export const isBetaFirmware = (category: FirmwareCategory): boolean => {
 }
 
 export const compareSwitchVersion = (a: string, b: string): number => {
-  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
+  // eslint-disable-next-line max-len
+  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
   const group1 = a?.match(switchVersionReg)?.groups
   const group2 = b?.match(switchVersionReg)?.groups
   if (group1 && group2) {
     let res = 0
-    const keys = ['major', 'minor', 'build']
+    const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']
     keys.every(key=>{
-      res = group1[key].localeCompare(group2[key], 'en-u-kn-true') // sort by charCode and numeric
+      const initValue = (key === 'candidate') ? '0' : (key === 'build') ? '999' : ''
+      const aValue = group1[key] || initValue
+      const bValue = group2[key] || initValue
+      res = aValue.localeCompare(bValue, 'en-u-kn-true') // sort by charCode and numeric
+
+      if (key === 'rcbuild' && (
+        (aValue && bValue === '' && !group2['build']) ||
+        (aValue === '' && !group1['build'] && bValue)
+      )) { // '10010' == '10010_rc2'
+        res = 0
+        return false
+      }
       return res === 0 // false to break every loop
     })
     return res
