@@ -3,20 +3,26 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Statistic } from 'antd'
 import { useIntl }   from 'react-intl'
 
-import { Card, Loader }                              from '@acx-ui/components'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
-import { noDataDisplay, useDateFilter, NetworkPath } from '@acx-ui/utils'
+import { Card, Loader }               from '@acx-ui/components'
+import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { noDataDisplay, NetworkPath } from '@acx-ui/utils'
 
 import { useNetworkSummaryInfoQuery } from './services'
 import { ReportTileWrapper, Tile }    from './styledComponents'
 
-export const ReportTile = ({ path }: { path: NetworkPath }) => {
+export const ReportTile = ({
+  path,
+  startDate,
+  endDate
+}: {
+  path: NetworkPath;
+  startDate: string;
+  endDate: string;
+}) => {
   const { $t } = useIntl()
 
   const [ selected, setSelected ] = useState<number>(0)
   const timer = useRef<ReturnType<typeof setInterval>>()
-
-  const { startDate, endDate } = useDateFilter()
   const queryResults = useNetworkSummaryInfoQuery({ path, startDate, endDate })
 
   const startTimer = useCallback((interval: number, numOfTile: number) => {

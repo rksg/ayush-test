@@ -89,7 +89,7 @@ export default function Dashboard () {
         title={$t({ defaultMessage: 'How is my network doing?' })}
         extra={[
           <>
-            <SANetworkFilter />
+            <SANetworkFilter overrideFilters={analyticsFilter}/>
             <RangePicker
               key='range-picker'
               selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -103,7 +103,7 @@ export default function Dashboard () {
       />
       <UI.Grid style={{ height }}>
         <div style={{ gridArea: 'a1' }}>
-          <ReportTile path={path} />
+          <ReportTile path={path} startDate={startDate} endDate={endDate}/>
         </div>
         <div style={{ gridArea: 'a2' }}>
           <NetworkHistory
