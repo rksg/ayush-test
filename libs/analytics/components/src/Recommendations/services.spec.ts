@@ -133,7 +133,12 @@ describe('Recommendation services', () => {
     ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
-    expect(data?.recommendations).toStrictEqual(expectedResult)
+    expect(data).toStrictEqual({
+      recommendations: expectedResult,
+      crrmScenarios: 100,
+      optimizedCount: 1,
+      totalCount: 3
+    })
   })
 
   it('should return recommendation list', async () => {
