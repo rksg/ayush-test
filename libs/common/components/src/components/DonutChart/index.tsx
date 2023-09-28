@@ -119,6 +119,7 @@ export function DonutChart ({
   const colors = data.map(series => series.color)
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const isSmall = props.size === 'small'
+  const isCustomEmptyStatus = isEmpty && !!props.value
 
   if (data.length === 0) { // Adding empty data to show center label
     data.push({
@@ -144,6 +145,14 @@ export function DonutChart ({
     fontWeight: cssNumber('--acx-headline-3-font-weight')
   }
 
+  const customStyles = {
+    color: cssStr('--acx-neutrals-60'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-subtitle-6-font-size'),
+    lineHeight: cssNumber('--acx-subtitle-5-line-height'),
+    fontWeight: cssNumber('--acx-subtitle-6-font-weight')
+  }
+
   const commonFontStyle = {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font')
@@ -153,12 +162,12 @@ export function DonutChart ({
     'small': {
       title: {
         ...commonFontStyle,
-        fontSize: cssNumber('--acx-subtitle-6-font-size'),
-        lineHeight: cssNumber('--acx-subtitle-6-line-height'),
+        fontSize: cssNumber('--acx-subtitle-5-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-5-line-height'),
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
       value: {
-        ...commonStyles
+        ...(isCustomEmptyStatus ? customStyles : commonStyles)
       }
     },
     'medium': {
@@ -307,7 +316,9 @@ export function DonutChart ({
         },
         itemStyle: {
           borderWidth: props.size === 'large' || props.size === 'x-large' ? 2 : 1,
-          borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
+          borderColor: isCustomEmptyStatus
+            ? cssStr('--acx-neutrals-40')
+            : isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }
     ]
