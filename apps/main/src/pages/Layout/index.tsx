@@ -23,6 +23,7 @@ import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                                 from '@acx-ui/rc/services'
 import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
@@ -42,8 +43,10 @@ function Layout () {
   const logo = useLogo(tenantId)
 
   const { data: userProfile } = useUserProfileContext()
+  const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+
   const companyName = userProfile?.companyName
-  const tenantType = getJwtTokenPayload().tenantType
+  const tenantType = tenantDetails?.tenantType
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
@@ -54,7 +57,7 @@ function Layout () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isSupportDelegation = userProfile?.support && isDelegationMode()
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
-  tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
+    tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
