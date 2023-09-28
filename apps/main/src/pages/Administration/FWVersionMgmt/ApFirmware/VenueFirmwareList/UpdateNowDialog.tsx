@@ -21,8 +21,7 @@ import * as UI from './styledComponents'
 
 export enum VersionsSelectMode {
   Radio,
-  Dropdown,
-  Radio_None
+  Dropdown
 }
 
 // eslint-disable-next-line max-len
