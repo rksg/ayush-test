@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useEffect } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { Col, Row }            from 'antd'
 import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
