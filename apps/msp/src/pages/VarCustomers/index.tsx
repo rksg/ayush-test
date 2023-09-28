@@ -85,6 +85,8 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
@@ -211,13 +213,13 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return (!isDelegationMode()) ? {
+        return (!isSupportToMspDashboardAllowed) ? {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         } : {}
       },
       render: function (_, { tenantName }, __, highlightFn) {
         return (
-          (!isDelegationMode())
+          (!isSupportToMspDashboardAllowed)
             ? <Link to=''>{highlightFn(tenantName)}</Link> : tenantName
         )
       }
@@ -307,7 +309,7 @@ export function VarCustomers () {
     }
   ]
 
-  const delegationType = userProfile?.support && !isDelegationMode()
+  const delegationType = userProfile?.support && !isSupportToMspDashboardAllowed
     ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',

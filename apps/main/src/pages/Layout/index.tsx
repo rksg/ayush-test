@@ -6,8 +6,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
-import { HomeSolid }     from '@acx-ui/icons'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { HomeSolid }                             from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -39,6 +39,8 @@ function Layout () {
   const navigate = useNavigate()
   const tenantId = useTenantId()
   const params = useParams()
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   const logo = useLogo(tenantId)
 
@@ -55,7 +57,7 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  const isSupportDelegation = userProfile?.support && isDelegationMode()
+  const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'

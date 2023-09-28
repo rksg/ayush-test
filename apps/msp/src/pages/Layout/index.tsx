@@ -4,7 +4,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
@@ -47,6 +47,8 @@ function Layout () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -65,7 +67,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (!isDelegationMode() && (userProfile?.support || userProfile?.dogfood)) {
+      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
