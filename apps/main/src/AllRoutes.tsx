@@ -8,7 +8,6 @@ import Administration   from './pages/Administration'
 import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
 import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
 import Dashboardv2      from './pages/Dashboardv2'
 import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
@@ -43,7 +42,6 @@ function AllRoutes () {
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
           <Route path='dashboard' element={<Dashboardv2 />} />
-          <Route path='dashboard-v1' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
