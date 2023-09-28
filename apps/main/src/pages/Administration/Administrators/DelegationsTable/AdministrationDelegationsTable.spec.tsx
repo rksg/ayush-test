@@ -168,7 +168,7 @@ describe('administrators delegation list', () => {
       })
 
     const colHeaders = await screen.findAllByRole('columnheader')
-    expect(colHeaders.length).toBe(4)
+    expect(colHeaders.length).toBe(3)
     expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
     expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()

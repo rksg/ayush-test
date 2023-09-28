@@ -112,15 +112,15 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         return row.delegatedToName
       }
     },
-    {
+    ...(isMultipleVarEnabled ? [{
       title: $t({ defaultMessage: 'Email' }),
       key: 'delegatedToAdmin',
       dataIndex: 'delegatedToAdmin',
       sorter: { compare: sortProp('delegatedToAdmin', defaultSort) },
-      render: (_, row) => {
+      render: (_: React.ReactNode, row: Delegation) => {
         return row.delegatedToAdmin
       }
-    },
+    }] : []),
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
