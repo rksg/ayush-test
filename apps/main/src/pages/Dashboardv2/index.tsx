@@ -188,7 +188,7 @@ function DashboardPageHeader () {
           onDateApply={setDateFilterState as CallableFunction}
           showTimePicker
           selectionType={range}
-          isDashBoard
+          showLast8hours
         />
       ]}
     />

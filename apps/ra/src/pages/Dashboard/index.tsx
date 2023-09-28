@@ -89,7 +89,7 @@ export default function Dashboard () {
               onDateApply={setDateFilterState as CallableFunction}
               showTimePicker
               selectionType={range}
-              isDashBoard
+              showLast8hours
             />
           </>
         ]}

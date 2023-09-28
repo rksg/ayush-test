@@ -44,7 +44,7 @@ interface DatePickerProps {
   onDateApply: Function;
   selectionType: DateRange;
   showAllTime?: boolean;
-  isDashBoard?: boolean;
+  showLast8hours?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -55,7 +55,7 @@ export const RangePicker = ({
   onDateApply,
   showAllTime,
   selectionType,
-  isDashBoard
+  showLast8hours
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -110,7 +110,7 @@ export const RangePicker = ({
   }, [range, onDateApply, translatedOptions])
 
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
-  const last8HoursKey = isDashBoard ? '' : $t(dateRangeMap[DateRange.last8Hours])
+  const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
