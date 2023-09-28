@@ -14,6 +14,12 @@ export const HelpButton = () => {
       selectedKeys={[]}
       items={[
         {
+          key: 'What’s-New',
+          label: <NewTabLink to='https://whatsnew.com'>
+            {$t({ defaultMessage: 'What’s New' })}
+          </NewTabLink>
+        },
+        {
           key: 'documentation',
           label: <NewTabLink to={documentationCenter}>
             {$t({ defaultMessage: 'Documentation' })}
@@ -22,7 +28,7 @@ export const HelpButton = () => {
         {
           key: 'how-to-videos',
           // eslint-disable-next-line max-len
-          label: <NewTabLink to='https://www.youtube.com/playlist?list=PLySwoo7u9-KJ4kZxhfoArNQfFDGWhwSJm'>
+          label: <NewTabLink to='https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'>
             {$t({ defaultMessage: 'How-To Videos' })}
           </NewTabLink>
         },

@@ -22,9 +22,10 @@ describe('HelpButton', () => {
     await userEvent.click(screen.getByRole('button'))
     const links = screen.getAllByRole('link')
     const items = [
+      { text: 'What`s New', href: 'https://whatsnew.com' },
       { text: 'Documentation', href: 'https://documentation.com' },
       // eslint-disable-next-line max-len
-      { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJ4kZxhfoArNQfFDGWhwSJm' },
+      { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi' },
       // eslint-disable-next-line max-len
       { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html' },
       { text: 'Contact Support', href: 'https://support.ruckuswireless.com/contact-us' },
