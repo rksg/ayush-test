@@ -547,7 +547,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         ? rawGuestPersona[key as keyof typeof guestPersona] : {}))
 
     if (rawEnableGuestVlan && rawEnableGuestVlan !== enableGuestVlan) {
-      // Switch to disable the Guest vlan
+      // Disable the Guest vlan at first time -> follow the unit vlan
       Object.assign(diffGuestPersona, { vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan })
     } else if (!rawEnableGuestVlan
       && rawEnableGuestVlan === enableGuestVlan
@@ -557,18 +557,19 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       Object.assign(diffGuestPersona, { vlan: diffUnitPersona?.vlan })
     }
 
+
     const dpsks: PropertyDpskSetting[] = [
       ...(Object.keys(diffUnitPersona).length !== 0 ?
         [{
           type: PropertyDpskType.UNIT,
           passphrase: diffUnitPersona?.dpskPassphrase,
-          vlan: diffUnitPersona?.vlan
+          vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
         }] : []),
       ...(Object.keys(diffGuestPersona).length !== 0
         ? [{
           type: PropertyDpskType.GUEST,
           passphrase: diffGuestPersona?.dpskPassphrase,
-          vlan: diffGuestPersona?.vlan
+          vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan
         }] : [])
     ]
 
