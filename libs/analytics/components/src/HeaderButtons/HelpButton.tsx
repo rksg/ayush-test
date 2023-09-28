@@ -15,7 +15,8 @@ export const HelpButton = () => {
       items={[
         {
           key: 'What’s-New',
-          label: <NewTabLink to='https://whatsnew.com'>
+          // eslint-disable-next-line max-len
+          label: <NewTabLink to='https://docs.cloud.ruckuswireless.com/RUCKUS-AI/releasenotes/releasenotes.html'>
             {$t({ defaultMessage: 'What’s New' })}
           </NewTabLink>
         },
@@ -35,7 +36,7 @@ export const HelpButton = () => {
         {
           key: 'license-information',
           // eslint-disable-next-line max-len
-          label: <NewTabLink to='https://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html'>
+          label: <NewTabLink to='https://docs.cloud.ruckuswireless.com/RUCKUS-AI/licensingguide/index.html'>
             {$t({ defaultMessage: 'License Information' })}
           </NewTabLink>
         },
