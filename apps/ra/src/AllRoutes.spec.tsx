@@ -36,6 +36,7 @@ describe('AllRoutes', () => {
   beforeEach(() => {
     profileContext.mockReturnValue({
       data: {
+        accountId: 'aid',
         tenants: [],
         invitations: [],
         permissions: { 'view-analytics': true }
@@ -47,24 +48,32 @@ describe('AllRoutes', () => {
 
   it('redirects analytics users to dashboard', async () => {
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
-    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/dashboard' }, {})
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/dashboard', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
   })
 
   it('redirects report users to reports', async () => {
     profileContext.mockReturnValue({
       data: {
+        accountId: 'aid',
         tenants: [],
         invitations: [],
         permissions: { 'view-analytics': false }
       }
     })
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
-    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/reports' }, {})
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
   })
 
   it('shows toast for invitations', async () => {
     profileContext.mockReturnValue({
       data: {
+        accountId: 'aid',
         tenants: [],
         invitations: ['some invitations'],
         permissions: { 'view-analytics': false }
@@ -93,7 +102,10 @@ describe('AllRoutes', () => {
     search.set('return', '/ai/incidents')
     jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
-    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/ai/incidents' }, {})
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/incidents', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
   })
 
   it('should render incidents correctly', async () => {

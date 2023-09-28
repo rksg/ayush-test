@@ -26,11 +26,11 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
-  const { data: user } = useUserProfileContext()
+  const { data: { invitations, permissions, accountId } } = useUserProfileContext()
   const [ search ] = useSearchParams()
   const previousURL = search.get('return')!
   useEffect(() => {
-    if (user.invitations.length > 0 /*|| user.tenants.length > 1*/) {
+    if (invitations.length > 0 /*|| tenants.length > 1*/) {
       showToast({ // TODO open account drawer instead
         type: 'success',
         content: <div>
@@ -42,14 +42,17 @@ function Init () {
       })
     }
   })
+  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([accountId]))
   return <Navigate
     replace
-    to={previousURL
-      ? decodeURIComponent(previousURL)
-      : user.permissions[PERMISSION_VIEW_ANALYTICS]
-        ? `${MLISA_BASE_PATH}/dashboard`
-        : `${MLISA_BASE_PATH}/reports`
-    } />
+    to={{
+      search: `?selectedTenants=${selectedTenants}`,
+      pathname: previousURL
+        ? decodeURIComponent(previousURL)
+        : permissions[PERMISSION_VIEW_ANALYTICS]
+          ? `${MLISA_BASE_PATH}/dashboard`
+          : `${MLISA_BASE_PATH}/reports`
+    }} />
 }
 
 function AllRoutes () {
