@@ -267,7 +267,7 @@ export function UntaggedPortsStep () {
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
             {$t({ defaultMessage:
-                'Select the untagged ports (access ports) for this model ({family}-{model}):' },
+                'Select the untagged ports (trunk ports) for this model ({family}-{model}):' },
             { family: vlanSettingValues.family, model: vlanSettingValues.model })}
           </label>
         </Col>

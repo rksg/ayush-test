@@ -34,7 +34,6 @@ export const ClientDetailPageHeader = () => {
       title={<Space size={4}>{clientId}
         {<HostnameSpace size={4}>
           {/* TODO: use client detail query to get hostname */}
-          ({$t({ defaultMessage: 'Unknown' })})
         </HostnameSpace>}
       </Space>}
       breadcrumb={[

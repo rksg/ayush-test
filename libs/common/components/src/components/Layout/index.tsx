@@ -173,10 +173,14 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 type LayoutContextType = {
   pageHeaderY: number
   setPageHeaderY: (y: number) => void
+  showMessageBanner?: boolean
+  setShowMessageBanner: (isShow?: boolean) => void
 }
 const LayoutContext = createContext({
   pageHeaderY: 0,
-  setPageHeaderY: () => {}
+  setPageHeaderY: () => {},
+  showMessageBanner: undefined,
+  setShowMessageBanner: () => {}
 } as LayoutContextType)
 export const useLayoutContext = () => useContext(LayoutContext)
 
@@ -191,6 +195,7 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
   const [pageHeaderY, setPageHeaderY] = useState(0)
+  const [showMessageBanner, setShowMessageBanner] = useState<boolean>()
   const screenXL = parseInt(modifyVars['@screen-xl'], 10)
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
@@ -220,7 +225,11 @@ export function Layout ({
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
 
-  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
+  return <UI.Wrapper showScreen={display || subOptimalDisplay}
+    style={{
+      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
+      '--acx-pageheader-height': pageHeaderY + 'px'
+    } as React.CSSProperties}>
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
@@ -243,7 +252,12 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
+      <LayoutContext.Provider value={{
+        pageHeaderY,
+        setPageHeaderY,
+        showMessageBanner,
+        setShowMessageBanner
+      }}>
         {(display || subOptimalDisplay) ? <Content>{content}</Content> :
           <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />

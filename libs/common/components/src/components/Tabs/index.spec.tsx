@@ -4,8 +4,8 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 import { Tabs, TabsType } from '.'
 
 describe('Tabs', () => {
-  function renderTab (type?: TabsType) {
-    return <Tabs type={type}>
+  function renderTab (type?: TabsType, stickyTop?: boolean) {
+    return <Tabs type={type} stickyTop={stickyTop}>
       <Tabs.TabPane tab='Tab 1' key='tab1'>Tab 1 Content</Tabs.TabPane>
       <Tabs.TabPane tab='Tab 2' key='tab2'>Tab 2 Content</Tabs.TabPane>
     </Tabs>
@@ -17,12 +17,13 @@ describe('Tabs', () => {
   })
   types.forEach(type => {
     it(`render type = ${type}`, async () => {
-      render(renderTab(type))
+      render(renderTab(type, false))
       expect(screen.getAllByRole('tab')).toHaveLength(2)
     })
   })
-  it('render as second', async () => {
-    render(renderTab('second'))
+
+  it('render with stickyTop', async () => {
+    render(renderTab('card', true))
     const tabs = screen.getAllByRole('tab')
     expect(tabs).toHaveLength(2)
 

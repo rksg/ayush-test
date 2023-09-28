@@ -15,7 +15,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         </span>
       </button>
       <div
-        class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 eEpEiI"
+        class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 kcJSlw"
       >
         <div
           class="ant-tabs-nav"
@@ -1937,13 +1937,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
       </div>
       <div
         style="display: none;"
-      >
-        <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
-        >
-          QoS
-        </h4>
-      </div>
+      />
     </div>
   </form>
 </DocumentFragment>

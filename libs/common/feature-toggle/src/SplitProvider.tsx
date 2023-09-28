@@ -11,6 +11,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
+const splitProxy = get('SPLIT_PROXY_ENDPOINT')
 const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
@@ -19,6 +20,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { data: userProfile } = useUserProfileContext()
   const prefixKey = isMLISA ? 'MLISA' : 'ACX'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
+
   if (!factory && tenantKey) {
     factory = SplitSdk({
       scheduler: {
@@ -28,9 +30,14 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         authorizationKey: splitKey,
         key: tenantKey
       },
+      ...(splitProxy ? { urls: {
+        sdk: splitProxy,
+        events: splitProxy,
+        auth: splitProxy
+      } } : {}),
       storage: {
         type: 'LOCALSTORAGE',
-        prefix: prefixKey + suffix
+        prefix: `${prefixKey}-${suffix}`
       },
       debug: false // set this value to true for running in debug mode for debugging in local development only
     })

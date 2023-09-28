@@ -17,10 +17,6 @@ function ClientDetailTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Overview' })}
-        key='overview'
-      />
-      <Tabs.TabPane
         tab={$t({ defaultMessage: 'Troubleshooting' })}
         key='troubleshooting'
       />

@@ -10,6 +10,7 @@ import { usePollingTableQuery }                                                f
 export default function ClientList () {
   const { $t } = useIntl()
   const [ switchCount, setSwitchCount ] = useState(0)
+  const [ tableQueryFilters, setTableQueryFilters ] = useState({})
 
   const tableQuery = usePollingTableQuery({
     useQuery: useGetSwitchClientListQuery,
@@ -25,7 +26,9 @@ export default function ClientList () {
     setSwitchCount(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
-  return <SwitchClientContext.Provider value={{ setSwitchCount }}>
+  return <SwitchClientContext.Provider value={{
+    setSwitchCount, tableQueryFilters, setTableQueryFilters
+  }}>
     <PageHeader
       title={$t({ defaultMessage: 'Wired ({switchCount})' }, { switchCount })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}

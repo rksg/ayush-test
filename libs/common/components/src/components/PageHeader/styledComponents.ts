@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
     var(--acx-content-vertical-space) +
     (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
   );
-  z-index: 6;
+  z-index: 7;
   background-color: var(--acx-primary-white);
   padding: 0 var(--acx-content-horizontal-space);
   margin: 0 calc(var(--acx-content-horizontal-space) * -1);

@@ -43,11 +43,12 @@ const getDisplayDateString = (data: string | undefined) => {
 const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: userProfileData } = useUserProfileContext()
+  const { data: userProfileData, hasAccess } = useUserProfileContext()
   const { className, hasMSPEcLabel, canMSPDelegation } = props
   const isRevokeExpired = useRef<boolean>(false)
   const isMspDelegatedEC = hasMSPEcLabel && userProfileData?.varTenantId
                               && canMSPDelegation === false
+
 
   const [ enableAccessSupport,
     { isLoading: isEnableAccessSupportUpdating }]
@@ -105,15 +106,16 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   || isEnableAccessSupportUpdating
   || isDisableAccessSupportUpdating
 
+  const isRksSupportAllowed = hasAccess('POST:/api/tenant/{tenantId}/delegation/support')
   const isSupportUser = Boolean(userProfileData?.support)
-  const isDisabled = isSupportUser || isUpdating
+  const isDisabled = isSupportUser || !isRksSupportAllowed || isUpdating
 
   const supportInfo = isMspDelegatedEC ? ecTenantDelegationData : tenantDelegationData
   const { createdDate, expiryDate, expiryDateString, isAccessSupported } = supportInfo
   const isSupportAccessEnabled = Boolean(isAccessSupported)
 
   useEffect(() => {
-    if (expiryDate && !isUpdating && !isRevokeExpired.current) {
+    if (isRksSupportAllowed && expiryDate && !isUpdating && !isRevokeExpired.current) {
       const remainingDuration = moment.duration(
         moment(expiryDate).diff(moment.now()))
       const remainingSecs = remainingDuration.asSeconds()
@@ -129,7 +131,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
           })
       }
     }
-  }, [expiryDate, isUpdating])
+  }, [expiryDate, isUpdating, isRksSupportAllowed])
 
   return (
     <Row gutter={24} className={className}>
