@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import moment                            from 'moment'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
@@ -18,7 +19,12 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery, sortProp, defaultSort
+  MacRegistrationFilterRegExp,
+  useTableQuery,
+  usePollingTableQuery,
+  sortProp,
+  defaultSort,
+  EXPIRATION_TIME_FORMAT
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -56,18 +62,14 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
 
+  const connectedDevices = devicesData?.filter(d => d.deviceConnectivity === 'CONNECTED') || []
+  const connectedDeviceMacs = connectedDevices.map(device => device.mac)
+
   const clientTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: {
       ...defaultClientPayload,
-      filters: {
-        clientMac: devicesData && devicesData?.filter(device =>
-          device.deviceConnectivity === 'CONNECTED'
-        ).length > 0
-          ? devicesData?.filter(device => device.deviceConnectivity === 'CONNECTED')
-            .map(device => device.mac)
-          : []
-      }
+      filters: { clientMac: connectedDeviceMacs }
     },
     pagination: {
       pageSize: 10000
@@ -116,7 +118,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const getOnlineStatus = (row: DPSKDeviceInfo) => {
     if (isNewConfigFlow) {
       const dateContent = row.lastConnectedTime
-        ? new Date(row.lastConnectedTime).toLocaleString()
+        ? moment(row.lastConnectedTime).format(EXPIRATION_TIME_FORMAT)
         : '-'
       return deviceOnlineList.hasOwnProperty(row.mac)
         ? $t({ defaultMessage: 'Online' })
