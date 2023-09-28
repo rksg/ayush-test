@@ -19,6 +19,7 @@ export default function PortalViewGuestForget (props: {
       <UI.ViewSectionTabs
         defaultActiveKey='text'
         type='card'
+        stickyTop={false}
         size={'middle'}
       >
         <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswdText} key='text'>

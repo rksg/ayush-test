@@ -2,6 +2,7 @@ import { rest } from 'msw'
 
 import { RadioBand }                          from '@acx-ui/components'
 import * as config                            from '@acx-ui/config'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
 import { Provider, store }                    from '@acx-ui/store'
@@ -15,6 +16,16 @@ import { EmbeddedReport, convertDateTimeToSqlFormat, getSupersetRlsClause } from
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
   embedDashboard: () => mockEmbedDashboard
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  __esModule: true,
+  ...jest.requireActual('@acx-ui/utils'),
+  useLocaleContext: () => ({
+    messages: {
+      locale: 'en'
+    }
+  })
 }))
 
 jest.mock('@acx-ui/config')
@@ -65,6 +76,8 @@ describe('EmbeddedDashboard', () => {
 
   const params = { tenantId: 'tenant-id' }
   it('should render the dashboard', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
       (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
@@ -92,6 +105,8 @@ describe('EmbeddedDashboard', () => {
     </Provider>, { route: { params } })
   })
   it('should render the dashboard rls clause', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
       (_, res, ctx) => res(ctx.json(getEmbeddedReponse))

@@ -233,3 +233,23 @@ export const mockedDevices = [
     deviceConnectivity: 'CONNECTED'
   }
 ]
+
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
+    }
+  ]
+}

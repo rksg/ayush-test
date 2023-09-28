@@ -12,7 +12,7 @@ import {
   PERMISSION_MANAGE_LABEL,
   PERMISSION_FRANCHISOR
 } from '@acx-ui/analytics/utils'
-import { LayoutProps }  from '@acx-ui/components'
+import { LayoutProps } from '@acx-ui/components'
 import {
   AIOutlined,
   AISolid,
@@ -25,7 +25,10 @@ import {
   RocketOutlined,
   RocketSolid,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  SwitchOutlined,
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -150,6 +153,55 @@ export function useMenuConfig () {
           }
         ]
       }] : []),
+    ...(hasViewAnalyticsPermissions ? [
+      {
+        label: $t({ defaultMessage: 'Wi-Fi' }),
+        inactiveIcon: WiFi,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Access Points' }),
+            children: [
+              {
+                uri: '/wifi',
+                label: $t({ defaultMessage: 'Access Points List' }),
+                isActiveCheck: new RegExp('^/wifi(?!(/reports))')
+              },
+              {
+                uri: '/wifi/reports/aps',
+                label: $t({ defaultMessage: 'Access Points Report' })
+              },
+              {
+                uri: '/wifi/reports/airtime',
+                label: $t({ defaultMessage: 'Airtime Utilization Report' })
+              }
+            ]
+          }
+        ]
+      }
+    ] : []),
+    {
+      label: $t({ defaultMessage: 'Wired' }),
+      inactiveIcon: SwitchOutlined,
+      activeIcon: SwitchSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Switches' }),
+          children: [
+            {
+              uri: '/switch',
+              label: $t({ defaultMessage: 'Switch List' }),
+              isActiveCheck: new RegExp('^/switch(?!(/reports))')
+            },
+            {
+              uri: '/switch/reports/wired',
+              label: $t({ defaultMessage: 'Wired Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),

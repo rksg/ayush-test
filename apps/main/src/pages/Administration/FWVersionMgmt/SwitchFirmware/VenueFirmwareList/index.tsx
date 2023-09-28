@@ -176,7 +176,10 @@ export const VenueFirmwareTable = (
 
     return availableVersions?.map((version) => {
       if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
-        return { id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR }
+        return {
+          ...version,
+          id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
+        }
       } return version
     })
   }
@@ -276,9 +279,7 @@ export const VenueFirmwareTable = (
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-        // eslint-disable-next-line max-len
-        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
-
+        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
         if (enableSwitchTwoVersionUpgrade) {
           nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
           icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
@@ -326,8 +327,7 @@ export const VenueFirmwareTable = (
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-        // eslint-disable-next-line max-len
-        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
+        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
 
         if (enableSwitchTwoVersionUpgrade) {
           nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
@@ -343,14 +343,14 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    visible: (selectedRows) => {
-      let skipUpdateVisilibity = true
+    disabled: (selectedRows) => {
+      let skipUpdateEnabled = true
       selectedRows.forEach((row) => {
         if (!hasSchedule(row)) {
-          skipUpdateVisilibity = false
+          skipUpdateEnabled = false
         }
       })
-      return skipUpdateVisilibity
+      return !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows, clearSelection) => {
@@ -473,5 +473,18 @@ const removeCurrentVersionsAnd10010IfNeeded = (version: string,
   _.remove(filterVersions, (v: FirmwareVersion) => {
     return v.id === version || v.id === rodanVersion
   })
+}
+
+function checkCurrentVersions (version: string,
+  rodanVersion: string,
+  filterVersions: FirmwareVersion[]): FirmwareVersion[] {
+  let inUseVersions = [] as FirmwareVersion[]
+  filterVersions.forEach((v: FirmwareVersion) => {
+    if (v.id === version || v.id === rodanVersion) {
+      v = { ...v, inUse: true }
+    }
+    inUseVersions.push(v)
+  })
+  return inUseVersions
 }
 

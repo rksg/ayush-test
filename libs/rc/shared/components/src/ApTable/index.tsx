@@ -21,9 +21,10 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
 } from '@acx-ui/rc/services'
 import {
+  AFCStatus,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -62,7 +63,8 @@ export const defaultApPayload = {
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.APSystem.secureBootEnabled'
+    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
+    'apStatusData.APSystem.secureBootEnabled'
   ]
 }
 
@@ -181,7 +183,38 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (status: any, row : APExtended) => {
+        /* eslint-disable max-len */
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
+        )) {
+
+          const afcInfo = row.apStatusData?.afcInfo
+
+          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
+          }
+
+          return (
+            <span>
+              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
+                text={warningMessages}
+              />
+            </span>
+          )
+        } else {
+          return <APStatus status={status.props.children} />
+        }
+        /* eslint-enable max-len */
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),

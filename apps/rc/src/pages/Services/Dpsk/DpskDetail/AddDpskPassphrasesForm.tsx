@@ -52,6 +52,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
@@ -257,7 +258,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         ]}
         children={<Input />}
       />
-      {isMacAddressEnabled() &&
+      {isMacAddressEnabled() && !isNewConfigFlow &&
         <Form.Item
           label={
             <>
