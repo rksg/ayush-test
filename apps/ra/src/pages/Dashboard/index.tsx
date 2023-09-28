@@ -21,7 +21,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter } from '@acx-ui/utils'
+import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -64,6 +64,12 @@ export const useDashBoardUpdatedFilters = () => {
   }
 }
 
+export const getFiltersForRecommendationWidgets = (filters : AnalyticsFilter) => {
+  if(filters.range !== DateRange.last8Hours)
+    return filters
+  return { ...filters, ...getDateRangeFilter(DateRange.last24Hours) }
+}
+
 export default function Dashboard () {
   const { $t } = useIntl()
   const {
@@ -76,6 +82,7 @@ export default function Dashboard () {
     path
   }= useDashBoardUpdatedFilters()
   const height = useMonitorHeight(536)
+
   return (
     <>
       <PageHeader
@@ -102,24 +109,24 @@ export default function Dashboard () {
           <NetworkHistory
             hideLegend
             historicalIcon={false}
-            filters={{ ...analyticsFilter, startDate, endDate, range }}
+            filters={analyticsFilter}
           />
         </div>
         <div style={{ gridArea: 'a3' }}>
-          <SLA filters={{ ...analyticsFilter, startDate, endDate, range }} />
+          <SLA filters={analyticsFilter} />
         </div>
         <div style={{ gridArea: 'b1' }}>
-          <IncidentsCountBySeverities filters={{ ...filters, startDate, endDate, range }} />
+          <IncidentsCountBySeverities filters={filters} />
         </div>
         <div style={{ gridArea: 'b2' }}>
-          <AIDrivenRRM filters={{ ...filters, startDate, endDate, range }} />
+          <AIDrivenRRM filters={getFiltersForRecommendationWidgets(filters)} />
         </div>
         <div style={{ gridArea: 'c2' }}>
-          <AIOperations filters={{ ...filters, startDate, endDate, range }} />
+          <AIOperations filters={getFiltersForRecommendationWidgets(filters)} />
         </div>
         <div style={{ gridArea: 'd1' }}>
           <DidYouKnow
-            filters={{ ...filters, startDate, endDate, range }}
+            filters={filters}
             maxFactPerSlide={3}
             maxSlideChar={290}
           />

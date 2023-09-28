@@ -4,8 +4,9 @@ import { BrowserRouter }                   from '@acx-ui/react-router-dom'
 import { act, render, renderHook, screen } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
 
-import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters } from '.'
+import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters, getFiltersForRecommendationWidgets } from '.'
 
+const original = Date.now
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object
     .keys(jest.requireActual('@acx-ui/analytics/components'))
@@ -87,6 +88,46 @@ describe('Dashboard', () => {
         </BrowserRouter>
       )
       expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
+    })
+  })
+  describe('getFiltersForRecommendationWidgets', () => {
+    beforeEach(() => {
+      Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    })
+    afterAll(() => Date.now = original)
+    it('should return last24hours when last8hours is selected', async () => {
+      const result = getFiltersForRecommendationWidgets({
+        startDate: 'startDate',
+        endDate: 'endDate',
+        range: DateRange.last8Hours,
+        filter: { networkNodes: [], switchNodes: [] }
+      })
+      expect(result).toEqual({
+        filter: {
+          networkNodes: [],
+          switchNodes: []
+        },
+        range: 'Last 24 Hours',
+        startDate: '2021-12-31T00:01:00+00:00',
+        endDate: '2022-01-01T00:01:00+00:00'
+      })
+    })
+    it('should return last24hours', async () => {
+      const result = getFiltersForRecommendationWidgets({
+        startDate: 'startDate',
+        endDate: 'endDate',
+        range: DateRange.last24Hours,
+        filter: { networkNodes: [], switchNodes: [] }
+      })
+      expect(result).toEqual({
+        filter: {
+          networkNodes: [],
+          switchNodes: []
+        },
+        range: 'Last 24 Hours',
+        startDate: 'startDate',
+        endDate: 'endDate'
+      })
     })
   })
 })
