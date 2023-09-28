@@ -12,7 +12,9 @@ export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
     return get('IS_MLISA_SA')
       ? 'https://staging.mlisa.io'
+    // ? 'https://local.mlisa.io'
       : 'https://dev.ruckus.cloud'
+    // : 'https://alto.local.mlisa.io'
   }
   return origin
 }
