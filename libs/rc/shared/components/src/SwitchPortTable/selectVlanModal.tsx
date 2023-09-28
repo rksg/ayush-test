@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { Checkbox, FormInstance, Input, Radio, Space, Switch, Typography } from 'antd'
 import _                                                                   from 'lodash'
 
-import { Button, Modal, Tabs, Tooltip }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { InformationSolid }                              from '@acx-ui/icons'
-import { useAddVlanMutation, useAddSwitchVlansMutation } from '@acx-ui/rc/services'
+import { Button, Modal, Tabs, Tooltip }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { InformationSolid }                                from '@acx-ui/icons'
+import { useAddVlanMutation, useAddSwitchesVlansMutation } from '@acx-ui/rc/services'
 import {
   SwitchVlan,
   PortSettingModel,
+  VenueMessages,
   Vlan
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -40,17 +41,18 @@ export function SelectVlanModal (props: {
   voiceVlan?: string,
   isVoiceVlanInvalid?: boolean,
   hasSwitchProfile?: boolean,
+  cliApplied?: boolean,
   profileId?: string,
-  isVenueLevel?: boolean
+  switchIds?: string[],
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string
 }) {
   const { $t } = getIntl()
   const params = useParams()
   const { form, selectModalvisible, setSelectModalvisible,
-    setUseVenueSettings, onValuesChange, hasSwitchProfile,
-    vlanDisabledTooltip, defaultVlan, switchVlans,
-    vlanUsedByVe = [], taggedVlans = '', untaggedVlan, isVenueLevel,
+    setUseVenueSettings, onValuesChange, hasSwitchProfile, cliApplied,
+    vlanDisabledTooltip, defaultVlan, switchVlans, switchIds,
+    vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
     showVoiceVlan, voiceVlan, isVoiceVlanInvalid
   } = props
 
@@ -66,7 +68,7 @@ export function SelectVlanModal (props: {
   const [voiceVlanTmp, setVoiceVlanTmp] = useState(voiceVlan)
   const [isVoiceVlanInvalidTmp, setIsVoiceVlanInvalidTmp] = useState(isVoiceVlanInvalid)
   const [addVlan] = useAddVlanMutation()
-  const [addSwitchVlans] = useAddSwitchVlansMutation()
+  const [addSwitchesVlans] = useAddSwitchesVlansMutation()
 
   const onOk = async () => {
     form.setFieldsValue({
@@ -205,42 +207,24 @@ export function SelectVlanModal (props: {
   }
 
   const setVlan = async (values: Vlan) => {
-    if (enableSwitchLevelVlan && isVenueLevel) {
-      // isVenueLevel
-    } else if (enableSwitchLevelVlan) {
-      const payload = {
-        // ...values,
-        ...(_.omit(values, ['switchFamilyModels']))
-        // switchVlanPortModels: values?.switchFamilyModels?.map(models => {
-        //   return {
-        //     ...(_.omit(models, ['model'])),
-        //     switchModel: models?.model,
-        //     taggedPorts: models?.taggedPorts?.toString(),
-        //     untaggedPorts: models?.untaggedPorts?.toString()
-        //   }
-        // })
-      }
+    if (enableSwitchLevelVlan) {
+      const payload = switchIds?.map(switchId => {
+        return {
+          ...(_.omit(values, ['switchFamilyModels'])),
+          switchId
+        }
+      })
 
       try {
-        await addSwitchVlans({
+        await addSwitchesVlans({
           params,
           payload
         }).unwrap()
-        await props.updateSwitchVlans?.({
-          ...values
-          // switchFamilyModels: values?.switchFamilyModels?.map(models => {
-          //   return {
-          //     ...models,
-          //     //...(_.omit(models, ['model'])),
-          //     // switchModel: models?.model,
-          //     taggedPorts: models?.taggedPorts?.toString(),
-          //     untaggedPorts: models?.untaggedPorts?.toString()
-          //   }
-          // })
-        })
+        await props.updateSwitchVlans?.(values)
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
       }
+
     } else {
       const payload = {
         ...values,
@@ -300,16 +284,25 @@ export function SelectVlanModal (props: {
             TODO: remove tooltip and disabled button when removing FF enableSwitchLevelVlan
           } */}
           {enableSwitchLevelVlan
-            ?<Button key='add-vlan'
-              type='link'
-              size='small'
-              onClick={() => {
-                setVlanDrawerVisible(true)
-              }}
+            ? <Tooltip
+              placement='top'
+              key='disable-add-vlan-tooltip'
+              title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}
             >
-              {$t({ defaultMessage: 'Add VLAN' })}
-            </Button>
-            :<Tooltip
+              <Space>
+                <Button key='add-vlan'
+                  type='link'
+                  size='small'
+                  disabled={cliApplied}
+                  onClick={() => {
+                    setVlanDrawerVisible(true)
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add VLAN' })}
+                </Button>
+              </Space>
+            </Tooltip>
+            : <Tooltip
               placement='top'
               key='disable-add-vlan-tooltip'
               title={!hasSwitchProfile ? vlanDisabledTooltip : ''}

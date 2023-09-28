@@ -246,6 +246,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/vlans/:vlanId',
     newApi: true
   },
+  addSwitchesVlans: {
+    method: 'post',
+    url: '/switches/vlans',
+    newApi: true
+  },
   getSwitchesVlan: {
     method: 'post',
     url: '/switches/vlansIntersection/query',

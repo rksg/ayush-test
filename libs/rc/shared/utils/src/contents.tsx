@@ -83,6 +83,15 @@ export const SwitchMessages = {
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
     defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+  }),
+  NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
+  }),
+  STACKING_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a stacking port and can not be configured'
+  }),
+  LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a LAG member port and can not be configured'
   })
 }
 

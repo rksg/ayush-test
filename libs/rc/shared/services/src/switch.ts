@@ -460,6 +460,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
+    addSwitchesVlans: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitchesVlans, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -1331,6 +1341,7 @@ export const {
   useAddSwitchVlansMutation,
   useDeleteSwitchVlanMutation,
   useUpdateSwitchVlanMutation,
+  useAddSwitchesVlansMutation,
   useGetSwitchesVlanQuery,
   useLazyGetSwitchesVlanQuery,
   useGetTaggedVlansByVenueQuery,

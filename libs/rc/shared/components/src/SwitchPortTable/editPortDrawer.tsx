@@ -169,6 +169,7 @@ export function EditPortDrawer ({
   const [editPortData, setEditPortData] = useState(null as unknown as PortSettingModel)
   const [defaultVlan, setDefaultVlan] = useState('')
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
+
   const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [portsProfileVlans, setPortsProfileVlans] = useState({} as ProfileVlans)
@@ -181,6 +182,7 @@ export function EditPortDrawer ({
   const [disabledUseVenueSetting, setDisabledUseVenueSetting] = useState(false)
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
   const [disableSaveButton, setDisableSaveButton] = useState(false)
+  const [cliApplied, setCliApplied] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -214,7 +216,9 @@ export function EditPortDrawer ({
   const getVlans = async () => {
     return switches.length > 1
       // eslint-disable-next-line max-len
-      ? await getSwitchesVlan({ params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
+      // isVenueLevel && enableSwitchLevelVlan
+      ? await getSwitchesVlan({ 
+        params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
       : await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
   }
 
@@ -247,11 +251,22 @@ export function EditPortDrawer ({
     return veRouted?.data
   }
 
-  const getEachSwitchVlans = async () => {
+  const getEachSwitchVlans = async () => { ////
     const switchVlans = switches?.map(async (switchId) => {
       return await getSwitchVlans({
         params: { tenantId, switchId }
       }, true).unwrap()
+    })
+    return Promise.all(switchVlans)
+  }
+
+  const getAllSwitchesVlans = async () => { ////
+    const switchVlans = switches?.map(async (switchId) => {
+      return await getSwitchVlan({
+        params: { tenantId, switchId }
+      }, true).unwrap().then(res => {
+        return res?.switchVlan ? res?.switchVlan : []
+      })
     })
     return Promise.all(switchVlans)
   }
@@ -269,6 +284,7 @@ export function EditPortDrawer ({
       const aclUnion = await getAclUnion({ params: { tenantId, switchId } }, true).unwrap()
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
+      const allSwitchVlans = isVenueLevel ? (await getAllSwitchesVlans())?.flat() : []
       const vlansByVenue = await getVlansByVenue({
         params: { tenantId, venueId: vid }
       }, true).unwrap()
@@ -292,17 +308,25 @@ export function EditPortDrawer ({
 
       setDefaultVlan(defaultVlan)
       setProfileDefaultVlan(profileDefaultVlan)
-      setSwitchVlans(switchVlans)
+      setSwitchVlans({
+        ...switchVlans,
+        ...(enableSwitchLevelVlan && isVenueLevel
+          ? { switchVlan: allSwitchVlans, profileVlan: [] } : {}
+        ) /////
+      } as SwitchVlanUnion)
       setVenueVlans(vlansByVenue)
       setVlanUsedByVe(vlanUsedByVe)
 
       setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
       setPoeClassOptions(getPoeClass(selectedPorts))
-      setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
+      setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
-      setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
+      setCliApplied(switchProfile?.filter(p => p.profileType === 'CLI')?.length > 0)
+      setDisabledUseVenueSetting(
+        profileDefaultVlan ? await getUseVenueSettingDisabled(profileDefaultVlan) : false
+      )
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -1393,8 +1417,9 @@ export function EditPortDrawer ({
         isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
+        cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
-        isVenueLevel={isVenueLevel}
+        switchIds={switches}
         updateSwitchVlans={async (values: Vlan) =>
           updateSwitchVlans(
             values,

@@ -2,6 +2,8 @@ import { defineMessage } from 'react-intl'
 
 import { SwitchModelInfoMap } from './types'
 
+export const SWITCH_DEFAULT_VLAN_NAME = 'DEFAULT-VLAN'
+
 export enum NetworkTypeEnum {
   PSK = 'psk',
   OPEN = 'open',

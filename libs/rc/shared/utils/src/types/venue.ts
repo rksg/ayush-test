@@ -383,7 +383,9 @@ export interface SwitchModel {
 	slots: SwitchModelSlot[],
 	switchModel?: string,
   taggedPorts?: string,
+	taggedPortsList?: string[],
 	untaggedPorts?: string,
+	untaggedPortsList?: string[],
 	voicePorts?: string
 }
 
@@ -404,6 +406,8 @@ export interface Vlan {
   taggedPorts?: string,
   title?: string,
   key?: number
+	inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
 }
 
 export interface ConfigurationProfile {

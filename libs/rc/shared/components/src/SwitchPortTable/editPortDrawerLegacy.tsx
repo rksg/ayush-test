@@ -182,6 +182,7 @@ export function EditPortDrawer ({
   const [disabledUseVenueSetting, setDisabledUseVenueSetting] = useState(false)
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
   const [disableSaveButton, setDisableSaveButton] = useState(false)
+  const [cliApplied, setCliApplied] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -303,6 +304,7 @@ export function EditPortDrawer ({
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
+      setCliApplied(switchProfile?.filter(p => p.profileType === 'CLI')?.length > 0)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
 
       isMultipleEdit
@@ -1337,8 +1339,8 @@ export function EditPortDrawer ({
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
+        cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
-        isVenueLevel={isVenueLevel}
         updateSwitchVlans={async (values: Vlan) =>
           updateSwitchVlans(
             values,
