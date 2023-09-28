@@ -164,7 +164,7 @@ export function VenueFirmwareList () {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
           ((item.versions?.[0].id
-            && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) < 0)
+            && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
           || !item.versions?.[0].id))
         return hasOutdatedFw
       },

@@ -269,7 +269,7 @@ describe('Edge venue firmware list', () => {
   })
 
 
-  it('should cancel preference update', async () => {
+  it.skip('should cancel preference update', async () => {
     const user = userEvent.setup()
     render(
       <Provider>

@@ -32,13 +32,14 @@ import {
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
-  useUpdateVenueTripleBandRadioSettingsMutation, useGetVenueApCapabilitiesQuery
+  useUpdateVenueTripleBandRadioSettingsMutation,
+  useGetVenueApCapabilitiesQuery,
+  isAPLowPower
 } from '@acx-ui/rc/services'
 import {
   APExtended,
   APExtendedGrouped,
   VenueRadioCustomization,
-  AFCPowerMode,
   LowPowerAPQuantity,
   ChannelBandwidth6GEnum
 } from '@acx-ui/rc/utils'
@@ -172,7 +173,7 @@ export function RadioSettings () {
   /* eslint-disable max-len */
   const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
     const lowerPowerModeAP = response.filter((ap) => {
-      return ap.apRadioDeploy === '2-5-6' && ap.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER
+      return ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
     })
 
     setLowPowerAPQuantity({

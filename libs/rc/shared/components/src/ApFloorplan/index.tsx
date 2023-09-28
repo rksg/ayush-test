@@ -57,6 +57,8 @@ export function ApFloorplan (props: {
 
   const { data: extendedApList } = useApListQuery({
     params, payload: {
+      pageSize: 10000,
+      page: 1,
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }
@@ -205,7 +207,7 @@ export function ApFloorplan (props: {
                 key={device?.serialNumber}
                 galleryMode={false}
                 contextAlbum={false}
-                showRogueAp={true}
+                showRogueAp={!!rogueApMac}
                 perRogueApModel={!!rogueApMac}
                 context={FloorplanContext['ap']}
                 device={device}
