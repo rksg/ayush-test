@@ -38,8 +38,8 @@ export const ClientDetailPageHeader = () => {
       </Space>}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Clients' }), link: '' },
-        { text: $t({ defaultMessage: 'Wireless' }), link: '' }// ,
-        // { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
+        { text: $t({ defaultMessage: 'Wireless' }), link: '' },
+        { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ]}
       extra={[
         <DatePicker />

@@ -173,6 +173,7 @@ describe('DpskForm', () => {
     )
 
     expect(await screen.findByRole('radio', { name: /REJECT/ })).toBeChecked()
+    jest.mocked(useIsTierAllowed).mockReset()
   })
 
   it('should navigate to the DPSK table when clicking Cancel button', async () => {
