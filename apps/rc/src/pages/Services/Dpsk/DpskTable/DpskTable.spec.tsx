@@ -21,8 +21,8 @@ import {
 import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
-import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-import DpskTable                                     from './DpskTable'
+import { mockedDpskList } from './__tests__/fixtures'
+import DpskTable          from './DpskTable'
 
 
 const mockedUseNavigate = jest.fn()
@@ -144,15 +144,7 @@ describe('DpskTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  // eslint-disable-next-line max-len
-  it.skip('should not delete the selected row when it is mapped to Identity or Network', async () => {
-    mockServer.use(
-      rest.post(
-        DpskUrls.getEnhancedDpskList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskListWithPersona }))
-      )
-    )
-
+  it('should not delete the selected row when it is mapped to Identity or Network', async () => {
     render(
       <Provider>
         <DpskTable />
@@ -161,15 +153,15 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskListWithPersona.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    const targetDpsk = mockedDpskList.data[3]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    await userEvent.click(within(targetRow).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
     const alertDialog = await screen.findByRole('dialog')
 
     // eslint-disable-next-line max-len
-    expect(within(alertDialog).getByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
+    expect(await within(alertDialog).findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
 
     await userEvent.click(within(alertDialog).getByRole('button', { name: /OK/ }))
     await waitFor(() => expect(alertDialog).not.toBeVisible())
