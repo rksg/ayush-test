@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { ToastProps }                  from '@acx-ui/components'
 import { WifiUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { mockServer, render, waitFor } from '@acx-ui/test-utils'
@@ -18,11 +17,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   closeCcdSocket: () => jest.fn()
 }))
 
-const mockedShowToast = jest.fn()
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  showToast: (config: ToastProps) => mockedShowToast(config)
-}))
 
 describe('CcdResultViewer', () => {
   const venueId = '_VENUE_ID_'
