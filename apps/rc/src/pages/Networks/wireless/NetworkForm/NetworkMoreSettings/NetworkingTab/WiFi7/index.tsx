@@ -294,7 +294,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
       <UI.Subtitle>
         {$t({ defaultMessage: 'Wi-Fi 7' })}
         <Tooltip.Question
-          title={$t({ defaultMessage: 'Only work with Wi-Fi Aps, e.g., R770' })}
+          title={$t({ defaultMessage: 'Only work with Wi-Fi 7 Aps, e.g., R770' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />
