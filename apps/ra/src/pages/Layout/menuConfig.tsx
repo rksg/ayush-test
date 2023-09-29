@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import {
-  useUserProfileContext,
+  getUserProfile,
   PERMISSION_VIEW_ANALYTICS,
   PERMISSION_VIEW_DATA_EXPLORER,
   PERMISSION_MANAGE_SERVICE_GUARD,
@@ -31,8 +31,8 @@ import {
 } from '@acx-ui/icons'
 export function useMenuConfig () {
   const { $t } = useIntl()
-  const { data: userProfile } = useUserProfileContext()
-  const currentAccountPermissions = userProfile.permissions
+  const userProfile = getUserProfile()
+  const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =

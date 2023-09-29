@@ -1,9 +1,9 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
 
-import { useUserProfileContext } from '@acx-ui/analytics/utils'
-import { showToast }             from '@acx-ui/components'
-import { Provider }              from '@acx-ui/store'
-import { render, screen }        from '@acx-ui/test-utils'
+import { getUserProfile } from '@acx-ui/analytics/utils'
+import { showToast }      from '@acx-ui/components'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -28,20 +28,22 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  useUserProfileContext: jest.fn()
+  getUserProfile: jest.fn()
 }))
-const profileContext = useUserProfileContext as jest.Mock
+const userProfile = getUserProfile as jest.Mock
 
 describe('AllRoutes', () => {
   beforeEach(() => {
-    profileContext.mockReturnValue({
-      data: {
-        accountId: 'aid',
-        tenants: [],
-        invitations: [],
+    userProfile.mockReturnValue({
+      accountId: 'aid',
+      tenants: [],
+      invitations: [],
+      selectedTenant: {
+        id: 'aid',
         permissions: { 'view-analytics': true }
       }
-    })
+    }
+    )
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
   })
@@ -55,11 +57,12 @@ describe('AllRoutes', () => {
   })
 
   it('redirects report users to reports', async () => {
-    profileContext.mockReturnValue({
-      data: {
-        accountId: 'aid',
-        tenants: [],
-        invitations: [],
+    userProfile.mockReturnValue({
+      accountId: 'aid',
+      tenants: [],
+      invitations: [],
+      selectedTenant: {
+        id: 'aid',
         permissions: { 'view-analytics': false }
       }
     })
@@ -71,13 +74,11 @@ describe('AllRoutes', () => {
   })
 
   it('shows toast for invitations', async () => {
-    profileContext.mockReturnValue({
-      data: {
-        accountId: 'aid',
-        tenants: [],
-        invitations: ['some invitations'],
-        permissions: { 'view-analytics': false }
-      }
+    userProfile.mockReturnValue({
+      accountId: 'aid',
+      tenants: [],
+      invitations: ['some invitations'],
+      selectedTenant: { permissions: { 'view-analytics': false } }
     })
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(showToast).toHaveBeenCalledWith({
