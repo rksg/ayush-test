@@ -12,6 +12,18 @@ import {
   UserProfileProvider
 } from './UserProfileContext'
 
+const permissions = {
+  'view-analytics': true,
+  'view-report-controller-inventory': true,
+  'view-data-explorer': true,
+  'manage-service-guard': true,
+  'manage-call-manager': true,
+  'manage-mlisa': true,
+  'manage-occupancy': true,
+  'manage-label': true,
+  'manage-tenant-settings': true,
+  'manage-config-recommendation': true
+}
 const tenant = {
   id: 'a1',
   name: 'name1',
@@ -20,18 +32,7 @@ const tenant = {
   resourceGroupId: 'rg1',
   isTrial: false,
   isRADEOnly: false,
-  permissions: {
-    'view-analytics': true,
-    'view-report-controller-inventory': true,
-    'view-data-explorer': true,
-    'manage-service-guard': true,
-    'manage-call-manager': true,
-    'manage-mlisa': true,
-    'manage-occupancy': true,
-    'manage-label': true,
-    'manage-tenant-settings': true,
-    'manage-config-recommendation': true
-  },
+  permissions,
   type: 'internal',
   settings: {
     'sla-p1-incidents-count': 's1',
@@ -49,6 +50,7 @@ const mockedUserProfile = {
   email: 'e1',
   accountId: 'a1',
   userId: 'u1',
+  permissions,
   invitations: [tenant],
   tenants: [tenant]
 }
