@@ -23,12 +23,12 @@ describe('HelpButton', () => {
     const links = screen.getAllByRole('link')
     const items = [
       // eslint-disable-next-line max-len
-      { text: 'What`s New', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/releasenotes/releasenotes.html' },
+      { text: 'What’s New', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/releasenotes/releasenotes.html' },
       { text: 'Documentation', href: 'https://documentation.com' },
       // eslint-disable-next-line max-len
       { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi' },
       // eslint-disable-next-line max-len
-      { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html' },
+      { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/licensingguide/index.html' },
       { text: 'Contact Support', href: 'https://support.ruckuswireless.com/contact-us' },
       { text: 'Open a Case', href: 'https://support.ruckuswireless.com/cases/new' },
       { text: 'Privacy', href: 'https://support.ruckuswireless.com/ruckus-cloud-privacy-policy' }
