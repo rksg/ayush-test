@@ -543,5 +543,30 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/rwgs',
     newApi: true
+  },
+  getGatewayAlarms: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/alarms',
+    newApi: true
+  },
+  getGatewayDashboard: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dashboards',
+    newApi: true
+  },
+  getGatewayTopProcess: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/topprocess',
+    newApi: true
+  },
+  getGatewayFileSystems: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/filesystems',
+    newApi: true
+  },
+  getGatewayDetails: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/details',
+    newApi: true
   }
 }

@@ -4,20 +4,21 @@ import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router
 import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
 import { Provider }                                   from '@acx-ui/store'
 
-const reports = {
-  overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
-  wireless: <Report type={ReportType.WIRELESS} />,
-  wired: <Report type={ReportType.WIRED} />,
-  aps: <Report type={ReportType.ACCESS_POINT} />,
-  switches: <Report type={ReportType.SWITCH} />,
-  clients: <Report type={ReportType.CLIENT} />,
-  applications: <Report type={ReportType.APPLICATION} />,
-  wlans: <Report type={ReportType.WLAN} />,
-  airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />
-}
-
 export default function ReportsRoutes () {
-  const basePath = get('IS_MLISA_SA') ? MLISA_BASE_PATH : ':tenantId/t'
+  const isRa = get('IS_MLISA_SA')
+  const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
+  const reports = {
+    overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
+    wireless: <Report type={ReportType.WIRELESS} showFilter={!isRa} />,
+    wired: <Report type={ReportType.WIRED} showFilter={!isRa} />,
+    aps: <Report type={ReportType.ACCESS_POINT} showFilter={!isRa} />,
+    switches: <Report type={ReportType.SWITCH} showFilter={!isRa} />,
+    clients: <Report type={ReportType.CLIENT} showFilter={!isRa} />,
+    applications: <Report type={ReportType.APPLICATION} showFilter={!isRa} />,
+    wlans: <Report type={ReportType.WLAN} showFilter={!isRa} />,
+    airtime: <Report type={ReportType.AIRTIME_UTILIZATION} showFilter={!isRa} />
+  }
+
   const routes = rootRoutes(
     <Route path={basePath}>
       <Route path='*' element={<PageNotFound />} />
