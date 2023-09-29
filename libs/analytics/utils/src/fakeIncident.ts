@@ -568,7 +568,7 @@ export const fakeIncidentLoadSzCpuLoad = fakeIncident({
   severity: 0.9,
   startTime: '2022-09-28T04:00:00.000Z',
   endTime: '2022-09-28T05:00:10.000Z',
-  code: 'p-switch-memory-high',
+  code: 'p-load-sz-cpu-load',
   sliceType: 'switch',
   sliceValue: 'ICX8200-24 Router',
   id: '7a58f892-880d-42fe-a97c-7455a2ec51f9',
