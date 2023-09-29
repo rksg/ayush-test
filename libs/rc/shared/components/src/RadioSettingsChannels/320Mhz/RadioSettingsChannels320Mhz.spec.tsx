@@ -25,8 +25,8 @@ describe('RadioSettingsChannels320Mhz', () => {
         </StepsFormLegacy>
       </Provider>
     )
-    expect(screen.queryAllByTestId('320-button', { exact: false }).length).toBe(6)
-    expect(screen.queryAllByTestId('160-checkbox', { exact: false }).length).toBe(7)
+    expect(screen.queryAllByTestId('320-button', { exact: false }).length).toBe(1)
+    expect(screen.queryAllByTestId('160-checkbox', { exact: false }).length).toBe(2)
   })
 
   it('should render correctly with correctly checked 160 Channel Group', async () => {
@@ -46,11 +46,11 @@ describe('RadioSettingsChannels320Mhz', () => {
     )
     expect(screen.getByTestId('160-checkbox-15')).toBeChecked()
     expect(screen.getByTestId('160-checkbox-47')).toBeChecked()
-    expect(screen.getByTestId('160-checkbox-79')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-111')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-143')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-175')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-205')).not.toBeChecked()
+    expect(screen.queryByTestId('160-checkbox-79')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('160-checkbox-111')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('160-checkbox-143')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('160-checkbox-175')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('160-checkbox-205')).not.toBeInTheDocument()
   })
 
   it('should render correctly with correctly click 320 channel group', async () => {
@@ -69,14 +69,9 @@ describe('RadioSettingsChannels320Mhz', () => {
       </Provider>
     )
 
-    fireEvent.click(screen.getByTestId('320-button-95'))
-    expect(screen.getByTestId('160-checkbox-15')).toBeChecked()
-    expect(screen.getByTestId('160-checkbox-47')).toBeChecked()
-    expect(screen.getByTestId('160-checkbox-79')).toBeChecked()
-    expect(screen.getByTestId('160-checkbox-111')).toBeChecked()
-    expect(screen.getByTestId('160-checkbox-143')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-175')).not.toBeChecked()
-    expect(screen.getByTestId('160-checkbox-205')).not.toBeChecked()
+    fireEvent.click(screen.getByTestId('320-button-31'))
+    expect(screen.getByTestId('160-checkbox-15')).not.toBeChecked()
+    expect(screen.getByTestId('160-checkbox-47')).not.toBeChecked()
   })
 
   it('should render correctly if channel isolated', async () => {

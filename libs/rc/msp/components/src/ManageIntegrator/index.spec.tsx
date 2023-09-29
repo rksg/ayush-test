@@ -360,14 +360,14 @@ describe('ManageIntegrator', () => {
 
     // Input valid values for other fields
     const inputs = screen.getAllByRole('textbox')
+    fireEvent.change(inputs[4], { target: { value: 'Smith' } })
+    expect(await screen.findByDisplayValue('Smith')).toBeVisible()
     fireEvent.change(inputs[0], { target: { value: 'JohnSmith' } })
     expect(await screen.findByDisplayValue('JohnSmith')).toBeVisible()
     fireEvent.change(inputs[2], { target: { value: 'john@mail.com' } })
     expect(await screen.findByDisplayValue('john@mail.com')).toBeVisible()
     fireEvent.change(inputs[3], { target: { value: 'John' } })
     expect(await screen.findByDisplayValue('John')).toBeVisible()
-    fireEvent.change(inputs[4], { target: { value: 'Smith' } })
-    expect(await screen.findByDisplayValue('Smith')).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
@@ -399,14 +399,15 @@ describe('ManageIntegrator', () => {
 
     // Input valid values for all required fields
     const inputs = screen.getAllByRole('textbox')
+    fireEvent.change(inputs[4], { target: { value: 'Smith' } })
+    expect(await screen.findByDisplayValue('Smith')).toBeVisible()
     fireEvent.change(inputs[0], { target: { value: 'JohnSmith' } })
     expect(await screen.findByDisplayValue('JohnSmith')).toBeVisible()
     fireEvent.change(inputs[2], { target: { value: 'john@mail.com' } })
     expect(await screen.findByDisplayValue('john@mail.com')).toBeVisible()
     fireEvent.change(inputs[3], { target: { value: 'John' } })
     expect(await screen.findByDisplayValue('John')).toBeVisible()
-    fireEvent.change(inputs[4], { target: { value: 'Smith' } })
-    expect(await screen.findByDisplayValue('Smith')).toBeVisible()
+
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
