@@ -54,7 +54,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const shouldInvite3rdPartyEnabled =
   (isMultipleVarEnabled && data?.length && data.length < MAX_VAR_INVITATIONS ) || false
 
-  const hasDelegations = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
+  const maxInvitationReached = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
   const handleClickInviteDelegation = () => {
     setShowDialog(true)
@@ -164,7 +164,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
       label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
-      disabled: hasDelegations,
+      disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
   }
