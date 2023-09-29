@@ -134,10 +134,11 @@ describe('Recommendation services', () => {
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual({
-      recommendations: expectedResult,
-      crrmScenarios: 100,
-      optimizedCount: 1,
-      totalCount: 3
+      crrmCount: 3,
+      zoneCount: 3,
+      optimizedZoneCount: 1,
+      crrmScenarios: 13888,
+      recommendations: expectedResult
     })
   })
 

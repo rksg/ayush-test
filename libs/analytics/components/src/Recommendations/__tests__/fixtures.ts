@@ -3,6 +3,10 @@ import { NetworkPath } from '@acx-ui/utils'
 import { StateType } from '../config'
 
 export const crrmListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
   recommendations: [
     {
       id: '1',
@@ -34,10 +38,7 @@ export const crrmListResult = {
         projected: 0
       }
     }
-  ],
-  optimizedCount: 1,
-  totalCount: 3,
-  crrmScenarios: 100
+  ]
 }
 
 export const recommendationListResult = {

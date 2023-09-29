@@ -49,10 +49,11 @@ export type Recommendation = {
 }
 
 export type CrrmList = {
+  crrmCount: number
+  zoneCount: number
+  optimizedZoneCount: number
+  crrmScenarios: number
   recommendations: CrrmListItem[]
-  crrmScenarios: number,
-  optimizedCount: number,
-  totalCount: number
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -234,14 +235,22 @@ export const api = recommendationApi.injectEndpoints({
         query CrrmList(
           $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int, $status: [String]
         ) {
-          optimizedCount: recommendationCount(
+          crrmCount: recommendationCount(start: $start, end: $end, path: $path, crrm: true)
+          zoneCount: recommendationCount(
             start: $start,
             end: $end,
             path: $path,
             crrm: true,
-            status: $status
+            uniqueBy: "sliceValue"
           )
-          totalCount: recommendationCount(start: $start, end: $end, path: $path, crrm: true)
+          optimizedZoneCount: recommendationCount(
+            start: $start,
+            end: $end,
+            path: $path,
+            crrm: true,
+            status: $status,
+            uniqueBy: "sliceValue"
+          )
           crrmScenarios(start: $start, end: $end, path: $path)
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
             id
@@ -261,10 +270,11 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: CrrmList) => {
         return {
-          recommendations: transformCrrmList(response.recommendations),
+          crrmCount: response.crrmCount,
+          zoneCount: response.zoneCount,
+          optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
-          optimizedCount: response.optimizedCount,
-          totalCount: response.totalCount
+          recommendations: transformCrrmList(response.recommendations)
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
