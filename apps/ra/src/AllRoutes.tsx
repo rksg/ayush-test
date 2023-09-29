@@ -9,7 +9,7 @@ import {
   VideoCallQoeForm,
   VideoCallQoeDetails
 }                                                       from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { Route, rootRoutes, Navigate, MLISA_BASE_PATH, useSearchParams } from '@acx-ui/react-router-dom'
 
 import ClientDetails                 from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum } from './pages/Clients'
@@ -24,11 +24,17 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function AllRoutes () {
+  const [search] = useSearchParams()
   return rootRoutes(<Route element={<Layout />}>
     <Route path='/' element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />} />
     <Route
       path={MLISA_BASE_PATH}
-      element={<Navigate replace to={`${MLISA_BASE_PATH}/dashboard`} />}
+      element={<Navigate
+        replace
+        to={{
+          pathname: `${MLISA_BASE_PATH}/dashboard`,
+          search: `${search.toString()}`
+        }} />}
     />
     <Route path={MLISA_BASE_PATH}>
       <Route path='dashboard' element={<Dashboard />} />

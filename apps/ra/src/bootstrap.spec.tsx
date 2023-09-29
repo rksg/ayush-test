@@ -33,7 +33,27 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='profile-provider'
-  />
+  />,
+  getPendoConfig: jest.fn().mockImplementation(() => ({
+    account: {
+      id: 'tid1',
+      name: 'n1',
+      isTrial: true,
+      productName: 'RuckusAI'
+    },
+    visitor: {
+      delegated: false,
+      email: 'e1',
+      full_name: 'fn1 ln1',
+      id: 'uid1',
+      region: 'test region',
+      role: 'r1',
+      support: true,
+      varTenantId: 'tid1',
+      version: 'test version'
+    }
+  }
+  ))
 }))
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockImplementation((name: string) => ({

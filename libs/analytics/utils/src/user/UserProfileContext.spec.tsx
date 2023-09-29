@@ -50,7 +50,8 @@ const mockedUserProfile = {
   accountId: 'a1',
   userId: 'u1',
   invitations: [tenant],
-  tenants: [tenant]
+  tenants: [tenant],
+  selectedTenant: tenant
 }
 
 function TestUserProfile () {
