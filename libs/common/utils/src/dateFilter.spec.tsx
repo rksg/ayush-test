@@ -53,32 +53,31 @@ describe('useDateFilter', () => {
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
-})
-it('should render correctly with default date from url', () => {
-  function Component () {
-    const filters = useDateFilter()
-    return <div>{JSON.stringify(filters)}</div>
-  }
-  const location = {
-    ...window.location,
-    search: fixedEncodeURIComponent(JSON.stringify({
-      startDate: '2022-07-23T18:31:00+08:00',
-      endDate: '2022-07-24T18:31:59+08:00',
-      range: 'Last 24 Hours'
-    }))
-  }
-  Object.defineProperty(window, 'location', {
-    writable: true,
-    value: location
+  it('should render correctly with default date from url', () => {
+    function Component () {
+      const filters = useDateFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const location = {
+      ...window.location,
+      search: fixedEncodeURIComponent(JSON.stringify({
+        startDate: '2022-07-23T18:31:00+08:00',
+        endDate: '2022-07-24T18:31:59+08:00',
+        range: 'Last 24 Hours'
+      }))
+    }
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: location
+    })
+    const { asFragment } = render(
+      <BrowserRouter window={window}>
+        <Component />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
   })
-  const { asFragment } = render(
-    <BrowserRouter window={window}>
-      <Component />
-    </BrowserRouter>
-  )
-  expect(asFragment()).toMatchSnapshot()
 })
-
 describe('defaultRanges', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:30.123Z').getTime())
