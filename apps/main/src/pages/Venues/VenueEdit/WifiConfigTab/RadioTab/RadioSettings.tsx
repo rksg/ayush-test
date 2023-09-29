@@ -32,15 +32,16 @@ import {
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
-  useUpdateVenueTripleBandRadioSettingsMutation, useGetVenueApCapabilitiesQuery
+  useUpdateVenueTripleBandRadioSettingsMutation,
+  useGetVenueApCapabilitiesQuery,
+  isAPLowPower
 } from '@acx-ui/rc/services'
 import {
   APExtended,
   APExtendedGrouped,
   VenueRadioCustomization,
   LowPowerAPQuantity,
-  ChannelBandwidth6GEnum,
-  isAPLowPower
+  ChannelBandwidth6GEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 

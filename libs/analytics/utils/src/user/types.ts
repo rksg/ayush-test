@@ -8,6 +8,7 @@ export type UserProfile = {
   invitations: Tenant[]
   tenants: Tenant[]
   selectedTenant: Tenant
+  permissions: Permissions
 }
 
 export type Tenant = {
@@ -34,6 +35,7 @@ export type Permissions = {
   'manage-label': boolean
   'manage-tenant-settings': boolean
   'manage-config-recommendation': boolean
+  'franchisor': boolean
 }
 
 export type Settings = {

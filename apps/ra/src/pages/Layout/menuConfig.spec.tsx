@@ -29,22 +29,21 @@ const defaultMockPermissions = {
   'manage-occupancy': true,
   'manage-label': true,
   'manage-tenant-settings': true,
-  'manage-config-recommendation': true
+  'manage-config-recommendation': true,
+  'franchisor': true
 }
-const mockSettings = { franchisor: true }
 const defaultMockUserProfile = {
   data: {
     accountId: 'accountId',
+    permissions: defaultMockPermissions,
     tenants: [
       {
         id: 'accountId',
-        permissions: defaultMockPermissions,
-        settings: mockSettings
+        permissions: defaultMockPermissions
       },
       {
         id: 'accountId2',
-        permissions: defaultMockPermissions,
-        settings: mockSettings
+        permissions: defaultMockPermissions
       }
     ],
     selectedTenant: {
@@ -76,11 +75,11 @@ describe('useMenuConfig', () => {
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {
@@ -105,11 +104,11 @@ describe('useMenuConfig', () => {
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {
@@ -128,16 +127,17 @@ describe('useMenuConfig', () => {
     const mockPermissions = {
       ...defaultMockPermissions,
       'manage-mlisa': false,
-      'manage-label': false
+      'manage-label': false,
+      'franchisor': false
     }
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: mockPermissions,
-            settings: { franchisor: false }
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {
@@ -160,11 +160,11 @@ describe('useMenuConfig', () => {
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {
@@ -187,11 +187,11 @@ describe('useMenuConfig', () => {
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: mockPermissions,
-            settings: mockSettings
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {
@@ -207,14 +207,18 @@ describe('useMenuConfig', () => {
   })
   it('should not return Administration-related menu items for franchisor setting', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockPermissions = {
+      ...defaultMockPermissions,
+      franchisor: false
+    }
     const mockUserProfile = {
       data: {
         accountId: 'accountId',
+        permissions: mockPermissions,
         tenants: [
           {
             id: 'accountId',
-            permissions: defaultMockPermissions,
-            settings: { franchisor: false }
+            permissions: mockPermissions
           }
         ],
         selectedTenant: {

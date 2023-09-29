@@ -11,7 +11,7 @@ import {
   PERMISSION_MANAGE_LABEL,
   PERMISSION_FRANCHISOR
 } from '@acx-ui/analytics/utils'
-import { LayoutProps }  from '@acx-ui/components'
+import { LayoutProps } from '@acx-ui/components'
 import {
   AIOutlined,
   AISolid,
@@ -24,15 +24,15 @@ import {
   RocketOutlined,
   RocketSolid,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  SwitchOutlined,
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 export function useMenuConfig () {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const tenant = userProfile?.selectedTenant
-  const currentAccountPermissions = tenant?.permissions
-  const currentAccountSetting = tenant?.settings
-
+  const currentAccountPermissions = userProfile.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =
@@ -48,7 +48,7 @@ export function useMenuConfig () {
   const hasManageLabelPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_LABEL]
 
-  const hasFranchisorSetting = currentAccountSetting?.[PERMISSION_FRANCHISOR]
+  const hasFranchisorSetting = currentAccountPermissions?.[PERMISSION_FRANCHISOR]
 
   const config: LayoutProps['menuConfig'] = [
     ...(hasViewAnalyticsPermissions ? [
@@ -113,7 +113,7 @@ export function useMenuConfig () {
         activeIcon: RocketSolid,
         children: [
           {
-            label: $t({ defaultMessage: 'App Insights (coming soon)' })
+            label: $t({ defaultMessage: 'AppInsights (coming soon)' })
           },
           ...(hasManageCallManagerPermissions ? [
             {
@@ -146,6 +146,55 @@ export function useMenuConfig () {
           }
         ]
       }] : []),
+    ...(hasViewAnalyticsPermissions ? [
+      {
+        label: $t({ defaultMessage: 'Wi-Fi' }),
+        inactiveIcon: WiFi,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Access Points' }),
+            children: [
+              {
+                uri: '/wifi',
+                label: $t({ defaultMessage: 'Access Points List' }),
+                isActiveCheck: new RegExp('^/wifi(?!(/reports))')
+              },
+              {
+                uri: '/wifi/reports/aps',
+                label: $t({ defaultMessage: 'Access Points Report' })
+              },
+              {
+                uri: '/wifi/reports/airtime',
+                label: $t({ defaultMessage: 'Airtime Utilization Report' })
+              }
+            ]
+          }
+        ]
+      }
+    ] : []),
+    {
+      label: $t({ defaultMessage: 'Wired' }),
+      inactiveIcon: SwitchOutlined,
+      activeIcon: SwitchSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Switches' }),
+          children: [
+            {
+              uri: '/switch',
+              label: $t({ defaultMessage: 'Switch List' }),
+              isActiveCheck: new RegExp('^/switch(?!(/reports))')
+            },
+            {
+              uri: '/switch/reports/wired',
+              label: $t({ defaultMessage: 'Wired Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),

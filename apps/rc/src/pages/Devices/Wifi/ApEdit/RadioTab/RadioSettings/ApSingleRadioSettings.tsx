@@ -7,7 +7,8 @@ import { useIntl }           from 'react-intl'
 
 
 import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
-import { ApViewModel, AFCStatus, isAPLowPower }                   from '@acx-ui/rc/utils'
+import { isAPLowPower }                                           from '@acx-ui/rc/services'
+import { ApViewModel, AFCStatus }                                 from '@acx-ui/rc/utils'
 
 import { ApEditContext }           from '../..'
 import { DisabledDiv, FieldLabel } from '../../styledComponents'
