@@ -133,6 +133,11 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
+Object.defineProperty(window, 'location', {
+  writable: true,
+  value: { search: '' },
+})
+
 window.crypto = {
   getRandomValues: function (buffer) {
     return nodeCrypto.randomFillSync(buffer)

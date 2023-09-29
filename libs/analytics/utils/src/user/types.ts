@@ -8,7 +8,6 @@ export type UserProfile = {
   invitations: Tenant[]
   tenants: Tenant[]
   selectedTenant: Tenant
-  permissions: Permissions
 }
 
 export type Tenant = {

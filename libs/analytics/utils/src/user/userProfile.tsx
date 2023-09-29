@@ -39,8 +39,10 @@ const extractTenantFromUrl = (tenantFromUrl: string | null) => {
   return null
 }
 export const getUserProfile = () => user.profile
-export const setUserProfile = (profile: UserProfile, tenantFromUrl: string | null) => {
-  const selectedTenantId = extractTenantFromUrl(tenantFromUrl) || profile.accountId
+export const setUserProfile = (profile: UserProfile) => {
+  const searchParams = new URLSearchParams(window.location.search)
+  const selectedTenantId = extractTenantFromUrl(searchParams.get('selectedTenants'))
+    || profile.accountId
   if (selectedTenantId === (getUserProfile())?.selectedTenant?.id) return
   const selectedTenant = profile.tenants.find(tenant => tenant.id === selectedTenantId) as Tenant
   // Do not call this manually except in test env & UserProfileProvider

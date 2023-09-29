@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Menu } from 'antd'
 
 import { HelpButton, UserButton } from '@acx-ui/analytics/components'
-import { useUserProfileContext }  from '@acx-ui/analytics/utils'
+import { getUserProfile }         from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI,
@@ -50,8 +50,8 @@ function AccountsDropdown ({
 }
 function Layout () {
   const params = useParams()
-  const { data: userProfile } = useUserProfileContext()
-  const accounts = userProfile?.tenants || []
+  const userProfile = getUserProfile()
+  const accounts = userProfile.tenants
   const selectedAccountName = userProfile?.selectedTenant.name
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')

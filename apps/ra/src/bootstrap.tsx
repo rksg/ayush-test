@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Root } from 'react-dom/client'
 
-import { getPendoConfig, UserProfileProvider } from '@acx-ui/analytics/utils'
+import { getPendoConfig, UserProfileProvider, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
@@ -46,27 +46,29 @@ export function loadMessages (locales: readonly string[]): LangKey {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { lang } = useLocaleContext()
+  const { children } = props
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
+    children={<ConfigProvider children={children} lang={loadMessages([lang])} />}
   />
 }
 
 export async function init (root: Root) {
   const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
+  setUserProfile(user)
   setUpIntl({ locale: 'en-US' })
   root.render(
     <React.StrictMode>
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-            <BrowserRouter>
-              <UserProfileProvider profile={user}>
+            <UserProfileProvider>
+              <BrowserRouter>
                 <React.Suspense fallback={null}>
                   <AllRoutes />
                 </React.Suspense>
-              </UserProfileProvider>
-            </BrowserRouter>
+              </BrowserRouter>
+            </UserProfileProvider>
           </PreferredLangConfigProvider>
         </LocaleProvider>
       </Provider>

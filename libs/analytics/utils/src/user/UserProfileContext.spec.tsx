@@ -6,7 +6,8 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { getUserProfile } from './userProfile'
+import { Tenant }                         from './types'
+import { getUserProfile, setUserProfile } from './userProfile'
 import {
   useUserProfileContext,
   UserProfileProvider
@@ -50,10 +51,9 @@ const mockedUserProfile = {
   email: 'e1',
   accountId: 'a1',
   userId: 'u1',
-  permissions,
-  invitations: [tenant],
-  tenants: [tenant],
-  selectedTenant: tenant
+  invitations: [tenant] as Tenant[],
+  tenants: [tenant] as Tenant[],
+  selectedTenant: { ...tenant, permissions } as Tenant
 }
 
 function TestUserProfile () {
@@ -66,11 +66,12 @@ const route = { path: '/ai' }
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
-      <UserProfileProvider profile={mockedUserProfile} {...props} />
+      <UserProfileProvider {...props} />
     </Provider>
   )
 
   it('requests for user profile and stores in context', async () => {
+    setUserProfile(mockedUserProfile)
     render(<TestUserProfile />, { wrapper, route })
     expect(await screen.findByText('First Last')).toBeVisible()
     expect(getUserProfile()).toEqual(mockedUserProfile)

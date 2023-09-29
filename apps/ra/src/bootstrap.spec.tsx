@@ -30,6 +30,7 @@ jest.mock('@acx-ui/utils', () => ({
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
+  setUserProfile: () => {},
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='profile-provider'

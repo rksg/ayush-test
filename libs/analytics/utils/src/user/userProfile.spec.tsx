@@ -51,36 +51,37 @@ describe('User Profile', () => {
     jest.restoreAllMocks()
   })
   it('should set user profile once', () => {
-    setUserProfile(defaultMockUserProfile.data, null)
+    setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
     })
     expect(mockedUpdatePendo).toHaveBeenCalledTimes(1)
-    setUserProfile(defaultMockUserProfile.data, null)
+    setUserProfile(defaultMockUserProfile.data)
     expect(mockedUpdatePendo).toHaveBeenCalledTimes(1)
   })
   it('should set user profile acc to tenant from url', () => {
-    setUserProfile(
-      defaultMockUserProfile.data,
-      btoa(JSON.stringify([defaultMockUserProfile.data.tenants[1].id]))
+    const t = window.btoa(
+      JSON.stringify([defaultMockUserProfile.data.tenants[1].id])
     )
+    window.location.search = `selectedTenants=${t}`
+    setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[1] }
     })
   })
   it('should return pendo config', () => {
-    setUserProfile(defaultMockUserProfile.data, null)
+    setUserProfile(defaultMockUserProfile.data)
     expect(getPendoConfig()).toEqual({
       account: {
-        id: '1',
+        id: '2',
         isTrial: false,
-        name: '1',
+        name: '2',
         productName: 'RuckusAI'
       },
       visitor: {
-        delegated: false,
+        delegated: true,
         email: '',
         full_name: ' ',
         id: '',
