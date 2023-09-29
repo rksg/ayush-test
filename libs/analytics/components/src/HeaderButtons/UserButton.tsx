@@ -2,7 +2,7 @@ import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  useUserProfileContext,
+  getUserProfile,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
 import { LayoutUI, Dropdown } from '@acx-ui/components'
@@ -11,8 +11,9 @@ import { NewTabLink }         from '@acx-ui/react-router-dom'
 
 export const UserButton = () => {
   const { $t } = useIntl()
-  const { data: userProfile } = useUserProfileContext()
-  const hasViewAnalyticsPermissions = userProfile.permissions[PERMISSION_VIEW_ANALYTICS]
+  const userProfile = getUserProfile()
+  const hasViewAnalyticsPermissions = userProfile
+    .selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
 
   const menuHeaderDropdown = (
     <Menu

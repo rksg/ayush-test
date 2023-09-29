@@ -9,7 +9,7 @@ import {
   VideoCallQoeForm,
   VideoCallQoeDetails
 } from '@acx-ui/analytics/components'
-import { useUserProfileContext, PERMISSION_VIEW_ANALYTICS }              from '@acx-ui/analytics/utils'
+import { setUserProfile, PERMISSION_VIEW_ANALYTICS, getUserProfile }     from '@acx-ui/analytics/utils'
 import { showToast }                                                     from '@acx-ui/components'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
@@ -30,7 +30,9 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
-  const { data: { invitations, permissions, accountId } } = useUserProfileContext()
+  setUserProfile(getUserProfile())
+  const { invitations, selectedTenant } = getUserProfile()
+  const { id, permissions } = selectedTenant
   const [ search ] = useSearchParams()
   const previousURL = search.get('return')!
   useEffect(() => {
@@ -46,7 +48,7 @@ function Init () {
       })
     }
   })
-  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([accountId]))
+  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
   return <Navigate
     replace
     to={{
