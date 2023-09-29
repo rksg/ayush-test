@@ -7472,7 +7472,7 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          High memory utilization detected in Switch: ICX8200-24 Router (38:45:3B:3C:EC:70)
+          Switch: ICX8200-24 Router (38:45:3B:3C:EC:70) is experiencing unusually high CPU usage
         </span>
       </div>
     </div>
@@ -7577,7 +7577,7 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
                             <span
                               class="styledComponents__TextContent-sc-1l4qm8r-0"
                             >
-                              Memory
+                              Load
                             </span>
                           </span>
                         </div>
