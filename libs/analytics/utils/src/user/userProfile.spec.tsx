@@ -50,6 +50,12 @@ describe('User Profile', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
+  afterAll(() => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { search: '' }
+    })
+  })
   it('should set user profile once', () => {
     setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
@@ -64,7 +70,10 @@ describe('User Profile', () => {
     const t = window.btoa(
       JSON.stringify([defaultMockUserProfile.data.tenants[1].id])
     )
-    window.location.search = `selectedTenants=${t}`
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { search: `selectedTenants=${t}` }
+    })
     setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
