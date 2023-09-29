@@ -45,12 +45,7 @@ const defaultMockUserProfile = {
         id: 'accountId2',
         permissions: defaultMockPermissions
       }
-    ],
-    selectedTenant: {
-      id: 'accountId',
-      permissions: defaultMockPermissions,
-      settings: mockSettings
-    }
+    ]
   }
 }
 describe('useMenuConfig', () => {
@@ -81,12 +76,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: mockPermissions,
-          settings: mockSettings
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
@@ -110,12 +100,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: mockPermissions,
-          settings: mockSettings
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
@@ -139,12 +124,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: mockPermissions,
-          settings: { franchisor: false }
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
@@ -166,12 +146,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: mockPermissions,
-          settings: mockSettings
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
@@ -193,12 +168,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: mockPermissions,
-          settings: mockSettings
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
@@ -220,12 +190,7 @@ describe('useMenuConfig', () => {
             id: 'accountId',
             permissions: mockPermissions
           }
-        ],
-        selectedTenant: {
-          id: 'accountId',
-          permissions: defaultMockPermissions,
-          settings: { franchisor: false }
-        }
+        ]
       }
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
