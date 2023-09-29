@@ -1,19 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import * as config        from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { HelpButton } from './'
 
-jest.mock('@acx-ui/config')
-const get = jest.mocked(config.get)
 
 describe('HelpButton', () => {
-  beforeEach(() => {
-    get.mockReturnValue('https://documentation.com')
-  })
   it('should render properly', async () => {
     render(
       <Provider><HelpButton /></Provider>,
@@ -22,11 +16,14 @@ describe('HelpButton', () => {
     await userEvent.click(screen.getByRole('button'))
     const links = screen.getAllByRole('link')
     const items = [
-      { text: 'Documentation', href: 'https://documentation.com' },
       // eslint-disable-next-line max-len
-      { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJ4kZxhfoArNQfFDGWhwSJm' },
+      { text: 'What’s New', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/releasenotes/releasenotes.html' },
       // eslint-disable-next-line max-len
-      { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RALicensingGuide/mapfile/index.html' },
+      { text: 'Documentation', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/index.html' },
+      // eslint-disable-next-line max-len
+      { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi' },
+      // eslint-disable-next-line max-len
+      { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/licensingguide/index.html' },
       { text: 'Contact Support', href: 'https://support.ruckuswireless.com/contact-us' },
       { text: 'Open a Case', href: 'https://support.ruckuswireless.com/cases/new' },
       { text: 'Privacy', href: 'https://support.ruckuswireless.com/ruckus-cloud-privacy-policy' }
