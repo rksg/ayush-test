@@ -44,7 +44,8 @@ function AIDrivenRRMWidget ({
         {optimizedZoneCount}
         {optimizedZoneCount, plural, one {zone} other {zones}}
         {optimizedZoneCount, plural, one {is} other {are}}
-        optimized.`
+        optimized.`,
+      description: 'Translation strings - is, are, recommendation, recommendations, zone, zones'
     },
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
