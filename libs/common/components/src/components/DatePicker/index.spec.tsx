@@ -399,7 +399,7 @@ describe('RangePicker', () => {
           selectionType={DateRange.custom}
           selectedRange={{ startDate: null, endDate: null }}
           onDateApply={() => {}}
-          isDashBoard={true}
+          showLast8hours={true}
         />
       </IntlProvider>
     )
