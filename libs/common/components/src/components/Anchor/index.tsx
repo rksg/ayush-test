@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useEffect } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { Col, Row }            from 'antd'
 import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
@@ -32,14 +32,6 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
     const hash = (e.target as HTMLElement).title.split(' ').join('-')
     navigate({ pathname: `${location.pathname}`, hash: hash })
   }
-
-  useEffect(()=>{
-    if (location.hash) {
-      setTimeout(() =>
-        anchorRef?.current?.handleScrollTo(`${location.hash}`)
-      , 500)
-    }
-  }, [])
 
   return <Row gutter={20}>
     <AnchorLayoutSidebar span={4}
