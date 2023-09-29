@@ -16,6 +16,8 @@ describe('ReportTile', () => {
   it('should render correctly', async () => {
     render(<ReportTile
       path={[{ type: 'network', name: 'Network' }]}
+      startDate='startDate'
+      endDate='endDate'
     />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
@@ -36,6 +38,8 @@ describe('ReportTile', () => {
     const spy = jest.spyOn(global, 'setInterval')
     render(<ReportTile
       path={[{ type: 'network', name: 'Network' }]}
+      startDate='startDate'
+      endDate='endDate'
     />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
@@ -47,6 +51,8 @@ describe('ReportTile', () => {
   it('reset to first tile when path changed', async () => {
     const { rerender } = render(<ReportTile
       path={[{ type: 'network', name: 'Network' }]}
+      startDate='startDate'
+      endDate='endDate'
     />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
@@ -70,7 +76,9 @@ describe('ReportTile', () => {
       { type: 'zone', name: 'Z1' },
       { type: 'apGroup', name: 'NetworAG1' },
       { type: 'AP', name: '00:00:00:00:00:01' }
-    ]} />)
+    ]}
+    startDate='startDate'
+    endDate='endDate'/>)
 
     const newTiles = await waitFor(async () => {
       const newTiles = await screen.findAllByTestId('Tile')
