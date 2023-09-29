@@ -19,7 +19,6 @@ import {
 
 import { RWGForm } from '.'
 
-
 const successResponse = {
   requestId: 'request-id'
 }
@@ -67,7 +66,7 @@ const gatewayResponse = {
     loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
     username: 'inigo',
     password: 'Inigo123!',
-    status: null,
+    status: 'Operational',
     id: 'bbc41563473348d29a36b76e95c50381',
     new: false
   }
@@ -245,6 +244,45 @@ describe('Gateway Form', () => {
     await userEvent.click(await screen.findByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/ruckus-wan-gateway`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('should navigate to gateway details', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockFn = jest.fn()
+
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit',
+      gatewayId: gatewayResponse.response.id
+    }
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getGateway.url,
+        (req, res, ctx) => {
+          mockFn()
+          return res(ctx.json(gatewayResponse))
+        })
+    )
+
+    render(
+      <Provider>
+        <RWGForm />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    await waitFor(() => expect(mockFn).toBeCalled())
+
+    await userEvent.click(await screen.findByText('Back to Gateway details'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      // eslint-disable-next-line max-len
+      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.gatewayId}/gateway-details/overview`,
       hash: '',
       search: ''
     })

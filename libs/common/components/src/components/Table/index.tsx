@@ -81,6 +81,7 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number,
     searchableWidth?: number,
+    stickyPagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -130,9 +131,10 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, ...props
+  onDisplayRowChange, stickyPagination, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -161,6 +163,11 @@ function Table <RecordType extends Record<string, any>> ({
   }, 1000)
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
+
+  if (stickyPagination === undefined && type === 'tall' && wrapperRef?.current?.closest('#root')) {
+    // stickyPagination is true by default while this Table is under LayoutComponent (not in Modal or Drawer)
+    stickyPagination = true
+  }
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -512,7 +519,9 @@ function Table <RecordType extends Record<string, any>> ({
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}
+    ref={wrapperRef}
     $type={type}
+    $stickyPagination={!!stickyPagination}
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <UI.ActionsContainer

@@ -116,6 +116,15 @@ export default function DpskPassphraseManagement () {
     }
   }
 
+  const macColumn = isNewConfigFlow ? [] : [
+    {
+      key: 'mac',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'mac',
+      sorter: true
+    }
+  ]
+
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
       key: 'createdDate',
@@ -146,12 +155,7 @@ export default function DpskPassphraseManagement () {
           : $t(unlimitedNumberOfDeviceLabel)
       }
     },
-    {
-      key: 'mac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'mac',
-      sorter: true
-    },
+    ...macColumn,
     {
       key: 'passphrase',
       title: $t({ defaultMessage: 'Passphrase' }),
@@ -248,6 +252,10 @@ export default function DpskPassphraseManagement () {
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
+    if (isNewConfigFlow) {
+      return isCloudpathEnabled && selectedRows.length === 1
+    }
+
     if (!isCloudpathEnabled || selectedRows.length !== 1) return false
 
     const row = selectedRows[0]
@@ -379,8 +387,6 @@ export default function DpskPassphraseManagement () {
       }}
       onClose={() => setUploadCsvDrawerVisible(false)}
       extraDescription={[
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Notice: Existing DPSK passphrases with the same MAC address will be overwritten, and the previous passphrase will be unusable' }),
         // eslint-disable-next-line max-len
         $t({ defaultMessage: 'The properties you set here for "User Name Prefix" will not replace any value that you manually define in the imported file' })
       ]}

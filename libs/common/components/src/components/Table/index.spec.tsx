@@ -139,6 +139,15 @@ describe('Table component', () => {
     expect(alert).not.toBeVisible()
   })
 
+  it('renders stickyPagination table', () => {
+    const { asFragment } = render(<div id='root'><Table
+      type='tall'
+      columns={testColumns}
+      dataSource={testData}
+    /></div>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [
@@ -808,6 +817,49 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+
+    it('test Coordinated filters', async () => {
+      const testFilteredColumns = filteredColumns.map(col => ({
+        ...col,
+        ...(col.key === 'name' ? { coordinatedKeys: ['age'] } : {})
+      }))
+      render(<Table
+        columns={testFilteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+
+      const tbody = await findTBody()
+      expect(tbody).toBeVisible()
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters).toHaveLength(2)
+
+      const [ nameFilter, ageFilter ] = filters
+      fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
+      let filteredOptions = await screen.findAllByTestId('option-John Doe')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      fireEvent.keyDown(ageFilter, { key: '32', code: '32' })
+      filteredOptions = await screen.findAllByTestId('option-32')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      // eslint-disable-next-line testing-library/no-node-access
+      const selection = document.querySelectorAll('.ant-select-selection-item')
+      expect(selection).toHaveLength(2)
+
+      fireEvent.keyDown(nameFilter, { key: 'Sam Smith', code: 'Sam Smith' })
+      filteredOptions = await screen.findAllByTestId('option-Sam Smith')
+      expect(filteredOptions).toHaveLength(1)
+      fireEvent.click(filteredOptions[0])
+
+      await waitFor(() => {
+        // eslint-disable-next-line testing-library/no-node-access
+        const selection = document.querySelectorAll('.ant-select-selection-item')
+        expect(selection).toHaveLength(1)
+      })
     })
 
     it('should highlight when search', async () => {

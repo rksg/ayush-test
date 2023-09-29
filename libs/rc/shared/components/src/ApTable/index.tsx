@@ -21,11 +21,10 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
 } from '@acx-ui/rc/services'
 import {
   AFCStatus,
-  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -187,8 +186,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER)) {
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
+        )) {
 
           const afcInfo = row.apStatusData?.afcInfo
 

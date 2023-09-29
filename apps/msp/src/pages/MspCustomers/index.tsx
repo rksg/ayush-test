@@ -92,7 +92,10 @@ const transformCreationDate = (row: MspEc) => {
 
 const transformExpirationDate = (row: MspEc) => {
   let expirationDate = '--'
-  const entitlements = row.entitlements
+  const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+  const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
   let target: DelegationEntitlementRecord
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
     const consumed = parseInt(entitlement.consumed, 10)
