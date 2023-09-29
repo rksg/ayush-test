@@ -1,19 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import * as config        from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { HelpButton } from './'
 
-jest.mock('@acx-ui/config')
-const get = jest.mocked(config.get)
 
 describe('HelpButton', () => {
-  beforeEach(() => {
-    get.mockReturnValue('https://documentation.com')
-  })
   it('should render properly', async () => {
     render(
       <Provider><HelpButton /></Provider>,
@@ -24,7 +18,8 @@ describe('HelpButton', () => {
     const items = [
       // eslint-disable-next-line max-len
       { text: 'What’s New', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/releasenotes/releasenotes.html' },
-      { text: 'Documentation', href: 'https://documentation.com' },
+      // eslint-disable-next-line max-len
+      { text: 'Documentation', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/index.html' },
       // eslint-disable-next-line max-len
       { text: 'How-To Videos', href: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi' },
       // eslint-disable-next-line max-len

@@ -2,13 +2,11 @@ import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { LayoutUI, Dropdown }      from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { NewTabLink }              from '@acx-ui/react-router-dom'
 
 export const HelpButton = () => {
   const { $t } = useIntl()
-  const documentationCenter = get('MLISA_DOCUMENTATION_URL')
   const menuHeaderDropdown = (
     <Menu
       selectedKeys={[]}
@@ -22,7 +20,9 @@ export const HelpButton = () => {
         },
         {
           key: 'documentation',
-          label: <NewTabLink to={documentationCenter}>
+          label: <NewTabLink
+            to='https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/index.html'
+          >
             {$t({ defaultMessage: 'Documentation' })}
           </NewTabLink>
         },
