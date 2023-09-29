@@ -35,6 +35,7 @@ describe('AIDrivenRRM dashboard', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
+    expect(await screen.findByText('3')).toBeVisible()
     expect(await screen.findByText('zone-1')).toBeVisible()
     expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
     expect(await screen.findByText('zone-2')).toBeVisible()
@@ -48,6 +49,10 @@ describe('AIDrivenRRM dashboard', () => {
   it('handles no data', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: {
+        crrmCount: 0,
+        zoneCount: 0,
+        optimizedZoneCount: 0,
+        crrmScenarios: 0,
         recommendations: []
       }
     })

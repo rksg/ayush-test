@@ -5,9 +5,9 @@ import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
-import * as UI                                                from '../AIDrivenRRM/styledComponents'
-import { useRecommendationListQuery, RecommendationListItem } from '../Recommendations/services'
-import { PriorityIcon }                                       from '../Recommendations/styledComponents'
+import * as UI                              from '../AIDrivenRRM/styledComponents'
+import { useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
+import { PriorityIcon }                     from '../Recommendations/styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -22,16 +22,17 @@ function AIOperationsWidget ({
 }: AIOperationsProps) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
-  const queryResults = useRecommendationListQuery({ ...filters, crrm: false })
+  const queryResults = useAiOpsListQuery({ ...filters, n: 5 })
   const data = queryResults?.data
+  const noData = data?.recommendations?.length === 0
+  const aiOpsCount = data?.aiOpsCount
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
     icon: <ColorPill
       color='var(--acx-accents-orange-50)'
-      value={$t(countFormat, { value: data?.length ?? 0 })}
+      value={$t(countFormat, { value: aiOpsCount })}
     />
   }
-  const noData = data?.length === 0
   const subtitle = $t({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
@@ -40,9 +41,9 @@ function AIOperationsWidget ({
       noData
         ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
         : <UI.List
-          dataSource={data?.slice(0,5)}
+          dataSource={data?.recommendations}
           renderItem={item => {
-            const recommendation = item as RecommendationListItem
+            const recommendation = item as AiOpsListItem
             const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/aiOps/${id}`}>
@@ -54,7 +55,7 @@ function AIOperationsWidget ({
                   )}
                 >
                   <UI.List.Item.Meta
-                    avatar={<PriorityIcon value={priority.order} />}
+                    avatar={<PriorityIcon value={priority!.order} />}
                     title={category}
                     description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
                   />

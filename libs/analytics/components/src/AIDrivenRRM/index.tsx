@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Card, NoData }          from '@acx-ui/components'
-import { formatter }                     from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import { Loader, Card, NoData, ColorPill } from '@acx-ui/components'
+import { formatter, intlFormats }          from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }   from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }            from '@acx-ui/utils'
 
 import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                  from '../Recommendations/styledComponents'
@@ -11,6 +11,8 @@ import { OptimizedIcon }                  from '../Recommendations/styledCompone
 import * as UI from './styledComponents'
 
 export { AIDrivenRRMWidget as AIDrivenRRM }
+
+const { countFormat } = intlFormats
 
 type AIDrivenRRMProps = {
   filters: AnalyticsFilter
@@ -23,14 +25,19 @@ function AIDrivenRRMWidget ({
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
   const queryResults = useCrrmListQuery({ ...filters, n: 5 })
   const data = queryResults?.data
-  const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const noData = data?.recommendations?.length === 0
-  const countFormat = formatter('countFormat')
-
   const crrmCount = data?.crrmCount
   const zoneCount = data?.zoneCount
   const optimizedZoneCount = data?.optimizedZoneCount
-  const crrmScenarios = countFormat(data?.crrmScenarios)
+  const crrmScenarios = formatter('countFormat')(data?.crrmScenarios)
+  const title = {
+    title: $t({ defaultMessage: 'AI-Driven RRM' }),
+    icon: <ColorPill
+      color='var(--acx-accents-orange-50)'
+      value={$t(countFormat, { value: crrmCount })}
+    />
+  }
+
   const subtitle = $t(
     {
       defaultMessage: `There

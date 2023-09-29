@@ -33,6 +33,29 @@ export type CrrmListItem = {
   crrmInterferingLinksText?: React.ReactNode
 } & Partial<RecommendationKpi>
 
+export type CrrmList = {
+  crrmCount: number
+  zoneCount: number
+  optimizedZoneCount: number
+  crrmScenarios: number
+  recommendations: CrrmListItem[]
+}
+
+export type AiOpsListItem = {
+  id: string
+  code: string
+  updatedAt: string
+  sliceValue: string
+  priority?: IconValue
+  category?: string
+  summary?: string
+}
+
+export type AiOpsList = {
+  aiOpsCount: number
+  recommendations: AiOpsListItem[]
+}
+
 export type Recommendation = {
   id: string
   code: string
@@ -46,14 +69,6 @@ export type Recommendation = {
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
-}
-
-export type CrrmList = {
-  crrmCount: number
-  zoneCount: number
-  optimizedZoneCount: number
-  crrmScenarios: number
-  recommendations: CrrmListItem[]
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -187,42 +202,6 @@ export const getCrrmInterferingLinksText = (
   }, { before, after })
 }
 
-export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
-  return recommendations.map(recommendation => {
-    const { status, kpi_number_of_interfering_links } = recommendation
-    return {
-      ...recommendation,
-      crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
-      crrmInterferingLinksText: getCrrmInterferingLinksText(
-        status,
-        kpi_number_of_interfering_links!
-      )
-    } as unknown as CrrmListItem
-  })
-}
-
-function transformRecommendationList (recommendations: Recommendation[]): RecommendationListItem[] {
-  const { $t } = getIntl()
-  return recommendations.map(recommendation => {
-    const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
-    const statusEnum = status as StateType
-    return {
-      ...recommendation,
-      scope: formattedPath(path, sliceValue),
-      type: nodeTypes(sliceType as NodeType),
-      priority: codes[code as keyof typeof codes].priority,
-      category: $t(codes[code as keyof typeof codes].category),
-      summary: $t(codes[code as keyof typeof codes].summary),
-      status: $t(states[statusEnum].text),
-      statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
-      statusEnum,
-      ...(code.includes('crrm') && {
-        crrmOptimizedState: getCrrmOptimizedState(statusEnum)
-      })
-    }
-  })
-}
-
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
@@ -253,10 +232,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $start, end: $end, path: $path)
           recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
-            id
-            status
-            sliceValue
-            ${kpiHelper('c-crrm-channel24g-auto')}
+            id status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
@@ -274,7 +250,57 @@ export const api = recommendationApi.injectEndpoints({
           zoneCount: response.zoneCount,
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
-          recommendations: transformCrrmList(response.recommendations)
+          recommendations: response.recommendations.map(recommendation => {
+            const { status, kpi_number_of_interfering_links } = recommendation
+            return {
+              ...recommendation,
+              crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
+              crrmInterferingLinksText: getCrrmInterferingLinksText(
+                status,
+                kpi_number_of_interfering_links!
+              )
+            } as unknown as CrrmListItem
+          })
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    aiOpsList: build.query<
+      AiOpsList,
+      AnalyticsFilter & { n: number }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query AiOpsList(
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+        ) {
+          aiOpsCount: recommendationCount(start: $start, end: $end, path: $path, crrm: false)
+          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: false) {
+            id code updatedAt sliceValue
+          }
+        }
+        `,
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate,
+          n: payload.n,
+          status: optimizedStates,
+          ...getFilterPayload(payload)
+        }
+      }),
+      transformResponse: (response: AiOpsList) => {
+        const { $t } = getIntl()
+        return {
+          aiOpsCount: response.aiOpsCount,
+          recommendations: response.recommendations.map(recommendation => {
+            const { code } = recommendation
+            return {
+              ...recommendation,
+              priority: codes[code as keyof typeof codes].priority,
+              category: $t(codes[code as keyof typeof codes].category),
+              summary: $t(codes[code as keyof typeof codes].summary)
+            } as unknown as AiOpsListItem
+          })
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
@@ -315,7 +341,25 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<Recommendation>) => {
-        return transformRecommendationList(response.recommendations)
+        const { $t } = getIntl()
+        return response.recommendations.map(recommendation => {
+          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+          const statusEnum = status as StateType
+          return {
+            ...recommendation,
+            scope: formattedPath(path, sliceValue),
+            type: nodeTypes(sliceType as NodeType),
+            priority: codes[code as keyof typeof codes].priority,
+            category: $t(codes[code as keyof typeof codes].category),
+            summary: $t(codes[code as keyof typeof codes].summary),
+            status: $t(states[statusEnum].text),
+            statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
+            statusEnum,
+            ...(code.includes('crrm') && {
+              crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+            })
+          }
+        })
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
@@ -399,6 +443,7 @@ export interface Response<Recommendation> {
 
 export const {
   useCrrmListQuery,
+  useAiOpsListQuery,
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
