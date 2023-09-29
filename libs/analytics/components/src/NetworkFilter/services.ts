@@ -24,7 +24,7 @@ interface Response {
   }
 }
 type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
-interface NetworkNode extends NetworkHierarchy<Child>{}
+export interface NetworkNode extends NetworkHierarchy<PathNode & { mac: string }>{}
 interface HierarchyResponse {
   network: {
     apHierarchy: NetworkNode[]

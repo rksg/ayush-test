@@ -29,6 +29,11 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { externalId: 'user-id' } })
 }))
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useUserProfileContext: () => ({ data: { userId: 'user-id' } })
+}))
+
 
 describe('Service Validation Table', () => {
   it('should render table with valid input', async () => {
@@ -205,7 +210,7 @@ describe('Service Validation Table', () => {
   describe('RA', () => {
     beforeEach(() => jest.mocked(get).mockReturnValue('true'))
 
-    it('disable edit button for now', async () => {
+    it('should only allow edit for same user', async () => {
       mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
         { data: fixtures.fetchAllServiceGuardSpecs })
       render(<ServiceGuardTable/>, {
@@ -215,7 +220,7 @@ describe('Service Validation Table', () => {
       const radio = await screen.findAllByRole('radio')
 
       await userEvent.click(radio[0])
-      expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()
+      expect(await screen.findByRole('button', { name: 'Edit' })).toBeEnabled()
     })
   })
 })

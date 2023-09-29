@@ -4,7 +4,12 @@ import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { sortProp, defaultSort, dateSort }                              from '@acx-ui/analytics/utils'
+import {
+  sortProp,
+  defaultSort,
+  dateSort,
+  useUserProfileContext as useSAUserProfileContext
+}                              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
@@ -44,7 +49,8 @@ export function ServiceGuardTable () {
   const navigate = useNavigate()
   const { setCount } = useContext(CountContext)
   const serviceGuardPath = useTenantLink('/analytics/serviceValidation/')
-  const { data: userProfile } = useUserProfileContext()
+  const { data: r1UserProfile } = useUserProfileContext()
+  const { data: saUserProfile } = useSAUserProfileContext()
   const { deleteTest, response: deleteResponse } = useDeleteServiceGuardTestMutation()
   const { runTest, response: runResponse } = useRunServiceGuardTestMutation()
   const { cloneTest, response: cloneResponse } = useCloneServiceGuardTestMutation()
@@ -97,14 +103,14 @@ export function ServiceGuardTable () {
         navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
       },
       disabled: ([selectedRow]) => {
-        if (get('IS_MLISA_SA')) return true
-        return selectedRow?.userId === userProfile?.externalId
+        const id = get('IS_MLISA_SA') ? saUserProfile.userId : r1UserProfile?.externalId
+        return selectedRow?.userId === id
           ? false
           : true
       },
       tooltip: ([selectedRow]) => {
-        if (get('IS_MLISA_SA')) return undefined
-        return selectedRow?.userId === userProfile?.externalId
+        const id = get('IS_MLISA_SA') ? saUserProfile.userId : r1UserProfile?.externalId
+        return selectedRow?.userId === id
           ? undefined
           : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
       }

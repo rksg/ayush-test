@@ -1,14 +1,21 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { dataApi, dataApiURL, store }       from '@acx-ui/store'
-import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
+import { get }                                             from '@acx-ui/config'
+import { dataApi, dataApiURL, rbacApi, rbacApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, screen, within }    from '@acx-ui/test-utils'
 
-import { mockNetworkHierarchy, mockHiddenAPs, renderForm } from '../../../__tests__/fixtures'
-import { ClientType }                                      from '../../../types'
+import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems } from '../../../__tests__/fixtures'
+import { ClientType }                                                                    from '../../../types'
 
 import { APsSelection } from './APsSelection'
 
 const { click, type } = userEvent
+
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
 
 describe('APsSelection', () => {
   beforeEach(() => {
@@ -111,12 +118,12 @@ describe('APsSelection', () => {
 
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
-
   it('renders selected APs in Venues', async () => {
     mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {
+        clientType: ClientType.VirtualClient,
         configs: [{
           networkPaths: {
             networkNodes: [
@@ -132,5 +139,105 @@ describe('APsSelection.FieldSummary', () => {
 
     expect(await field.findByText(/Venue 2 — 3 APs/)).toBeVisible()
     expect(await field.findByText(/Venue 1 — 1 AP/)).toBeVisible()
+  })
+})
+
+describe('RA', () => {
+  beforeEach(() => {
+    jest.mocked(get).mockReturnValue('true')
+    store.dispatch(dataApi.util.resetApiState())
+    store.dispatch(rbacApi.util.resetApiState())
+    mockServer.use(rest
+      .get(`${rbacApiURL}/systems`, (_req, res, ctx) => res(ctx.json(mockSystems))))
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockApHierarchy })
+  })
+  describe('APsSelection', () => {
+    it('supports select AP from network hierarchy', async () => {
+      renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      await click(document.body)
+      await click(await screen.findByText(/system 1/))
+      await click(await screen.findByText(/zone 1/))
+      await click(await screen.findByText(/group 1/))
+
+      await click(screen.getByRole('button', { name: 'Submit' }))
+
+      expect(await screen.findByTestId('form-values'))
+        .toHaveTextContent(JSON.stringify([
+          { name: 'some device id', type: 'system' },
+          { name: 'zone 1', type: 'zone' }
+        ]))
+    })
+    it('supports select partial of APs from network hierarchy', async () => {
+      renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      await click(document.body)
+      await click(await screen.findByText(/system 1/))
+      await click(await screen.findByText(/domain/))
+      await click(await screen.findByText(/zone 2/))
+      await click(await screen.findByText(/group 2/))
+      await click(await screen.findByText(/ap 1/))
+
+      await click(screen.getByRole('button', { name: 'Submit' }))
+
+      expect(await screen.findByTestId('form-values'))
+        .toHaveTextContent(JSON.stringify([
+          { name: 'some device id', type: 'system' },
+          { type: 'apMac', list: ['00:00:00:00:00:01'] }
+        ]))
+    })
+    it('can search for AP', async () => {
+      renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      const combobox = await screen.findByRole('combobox')
+
+      await type(combobox, 'ap 1')
+      await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
+
+      await click(screen.getByRole('button', { name: 'Submit' }))
+
+      expect(await screen.findByTestId('form-values'))
+        .toHaveTextContent(JSON.stringify([
+          { name: 'some device id', type: 'system' },
+          { type: 'apMac', list: ['00:00:00:00:00:01'] }
+        ]))
+    })
+  })
+  describe('APsSelection.FieldSummary', () => {
+    it('renders selected APs in network hierarchy', async () => {
+      renderForm(<APsSelection.FieldSummary />, {
+        initialValues: {
+          clientType: ClientType.VirtualClient,
+          configs: [{
+            networkPaths: {
+              networkNodes: [
+                [ { name: 'some device id', type: 'system' },
+                  { name: 'zone 1', type: 'zone' }],
+                [ { name: 'some device id', type: 'system' },
+                  { name: 'zone 1', type: 'zone' },
+                  { name: 'group 1', type: 'apGroup' }],
+                [ { name: 'some device id', type: 'system' },
+                  { type: 'apMac', list: ['00:00:00:00:00:01'] }]
+              ]
+            }
+          }]
+        }
+      })
+
+      const field = within(screen.getByTestId('field'))
+
+      expect(await field
+        .findByText(/system 1 \(SZ Cluster\) > zone 1 \(Zone\) — 1 AP/)).toBeVisible()
+      expect(await field
+        .findByText(/system 1 \(SZ Cluster\) > zone 1 \(Zone\) > group 1 \(AP Group\) — 0 AP/))
+        .toBeVisible()
+      expect(await field.findByText(/system 1 \(SZ Cluster\) — 1 AP/)).toBeVisible()
+    })
   })
 })

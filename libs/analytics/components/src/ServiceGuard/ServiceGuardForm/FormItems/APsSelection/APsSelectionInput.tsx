@@ -4,6 +4,7 @@ import { SingleValueType } from 'rc-cascader/lib/Cascader'
 import { normalizeNodeType, defaultNetworkPath }  from '@acx-ui/analytics/utils'
 import { FlattenCascader }                        from '@acx-ui/components'
 import type { BaseCascaderProps, CascaderOption } from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
 import type { FilterListNode, PathNode }          from '@acx-ui/utils'
 
 import { isAPListNodes, isNetworkNodes } from '../../../types'
@@ -55,7 +56,7 @@ function networkPathsToValue (
   value: APsSelectionInputProps['value']
 ): string[][] {
   if (!value) return []
-
+  const allOptions = extractOptionsValue({ children: options } as CascaderOption)
   const aps = value.filter(isAPListNodes)
     .map(([node, aps]) => ({ node: node as PathNode, aps: aps as FilterListNode }))
     // explode APs list into AP paths
@@ -63,19 +64,23 @@ function networkPathsToValue (
     // explode paths into value
     .map(path => {
       const value = path.map((_, i) => JSON.stringify([root, ...path.slice(0, i + 1)]))
-      return [
-        ...value.slice(0, -1),
-        `aps${path[0].name}`, // inject to match return type of `getFilterData`
-        ...value.slice(-1)
-      ]
-    })
+      return get('IS_MLISA_SA')
+        ? allOptions.filter(option => {
+          return JSON.parse(value.slice(-1)[0]).every((node: PathNode) =>
+            JSON.parse(option.slice(-1)[0]).find((optionNode: PathNode) =>
+              _.isEqual(node, optionNode)))
+        })
+        :[[
+          ...value.slice(0, -1),
+          `aps${path[0].name}`, // inject to match return type of `getFilterData`
+          ...value.slice(-1)
+        ]]
+    }).flat()
 
   const nodes = value.filter(isNetworkNodes)
     .map(path => path.map((_, i) => JSON.stringify([root, ...path.slice(0, i + 1)])))
 
   const values = nodes.concat(aps)
-  const allOptions = extractOptionsValue({ children: options } as CascaderOption)
-
   return values
     // exclude orphan nodes
     .filter(value => allOptions.some(option => _.isEqual(value, option)))

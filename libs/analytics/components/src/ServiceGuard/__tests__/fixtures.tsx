@@ -518,3 +518,34 @@ export const renderFormHook = () => {
   })
   return { form, formRender: render(<Form form={form} data-testid='form' />) }
 }
+
+export const mockApHierarchy = {
+  network: {
+    apHierarchy: [{ name: 'system 1', type: 'system',
+      children: [
+        { name: '1||Administration Domain', type: 'domain',
+          children: [{ name: 'zone 1', type: 'zone',
+            children: [{ name: 'group 1', type: 'apGroup' }]
+          }] },
+        {
+          name: '2||domain', type: 'domain',
+          children: [{ name: 'zone 2', type: 'zone',
+            children: [{ name: 'group 2', type: 'apGroup',
+              children: [
+                { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01' },
+                { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02' }
+              ] }]
+          }]
+        }]
+    }]
+  }
+}
+
+export const mockSystems = {
+  networkNodes: [{
+    deviceId: 'some device id',
+    deviceName: 'system 1',
+    onboarded: true,
+    controllerVersion: 'some version'
+  }]
+}
