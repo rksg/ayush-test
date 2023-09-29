@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { CommonUrlsInfo }                                                                     from '@acx-ui/rc/utils'
+import { Provider }                                                                           from '@acx-ui/store'
 import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { DNSRecordsTab } from '.'
