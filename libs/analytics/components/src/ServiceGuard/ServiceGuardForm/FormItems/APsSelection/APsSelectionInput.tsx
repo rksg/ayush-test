@@ -53,11 +53,11 @@ function extractNetworkPaths (values: SingleValueType | SingleValueType[]) {
 
 function networkPathsToValue (
   options: APsSelectionInputProps['options'],
-  value: APsSelectionInputProps['value']
+  selectedValue: APsSelectionInputProps['value']
 ): string[][] {
-  if (!value) return []
+  if (!selectedValue) return []
   const allOptions = extractOptionsValue({ children: options } as CascaderOption)
-  const aps = value.filter(isAPListNodes)
+  const aps = selectedValue.filter(isAPListNodes)
     .map(([node, aps]) => ({ node: node as PathNode, aps: aps as FilterListNode }))
     // explode APs list into AP paths
     .flatMap(({ node, aps }) => aps.list.map((mac) => [node, ap(mac)]))
@@ -77,7 +77,7 @@ function networkPathsToValue (
         ]]
     }).flat()
 
-  const nodes = value.filter(isNetworkNodes)
+  const nodes = selectedValue.filter(isNetworkNodes)
     .map(path => path.map((_, i) => JSON.stringify([root, ...path.slice(0, i + 1)])))
 
   const values = nodes.concat(aps)

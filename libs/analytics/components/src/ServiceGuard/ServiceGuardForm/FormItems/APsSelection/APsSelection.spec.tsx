@@ -166,8 +166,8 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { name: 'some device id', type: 'system' },
-          { name: 'zone 1', type: 'zone' }
+          { type: 'system', name: 'some device id' },
+          { type: 'zone', name: 'zone 1' }
         ]))
     })
     it('supports select partial of APs from network hierarchy', async () => {
@@ -186,7 +186,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { name: 'some device id', type: 'system' },
+          { type: 'system', name: 'some device id' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -204,7 +204,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { name: 'some device id', type: 'system' },
+          { type: 'system', name: 'some device id' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -217,11 +217,11 @@ describe('RA', () => {
           configs: [{
             networkPaths: {
               networkNodes: [
+                [ { name: 'some device id', type: 'system' }],
                 [ { name: 'some device id', type: 'system' },
-                  { name: 'zone 1', type: 'zone' }],
-                [ { name: 'some device id', type: 'system' },
-                  { name: 'zone 1', type: 'zone' },
-                  { name: 'group 1', type: 'apGroup' }],
+                  { name: 'domain', type: 'domain' },
+                  { name: 'zone 2', type: 'zone' },
+                  { name: 'group 4', type: 'apGroup' }],
                 [ { name: 'some device id', type: 'system' },
                   { type: 'apMac', list: ['00:00:00:00:00:01'] }]
               ]
@@ -233,9 +233,10 @@ describe('RA', () => {
       const field = within(screen.getByTestId('field'))
 
       expect(await field
-        .findByText(/system 1 \(SZ Cluster\) > zone 1 \(Zone\) — 1 AP/)).toBeVisible()
+        .findByText(/system 1 \(SZ Cluster\) — 2 AP/)).toBeVisible()
       expect(await field
-        .findByText(/system 1 \(SZ Cluster\) > zone 1 \(Zone\) > group 1 \(AP Group\) — 0 AP/))
+        // eslint-disable-next-line max-len
+        .findByText(/system 1 \(SZ Cluster\) > domain \(Domain\) > zone 2 \(Zone\) > group 4 \(AP Group\) — 0 AP/))
         .toBeVisible()
       expect(await field.findByText(/system 1 \(SZ Cluster\) — 1 AP/)).toBeVisible()
     })

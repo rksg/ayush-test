@@ -30,10 +30,10 @@ function transformSANetworkHierarchy (
 ) : CascaderOption[] {
   return nodes.map(node => {
     const formattedNode = (node.type as string === 'ap')
-      ? { name: node.mac, type: 'AP' }
+      ? { type: 'AP', name: node.mac }
       : (node.type === 'system')
-        ? { name: systems.find(sys => sys.deviceName === node.name)?.deviceId, type: node.type }
-        : { name: node.name, type: node.type }
+        ? { type: node.type, name: systems.find(sys => sys.deviceName === node.name)?.deviceId }
+        : { type: node.type, name: node.name }
     const path = [...parentPath, formattedNode] as PathNode[]
     return ({
       label: `${node.name} (${nodeTypes(node.type)})`,
@@ -137,8 +137,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     const nodes = paths
       .filter(isNetworkNodes)
       .map(path => get('IS_MLISA_SA')
-        ? getSAHierarchyCount(
-          path, path, response.data! as NetworkNode, systems.data?.networkNodes ?? [])
+        ? getSAHierarchyCount(path, path, response.data! as NetworkNode)
         : getHierarchyCount(path, response.data! as HierarchyNodeChild[]))
 
     const aps = paths
@@ -171,19 +170,29 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
   function getSAHierarchyCount (
     path: NetworkNodes,
     subPath: NetworkNodes,
-    hierarchies: NetworkNode,
-    systems: System[]
+    hierarchies: NetworkNode
   ): { name: string, count: number } | null {
     if(subPath.length === 0) {
       return {
         name: hierarchyName(path, true),
-        count: hierarchies.children?.length || 0
+        count: getSAAPCount(hierarchies) //.children?.length || 0
       }
     }
     const [ target, ...rest ] = subPath
     const current = hierarchies.children?.find(
       (node: NetworkNode) => node.name === target.name && node.type === target.type)
-    return current ? getSAHierarchyCount(path, rest, current, systems) : null
+    return current ? getSAHierarchyCount(path, rest, current) : null
+  }
+
+  function getSAAPCount (hierarchies: NetworkNode) : number {
+    if(hierarchies.type as string === 'ap') return 1
+    if(hierarchies.children && hierarchies.children.length > 0) {
+      return hierarchies.children.map(getSAAPCount).reduce((sum, count) => {
+        sum = sum + count
+        return sum
+      }, 0)
+    }
+    return 0
   }
 
   function getHierarchyCount (

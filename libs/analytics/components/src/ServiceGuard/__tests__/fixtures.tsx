@@ -534,7 +534,9 @@ export const mockApHierarchy = {
               children: [
                 { name: 'ap 1', type: 'ap', mac: '00:00:00:00:00:01' },
                 { name: 'ap 2', type: 'ap', mac: '00:00:00:00:00:02' }
-              ] }]
+              ] },
+            { name: 'group 4', type: 'apGroup' }
+            ]
           }]
         }]
     }]
