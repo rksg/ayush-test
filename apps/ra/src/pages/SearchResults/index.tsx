@@ -44,7 +44,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP) => (
-        <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
           {row.apName}</TenantLink>
       )
     },

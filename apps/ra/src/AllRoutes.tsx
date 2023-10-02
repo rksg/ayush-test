@@ -76,7 +76,7 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='wifi'>
+      <Route path='devices/wifi'>
         <Route index={true}
           element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
@@ -86,7 +86,7 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/reports'
+          path=':apId/details/overview'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />

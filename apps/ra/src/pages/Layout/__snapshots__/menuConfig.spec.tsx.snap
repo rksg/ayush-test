@@ -207,7 +207,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -216,7 +216,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -225,7 +225,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -552,7 +552,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -561,7 +561,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -570,7 +570,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -997,7 +997,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -1006,7 +1006,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -1015,7 +1015,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -1442,7 +1442,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -1451,7 +1451,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -1460,7 +1460,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2000,7 +2000,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2009,7 +2009,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2018,7 +2018,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2455,7 +2455,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2464,7 +2464,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2473,7 +2473,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2910,7 +2910,7 @@ Array [
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2919,7 +2919,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2928,7 +2928,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [

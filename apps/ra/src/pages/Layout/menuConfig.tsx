@@ -156,16 +156,16 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Access Points' }),
             children: [
               {
-                uri: '/wifi',
+                uri: '/devices/wifi',
                 label: $t({ defaultMessage: 'Access Points List' }),
-                isActiveCheck: new RegExp('^/wifi(?!(/reports))')
+                isActiveCheck: new RegExp('^/devices/wifi')
               },
               {
-                uri: '/wifi/reports/aps',
+                uri: '/devices/wifi/reports/aps',
                 label: $t({ defaultMessage: 'Access Points Report' })
               },
               {
-                uri: '/wifi/reports/airtime',
+                uri: '/devices/wifi/reports/airtime',
                 label: $t({ defaultMessage: 'Airtime Utilization Report' })
               }
             ]
