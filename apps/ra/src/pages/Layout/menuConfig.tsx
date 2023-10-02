@@ -173,28 +173,30 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    {
-      label: $t({ defaultMessage: 'Wired' }),
-      inactiveIcon: SwitchOutlined,
-      activeIcon: SwitchSolid,
-      children: [
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Switches' }),
-          children: [
-            {
-              uri: '/devices/switch',
-              label: $t({ defaultMessage: 'Switch List' }),
-              isActiveCheck: new RegExp('^/devices/switch')
-            },
-            {
-              uri: '/devices/switch/reports/wired',
-              label: $t({ defaultMessage: 'Wired Report' })
-            }
-          ]
-        }
-      ]
-    },
+    ...(hasViewAnalyticsPermissions ? [
+      {
+        label: $t({ defaultMessage: 'Wired' }),
+        inactiveIcon: SwitchOutlined,
+        activeIcon: SwitchSolid,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Switches' }),
+            children: [
+              {
+                uri: '/devices/switch',
+                label: $t({ defaultMessage: 'Switch List' }),
+                isActiveCheck: new RegExp('^/devices/switch')
+              },
+              {
+                uri: '/devices/switch/reports/wired',
+                label: $t({ defaultMessage: 'Wired Report' })
+              }
+            ]
+          }
+        ]
+      }
+    ] : []),
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),
@@ -206,11 +208,13 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Data Studio' })
           },
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
-          {
-            uri: '/analytics/occupancy',
-            label: $t({ defaultMessage: 'Occupancy' }),
-            openNewTab: true
-          }
+          ...(hasViewAnalyticsPermissions ? [
+            {
+              uri: '/analytics/occupancy',
+              label: $t({ defaultMessage: 'Occupancy' }),
+              openNewTab: true
+            }
+          ] : [])
         ]
       }
     ] : []),
