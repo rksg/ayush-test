@@ -1,5 +1,7 @@
+import { defaultNetworkPath }                    from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL }                  from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+import { DateRange }                             from '@acx-ui/utils'
 
 import { configChanges, kpiForOverview } from './__tests__/fixtures'
 import {
@@ -8,13 +10,14 @@ import {
 } from './services'
 
 describe('useConfigChangeQuery', () => {
+  const param = {
+    path: defaultNetworkPath,
+    startDate: '2023-04-01T16:00:00+08:00',
+    endDate: '2023-04-30T16:00:00+08:00',
+    range: DateRange.last24Hours
+  }
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
-    const param = {
-      path: [{ type: 'network' as const, name: 'Network' }],
-      start: '2023-04-01T16:00:00+08:00',
-      end: '2023-04-30T16:00:00+08:00'
-    }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     const { result } = renderHook(() => useConfigChangeQuery(param), { wrapper: Provider })
@@ -24,14 +27,14 @@ describe('useConfigChangeQuery', () => {
       .map((item, id) => ({ ...item, id })))
   })
   it('should return empty data', async () => {
-    const param = {
-      path: [{ type: 'network' as const, name: 'Network' }],
-      start: '2023-05-01T16:00:00+08:00',
-      end: '2023-05-30T16:00:00+08:00'
+    const noDataParam = {
+      ...param,
+      startDate: '2023-05-01T16:00:00+08:00',
+      endDate: '2023-05-30T16:00:00+08:00'
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    const { result } = renderHook(() => useConfigChangeQuery(param), { wrapper: Provider })
+    const { result } = renderHook(() => useConfigChangeQuery(noDataParam), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual([])
   })

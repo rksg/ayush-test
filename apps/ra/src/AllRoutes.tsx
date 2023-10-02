@@ -9,7 +9,7 @@ import {
   VideoCallQoeForm,
   VideoCallQoeDetails
 } from '@acx-ui/analytics/components'
-import { useUserProfileContext, PERMISSION_VIEW_ANALYTICS }              from '@acx-ui/analytics/utils'
+import { setUserProfile, PERMISSION_VIEW_ANALYTICS, getUserProfile }     from '@acx-ui/analytics/utils'
 import { showToast }                                                     from '@acx-ui/components'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
@@ -30,7 +30,9 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
-  const { data: { invitations, permissions, accountId } } = useUserProfileContext()
+  setUserProfile(getUserProfile())
+  const { invitations, selectedTenant } = getUserProfile()
+  const { id, permissions } = selectedTenant
   const [ search ] = useSearchParams()
   const previousURL = search.get('return')!
   useEffect(() => {
@@ -46,7 +48,7 @@ function Init () {
       })
     }
   })
-  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([accountId]))
+  const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
   return <Navigate
     replace
     to={{
@@ -74,7 +76,7 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='wifi'>
+      <Route path='devices/wifi'>
         <Route index={true}
           element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
@@ -84,7 +86,7 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/reports'
+          path=':apId/details/overview'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
@@ -105,16 +107,17 @@ function AllRoutes () {
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
-      <Route path='switch' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
-      <Route path='switch/reports/wired'
-        element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-      <Route path='switch/:switchId/details' element={<SwitchDetails/>} />
+      <Route path='devices/switch'>
+        <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
+        <Route path='reports/wired'
+          element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
+        <Route path=':switchId/serial/details/overview' element={<SwitchDetails/>} />
+      </Route>
       <Route path='users'>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
           <Route path=':activeTab'>
-            <Route path='' element={<Navigate replace to='./troubleshooting' />} />
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>

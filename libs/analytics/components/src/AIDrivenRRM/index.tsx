@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Card, NoData }          from '@acx-ui/components'
+import { isSwitchPath }                  from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, NoData } from '@acx-ui/components'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import type { PathFilter }               from '@acx-ui/utils'
 
 import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                  from '../Recommendations/styledComponents'
@@ -12,16 +13,17 @@ import * as UI from './styledComponents'
 export { AIDrivenRRMWidget as AIDrivenRRM }
 
 type AIDrivenRRMProps = {
-  filters: AnalyticsFilter
+  pathFilters: PathFilter
 }
 
 function AIDrivenRRMWidget ({
-  filters
+  pathFilters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
+  const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...filters, n: 5 })
-  const data = queryResults?.data
+  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const data = switchPath ? [] : queryResults?.data
   const title = $t({ defaultMessage: 'AI-Driven RRM' })
   const noData = data?.length === 0
 
@@ -33,14 +35,20 @@ function AIDrivenRRMWidget ({
           dataSource={data}
           renderItem={item => {
             const recommendation = item as CrrmListItem
-            const { sliceValue, id, crrmOptimizedState, crrmInterferingLinksText } = recommendation
+            const { sliceValue, id, crrmOptimizedState, crrmInterferingLinksText, summary }
+              = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/crrm/${id}`}>
-                <UI.List.Item.Meta
-                  avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                  title={sliceValue}
-                  description={crrmInterferingLinksText}
-                />
+                <Tooltip
+                  placement='top'
+                  title={summary}
+                >
+                  <UI.List.Item.Meta
+                    avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                    title={sliceValue}
+                    description={crrmInterferingLinksText}
+                  />
+                </Tooltip>
               </TenantLink>
             </UI.List.Item>
           }}
