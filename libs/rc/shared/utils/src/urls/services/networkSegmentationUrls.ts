@@ -45,28 +45,29 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
 
   getAvailableSwitches: {
     method: 'get',
-    url: '/venues/:venueId/networkSegmentations',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations',
+    url: '/venues/:venueId/personalIdentityNetworks',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/personalIdentityNetworks',
     newApi: true
   },
   getSwitchInfoByNSGId: {
     method: 'get',
-    url: '/venues/:venueId/networkSegmentations/:serviceId',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId',
+    url: '/venues/:venueId/personalIdentityNetworks/:serviceId',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/personalIdentityNetworks/:serviceId',
     newApi: true
   },
 
   validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/venues/:venueId/networkSegmentations/distributionSwitchInfo',
+    url: '/venues/:venueId/personalIdentityNetworks/distributionSwitchInfo',
     // eslint-disable-next-line max-len
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/personalIdentityNetworks/distributionSwitchInfo',
     newApi: true
   },
   validateAccessSwitchInfo: {
     method: 'post',
-    url: '/venues/:venueId/networkSegmentations/accessSwitchInfo',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo',
+    url: '/venues/:venueId/personalIdentityNetworks/accessSwitchInfo',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/personalIdentityNetworks/accessSwitchInfo',
     newApi: true
   },
   createNetworkSegmentationGroup: {
@@ -74,7 +75,7 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/personalIdentityNetworks'
   },
-  getNetworkSegmentationStatsList: {
+  getpersonalIdentityNetworkstatsList: {
     method: 'post',
     newApi: true,
     url: '/personalIdentityNetworks/query'
