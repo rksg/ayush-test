@@ -74,8 +74,8 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const fields = [
     (isRrm && {
       label: get('IS_MLISA_SA')
-        ? $t({ defaultMessage: 'Zone RRM' })
-        : $t({ defaultMessage: 'Venue RRM' }),
+        ? $t({ defaultMessage: 'Zone RRM Health' })
+        : $t({ defaultMessage: 'Venue RRM Health' }),
       children: <OptimizedIcon
         value={crrmOptimizedState!.order}
         text={$t(crrmOptimizedState!.label)}

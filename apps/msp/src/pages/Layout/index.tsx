@@ -4,7 +4,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
@@ -24,6 +24,7 @@ import { CloudMessageBanner }                                           from '@a
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
+import { isDelegationMode }                                             from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -46,6 +47,8 @@ function Layout () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -64,7 +67,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile?.support || userProfile?.dogfood) {
+      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
