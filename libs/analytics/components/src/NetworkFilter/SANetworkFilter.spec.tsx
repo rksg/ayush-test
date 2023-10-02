@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { IntlProvider }   from 'react-intl'
 
-import { DateRange } from '@acx-ui/utils'
+import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { DateRange }          from '@acx-ui/utils'
 
 import { SANetworkFilter }          from './SANetworkFilter'
 import { useNetworkHierarchyQuery } from './services'
@@ -10,12 +11,16 @@ const mockSetNetworkPath = jest.fn()
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
-  path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
+}
+const pathFilters = {
+  ...filters,
+  path: defaultNetworkPath
 }
 const mockUseAnalyticsFilter = {
   filters,
-  path: [{ type: 'network', name: 'Network' }],
+  pathFilters,
   setNetworkPath: mockSetNetworkPath,
   raw: []
 }
@@ -43,7 +48,11 @@ describe('SANetworkFilter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.mocked(useNetworkHierarchyQuery).mockReturnValue({ data: mockNetworkHierarchyData })
+    jest.mocked(useNetworkHierarchyQuery).mockReturnValue({
+      data: mockNetworkHierarchyData,
+      refresh: jest.fn(),
+      refetch: jest.fn()
+    })
   })
 
   it('should render without errors', async () => {
