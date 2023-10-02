@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Radio, RadioChangeEvent, Space, Typography } from 'antd'
-import { DefaultOptionType }                          from 'antd/lib/select'
-import { useIntl }                                    from 'react-intl'
+import { Radio, RadioChangeEvent, Space } from 'antd'
+import { DefaultOptionType }              from 'antd/lib/select'
+import { useIntl }                        from 'react-intl'
 
-import { Modal }     from '@acx-ui/components'
+import { Modal }      from '@acx-ui/components'
 import {
   EolApFirmware,
   FirmwareCategory,
