@@ -78,8 +78,6 @@ describe('useDateFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 })
-
-
 describe('defaultRanges', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:30.123Z').getTime())
@@ -98,7 +96,8 @@ describe('defaultRanges', () => {
       'All Time': ['2022-01-01T00:00:30.123Z', '2022-01-01T00:00:30.123Z'],
       'Last 24 Hours': ['2021-12-31T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
       'Last 7 Days': ['2021-12-25T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
-      'Last 30 Days': ['2021-12-02T00:01:00.000Z', '2022-01-01T00:01:00.000Z']
+      'Last 30 Days': ['2021-12-02T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
+      'Last 8 Hours': [ '2021-12-31T16:01:00.000Z','2022-01-01T00:01:00.000Z']
     })
   })
 

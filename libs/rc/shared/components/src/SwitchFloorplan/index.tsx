@@ -28,6 +28,8 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const [imageUrl, setImageUrl] = useState('')
 
   const { data: extendedSwitchList } = useSwitchListQuery({ params, payload: {
+    pageSize: 10000,
+    page: 1,
     filters: {
       floorplanId: [switchPosition?.floorplanId]
     }
