@@ -1,34 +1,41 @@
-import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
-import { useNavigate }                               from 'react-router-dom'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
-import { Tabs }                   from '@acx-ui/components'
+import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import { useApContext }           from '@acx-ui/rc/utils'
 import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import ApLldpNeighbors     from './ApLldpNeighbors'
 import ApRfNeighbors       from './ApRfNeighbors'
 import { ApNeighborTypes } from './constants'
-
-const tabs : {
-  key: ApNeighborTypes,
-  title: MessageDescriptor,
-  component: React.ReactNode
-}[] = [
-  {
-    key: 'rf',
-    title: defineMessage({ defaultMessage: 'RF Neighbors' }),
-    component: <ApRfNeighbors />
-  },
-  {
-    key: 'lldp',
-    title: defineMessage({ defaultMessage: 'LLDP Neighbors' }),
-    component: <ApLldpNeighbors />
-  }
-]
+import * as UI             from './styledComponents'
 
 export function ApNeighborsTab () {
   const { $t } = useIntl()
+
+  const tabs : {
+    key: ApNeighborTypes,
+    title: React.ReactNode,
+    component: React.ReactNode
+  }[] = [
+    {
+      key: 'rf',
+      title: <UI.TabWithHint>
+        {$t({ defaultMessage: 'RF Neighbors' })}
+        <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'RF Neighbors managed by this Tenant' })} />
+      </UI.TabWithHint>,
+      component: <ApRfNeighbors />
+    },
+    {
+      key: 'lldp',
+      title: $t({ defaultMessage: 'LLDP Neighbors' }),
+      component: <ApLldpNeighbors />
+    }
+  ]
+
   const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
   const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
@@ -48,7 +55,8 @@ export function ApNeighborsTab () {
       type='card'
     >
       {tabs.map(({ key, title, component }) =>
-        <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}
+        <Tabs.TabPane key={key} tab={title}>{component}</Tabs.TabPane>)
+      }
     </Tabs>
     : null
   )
