@@ -18,7 +18,8 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} })
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
