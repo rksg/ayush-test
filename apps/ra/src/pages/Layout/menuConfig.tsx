@@ -155,7 +155,7 @@ export function useMenuConfig () {
               {
                 uri: '/devices/wifi',
                 label: $t({ defaultMessage: 'Access Points List' }),
-                isActiveCheck: new RegExp('^/devices/wifi')
+                isActiveCheck: new RegExp('^/devices/wifi(?!(/reports))')
               },
               {
                 uri: '/devices/wifi/reports/aps',
@@ -183,7 +183,7 @@ export function useMenuConfig () {
               {
                 uri: '/devices/switch',
                 label: $t({ defaultMessage: 'Switch List' }),
-                isActiveCheck: new RegExp('^/devices/switch')
+                isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
               },
               {
                 uri: '/devices/switch/reports/wired',
