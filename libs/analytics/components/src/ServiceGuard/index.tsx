@@ -3,7 +3,6 @@ import { createContext, useEffect, useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button }     from '@acx-ui/components'
-import { get }        from '@acx-ui/config'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { ServiceGuardTable }            from './ServiceGuardTable'
@@ -29,7 +28,6 @@ export function useServiceGuard () {
   const extra = [
     <TenantLink to='/analytics/serviceValidation/add' key='add'>
       <Button type='primary'
-        disabled={Boolean(get('IS_MLISA_SA'))}
         children={$t({ defaultMessage: 'Create Test' })}
       />
     </TenantLink>
