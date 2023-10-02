@@ -31,6 +31,12 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
+      {isApNeighborsOn &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Neighbors' })}
+          key='neighbors'
+        />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
@@ -51,12 +57,6 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'
       />
-      {isApNeighborsOn &&
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Neighbors' })}
-          key='neighbors'
-        />
-      }
     </Tabs>
   )
 }
