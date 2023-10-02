@@ -1,17 +1,17 @@
 import { gql }           from 'graphql-request'
+import _                 from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
 import {
   nodeTypes,
-  getFilterPayload,
   formattedPath,
   productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
-import type { AnalyticsFilter }           from '@acx-ui/utils'
+import type { PathFilter }                from '@acx-ui/utils'
 
 import {
   states,
@@ -26,11 +26,13 @@ import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 export type CrrmListItem = {
   id: string
+  code: string
   status: StateType
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
+  summary?: string
 } & Partial<RecommendationKpi>
 
 export type CrrmList = {
@@ -206,59 +208,56 @@ export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmList,
-      AnalyticsFilter & { n: number }
+      PathFilter & { n: number }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int, $status: [String]
+          $startDate: DateTime, $endDate: DateTime,
+          $path: [HierarchyNodeInput], $n: Int, $status: [String]
         ) {
-          crrmCount: recommendationCount(start: $start, end: $end, path: $path, crrm: true)
+          crrmCount: recommendationCount(start: $startDate, end: $endDate, path: $path, crrm: true)
           zoneCount: recommendationCount(
-            start: $start,
-            end: $end,
+            start: $startDate,
+            end: $endDate,
             path: $path,
             crrm: true,
             uniqueBy: "sliceValue"
           )
           optimizedZoneCount: recommendationCount(
-            start: $start,
-            end: $end,
+            start: $startDate,
+            end: $endDate,
             path: $path,
             crrm: true,
             status: $status,
             uniqueBy: "sliceValue"
           )
-          crrmScenarios(start: $start, end: $end, path: $path)
-          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
-            id status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
+          crrmScenarios(start: $startDate, end: $endDate, path: $path)
+          recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
+            id code status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          n: payload.n,
-          status: optimizedStates,
-          ...getFilterPayload(payload)
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'n'])
       }),
       transformResponse: (response: CrrmList) => {
+        const { $t } = getIntl()
         return {
           crrmCount: response.crrmCount,
           zoneCount: response.zoneCount,
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
           recommendations: response.recommendations.map(recommendation => {
-            const { status, kpi_number_of_interfering_links } = recommendation
+            const { code, status, kpi_number_of_interfering_links } = recommendation
             return {
               ...recommendation,
-              crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
+              crrmOptimizedState: getCrrmOptimizedState(status),
               crrmInterferingLinksText: getCrrmInterferingLinksText(
                 status,
                 kpi_number_of_interfering_links!
-              )
+              ),
+              summary: $t(codes[code as keyof typeof codes].summary)
             } as unknown as CrrmListItem
           })
         }
@@ -267,25 +266,24 @@ export const api = recommendationApi.injectEndpoints({
     }),
     aiOpsList: build.query<
       AiOpsList,
-      AnalyticsFilter & { n: number }
+      PathFilter & { n: number }
     >({
       query: (payload) => ({
         document: gql`
         query AiOpsList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $n: Int
         ) {
-          aiOpsCount: recommendationCount(start: $start, end: $end, path: $path, crrm: false)
-          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: false) {
+          aiOpsCount: recommendationCount(
+            start: $startDate, end: $endDate, path: $path, crrm: false
+          )
+          recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
             id code updatedAt sliceValue
           }
         }
         `,
         variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          n: payload.n,
-          status: optimizedStates,
-          ...getFilterPayload(payload)
+          ..._.pick(payload, ['path', 'startDate', 'endDate', 'n']),
+          status: optimizedStates
         }
       }),
       transformResponse: (response: AiOpsList) => {
@@ -307,14 +305,14 @@ export const api = recommendationApi.injectEndpoints({
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      AnalyticsFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean }
     >({
       query: (payload) => ({
         document: gql`
         query RecommendationList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
         ) {
-          recommendations(start: $start, end: $end, path: $path, crrm: $crrm) {
+          recommendations(start: $startDate, end: $endDate, path: $path, crrm: $crrm) {
             id
             code
             status
@@ -333,12 +331,7 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          crrm: payload.crrm,
-          ...getFilterPayload(payload)
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'crrm'])
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()

@@ -1,29 +1,37 @@
 import { useIntl } from 'react-intl'
 
+import { isSwitchPath }                             from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import type { PathFilter }                          from '@acx-ui/utils'
 
-import * as UI                              from '../AIDrivenRRM/styledComponents'
-import { useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
-import { PriorityIcon }                     from '../Recommendations/styledComponents'
+import * as UI                                         from '../AIDrivenRRM/styledComponents'
+import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
+import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
 const { countFormat } = intlFormats
 
 type AIOperationsProps = {
-  filters: AnalyticsFilter
+  pathFilters: PathFilter
 }
 
 function AIOperationsWidget ({
-  filters
+  pathFilters
 }: AIOperationsProps) {
   const { $t } = useIntl()
+  const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
-  const queryResults = useAiOpsListQuery({ ...filters, n: 5 })
-  const data = queryResults?.data
+  const queryResults =
+    useAiOpsListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const data = switchPath
+    ? {
+      aiOpsCount: 0,
+      recommendations: []
+    } as AiOpsList
+    : queryResults?.data
   const noData = data?.recommendations?.length === 0
   const aiOpsCount = data?.aiOpsCount
   const title = {

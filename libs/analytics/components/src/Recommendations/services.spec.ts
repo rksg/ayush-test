@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
-import { DateRange, NetworkPath }                                          from '@acx-ui/utils'
+import { PathFilter, DateRange }                                           from '@acx-ui/utils'
 
 import {
   crrmListResult,
@@ -103,9 +104,8 @@ describe('Recommendation services', () => {
     startDate: '2023-06-10T00:00:00+08:00',
     endDate: '2023-06-17T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
-    filter: {}
-  } as const
+    path: defaultNetworkPath
+  } as PathFilter
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
@@ -122,17 +122,20 @@ describe('Recommendation services', () => {
       {
         ...crrmListResult.recommendations[0],
         crrmInterferingLinksText: 'From 3 to 0 interfering links',
-        crrmOptimizedState: crrmStates.optimized
+        crrmOptimizedState: crrmStates.optimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio'
       },
       {
         ...crrmListResult.recommendations[1],
         crrmInterferingLinksText: 'Reverted',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: crrmStates.nonOptimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio'
       },
       {
         ...crrmListResult.recommendations[2],
         crrmInterferingLinksText: '2 interfering links can be optimized to 0',
-        crrmOptimizedState: crrmStates.nonOptimized
+        crrmOptimizedState: crrmStates.nonOptimized,
+        summary: 'Optimal Ch/Width and Tx Power found for 6 GHz radio'
       }
     ]
     expect(error).toBe(undefined)

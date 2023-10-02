@@ -1,23 +1,23 @@
-import { IncidentFilter }                     from '@acx-ui/analytics/utils'
+import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
   waitForElementToBeRemoved
-}                    from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+} from '@acx-ui/test-utils'
+import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
 import { aiOpsListResult } from '../Recommendations/__tests__/fixtures'
 import { api }             from '../Recommendations/services'
 
 import { AIOperations } from '.'
 
-const filters : IncidentFilter = {
+const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   range: DateRange.last24Hours,
-  filter: {}
+  path: defaultNetworkPath
 }
 
 describe('AIOperations dashboard', () => {
@@ -27,7 +27,7 @@ describe('AIOperations dashboard', () => {
     mockGraphqlQuery(recommendationUrl, 'AiOpsList', {
       data: aiOpsListResult
     })
-    render(<AIOperations filters={filters} />, {
+    render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })
@@ -41,6 +41,23 @@ describe('AIOperations dashboard', () => {
     expect(await screen.findByText('07/06/2023')).toBeVisible()
   })
 
+  it('renders no data for switch path', async () => {
+    const switchPathFilters = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 's1' },
+        { type: 'switchGroup', name: 'sg1' }
+      ] as NetworkPath
+    }
+    render(<AIOperations pathFilters={switchPathFilters} />, {
+      route: true,
+      wrapper: Provider
+    })
+
+    expect(await screen.findByText('No recommendations')).toBeVisible()
+  })
+
   it('handles no data', async () => {
     mockGraphqlQuery(recommendationUrl, 'AiOpsList', {
       data: {
@@ -48,7 +65,7 @@ describe('AIOperations dashboard', () => {
         recommendations: []
       }
     })
-    render(<AIOperations filters={filters} />, {
+    render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
     })
