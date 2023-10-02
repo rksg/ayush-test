@@ -342,6 +342,46 @@ Array [
       },
     ],
   },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
 ]
 `;
 
@@ -755,6 +795,16 @@ Array [
             ],
             "openNewTab": true,
             "uri": "/analytics/admin/license",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
           },
           Object {
             "label": Array [
