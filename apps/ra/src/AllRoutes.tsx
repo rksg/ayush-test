@@ -80,7 +80,7 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='wifi'>
+      <Route path='devices/wifi'>
         <Route index={true}
           element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
@@ -90,7 +90,7 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/reports'
+          path=':apId/details/overview'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
@@ -131,16 +131,17 @@ function AllRoutes () {
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
-      <Route path='switch' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
-      <Route path='switch/reports/wired'
-        element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-      <Route path='switch/:switchId/details' element={<SwitchDetails/>} />
+      <Route path='devices/switch'>
+        <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
+        <Route path='reports/wired'
+          element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
+        <Route path=':switchId/serial/details/overview' element={<SwitchDetails/>} />
+      </Route>
       <Route path='users'>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
           <Route path=':activeTab'>
-            <Route path='' element={<Navigate replace to='./troubleshooting' />} />
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
