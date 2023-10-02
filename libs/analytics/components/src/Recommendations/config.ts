@@ -15,7 +15,7 @@ export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
   nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
 }
 
-const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
+export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
