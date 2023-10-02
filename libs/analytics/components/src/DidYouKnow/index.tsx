@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Carousel }     from '@acx-ui/components'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { Loader, Carousel }                 from '@acx-ui/components'
+import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
 import { getFactsData } from './facts'
 import {
@@ -12,7 +12,7 @@ import {
 export { DidYouKnowWidget as DidYouKnow }
 
 type DidYouKnowWidgetProps = {
-  filters: AnalyticsFilter
+  filters: PathFilter | DashboardFilter
   maxFactPerSlide?: number
   maxSlideChar?: number
 }
