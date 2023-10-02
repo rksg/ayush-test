@@ -87,6 +87,6 @@ describe('ApNeighborsTab', () => {
       }
     })
 
-    expect(await screen.findByTestId('ap-lldp-neighbors')).toBeVisible()
+    expect(await screen.findByTestId('ap-rf-neighbors')).toBeVisible()
   })
 })

@@ -16,14 +16,14 @@ const tabs : {
   component: React.ReactNode
 }[] = [
   {
-    key: 'lldp',
-    title: defineMessage({ defaultMessage: 'LLDP Neighbors' }),
-    component: <ApLldpNeighbors />
-  },
-  {
     key: 'rf',
     title: defineMessage({ defaultMessage: 'RF Neighbors' }),
     component: <ApRfNeighbors />
+  },
+  {
+    key: 'lldp',
+    title: defineMessage({ defaultMessage: 'LLDP Neighbors' }),
+    component: <ApLldpNeighbors />
   }
 ]
 
