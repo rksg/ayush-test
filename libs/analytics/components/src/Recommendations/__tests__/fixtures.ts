@@ -3,6 +3,10 @@ import { NetworkPath } from '@acx-ui/utils'
 import { StateType } from '../config'
 
 export const crrmListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
   recommendations: [
     {
       id: '1',
@@ -36,6 +40,24 @@ export const crrmListResult = {
         previous: null,
         projected: 0
       }
+    }
+  ]
+}
+
+export const aiOpsListResult = {
+  aiOpsCount: 2,
+  recommendations: [
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceValue: 'zone-2'
+    },
+    {
+      id: '3',
+      code: 'c-bandbalancing-enable',
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      sliceValue: 'Deeps Place'
     }
   ]
 }
