@@ -17,7 +17,7 @@ describe('ApDetails', () => {
       apId: 'ap-id'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/wifi/:apId/details/reports' }
+      route: { params, path: '/devices/wifi/:apId/details/overview' }
     })
     expect(screen.getByRole('heading', { name: /ap\-id/i }).textContent)
       .toEqual('ap-id')
