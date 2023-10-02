@@ -200,14 +200,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -216,7 +216,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -225,7 +225,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -257,14 +257,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -273,7 +273,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -339,6 +339,46 @@ Array [
       Object {
         "type": 0,
         "value": "Business Insights",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
       },
     ],
   },
@@ -545,14 +585,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -561,7 +601,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -570,7 +610,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -602,14 +642,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -618,7 +658,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -755,6 +795,16 @@ Array [
             ],
             "openNewTab": true,
             "uri": "/analytics/admin/license",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
           },
           Object {
             "label": Array [
@@ -990,14 +1040,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -1006,7 +1056,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -1015,7 +1065,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -1047,14 +1097,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -1063,7 +1113,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -1435,14 +1485,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -1451,7 +1501,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -1460,7 +1510,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -1492,14 +1542,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -1508,7 +1558,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -1639,54 +1689,6 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
         "label": Array [
           Object {
             "type": 0,
@@ -1703,16 +1705,6 @@ Array [
           },
         ],
         "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1993,14 +1985,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2009,7 +2001,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2018,7 +2010,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2050,14 +2042,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -2066,7 +2058,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -2448,14 +2440,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2464,7 +2456,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2473,7 +2465,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2505,14 +2497,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -2521,7 +2513,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [
@@ -2903,14 +2895,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Access Points List",
               },
             ],
-            "uri": "/wifi",
+            "uri": "/devices/wifi",
           },
           Object {
             "label": Array [
@@ -2919,7 +2911,7 @@ Array [
                 "value": "Access Points Report",
               },
             ],
-            "uri": "/wifi/reports/aps",
+            "uri": "/devices/wifi/reports/aps",
           },
           Object {
             "label": Array [
@@ -2928,7 +2920,7 @@ Array [
                 "value": "Airtime Utilization Report",
               },
             ],
-            "uri": "/wifi/reports/airtime",
+            "uri": "/devices/wifi/reports/airtime",
           },
         ],
         "label": Array [
@@ -2960,14 +2952,14 @@ Array [
       Object {
         "children": Array [
           Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
             "label": Array [
               Object {
                 "type": 0,
                 "value": "Switch List",
               },
             ],
-            "uri": "/switch",
+            "uri": "/devices/switch",
           },
           Object {
             "label": Array [
@@ -2976,7 +2968,7 @@ Array [
                 "value": "Wired Report",
               },
             ],
-            "uri": "/switch/reports/wired",
+            "uri": "/devices/switch/reports/wired",
           },
         ],
         "label": Array [

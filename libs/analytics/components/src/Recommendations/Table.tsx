@@ -4,16 +4,16 @@ import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
+  isSwitchPath,
   defaultSort,
   dateSort,
-  sortProp,
-  IncidentFilter
+  sortProp
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { noDataDisplay }               from '@acx-ui/utils'
+import { noDataDisplay, PathFilter }   from '@acx-ui/utils'
 
 import { RecommendationActions }  from './RecommendationActions'
 import {
@@ -46,14 +46,13 @@ export const crrmStateSort = (itemA: RecommendationListItem, itemB: Recommendati
   return defaultSort(stateA.order, stateB.order)
 }
 
-export function RecommendationTable ({ filters, showCrrm }:
-  { filters: IncidentFilter, showCrrm?: boolean }) {
+export function RecommendationTable (
+  { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
+) {
   const intl = useIntl()
   const { $t } = intl
 
-  const queryResults = useRecommendationListQuery({ ...filters, crrm: showCrrm })
-
-  const [ showMuted, setShowMuted ] = useState<boolean>(false)
+  const [showMuted, setShowMuted] = useState<boolean>(false)
 
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
@@ -63,8 +62,6 @@ export function RecommendationTable ({ filters, showCrrm }:
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
-  const data = queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
 
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
@@ -83,6 +80,11 @@ export function RecommendationTable ({ filters, showCrrm }:
     }
   ]
 
+  const switchPath = isSwitchPath(pathFilters.path)
+  const queryResults =
+    useRecommendationListQuery({ ...pathFilters, crrm: showCrrm }, { skip: switchPath })
+  const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
+
   useEffect(() => {
     setSelectedRowData([])
   }, [queryResults.data])
@@ -90,9 +92,9 @@ export function RecommendationTable ({ filters, showCrrm }:
   const columns: TableProps<RecommendationListItem>['columns'] = useMemo(() => [
     ...(showCrrm ? [{
       title: get('IS_MLISA_SA')
-        ? $t({ defaultMessage: 'Zone RRM' })
-        : $t({ defaultMessage: 'Venue RRM' }),
-      width: 90,
+        ? $t({ defaultMessage: 'Zone RRM Health' })
+        : $t({ defaultMessage: 'Venue RRM Health' }),
+      width: 120,
       dataIndex: 'optimizedState',
       key: 'optimizedState',
       render: (_, { crrmOptimizedState }) => {

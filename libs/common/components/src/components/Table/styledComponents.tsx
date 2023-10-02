@@ -54,6 +54,7 @@ export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   &&&&.ant-btn-icon-only {
     width: 16px;
     height: 16px;
+    min-width: unset;
   }
 `
 
