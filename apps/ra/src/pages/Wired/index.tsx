@@ -9,8 +9,8 @@ import { DateRange }                                                      from '
 import { SwitchList } from './SwitchList'
 
 export enum AISwitchTabsEnum {
-  SWITCH_LIST = 'switch',
-  WIRED_REPORT = 'switch/reports/wired'
+  SWITCH_LIST = 'devices/switch',
+  WIRED_REPORT = 'devices/switch/reports/wired'
 }
 
 interface SwitchTab {

@@ -21,7 +21,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { DateFilter, DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
+import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -62,10 +62,10 @@ export const useDashBoardUpdatedFilters = () => {
   }
 }
 
-export const getFiltersForRecommendationWidgets = (filters : AnalyticsFilter) => {
-  if(filters.range !== DateRange.last8Hours)
-    return filters
-  return { ...filters, ...getDateRangeFilter(DateRange.last24Hours) }
+export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
+  if (pathFilters.range !== DateRange.last8Hours)
+    return pathFilters
+  return { ...pathFilters, ...getDateRangeFilter(DateRange.last24Hours) }
 }
 
 export default function Dashboard () {
@@ -116,10 +116,10 @@ export default function Dashboard () {
           <IncidentsCountBySeverities filters={filters} />
         </div>
         <div style={{ gridArea: 'b2' }}>
-          <AIDrivenRRM pathFilters={pathFilters} />
+          <AIDrivenRRM pathFilters={getFiltersForRecommendationWidgets(pathFilters)} />
         </div>
         <div style={{ gridArea: 'c2' }}>
-          <AIOperations pathFilters={pathFilters} />
+          <AIOperations pathFilters={getFiltersForRecommendationWidgets(pathFilters)} />
         </div>
         <div style={{ gridArea: 'd1' }}>
           <DidYouKnow
