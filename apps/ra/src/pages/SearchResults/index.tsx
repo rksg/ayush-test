@@ -1,3 +1,4 @@
+import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -13,9 +14,9 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { TenantLink, resolvePath }            from '@acx-ui/react-router-dom'
-import { DateRange, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
+import { TenantLink, resolvePath }                                         from '@acx-ui/react-router-dom'
+import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                                from './NoData'
 import {  Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -44,7 +45,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       width: 130,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP) => (
-        <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
           {row.apName}</TenantLink>
       )
     },
@@ -102,10 +103,18 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'hostname',
       key: 'hostname',
       fixed: 'left',
-      render: (_, row : Client) => (
-        <TenantLink to={`/users/wifi/clients/${row.mac}/details`}>
-          {row.hostname}</TenantLink>
-      ),
+      render: (_, row : Client) => {
+        const { lastActiveTime, mac, hostname } = row
+        const period = encodeParameter<DateFilter>({
+          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
+          endDate: lastActiveTime,
+          range: DateRange.custom
+        })
+        return <TenantLink
+          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
+        >{hostname}
+        </TenantLink>
+      },
       sorter: { compare: sortProp('hostname', defaultSort) }
     },
     {
@@ -151,7 +160,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'switchName',
       key: 'switchName',
       render: (_, row : Switch) => (
-        <TenantLink to={`/switch/${row.switchMac}/details`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
           {row.switchName}</TenantLink>
       ),
       sorter: { compare: sortProp('switchName', defaultSort) }

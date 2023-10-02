@@ -8,8 +8,7 @@ import {
   PERMISSION_MANAGE_MLISA,
   PERMISSION_MANAGE_CALL_MANAGER,
   PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
-  PERMISSION_MANAGE_LABEL,
-  PERMISSION_FRANCHISOR
+  PERMISSION_MANAGE_LABEL
 } from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
 import {
@@ -47,8 +46,6 @@ export function useMenuConfig () {
     currentAccountPermissions?.[PERMISSION_VIEW_DATA_EXPLORER]
   const hasManageLabelPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_LABEL]
-
-  const hasFranchisorSetting = currentAccountPermissions?.[PERMISSION_FRANCHISOR]
 
   const config: LayoutProps['menuConfig'] = [
     ...(hasViewAnalyticsPermissions ? [
@@ -156,16 +153,16 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Access Points' }),
             children: [
               {
-                uri: '/wifi',
+                uri: '/devices/wifi',
                 label: $t({ defaultMessage: 'Access Points List' }),
-                isActiveCheck: new RegExp('^/wifi(?!(/reports))')
+                isActiveCheck: new RegExp('^/devices/wifi')
               },
               {
-                uri: '/wifi/reports/aps',
+                uri: '/devices/wifi/reports/aps',
                 label: $t({ defaultMessage: 'Access Points Report' })
               },
               {
-                uri: '/wifi/reports/airtime',
+                uri: '/devices/wifi/reports/airtime',
                 label: $t({ defaultMessage: 'Airtime Utilization Report' })
               }
             ]
@@ -173,28 +170,30 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    {
-      label: $t({ defaultMessage: 'Wired' }),
-      inactiveIcon: SwitchOutlined,
-      activeIcon: SwitchSolid,
-      children: [
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Switches' }),
-          children: [
-            {
-              uri: '/switch',
-              label: $t({ defaultMessage: 'Switch List' }),
-              isActiveCheck: new RegExp('^/switch(?!(/reports))')
-            },
-            {
-              uri: '/switch/reports/wired',
-              label: $t({ defaultMessage: 'Wired Report' })
-            }
-          ]
-        }
-      ]
-    },
+    ...(hasViewAnalyticsPermissions ? [
+      {
+        label: $t({ defaultMessage: 'Wired' }),
+        inactiveIcon: SwitchOutlined,
+        activeIcon: SwitchSolid,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Switches' }),
+            children: [
+              {
+                uri: '/devices/switch',
+                label: $t({ defaultMessage: 'Switch List' }),
+                isActiveCheck: new RegExp('^/devices/switch')
+              },
+              {
+                uri: '/devices/switch/reports/wired',
+                label: $t({ defaultMessage: 'Wired Report' })
+              }
+            ]
+          }
+        ]
+      }
+    ] : []),
     ...(hasViewDataExplorerPermission ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),
@@ -206,84 +205,78 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Data Studio' })
           },
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
-          {
-            uri: '/analytics/occupancy',
-            label: $t({ defaultMessage: 'Occupancy' }),
-            openNewTab: true
-          }
+          ...(hasViewAnalyticsPermissions ? [
+            {
+              uri: '/analytics/occupancy',
+              label: $t({ defaultMessage: 'Occupancy' }),
+              openNewTab: true
+            }
+          ] : [])
         ]
       }
     ] : []),
-    ...(hasManageMlisaPermission
-      || hasManageLabelPermission
-      || hasFranchisorSetting
-      || (hasViewAnalyticsPermissions && hasManageMlisaPermission) ? [
+    {
+      label: $t({ defaultMessage: 'Administration' }),
+      inactiveIcon: AdminOutlined,
+      activeIcon: AdminSolid,
+      adminItem: true,
+      children: [
         {
-          label: $t({ defaultMessage: 'Administration' }),
-          inactiveIcon: AdminOutlined,
-          activeIcon: AdminSolid,
-          adminItem: true,
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
+            ...(hasManageMlisaPermission ? [
+              {
+                uri: '/analytics/admin/onboarded',
+                label: $t({ defaultMessage: 'Onboarded Systems' }),
+                openNewTab: true
+              },
+              {
+                uri: '/analytics/admin/users',
+                label: $t({ defaultMessage: 'Users' }),
+                openNewTab: true
+              }
+            ] : []),
+            ...(hasManageLabelPermission ? [
+              {
+                uri: '/analytics/admin/labels',
+                label: $t({ defaultMessage: 'Labels' }),
+                openNewTab: true
+              }
+            ] : []),
+            ...(hasManageMlisaPermission ? [
+              {
+                uri: '/analytics/admin/resourceGroups',
+                label: $t({ defaultMessage: 'Resource Groups' }),
+                openNewTab: true
+              },
+              {
+                uri: '/analytics/admin/support',
+                label: $t({ defaultMessage: 'Support' }),
+                openNewTab: true
+              },
+              {
+                uri: '/analytics/admin/license',
+                label: $t({ defaultMessage: 'Licenses' }),
+                openNewTab: true
+              }
+            ] : []),
             {
-              type: 'group' as const,
-              label: $t({ defaultMessage: 'Account Management' }),
-              children: [
-                ...(hasManageMlisaPermission ? [
-                  {
-                    uri: '/analytics/admin/onboarded',
-                    label: $t({ defaultMessage: 'Onboarded Systems' }),
-                    openNewTab: true
-                  },
-                  {
-                    uri: '/analytics/admin/users',
-                    label: $t({ defaultMessage: 'Users' }),
-                    openNewTab: true
-                  }
-                ] : []),
-                ...(hasManageLabelPermission ? [
-                  {
-                    uri: '/analytics/admin/labels',
-                    label: $t({ defaultMessage: 'Labels' }),
-                    openNewTab: true
-                  }
-                ] : []),
-                ...(hasManageMlisaPermission ? [
-                  {
-                    uri: '/analytics/admin/resourceGroups',
-                    label: $t({ defaultMessage: 'Resource Groups' }),
-                    openNewTab: true
-                  },
-                  {
-                    uri: '/analytics/admin/support',
-                    label: $t({ defaultMessage: 'Support' }),
-                    openNewTab: true
-                  },
-                  {
-                    uri: '/analytics/admin/license',
-                    label: $t({ defaultMessage: 'Licenses' }),
-                    openNewTab: true
-                  }
-                ] : []),
-                ...(hasFranchisorSetting ? [
-                  {
-                    uri: '/analytics/admin/schedules',
-                    label: $t({ defaultMessage: 'Schedules' }),
-                    openNewTab: true
-                  }
-                ] : []),
-                ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
-                  {
-                    uri: '/analytics/admin/webhooks',
-                    label: $t({ defaultMessage: 'Webhooks' }),
-                    openNewTab: true
-                  }
-                ] : [])
-              ]
-            }
+              uri: '/analytics/admin/schedules',
+              label: $t({ defaultMessage: 'Schedules' }),
+              openNewTab: true
+            },
+            ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
+              {
+                uri: '/analytics/admin/webhooks',
+                label: $t({ defaultMessage: 'Webhooks' }),
+                openNewTab: true
+              }
+            ] : [])
           ]
         }
       ]
-      : [])
+    }
   ]
   return config
 }

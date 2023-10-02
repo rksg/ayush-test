@@ -8,9 +8,9 @@ import { DateRange }                                                      from '
 import { APList } from './ApsTable'
 
 export enum WifiTabsEnum {
-  LIST = 'wifi',
-  AP_REPORT = 'wifi/reports/aps',
-  AIRTIME_REPORT = 'wifi/reports/airtime'
+  LIST = 'devices/wifi',
+  AP_REPORT = 'devices/wifi/reports/aps',
+  AIRTIME_REPORT = 'devices/wifi/reports/airtime'
 }
 
 interface WifiTab {
