@@ -56,10 +56,10 @@ const useTabs = () : Tab[] => {
     component: <ConfigChange/>,
     headerExtra: [
       get('IS_MLISA_SA')
-        ? <SANetworkFilter />
+        ? <SANetworkFilter shouldQuerySwitch={false} />
         : <NetworkFilter
           key={getShowWithoutRbacCheckKey('network-filter')}
-          shouldQuerySwitch={true}
+          shouldQuerySwitch={false}
           withIncidents={false}
         />,
       <TimeRangeDropDown/>

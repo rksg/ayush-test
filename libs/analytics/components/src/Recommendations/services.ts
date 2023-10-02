@@ -1,17 +1,17 @@
 import { gql }           from 'graphql-request'
+import _                 from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
 import {
   nodeTypes,
-  getFilterPayload,
   formattedPath,
   productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
-import type { AnalyticsFilter }           from '@acx-ui/utils'
+import type { PathFilter }                from '@acx-ui/utils'
 
 import { states,
   codes,
@@ -25,11 +25,13 @@ import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 export type CrrmListItem = {
   id: string
+  code: string
   status: StateType
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
+  summary?: string
 } & Partial<RecommendationKpi>
 
 export type Recommendation = {
@@ -178,15 +180,17 @@ export const getCrrmInterferingLinksText = (
 }
 
 export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
+  const { $t } = getIntl()
   return recommendations.map(recommendation => {
-    const { status, kpi_number_of_interfering_links } = recommendation
+    const { code, status, kpi_number_of_interfering_links } = recommendation
     return {
       ...recommendation,
-      crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
+      crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(
         status,
         kpi_number_of_interfering_links!
-      )
+      ),
+      summary: $t(codes[code as keyof typeof codes].summary)
     } as unknown as CrrmListItem
   })
 }
@@ -217,28 +221,24 @@ export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmListItem[],
-      AnalyticsFilter & { n: number }
+      PathFilter & { n: number }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $n: Int
         ) {
-          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
+          recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
             id
+            code
             status
             sliceValue
             ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          n: payload.n,
-          ...getFilterPayload(payload)
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'n'])
       }),
       transformResponse: (response: Response<CrrmListItem>) => {
         return transformCrrmList(response.recommendations)
@@ -247,14 +247,14 @@ export const api = recommendationApi.injectEndpoints({
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      AnalyticsFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean }
     >({
       query: (payload) => ({
         document: gql`
         query RecommendationList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
         ) {
-          recommendations(start: $start, end: $end, path: $path, crrm: $crrm) {
+          recommendations(start: $startDate, end: $endDate, path: $path, crrm: $crrm) {
             id
             code
             status
@@ -273,12 +273,7 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          crrm: payload.crrm,
-          ...getFilterPayload(payload)
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'crrm'])
       }),
       transformResponse: (response: Response<Recommendation>) => {
         return transformRecommendationList(response.recommendations)
