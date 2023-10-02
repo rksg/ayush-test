@@ -59,14 +59,13 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
     form.setFieldsValue({
-      ...form.getFieldsValue(true),
       venueName: venueItem?.label,
-      edgeId: null,
-      edgeName: null,
-      dhcpId: null,
-      dhcpName: null,
-      poolId: null,
-      poolName: null
+      edgeId: undefined,
+      edgeName: undefined,
+      dhcpId: undefined,
+      dhcpName: undefined,
+      poolId: undefined,
+      poolName: undefined
     })
   }
 

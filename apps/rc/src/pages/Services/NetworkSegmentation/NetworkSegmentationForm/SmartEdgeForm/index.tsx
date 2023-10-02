@@ -117,11 +117,10 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const onEdgeChange = (value: string) => {
     const edgeItem = edgeOptions?.find(item => item.value === value)
     form.setFieldsValue({
-      ...form.getFieldsValue(true),
       edgeName: edgeItem?.label,
-      dhcpId: null,
-      poolId: null,
-      poolName: null,
+      dhcpId: undefined,
+      poolId: undefined,
+      poolName: undefined,
       dhcpRelay: false
     })
   }
@@ -129,9 +128,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const onDhcpChange = (value: string) => {
     const dhcpPorilfe = dhcpProfles?.find(item => item.id === value)
     form.setFieldsValue({
-      ...form.getFieldsValue(true),
-      poolId: null,
-      poolName: null,
+      poolId: undefined,
+      poolName: undefined,
       dhcpName: dhcpPorilfe?.serviceName,
       dhcpRelay: dhcpPorilfe?.dhcpRelay
     })
@@ -143,9 +141,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const selectPool = (poolId?: string, poolName?: string) => {
     form.setFieldsValue({
-      ...form.getFieldsValue(true),
-      poolId: poolId,
-      poolName: poolName
+      poolId,
+      poolName
     })
     form.validateFields(['poolId'])
   }
