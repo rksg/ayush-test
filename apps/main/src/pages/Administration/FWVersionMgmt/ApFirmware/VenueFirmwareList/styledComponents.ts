@@ -30,16 +30,11 @@ export const PreferencesSection = styled.div`
 export const TitleActive = styled.div`
   color: #333333;
   font-weight: 600;
-  margin: 12px 10px 0;
+  margin: 12px 0 0 0;
   .empty {
     color: var(--acx-neutrals-50);
     font-style: italic;
   }
-`
-
-export const Title2Active = styled.div`
-  color: #333333;
-  margin: 12px 10px 12px;
 `
 
 export const TitleDate = styled.div`
@@ -66,15 +61,10 @@ export const ItemModel = styled.div`
 
 export const Ul = styled.ul`
   list-style-type: none;
-  padding-left: 1em;
+  padding-left: 0;
 `
 
 export const Li = styled.li`
-  &:before {
-    content: "-";
-    position: absolute;
-    margin-left: -1em;
-  }
   margin-top: 5px;
 `
 
@@ -97,7 +87,7 @@ export const FieldGroup = styled.div`
 `
 
 export const ValueContainer = styled.div`
-  margin: 12px 12px 4px 32px;
+  margin: 12px 12px 4px 0;
   .ant-radio-group {
     font-size: unset;
   }

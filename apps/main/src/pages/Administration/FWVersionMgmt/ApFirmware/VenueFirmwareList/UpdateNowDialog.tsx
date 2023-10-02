@@ -25,9 +25,9 @@ export enum VersionsSelectMode {
 }
 
 // eslint-disable-next-line max-len
-export const firmwareNote1 = defineMessage({ defaultMessage: 'Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.' })
+export const firmwareNote1 = defineMessage({ defaultMessage: 'During firmware update, all selected network devices will reboot and service may be interrupted for up to 15 minutes.' })
 // eslint-disable-next-line max-len
-export const firmwareNote2 = defineMessage({ defaultMessage: 'You will be notified once the update process has finished.' })
+export const firmwareNote2 = defineMessage({ defaultMessage: 'Are you sure you want to update the firmware version on devices in all selected venues?' })
 
 export interface UpdateApNowDialogProps {
   visible: boolean,

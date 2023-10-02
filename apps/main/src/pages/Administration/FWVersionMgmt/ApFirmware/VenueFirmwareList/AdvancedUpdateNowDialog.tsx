@@ -92,15 +92,12 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       title={intl.$t({ defaultMessage: 'Update Now' })}
       visible={visible}
       width={560}
-      okText={intl.$t({ defaultMessage: 'Run Update' })}
+      okText={intl.$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      <Typography style={{ fontWeight: 700 }}>
-        {intl.$t({ defaultMessage: 'Choose which version to update the venue to:' })}
-      </Typography>
       { defaultActiveVersion &&
         <UI.Section>
           <ABFSelector

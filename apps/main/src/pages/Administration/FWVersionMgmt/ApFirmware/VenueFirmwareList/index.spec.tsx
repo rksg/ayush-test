@@ -159,7 +159,7 @@ describe('Firmware Venues Table', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     const confirmDialog = await screen.findByRole('dialog')
-    await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Update Firmware/ }))
 
     const targetActiveAbfVersion = availableABFList.filter(item => item.abf === 'active')[0]
     await waitFor(() => {
