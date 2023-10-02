@@ -6,9 +6,9 @@ import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
 import type { PathFilter }                          from '@acx-ui/utils'
 
-import * as UI                                                from '../AIDrivenRRM/styledComponents'
-import { useRecommendationListQuery, RecommendationListItem } from '../Recommendations/services'
-import { PriorityIcon }                                       from '../Recommendations/styledComponents'
+import * as UI                                         from '../AIDrivenRRM/styledComponents'
+import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
+import { PriorityIcon }                                from '../Recommendations/styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -25,25 +25,33 @@ function AIOperationsWidget ({
   const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
   const queryResults =
-    useRecommendationListQuery({ ...pathFilters, crrm: false }, { skip: switchPath })
-  const data = switchPath ? [] : queryResults?.data
+    useAiOpsListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const data = switchPath
+    ? {
+      aiOpsCount: 0,
+      recommendations: []
+    } as AiOpsList
+    : queryResults?.data
+  const noData = data?.recommendations?.length === 0
+  const aiOpsCount = data?.aiOpsCount
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
     icon: <ColorPill
       color='var(--acx-accents-orange-50)'
-      value={$t(countFormat, { value: data?.length ?? 0 })}
+      value={$t(countFormat, { value: aiOpsCount })}
     />
   }
-  const noData = data?.length === 0
+  const subtitle = $t({
+    defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick}>{
+    <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
       noData
         ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
         : <UI.List
-          dataSource={data?.slice(0,5)}
+          dataSource={data?.recommendations}
           renderItem={item => {
-            const recommendation = item as RecommendationListItem
+            const recommendation = item as AiOpsListItem
             const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
             return <UI.List.Item key={id}>
               <TenantLink to={`/recommendations/aiOps/${id}`}>
@@ -55,7 +63,7 @@ function AIOperationsWidget ({
                   )}
                 >
                   <UI.List.Item.Meta
-                    avatar={<PriorityIcon value={priority.order} />}
+                    avatar={<PriorityIcon value={priority!.order} />}
                     title={category}
                     description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
                   />

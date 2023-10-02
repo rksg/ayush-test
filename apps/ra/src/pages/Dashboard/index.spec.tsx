@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { defaultNetworkPath }              from '@acx-ui/analytics/utils'
 import { BrowserRouter }                   from '@acx-ui/react-router-dom'
 import { act, render, renderHook, screen } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
@@ -100,13 +101,10 @@ describe('Dashboard', () => {
         startDate: 'startDate',
         endDate: 'endDate',
         range: DateRange.last8Hours,
-        filter: { networkNodes: [], switchNodes: [] }
+        path: defaultNetworkPath
       })
       expect(result).toEqual({
-        filter: {
-          networkNodes: [],
-          switchNodes: []
-        },
+        path: defaultNetworkPath,
         range: 'Last 24 Hours',
         startDate: '2021-12-31T00:01:00+00:00',
         endDate: '2022-01-01T00:01:00+00:00'
@@ -117,13 +115,10 @@ describe('Dashboard', () => {
         startDate: 'startDate',
         endDate: 'endDate',
         range: DateRange.last24Hours,
-        filter: { networkNodes: [], switchNodes: [] }
+        path: defaultNetworkPath
       })
       expect(result).toEqual({
-        filter: {
-          networkNodes: [],
-          switchNodes: []
-        },
+        path: defaultNetworkPath,
         range: 'Last 24 Hours',
         startDate: 'startDate',
         endDate: 'endDate'
