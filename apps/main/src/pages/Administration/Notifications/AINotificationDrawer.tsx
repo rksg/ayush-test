@@ -1,6 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-import {  get, isEmpty }                             from 'lodash'
+import {  cloneDeep, get, set, unset, isEmpty }      from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import {
@@ -60,10 +60,11 @@ const afterMsg = defineMessage({
   defaultMessage: 'This will apply to all the recipients defined for this account.'
 })
 
+type Preferences = { preferences: AnalyticsPreferences }
 function OptionsList ({ labels, setState, type }:
   {
     labels: ListLabel[],
-    setState: Dispatch<SetStateAction<AnalyticsPreferences>>,
+    setState: Dispatch<SetStateAction<Preferences>>,
     type: 'incident' | 'configRecommendation'
   }) {
   const { $t } = useIntl()
@@ -74,21 +75,16 @@ function OptionsList ({ labels, setState, type }:
           id={key}
           name={key}
           checked={checked.includes('email')}
-          onChange={(e) => setState((currPref: AnalyticsPreferences) => {
-            const config = get(currPref, type, undefined)
-            let method: NotificationMethod[] = get(currPref, [type, key], [])
-            if (e.target.checked) {
-              method = method.concat(['email'])
-            } else {
-              method = method.filter(m => m !== 'email')
+          onChange={e => setState(({ preferences: p }: Preferences) => {
+            const preferences = cloneDeep(p)
+            const path = [type, key]
+            e.target.checked
+              ? set(preferences, path, ['email'])
+              : unset(preferences, path)
+            if (isEmpty(preferences[type])) {
+              delete preferences[type]
             }
-            return {
-              ...(!isEmpty(currPref) ? currPref : {}),
-              [type]: {
-                ...(!isEmpty(config) ? currPref[type] : {}),
-                [key]: method
-              }
-            }
+            return { preferences }
           })} />
         <label htmlFor={key}>{$t(label)}</label>
       </span>
@@ -107,19 +103,13 @@ export const AINotificationDrawer = ({
   const user = getUserProfile()
   const { tenantId } = user.profile
   const query = useGetPreferencesQuery({ tenantId: tenantId })
-  const [state, setState] = useState<AnalyticsPreferences>({})
-  useEffect(() => { setState(query.data!) }, [query.data])
+  const [{ preferences }, setState] = useState<Preferences>({ preferences: {} })
+  useEffect(() => { setState({ preferences: query.data! }) }, [query.data])
   const [updatePrefrences] = useSetNotificationMutation()
   const allowRecommandations = useIsSplitOn(Features.RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE)
   const onClose = () => setShowDrawer(false)
   const onApply = () => {
-    updatePrefrences({
-      tenantId,
-      preferences: {
-        ...query.data!,
-        ...state
-      }
-    })
+    updatePrefrences({ tenantId, preferences })
       .unwrap()
       .then(({ success }) => {
         showToast({
@@ -136,8 +126,8 @@ export const AINotificationDrawer = ({
         setShowDrawer(false)
       })
   }
-  const incidentLabels = getPreferenceLabel(state, 'incident')
-  const recommendationLabels = getPreferenceLabel(state, 'configRecommendation')
+  const incidentLabels = getPreferenceLabel(preferences, 'incident')
+  const recommendationLabels = getPreferenceLabel(preferences, 'configRecommendation')
   return <Drawer
     title={$t({ defaultMessage: 'AI Notifications' })}
     visible={showDrawer}

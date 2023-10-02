@@ -99,8 +99,7 @@ describe('IncidentNotificationDrawer', () => {
         P1: ['email']
       },
       configRecommendation: {
-        aiOps: ['email'],
-        crrm: []
+        aiOps: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
@@ -140,8 +139,7 @@ describe('IncidentNotificationDrawer', () => {
         P1: ['email']
       },
       configRecommendation: {
-        aiOps: ['email'],
-        crrm: []
+        aiOps: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
@@ -179,13 +177,11 @@ describe('IncidentNotificationDrawer', () => {
         tenantId: 'test-tenant',
         preferences: {
           incident: {
-            P1: [],
             P2: ['email'],
             P3: ['email']
           },
           configRecommendation: {
-            crrm: ['email'],
-            aiOps: []
+            crrm: ['email']
           }
         }
       })
@@ -202,9 +198,6 @@ describe('IncidentNotificationDrawer', () => {
     const mockedPref = {
       incident: {
         P1: ['email']
-      },
-      configRecommendation: {
-        crrm: []
       }
     }
     mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
@@ -242,7 +235,6 @@ describe('IncidentNotificationDrawer', () => {
         tenantId: 'test-tenant',
         preferences: {
           incident: {
-            P1: [],
             P2: ['email'],
             P3: ['email']
           },
@@ -263,12 +255,8 @@ describe('IncidentNotificationDrawer', () => {
   })
   it('should handle error notification preference update', async () => {
     const mockedPref = {
-      incident: {
-        P1: []
-      },
       configRecommendation: {
-        crrm: undefined,
-        aiOps: ['web']
+        aiOps: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
@@ -303,11 +291,8 @@ describe('IncidentNotificationDrawer', () => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test-tenant',
         preferences: {
-          incident: {
-            P1: []
-          },
           configRecommendation: {
-            aiOps: ['web', 'email']
+            aiOps: ['email']
           }
         }
       })
