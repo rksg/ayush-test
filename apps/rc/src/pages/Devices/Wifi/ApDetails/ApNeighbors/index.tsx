@@ -1,14 +1,14 @@
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate }                               from 'react-router-dom'
 
-import { Tabs }                                                   from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useApContext }                                           from '@acx-ui/rc/utils'
-import { useTenantLink }                                          from '@acx-ui/react-router-dom'
+import { Tabs }          from '@acx-ui/components'
+import { useApContext }  from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import ApLldpNeighbors     from './ApLldpNeighbors'
-import ApRfNeighbors       from './ApRfNeighbors'
-import { ApNeighborTypes } from './constants'
+import ApLldpNeighbors        from './ApLldpNeighbors'
+import ApRfNeighbors          from './ApRfNeighbors'
+import { ApNeighborTypes }    from './constants'
+import { useIsApNeighborsOn } from './useApNeighbors'
 
 const tabs : {
   key: ApNeighborTypes,
@@ -52,11 +52,4 @@ export function ApNeighborsTab () {
     </Tabs>
     : null
   )
-}
-
-export function useIsApNeighborsOn (): boolean {
-  const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
-  const isBetaApNeighborsOn = useIsTierAllowed(TierFeatures.BETA_AP_NEIGHBORS)
-
-  return isApNeighborsOn && isBetaApNeighborsOn
 }

@@ -44,7 +44,11 @@ jest.mock('./ApOverviewTab/ApProperties', () => ({
 }))
 
 jest.mock('./ApNeighbors', () => ({
-  ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />,
+  ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
+}))
+
+jest.mock('./ApNeighbors/useApNeighbors', () => ({
+  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
   useIsApNeighborsOn: () => true
 }))
 

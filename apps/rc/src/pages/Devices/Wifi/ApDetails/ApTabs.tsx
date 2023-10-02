@@ -6,8 +6,7 @@ import { ApDetailHeader, ApDeviceStatusEnum, useApContext } from '@acx-ui/rc/uti
 import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
 import { hasAccess }                                        from '@acx-ui/user'
 
-import { useIsApNeighborsOn } from './ApNeighbors'
-
+import { useIsApNeighborsOn } from './ApNeighbors/useApNeighbors'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
