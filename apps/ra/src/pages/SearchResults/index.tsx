@@ -151,7 +151,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'switchName',
       key: 'switchName',
       render: (_, row : Switch) => (
-        <TenantLink to={`/switch/${row.switchMac}/details`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
           {row.switchName}</TenantLink>
       ),
       sorter: { compare: sortProp('switchName', defaultSort) }
