@@ -17,7 +17,7 @@ export const SANetworkFilter = ({
   shouldQuerySwitch = true,
   overrideFilters = {}
 }: SANetworkFilterProps) => {
-  const { setNetworkPath, filters, path } = useAnalyticsFilter()
+  const { setNetworkPath, filters, pathFilters: { path } } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQuerySwitch: shouldQuerySwitch, ...overrideFilters }
   const networkHierarchyQuery = useNetworkHierarchyQuery(
     omit(networkFilter, 'path', 'filter')

@@ -21,7 +21,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
+import { DateFilter, DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -51,16 +51,14 @@ export const useDashBoardUpdatedFilters = () => {
   const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
     ? getDateRangeFilter(dateFilterState.range)
     : dateFilterState
-  const { filters } = useDashboardFilter()
-  const { filters: analyticsFilter, path } = useAnalyticsFilter()
+  const { filters, pathFilters } = useAnalyticsFilter()
   return {
-    analyticsFilter: { ...analyticsFilter, startDate, endDate, range },
     filters: { ...filters, startDate, endDate, range },
+    pathFilters: { ...pathFilters, startDate, endDate, range },
     startDate,
     endDate,
     range,
-    setDateFilterState,
-    path
+    setDateFilterState
   }
 }
 
@@ -73,13 +71,12 @@ export const getFiltersForRecommendationWidgets = (filters : AnalyticsFilter) =>
 export default function Dashboard () {
   const { $t } = useIntl()
   const {
-    analyticsFilter,
     filters,
+    pathFilters,
     startDate,
     endDate,
     range,
-    setDateFilterState,
-    path
+    setDateFilterState
   }= useDashBoardUpdatedFilters()
   const height = useMonitorHeight(536)
 
@@ -89,7 +86,7 @@ export default function Dashboard () {
         title={$t({ defaultMessage: 'How is my network doing?' })}
         extra={[
           <>
-            <SANetworkFilter overrideFilters={analyticsFilter}/>
+            <SANetworkFilter overrideFilters={filters}/>
             <RangePicker
               key='range-picker'
               selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -103,30 +100,30 @@ export default function Dashboard () {
       />
       <UI.Grid style={{ height }}>
         <div style={{ gridArea: 'a1' }}>
-          <ReportTile path={path} startDate={startDate} endDate={endDate}/>
+          <ReportTile pathFilters={pathFilters} />
         </div>
         <div style={{ gridArea: 'a2' }}>
           <NetworkHistory
             hideLegend
             historicalIcon={false}
-            filters={analyticsFilter}
+            filters={filters}
           />
         </div>
         <div style={{ gridArea: 'a3' }}>
-          <SLA filters={analyticsFilter} />
+          <SLA pathFilters={pathFilters} />
         </div>
         <div style={{ gridArea: 'b1' }}>
           <IncidentsCountBySeverities filters={filters} />
         </div>
         <div style={{ gridArea: 'b2' }}>
-          <AIDrivenRRM filters={getFiltersForRecommendationWidgets(filters)} />
+          <AIDrivenRRM pathFilters={pathFilters} />
         </div>
         <div style={{ gridArea: 'c2' }}>
-          <AIOperations filters={getFiltersForRecommendationWidgets(filters)} />
+          <AIOperations pathFilters={pathFilters} />
         </div>
         <div style={{ gridArea: 'd1' }}>
           <DidYouKnow
-            filters={filters}
+            filters={pathFilters}
             maxFactPerSlide={3}
             maxSlideChar={290}
           />

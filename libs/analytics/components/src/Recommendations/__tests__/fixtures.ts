@@ -6,6 +6,7 @@ export const crrmListResult = {
   recommendations: [
     {
       id: '1',
+      code: 'c-crrm-channel5g-auto',
       status: 'applied' as StateType,
       sliceValue: 'zone-1',
       kpi_number_of_interfering_links: {
@@ -16,6 +17,7 @@ export const crrmListResult = {
     },
     {
       id: '2',
+      code: 'c-crrm-channel24g-auto',
       status: 'reverted' as StateType,
       sliceValue: 'zone-2',
       kpi_number_of_interfering_links: {
@@ -26,6 +28,7 @@ export const crrmListResult = {
     },
     {
       id: '3',
+      code: 'c-crrm-channel6g-auto',
       status: 'new' as StateType,
       sliceValue: 'Deeps Place',
       kpi_number_of_interfering_links: {

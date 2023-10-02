@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
+import { isSwitchPath }                             from '@acx-ui/analytics/utils'
 import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import type { PathFilter }                          from '@acx-ui/utils'
 
 import * as UI                                                from '../AIDrivenRRM/styledComponents'
 import { useRecommendationListQuery, RecommendationListItem } from '../Recommendations/services'
@@ -14,16 +15,18 @@ export { AIOperationsWidget as AIOperations }
 const { countFormat } = intlFormats
 
 type AIOperationsProps = {
-  filters: AnalyticsFilter
+  pathFilters: PathFilter
 }
 
 function AIOperationsWidget ({
-  filters
+  pathFilters
 }: AIOperationsProps) {
   const { $t } = useIntl()
+  const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/aiOps')
-  const queryResults = useRecommendationListQuery({ ...filters, crrm: false })
-  const data = queryResults?.data
+  const queryResults =
+    useRecommendationListQuery({ ...pathFilters, crrm: false }, { skip: switchPath })
+  const data = switchPath ? [] : queryResults?.data
   const title = {
     title: $t({ defaultMessage: 'AI Operations' }),
     icon: <ColorPill
