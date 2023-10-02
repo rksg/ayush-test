@@ -48,7 +48,7 @@ interface Response <T> {
 const document = gql`
   query ImpactedSwitchVLANs($id: String) {
     incident(id: $id) {
-      impactedSwitchVLANs: getImpactedSwitches(n: 1000, search: "") {
+      impactedSwitchVLANs: getImpactedSwitches(n: 100, search: "") {
         name
         mac
         ports {

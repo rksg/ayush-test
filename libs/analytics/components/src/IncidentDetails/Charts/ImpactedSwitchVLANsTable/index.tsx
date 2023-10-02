@@ -36,7 +36,7 @@ export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
   }, {
     key: 'portNumber',
     dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Port Number' })
+    title: $t({ defaultMessage: 'Local Port' })
   }, {
     key: 'mismatchedVlans',
     dataIndex: 'mismatchedVlans',
