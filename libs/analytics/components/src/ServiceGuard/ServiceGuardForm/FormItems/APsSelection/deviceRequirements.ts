@@ -7,6 +7,7 @@ export type ExcludedTargetAPType = {
 
 export const deviceRequirements = {
   [ClientType.VirtualClient]: {
+    requiredSZVersion: '5.2.1',
     requiredAPFirmware: null,
     excludedTargetAPs: [
       { model: '7781CM' },
@@ -27,6 +28,7 @@ export const deviceRequirements = {
     ]
   },
   [ClientType.VirtualWirelessClient]: {
+    requiredSZVersion: '6.0',
     requiredAPFirmware: '6.0.0.0.3067',
     excludedTargetAPs: []
   }
