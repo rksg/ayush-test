@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -21,7 +21,8 @@ import {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchLatestFirmwareListQuery
+  useGetSwitchLatestFirmwareListQuery,
+  useLazyGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -33,7 +34,8 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -50,6 +52,7 @@ import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
+import * as SwitchUI            from './styledComponents'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
 function useColumns (
@@ -172,6 +175,7 @@ export const VenueFirmwareTable = (
   const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
+  const [ getSwitchList ] = useLazyGetSwitchListQuery()
 
   const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
@@ -258,14 +262,6 @@ export const VenueFirmwareTable = (
 
   // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
-  const columns2 = columns.map(obj => {
-    const newObj = { ...obj }
-    delete newObj['searchable']
-    delete newObj['filterable']
-
-
-    return newObj
-  })
 
   const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -402,43 +398,97 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const { tenantId } = useParams()
+  const [nestedData, setNestedData] = useState({} as { [key: string]: SwitchViewModel[] })
+  const [isLoading, setIsLoading] = useState({} as { [key: string]: boolean })
+  const handleExpand = async (_expanded: unknown, record: { id: string }) => {
+    setIsLoading({
+      [record.id]: true
+    })
+    setNestedData({ ...nestedData, [record.id]: [] })
+
+    const switchListPayload = {
+      pageSize: 10000,
+      filters: {
+        venueId: [record.id]
+      },
+      fields: ['id', 'isStack', 'formStacking', 'name', 'model', 'serialNumber',
+        'deviceStatus', 'syncedSwitchConfig', 'configReady'
+      ]
+    }
+    const switchList = record.id
+      ? (await getSwitchList({
+        params: { tenantId: tenantId }, payload: switchListPayload
+      }, true)).data?.data
+      : []
+
+    const result = { ...nestedData, [record.id]: switchList }
+    setNestedData(result as { [key: string]: SwitchViewModel[] })
+    setIsLoading({
+      [record.id]: false
+    })
+
+  }
+
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
+    return <Table<SwitchViewModel>
+      columns={[
+        {
+          title: 'test',
+          key: 'name',
+          dataIndex: 'name',
+          sorter: { compare: sortProp('name', defaultSort) },
+          defaultSortOrder: 'ascend'
+        }]}
+      loading={isLoading[record.id]}
+      locale={{
+        emptyText: 'No data'
+      }}
+      style={{ paddingLeft: '0px !important' }}
+      dataSource={nestedData[record.id] ?? [] as SwitchViewModel[]}
+      // pagination={tableQuery.pagination}
+      sticky={false}
+      tableAlertRender={false}
+      showHeader={false}
+      expandIcon={
+        () => <></>
+      }
+      expandable={{ expandedRowRender: () => { return <></> } }}
+      // onChange={tableQuery.handleTableChange}
+      rowKey='id'
+      rowSelection={{ type: 'checkbox', selectedRowKeys }}
+    />
+  }
+
 
   return (
     <Loader states={[
       tableQuery,
       { isLoading: false }
     ]}>
-      <Table
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        expandable={{ expandedRowRender: () => { return <Table
-          columns={columns2}
-          style={{ paddingLeft: '0px !important' }}
+      <SwitchUI.ExpanderTableWrapper>
+        <Table
+          columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
-          sticky={false}
-          tableAlertRender={false}
-          showHeader={false}
-          expandIcon={
-            () => <></>
-          }
-          expandable={{ expandedRowRender: () => { return <></> } }}
+          expandable={{
+            onExpand: handleExpand,
+            expandedRowRender: expandedRowRenderFunc,
+            rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
+          }}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
           rowKey='id'
+          rowActions={rowActions}
           rowSelection={{ type: 'checkbox', selectedRowKeys }}
-        /> } }}
-        onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
-        enableApiFilter={true}
-        rowKey='id'
-        rowActions={rowActions}
-        rowSelection={{ type: 'checkbox', selectedRowKeys }}
-        actions={[{
-          label: $t({ defaultMessage: 'Preferences' }),
-          onClick: () => setModelVisible(true)
-        }]}
-      />
+          actions={[{
+            label: $t({ defaultMessage: 'Preferences' }),
+            onClick: () => setModelVisible(true)
+          }]}
+        /></SwitchUI.ExpanderTableWrapper>
       <UpdateNowDialog
         visible={updateModelVisible}
         data={venues}

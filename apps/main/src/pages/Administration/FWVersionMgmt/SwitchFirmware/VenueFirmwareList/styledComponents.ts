@@ -1,6 +1,9 @@
+import { ExpanderWrapper } from './../../../../../../../../libs/common/components/src/components/Timeline/styledComponents';
 import styled from 'styled-components/macro'
 
-import { Button } from '@acx-ui/components'
+import { FirmwareSwitchVenue } from '@acx-ui/rc/utils'
+import { Table, TableProps, Button } from '@acx-ui/components'
+import { RecommendationListItem } from 'libs/analytics/components/src/Recommendations/services'
 
 export const DateContainer = styled.div`
   height: auto;
@@ -63,4 +66,19 @@ export const FieldGroup = styled.div`
   display: grid;
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
+`
+
+export const ExpanderTableWrapper = styled.div`
+  .ant-table-expanded-row-fixed{
+    padding-left: 0px;
+    padding-bottom: 0px;
+    .ant-table-fixed-column{
+      margin-bottom: 10px;
+      top: -3px;
+    }
+  }
+  .ant-table-tbody > tr:last-child > td {
+    border: none
+  }
+
 `
