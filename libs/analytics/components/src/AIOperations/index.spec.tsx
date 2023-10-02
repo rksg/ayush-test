@@ -8,9 +8,8 @@ import {
 } from '@acx-ui/test-utils'
 import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
-import { api } from '../Recommendations/services'
-
-import { expectedData } from './__tests__/fixtures'
+import { aiOpsListResult } from '../Recommendations/__tests__/fixtures'
+import { api }             from '../Recommendations/services'
 
 import { AIOperations } from '.'
 
@@ -25,8 +24,8 @@ describe('AIOperations dashboard', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('renders recommendation', async () => {
-    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
-      data: expectedData
+    mockGraphqlQuery(recommendationUrl, 'AiOpsList', {
+      data: aiOpsListResult
     })
     render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
@@ -37,8 +36,7 @@ describe('AIOperations dashboard', () => {
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
     expect(await screen.findByText('2')).toBeVisible()
-    expect(await screen.findByText('Wi-Fi Client Experience')).toBeVisible()
-    expect(await screen.findByText('Infrastructure')).toBeVisible()
+    expect(await screen.findAllByText('Wi-Fi Client Experience')).toHaveLength(2)
     expect(await screen.findByText('06/16/2023')).toBeVisible()
     expect(await screen.findByText('07/06/2023')).toBeVisible()
   })
@@ -61,7 +59,12 @@ describe('AIOperations dashboard', () => {
   })
 
   it('handles no data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations: [] } })
+    mockGraphqlQuery(recommendationUrl, 'AiOpsList', {
+      data: {
+        aiOpsCount: 0,
+        recommendations: []
+      }
+    })
     render(<AIOperations pathFilters={pathFilters} />, {
       route: true,
       wrapper: Provider
