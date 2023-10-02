@@ -13,6 +13,9 @@ import { ChannelDist }             from './Details/ChannelDist'
 import { CovClientrssiLow }        from './Details/CovClientrssiLow'
 import { DhcpFailure }             from './Details/DhcpFailure'
 import { EapFailure }              from './Details/EapFailure'
+import { LoadSzCpuLoad }           from './Details/LoadSzCpuLoad'
+import { NetSzNetLatency }         from './Details/NetSzNetLatency'
+import { NetTime }                 from './Details/NetTime'
 import { RadiusFailure }           from './Details/RadiusFailure'
 import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
@@ -38,7 +41,11 @@ export const incidentDetailsMap = {
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
-  'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist
+  'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,
+  'i-net-time-future': NetTime,
+  'i-net-time-past': NetTime,
+  'i-net-sz-net-latency': NetSzNetLatency,
+  'p-load-sz-cpu-load': LoadSzCpuLoad
 }
 
 export function IncidentDetails () {
