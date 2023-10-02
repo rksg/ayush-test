@@ -89,8 +89,8 @@ describe('useEdgeActions', () => {
     const { factoryReset } = result.current
     factoryReset(mockedEdges[0])
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Reset and recover "Smart Edge 1"?')
-    expect(dialog).toHaveTextContent('Are you sure you want to reset and recover this SmartEdge?')
+    // eslint-disable-next-line max-len
+    expect(dialog).toHaveTextContent('Reset & Recover "Smart Edge 1"?Are you sure you want to reset and recover this SmartEdge?Note: Reset & Recover can address anomalies, but may not resolve all issues, especially for complex, misconfigured, or hardware-related problems.CancelResetCancel')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
