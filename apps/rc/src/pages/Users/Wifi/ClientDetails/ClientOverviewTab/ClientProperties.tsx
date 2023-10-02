@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
+import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip, Descriptions }            from '@acx-ui/components'
@@ -28,7 +29,8 @@ import {
   NetworkTypeEnum,
   transformAdvancedDpskExpirationText,
   ExpirationType,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  EXPIRATION_TIME_FORMAT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -625,7 +627,7 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Creation Time' })}
         children={passphraseClient &&
-          formatter(DateFormatEnum.DateTimeFormat)(passphraseClient.createdDate)
+          moment(passphraseClient.createdDate).format(EXPIRATION_TIME_FORMAT)
         }
       />
       <Descriptions.Item
