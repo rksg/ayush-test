@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Services for notification apis setIncidentNotification should return correct value on preferences mutation 1`] = `
+Object {
+  "configRecommendation": Object {
+    "aiOps": Array [],
+    "crrm": Array [],
+  },
+  "incident": Object {
+    "P1": Array [],
+    "P2": Array [
+      "email",
+    ],
+    "P3": Array [
+      "email",
+    ],
+    "P4": Array [],
+  },
+}
+`;
+
+exports[`Services for notification apis setIncidentNotification should return correctly for undefined preferences 1`] = `Object {}`;
