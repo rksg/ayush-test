@@ -164,16 +164,14 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   </Radio>
                 }
                 { otherVersions.length > 0 ?
-                  <UI.SelectDiv>
-                    <Radio value={VersionsSelectMode.Dropdown}>
-                      <Select
-                        style={{ width: '420px', fontSize: '12px' }}
-                        placeholder='Select other version...'
-                        onChange={handleChange}
-                        options={otherOptions}
-                      />
-                    </Radio>
-                  </UI.SelectDiv>
+                  <Radio value={VersionsSelectMode.Dropdown}>
+                    <Select
+                      style={{ width: '420px', fontSize: '12px' }}
+                      placeholder='Select other version...'
+                      onChange={handleChange}
+                      options={otherOptions}
+                    />
+                  </Radio>
                   : null
                 }
               </Space>

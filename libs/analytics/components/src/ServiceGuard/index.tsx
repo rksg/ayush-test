@@ -18,7 +18,7 @@ export function useServiceGuard () {
   const { $t } = useIntl()
   const queryResults = useAllServiceGuardSpecsQuery()
   const [count, setCount] = useState(queryResults.data?.length || 0)
-  useEffect(()=> setCount(queryResults.data?.length || 0),[queryResults])
+  useEffect(() => setCount(queryResults.data?.length || 0),[queryResults])
 
   const title = defineMessage({
     defaultMessage: 'Service Validation {count, select, null {} other {({count})}}',
@@ -27,7 +27,9 @@ export function useServiceGuard () {
 
   const extra = [
     <TenantLink to='/analytics/serviceValidation/add' key='add'>
-      <Button type='primary'>{ $t({ defaultMessage: 'Create Test' }) }</Button>
+      <Button type='primary'
+        children={$t({ defaultMessage: 'Create Test' })}
+      />
     </TenantLink>
   ]
 
