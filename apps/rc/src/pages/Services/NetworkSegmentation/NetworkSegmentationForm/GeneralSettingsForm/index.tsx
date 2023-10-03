@@ -58,14 +58,15 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
-    form.setFieldValue('venueName', venueItem?.label)
-    form.setFieldValue('edgeId', null)
-    form.setFieldValue('edgeId', null)
-    form.setFieldValue('edgeName', null)
-    form.setFieldValue('dhcpId', null)
-    form.setFieldValue('dhcpName', null)
-    form.setFieldValue('poolId', null)
-    form.setFieldValue('poolName', null)
+    form.setFieldsValue({
+      venueName: venueItem?.label,
+      edgeId: undefined,
+      edgeName: undefined,
+      dhcpId: undefined,
+      dhcpName: undefined,
+      poolId: undefined,
+      poolName: undefined
+    })
   }
 
   const warningMsg = <FormattedMessage

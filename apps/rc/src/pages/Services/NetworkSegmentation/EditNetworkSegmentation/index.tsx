@@ -31,21 +31,22 @@ const EditNetworkSegmentation = () => {
   useEffect(() => {
     if(nsgData) {
       form.resetFields()
-      form.setFieldValue('name', nsgData.name)
-      // form.setFieldValue('tags', nsgData.ta)
-      form.setFieldValue('venueId', nsgData.venueInfos[0]?.venueId)
-      form.setFieldValue('edgeId', nsgData.edgeInfos[0]?.edgeId)
-      form.setFieldValue('segments', nsgData.edgeInfos[0]?.segments)
-      form.setFieldValue('devices', nsgData.edgeInfos[0]?.devices)
-      form.setFieldValue('dhcpId', nsgData.edgeInfos[0]?.dhcpInfoId)
-      form.setFieldValue('poolId', nsgData.edgeInfos[0]?.dhcpPoolId)
-      form.setFieldValue('vxlanTunnelProfileId', nsgData.vxlanTunnelProfileId)
-      form.setFieldValue('networkIds', nsgData.networkIds)
-      form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
-      form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
-      form.setFieldValue('originalDistributionSwitchInfos', nsgData.distributionSwitchInfos)
-      form.setFieldValue('originalAccessSwitchInfos', nsgData.accessSwitchInfos)
-      form.setFieldValue('personaGroupId', nsgData.venueInfos[0]?.personaGroupId)
+      form.setFieldsValue({
+        name: nsgData.name,
+        venueId: nsgData.venueInfos[0]?.venueId,
+        edgeId: nsgData.edgeInfos[0]?.edgeId,
+        segments: nsgData.edgeInfos[0]?.segments,
+        devices: nsgData.edgeInfos[0]?.devices,
+        dhcpId: nsgData.edgeInfos[0]?.dhcpInfoId,
+        poolId: nsgData.edgeInfos[0]?.dhcpPoolId,
+        vxlanTunnelProfileId: nsgData.vxlanTunnelProfileId,
+        networkIds: nsgData.networkIds,
+        distributionSwitchInfos: nsgData.distributionSwitchInfos,
+        accessSwitchInfos: nsgData.accessSwitchInfos,
+        originalDistributionSwitchInfos: nsgData.distributionSwitchInfos,
+        originalAccessSwitchInfos: nsgData.accessSwitchInfos,
+        personaGroupId: nsgData.venueInfos[0]?.personaGroupId
+      })
     }
   }, [nsgData])
 

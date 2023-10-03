@@ -70,7 +70,7 @@ export const EdgeDetailsPageHeader = () => {
       ]
     },
     {
-      label: $t({ defaultMessage: 'Reset and Recover' }),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
       showupstatus: [
         EdgeStatusEnum.OPERATIONAL,
