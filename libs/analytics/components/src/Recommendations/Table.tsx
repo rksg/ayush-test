@@ -92,9 +92,9 @@ export function RecommendationTable (
   const columns: TableProps<RecommendationListItem>['columns'] = useMemo(() => [
     ...(showCrrm ? [{
       title: get('IS_MLISA_SA')
-        ? $t({ defaultMessage: 'Zone RRM' })
-        : $t({ defaultMessage: 'Venue RRM' }),
-      width: 90,
+        ? $t({ defaultMessage: 'Zone RRM Health' })
+        : $t({ defaultMessage: 'Venue RRM Health' }),
+      width: 120,
       dataIndex: 'optimizedState',
       key: 'optimizedState',
       render: (_, { crrmOptimizedState }) => {

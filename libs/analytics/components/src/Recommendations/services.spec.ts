@@ -1,17 +1,19 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { defineMessage } from 'react-intl'
 
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
 import { PathFilter, DateRange }                                           from '@acx-ui/utils'
 
-import { crrmListResult, recommendationListResult } from './__tests__/fixtures'
-import { crrmStates }                               from './config'
+import {
+  crrmListResult,
+  aiOpsListResult,
+  recommendationListResult
+} from './__tests__/fixtures'
+import { crrmStates, priorities }     from './config'
 import {
   api,
-  transformCrrmList,
   getCrrmOptimizedState,
   getCrrmInterferingLinksText,
   useCancelRecommendationMutation,
@@ -19,76 +21,80 @@ import {
   useScheduleRecommendationMutation
 } from './services'
 
-import type { CrrmListItem } from './services'
-
 describe('Recommendations utils', () => {
-  let recommendations: CrrmListItem[]
-  beforeAll(() => {
-    recommendations = transformCrrmList(crrmListResult.recommendations as unknown as CrrmListItem[])
-  })
-
   describe('getCrrmOptimizedState', () => {
     it('returns optimized state', () => {
-      expect(getCrrmOptimizedState(recommendations[0].status)).toEqual(crrmStates.optimized)
+      expect(getCrrmOptimizedState('applyscheduled')).toEqual(crrmStates.optimized)
     })
 
     it('returns non optimized state', () => {
-      expect(getCrrmOptimizedState(recommendations[1].status)).toEqual(crrmStates.nonOptimized)
+      expect(getCrrmOptimizedState('new')).toEqual(crrmStates.nonOptimized)
     })
   })
 
   describe('getCrrmInterferingLinksText', () => {
     it('returns text when applied', () => {
-      const { status, kpi_number_of_interfering_links } = recommendations[0]
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('From 3 to 0 interfering links')
+      expect(getCrrmInterferingLinksText('applied', {
+        current: 0,
+        previous: 3,
+        projected: null
+      })).toBe('From 3 to 0 interfering links')
     })
 
     it('returns text when revertfailed', () => {
-      const recommendation = { ...recommendations[0], status: 'revertfailed' } as CrrmListItem
-      const { status, kpi_number_of_interfering_links } = recommendation
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('Revert Failed')
+      expect(getCrrmInterferingLinksText('revertfailed', {
+        current: 0,
+        previous: 3,
+        projected: null
+      })).toBe('Revert Failed')
     })
 
     it('returns text when reverted', () => {
-      const { status, kpi_number_of_interfering_links } = recommendations[1]
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('Reverted')
+      expect(getCrrmInterferingLinksText('reverted', {
+        current: 5,
+        previous: 5,
+        projected: null
+      })).toBe('Reverted')
     })
 
     it('returns text when new', () => {
-      const { status, kpi_number_of_interfering_links } = recommendations[2]
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('2 interfering links can be optimized to 0')
+      expect(getCrrmInterferingLinksText('new', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('2 interfering links can be optimized to 0')
     })
 
     it('returns text when reverted but no previous (revertedTime < appliedTime+24hours)', () => {
-      const recommendation = { ...recommendations[2], status: 'reverted' } as CrrmListItem
-      const { status, kpi_number_of_interfering_links } = recommendation
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('Reverted')
+      expect(getCrrmInterferingLinksText('reverted', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('Reverted')
     })
 
     it('returns text when applied but no previous (maxIngestedTime < appliedTime+24hours)', () => {
-      const recommendation = { ...recommendations[2], status: 'applied' } as CrrmListItem
-      const { status, kpi_number_of_interfering_links } = recommendation
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('2 interfering links will be optimized to 0')
+      expect(getCrrmInterferingLinksText('applied', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('2 interfering links will be optimized to 0')
     })
 
     it('returns text when applyscheduled', () => {
-      const recommendation = { ...recommendations[2], status: 'applyscheduled' } as CrrmListItem
-      const { status, kpi_number_of_interfering_links } = recommendation
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('2 interfering links will be optimized to 0')
+      expect(getCrrmInterferingLinksText('applyscheduled', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('2 interfering links will be optimized to 0')
     })
 
     it('returns text when applyfailed', () => {
-      const recommendation = { ...recommendations[2], status: 'applyfailed' } as CrrmListItem
-      const { status, kpi_number_of_interfering_links } = recommendation
-      expect(getCrrmInterferingLinksText(status, kpi_number_of_interfering_links!))
-        .toBe('Failed')
+      expect(getCrrmInterferingLinksText('applyfailed', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('Failed')
     })
   })
 })
@@ -106,9 +112,7 @@ describe('Recommendation services', () => {
   })
 
   it('should return crrm list', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmListResult
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
 
     const { status, data, error } = await store.dispatch(
       api.endpoints.crrmList.initiate({ ...props, n: 5 })
@@ -136,7 +140,42 @@ describe('Recommendation services', () => {
     ]
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult)
+    expect(data).toStrictEqual({
+      crrmCount: 3,
+      zoneCount: 3,
+      optimizedZoneCount: 1,
+      crrmScenarios: 13888,
+      recommendations: expectedResult
+    })
+  })
+
+  it('should return aiOps list', async () => {
+    mockGraphqlQuery(recommendationUrl, 'AiOpsList', { data: aiOpsListResult })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.aiOpsList.initiate({ ...props, n: 5 })
+    )
+
+    const expectedResult = [
+      {
+        ...aiOpsListResult.recommendations[0],
+        priority: priorities.medium,
+        category: 'Wi-Fi Client Experience',
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio'
+      },
+      {
+        ...aiOpsListResult.recommendations[1],
+        priority: priorities.low,
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable band balancing'
+      }
+    ]
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual({
+      aiOpsCount: 2,
+      recommendations: expectedResult
+    })
   })
 
   it('should return recommendation list', async () => {
@@ -154,7 +193,7 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        priority: { order: 2, label: defineMessage({ defaultMessage: 'High' }) },
+        priority: priorities.high,
         category: 'AI-Driven Cloud RRM',
         summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
         status: 'Applied',
@@ -167,7 +206,7 @@ describe('Recommendation services', () => {
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
-        priority: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
+        priority: priorities.medium,
         category: 'Wi-Fi Client Experience',
         summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio',
         status: 'Revert Failed',
@@ -180,7 +219,7 @@ describe('Recommendation services', () => {
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
         type: 'Venue',
-        priority: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
+        priority: priorities.low,
         category: 'Wi-Fi Client Experience',
         summary: 'Enable band balancing',
         status: 'New',
