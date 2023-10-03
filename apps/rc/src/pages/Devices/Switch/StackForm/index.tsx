@@ -58,7 +58,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  SwitchRow
+  SwitchRow,
+  isSameModelFamily
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -429,14 +430,18 @@ export function StackForm () {
 
     const model = getSwitchModel(serialNumber) || ''
 
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
+    if (modelNotSupportStack.indexOf(model) > -1) {
+      return Promise.reject(
+        $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
       )
-      : Promise.resolve()
+    }
+    const allSameModelFamily = tableData.every(item => isSameModelFamily(item.id, serialNumber))
+    if (!allSameModelFamily) {
+      return Promise.reject(
+        $t({ defaultMessage: 'All switch models should belong to the same family.' })
+      )
+    }
+    return Promise.resolve()
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
@@ -833,7 +838,7 @@ export function StackForm () {
                         }
                       </TypographyText></div>
                   }
-                  <Col span={18} style={{ padding: '0' }}>
+                  <Col span={22} style={{ padding: '0' }}>
                     <TableContainer data-testid='dropContainer'>
                       <Table
                         columns={columns}
