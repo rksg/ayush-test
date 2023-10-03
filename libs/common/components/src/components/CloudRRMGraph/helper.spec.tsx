@@ -132,6 +132,13 @@ describe('trimPairedGraphs', () => {
     ])
     expect(trimed[0].nodes.map(node => node.id).slice(1))
       .toEqual(trimed[1].nodes.map(node => node.id).slice(0, trimed[1].nodes.length - 1))
+
+    const trimed2 = trimPairedGraphs([
+      deriveInterfering(sample, BandEnum._5_GHz),
+      deriveInterfering(sampleForSortingTest, BandEnum._5_GHz)
+    ], 3)
+    expect(trimed2[0].nodes.map(node => node.id).slice(1))
+      .toEqual(trimed2[1].nodes.map(node => node.id).slice(0, trimed2[1].nodes.length - 1))
   })
 })
 

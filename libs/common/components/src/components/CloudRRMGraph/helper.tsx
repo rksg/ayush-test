@@ -219,6 +219,14 @@ export function deriveInterferingGraphs (
   return graphs.map(graph => deriveInterfering(graph, band))
 }
 
+function trimLinks (
+  nodes: Type.ProcessedCloudRRMNode[],
+  links: Type.ProcessedCloudRRMLink[]
+) {
+  const ids = nodes.map(node => node.id)
+  return links.filter(link => ids.includes(link.source) && ids.includes(link.target))
+}
+
 export function trimGraph (
   graph: Type.ProcessedCloudRRMGraph, maxNumNode: number = 500
 ) : Type.ProcessedCloudRRMGraph {
@@ -226,30 +234,33 @@ export function trimGraph (
     node.category === Type.CategoryState.Normal
       ? Type.CategoryState.Normal : Type.CategoryState.Highlight)
 
-  const left = maxNumNode - highlight.length
+  const remaining = maxNumNode - highlight.length
   const trimmedNodes = [
-    ...(left > 0 && normal.length > 0 ? normal.slice(0, left) : []),
+    ...((remaining > 0 && normal.length > 0) ? normal.slice(0, remaining) : []),
     ...highlight
   ]
-  const ids = trimmedNodes.map(node => node.id)
-  const trimedLinks = graph.links
-    .filter(link => ids.includes(link.source) && ids.includes(link.target))
+  const trimedLinks = trimLinks(trimmedNodes, graph.links)
   return { ...graph, nodes: trimmedNodes, links: trimedLinks }
 }
 
 export function trimPairedGraphs (
   graphs: Type.ProcessedCloudRRMGraph[],
-  maxNumNode?: number
+  maxNumNode: number = 500
 ) : Type.ProcessedCloudRRMGraph[] {
-  const trimmedGraphs = graphs.map(graph => trimGraph(graph, maxNumNode))
-  const nodeList = trimmedGraphs[0].nodes.map(node => node.id)
-  const sortedNode = [
-    ...(nodeList
-      .map(id => trimmedGraphs[1].nodes.find(n => n.id === id))
-      .filter(Boolean) as Type.ProcessedCloudRRMNode[]),
-    ...(trimmedGraphs[1].nodes.filter(node => !nodeList.includes(node.id)))
-  ]
-  return [ trimmedGraphs[0], { ...trimmedGraphs[1], nodes: sortedNode } ]
+  const [ base, sub ] = graphs
+  const left = trimGraph(base, maxNumNode)
+  const baseNodeList = left.nodes.map(node => node.id)
+  const right = baseNodeList.map(id => sub.nodes.find(n => n.id === id)).filter(Boolean)
+  const { highlight = [], normal = [] } = _.groupBy(
+    sub.nodes.filter(node => !baseNodeList.includes(node.id)),
+    node => node.category === 'normal' ? 'normal' : 'highlight')
+  const remaining = maxNumNode - right.length
+  const subNodeList = [
+    ...right,
+    ...((remaining > 0) ? [...highlight, ...normal].slice(0, remaining) : [])
+  ] as Type.ProcessedCloudRRMNode[]
+  const links = trimLinks(subNodeList, sub.links)
+  return [ left, { ...sub, nodes: subNodeList, links }]
 }
 
 export function pairGraphs (graphs: Type.ProcessedCloudRRMGraph[]) : Type.ProcessedCloudRRMGraph[] {
