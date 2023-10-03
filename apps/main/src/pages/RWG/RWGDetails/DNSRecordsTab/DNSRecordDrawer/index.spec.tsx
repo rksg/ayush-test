@@ -119,7 +119,10 @@ describe('RWGDetails DNS Records Drawer', () => {
     expect(screen.getAllByText('AAAA')[1]).toBeInTheDocument()
 
     const options = await screen.findAllByText('AAAA')
-    userEvent.click(options[1])
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      userEvent.click(options[1])
+    })
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(() => {

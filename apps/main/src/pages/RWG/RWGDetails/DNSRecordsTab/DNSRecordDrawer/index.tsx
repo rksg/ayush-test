@@ -90,7 +90,7 @@ export function DNSRecordDrawer (props: DNSRecordsProps) {
   return (
     <Drawer
       destroyOnClose
-      width={'480px'}
+      width={'320px'}
       visible={visible}
       title={isEdit
         ? $t({ defaultMessage: 'Edit DNS Record' })
