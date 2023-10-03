@@ -5,12 +5,12 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupById: {
     method: 'get',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   },
   getNetworkSegmentationGroupList: {
     method: 'get',
     newApi: true,
-    url: '/networkSegmentationGroups?size=:pageSize&page=:page&sort=:sort'
+    url: '/personalIdentityNetworks?size=:pageSize&page=:page&sort=:sort'
   },
   getWebAuthTemplate: {
     method: 'get',
@@ -72,21 +72,21 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   createNetworkSegmentationGroup: {
     method: 'post',
     newApi: true,
-    url: '/networkSegmentationGroups'
+    url: '/personalIdentityNetworks'
   },
   getNetworkSegmentationStatsList: {
     method: 'post',
     newApi: true,
-    url: '/networkSegmentationGroups/query'
+    url: '/personalIdentityNetworks/query'
   },
   deleteNetworkSegmentationGroup: {
     method: 'delete',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   },
   updateNetworkSegmentationGroup: {
     method: 'put',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   }
 }

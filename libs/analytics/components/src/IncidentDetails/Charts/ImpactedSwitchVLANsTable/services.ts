@@ -77,7 +77,7 @@ export const impactedApi = dataApi.injectEndpoints({
         const results = response.incident.impactedSwitchVLANs
           .flatMap(({ name, mac, ports }) => ports.map(port => ({ name, mac, ...port })))
           .reduce((agg, row) => {
-            const key = [row.portMac, row.connectedDevice.mac].sort().join('-')
+            const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
             if (!agg[key]) agg[key] = { ...row, key }
             return agg
           }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
