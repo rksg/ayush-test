@@ -49,7 +49,10 @@ import {
   ApLldpNeighborsResponse,
   SupportCcdVenue,
   SupportCcdApGroup,
-  ApClientAdmissionControl
+  ApClientAdmissionControl,
+  AFCInfo,
+  AFCPowerMode,
+  AFCStatus
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -824,7 +827,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     runCcd: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -1088,4 +1093,12 @@ const transformApViewModel = (result: ApViewModel) => {
     } as RadioProperties
   }
   return ap
+}
+
+
+export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
+  if (!afcInfo) return false
+  return (
+    afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+    afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
 }

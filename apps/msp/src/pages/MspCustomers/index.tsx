@@ -44,7 +44,7 @@ import {
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType }                                                            from '@acx-ui/utils'
+import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
@@ -93,7 +93,10 @@ const transformCreationDate = (row: MspEc) => {
 
 const transformExpirationDate = (row: MspEc) => {
   let expirationDate = '--'
-  const entitlements = row.entitlements
+  const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+  const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
   let target: DelegationEntitlementRecord
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
     const consumed = parseInt(entitlement.consumed, 10)
@@ -120,6 +123,8 @@ export function MspCustomers () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
   const isUpgradeMultipleEcEnabled = useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -138,7 +143,7 @@ export function MspCustomers () {
   const mspUtils = MSPUtils()
 
   const onBoard = mspLabel?.msp_label
-  const ecFilters = isPrimeAdmin
+  const ecFilters = isPrimeAdmin || isSupportToMspDashboardAllowed
     ? { tenantType: [AccountType.MSP_EC] }
     : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
@@ -169,7 +174,7 @@ export function MspCustomers () {
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
   if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
-      userProfile?.support === false) {
+      (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
   }
 
@@ -275,7 +280,7 @@ export function MspCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend',
       onCell: (data) => {
-        return (data.status === 'Active') ? {
+        return (data.status === 'Active' && !isSupportToMspDashboardAllowed) ? {
           onClick: () => {
             userProfile?.support
               ? delegateToMspEcPath(data.id)
@@ -285,7 +290,8 @@ export function MspCustomers () {
       },
       render: function (_, row, __, highlightFn) {
         return (
-          (row.status === 'Active') ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
+          (row.status === 'Active' && !isSupportToMspDashboardAllowed)
+            ? <Link to=''>{highlightFn(row.name)}</Link> : row.name
         )
       }
     },
@@ -712,7 +718,7 @@ export function MspCustomers () {
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
-              hidden={userProfile?.support || !onBoard}
+              hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>
           ]
@@ -721,8 +727,9 @@ export function MspCustomers () {
           </TenantLink>
           ]}
       />
-      {userProfile?.support && <SupportEcTable />}
-      {!userProfile?.support && !isIntegrator && <MspEcTable />}
+      {userProfile?.support && !isSupportToMspDashboardAllowed && <SupportEcTable />}
+      {(isSupportToMspDashboardAllowed || (!userProfile?.support && !isIntegrator))
+        && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}

@@ -41,11 +41,7 @@ jest.mock('../VideoCallQoe', () => ({
 }))
 
 jest.mock('../ConfigChange', () => ({
-  ...jest.requireActual('../ConfigChange'),
-  useConfigChange: () => ({
-    headerExtra: [<div data-testid='HeaderExtra' />],
-    component: <div data-testid='ConfigChange' />
-  })
+  ConfigChange: () => <div data-testid='ConfigChange' />
 }))
 
 jest.mock('@acx-ui/config')
@@ -112,7 +108,6 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('Network Assurance')).toBeVisible()
     expect(await screen.findByTestId('ConfigChange')).toBeVisible()
-    expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
   it('should render config change when feature flag CONFIG_CHANGE is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
