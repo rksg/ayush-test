@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
@@ -23,6 +24,26 @@ export default function PortalViewContentPreview (props:{
   const { view, demoValue, networkViewType,networkSocial,portalLang } = props
   const componentDisplay = demoValue?.componentDisplay
   const isbg = demoValue?.bgImage ? 'true' : 'false'
+  const renderTermsConditionsView = (view: PortalViewEnum) => {
+    if (componentDisplay.termsConditions && portalLang) {
+      const { acceptTermsMsg2, acceptTermsMsgClickthrough, acceptTermsMsgHostApproval } = portalLang
+      let termsMsg = acceptTermsMsg2 || ''
+      if (view === PortalViewEnum.ClickThrough) {
+        termsMsg = acceptTermsMsgClickthrough || ''
+      } else if (view === PortalViewEnum.HostApproval) {
+        termsMsg = acceptTermsMsgHostApproval || ''
+      }
+      const acceptTermsMsg = termsMsg.replace('<1>{{linkText}}</1>','#')
+      const linkIndex = acceptTermsMsg.indexOf('#')
+      return (<span style={{ display: 'inline-block' }}>
+        {(linkIndex !== 0) && <UI.FieldText style={{ display: 'inline' }}>{acceptTermsMsg.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
+        <UI.FieldLabelLink>{props.portalLang.acceptTermsLink}</UI.FieldLabelLink>
+        {(linkIndex !== acceptTermsMsg.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsMsg.substring(linkIndex +1, acceptTermsMsg.length -1)}</UI.FieldText>}
+      </span>)
+
+    }
+    return []
+  }
   const isLogoPhotoHide = !componentDisplay.logo && !componentDisplay.photo&&
     !componentDisplay.wifi4eu
   return (
@@ -96,12 +117,9 @@ export default function PortalViewContentPreview (props:{
         portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}/>}
-      {componentDisplay.termsConditions &&<UI.FieldText>{
-        props.portalLang.acceptTermsMsg2?.replace('<1>{{linkText}}</1>','')
-      }&nbsp;
-      <UI.FieldLabelLink>
-        {props.portalLang.acceptTermsLink}
-      </UI.FieldLabelLink></UI.FieldText>}
+      {view !== PortalViewEnum.SelfSignInRegister && view !== PortalViewEnum.GuestPassForgot &&
+       view !== PortalViewEnum.ConnectionConfirmed && view !== PortalViewEnum.TermCondition &&
+        renderTermsConditionsView(view)}
       {componentDisplay.poweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
         demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
         <div style={{ backgroundColor: demoValue.poweredBgColor }}>

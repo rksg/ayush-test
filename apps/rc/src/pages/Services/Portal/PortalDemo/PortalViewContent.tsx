@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 import { useContext, useState } from 'react'
 
@@ -52,6 +53,27 @@ export default function PortalViewContent (props:{
         componentDisplay: { ...demoValue.componentDisplay, logo: data.show as boolean } })
     }}
   />
+
+  const renderTermsConditionsView = (view: PortalViewEnum) => {
+    if (componentDisplay.termsConditions && portalLang) {
+      const { acceptTermsMsg2, acceptTermsMsgClickthrough, acceptTermsMsgHostApproval } = portalLang
+      let termsMsg = acceptTermsMsg2 || ''
+      if (view === PortalViewEnum.ClickThrough) {
+        termsMsg = acceptTermsMsgClickthrough || ''
+      } else if (view === PortalViewEnum.HostApproval) {
+        termsMsg = acceptTermsMsgHostApproval || ''
+      }
+      const acceptTermsMsg = termsMsg.replace('<1>{{linkText}}</1>','#')
+      const linkIndex = acceptTermsMsg.indexOf('#')
+      return (<span style={{ display: 'inline-block' }}>
+        {(linkIndex !== 0) && <UI.FieldText style={{ display: 'inline' }}>{acceptTermsMsg.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
+        <UI.FieldLabelLink>{props.portalLang.acceptTermsLink}</UI.FieldLabelLink>
+        {(linkIndex !== acceptTermsMsg.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsMsg.substring(linkIndex +1, acceptTermsMsg.length -1)}</UI.FieldText>}
+      </span>)
+
+    }
+    return []
+  }
   const isLogoPhotoHide = !componentDisplay.logo && !componentDisplay.photo&&
     !componentDisplay.wifi4eu
   return (
@@ -147,11 +169,9 @@ export default function PortalViewContent (props:{
         portalLang={portalLang}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
-      {componentDisplay.termsConditions &&<UI.FieldText>{
-        props.portalLang.acceptTermsMsg2?.replace('<1>{{linkText}}</1>','')}&nbsp;
-      <UI.FieldLabelLink>
-        {props.portalLang.acceptTermsLink}
-      </UI.FieldLabelLink></UI.FieldText>}
+      {view !== PortalViewEnum.SelfSignInRegister && view !== PortalViewEnum.GuestPassForgot &&
+       view !== PortalViewEnum.ConnectionConfirmed && view !== PortalViewEnum.TermCondition &&
+        renderTermsConditionsView(view)}
       {componentDisplay.poweredBy &&<PortalPoweredByContent
         portalLang={portalLang}
         demoValue={demoValue}
