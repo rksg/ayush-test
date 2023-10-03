@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   padding-top: 5px;
   display: grid;
   grid-template-columns: 7fr 5fr;
-  .ant-progress {
+  .ant-progress-wrapper {
     grid-column: 1 / span 2;
   }
 `

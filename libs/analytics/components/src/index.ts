@@ -48,7 +48,7 @@ export { TopWiFiNetworks } from './TopWiFiNetworks'
 export { useMuteIncidentsMutation } from './IncidentTable/services'
 export { IncidentDetails } from './IncidentDetails'
 export { AIAnalytics, AIAnalyticsTabEnum } from './AIAnalytics'
-export { useConfigChange } from './ConfigChange'
+export { ConfigChange } from './ConfigChange'
 export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
 export {

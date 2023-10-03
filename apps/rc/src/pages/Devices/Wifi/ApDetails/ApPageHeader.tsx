@@ -9,13 +9,12 @@ import { useIntl } from 'react-intl'
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
+import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus,
-  AFCPowerMode
+  ApStatus
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -129,8 +128,7 @@ function ApPageHeader () {
         ])
       ]}
       footer={<>
-        {(ApStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) &&
-          <LowPowerBannerAndModal parent='ap' />}
+        {isAPLowPower(ApStatusData?.afcInfo) && <LowPowerBannerAndModal parent='ap' />}
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
     />

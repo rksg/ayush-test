@@ -105,40 +105,40 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-7 -5l14 0l0 44l-14 0Z"
+                              d="M-7 -5l14 0l0 50l-14 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <path
-                              d="M-2 0l4 0l0 10l-4 0Z"
+                              d="M-2 0l4 0l0 16l-4 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="5"
+                              transform="translate(640 380)"
+                              y="8"
                             >
                               WLAN
                             </text>
                             <path
-                              d="M-0.5 14l1 0l0 20l-1 0Z"
+                              d="M-0.5 20l1 0l0 20l-1 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="24"
+                              transform="translate(640 380)"
+                              y="30"
                             >
                               3
                             </text>
@@ -233,40 +233,40 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-8 -5l16 0l0 44l-16 0Z"
+                              d="M-8 -5l16 0l0 50l-16 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <path
-                              d="M-3 0l6 0l0 10l-6 0Z"
+                              d="M-3 0l6 0l0 16l-6 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="5"
+                              transform="translate(640 380)"
+                              y="8"
                             >
                               Reason
                             </text>
                             <path
-                              d="M-0.5 14l1 0l0 20l-1 0Z"
+                              d="M-0.5 20l1 0l0 20l-1 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="24"
+                              transform="translate(640 380)"
+                              y="30"
                             >
                               2
                             </text>
@@ -367,41 +367,41 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-14.5 -5l29 0l0 44l-29 0Z"
+                              d="M-14.5 -5l29 0l0 50l-29 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <path
-                              d="M-9.5 0l19 0l0 10l-19 0Z"
+                              d="M-9.5 0l19 0l0 16l-19 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
-                              y="5"
+                              y="8"
                             >
                               Client Manufacturer
                             </text>
                             <path
-                              d="M-0.5 14l1 0l0 20l-1 0Z"
+                              d="M-0.5 20l1 0l0 20l-1 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="24"
+                              transform="translate(640 380)"
+                              y="30"
                             >
                               2
                             </text>
@@ -502,40 +502,40 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-7.5 -5l15 0l0 44l-15 0Z"
+                              d="M-7.5 -5l15 0l0 50l-15 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <path
-                              d="M-2.5 0l5 0l0 10l-5 0Z"
+                              d="M-2.5 0l5 0l0 16l-5 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
-                              style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="5"
+                              transform="translate(640 380)"
+                              y="8"
                             >
                               Radio
                             </text>
                             <path
-                              d="M-0.5 14l1 0l0 20l-1 0Z"
+                              d="M-0.5 20l1 0l0 20l-1 0Z"
                               fill="none"
-                              transform="translate(640 383)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 383)"
-                              y="24"
+                              transform="translate(640 380)"
+                              y="30"
                             >
                               2
                             </text>

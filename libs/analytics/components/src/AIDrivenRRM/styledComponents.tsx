@@ -1,5 +1,9 @@
+import { forwardRef } from 'react'
+
 import { List as AntList } from 'antd'
 import styled              from 'styled-components'
+
+import type { ListItemMetaProps } from 'antd/lib/list'
 
 export const List = styled(AntList)``
 
@@ -14,7 +18,7 @@ List.Item = styled(AntList.Item)`
   }
 `
 
-List.Item.Meta = styled(AntList.Item.Meta)`
+const MetaNoRef = styled(AntList.Item.Meta)`
   align-items: center;
 
   .ant-list-item-meta-avatar {
@@ -36,3 +40,5 @@ List.Item.Meta = styled(AntList.Item.Meta)`
     color: var(--acx-neutrals-50);
   }
 `
+List.Item.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
+  <div ref={ref}><MetaNoRef {...props} /></div>)

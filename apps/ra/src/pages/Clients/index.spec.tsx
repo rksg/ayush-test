@@ -10,10 +10,8 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
-  useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ]
+jest.mock('./ClientsList', () => ({
+  ClientsList: () => <div>Client list content</div>
 }))
 
 jest.mock('@acx-ui/reports/components', () => ({
@@ -27,7 +25,7 @@ describe('Clients', () => {
     expect(await screen.findByText('Clients')).toBeVisible()
     expect(await screen.findByText('Wireless')).toBeVisible()
     expect(await screen.findByText('Client list content')).toBeVisible()
-    expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
+    expect(await screen.findByText('Last 24 Hours')).toBeVisible()
   })
   it('should handle reports tab click', async () => {
     render(<Clients tab={AIClientsTabEnum.CLIENTS}/>,

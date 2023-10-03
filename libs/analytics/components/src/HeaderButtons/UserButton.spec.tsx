@@ -2,6 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import {
+  setUserProfile,
+  Tenant,
   UserProfileContext,
   UserProfileContextProps
 } from '@acx-ui/analytics/utils'
@@ -28,13 +30,20 @@ const mockUserProfile = {
   accountId: 'accountId',
   firstName: 'firstName',
   lastName: 'lastName',
+  email: '',
+  userId: '',
+  role: '',
+  support: false,
+  invitations: [] as Tenant[],
+  selectedTenant: { id: 'accountId', permissions: mockPermissions } as Tenant,
   tenants: [
     { id: 'accountId', permissions: mockPermissions },
     { id: 'accountId2', permissions: [] }
-  ]
+  ] as Tenant[]
 }
 describe('UserButton', () => {
   it('should render button with user profile', async () => {
+    setUserProfile(mockUserProfile)
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -83,12 +92,16 @@ describe('UserButton', () => {
   })
 
   it('should not render My Profile if view-analytics is false', async () => {
+    const permissions = { ...mockPermissions, 'view-analytics': false }
     const mockUserProfileNotViewAnalytics = {
       ...mockUserProfile,
+      accountId: 'accountId1',
+      selectedTenant: { id: 'accountId1', permissions } as Tenant,
       tenants: [
-        { id: 'accountId', permissions: { ...mockPermissions, 'view-analytics': false } }
-      ]
+        { id: 'accountId1', permissions }
+      ] as Tenant[]
     }
+    setUserProfile(mockUserProfileNotViewAnalytics)
     render(
       <Provider>
         <UserProfileContext.Provider
