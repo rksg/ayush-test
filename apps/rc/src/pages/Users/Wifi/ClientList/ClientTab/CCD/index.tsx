@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react'
+/* eslint-disable max-len */
+import { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useState } from 'react'
 
 import { Divider, Form, Input, Select, Space } from 'antd'
 import { DefaultOptionType }                   from 'antd/lib/select'
@@ -10,11 +11,14 @@ import { CloseSymbol, PlaySolid2, SearchOutlined, StopSolid } from '@acx-ui/icon
 import { useGetCcdSupportVenuesQuery }                        from '@acx-ui/rc/services'
 import { ConvertToStandardMacAddress, MacAddressRegExp }      from '@acx-ui/rc/utils'
 
+import { ClientContext } from '..'
+
 import ApGroupSelecterDrawer                     from './ApGroupSelecterDrawer'
 import { ApInfoCards }                           from './ApInfoCards'
 import { CcdResultViewer, CcdResultViewerProps } from './CcdResultViewer'
 import { ApInfo }                                from './contents'
 import { Button, CcdResultContainer }            from './styledComponents'
+
 
 
 const defaultPayload = {
@@ -24,12 +28,14 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-export function ClientConnectionDiagnosis () {
+const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
   const clientMac = Form.useWatch('client', form)
   const venueId = Form.useWatch('venue', form)
+
+  const { setCcdControlContext } = useContext(ClientContext)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useGetCcdSupportVenuesQuery({ params: { tenantId }, payload: defaultPayload })
@@ -47,6 +53,16 @@ export function ClientConnectionDiagnosis () {
   const [selectedApsInfo, setSelectedApsInfo] = useState<ApInfo[]>()
   const [currentViewApMac, setCurrentViewApMac] = useState<string>('')
   const [currentCcdApMac, setCurrentCcdApMac] = useState<string>('')
+
+  useEffect(() => {
+
+    setCcdControlContext({
+      isTracing: false,
+      viewStatus: {} as CcdResultViewerProps
+    })
+
+  }, [])
+
 
   useEffect(()=> {
     if (!isVenuesListLoading) {
@@ -104,14 +120,48 @@ export function ClientConnectionDiagnosis () {
       clientMac: ConvertToStandardMacAddress(clientMac),
       ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
     }
-
-    setViewerStatus({
+    const statusData = {
       ...viewerStatus,
       state,
       venueId,
       payload
+    }
+
+    setViewerStatus(statusData)
+
+    setCcdControlContext({
+      isTracing: !isTracing,
+      viewStatus: { ...statusData }
     })
   }
+
+  const stopCcd = async () => {
+    setIsTracing(false)
+
+    const state = 'STOP'
+    const payload = {
+      state,
+      clientMac: ConvertToStandardMacAddress(clientMac),
+      ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
+    }
+    const statusData = {
+      ...viewerStatus,
+      state,
+      venueId,
+      payload
+    }
+
+    setViewerStatus(statusData)
+
+    setCcdControlContext({
+      isTracing: false,
+      viewStatus: { ...statusData }
+    })
+  }
+
+  useImperativeHandle(ref, () => ({
+    stopCcd: stopCcd
+  }))
 
   const handleClear = () => {
     setSelectedApsDisplayText(undefined)
@@ -258,3 +308,5 @@ export function ClientConnectionDiagnosis () {
     }
   </>)
 }
+
+export default forwardRef(ClientConnectionDiagnosis)

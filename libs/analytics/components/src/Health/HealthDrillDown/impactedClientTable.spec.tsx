@@ -64,12 +64,12 @@ describe('ImpactedClientsTable', () => {
     )
     expect(await screen.findByText('0 Impacted Clients')).toBeVisible()
   })
-  it('should show only top 100 impacted clients', async () => {
+  it('should show only top 10 impacted clients', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: {
         network: {
           hierarchyNode: {
-            impactedClients: range(0, 101).map(() => {
+            impactedClients: range(0, 11).map(() => {
               return {
                 mac: uniqueId(),
                 manufacturer: 'Intel Corporate',
@@ -97,7 +97,8 @@ describe('ImpactedClientsTable', () => {
         }
       }
     )
-    expect(await screen.findByText('Top 100 Impacted Clients')).toBeVisible()
+    expect(await screen.findByText('Top 10 Impacted Clients')).toBeVisible()
+    expect(await screen.findAllByText('Intel Corporate')).toHaveLength(10)
   })
 })
 

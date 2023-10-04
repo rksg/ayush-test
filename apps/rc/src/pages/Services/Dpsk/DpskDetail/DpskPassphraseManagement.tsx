@@ -388,8 +388,6 @@ export default function DpskPassphraseManagement () {
       onClose={() => setUploadCsvDrawerVisible(false)}
       extraDescription={[
         // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Notice: Existing DPSK passphrases with the same MAC address will be overwritten, and the previous passphrase will be unusable' }),
-        // eslint-disable-next-line max-len
         $t({ defaultMessage: 'The properties you set here for "User Name Prefix" will not replace any value that you manually define in the imported file' })
       ]}
     >
