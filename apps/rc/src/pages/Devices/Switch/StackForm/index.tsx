@@ -435,8 +435,10 @@ export function StackForm () {
         $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
       )
     }
-    const allSameModelFamily = tableData.every(item => isSameModelFamily(item.id, serialNumber))
-    if (!allSameModelFamily) {
+    const allSameModelFamily = tableData
+      .filter(item => item.id && item.id !== serialNumber)
+      .every(item => isSameModelFamily(item.id, serialNumber))
+    if (serialNumber && !allSameModelFamily) {
       return Promise.reject(
         $t({ defaultMessage: 'All switch models should belong to the same family.' })
       )
