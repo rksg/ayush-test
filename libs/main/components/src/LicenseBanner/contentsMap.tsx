@@ -58,9 +58,9 @@ export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo, $t: IntlSha
   return {
     [LicenseBannerTypeEnum.gracePeriod]: isMulti ? $t({ defaultMessage: 'Your subscription expired. Grace period ends in {daysText} days' }, param):
       $t({ defaultMessage: 'Your subscription for {deviceCount} {deviceText} expired. Grace period ends in {daysText} days' }, param),
-    [LicenseBannerTypeEnum.initial]: isMulti ? $t({ defaultMessage: 'MSP subscription for {deviceCount} APs will expire in {daysText} days' }, param)
+    [LicenseBannerTypeEnum.initial]: isMulti ? $t({ defaultMessage: 'MSP subscription for {deviceCount} {deviceText} will expire in {daysText} days' }, param)
       : $t({ defaultMessage: 'MSP subscription about to expire in {daysText} days' }, param),
-    [LicenseBannerTypeEnum.closeToExpiration]: isMulti ? $t({ defaultMessage: 'MSP subscription for {deviceCount} APs will expire in {daysText} days' }, param)
+    [LicenseBannerTypeEnum.closeToExpiration]: isMulti ? $t({ defaultMessage: 'MSP subscription for {deviceCount} {deviceText} will expire in {daysText} days' }, param)
       : $t({ defaultMessage: 'MSP subscription about to expire in {daysText} days' }, param),
     [LicenseBannerTypeEnum.expired]: isMulti ? $t({ defaultMessage: 'MSP licenses have expired' })
       : $t({ defaultMessage: 'MSP subscription has expired' }),
