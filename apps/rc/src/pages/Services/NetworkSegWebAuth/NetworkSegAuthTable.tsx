@@ -114,7 +114,7 @@ export default function NetworkSegAuthTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+            entityName: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -146,7 +146,7 @@ export default function NetworkSegAuthTable () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Network Segmentation Auth Page for Switch ({count})' },
+      title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
@@ -157,7 +157,7 @@ export default function NetworkSegAuthTable () {
           to={getServiceRoutePath({
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
           })}>
-          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page' })}</Button>
+          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>
       ])} />
     <Loader states={[tableQuery]}>

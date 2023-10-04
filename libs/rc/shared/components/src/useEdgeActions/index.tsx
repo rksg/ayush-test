@@ -52,7 +52,7 @@ export const useEdgeActions = () => {
     })
   }
 
-  const factoryReset = (data: EdgeStatus) => {
+  const factoryReset = (data: EdgeStatus, callback?: () => void) => {
     showActionModal({
       type: 'confirm',
       title: $t(
@@ -91,6 +91,7 @@ export const useEdgeActions = () => {
           closeAfterAction: true,
           handler: () => {
             invokeFactoryResetEdge({ params: { serialNumber: data.serialNumber } })
+              .then(() => callback?.())
           }
         }]
       }

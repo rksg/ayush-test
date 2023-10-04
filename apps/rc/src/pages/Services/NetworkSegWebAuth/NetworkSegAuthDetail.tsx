@@ -112,7 +112,7 @@ export default function NetworkSegAuthDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
-            text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+            text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
             link: getServiceRoutePath({
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.LIST
