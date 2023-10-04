@@ -1,24 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Tooltip } from 'antd'
-import * as _      from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
-  ColumnType,
   Table,
   TableProps,
-  Loader
 } from '@acx-ui/components'
 import {
-  useGetSwitchVenueVersionListQuery,
   useGetSwitchCurrentVersionsQuery,
   useLazyGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  TableQuery,
-  useTableQuery,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -34,10 +28,7 @@ import {
 import * as UI       from '../../../styledComponents'
 import * as SwitchUI from '../styledComponents'
 
-function useColumns (
-  searchable?: boolean,
-  filterables?: { [key: string]: ColumnType['filterable'] }
-) {
+function useColumns () {
   const intl = useIntl()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
@@ -45,7 +36,6 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      searchable: searchable,
       defaultSortOrder: 'ascend'
     }, {
       title: '',
@@ -55,9 +45,6 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      // sorter: true,
-      filterable: filterables ? filterables['version'] : false,
-      filterMultiple: false,
       render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
@@ -105,18 +92,17 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type VenueTableProps = {
-  tableQuery: TableQuery<FirmwareSwitchVenue, RequestPayload<unknown>, unknown>,
-  searchable?: boolean
-  filterables?: { [key: string]: ColumnType['filterable'] }
+  data: FirmwareSwitchVenue[],
 }
 
 export const NestedSwitchFirmwareTable = (
-  { tableQuery, searchable, filterables }: VenueTableProps) => {
+  { data }: VenueTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRowKeys2, setSelectedRowKeys2] = useState([])
   const [ getSwitchList ] = useLazyGetSwitchListQuery()
 
 
-  const columns = useColumns(searchable, filterables)
+  const columns = useColumns()
   const intl = useIntl()
   const switchColumns: TableProps<SwitchViewModel>['columns'] = [
     {
@@ -176,6 +162,11 @@ export const NestedSwitchFirmwareTable = (
     })
   }
 
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(selectedRowKeys)
+  }, [selectedRowKeys])
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
     return <Table<SwitchViewModel>
@@ -197,71 +188,46 @@ export const NestedSwitchFirmwareTable = (
       expandable={{ expandedRowRender: () => { return <></> } }}
       // onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowSelection={{ type: 'checkbox', selectedRowKeys }}
+      rowSelection={{
+        type: 'checkbox',
+        selectedRowKeys
+      }}
     />
   }
 
 
   return (
-    <Loader states={[
-      tableQuery,
-      { isLoading: false }
-    ]}>
-      <SwitchUI.ExpanderTableWrapper>
-        <Table
-          columns={columns}
-          type={'tall'}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          expandable={{
-            onExpand: handleExpand,
-            expandedRowRender: expandedRowRenderFunc,
-            rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
-          }}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-          rowKey='id'
-          rowSelection={{ type: 'checkbox', selectedRowKeys }}
-        /></SwitchUI.ExpanderTableWrapper>
-    </Loader>
+    <SwitchUI.ExpanderTableWrapper>
+      <Table
+        columns={columns}
+        type={'tall'}
+        dataSource={data}
+        // pagination={tableQuery.pagination}
+        expandable={{
+          onExpand: handleExpand,
+          expandedRowRender: expandedRowRenderFunc,
+          rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
+        }}
+        // onChange={tableQuery.handleTableChange}
+        // onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
+        rowKey='id'
+        rowSelection={{
+          type: 'checkbox', selectedRowKeys: selectedRowKeys2,
+          onChange: (keys, newRows, info) => {
+            // eslint-disable-next-line no-console
+            console.log(newRows)
+          }
+        }}
+      /></SwitchUI.ExpanderTableWrapper>
   )
 }
 
-export function VenueFirmwareList () {
-  const venuePayload = useDefaultVenuePayload()
-
-  const tableQuery = useTableQuery<FirmwareSwitchVenue>({
-    useQuery: useGetSwitchVenueVersionListQuery,
-    defaultPayload: venuePayload,
-    search: {
-      searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
-  })
-
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      let versionList = data?.currentVersions
-      if (data?.currentVersionsAboveTen && versionList) {
-        versionList = versionList.concat(data?.currentVersionsAboveTen)
-      }
-
-      return {
-        // eslint-disable-next-line max-len
-        versionFilterOptions: versionList?.map(v=>({ key: v, value: parseSwitchVersion(v) })) || true
-      }
-    }
-  })
-
-  const typeFilterOptions = [{ key: 'Release', value: 'Release' }, { key: 'Beta', value: 'Beta' }]
+export function VenueFirmwareList (data: FirmwareSwitchVenue[]) {
 
   return (
-    <NestedSwitchFirmwareTable tableQuery={tableQuery}
-      searchable={true}
-      filterables={{
-        version: versionFilterOptions,
-        type: typeFilterOptions
-      }}
+    <NestedSwitchFirmwareTable
+      data={data}
     />
   )
 }

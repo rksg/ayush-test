@@ -54,6 +54,7 @@ import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog }      from './ChangeScheduleDialog'
 import { NestedSwitchFirmwareTable } from './NestedSwitchFirmwareTable'
+import { UpdateNowDialog } from './UpdateNowDialog'
 
 function useColumns (
   searchable?: boolean,
@@ -414,66 +415,16 @@ export const VenueFirmwareTable = (
           onClick: () => setModelVisible(true)
         }]}
       />
-      <NestedSwitchFirmwareTable
-        tableQuery={tableQuery}
-        // visible={updateModelVisible}
-        // data={venues}
-        // availableVersions={filterVersions(upgradeVersions)}
-        // nonIcx8200Count={nonIcx8200Count}
-        // icx8200Count={icx8200Count}
-        // onCancel={handleUpdateModalCancel}
-        // onSubmit={handleUpdateModalSubmit}
-      />
-      <Modal
-        title={$t({ defaultMessage: 'Update Now' })}
-        type={ModalType.ModalStepsForm}
+      {/* <NestedSwitchFirmwareTable
+        data={tableQuery.data?.data as FirmwareSwitchVenue[]}
+      /> */}
+
+      <UpdateNowDialog
         visible={updateModelVisible}
-        mask={true}
-        children={
-          <StepsForm
-            form={form}
-            editMode={false}
-            onCancel={() => { }}
-            onFinish={handleAddCli}
-          >
-            <StepsForm.StepForm
-              key='selectSwitches'
-              name='selectSwitches'
-              title={$t({ defaultMessage: 'Select Switch(es)' })}
-              layout='horizontal'
-            >
-              <NestedSwitchFirmwareTable
-                tableQuery={tableQuery}
-              // visible={updateModelVisible}
-              // data={venues}
-              // availableVersions={filterVersions(upgradeVersions)}
-              // nonIcx8200Count={nonIcx8200Count}
-              // icx8200Count={icx8200Count}
-              // onCancel={handleUpdateModalCancel}
-              // onSubmit={handleUpdateModalSubmit}
-              />
-            </StepsForm.StepForm>
-            <StepsForm.StepForm
-              name='firmware'
-              title={$t({ defaultMessage: 'Select Firmware' })}
-            >
-              <div>test</div>
-            </StepsForm.StepForm>
-
-          </StepsForm>
-
-        // <NestedSwitchFirmwareTable
-          // tableQuery={tableQuery}
-          // visible={updateModelVisible}
-          // data={venues}
-          // availableVersions={filterVersions(upgradeVersions)}
-          // nonIcx8200Count={nonIcx8200Count}
-          // icx8200Count={icx8200Count}
-          // onCancel={handleUpdateModalCancel}
-          // onSubmit={handleUpdateModalSubmit}
-        // />
-        }
-      />
+        data={tableQuery.data?.data as FirmwareSwitchVenue[]}
+        onCancel={() => { }}
+        onSubmit={() => { }}
+      ></UpdateNowDialog>
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
         data={venues}
