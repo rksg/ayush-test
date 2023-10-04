@@ -570,6 +570,7 @@ export interface VePortRouted {
 export interface SwitchDefaultVlan {
   defaultVlanId: number
   switchId: string
+  vlanList: SwitchVlans[]
 }
 
 

@@ -394,14 +394,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
-        if (enableNewApi(SwitchUrlsInfo.getDefaultVlan)) {
-          payload = { isDefault: true, switchIds: payload }
-        }
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
       query: ({ params }) => {
@@ -428,7 +427,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     addSwitchVlans: build.mutation<Vlan[], RequestPayload>({

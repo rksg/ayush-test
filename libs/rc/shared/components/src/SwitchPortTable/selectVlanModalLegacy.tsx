@@ -234,46 +234,27 @@ export function SelectVlanModal (props: {
       onCancel={onCancel}
       footer={[
         <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
-          {/* {
-            TODO: remove tooltip and disabled button when removing FF enableSwitchLevelVlan
-          } */}
-          {enableSwitchLevelVlan
-            ? <Tooltip
-              placement='top'
-              key='disable-add-vlan-tooltip'
-              title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}
-            >
-              <Space>
-                <Button key='add-vlan'
-                  type='link'
-                  size='small'
-                  disabled={cliApplied}
-                  onClick={() => {
-                    setVlanDrawerVisible(true)
-                  }}
-                >
-                  {$t({ defaultMessage: 'Add VLAN' })}
-                </Button>
-              </Space>
-            </Tooltip>
-            :<Tooltip
-              placement='top'
-              key='disable-add-vlan-tooltip'
-              title={!hasSwitchProfile ? vlanDisabledTooltip : ''}
-            >
-              <Space>
-                <Button key='add-vlan'
-                  type='link'
-                  size='small'
-                  disabled={!hasSwitchProfile}
-                  onClick={() => {
-                    setVlanDrawerVisible(true)
-                  }}
-                >
-                  {$t({ defaultMessage: 'Add VLAN' })}
-                </Button>
-              </Space>
-            </Tooltip>}
+          <Tooltip
+            placement='top'
+            key='disable-add-vlan-tooltip'
+            title={enableSwitchLevelVlan
+              ? (cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
+              : (!hasSwitchProfile ? vlanDisabledTooltip : '')
+            }
+          >
+            <Space>
+              <Button key='add-vlan'
+                type='link'
+                size='small'
+                disabled={enableSwitchLevelVlan ? cliApplied : !hasSwitchProfile}
+                onClick={() => {
+                  setVlanDrawerVisible(true)
+                }}
+              >
+                {$t({ defaultMessage: 'Add VLAN' })}
+              </Button>
+            </Space>
+          </Tooltip>
           <Space>
             <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
             <Tooltip

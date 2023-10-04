@@ -78,7 +78,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { data: switchDetailHeader } =
   useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
   const { data: switchesDefaultVlan }
-  = useGetDefaultVlanQuery({ params: { tenantId }, payload: [switchId] })
+  = useGetDefaultVlanQuery({ params: { tenantId }, payload: { switchIds: [switchId] } })
 
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
@@ -588,7 +588,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           untaggedVlan={untaggedVlan}
           vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
           hasSwitchProfile={hasSwitchProfile}
+          cliApplied={cliApplied}
           profileId={switchConfigurationProfileId}
+          switchIds={switchId ? [switchId] : []}
           updateSwitchVlans={async (values: Vlan) =>
             updateSwitchVlans(values,
               switchVlans,
@@ -614,7 +616,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           untaggedVlan={untaggedVlan}
           vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
           hasSwitchProfile={hasSwitchProfile}
+          cliApplied={cliApplied}
           profileId={switchConfigurationProfileId}
+          switchIds={switchId ? [switchId] : []}
           updateSwitchVlans={async (values: Vlan) =>
             updateSwitchVlans(values,
               switchVlans,

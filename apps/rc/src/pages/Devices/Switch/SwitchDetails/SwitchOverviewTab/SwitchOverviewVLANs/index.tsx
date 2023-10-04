@@ -24,9 +24,11 @@ import {
   VenueMessages,
   transformTitleCase,
   useTableQuery,
+  isStrictOperationalSwitch,
   transformDisplayOnOff,
   SpanningTreeProtocolName,
   SwitchMessages,
+  SwitchStatusEnum,
   SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
@@ -211,8 +213,13 @@ export function SwitchOverviewVLANs () {
 
   useEffect(() => {
     if (switchDetailsContextData) {
+      const switchDetailHeader = switchDetailsContextData?.switchDetailHeader
+      const isOperational = isStrictOperationalSwitch(
+        switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
+        , !!switchDetailHeader?.syncedSwitchConfig)
+
       setCliApplied(switchDetailsContextData?.switchDetailHeader?.cliApplied || false)
-      setIsSwitchOperational(switchDetailsContextData?.currentSwitchOperational || false)
+      setIsSwitchOperational(isOperational || false)
     }
   }, [switchDetailsContextData])
 
