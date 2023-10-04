@@ -11,10 +11,9 @@ export interface RequestPayload {
   limit: number
 }
 
-export interface ListPayload extends Omit<RequestPayload, 'query'>{
+export interface ListPayload extends RequestPayload {
   metric: string
 }
-
 
 export interface Client {
   hostname: string
@@ -39,12 +38,30 @@ export interface SearchResponse {
   networkHierarchy: NetworkHierarchy[]
   aps: AP[]
   switches: Switch[]
+  wifiNetwork: Network[]
 }
 
 export interface APListResponse {
   aps: AP[]
 }
 
+export interface SwitchList {
+  switches: Switch[]
+}
+
+export interface NetworkListReponse {
+  wifiNetwork: Network[]
+}
+
+export interface Network {
+  name: string,
+  apCount: number,
+  clientCount: number,
+  traffic: number,
+  rxBytes: number,
+  txBytes: number,
+  zoneCount: number,
+}
 
 export interface AP {
   apName: string
@@ -55,6 +72,7 @@ export interface AP {
   apZone: string
   networkPath: NetworkPath
 }
+
 export interface Switch {
   switchName: string
   switchMac: string
@@ -104,6 +122,15 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchMac: switchId
               switchModel
               switchVersion: switchFirmware
+            },
+            wifiNetwork {
+              name
+              apCount
+              clientCount
+              zoneCount
+              traffic
+              rxBytes
+              txBytes
             }
           }
         }
@@ -139,12 +166,65 @@ export const searchApi = dataApiSearch.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
       transformResponse: (response: { search: APListResponse }) => response.search
+    }),
+    switchtList: build.query<SwitchList, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Search(
+          $start: DateTime,
+          $end: DateTime,
+          $query: String,
+          $metric: String,
+          $limit: Int
+        ) {
+          search(start: $start, end: $end, query: $query, metric: $metric, limit: $limit) {
+            switches {
+              switchName
+              switchMac: switchId
+              switchModel
+              switchVersion: switchFirmware
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'SWITCH_LIST' }],
+      transformResponse: (response: { search: SwitchList }) => response.search
+    }),
+    networkList: build.query<NetworkListReponse, ListPayload>({
+      query: (payload) => ({
+        document: gql`
+        query SearchWiFiNetwork(
+          $start: DateTime
+          $end: DateTime
+          $query: String
+          $limit: Int
+        ) {
+          search(start: $start, end: $end, query: $query, limit: $limit) {
+            wifiNetwork {
+              name
+              apCount
+              clientCount
+              zoneCount
+              traffic
+              rxBytes
+              txBytes
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
+      transformResponse: (response: { search: NetworkListReponse }) => response.search
     })
   })
 })
 
 export const {
   useSearchQuery,
-  useApListQuery
-
+  useApListQuery,
+  useSwitchtListQuery,
+  useNetworkListQuery
 } = searchApi
