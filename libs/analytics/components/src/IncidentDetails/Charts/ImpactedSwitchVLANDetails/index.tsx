@@ -39,7 +39,6 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   } })
 
   const impactedSwitches = response.data!
-  console.log('impactedSwitches', impactedSwitches)
 
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
@@ -51,22 +50,18 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       .map(({ id, name }) => ({ mac, id, name }))
     )
 
-  console.log('impactedVlans', impactedVlans)
-
-  // const uniqImpactedVlans = _.sortBy(
-  //   Object.entries(impactedVlans.reduce((agg, { mac, id, name }) => {
-  //     agg[id] = {
-  //       macs: agg[id] ? [...new Set([...agg[id].macs, mac])] : [mac],
-  //       names: agg[id] ? [...new Set([...agg[id].names, name])] : [name]
-  //     }
-  //     return agg
-  //   }, {})), ([id]) => parseInt(id, 10))
-  // console.log('uniqImpactedVlans', uniqImpactedVlans)
+  const uniqImpactedVlans = _.sortBy(
+    Object.entries(impactedVlans.reduce((agg, { mac, id, name }) => {
+      agg[id] = {
+        macs: agg[id] ? [...new Set([...agg[id].macs, mac])] : [mac],
+        names: agg[id] ? [...new Set([...agg[id].names, name])] : [name]
+      }
+      return agg
+    }, {} as Record<number, { macs: string[]; names: string[] }>)), ([id]) => parseInt(id, 10))
 
   const uniqueSwitchCount = impactedSwitches?.length || 0
-  // const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
-  //   ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
-  const uniqueVlanCount = 1
+  const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
+    ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
 
   const impactedTypes = [
     {
@@ -82,14 +77,13 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       icon: 'vlan',
       max: 3,
       count: uniqueVlanCount,
-      data: [{ name: 'VLAN 30', title: 'title' }],
-      // data: uniqImpactedVlans.map(([id, { macs, names }]) => {
-      //   return {
-      //     name: macs.length > 1
-      //       ? `VLAN ${id} (${macs.length} switches)` : `VLAN ${id}`,
-      //     title: names.join(',')
-      //   }
-      // }),
+      data: uniqImpactedVlans.map(([id, { macs, names }]) => {
+        return {
+          name: macs.length > 1
+            ? `VLAN ${id} (${macs.length} switches)` : `VLAN ${id}`,
+          title: names.join(',')
+        }
+      }),
       title: $t({ defaultMessage: 'Mismatched VLAN' }),
       details: $t({ defaultMessage:
         '{vlanCount} configured {vlanCount, plural, one {VLAN} other {VLANs}}' }, { vlanCount })

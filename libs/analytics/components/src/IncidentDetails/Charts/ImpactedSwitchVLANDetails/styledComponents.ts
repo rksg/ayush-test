@@ -27,8 +27,8 @@ export const SummaryCount = styled.div`
 `
 
 export const SummaryList = styled.div`
-  font-size: 12px;
-  font-weight: bold;
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-body-font-weight-bold);
   line-height: 1.5;
   & > div {
     display: flex;
@@ -43,12 +43,12 @@ export const SummaryList = styled.div`
 
 export const SummaryTitle = styled.div`
   margin-top: 20px;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--acx-body-3-font-size);
+  font-weight: var(--acx-body-font-weight-bold);
 `
 
 export const SummaryDetails = styled.div`
   margin-top: 8px;
-  font-size: 12px;
+  font-size: var(--acx-body-4-font-size);
   opacity: 0.6;
 `
