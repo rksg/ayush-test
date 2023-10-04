@@ -12,7 +12,7 @@ import {
   useEdgeBySerialNumberQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeStatusEnum
+  EdgeStatusEnum, rebootableEdgeStatuses, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -62,22 +62,12 @@ export const EdgeDetailsPageHeader = () => {
     {
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
-      showupstatus: [
-        EdgeStatusEnum.OPERATIONAL,
-        EdgeStatusEnum.APPLYING_CONFIGURATION,
-        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
-        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
-      ]
+      showupstatus: rebootableEdgeStatuses
     },
     {
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
-      showupstatus: [
-        EdgeStatusEnum.OPERATIONAL,
-        EdgeStatusEnum.APPLYING_CONFIGURATION,
-        EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
-        EdgeStatusEnum.FIRMWARE_UPDATE_FAILED
-      ]
+      showupstatus: resettabaleEdgeStatuses
     },
     {
       label: $t({ defaultMessage: 'Delete SmartEdge' }),
