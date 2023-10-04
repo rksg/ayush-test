@@ -139,7 +139,7 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
             noStyle
             rules={[
               { required: true, message: $t({ defaultMessage: 'Please enter rate-limit' }) },
-              { type: 'number', min: 0 }
+              { type: 'number', min: 1000 }
             ]}
             initialValue={1000}
           >
