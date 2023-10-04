@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 
-import { Tooltip } from 'antd'
-import * as _      from 'lodash'
-import { useIntl } from 'react-intl'
+import { Form, Tooltip } from 'antd'
+import * as _            from 'lodash'
+import { useIntl }       from 'react-intl'
 
 import {
   showActionModal,
   ColumnType,
   Table,
   TableProps,
-  Loader
+  Loader,
+  Modal,
+  ModalType,
+  StepsForm
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
@@ -49,8 +52,7 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { UpdateNowDialog }      from './UpdateNowDialog'
+import { ChangeScheduleDialog }      from './ChangeScheduleDialog'
 import { NestedSwitchFirmwareTable } from './NestedSwitchFirmwareTable'
 
 function useColumns (
@@ -374,6 +376,23 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const [form] = Form.useForm()
+  const handleAddCli = async () => {
+    try {
+      // await addCliTemplate({
+      //   params, payload: {
+      //     ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
+      //     applyLater: !data.applyNow,
+      //     venueSwitches: transformVenueSwitches(
+      //       data.venueSwitches as unknown as Map<string, string[]>[]
+      //     )
+      //   }
+      // }).unwrap()
+      // navigate(linkToNetworks, { replace: true })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   return (
     <Loader states={[
@@ -404,6 +423,56 @@ export const VenueFirmwareTable = (
         // icx8200Count={icx8200Count}
         // onCancel={handleUpdateModalCancel}
         // onSubmit={handleUpdateModalSubmit}
+      />
+      <Modal
+        title={$t({ defaultMessage: 'Update Now' })}
+        type={ModalType.ModalStepsForm}
+        visible={updateModelVisible}
+        mask={true}
+        children={
+          <StepsForm
+            form={form}
+            editMode={false}
+            onCancel={() => { }}
+            onFinish={handleAddCli}
+          >
+            <StepsForm.StepForm
+              key='selectSwitches'
+              name='selectSwitches'
+              title={$t({ defaultMessage: 'Select Switch(es)' })}
+              layout='horizontal'
+            >
+              <NestedSwitchFirmwareTable
+                tableQuery={tableQuery}
+              // visible={updateModelVisible}
+              // data={venues}
+              // availableVersions={filterVersions(upgradeVersions)}
+              // nonIcx8200Count={nonIcx8200Count}
+              // icx8200Count={icx8200Count}
+              // onCancel={handleUpdateModalCancel}
+              // onSubmit={handleUpdateModalSubmit}
+              />
+            </StepsForm.StepForm>
+            <StepsForm.StepForm
+              name='firmware'
+              title={$t({ defaultMessage: 'Select Firmware' })}
+            >
+              <div>test</div>
+            </StepsForm.StepForm>
+
+          </StepsForm>
+
+        // <NestedSwitchFirmwareTable
+          // tableQuery={tableQuery}
+          // visible={updateModelVisible}
+          // data={venues}
+          // availableVersions={filterVersions(upgradeVersions)}
+          // nonIcx8200Count={nonIcx8200Count}
+          // icx8200Count={icx8200Count}
+          // onCancel={handleUpdateModalCancel}
+          // onSubmit={handleUpdateModalSubmit}
+        // />
+        }
       />
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}

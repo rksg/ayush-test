@@ -66,6 +66,10 @@ export const FieldGroup = styled.div`
 `
 
 export const ExpanderTableWrapper = styled.div`
+
+  .ant-table-cell-fix-right-first{
+    /* display: none; */
+  }
   .ant-table-expanded-row-fixed{
     padding-left: 7px;
     padding-right: 0px;
@@ -79,6 +83,10 @@ export const ExpanderTableWrapper = styled.div`
     border: none
   }
 
+  .ant-table-cell-fix-right:not(.react-resizable){
+    background-color: #EBEDEE;
+  }
+
 
     .ant-table-body {
       background-color: #EBEDEE;
@@ -86,8 +94,14 @@ export const ExpanderTableWrapper = styled.div`
 
     .switchTable{
       .ant-table-body {
-      background-color: white;
-    }
+        background-color: white;
+      }
+      .ant-table-cell-fix-right{
+        background-color: white;
+      }
+
+
+
 
     }
 `

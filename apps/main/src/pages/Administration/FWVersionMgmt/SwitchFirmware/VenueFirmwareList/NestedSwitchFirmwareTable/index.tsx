@@ -210,6 +210,7 @@ export const NestedSwitchFirmwareTable = (
       <SwitchUI.ExpanderTableWrapper>
         <Table
           columns={columns}
+          type={'tall'}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           expandable={{
