@@ -133,17 +133,17 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Rate-limit Value' })}
           // eslint-disable-next-line max-len
-          tooltip={$t({ defaultMessage: 'A value of 100 kbps for ICMP Attack means ICMP traffic beyond 100kbps will be dropped.' })}
+          tooltip={$t({ defaultMessage: 'A value of 1000 kbps for ICMP Attack means ICMP traffic beyond 1000 kbps will be dropped.' })}
         >
           <Form.Item name='rateLimiting'
             noStyle
             rules={[
               { required: true, message: $t({ defaultMessage: 'Please enter rate-limit' }) },
-              { type: 'number', min: 0 }
+              { type: 'number', min: 1000 }
             ]}
-            initialValue={256}
+            initialValue={1000}
           >
-            <InputNumber min={0} />
+            <InputNumber min={1000} />
           </Form.Item>
           <span className='ant-form-text' style={{ marginLeft: 8 }}>
             {$t({ defaultMessage: 'kbps' })}
