@@ -257,7 +257,7 @@ export function StackForm () {
         setTableData(switchTableData as SwitchTable[])
         setRowKey(stackSwitches?.length ?? 0)
         formRef?.current?.setFieldValue('venueId', venueId)
-        stackSwitches?.map((serialNumber, index) => {
+        stackSwitches?.forEach((serialNumber, index) => {
           formRef?.current?.setFieldValue(`serialNumber${index + 1}`, serialNumber)
         })
       }
@@ -513,9 +513,14 @@ export function StackForm () {
           validateFirst
         >{ isStackSwitches
             ? <Select
-              options={standaloneSwitches?.map(s => ({
+              options={standaloneSwitches?.filter(s =>
+                row.id === s.serialNumber ||
+                (!tableData.find(d => d.id === s.serialNumber)
+                && modelNotSupportStack.indexOf(s.model) < 0)
+              ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
-              }))}
+              }))
+              }
               onChange={value => {
                 setTableData(tableData.map(d =>
                   d.key === row.key ? { ...d, id: value } : d
@@ -840,7 +845,7 @@ export function StackForm () {
                         }
                       </TypographyText></div>
                   }
-                  <Col span={22} style={{ padding: '0' }}>
+                  <Col span={18} style={{ padding: '0', minWidth: 500 }}>
                     <TableContainer data-testid='dropContainer'>
                       <Table
                         columns={columns}
