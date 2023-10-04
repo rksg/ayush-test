@@ -394,7 +394,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       }] : []),
     ...(apMgmtVlanFlag ? [
       {
-        key: 'mgmtVlan',
+        key: 'managementVlan',
         title: $t({ defaultMessage: 'Management VLAN' }),
         dataIndex: 'managementVlan',
         show: false,
