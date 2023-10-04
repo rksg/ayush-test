@@ -14,7 +14,7 @@ export default function PortalViewSelfSignRegister (props:{
   const { demoValue, updateBtn, isPreview, portalLang } = props
   const { componentDisplay } = demoValue
   const renderTermsConditionsView = (activeKey:string) => {
-    if (componentDisplay.termsConditions && portalLang) {
+    if (componentDisplay.termsConditions && portalLang?.acceptTermsMsg2 && portalLang?.acceptTermsMsgHostApproval) {
       const { acceptTermsMsg2, acceptTermsMsgHostApproval } = portalLang
       let acceptTermsTxt = (activeKey === 'register') ? acceptTermsMsgHostApproval : acceptTermsMsg2
       const acceptTermsMsg = acceptTermsTxt.replace('<1>{{linkText}}</1>','#')
