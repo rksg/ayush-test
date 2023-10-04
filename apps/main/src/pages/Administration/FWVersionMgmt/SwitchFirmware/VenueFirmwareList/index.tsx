@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -21,8 +21,7 @@ import {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchLatestFirmwareListQuery,
-  useLazyGetSwitchListQuery
+  useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -34,8 +33,7 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule,
-  SwitchViewModel
+  switchSchedule
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -52,8 +50,8 @@ import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import * as SwitchUI            from './styledComponents'
 import { UpdateNowDialog }      from './UpdateNowDialog'
+import { NestedSwitchFirmwareTable } from './NestedSwitchFirmwareTable'
 
 function useColumns (
   searchable?: boolean,
@@ -72,7 +70,8 @@ function useColumns (
       render: function (_, row) {
         return row.name
       }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
@@ -90,7 +89,8 @@ function useColumns (
         }
         return versionList.length > 0 ? versionList.join(', ') : '--'
       }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
@@ -98,31 +98,8 @@ function useColumns (
       render: function (_, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
-    }, {
-      title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableFw',
-      dataIndex: 'availableFw',
-      sorter: { compare: sortProp('availableFw', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status',
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Last Update' }),
-      key: 'lastUpdate',
-      dataIndex: 'lastUpdate',
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    }, {
+    },
+    {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
@@ -175,7 +152,6 @@ export const VenueFirmwareTable = (
   const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
-  const [ getSwitchList ] = useLazyGetSwitchListQuery()
 
   const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
@@ -398,105 +374,36 @@ export const VenueFirmwareTable = (
     }
   }]
 
-  const { tenantId } = useParams()
-  const [nestedData, setNestedData] = useState({} as { [key: string]: SwitchViewModel[] })
-  const [isLoading, setIsLoading] = useState({} as { [key: string]: boolean })
-  const handleExpand = async (_expanded: unknown, record: { id: string }) => {
-    setIsLoading({
-      [record.id]: true
-    })
-    setNestedData({ ...nestedData, [record.id]: [] })
-
-    const switchListPayload = {
-      pageSize: 10000,
-      filters: {
-        venueId: [record.id]
-      },
-      fields: ['id', 'isStack', 'formStacking', 'name', 'model', 'serialNumber',
-        'deviceStatus', 'syncedSwitchConfig', 'configReady'
-      ]
-    }
-    const switchList = record.id
-      ? (await getSwitchList({
-        params: { tenantId: tenantId }, payload: switchListPayload
-      }, true)).data?.data
-      : []
-
-    const result = { ...nestedData, [record.id]: switchList }
-    setNestedData(result as { [key: string]: SwitchViewModel[] })
-    setIsLoading({
-      [record.id]: false
-    })
-
-  }
-
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
-    return <Table<SwitchViewModel>
-      columns={[
-        {
-          title: 'test',
-          key: 'name',
-          dataIndex: 'name',
-          sorter: { compare: sortProp('name', defaultSort) },
-          defaultSortOrder: 'ascend'
-        }]}
-      loading={isLoading[record.id]}
-      locale={{
-        emptyText: 'No data'
-      }}
-      style={{ paddingLeft: '0px !important' }}
-      dataSource={nestedData[record.id] ?? [] as SwitchViewModel[]}
-      // pagination={tableQuery.pagination}
-      sticky={false}
-      tableAlertRender={false}
-      showHeader={false}
-      expandIcon={
-        () => <></>
-      }
-      expandable={{ expandedRowRender: () => { return <></> } }}
-      // onChange={tableQuery.handleTableChange}
-      rowKey='id'
-      rowSelection={{ type: 'checkbox', selectedRowKeys }}
-    />
-  }
-
 
   return (
     <Loader states={[
       tableQuery,
       { isLoading: false }
     ]}>
-      <SwitchUI.ExpanderTableWrapper>
-        <Table
-          columns={columns}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          expandable={{
-            onExpand: handleExpand,
-            expandedRowRender: expandedRowRenderFunc,
-            rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
-          }}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-          rowKey='id'
-          rowActions={rowActions}
-          rowSelection={{ type: 'checkbox', selectedRowKeys }}
-          actions={[{
-            label: $t({ defaultMessage: 'Preferences' }),
-            onClick: () => setModelVisible(true)
-          }]}
-        /></SwitchUI.ExpanderTableWrapper>
-      <UpdateNowDialog
-        visible={updateModelVisible}
-        data={venues}
-        availableVersions={filterVersions(upgradeVersions)}
-        nonIcx8200Count={nonIcx8200Count}
-        icx8200Count={icx8200Count}
-        onCancel={handleUpdateModalCancel}
-        onSubmit={handleUpdateModalSubmit}
+      <Table
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
+        rowKey='id'
+        rowActions={rowActions}
+        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        actions={[{
+          label: $t({ defaultMessage: 'Preferences' }),
+          onClick: () => setModelVisible(true)
+        }]}
+      />
+      <NestedSwitchFirmwareTable
+        tableQuery={tableQuery}
+        // visible={updateModelVisible}
+        // data={venues}
+        // availableVersions={filterVersions(upgradeVersions)}
+        // nonIcx8200Count={nonIcx8200Count}
+        // icx8200Count={icx8200Count}
+        // onCancel={handleUpdateModalCancel}
+        // onSubmit={handleUpdateModalSubmit}
       />
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}

@@ -1,9 +1,6 @@
-import { ExpanderWrapper } from './../../../../../../../../libs/common/components/src/components/Timeline/styledComponents';
 import styled from 'styled-components/macro'
 
-import { FirmwareSwitchVenue } from '@acx-ui/rc/utils'
-import { Table, TableProps, Button } from '@acx-ui/components'
-import { RecommendationListItem } from 'libs/analytics/components/src/Recommendations/services'
+import { Button } from '@acx-ui/components'
 
 export const DateContainer = styled.div`
   height: auto;
@@ -70,7 +67,8 @@ export const FieldGroup = styled.div`
 
 export const ExpanderTableWrapper = styled.div`
   .ant-table-expanded-row-fixed{
-    padding-left: 0px;
+    padding-left: 7px;
+    padding-right: 0px;
     padding-bottom: 0px;
     .ant-table-fixed-column{
       margin-bottom: 10px;
@@ -81,4 +79,15 @@ export const ExpanderTableWrapper = styled.div`
     border: none
   }
 
+
+    .ant-table-body {
+      background-color: #EBEDEE;
+    }
+
+    .switchTable{
+      .ant-table-body {
+      background-color: white;
+    }
+
+    }
 `
