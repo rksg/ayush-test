@@ -98,19 +98,21 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
           const remaining = type.data.length - items?.length
           return <UI.SummaryType key={index}>
             <UI.Summary>
-              <UI.SummaryCount>{type.count}</UI.SummaryCount>
-              <UI.SummaryList>
-                {items.map((d, i) => <div key={i} title={d.title}>
-                  {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
-                  <span>{d.name}</span>
-                </div>)}
-                {remaining > 0 && <div><span>
-                  And {remaining} more{'\u2026'}
-                </span></div>}
-              </UI.SummaryList>
+              <div><UI.SummaryCount>{type.count}</UI.SummaryCount></div>
+              <div>
+                <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
+                <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
+              </div>
             </UI.Summary>
-            <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
-            <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
+            <UI.SummaryList>
+              {items.map((d, i) => <div key={i} title={d.title}>
+                {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
+                <span>{d.name}</span>
+              </div>)}
+              {remaining > 0 && <div><span>
+                And {remaining} more{'\u2026'}
+              </span></div>}
+            </UI.SummaryList>
           </UI.SummaryType>
         })}
       </GridRow>

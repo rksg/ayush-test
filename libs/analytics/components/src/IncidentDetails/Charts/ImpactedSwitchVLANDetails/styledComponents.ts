@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const SummaryType = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   flex-grow: 1;
   flex-basis: 0;
   text-align: center;
@@ -14,16 +14,13 @@ export const SummaryType = styled.div`
 `
 
 export const Summary = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 15px;
+  display: block;
+  margin-right: 20px;
 `
 
 export const SummaryCount = styled.div`
-  font-size: 3.5rem;
-  margin-right: 20px;
+  font-size: var(--acx-headline-2-font-size);
+  font-weight: var(--acx-body-font-weight-bold);
 `
 
 export const SummaryList = styled.div`
@@ -42,7 +39,7 @@ export const SummaryList = styled.div`
 `
 
 export const SummaryTitle = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: var(--acx-body-3-font-size);
   font-weight: var(--acx-body-font-weight-bold);
 `
