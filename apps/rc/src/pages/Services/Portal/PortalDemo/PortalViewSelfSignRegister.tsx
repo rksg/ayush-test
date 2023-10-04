@@ -13,9 +13,11 @@ export default function PortalViewSelfSignRegister (props:{
 }) {
   const { demoValue, updateBtn, isPreview, portalLang } = props
   const { componentDisplay } = demoValue
-  const renderTermsConditionsView = () => {
-    if (componentDisplay.termsConditions && portalLang?.acceptTermsMsgSelfSign) {
-      const acceptTermsMsg = portalLang?.acceptTermsMsgSelfSign?.replace('<1>{{linkText}}</1>','#')
+  const renderTermsConditionsView = (activeKey:string) => {
+    if (componentDisplay.termsConditions && portalLang) {
+      const { acceptTermsMsg2, acceptTermsMsgHostApproval } = portalLang
+      let acceptTermsTxt = (activeKey === 'register') ? acceptTermsMsgHostApproval : acceptTermsMsg2
+      const acceptTermsMsg = acceptTermsTxt.replace('<1>{{linkText}}</1>','#')
       const linkIndex = acceptTermsMsg.indexOf('#')
       return (<span style={{ display: 'inline-block' }}>
         {(linkIndex !== 0) &&
@@ -60,7 +62,7 @@ export default function PortalViewSelfSignRegister (props:{
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.register}</PortalButtonContent>
           <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>
-            {renderTermsConditionsView()}
+            {renderTermsConditionsView('register')}
           </UI.ViewSectionText>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
@@ -73,6 +75,9 @@ export default function PortalViewSelfSignRegister (props:{
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.connectToWifi}</PortalButtonContent>
+          <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>
+            {renderTermsConditionsView('login')}
+          </UI.ViewSectionText>
         </UI.ViewSectionTabs.TabPane>
       </UI.ViewSectionTabs>
       <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>

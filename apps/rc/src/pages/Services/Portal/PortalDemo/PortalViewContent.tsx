@@ -56,12 +56,14 @@ export default function PortalViewContent (props:{
 
   const renderTermsConditionsView = (view: PortalViewEnum) => {
     if (componentDisplay.termsConditions && portalLang) {
-      const { acceptTermsMsg2, acceptTermsMsgClickthrough, acceptTermsMsgHostApproval } = portalLang
+      const { acceptTermsMsg2, acceptTermsMsgClickthrough, acceptTermsMsgSelfSign, acceptTermsMsgHostApproval } = portalLang
       let termsMsg = acceptTermsMsg2 || ''
       if (view === PortalViewEnum.ClickThrough) {
         termsMsg = acceptTermsMsgClickthrough || ''
       } else if (view === PortalViewEnum.HostApproval) {
         termsMsg = acceptTermsMsgHostApproval || ''
+      } else if (view === PortalViewEnum.SelfSignIn) {
+        termsMsg = acceptTermsMsgSelfSign || ''
       }
       const acceptTermsMsg = termsMsg.replace('<1>{{linkText}}</1>','#')
       const linkIndex = acceptTermsMsg.indexOf('#')
