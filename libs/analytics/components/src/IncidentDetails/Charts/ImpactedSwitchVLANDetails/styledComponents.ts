@@ -1,20 +1,5 @@
 import styled from 'styled-components'
 
-import {
-  Switch,
-  VLANIcon
-} from '@acx-ui/icons'
-
-type vlanType = 'switch' | 'vlan'
-
-// const iconByType = (type: vlanType) => {
-//   switch (type) {
-//     case 'switch': return Switch
-//     case 'vlan': return VLANIcon
-//     // case 'port': return sanitizeSVG(portIcon('#607481'))
-//   }
-// }
-
 export const SummaryType = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,7 +8,7 @@ export const SummaryType = styled.div`
   text-align: center;
   line-height: 1;
   &:not(:first-of-type) {
-    border-left: 1px solid ${p => p.theme.incidentDetailTitleBorderColor};
+    border-left: 1px solid black;
   }
   padding-bottom: 10px;
 `
@@ -67,12 +52,3 @@ export const SummaryDetails = styled.div`
   font-size: 12px;
   opacity: 0.6;
 `
-
-// export const Icon = styled.span`
-//   background: url('${p => iconByType(p.type)}') no-repeat;
-//   background-size: 100% 100%;
-//   width: 14px;
-//   height: 14px;
-//   display: inline-block;
-//   margin-right: 5px;
-// `

@@ -2,6 +2,10 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Card, GridRow, Loader } from '@acx-ui/components'
+import {
+  Switch,
+  VLANIcon
+} from '@acx-ui/icons'
 
 import {
   ImpactedSwitchPortRow,
@@ -10,8 +14,13 @@ import {
 
 import * as UI from './styledComponents'
 
-
 import type { ChartProps } from '../types.d'
+
+interface impactedVlans {
+  id: number
+  mac: string
+  name: string
+}
 
 export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const { $t } = useIntl()
@@ -29,26 +38,20 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
     return { ...response, rows }
   } })
 
-  console.log('incident', incident)
-  console.log('response', response)
-
   const impactedSwitches = response.data!
-
-  // const impactedVlans = removeDuplicateMismatchVLANs(impactedSwitches)
-  //   .flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
-  //     .map(({ id, name }) => ({ mac, id, name }))
-  //   )
+  console.log('impactedSwitches', impactedSwitches)
 
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
       ? []
       : _.uniqBy(impactedSwitches, (item) => item.mismatchedVlans[0].id)
 
-  const impactedVlans = impactedSwitches?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
-    .map(({ id, name }) => ({ mac, id, name }))
-  )
+  const impactedVlans: impactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
+    ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
+      .map(({ id, name }) => ({ mac, id, name }))
+    )
 
-  console.log('removeDuplicateMismatchVLANs', removeDuplicateMismatchVLANs(impactedSwitches))
+  console.log('impactedVlans', impactedVlans)
 
   // const uniqImpactedVlans = _.sortBy(
   //   Object.entries(impactedVlans.reduce((agg, { mac, id, name }) => {
@@ -58,6 +61,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   //     }
   //     return agg
   //   }, {})), ([id]) => parseInt(id, 10))
+  // console.log('uniqImpactedVlans', uniqImpactedVlans)
 
   const uniqueSwitchCount = impactedSwitches?.length || 0
   // const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
@@ -78,7 +82,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       icon: 'vlan',
       max: 3,
       count: uniqueVlanCount,
-      data: [{ name: 'test', title: 'title' }],
+      data: [{ name: 'VLAN 30', title: 'title' }],
       // data: uniqImpactedVlans.map(([id, { macs, names }]) => {
       //   return {
       //     name: macs.length > 1
@@ -103,7 +107,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
               <UI.SummaryCount>{type.count}</UI.SummaryCount>
               <UI.SummaryList>
                 {items.map((d, i) => <div key={i} title={d.title}>
-                  {/* <UI.Icon type={type.icon} /> */}
+                  {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
                   <span>{d.name}</span>
                 </div>)}
                 {remaining > 0 && <div><span>
