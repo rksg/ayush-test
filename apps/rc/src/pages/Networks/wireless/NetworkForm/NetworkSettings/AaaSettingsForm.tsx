@@ -98,7 +98,7 @@ function SettingsForm () {
     if (!isUndefined(wlanSecurity)) {
       form.setFieldValue(['wlanSecurity'], wlanSecurity)
     }
-  })
+  }, [wlanSecurity])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
