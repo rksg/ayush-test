@@ -1,24 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { Checkbox, Select, DatePicker } from 'antd'
-import { CheckboxChangeEvent }          from 'antd/lib/checkbox'
+import moment      from 'moment'
+import { Checkbox, Select }    from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { RangePicker }         from '@acx-ui/components'
 import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
 import { FilterValue }        from 'antd/lib/table/interface'
-import { IntlShape, useIntl } from 'react-intl'
+import { IntlShape } from 'react-intl'
 
-import {
-  DateRange,
-  dateRangeMap,
-  defaultRanges
-} from '@acx-ui/utils'
+import { DateRange } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
-const { RangePicker } = DatePicker
 
 export interface Filter extends Record<string, FilterValue|null> {}
 
@@ -88,6 +85,7 @@ export function renderSearch <RecordType> (
     allowClear
   />
 }
+
 export function renderFilter <RecordType> (
   column: TableColumn<RecordType, 'text'>,
   index: number,
@@ -113,71 +111,21 @@ export function renderFilter <RecordType> (
       }}>{column?.filterComponent?.label}</Checkbox>
   }
 
-  const DatepickerComp = (column: TableColumn<RecordType, 'text'>, intl: IntlShape) => {
-
-    const [option, setOption] = useState('')
-    const timeRange = () => [
-      { key: '', text: intl.$t(dateRangeMap[DateRange.allTime]) },
-      { key: DateRange.last24Hours, text: intl.$t(dateRangeMap[DateRange.last24Hours]) },
-      { key: DateRange.last7Days, text: intl.$t(dateRangeMap[DateRange.last7Days]) },
-      { key: DateRange.last30Days, text: intl.$t(dateRangeMap[DateRange.last30Days]) },
-      { key: DateRange.custom, text: intl.$t(dateRangeMap[DateRange.custom]) }
-    ] as Array<{ key: string, text: string }>
-
-    const showtimeRangeOptions = timeRange().map(({ key, text }) => ({
-      key, value: text
-    }))
-    return <>
-      <UI.FilterSelect
-        key={index}
-        maxTagCount='responsive'
-        mode={column.filterMultiple === false ? undefined : 'multiple'}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onChange={(value: any) => {
-          setOption(value)
-          const ranges = defaultRanges()
-          const range = ranges[value as DateRange]
-          const result = {
-            fromTime: range?.[0] ?? undefined,
-            toTime: range?.[1] ?? undefined
-          }
-          setFilterValues({ ...filterValues, ...result })
-        }}
-        filterOption={filterOption}
-        placeholder={column.title as string}
-        showArrow
-        allowClear
-        style={{ width }}
-      >
-        {showtimeRangeOptions?.map((option, index) =>
-          <Select.Option
-            value={option.key}
-            key={option.key ?? index}
-            data-testid={`option-${option.key}`}
-            title={option.value}
-            children={option.value}
-          />
-        )}
-      </UI.FilterSelect>
-      {option === DateRange.custom &&
-      <RangePicker
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onChange={(value: any) => {
-          const result = {
-            fromTime: value?.[0] ?? undefined,
-            toTime: value?.[1] ?? undefined
-          }
-          setFilterValues({ ...filterValues, ...result })
-        }}
-        style={{ width: '220px' }}
-      />}
-    </>
+  const renderDatepicker = (column: TableColumn<RecordType, 'text'>) => {
+    return <RangePicker
+      selectedRange={{
+        startDate: moment().seconds(0),
+        endDate: moment().seconds(0)
+      }}  
+      onDateApply={() => ({})}
+      selectionType={DateRange.allTime}
+    />
   }
 
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    datepicker: DatepickerComp(column, useIntl())
+    datepicker: renderDatepicker(column)
   }
   type Type = keyof typeof filterTypeComp
 
