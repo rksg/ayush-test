@@ -58,7 +58,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  SwitchRow
+  SwitchRow,
+  isSameModelFamily
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -256,7 +257,7 @@ export function StackForm () {
         setTableData(switchTableData as SwitchTable[])
         setRowKey(stackSwitches?.length ?? 0)
         formRef?.current?.setFieldValue('venueId', venueId)
-        stackSwitches?.map((serialNumber, index) => {
+        stackSwitches?.forEach((serialNumber, index) => {
           formRef?.current?.setFieldValue(`serialNumber${index + 1}`, serialNumber)
         })
       }
@@ -429,14 +430,20 @@ export function StackForm () {
 
     const model = getSwitchModel(serialNumber) || ''
 
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
+    if (modelNotSupportStack.indexOf(model) > -1) {
+      return Promise.reject(
+        $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
       )
-      : Promise.resolve()
+    }
+    const allSameModelFamily = tableData
+      .filter(item => item.id && item.id !== serialNumber)
+      .every(item => isSameModelFamily(item.id, serialNumber))
+    if (serialNumber && !allSameModelFamily) {
+      return Promise.reject(
+        $t({ defaultMessage: 'All switch models should belong to the same family.' })
+      )
+    }
+    return Promise.resolve()
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
@@ -506,9 +513,14 @@ export function StackForm () {
           validateFirst
         >{ isStackSwitches
             ? <Select
-              options={standaloneSwitches?.map(s => ({
+              options={standaloneSwitches?.filter(s =>
+                row.id === s.serialNumber ||
+                (!tableData.find(d => d.id === s.serialNumber)
+                && modelNotSupportStack.indexOf(s.model) < 0)
+              ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
-              }))}
+              }))
+              }
               onChange={value => {
                 setTableData(tableData.map(d =>
                   d.key === row.key ? { ...d, id: value } : d
@@ -833,7 +845,7 @@ export function StackForm () {
                         }
                       </TypographyText></div>
                   }
-                  <Col span={18} style={{ padding: '0' }}>
+                  <Col span={18} style={{ padding: '0', minWidth: 500 }}>
                     <TableContainer data-testid='dropContainer'>
                       <Table
                         columns={columns}

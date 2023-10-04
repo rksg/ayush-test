@@ -1,17 +1,44 @@
+/* eslint-disable max-len */
 import { useEffect, useRef, useState } from 'react'
 
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { showToast }                                                                  from '@acx-ui/components'
-import { ApErrorHandlingMessages, CatchErrorResponse, closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
-
-
-const socketTimeout = 600000
+import { showActionModal }                                   from '@acx-ui/components'
+import { CatchErrorResponse, closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
 
 
-type ApErrorMessageKey = keyof typeof ApErrorHandlingMessages
-const errorTypeMapping: { [code in string]: ApErrorMessageKey } = {
-  'WIFI-99999': 'ERROR_OCCURRED' // TODO: temporary
+const socketTimeout = 600000 // 10 mins
+
+interface ErrorMessageType {
+  title: { defaultMessage: string },
+  message: { defaultMessage: string }
+}
+
+const CcdErrorTypeMapping: { [code in string]: ErrorMessageType } = {
+  'AP-OPS-10200': {
+    title: defineMessage({ defaultMessage: 'Bad Request' }),
+    message: defineMessage({
+      defaultMessage: 'Your request resulted in an error.'
+    })
+  },
+  'AP-OPS-10201': {
+    title: defineMessage({ defaultMessage: 'Bad Request' }),
+    message: defineMessage({
+      defaultMessage: 'Can not find APs for troubleshooting.'
+    })
+  },
+  'AP-OPS-10301': {
+    title: defineMessage({ defaultMessage: 'Session in progress…' }),
+    message: defineMessage({
+      defaultMessage: 'The Diagnostics session is already in progress initiated by another user. Try Tracing Connectivity later.'
+    })
+  },
+  'AP-OPS-10302': {
+    title: defineMessage({ defaultMessage: 'Reach max diagnosis session' }),
+    message: defineMessage({
+      defaultMessage: 'The Diagnostics session is exceed the Max. number allowed connections. Try Tracing Connectivity later.'
+    })
+  }
 }
 
 
@@ -28,7 +55,6 @@ export function useCcd (handler: (msg: string) => void) {
     if (requestId) {
       //console.log('Open CCD socket: ', requestId)
       ccdSocketRef.current = initCcdSocket(requestId, (msg: string) => {
-        clearSocketTimeout()
         handler(msg)
       })
       setSocketTimeout()
@@ -64,24 +90,34 @@ export function useCcd (handler: (msg: string) => void) {
   }
 
   const handleError = (error: CatchErrorResponse) => {
-    const code = error?.data?.errors?.[0]?.code
-    const isDefinedCode = code && errorTypeMapping[code]
-    const message: MessageDescriptor = isDefinedCode
-      ? ApErrorHandlingMessages[errorTypeMapping[code]]
-      : ApErrorHandlingMessages.ERROR_OCCURRED
+    const ccdError = error?.data?.errors?.[0]
+    const code = ccdError?.code
+    const isDefinedCcdCode = code && CcdErrorTypeMapping[code]
 
-    showError($t(message, { action: $t({ defaultMessage: 'detecting' }) }))
+    if (isDefinedCcdCode) {
+      const { title, message } = isDefinedCcdCode
+      showErrorModal($t(title), $t(message))
+    } else {
+      const message = ccdError?.message
+      showErrorModal('', message)
+    }
   }
 
-  const showError = (errorMessage: string) => {
-    showToast({
+  const showErrorModal = (title: string, message: string) => {
+    showActionModal({
       type: 'error',
-      content: errorMessage
+      title: title,
+      content: message
     })
   }
 
   const onSocketTimeout = () => {
-    showError($t({ defaultMessage: 'The socket timeout' }))
+    const title = $t({ defaultMessage: 'Session is expired' })
+    const message = $t({
+      defaultMessage: 'The Diagnostics session is expired. To start a new session, click Trace Connectivity again.'
+    })
+
+    showErrorModal(title, message)
   }
 
   return {
