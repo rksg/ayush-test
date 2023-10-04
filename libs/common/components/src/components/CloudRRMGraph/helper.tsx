@@ -237,7 +237,7 @@ export function trimGraph (
   const remaining = maxNumNode - highlight.length
   const trimmedNodes = [
     ...((remaining > 0 && normal.length > 0) ? normal.slice(0, remaining) : []),
-    ...highlight
+    ...highlight.slice(0, Math.min(highlight.length, maxNumNode))
   ]
   const trimedLinks = trimLinks(trimmedNodes, graph.links)
   return { ...graph, nodes: trimmedNodes, links: trimedLinks }

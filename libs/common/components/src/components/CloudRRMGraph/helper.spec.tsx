@@ -117,6 +117,7 @@ describe('trimGraph', () => {
     ])
     expect(trimGraph(data)).toMatchSnapshot()
     expect(trimGraph(data, 8)).toMatchSnapshot()
+    expect(trimGraph(data, 1)).toMatchSnapshot()
   })
   it('should handle empty', () => {
     expect(trimGraph({ nodes: [], links: [], categories: [] }))
