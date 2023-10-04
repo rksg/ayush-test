@@ -13,6 +13,7 @@ import { errorTypeMapping }                      from './contents'
 
 export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, handler: () => void) {
   const [ isDetecting, setIsDetecting ] = useState(false)
+  const [ detectIsSystemDriven, setDetectIsSystemDriven ] = useState(true)
   const { $t } = useIntl()
   const [ detectApNeighbors ] = useDetectApNeighborsMutation()
   const pokeSocketRef = useRef<SocketIOClient.Socket>()
@@ -37,7 +38,7 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
       })
 
       pokeSocketRef.current.on('connectedSocketEvent', () => {
-        doDetect()
+        doDetect(true)
       })
     }
 
@@ -57,12 +58,13 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
   }
 
   const onSocketTimeout = () => {
-    showError($t({ defaultMessage: 'The AP is not reachable' }))
+    if (!detectIsSystemDriven) showError($t({ defaultMessage: 'The AP is not reachable' }))
     setIsDetecting(false)
   }
 
-  const doDetect = async () => {
+  const doDetect = async (isSystemDriven = false) => {
     setIsDetecting(true)
+    setDetectIsSystemDriven(isSystemDriven)
 
     try {
       await detectApNeighbors({
@@ -73,7 +75,7 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
         }
       }).unwrap()
     } catch (error) {
-      handleError(error as CatchErrorResponse)
+      if (!isSystemDriven) handleError(error as CatchErrorResponse)
       setIsDetecting(false)
     }
   }

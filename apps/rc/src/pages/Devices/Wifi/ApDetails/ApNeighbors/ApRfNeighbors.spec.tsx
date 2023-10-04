@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { ToastProps }                               from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
@@ -9,6 +10,7 @@ import { ApContextProvider } from '../ApContextProvider'
 
 import { mockedAp, mockedApRfNeighbors, mockedSocket, tabPath } from './__tests__/fixtures'
 import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer }   from './ApRfNeighbors'
+import { defaultSocketTimeout }                                 from './constants'
 
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -36,14 +38,12 @@ describe('ApRfNeighbors', () => {
   }
 
   beforeEach(() => {
-    jest.useFakeTimers()
     jest.clearAllMocks()
 
     mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
   })
 
   afterEach(() => {
-    jest.useRealTimers()
     mockedInitPokeSocketFn.mockRestore()
   })
 
@@ -74,10 +74,13 @@ describe('ApRfNeighbors', () => {
   })
 
   it('should render RF Neighbors view', async () => {
+    const websocketDelay = 1000
     mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
-      setTimeout(handler, 0) // Simulate receving the message from websocket
+      setTimeout(handler, websocketDelay) // Simulate receving the message from websocket
       return mockedSocket
     })
+
+    jest.useFakeTimers()
 
     render(<ApRfNeighbors />, {
       wrapper,
@@ -86,45 +89,67 @@ describe('ApRfNeighbors', () => {
 
     await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
 
+    await act(async () => {
+      jest.advanceTimersByTime(websocketDelay)
+    })
+
     const targetApName = new RegExp(mockedApRfNeighbors.neighbors[0].deviceName)
     expect(await screen.findByRole('row', { name: targetApName })).toBeVisible()
+
+    jest.useRealTimers()
   })
 
   it('should show error when timeout', async () => {
+    jest.useFakeTimers()
+
     render(<ApRfNeighbors />, {
       wrapper,
       route: { params, path: tabPath }
     })
 
-    await waitFor(() => {
-      expect(mockedInitPokeSocketFn).toHaveBeenCalled()
+    await waitFor(() => expect(mockedInitPokeSocketFn).toHaveBeenCalled())
+
+    await act(async () => {
+      jest.advanceTimersByTime(defaultSocketTimeout) // Simulate websocket timeout
     })
 
-    await act(() => {
-      jest.runAllTimers() // Simulate websocket timeout
+    // Will not show error when the timeout of the detection is caused by the system instead of user trigger
+    expect(mockedShowToast).not.toHaveBeenCalled()
+
+    // To make the click event execute immediately instead of waiting for a timeout when using the fake timer, we should include the delay: null option
+    await userEvent.click(screen.getByRole('button', { name: 'Detect' }), { delay: null })
+
+    await act(async () => {
+      jest.advanceTimersByTime(defaultSocketTimeout) // Simulate websocket timeout
     })
 
     expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
       content: 'The AP is not reachable',
       type: 'error'
     }))
+
+    jest.useRealTimers()
   })
 
   it('should handle error correctly', async () => {
-    const mockedError = {
-      errors: [
-        {
-          code: 'WIFI-10496',
-          message: 'error occurs'
-        }
-      ],
-      requestId: 'REQUEST_ID'
-    }
+    const detectFn = jest.fn()
 
     mockServer.use(
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
-        (req, res, ctx) => res(ctx.status(400), ctx.json(mockedError))
+        (req, res, ctx) => {
+          detectFn()
+
+          return res(ctx.status(400), ctx.json({
+            errors: [
+              {
+                code: 'WIFI-10496',
+                message: 'error occurs'
+              }
+            ],
+            requestId: 'REQUEST_ID'
+          }))
+        }
       )
     )
 
@@ -132,6 +157,12 @@ describe('ApRfNeighbors', () => {
       wrapper,
       route: { params, path: tabPath }
     })
+
+    await waitFor(() => expect(detectFn).toHaveBeenCalled())
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Detect' })).toBeEnabled())
+
+    await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
 
     await waitFor(() => {
       expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({

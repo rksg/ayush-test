@@ -26,12 +26,12 @@ export default function ApRfNeighbors () {
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
-    onClick: doDetect
+    onClick: () => doDetect()
   }]
 
-  function socketHandler () {
+  async function socketHandler () {
     try {
-      getApRfNeighbors({ params: { serialNumber } }).unwrap()
+      await getApRfNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
       handleError(error as CatchErrorResponse)
     }
