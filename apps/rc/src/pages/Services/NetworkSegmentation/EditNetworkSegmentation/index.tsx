@@ -76,11 +76,11 @@ const EditNetworkSegmentation = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Edit Network Segmentation Service' })}
+        title={$t({ defaultMessage: 'Edit Personal Identity Network Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Network Segmentation' }), link: tablePath }
+          { text: $t({ defaultMessage: 'Personal Identity Network' }), link: tablePath }
         ]}
       />
       <Loader states={[{ isLoading: isNsgDataLoading }]}>

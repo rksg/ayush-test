@@ -239,7 +239,10 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'n'])
+        variables: {
+          ..._.pick(payload, ['path', 'startDate', 'endDate', 'n']),
+          status: optimizedStates
+        }
       }),
       transformResponse: (response: CrrmList) => {
         const { $t } = getIntl()
@@ -281,10 +284,7 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: {
-          ..._.pick(payload, ['path', 'startDate', 'endDate', 'n']),
-          status: optimizedStates
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'n'])
       }),
       transformResponse: (response: AiOpsList) => {
         const { $t } = getIntl()

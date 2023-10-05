@@ -8,7 +8,8 @@ import {
   GatewayDashboard,
   GatewayTopProcess,
   GatewayFileSystem,
-  GatewayDetails
+  GatewayDetails,
+  DNSRecord
 } from '@acx-ui/rc/utils'
 import { baseRWGApi }        from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -153,6 +154,53 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         return data?.response
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getDNSRecords: build.query<TableResult<DNSRecord>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDNSRecords, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: DNSRecord[] }) => {
+        return {
+          data: data?.response || [],
+          totalCount: data?.response?.length || 0,
+          page: 0
+        }
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    getDNSRecord: build.query<DNSRecord, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDNSRecord, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (data: { response: DNSRecord }) => {
+        return data?.response
+      },
+      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    deleteDnsRecord: build.mutation<DNSRecord, RequestPayload>({
+      query: ({ params }) => {
+        let req = createHttpRequest(CommonUrlsInfo.deleteDnsRecords, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    addUpdateDnsRecord: build.mutation<RWG, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addUpdateDnsRecord, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
   })
 })
@@ -168,5 +216,9 @@ export const {
   useGetGatewayDashboardQuery,
   useGetGatewayTopProcessQuery,
   useGetGatewayFileSystemsQuery,
-  useGetGatewayDetailsQuery
+  useGetGatewayDetailsQuery,
+  useGetDNSRecordsQuery,
+  useGetDNSRecordQuery,
+  useDeleteDnsRecordMutation,
+  useAddUpdateDnsRecordMutation
 } = rwgApi

@@ -72,7 +72,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const warningMsg = <FormattedMessage
     defaultMessage={
       // eslint-disable-next-line max-len
-      'Please make sure you’ve done the following preparations before creating a Network Segmentation:' +
+      'Please make sure you’ve done the following preparations before creating a Personal Identity Network:' +
       '<br></br><br></br>' +
       // eslint-disable-next-line max-len
       '<icon></icon>Already enabled the <sub5b>Property Management</sub5b> service for the venue where you want to apply' +
