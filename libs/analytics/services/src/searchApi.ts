@@ -33,24 +33,21 @@ export interface NetworkHierarchy {
   switchCount: number
 }
 
-export interface SearchResponse {
+export interface SearchResponse extends APListResponse, SwitchListResponse, NetworkListReponse {
   clients: Client[]
   networkHierarchy: NetworkHierarchy[]
-  aps: AP[]
-  switches: Switch[]
-  wifiNetwork: Network[]
 }
 
 export interface APListResponse {
   aps: AP[]
 }
 
-export interface SwitchList {
+export interface SwitchListResponse {
   switches: Switch[]
 }
 
 export interface NetworkListReponse {
-  wifiNetwork: Network[]
+  wifiNetworks: Network[]
 }
 
 export interface Network {
@@ -123,7 +120,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchModel
               switchVersion: switchFirmware
             },
-            wifiNetwork {
+            wifiNetworks {
               name
               apCount
               clientCount
@@ -167,7 +164,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'AP_LIST' }],
       transformResponse: (response: { search: APListResponse }) => response.search
     }),
-    switchtList: build.query<SwitchList, ListPayload>({
+    switchtList: build.query<SwitchListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
@@ -190,19 +187,20 @@ export const searchApi = dataApiSearch.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'SWITCH_LIST' }],
-      transformResponse: (response: { search: SwitchList }) => response.search
+      transformResponse: (response: { search: SwitchListResponse }) => response.search
     }),
     networkList: build.query<NetworkListReponse, ListPayload>({
       query: (payload) => ({
         document: gql`
-        query SearchWiFiNetwork(
+        query Search(
           $start: DateTime
           $end: DateTime
           $query: String
+          $metric: String
           $limit: Int
         ) {
-          search(start: $start, end: $end, query: $query, limit: $limit) {
-            wifiNetwork {
+          search(start: $start, end: $end, query: $query, metric: $metric, limit: $limit) {
+            wifiNetworks {
               name
               apCount
               clientCount

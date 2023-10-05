@@ -99,7 +99,7 @@ export function NetworkList ({ searchVal = '' }: { searchVal?: string }) {
   return <Loader states={[results]}>
     <Table<Network>
       columns={networkTableColumnHeaders}
-      dataSource={results.data?.wifiNetwork as unknown as Network[]}
+      dataSource={results.data?.wifiNetworks as unknown as Network[]}
       pagination={pagination}
       settingsId='wifi-network-search-table'
       onFilterChange={updateSearchString}

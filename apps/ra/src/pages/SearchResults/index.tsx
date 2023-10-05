@@ -349,17 +349,17 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
               />
             </Panel>
           }
-          { results.data?.wifiNetwork.length &&
+          { results.data?.wifiNetworks.length &&
             <Panel
               key='wifiNetworks'
               header={
                 `${$t({
                   defaultMessage: 'Wi-Fi Networks'
-                })} (${results.data?.wifiNetwork.length})`
+                })} (${results.data?.wifiNetworks.length})`
               }>
               <Table<Network>
                 columns={wifiNetworksTableColumnHeaders}
-                dataSource={results.data?.wifiNetwork as unknown as Network[]}
+                dataSource={results.data?.wifiNetworks as unknown as Network[]}
                 pagination={pagination}
                 settingsId='wifi-networks-search-table'
               />
