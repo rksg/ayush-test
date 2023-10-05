@@ -4,9 +4,9 @@ import { Modal }      from 'antd'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { switchApi }       from '@acx-ui/rc/services'
-import { FirmwareUrlsInfo, SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { switchApi }                        from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                  from '@acx-ui/store'
 import {
   mockServer,
   render,
