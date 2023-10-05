@@ -94,10 +94,10 @@ function Layout () {
       }
       leftHeaderContent={<>
         {isHspSupportEnabled && <TenantLink to='/dashboard'>
-          <UI.Home>
+          <UI.MyAccount>
             <LayoutUI.Icon children={<AdminSolid />} />
             {$t({ defaultMessage: 'My Account' })}
-          </UI.Home></TenantLink>}
+          </UI.MyAccount></TenantLink>}
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>

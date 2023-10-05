@@ -27,7 +27,7 @@ import {
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
