@@ -15,9 +15,10 @@ import { DeleteOutlinedIcon }                from '@acx-ui/icons'
 import {
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
-  useGetSwitchQuery
+  useGetSwitchQuery,
+  useLazyGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel } from '@acx-ui/rc/utils'
+import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SwitchViewModel, checkVersionAtLeast09010h } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -89,6 +90,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
+  const [venueFW, setVenueFW] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -96,6 +98,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     useGetSwitchQuery({ params: { tenantId, switchId } })
   const { data: switchDetail } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
+  const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', disabled: false }
@@ -168,7 +171,32 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     if(switchDetail?.stackMembers){
       setMaxMembers(12 - switchDetail?.stackMembers.length)
     }
+
+    if (switchDetail) {
+      setVenueVersion(switchDetail)
+    }
+
   }, [form, switchDetail])
+
+  const setVenueVersion = async (switchDetail: SwitchViewModel) => {
+    return switchDetail.venueName ?
+      await getSwitchVenueVersionList({
+        params: { tenantId }, payload: {
+          firmwareType: '',
+          firmwareVersion: '',
+          searchString: switchDetail.venueName,
+          updateAvailable: ''
+        }
+      }).unwrap()
+        .then(result => {
+          if (Array.isArray(result?.data) && result?.data.length > 0) {
+            setVenueFW(result.data[0]?.switchFirmwareVersion?.id)
+          }
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        }) : {}
+  }
+
 
   const validatorSwitchModel = (serialNumber: string) => {
     const re = new RegExp(SWITCH_SERIAL_PATTERN)
@@ -231,7 +259,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(venueFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
