@@ -632,9 +632,13 @@ export function StackForm () {
 
       const switchModel =
         getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+      let miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
         (checkVersionAtLeast09010h(venueFw || '') ? 4 : 2) :
         (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
+
+      if (switchModel?.includes('ICX8200')) {
+        miniMembers = 4
+      }
 
       setTableData(tableData.splice(0, miniMembers))
     }
@@ -687,8 +691,11 @@ export function StackForm () {
       return true
     }
 
+
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
       return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
+    } else if (switchModel?.includes('ICX8200')) {
+      return 4
     } else {
       return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
     }
@@ -697,6 +704,9 @@ export function StackForm () {
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (switchModel?.includes('ICX8200')) {
+      return 4
+    }
     return switchModel?.includes('ICX7150') ?
       (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
       (checkVersionAtLeast09010h(currentFW) ? 8 : 4)

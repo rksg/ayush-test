@@ -5,7 +5,7 @@ import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
 import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { FirmwareUrlsInfo, SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  editStackDetail } from '../../__tests__/fixtures'
+  editStackDetail, switchFirmwareVenue } from '../../__tests__/fixtures'
 
 import AddStackMember from '.'
 
@@ -50,6 +50,8 @@ describe('Add Stack Member Form', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(editStackData))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
