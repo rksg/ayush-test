@@ -1,5 +1,12 @@
+import moment from 'moment'
+
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
+
 import {
   DelegationEntitlementRecord,
+  MspEc,
+  MspEcAlarmList,
   MspEcProfile,
   MspProfile
 } from './types'
@@ -61,11 +68,86 @@ export const MSPUtils = () => {
     }
   }
 
+  const getStatus = (row: MspEc) => {
+    const isTrial = row.accountType === 'TRIAL'
+    const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
+    return value
+  }
+
+  const transformApEntitlement = (row: MspEc) => {
+    return row.wifiLicenses ? row.wifiLicenses : 0
+  }
+
+  const transformSwitchEntitlement = (row: MspEc) => {
+    return row.switchLicenses ? row.switchLicenses : 0
+  }
+
+  const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
+    const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === deviceType)
+    if (entitlement.length > 0) {
+      const apEntitlement = entitlement[0]
+      const quantity = parseInt(apEntitlement.quantity, 10)
+      const consumed = parseInt(apEntitlement.consumed, 10)
+      if (quantity > 0) {
+        const value =
+        (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
+        return value
+      } else {
+        return '0%'
+      }
+    }
+    return '0%'
+  }
+
+  const transformCreationDate = (row: MspEc) => {
+    const creationDate = row.creationDate
+    if (!creationDate || isNaN(creationDate)) {
+      return ''
+    }
+    const Epoch = creationDate - (creationDate % 1000)
+    const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
+    return activeDate
+  }
+
+  const transformExpirationDate = (row: MspEc) => {
+    let expirationDate = '--'
+    const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+    const entitlements = apswEntitlement.length > 0 ? apswEntitlement : row.entitlements
+    let target: DelegationEntitlementRecord
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      const consumed = parseInt(entitlement.consumed, 10)
+      const quantity = parseInt(entitlement.quantity, 10)
+      if (consumed > 0 || quantity > 0) {
+        if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
+          target = entitlement
+        }
+      }
+      expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
+    })
+    return expirationDate
+  }
+
+  const transformAlarmCount = (row: MspEc, alarmCountData?: MspEcAlarmList) => {
+    const count = alarmCountData?.mspEcAlarmCountList?.find(item =>
+      item.tenantId === row.id)?.alarmCount
+    return (count || 0)
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
     transformInstalledDevice,
     transformDeviceEntitlement,
-    transformDeviceUtilization
+    transformDeviceUtilization,
+    getStatus,
+    transformApEntitlement,
+    transformUtilization,
+    transformSwitchEntitlement,
+    transformCreationDate,
+    transformExpirationDate,
+    transformAlarmCount
   }
 }

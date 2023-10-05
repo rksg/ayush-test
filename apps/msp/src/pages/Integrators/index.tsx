@@ -11,6 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
@@ -26,7 +27,7 @@ import {
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
@@ -58,6 +59,7 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -237,18 +239,19 @@ export function Integrators () {
         title={$t({ defaultMessage: 'Tech Partners' })}
         extra={isAdmin ?
           [
-            <TenantLink to='/dashboard'>
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-            </TenantLink>,
+            </TenantLink> : null,
             <MspTenantLink to='/integrators/create'>
               <Button
                 hidden={!onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
-          : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          : [
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
+            </TenantLink> : null
           ]}
       />
       <IntegratorssTable />

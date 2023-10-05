@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps } from '@acx-ui/components'
+import { LayoutProps }            from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -20,6 +21,7 @@ import { AccountType } from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -38,7 +40,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
           uri: '/dashboard/mspCustomers',
           tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP Customers' })
-        }]),
+        },
+        ...(!isHspSupportEnabled ? [] : [{
+          uri: '/dashboard/mspRecCustomers',
+          tenantType: 'v' as TenantType,
+          label: $t({ defaultMessage: 'MSP REC Customers' })
+        }])
+        ]),
         ...((isNonVarMSP || isIntegrator) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,

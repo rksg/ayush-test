@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
@@ -13,15 +14,20 @@ export function Dashboard () {
   const { data: userProfile } = useUserProfileContext()
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const linkMspPath = useTenantLink('/dashboard/mspCustomers/', 'v')
+  const linkHspPath = useTenantLink('/dashboard/hspCustomers/', 'v')
+  const linkLspPath = useTenantLink('/dashboard/varCustomers/', 'v')
+  const isHspSupported = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
 
   if (tenantDetailsData.data && userProfile) {
     if (tenantDetailsData.data.tenantType === AccountType.VAR &&
         userProfile?.support === false) {
-      navigate(linkVarPath, { replace: true })
+      isHspSupported ? navigate(linkLspPath, { replace: true })
+        : navigate(linkVarPath, { replace: true })
     } else {
-      navigate(linkMspPath, { replace: true })
+      isHspSupported ? navigate(linkHspPath, { replace: true })
+        : navigate(linkMspPath, { replace: true })
     }
   }
 

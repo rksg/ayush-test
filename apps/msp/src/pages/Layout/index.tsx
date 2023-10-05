@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { AdminSolid }                            from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -20,14 +23,16 @@ import {
   useMspEntitlementListQuery,
   useGetTenantDetailQuery
 } from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
+import * as UI           from './styledComponents'
 
 function Layout () {
+  const { $t } = useIntl()
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [hasLicense, setHasLicense] = useState(false)
@@ -37,6 +42,7 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
@@ -87,6 +93,11 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
+        {isHspSupportEnabled && <TenantLink to='/dashboard'>
+          <UI.Home>
+            <LayoutUI.Icon children={<AdminSolid />} />
+            {$t({ defaultMessage: 'My Account' })}
+          </UI.Home></TenantLink>}
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>

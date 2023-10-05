@@ -84,6 +84,7 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
   const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
@@ -362,7 +363,7 @@ export function VarCustomers () {
       <PageHeader
         title={title}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>

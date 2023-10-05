@@ -46,7 +46,7 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType }                                                            from '@acx-ui/utils'
 
-import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
+import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -107,7 +107,7 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-export function MspCustomers () {
+export function MspRecCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const edgeEnabled = useIsTierAllowed(Features.EDGES)
@@ -138,8 +138,8 @@ export function MspCustomers () {
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
-    ? { tenantType: [AccountType.MSP_EC] }
-    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
+    ? { tenantType: [AccountType.MSP_REC] }
+    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_REC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
@@ -684,7 +684,7 @@ export function MspCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'MSP Customers' })}
+        title={$t({ defaultMessage: 'MSP REC Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [
@@ -694,7 +694,7 @@ export function MspCustomers () {
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add EC Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add REC Customer' })}</Button>
             </MspTenantLink>
           ]
           : [

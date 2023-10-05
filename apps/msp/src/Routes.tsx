@@ -3,11 +3,13 @@ import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/co
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
-import { Dashboard }        from './pages/Dashboard'
-import { DeviceInventory }  from './pages/DeviceInventory'
+import { Dashboard }       from './pages/Dashboard'
+import { DeviceInventory } from './pages/DeviceInventory'
+// import { HspCustomers }     from './pages/HspCustomers'
 import { Integrators }      from './pages/Integrators'
 import Layout               from './pages/Layout'
 import { MspCustomers }     from './pages/MspCustomers'
+import { MspRecCustomers }  from './pages/MspRecCustomers'
 import { Subscriptions }    from './pages/Subscriptions'
 import { AssignMspLicense } from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }     from './pages/VarCustomers'
@@ -23,6 +25,7 @@ export default function MspRoutes () {
         element={<Dashboard />}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
+      <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators/*' element={<CustomersRoutes />} />
       <Route path='deviceinventory' element={<DeviceInventory />} />
@@ -46,6 +49,14 @@ function CustomersRoutes () {
         <Route path='create' element={<ManageCustomer />} />
         <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} />
       </Route>
+      <Route path=':tenantId/v/dashboard/mspRecCustomers'>
+        <Route index element={<MspRecCustomers />} />
+        {/* <Route path='create' element={<ManageCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} /> */}
+      </Route>
+      {/* <Route path=':tenantId/v/dashboard/hspCustomers'>
+        <Route index element={<HspCustomers />} />
+      </Route> */}
       <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />
         <Route path='create' element={<ManageIntegrator />} />

@@ -8,7 +8,7 @@ import { Provider }                                               from '@acx-ui/
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
 
-import { MspCustomers } from '.'
+import { MspRecCustomers } from '.'
 
 const list = {
   totalCount: 3,
@@ -175,7 +175,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('MspCustomers', () => {
+describe('MspRecCustomers', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
@@ -236,13 +236,13 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('MSP Customers')).toBeVisible()
+    expect(screen.getByText('MSP REC Customers')).toBeVisible()
     // expect(screen.getByText('Manage My Account')).toBeVisible()
-    expect(screen.getByText('Add EC Customer')).toBeVisible()
+    expect(screen.getByText('Add REC Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -260,7 +260,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -272,7 +272,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -292,7 +292,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -317,7 +317,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -341,7 +341,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -365,7 +365,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -384,7 +384,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -418,7 +418,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -452,7 +452,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -490,7 +490,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -519,12 +519,12 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add EC Customer')).not.toBeVisible()
+    expect(screen.getByText('Add REC Customer')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -549,7 +549,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
@@ -582,7 +582,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
@@ -609,7 +609,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -629,7 +629,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -648,7 +648,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -667,7 +667,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
@@ -689,7 +689,7 @@ describe('MspCustomers', () => {
     })
     render(
       <Provider>
-        <MspCustomers />
+        <MspRecCustomers />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
