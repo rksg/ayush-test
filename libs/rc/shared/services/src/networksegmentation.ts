@@ -49,9 +49,9 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Personal Identity Network',
-            'Update Personal Identity Network',
-            'Delete Personal Identity Network'
+            'Add Network Segmentation Group',
+            'Update Network Segmentation Group',
+            'Delete Network Segmentation Group'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
