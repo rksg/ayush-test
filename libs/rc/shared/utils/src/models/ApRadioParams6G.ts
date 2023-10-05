@@ -39,6 +39,8 @@ export class ApRadioParams6G {
 
   txPower: TxPowerEnum
 
+  useVenueSettings?: boolean
+
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
 
@@ -55,5 +57,7 @@ export class ApRadioParams6G {
     this.txPower = TxPowerEnum.MAX
 
     this.channelBandwidth320MhzGroup = Channel320MHzGroupEnum.AUTO
+
+    this.useVenueSettings = true
   }
 }
