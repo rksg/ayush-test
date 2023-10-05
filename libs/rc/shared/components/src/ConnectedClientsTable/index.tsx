@@ -302,15 +302,17 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       show: !!showAllColumns,
       render: (_, { status }) => {
+        let statusText;
         if (status === 1) {
-          intl.$t({ defaultMessage: 'Authorized' })
+          statusText = intl.$t({ defaultMessage: 'Authorized' });
         } else if (status === 0) {
-          intl.$t({ defaultMessage: 'Unauthorized' })
+          statusText = intl.$t({ defaultMessage: 'Unauthorized' });
         } else if (status === -1) {
-          intl.$t({ defaultMessage: 'N/A' })
+          statusText = intl.$t({ defaultMessage: 'N/A' });
         } else {
-          intl.$t({ defaultMessage: '--' })
+          statusText = '--';
         }
+        return statusText;
       }
     },
     {
