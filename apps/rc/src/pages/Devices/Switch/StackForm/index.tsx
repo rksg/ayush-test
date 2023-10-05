@@ -59,7 +59,8 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
-  isSameModelFamily
+  isSameModelFamily,
+  checkVersionAtLeast09010h
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -315,7 +316,7 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -347,7 +348,7 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -631,9 +632,13 @@ export function StackForm () {
 
       const switchModel =
         getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
-        (venueFw?.includes('09010h') ? 4 : 2) :
-        (venueFw?.includes('09010h') ? 8 : 4))
+      let miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+        (checkVersionAtLeast09010h(venueFw || '') ? 4 : 2) :
+        (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
+
+      if (switchModel?.includes('ICX8200')) {
+        miniMembers = 4
+      }
 
       setTableData(tableData.splice(0, miniMembers))
     }
@@ -686,19 +691,25 @@ export function StackForm () {
       return true
     }
 
+
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
+    } else if (switchModel?.includes('ICX8200')) {
+      return 4
     } else {
-      return tableData.length < (currentFW.includes('09010h') ? 8 : 4)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
     }
   }
 
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (switchModel?.includes('ICX8200')) {
+      return 4
+    }
     return switchModel?.includes('ICX7150') ?
-      (currentFW.includes('09010h') ? 4 : 2) :
-      (currentFW.includes('09010h') ? 8 : 4)
+      (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
+      (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
   }
 
   return (
@@ -909,3 +920,4 @@ export function StackForm () {
     </>
   )
 }
+
