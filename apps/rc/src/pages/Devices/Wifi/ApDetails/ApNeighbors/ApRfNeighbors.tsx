@@ -14,14 +14,15 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { defaultPagination }           from './constants'
-import { handleError, useApNeighbors } from './useApNeighbors'
+import { defaultPagination } from './constants'
+import { useApNeighbors }    from './useApNeighbors'
 
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const [ getApRfNeighbors, getApRfNeighborsStates ] = useLazyGetApRfNeighborsQuery()
-  const { doDetect, isDetecting } = useApNeighbors('rf', serialNumber!, socketHandler)
+  // eslint-disable-next-line max-len
+  const { doDetect, isDetecting, handleApiError } = useApNeighbors('rf', serialNumber!, socketHandler)
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
@@ -33,7 +34,7 @@ export default function ApRfNeighbors () {
     try {
       await getApRfNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
-      handleError(error as CatchErrorResponse)
+      handleApiError(error as CatchErrorResponse)
     }
   }
 

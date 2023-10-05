@@ -18,7 +18,7 @@ import { filterByAccess } from '@acx-ui/user'
 import { emtpyRenderer }                  from './ApRfNeighbors'
 import { defaultPagination }              from './constants'
 import { lldpNeighborsFieldLabelMapping } from './contents'
-import { handleError, useApNeighbors }    from './useApNeighbors'
+import { useApNeighbors }                 from './useApNeighbors'
 
 import type { LldpNeighborsDisplayFields } from './contents'
 
@@ -26,7 +26,8 @@ export default function ApLldpNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
-  const { doDetect, isDetecting } = useApNeighbors('lldp', serialNumber!, socketHandler)
+  // eslint-disable-next-line max-len
+  const { doDetect, isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
 
@@ -40,7 +41,7 @@ export default function ApLldpNeighbors () {
     try {
       await getApLldpNeighbors({ params: { serialNumber } }).unwrap()
     } catch (error) {
-      handleError(error as CatchErrorResponse)
+      handleApiError(error as CatchErrorResponse)
     }
   }
 

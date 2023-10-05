@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                               from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -21,12 +20,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   closePokeSocket: () => jest.fn()
 }))
 
-const mockedShowToast = jest.fn()
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  showToast: (config: ToastProps) => mockedShowToast(config)
-}))
-
 const wrapper = (props: { children: JSX.Element }) => <Provider>
   <ApContextProvider {...props} />
 </Provider>
@@ -38,13 +31,12 @@ describe('ApRfNeighbors', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-
     mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
   })
 
   afterEach(() => {
-    mockedInitPokeSocketFn.mockRestore()
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
   })
 
   beforeEach(() => {
@@ -114,7 +106,9 @@ describe('ApRfNeighbors', () => {
     })
 
     // Will not show error when the timeout of the detection is caused by the system instead of user trigger
-    expect(mockedShowToast).not.toHaveBeenCalled()
+    await waitFor(() => {
+      expect(screen.queryByText('The AP is not reachable')).toBeNull()
+    })
 
     // To make the click event execute immediately instead of waiting for a timeout when using the fake timer, we should include the delay: null option
     await userEvent.click(screen.getByRole('button', { name: 'Detect' }), { delay: null })
@@ -123,12 +117,16 @@ describe('ApRfNeighbors', () => {
       jest.advanceTimersByTime(defaultSocketTimeout) // Simulate websocket timeout
     })
 
-    expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-      content: 'The AP is not reachable',
-      type: 'error'
-    }))
+    await waitFor(() => {
+      expect(screen.queryByText('The AP is not reachable')).toBeVisible()
+    })
 
     jest.useRealTimers()
+
+    await userEvent.click(screen.getByRole('img', { name: 'close' }))
+    await waitFor(() => {
+      expect(screen.queryByText('The AP is not reachable')).toBeNull()
+    })
   })
 
   it('should handle error correctly', async () => {
@@ -165,10 +163,13 @@ describe('ApRfNeighbors', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
 
     await waitFor(() => {
-      expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-        content: 'The version of AP firmware is not supported',
-        type: 'error'
-      }))
+      expect(screen.queryByText('The version of AP firmware is not supported')).toBeVisible()
+    })
+
+    // should destroy the previous error toast when the new error occurs
+    await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
+    await waitFor(() => {
+      expect(screen.queryAllByText('The version of AP firmware is not supported').length).toBe(0)
     })
   })
 })
