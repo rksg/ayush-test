@@ -79,7 +79,8 @@ const defaultPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 const defaultArray: Venue[] = []
@@ -96,7 +97,10 @@ export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
