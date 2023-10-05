@@ -314,7 +314,21 @@ function Table <RecordType extends Record<string, any>> ({
     return all
   }, {} as Record<string, TableColumn<RecordType, 'text'>>))
 
-  const filterables = aggregator(columns, 'filterable')
+  const sortFilterableItems = (
+    a: TableColumn<RecordType, 'text'>,
+    b: TableColumn<RecordType, 'text'>): number => {
+    const aType = a.filterComponent ? _.get(a.filterComponent, 'type') : ''
+    const bType = b.filterComponent ? _.get(b.filterComponent, 'type') : ''
+
+    const priorityOrder: ('rangepicker' | 'checkbox')[] = ['rangepicker', 'checkbox']
+
+    const aIndex = priorityOrder.indexOf(aType as 'rangepicker' | 'checkbox')
+    const bIndex = priorityOrder.indexOf(bType as 'rangepicker' | 'checkbox')
+
+    return aIndex - bIndex
+  }
+
+  const filterables = aggregator(columns, 'filterable').sort(sortFilterableItems)
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {

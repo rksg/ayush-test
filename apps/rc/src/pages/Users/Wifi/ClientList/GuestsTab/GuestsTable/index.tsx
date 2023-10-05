@@ -190,7 +190,7 @@ export const GuestsTable = () => {
       fixed: 'left',
       filterable: true,
       filterMultiple: false,
-      filterComponent: { type: 'datepicker' },
+      filterComponent: { type: 'rangepicker' },
       render: (_, row) =>
         <Button
           type='link'

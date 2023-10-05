@@ -8,6 +8,7 @@ type RangePickerWrapperProps = {
   selectionType: DateRange
   isCalendarOpen: boolean
   rangeText: string
+  showTimePicker?: boolean
 }
 
 /* eslint-disable max-len */
@@ -149,8 +150,10 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
           display: none;
         }
       `
-    : `
+    : props.showTimePicker ? `
         width: 322px;
+      ` : `
+        width: 235px;
       `
 }
     padding: 6px 11px 5px;

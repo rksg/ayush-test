@@ -116,6 +116,7 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      showTimePicker={showTimePicker}
     >
       <AntRangePicker
         ref={rangeRef}

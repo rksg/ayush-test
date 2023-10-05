@@ -1,17 +1,18 @@
 import React from 'react'
 
-import moment      from 'moment'
 import { Checkbox, Select }    from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { RangePicker }         from '@acx-ui/components'
 import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
-import { FilterValue }        from 'antd/lib/table/interface'
-import { IntlShape } from 'react-intl'
+import { FilterValue } from 'antd/lib/table/interface'
+import moment          from 'moment'
+import { IntlShape }   from 'react-intl'
 
-import { DateRange } from '@acx-ui/utils'
+import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
+
+import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
@@ -25,6 +26,32 @@ function hasChildrenColumn <RecordType> (
   column: RecordType | RecordWithChildren<RecordType>
 ): column is RecordWithChildren<RecordType> {
   return !!(column as RecordWithChildren<RecordType>).children
+}
+
+interface RangePickerProps {
+  filterValues: Filter,
+  setFilterValues: Function
+}
+
+function DatePickerComp (props: RangePickerProps) {
+  const { filterValues, setFilterValues } = props
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  return <RangePicker
+    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+    onDateApply={(date: DateFilter) => {
+      const period = getDateRangeFilter(date.range, date.startDate, date.endDate)
+      const filters = {
+        ...filterValues,
+        ...(date.range === DateRange.allTime ?
+          { fromTime: undefined, toTime: undefined } :
+          { fromTime: moment(period.startDate), toTime: moment(period.endDate) })
+      }
+      setFilterValues(filters)
+      setDateFilter(date)
+    }}
+    selectionType={range}
+    showAllTime
+  />
 }
 
 export function getFilteredData <RecordType> (
@@ -111,21 +138,9 @@ export function renderFilter <RecordType> (
       }}>{column?.filterComponent?.label}</Checkbox>
   }
 
-  const renderDatepicker = (column: TableColumn<RecordType, 'text'>) => {
-    return <RangePicker
-      selectedRange={{
-        startDate: moment().seconds(0),
-        endDate: moment().seconds(0)
-      }}  
-      onDateApply={() => ({})}
-      selectionType={DateRange.allTime}
-    />
-  }
-
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    datepicker: renderDatepicker(column)
+    rangepicker: <DatePickerComp filterValues={filterValues} setFilterValues={setFilterValues} />
   }
   type Type = keyof typeof filterTypeComp
 
