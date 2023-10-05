@@ -302,19 +302,16 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       show: !!showAllColumns,
       render: (_, { status }) => {
-        if (status === null || status.trim() === '') {
-          return '--'
-        }
         const statusInt = parseInt(status, 10)
-        let statusText
+        if (isNaN(statusInt)) return '--'
+
+        let statusText = '--'
         if (statusInt === 1) {
           statusText = intl.$t({ defaultMessage: 'Authorized' })
         } else if (statusInt === 0) {
           statusText = intl.$t({ defaultMessage: 'Unauthorized' })
         } else if (statusInt === -1) {
           statusText = intl.$t({ defaultMessage: 'N/A' })
-        } else {
-          statusText = '--'
         }
         return statusText
       }
