@@ -189,6 +189,7 @@ export const GuestsTable = () => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       filterable: true,
+      filterKey: 'fromTime',
       filterMultiple: false,
       filterComponent: { type: 'rangepicker' },
       render: (_, row) =>

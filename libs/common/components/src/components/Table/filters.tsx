@@ -33,25 +33,28 @@ interface RangePickerProps {
   setFilterValues: Function
 }
 
-function DatePickerComp (props: RangePickerProps) {
+function RangePickerComp (props: RangePickerProps) {
   const { filterValues, setFilterValues } = props
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  return <RangePicker
-    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-    onDateApply={(date: DateFilter) => {
-      const period = getDateRangeFilter(date.range, date.startDate, date.endDate)
-      const filters = {
-        ...filterValues,
-        ...(date.range === DateRange.allTime ?
-          { fromTime: undefined, toTime: undefined } :
-          { fromTime: moment(period.startDate), toTime: moment(period.endDate) })
-      }
-      setFilterValues(filters)
-      setDateFilter(date)
-    }}
-    selectionType={range}
-    showAllTime
-  />
+  return <UI.FilterRangePicker>
+    <RangePicker
+      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+      onDateApply={(date: DateFilter) => {
+        const period = getDateRangeFilter(date.range, date.startDate, date.endDate)
+        const filters = {
+          ...filterValues,
+          ...(date.range === DateRange.allTime ?
+            { fromTime: undefined, toTime: undefined } :
+            { fromTime: moment(period.startDate).toISOString(),
+              toTime: moment(period.endDate).toISOString() })
+        }
+        setFilterValues(filters)
+        setDateFilter(date)
+      }}
+      selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
+      showAllTime
+    />
+  </UI.FilterRangePicker>
 }
 
 export function getFilteredData <RecordType> (
@@ -125,8 +128,10 @@ export function renderFilter <RecordType> (
   const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
     return <Checkbox
       key={index}
-      defaultChecked={(column?.defaultFilteredValue &&
-        column?.defaultFilteredValue[0] as boolean) || false}
+      checked={(filterValues[column?.filterKey as keyof Filter] === undefined &&
+        (column?.defaultFilteredValue &&
+        column?.defaultFilteredValue[0] as boolean)) ||
+        filterValues[column?.filterKey as keyof Filter]?.[0] === 'true'}
       onChange={(e: CheckboxChangeEvent) => {
         const isChecked = e.target.checked.toString() ||
           (column?.defaultFilteredValue && column?.defaultFilteredValue[0])
@@ -140,7 +145,7 @@ export function renderFilter <RecordType> (
 
   const filterTypeComp = {
     checkbox: renderCheckbox(column),
-    rangepicker: <DatePickerComp filterValues={filterValues} setFilterValues={setFilterValues} />
+    rangepicker: <RangePickerComp filterValues={filterValues} setFilterValues={setFilterValues} />
   }
   type Type = keyof typeof filterTypeComp
 

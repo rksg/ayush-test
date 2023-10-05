@@ -610,3 +610,12 @@ export const disableStickyHeaders = css`
     top: unset;
   }
 `
+
+export const FilterRangePicker = styled.div`
+.ant-picker {
+  border: 1px solid var(--acx-neutrals-50);
+}
+.ant-picker-focused {
+  border-color: var(--acx-neutrals-70) !important;
+}
+`
