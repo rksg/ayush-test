@@ -121,7 +121,7 @@ describe('Update NetworkSegmentation', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Network Segmentation'
+      name: 'Personal Identity Network'
     })).toBeVisible()
   })
 })
