@@ -39,7 +39,7 @@ jest.mock('../NetworkSegmentationForm/SummaryForm', () => ({
   SummaryForm: () => <div data-testid='SummaryForm' />
 }))
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('AddNetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
