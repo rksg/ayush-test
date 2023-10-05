@@ -1,0 +1,117 @@
+import { useState } from 'react'
+
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+
+import {
+  Button,
+  Drawer,
+  Loader,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import {
+  useMspAdminListQuery
+} from '@acx-ui/msp/services'
+import {
+  MspAdministrator
+} from '@acx-ui/msp/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+
+interface SelectRecCustomerDrawerProps {
+  visible: boolean
+  tenantId?: string
+  setVisible: (visible: boolean) => void
+  setSelected: (selected: MspAdministrator[]) => void
+}
+
+export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
+  const { $t } = useIntl()
+
+  const { visible, setVisible, setSelected } = props
+  const [resetField, setResetField] = useState(false)
+  const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
+
+  const queryResults = useMspAdminListQuery({ params: useParams() })
+
+  const onClose = () => {
+    setVisible(false)
+    setSelectedRows([])
+  }
+
+  const resetFields = () => {
+    setResetField(true)
+    onClose()
+  }
+
+  const handleSave = () => {
+    setSelected(selectedRows)
+    resetFields()
+    // setVisible(false)
+  }
+
+  const columns: TableProps<MspAdministrator>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      sorter: true,
+      defaultSortOrder: 'ascend'
+    },
+    {
+      title: $t({ defaultMessage: 'Email' }),
+      dataIndex: 'email',
+      key: 'email',
+      sorter: true,
+      searchable: true
+    }
+  ]
+
+  const content =
+    <Space direction='vertical'>
+      <Loader states={[queryResults
+      ]}>
+        <Table
+          columns={columns}
+          dataSource={queryResults?.data}
+          rowKey='email'
+          rowSelection={{
+            type: 'radio',
+            // selectedRowKeys: selectedKeys,
+            onChange (selectedRowKeys, selRows) {
+              setSelectedRows(selRows)
+            }
+          }}
+        />
+      </Loader>
+    </Space>
+
+  const footer =<div>
+    <Button
+      disabled={selectedRows.length === 0}
+      onClick={() => handleSave()}
+      type='primary'
+    >
+      {$t({ defaultMessage: 'Save' })}
+    </Button>
+
+    <Button onClick={() => {
+      setVisible(false)
+    }}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  </div>
+
+  return (
+    <Drawer
+      title={$t({ defaultMessage: 'Manage Customer' })}
+      visible={visible}
+      onClose={onClose}
+      footer={footer}
+      destroyOnClose={resetField}
+      width={700}
+    >
+      {content}
+    </Drawer>
+  )
+}

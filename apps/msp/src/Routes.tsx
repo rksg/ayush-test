@@ -3,13 +3,13 @@ import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/co
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
 
-import { Dashboard }       from './pages/Dashboard'
-import { DeviceInventory } from './pages/DeviceInventory'
-// import { HspCustomers }     from './pages/HspCustomers'
+import { Dashboard }        from './pages/Dashboard'
+import { DeviceInventory }  from './pages/DeviceInventory'
 import { Integrators }      from './pages/Integrators'
 import Layout               from './pages/Layout'
 import { MspCustomers }     from './pages/MspCustomers'
 import { MspRecCustomers }  from './pages/MspRecCustomers'
+import { AddRecCustomer }   from './pages/MspRecCustomers/AddRecCustomer'
 import { Subscriptions }    from './pages/Subscriptions'
 import { AssignMspLicense } from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }     from './pages/VarCustomers'
@@ -51,12 +51,9 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/dashboard/mspRecCustomers'>
         <Route index element={<MspRecCustomers />} />
-        {/* <Route path='create' element={<ManageCustomer />} />
-        <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} /> */}
+        <Route path='create' element={<AddRecCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId' element={<AddRecCustomer />} />
       </Route>
-      {/* <Route path=':tenantId/v/dashboard/hspCustomers'>
-        <Route index element={<HspCustomers />} />
-      </Route> */}
       <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />
         <Route path='create' element={<ManageIntegrator />} />

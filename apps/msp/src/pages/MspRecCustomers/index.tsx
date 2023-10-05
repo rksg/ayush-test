@@ -691,7 +691,7 @@ export function MspRecCustomers () {
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink> : null,
-            <MspTenantLink to='/dashboard/mspcustomers/create'>
+            <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add REC Customer' })}</Button>
