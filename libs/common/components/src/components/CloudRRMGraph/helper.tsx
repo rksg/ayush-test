@@ -58,30 +58,30 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
               b: (contents) => <b>{contents}</b>
             }}
           />
-          {variables.map(vars => <li><FormattedMessage
+          <li>{variables.map(vars => <FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Channel number (radio {radio}): <b>{channel}</b>'
             values={{
               ..._.pick(vars, ['radio', 'channel']),
               b: (contents) => <b>{contents}</b>
             }}
-          /></li>)}
-          {variables.map(vars => <li><FormattedMessage
+          />)}</li>
+          <li>{variables.map(vars => <FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Bandwidth (radio {radio}): <b>{bandwidth}</b>'
             values={{
               ..._.pick(vars, ['radio', 'bandwidth']),
               b: (contents) => <b>{contents}</b>
             }}
-          /></li>)}
-          {showTxPower && variables.map(vars => <li><FormattedMessage
+          />)}</li>
+          {showTxPower && <li>{variables.map(vars => <FormattedMessage
             key={`${vars.radio}-${vars.txPower}`}
             defaultMessage='Tx Power (radio {radio}): <b>{txPower}</b>'
             values={{
               ..._.pick(vars, ['radio', 'txPower']),
               b: (contents) => <b>{contents}</b>
             }}
-          /></li>)}
+          />)}</li>}
         </ul>
       </TooltipWrapper>
     </RawIntlProvider>
