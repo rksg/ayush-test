@@ -100,14 +100,12 @@ export function RevertDialog (props: RevertDialogProps) {
                 <Radio value={v.name} key={v.name}>{getVersionLabel(intl, v)}</Radio>)}
             </Space>
           </Radio.Group>
-          <UI.Section>
-            <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
-            </UI.Ul>
-          </UI.Section>
+          <UI.Ul>
+            { // eslint-disable-next-line max-len
+              <UI.Li>{$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
+            { // eslint-disable-next-line max-len
+              <UI.Li>{$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
+          </UI.Ul>
         </Form.Item>
       </Form>
     </Modal>

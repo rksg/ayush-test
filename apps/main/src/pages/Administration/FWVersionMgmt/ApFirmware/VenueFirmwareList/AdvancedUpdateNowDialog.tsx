@@ -221,7 +221,7 @@ function ABFSelector (props: ABFSelectorProps) {
         onChange={onSelectModeChange}
         value={selectedVersion}
       >
-        <Space direction={'vertical'}>
+        <Space direction={'vertical'} size={12}>
           <Radio key={defaultVersionId} value={defaultVersionId}>
             {defaultVersionLabel}
           </Radio>
