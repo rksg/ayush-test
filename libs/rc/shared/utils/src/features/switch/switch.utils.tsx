@@ -676,7 +676,11 @@ export const getAdminPassword = (
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  return !(data?.configReady && data?.syncedSwitchConfig)
+  const fwUpdatingStatus
+    = [SwitchStatusEnum.FIRMWARE_UPD_START, SwitchStatusEnum.APPLYING_FIRMWARE]
+  const isFirmwareUpdating = fwUpdatingStatus.includes(data?.deviceStatus as SwitchStatusEnum)
+
+  return !(data?.configReady && data?.syncedSwitchConfig) || isFirmwareUpdating
     ? noDataDisplay
     : (data?.syncedAdminPassword
       ? PasswordCoomponent && <PasswordCoomponent
