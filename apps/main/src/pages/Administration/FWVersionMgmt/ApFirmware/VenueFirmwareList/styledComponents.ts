@@ -20,7 +20,7 @@ export const DateContainer = styled.div`
 `
 
 export const Section = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 32px;
 `
 
 export const PreferencesSection = styled.div`

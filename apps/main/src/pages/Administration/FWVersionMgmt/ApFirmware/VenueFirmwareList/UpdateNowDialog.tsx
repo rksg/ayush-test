@@ -210,12 +210,10 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
             </UI.Section>
             : null
           }
-          <UI.Section>
-            <UI.Ul>
-              <UI.Li>{$t(firmwareNote1)}</UI.Li>
-              <UI.Li>{$t(firmwareNote2)}</UI.Li>
-            </UI.Ul>
-          </UI.Section>
+          <UI.Ul>
+            <UI.Li>{$t(firmwareNote1)}</UI.Li>
+            <UI.Li>{$t(firmwareNote2)}</UI.Li>
+          </UI.Ul>
         </Form.Item>
       </Form>
     </Modal>
