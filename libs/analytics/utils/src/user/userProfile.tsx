@@ -45,7 +45,7 @@ export const setUserProfile = (profile: UserProfile) => {
     || profile.accountId
   if (selectedTenantId === (getUserProfile())?.selectedTenant?.id) return
   const selectedTenant = profile.tenants.find(tenant => tenant.id === selectedTenantId) as Tenant
-  // Do not call this manually except in test env & UserProfileProvider
+  // Do not call this manually except in test env
   user.profile = { ...profile, selectedTenant }
   updatePendo(
     /* istanbul ignore next */
