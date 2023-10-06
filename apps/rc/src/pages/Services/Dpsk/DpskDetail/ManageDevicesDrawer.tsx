@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import moment                            from 'moment'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
@@ -18,7 +19,13 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp, useTableQuery, usePollingTableQuery
+  MacRegistrationFilterRegExp,
+  useTableQuery,
+  usePollingTableQuery,
+  sortProp,
+  defaultSort,
+  dateSort,
+  EXPIRATION_TIME_FORMAT
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -56,18 +63,14 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
 
+  const connectedDevices = devicesData?.filter(d => d.deviceConnectivity === 'CONNECTED') || []
+  const connectedDeviceMacs = connectedDevices.map(device => device.mac)
+
   const clientTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: {
       ...defaultClientPayload,
-      filters: {
-        clientMac: devicesData && devicesData?.filter(device =>
-          device.deviceConnectivity === 'CONNECTED'
-        ).length > 0
-          ? devicesData?.filter(device => device.deviceConnectivity === 'CONNECTED')
-            .map(device => device.mac)
-          : []
-      }
+      filters: { clientMac: connectedDeviceMacs }
     },
     pagination: {
       pageSize: 10000
@@ -116,7 +119,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const getOnlineStatus = (row: DPSKDeviceInfo) => {
     if (isNewConfigFlow) {
       const dateContent = row.lastConnectedTime
-        ? new Date(row.lastConnectedTime).toLocaleString()
+        ? moment(row.lastConnectedTime).format(EXPIRATION_TIME_FORMAT)
         : '-'
       return deviceOnlineList.hasOwnProperty(row.mac)
         ? $t({ defaultMessage: 'Online' })
@@ -139,7 +142,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: true,
+      sorter: { compare: sortProp('mac', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
@@ -154,7 +157,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
-      sorter: true,
+      sorter: { compare: sortProp(isNewConfigFlow ? 'lastConnectedTime' : 'online', dateSort) },
       render: (_, row) => {
         return getOnlineStatus(row)
       }
@@ -163,7 +166,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       key: 'lastConnectedNetwork',
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
-      sorter: true,
+      sorter: { compare: sortProp('lastConnectedNetwork', defaultSort) },
       render: (_, row) => {
         return row.lastConnectedNetwork? <TenantLink
           // eslint-disable-next-line max-len
@@ -274,7 +277,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     dataSource={devicesData?.filter(data => {
       return searchString ? data.mac.toLowerCase().includes(searchString) : true
     })}
-    enableApiFilter={true}
+    enableApiFilter={false}
+    pagination={{ defaultPageSize: 10000, hideOnSinglePage: true }}
     rowKey='mac'
     rowActions={rowActions}
     rowSelection={{ type: 'checkbox' }}

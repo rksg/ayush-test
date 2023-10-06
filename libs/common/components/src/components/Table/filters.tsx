@@ -171,40 +171,47 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
+  return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
+    data-testid='options-selector'
+    key={index}
+    maxTagCount='responsive'
+    mode={column.filterMultiple === false ? undefined : 'multiple'}
+    showSearch={column?.filterSearchable ?? undefined}
+    value={filterValues[key as keyof Filter]}
+    onChange={(value: unknown) => {
+      const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+      const filterValue = Array.isArray(value) ? value : [value]
+      let filters = {} as Filter
 
-  return filterTypeComp[column.filterComponent?.type as Type] ||
-    <UI.FilterSelect
-      data-testid='options-selector'
-      key={index}
-      maxTagCount='responsive'
-      mode={column.filterMultiple === false ? undefined : 'multiple'}
-      value={filterValues[key as keyof Filter]}
-      onChange={(value: unknown) => {
-        const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-        const filterValue = Array.isArray(value) ? value : [value]
-        if (column.filterValueNullable === false &&
+      if (column.filterValueNullable === false &&
         filterValue.filter(v => v != null).length === 0) {
-          setFilterValues({ ...filterValues, [key]: undefined })
-        } else {
-          setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
-        }
-      }}
-      filterOption={filterOption}
-      placeholder={column.title as string}
-      showArrow
-      allowClear
-      style={{ width }}
-    >
-      {options?.map((option, index) =>
-        <Select.Option
-          value={option.key}
-          key={option.key ?? index}
-          data-testid={`option-${option.key}`}
-          title={option.value}
-          children={option.label ?? option.value}
-        />
-      )}
-    </UI.FilterSelect>
+        filters = { ...filterValues, [key]: undefined } as Filter
+      } else {
+        filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
+      }
+
+      column?.coordinatedKeys?.forEach(key => {
+        delete filters[key]
+      })
+
+      setFilterValues(filters)
+    }}
+    filterOption={filterOption}
+    placeholder={column.title as string}
+    showArrow
+    allowClear
+    style={{ width }}
+  >
+    {options?.map((option, index) =>
+      <Select.Option
+        value={option.key}
+        key={option.key ?? index}
+        data-testid={`option-${option.key}`}
+        title={option.value}
+        children={option.label ?? option.value}
+      />
+    )}
+  </UI.FilterSelect>
 }
 
 export function filterOption (

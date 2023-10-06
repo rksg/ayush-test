@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Tabs, cssStr }                           from '@acx-ui/components'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
-import { LocationExtended }                       from '@acx-ui/rc/utils'
+import { ApViewModel, LocationExtended }          from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -36,7 +36,8 @@ function ApEditTabs () {
     editAdvancedContextData,
     setEditAdvancedContextData,
     setPreviousPath,
-    setIsOnlyOneTab
+    setIsOnlyOneTab,
+    setApViewContextData
   } = useContext(ApEditContext)
 
   const apViewModelPayload = {
@@ -44,7 +45,8 @@ function ApEditTabs () {
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
       'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+      'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
     filters: { serialNumber: [params.serialNumber] }
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
@@ -107,6 +109,8 @@ function ApEditTabs () {
     } else {
       unblockRef.current?.()
     }
+
+    setApViewContextData(currentAP ?? {} as ApViewModel)
   }, [editContextData])
 
   useEffect(() => {

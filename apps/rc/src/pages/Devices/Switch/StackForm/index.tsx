@@ -58,7 +58,9 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  SwitchRow
+  SwitchRow,
+  isSameModelFamily,
+  checkVersionAtLeast09010h
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -199,11 +201,11 @@ export function StackForm () {
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
           (item: { id: string; model: undefined }, index: number) => {
-            const key: number = _.get(item, 'unitId') || (index + 1)
+            const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
               formRef?.current?.setFieldValue('active', key)
-              setActiveRow(key.toString())
+              setActiveRow(key)
             }
             setVisibleNotification(true)
             return {
@@ -219,12 +221,7 @@ export function StackForm () {
           })
 
         setTableData(stackMembers)
-        const largestRowKey = stackMembers.reduce(
-          (maxUnitId: number, currentItem: { unitId: number }) => {
-            const unitId = currentItem.unitId
-            return unitId > maxUnitId ? unitId : maxUnitId
-          }, stackMembers.length)
-        setRowKey(largestRowKey)
+        setRowKey(stackMembers.length)
       }
 
       getStackMembersList()
@@ -261,7 +258,7 @@ export function StackForm () {
         setTableData(switchTableData as SwitchTable[])
         setRowKey(stackSwitches?.length ?? 0)
         formRef?.current?.setFieldValue('venueId', venueId)
-        stackSwitches?.map((serialNumber, index) => {
+        stackSwitches?.forEach((serialNumber, index) => {
           formRef?.current?.setFieldValue(`serialNumber${index + 1}`, serialNumber)
         })
       }
@@ -302,7 +299,6 @@ export function StackForm () {
 
   const handleAddRow = () => {
     const newRowKey = rowKey + 1
-    formRef.current?.resetFields([`serialNumber${newRowKey}`])
     setRowKey(newRowKey)
     setTableData([
       ...tableData,
@@ -320,7 +316,7 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -352,7 +348,7 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -423,14 +419,8 @@ export function StackForm () {
     }
   }
 
-  const handleDelete = (index: number, row: SwitchTable) => {
-    const tmpTableData = tableData.filter((item) => item.key !== row.key)
-    const largestKey: number = tmpTableData.reduce((maxKey, currentItem) => {
-      const key: number = parseInt(currentItem.key, 10)
-      return key > maxKey ? key : maxKey
-    }, tmpTableData.length)
-    setRowKey(largestKey)
-    setTableData(tmpTableData)
+  const handleDelete = (row: SwitchTable) => {
+    setTableData(tableData.filter((item) => item.key !== row.key))
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
@@ -441,14 +431,20 @@ export function StackForm () {
 
     const model = getSwitchModel(serialNumber) || ''
 
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
+    if (modelNotSupportStack.indexOf(model) > -1) {
+      return Promise.reject(
+        $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
       )
-      : Promise.resolve()
+    }
+    const allSameModelFamily = tableData
+      .filter(item => item.id && item.id !== serialNumber)
+      .every(item => isSameModelFamily(item.id, serialNumber))
+    if (serialNumber && !allSameModelFamily) {
+      return Promise.reject(
+        $t({ defaultMessage: 'All switch models should belong to the same family.' })
+      )
+    }
+    return Promise.resolve()
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
@@ -493,8 +489,8 @@ export function StackForm () {
       }
     },
     {
-      dataIndex: 'key',
-      key: 'key',
+      dataIndex: 'unitId',
+      key: 'unitId',
       showSorterTooltip: false,
       show: editMode
     },
@@ -518,9 +514,14 @@ export function StackForm () {
           validateFirst
         >{ isStackSwitches
             ? <Select
-              options={standaloneSwitches?.map(s => ({
+              options={standaloneSwitches?.filter(s =>
+                row.id === s.serialNumber ||
+                (!tableData.find(d => d.id === s.serialNumber)
+                && modelNotSupportStack.indexOf(s.model) < 0)
+              ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
-              }))}
+              }))
+              }
               onChange={value => {
                 setTableData(tableData.map(d =>
                   d.key === row.key ? { ...d, id: value } : d
@@ -567,9 +568,14 @@ export function StackForm () {
       show: !editMode,
       render: function (_, row) {
         return (
-          <Form.Item name={'active'}>
+          <Form.Item name={`active${row.key}`} initialValue={activeRow}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
-              <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
+              <Radio
+                data-testid={`active${row.key}`}
+                key={row.key}
+                value={row.key}
+                checked={activeRow === row.key}
+              />
             </Radio.Group>
           </Form.Item>
         )
@@ -578,7 +584,7 @@ export function StackForm () {
     {
       key: 'action',
       dataIndex: 'action',
-      render: (_, row, index) => (
+      render: (_, row) => (
         <Button
           data-testid={`deleteBtn${row.key}`}
           type='link'
@@ -593,7 +599,7 @@ export function StackForm () {
           }
           disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
           hidden={row.disabled}
-          onClick={() => handleDelete(index, row)}
+          onClick={() => handleDelete(row)}
         />
       )
     }
@@ -607,7 +613,7 @@ export function StackForm () {
     return (
       venueId &&
       list &&
-      list.map((item) => ({
+      list.map((item: { vlanId: number }) => ({
         label: item.vlanId,
         value: item.vlanId
       }))
@@ -626,9 +632,13 @@ export function StackForm () {
 
       const switchModel =
         getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
-        (venueFw?.includes('09010h') ? 4 : 2) :
-        (venueFw?.includes('09010h') ? 8 : 4))
+      let miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+        (checkVersionAtLeast09010h(venueFw || '') ? 4 : 2) :
+        (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
+
+      if (switchModel?.includes('ICX8200')) {
+        miniMembers = 4
+      }
 
       setTableData(tableData.splice(0, miniMembers))
     }
@@ -681,19 +691,25 @@ export function StackForm () {
       return true
     }
 
+
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
+    } else if (switchModel?.includes('ICX8200')) {
+      return 4
     } else {
-      return tableData.length < (currentFW.includes('09010h') ? 8 : 4)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
     }
   }
 
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (switchModel?.includes('ICX8200')) {
+      return 4
+    }
     return switchModel?.includes('ICX7150') ?
-      (currentFW.includes('09010h') ? 4 : 2) :
-      (currentFW.includes('09010h') ? 8 : 4)
+      (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
+      (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
   }
 
   return (
@@ -840,7 +856,7 @@ export function StackForm () {
                         }
                       </TypographyText></div>
                   }
-                  <Col span={18} style={{ padding: '0' }}>
+                  <Col span={18} style={{ padding: '0', minWidth: 500 }}>
                     <TableContainer data-testid='dropContainer'>
                       <Table
                         columns={columns}
@@ -904,3 +920,4 @@ export function StackForm () {
     </>
   )
 }
+

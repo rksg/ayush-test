@@ -43,6 +43,7 @@ export enum Features {
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
   I18N_PHASE2_TOGGLE = 'acx-ui-i18n-phase2-toggle',
+  I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
@@ -101,7 +102,11 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
-  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle'
+  IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
+  SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
+  INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
+  RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
+  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

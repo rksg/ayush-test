@@ -49,7 +49,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const updateNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
+const updateNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 describe('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
@@ -121,7 +121,7 @@ describe('Update NetworkSegmentation', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Network Segmentation'
+      name: 'Personal Identity Network'
     })).toBeVisible()
   })
 })

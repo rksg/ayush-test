@@ -4,6 +4,7 @@ type commonEnvironment = {
   SPLIT_IO_KEY: string
   PENDO_API_KEY: string
   STATIC_ASSETS: string
+  SPLIT_PROXY_ENDPOINT: string
 }
 
 /**
@@ -34,7 +35,6 @@ type RAEnvironment = {
   IS_MLISA_SA: string
   MLISA_REGION: string
   MLISA_VERSION: string
-  MLISA_DOCUMENTATION_URL: string
   MLISA_UI_USER_TRACKING: string
   DRUID_ROLLUP_DAYS: string
 }
@@ -49,8 +49,8 @@ export async function initialize () {
   config.value = await fetch(envConfigUrl).then(res => res.json())
 }
 
-export function get (key: keyof EnvironmentConfig) {
-  if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA as string
+export function get (key: keyof EnvironmentConfig): string {
+  if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA || ''
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
 }

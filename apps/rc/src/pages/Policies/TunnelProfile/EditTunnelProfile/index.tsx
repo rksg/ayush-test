@@ -25,15 +25,16 @@ const EditTunnelProfile = () => {
   const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
   useEffect(() => {
-    form.setFieldValue('name', tunnelProfileData?.name)
-    form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
-    form.setFieldValue('mtuType', tunnelProfileData?.mtuType)
-    form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
-
     const ageTime = tunnelProfileData?.ageTimeMinutes || 20
     const result = ageTimeUnitConversion(ageTime)
-    form.setFieldValue('ageTimeMinutes', result?.value)
-    form.setFieldValue('ageTimeUnit', result?.unit)
+    form.setFieldsValue({
+      name: tunnelProfileData?.name,
+      mtuSize: tunnelProfileData?.mtuSize,
+      mtuType: tunnelProfileData?.mtuType,
+      forceFragmentation: tunnelProfileData?.forceFragmentation,
+      ageTimeMinutes: result?.value,
+      ageTimeUnit: result?.unit
+    })
   }, [form, tunnelProfileData])
 
   const handelUpdate = (data: TunnelProfileFormType) =>

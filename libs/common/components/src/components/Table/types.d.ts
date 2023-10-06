@@ -65,6 +65,17 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterValueNullable?: boolean
   /**
+   * Set the filter to be searchable
+   * @default undefined
+   */
+  filterSearchable?: boolean
+  /**
+   * Set the key for Coordinated filters that have a hierarchical dependency
+   * the relevant filter will be reset by key when changing the value
+   * @default undefined
+   */
+  coordinatedKeys?: string[]
+  /**
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */

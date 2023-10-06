@@ -68,7 +68,7 @@ export function CliStepSummary () {
       </Col>
       <Col span={13}>
         <Typography.Text style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-          {$t({ defaultMessage: 'CLI Confugurations' })}
+          {$t({ defaultMessage: 'CLI Configurations' })}
         </Typography.Text>
         <UI.CodeMirrorContainer>
           <CodeMirrorWidget
