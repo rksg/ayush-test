@@ -18,6 +18,6 @@ export interface TunnelProfileViewData {
   mtuSize: number
   forceFragmentation: boolean
   ageTimeMinutes: number
-  networkSegmentationIds: string[]
+  personalIdentityNetworkIds: string[]
   networkIds: string[]
 }
