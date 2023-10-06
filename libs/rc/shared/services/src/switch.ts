@@ -479,7 +479,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {

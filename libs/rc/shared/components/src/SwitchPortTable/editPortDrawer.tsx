@@ -208,7 +208,7 @@ export function EditPortDrawer ({
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
-  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading }
+  const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: { switchIds: switches } })
 
   const getVlans = async () => {
@@ -264,7 +264,7 @@ export function EditPortDrawer ({
       switchVlan: vlanIds?.map(v => {
         const nameList = vlanList
           ?.filter(vlan => !!vlan.vlanName && vlan.vlanId === v)
-          ?.map(v => v.vlanName)
+          ?.map(vlan => vlan.vlanName)
 
         const isAllHaveName = nameList?.length === switches.length
         const isSameName = _.uniq(nameList)?.length === 1
@@ -336,13 +336,13 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (!isDefaultVlanLoading && !isSwitchDetailLoading) {
+    if (!isSwitchDetailLoading && switchesDefaultVlan) {
       resetFields()
       setData()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPorts, isSwitchDetailLoading, isDefaultVlanLoading, visible])
+  }, [selectedPorts, isSwitchDetailLoading, switchesDefaultVlan, visible])
 
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
     vlansByVenue: Vlan[]) => {
