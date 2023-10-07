@@ -93,7 +93,7 @@ export function VenueServicesTab () {
         {
           isEdgeEnabled && isEdgeReady && hasNsg &&
           <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Network Segmentation' })}
+            tab={$t({ defaultMessage: 'Personal Identity Network' })}
             key={ServiceType.NETWORK_SEGMENTATION}
           >
             <NetworkSegmentation />

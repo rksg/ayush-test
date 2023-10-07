@@ -9,7 +9,10 @@ import {
   fakeIncidentSwitchMemory,
   fakeIncidentPoePd,
   fakeIncidentTtc,
-  fakeIncidentChannelDist
+  fakeIncidentChannelDist,
+  fakeIncidentNetTime,
+  fakeIncidentNetSzNetLatency,
+  fakeIncidentLoadSzCpuLoad
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
@@ -27,12 +30,14 @@ import { ChannelDist }             from './ChannelDist'
 import { CovClientrssiLow }        from './CovClientrssiLow'
 import { DhcpFailure }             from './DhcpFailure'
 import { EapFailure }              from './EapFailure'
+import { LoadSzCpuLoad }           from './LoadSzCpuLoad'
+import { NetSzNetLatency }         from './NetSzNetLatency'
+import { NetTime }                 from './NetTime'
 import { RadiusFailure }           from './RadiusFailure'
 import { SwitchMemoryHigh }        from './SwitchMemoryHigh'
 import { SwitchPoePd }             from './SwitchPoePd'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
-
 
 jest.mock('../Insights', () => ({
   Insights: () => <div data-testid='insights' />
@@ -51,6 +56,9 @@ jest.mock('../Charts/PoeLowTable', () => ({
 }))
 jest.mock('../Charts/PoePdTable', () => ({
   PoePdTable: () => <div data-testid='poePdTable' />
+}))
+jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
+  ImpactedSwitchVLANsTable: () => <div data-testid='ImpactedSwitchVLANsTable' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
@@ -178,6 +186,27 @@ describe('Test', () => {
         fakeIncident: { ...fakeIncidentChannelDist, code: 'p-channeldist-suboptimal-plan-24g' }, //2.4g
         hasNetworkImpact: false,
         hasTimeSeries: true,
+        charts: []
+      },
+      {
+        component: NetTime,
+        fakeIncident: fakeIncidentNetTime,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: NetSzNetLatency,
+        fakeIncident: fakeIncidentNetSzNetLatency,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: LoadSzCpuLoad,
+        fakeIncident: fakeIncidentLoadSzCpuLoad,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
         charts: []
       }
     ].forEach((test) => {

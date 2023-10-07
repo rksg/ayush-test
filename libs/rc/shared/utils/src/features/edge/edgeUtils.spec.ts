@@ -1,7 +1,7 @@
-import { EdgeServiceStatusEnum } from '../../models/EdgeEnum'
+import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { requireAttentionAlarmSummary, poorAlarmSummary } from './__tests__/fixtures'
-import { getEdgeServiceHealth }                           from './edgeUtils'
+import { requireAttentionAlarmSummary, poorAlarmSummary }                  from './__tests__/fixtures'
+import { allowRebootForStatus, allowResetForStatus, getEdgeServiceHealth } from './edgeUtils'
 
 describe('Edge utils', () => {
 
@@ -23,5 +23,19 @@ describe('Edge utils', () => {
   it('should get unknown service health', () => {
     const serviceHealth = getEdgeServiceHealth(undefined)
     expect(serviceHealth).toBe(EdgeServiceStatusEnum.UNKNOWN)
+  })
+
+  it('reboot & reset should be allowed only for a set of specific statuses', () => {
+    Object.values(EdgeStatusEnum).forEach(status => {
+      expect(allowRebootForStatus(status)).toBe(status === EdgeStatusEnum.OPERATIONAL ||
+        status === EdgeStatusEnum.APPLYING_CONFIGURATION ||
+        status === EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED ||
+        status === EdgeStatusEnum.FIRMWARE_UPDATE_FAILED)
+
+      expect(allowResetForStatus(status)).toBe(status === EdgeStatusEnum.OPERATIONAL ||
+        status === EdgeStatusEnum.APPLYING_CONFIGURATION ||
+        status === EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED ||
+        status === EdgeStatusEnum.FIRMWARE_UPDATE_FAILED)
+    })
   })
 })

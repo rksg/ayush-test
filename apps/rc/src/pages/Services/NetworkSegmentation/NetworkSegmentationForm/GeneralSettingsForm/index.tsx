@@ -58,20 +58,21 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
-    form.setFieldValue('venueName', venueItem?.label)
-    form.setFieldValue('edgeId', null)
-    form.setFieldValue('edgeId', null)
-    form.setFieldValue('edgeName', null)
-    form.setFieldValue('dhcpId', null)
-    form.setFieldValue('dhcpName', null)
-    form.setFieldValue('poolId', null)
-    form.setFieldValue('poolName', null)
+    form.setFieldsValue({
+      venueName: venueItem?.label,
+      edgeId: undefined,
+      edgeName: undefined,
+      dhcpId: undefined,
+      dhcpName: undefined,
+      poolId: undefined,
+      poolName: undefined
+    })
   }
 
   const warningMsg = <FormattedMessage
     defaultMessage={
       // eslint-disable-next-line max-len
-      'Please make sure you’ve done the following preparations before creating a Network Segmentation:' +
+      'Please make sure you’ve done the following preparations before creating a Personal Identity Network:' +
       '<br></br><br></br>' +
       // eslint-disable-next-line max-len
       '<icon></icon>Already enabled the <sub5b>Property Management</sub5b> service for the venue where you want to apply' +

@@ -37,6 +37,7 @@ describe('Chart', () => {
         selected={null}
         onClick={handleClick}
         legend={legend}
+        setLegend={jest.fn()}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -49,6 +50,7 @@ describe('Chart', () => {
         selected={null}
         onClick={handleClick}
         legend={legend}
+        setLegend={jest.fn()}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -70,6 +72,7 @@ describe('Chart', () => {
         selected={selected}
         onClick={handleClick}
         legend={legend}
+        setLegend={jest.fn()}
       />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -96,6 +99,7 @@ describe('Chart', () => {
           selected={null}
           onClick={handleClick}
           legend={legend}
+          setLegend={jest.fn()}
         />
       </KPIFilterContext.Provider>
     </ConfigChangeContext.Provider>, { wrapper: Provider, route: {} })

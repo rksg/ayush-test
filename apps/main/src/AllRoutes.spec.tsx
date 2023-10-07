@@ -18,7 +18,8 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} })
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -37,7 +38,7 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
-jest.mock('./pages/Dashboardv2', () => () => {
+jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('./routes/AnalyticsRoutes', () => () => {
