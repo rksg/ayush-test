@@ -20,7 +20,7 @@ export interface ChangeSlotProps {
 
 const ChangeSlot = (props: ChangeSlotProps) => {
   const { $t } = useIntl()
-  const { visible, onSubmit, onCancel, days, times } = props
+  const { days, times } = props
   const { Option } = Select
   const [valueDays, setValueDays] = useState<string[]>([])
   const [disabledDays, setDisabledDays] = useState(false)

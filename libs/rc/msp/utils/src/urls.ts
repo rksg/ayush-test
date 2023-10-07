@@ -303,7 +303,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getRecommandFirmwareUpgrade: {
     method: 'get',
-    url: '/wifi/upgrade/default-abf-ap-firmware?type=RECOMMENDED',
+    url: '/apFirmwares?status=default',
     newApi: true
   },
   mspEcFirmwareUpgradeSchedules: {

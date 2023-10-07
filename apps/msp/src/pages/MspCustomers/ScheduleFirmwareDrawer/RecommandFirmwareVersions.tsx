@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -7,24 +9,30 @@ import {
 import { useGetRecommandFirmwareUpgradeQuery } from '@acx-ui/msp/services'
 import { useParams }                           from '@acx-ui/react-router-dom'
 
-interface RecommandFirmwareVersionsProps {
-  tenantIds?: string[]
-}
-
-export const RecommandFirmwareVersions = (props: RecommandFirmwareVersionsProps) => {
+export const RecommandFirmwareVersions = () => {
   const { $t } = useIntl()
 
-  const { tenantIds } = props
+  const [firmwareVersionsData, setRecommandFirmware] = useState([] as string[])
   const params = useParams()
 
   const queryResults = useGetRecommandFirmwareUpgradeQuery({ params: params })
 
+  useEffect(() => {
+    if (queryResults?.data) {
+      const firmwareVersions =
+        queryResults.data.defaultApBranchFamilyApFirmwares.map(item => item.defaultApFirmware)
+
+      setRecommandFirmware(firmwareVersions)
+    }
+  }, [queryResults?.data])
+
   const contentFirmwareVersions =
     <Space size={18} direction='vertical'>
       <Subtitle level={4}>
-        {$t({
-          defaultMessage: 'Firmware Version: 6.2.0.103.17.10'
-        })}
+        {
+          $t({ defaultMessage: 'Firmware Version: {versions}' },
+            { versions: firmwareVersionsData.join(', ') })
+        }
       </Subtitle>
 
       <h4>{$t({

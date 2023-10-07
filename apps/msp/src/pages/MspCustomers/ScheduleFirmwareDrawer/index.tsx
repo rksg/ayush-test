@@ -27,18 +27,18 @@ interface ScheduleFirmwareDrawerProps {
 
 interface AutoSchedule {
   days: string[],
-  times: string[]
+  timeSlots: string[]
 }
 
 interface ManualSchedule {
   date: string,
-  time: string
+  timeSlot: string
 }
 
 interface ScheduleData {
   mspEcList: string[],
-  autoSchedule: AutoSchedule,
-  manualSchedule: ManualSchedule
+  autoSchedule?: AutoSchedule,
+  manualSchedule?: ManualSchedule
 }
 
 interface ScheduleMultiEcFirmware {
@@ -58,12 +58,15 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [scheduleUpdatePage, setScheduleUpdatePage] = useState(false)
   const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
-  const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
-  const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
+  // const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
+  // const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
   const [onSlotChange, setOnSlotChange] = useState(false)
   const params = useParams()
   const [form] = useForm()
   const { Option } = Select
+
+  const valueDays = ['Saturday']
+  const valueTimes = ['00:00 - 02:00']
 
   const onClose = () => {
     setVisible(false)
@@ -104,14 +107,24 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   }
 
   const handleScheduleUpdate = () => {
-    let manual: ManualSchedule = { date: '', time: '' }
-    let auto: AutoSchedule = { days: [], times: [] }
+    // case 1
+    let manualSchedule
+    let autoSchedule
+    manualSchedule = {
+      date: '2023-09-30',
+      timeSlot: '00:00-02:00'
+    }
+    // autoSchedule = {
+    //   days: ['Sunday','Saturday'],
+    //   timeSlots: ['00:00-02:00','02:00-04:00','04:00-06:00']
+    // }
+    // case 2
     const payload: ScheduleMultiEcFirmware = {
       operation: 'AP_FIRMWARE_UPGRADE',
       data: {
         mspEcList: tenantIds,
-        manualSchedule: manual,
-        autoSchedule: auto
+        manualSchedule: manualSchedule,
+        autoSchedule: autoSchedule
       }
     }
 
@@ -123,54 +136,54 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
     setVisible(false)
   }
 
-  const contentScheduleFirmwareUpdate =
-  <>
-    {!onSlotChange && <Space size={18} direction='vertical'>
-      <h4>{$t({
-        defaultMessage:
+  const ScheduleFirmware = () => {
+    return (
+      <Space size={18} direction='vertical'>
+        <h4>{$t({
+          defaultMessage:
         `Any changes done to the Saved Schedule or a Manual option will overwrite previously 
         scheduled configurations in Preferences.`
-      })}</h4>
-      <Form
-        form={form}
-        name={'preferencesModalForm'}
-      >
-        <Form.Item
-          initialValue={ScheduleMode.Automatically}
+        })}</h4>
+        <Form
+          form={form}
+          name={'preferencesModalForm'}
         >
-          <Radio.Group
-            onChange={onScheduleModeChange}
-            value={scheduleMode}>
-            <Space direction={'vertical'}>
-              <Radio value={ScheduleMode.Automatically}>
-                {$t({ defaultMessage: 'Use saved schedule' })}
-                <UI.GreyTextSection>
-                  <div>{$t({
-                    defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
-                  <div>{$t({
-                    defaultMessage: '- Applies to all newly added venues automatically' })}</div>
-                </UI.GreyTextSection>
-                <UI.PreferencesSection>
-                  <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>
-                  <div>{valueDays.join(', ')}</div>
-                  <div style={{ paddingBottom: 8 }}>
-                    {$t({ defaultMessage: 'at:' })} {valueTimes.join(', ')}</div>
-                </UI.PreferencesSection>
-                <UI.ChangeButton
-                  type='link'
-                  disabled={scheduleMode === ScheduleMode.Manually}
-                  onClick={showSlotChange}
-                  block>
-                  {$t({ defaultMessage: 'Change' })}
-                </UI.ChangeButton>
-              </Radio>
-              <Radio value={ScheduleMode.Manually}>
-                {$t({ defaultMessage: 'Schedule updates manually' })}
-                <UI.GreyTextSection>
-                  <div>{$t({ defaultMessage:
+          <Form.Item
+            initialValue={ScheduleMode.Automatically}
+          >
+            <Radio.Group
+              onChange={onScheduleModeChange}
+              value={scheduleMode}>
+              <Space direction={'vertical'}>
+                <Radio value={ScheduleMode.Automatically}>
+                  {$t({ defaultMessage: 'Use saved schedule' })}
+                  <UI.GreyTextSection>
+                    <div>{$t({
+                      defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
+                    <div>{$t({
+                      defaultMessage: '- Applies to all newly added venues automatically' })}</div>
+                  </UI.GreyTextSection>
+                  <UI.PreferencesSection>
+                    <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>
+                    <div>{valueDays.join(', ')}</div>
+                    <div style={{ paddingBottom: 8 }}>
+                      {$t({ defaultMessage: 'at:' })} {valueTimes.join(', ')}</div>
+                  </UI.PreferencesSection>
+                  <UI.ChangeButton
+                    type='link'
+                    disabled={scheduleMode === ScheduleMode.Manually}
+                    onClick={showSlotChange}
+                    block>
+                    {$t({ defaultMessage: 'Change' })}
+                  </UI.ChangeButton>
+                </Radio>
+                <Radio value={ScheduleMode.Manually}>
+                  {$t({ defaultMessage: 'Schedule updates manually' })}
+                  <UI.GreyTextSection>
+                    <div>{$t({ defaultMessage:
                   '- Applies only to selected MSP Customers and their tennants.' })}</div>
-                </UI.GreyTextSection>
-                {scheduleMode === ScheduleMode.Manually &&
+                  </UI.GreyTextSection>
+                  {scheduleMode === ScheduleMode.Manually &&
                 <div style={{ marginTop: 10 }}>
                   <label>{$t({ defaultMessage: 'Enter Specific Date' })}</label>
                   <DatePicker
@@ -192,33 +205,47 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                     }
                   </Select>
                 </div>}
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
-      </Form>
-    </Space>}
-    {onSlotChange && <ChangeSlot
-      // visible={modelVisible}
-      // onCancel={handleModalCancel}
-      // onSubmit={handleModalSubmit}
-      days={valueDays as string[]}
-      times={valueTimes as string[]}
-    />}
-  </>
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        </Form>
+      </Space>
+    )
+  }
+
+  const contentScheduleFirmwareUpdate =
+    onSlotChange ?
+      <ChangeSlot
+        // visible={modelVisible}
+        // onCancel={handleModalCancel}
+        // onSubmit={handleModalSubmit}
+        days={valueDays as string[]}
+        times={valueTimes as string[]}
+      /> : <ScheduleFirmware/>
+
+  const footerSlotChange =<div>
+    <Button
+      onClick={() => setOnSlotChange(false)}
+      type='primary'>
+      {$t({ defaultMessage: 'Save' })}
+    </Button>
+
+    <Button onClick={() => { setOnSlotChange(false)}}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  </div>
 
   const footer =<div>
     {scheduleUpdatePage
       ? <Button
         onClick={() => handleScheduleUpdate()}
-        type='primary'
-      >
+        type='primary'>
         {$t({ defaultMessage: 'Schedule Update' })}
       </Button>
       : <Button
         onClick={() => handleNextClick()}
-        type='primary'
-      >
+        type='primary'>
         {$t({ defaultMessage: 'Next' })}
       </Button>}
 
@@ -234,7 +261,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
       title={$t({ defaultMessage: 'Schedule Firmware Update' })}
       visible={visible}
       onClose={onClose}
-      footer={footer}
+      footer={onSlotChange ? footerSlotChange : footer}
       destroyOnClose={resetField}
       width={452}
     >
