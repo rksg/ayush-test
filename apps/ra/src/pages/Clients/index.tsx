@@ -25,7 +25,8 @@ const useTabs = () : Tab[] => {
   const clientsTab = {
     key: AIClientsTabEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List' }),
-    component: <ClientsList/>
+    component: <ClientsList/>,
+    headerExtra: [<TimeRangeDropDown/>]
   }
   const reportsTab = {
     key: AIClientsTabEnum.REPORTS,
@@ -34,7 +35,7 @@ const useTabs = () : Tab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    headerExtra: useHeaderExtra({ excludeNetworkFilter: false })
   }
   return [clientsTab, reportsTab]
 }
@@ -64,7 +65,7 @@ export function AIClients ({ tab }:{ tab?: AIClientsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={[<TimeRangeDropDown/>]}
+      extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
   </TimeRangeDropDownProvider>

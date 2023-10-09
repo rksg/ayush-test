@@ -2,7 +2,9 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { NetworkFilter }              from '@acx-ui/analytics/components'
+import { SANetworkFilter  }           from '@acx-ui/analytics/components'
 import { RangePicker }                from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
 import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }              from '@acx-ui/utils'
 
@@ -29,16 +31,18 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
     />
   ]
   showFilter && component.unshift(
-    <NetworkFilter
-      key={getShowWithoutRbacCheckKey('reports-network-filter')}
-      shouldQuerySwitch={shouldQuerySwitch}
-      showRadioBand={showRadioBand}
-      multiple={true}
-      filterMode={mode}
-      filterFor={'reports'}
-      isRadioBandDisabled={isRadioBandDisabled}
-      radioBandDisabledReason={radioBandDisabledReason}
-    />
+    get('IS_MLISA_SA')
+      ? <SANetworkFilter />
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('reports-network-filter')}
+        shouldQuerySwitch={shouldQuerySwitch}
+        showRadioBand={showRadioBand}
+        multiple={true}
+        filterMode={mode}
+        filterFor={'reports'}
+        isRadioBandDisabled={isRadioBandDisabled}
+        radioBandDisabledReason={radioBandDisabledReason}
+      />
   )
 
   return component

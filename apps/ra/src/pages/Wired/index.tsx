@@ -36,7 +36,7 @@ const useTabs = () : SwitchTab[] => {
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    headerExtra: useHeaderExtra({ excludeNetworkFilter: false, shouldQuerySwitch: true })
   }
   return [switchListTab, wiredReportTab]
 }

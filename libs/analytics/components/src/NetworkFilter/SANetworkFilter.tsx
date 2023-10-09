@@ -11,7 +11,7 @@ import { useNetworkHierarchyQuery } from './services'
 type SANetworkFilterProps = {
   shouldQuerySwitch? : boolean
   overrideFilters? : AnalyticsFilter | {}
- }
+}
 
 export const SANetworkFilter = ({
   shouldQuerySwitch = true,
