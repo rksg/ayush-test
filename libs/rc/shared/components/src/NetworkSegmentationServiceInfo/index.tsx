@@ -90,7 +90,7 @@ export const NetworkSegmentationServiceInfo = styled((
   const tunnelTooltipMsg = $t(
     {
       defaultMessage: `{tunnelNumber} tunnels using {tunnelName} tunnel
-    profile under this Network Segmentation.`
+    profile under this Personal Identity Network.`
     },
     {
       tunnelNumber: nsgViewData?.tunnelNumber || 0,
