@@ -388,3 +388,10 @@ export interface MspAggregations {
   aggregation: boolean,
   ecExclusionEnabled: boolean
 }
+
+export interface MspEcAlarmList {
+  mspEcAlarmCountList: {
+    tenantId?: string;
+    alarmCount?: number;
+  }[]
+}
