@@ -85,7 +85,7 @@ const createNsgPath = '/:tenantId/t/' + getServiceRoutePath({
   type: ServiceType.NETWORK_SEGMENTATION,
   oper: ServiceOperation.EDIT
 })
-const editNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
+const editNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 describe('SmartEdgeForm', () => {
   let params: { tenantId: string, serviceId: string }

@@ -144,6 +144,8 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const addMenu = <Menu
     expandIcon={<UI.MenuExpandArrow />}
@@ -165,10 +167,10 @@ function DashboardPageHeader () {
       }, {
         key: 'add-switch',
         label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
-      }, {
+      }, ...(isEdgeEnabled && isEdgeReady) ? [{
         key: 'add-edge',
         label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
-      }]
+      }] : []]
     }]}
   />
 

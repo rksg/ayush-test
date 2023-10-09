@@ -585,16 +585,6 @@ describe('test getWlanSecurity func', () => {
     expect(actual).toBe(WlanSecurityEnum.WPA3)
   })
 
-  it('should return WlanSecurityEnum.WPA3 when wlanSecurity is WPA3', function () {
-    const mockWlanData = {
-      name: 'test',
-      wlanSecurity: WlanSecurityEnum.WPA3
-    } as NetworkSaveData
-
-    const actual = getWlanSecurity(mockWlanData)
-    expect(actual).toBe(WlanSecurityEnum.WPA3)
-  })
-
   it('should return undefined when both wlanSecurity and wlan.wlanSecurity are undefined', function () {
     const mockWlanData = {
       name: 'test',
