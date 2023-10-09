@@ -101,8 +101,7 @@ export const sampleForSortingTest: Type.CloudRRMGraph = {
     { apMac: '00:00:00:00:00:03', apName: 'name3', channelWidth: [160], channel: [40], txPower: ['_10DB'] },
     { apMac: '00:00:00:00:00:08', apName: 'name8', channelWidth: [20], channel: [36], txPower: ['_MIN'] },
     { apMac: '00:00:00:00:00:0A', apName: 'extra-node', channelWidth: [20], channel: [36], txPower: ['_FULL'] }
-  ],
-  interferingLinks: []
+  ]
 }
 
 export const sampleForPairingTest: Type.CloudRRMGraph = {

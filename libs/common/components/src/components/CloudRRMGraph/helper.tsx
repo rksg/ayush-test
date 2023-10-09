@@ -250,13 +250,16 @@ export function trimPairedGraphs (
   const [ base, sub ] = graphs
   const left = trimGraph(base, maxNumNode)
   const baseNodeList = left.nodes.map(node => node.id)
-  const right = baseNodeList.map(id => sub.nodes.find(n => n.id === id)).filter(Boolean)
+  const selected = baseNodeList.map(id => sub.nodes.find(n => n.id === id)).filter(Boolean)
   const { highlight = [], normal = [] } = _.groupBy(
-    sub.nodes.filter(node => !baseNodeList.includes(node.id)),
-    node => node.category === 'normal' ? 'normal' : 'highlight')
-  const remaining = maxNumNode - right.length
+    sub.nodes,
+    node => baseNodeList.includes(node.id)
+      ? 'selected'
+      : (node.category === 'normal' ? 'normal' : 'highlight')
+  )
+  const remaining = maxNumNode - selected.length
   const subNodeList = [
-    ...right,
+    ...selected,
     ...((remaining > 0) ? [...highlight, ...normal].slice(0, remaining) : [])
   ] as Type.ProcessedCloudRRMNode[]
   const links = trimLinks(subNodeList, sub.links)
