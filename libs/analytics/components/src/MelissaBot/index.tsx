@@ -1,10 +1,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Divider, Input } from 'antd'
-import { defer, get }     from 'lodash'
-import moment             from 'moment-timezone'
-import { useIntl }        from 'react-intl'
+import { Divider, Input, Spin } from 'antd'
+import { defer, get }           from 'lodash'
+import moment                   from 'moment-timezone'
+import { useIntl }              from 'react-intl'
+import { useLocation }          from 'react-router-dom'
 
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import { Drawer }                             from '@acx-ui/components'
@@ -21,9 +22,14 @@ const scrollToBottom=()=>{
 
 export function MelissaBot (){
   const { $t } = useIntl()
+  const { pathname } = useLocation()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputRef = useRef<any>(null)
+  const initCount = useRef(0)
   const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [responseCount, setResponseCount] = useState(0)
+  const [showFloatingButton, setShowFloatingButton] = useState(false)
   const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [messages,setMessages] = useState<string[]>([])
@@ -50,6 +56,8 @@ export function MelissaBot (){
         body: JSON.stringify(body)
       }).then(async (res)=>{
       const json=await res.json()
+      setIsLoading(false)
+      setResponseCount(responseCount+1)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
       fulfillmentMessages.forEach(message=>{
@@ -67,22 +75,32 @@ export function MelissaBot (){
       })
     })
   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(()=>{
-    setInputValue('')
-    setIsInputDisabled(true)
-    askMelissa({
-      queryInput: {
-        event: {
-          languageCode: 'en',
-          name: 'Welcome'
+    if(pathname.includes('/dashboard')){
+      setShowFloatingButton(false)
+    }else if(responseCount){
+      setShowFloatingButton(true)
+    }
+  },[pathname,responseCount])
+  useEffect(()=>{
+    if(initCount.current === 0){
+      initCount.current +=1
+      setInputValue('')
+      setIsInputDisabled(true)
+      askMelissa({
+        queryInput: {
+          event: {
+            languageCode: 'en',
+            name: 'Welcome'
+          }
         }
-      }
-    })
+      })
+    }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   return (
-    <><img
+    <>{showFloatingButton && <img
       src={icon}
       alt={imageAlt}
       onClick={showDrawer}
@@ -92,7 +110,7 @@ export function MelissaBot (){
         bottom: '10px',
         zIndex: 999999,
         cursor: 'pointer'
-      }} />
+      }} />}
     <Drawer
       title={title}
       icon={<img src={icon} alt={imageAlt} style={{ height: '40px' }}/>}
@@ -109,10 +127,13 @@ export function MelissaBot (){
         onKeyDown={(e)=>{
           if(e.key === 'Enter'){
             messages.push(inputValue)
+            setIsLoading(true)
             setIsInputDisabled(true)
             setInputValue('')
             setMessages(messages)
-            scrollToBottom()
+            defer(()=>{
+              scrollToBottom()
+            })
             askMelissa({
               queryInput: {
                 text: {
@@ -126,6 +147,7 @@ export function MelissaBot (){
     >
       {messages.map((message) => <><p style={{ whiteSpace: 'pre-line' }}>
         {message}</p><Divider /></>)}
+      {isLoading && <Spin/>}
     </Drawer></>
   )
 }
