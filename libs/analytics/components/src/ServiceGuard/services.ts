@@ -442,6 +442,20 @@ export function specToDto (
   }
 }
 
+export function localToDb (
+  spec?: Omit<ServiceGuardSpec, 'apsCount' | 'userId' | 'tests' | 'configs'> & {
+    configs: Omit<ServiceGuardConfig, 'id' | 'specId' | 'updatedAt' | 'createdAt'>[]
+}) {
+  if (!spec) return undefined
+  const schedule = { ...(spec.schedule! || initialValues.schedule) }
+  const { frequency } = schedule
+  frequency && (schedule.timezone = moment.tz.guess())
+  return {
+    ..._.omit(spec, ['schedule']),
+    schedule
+  }
+}
+
 type CreateUpdateCloneMutationResult = MutationResult<{
   spec: Pick<ServiceGuardSpec, 'id'>
 }>
@@ -553,6 +567,9 @@ export function useServiceGuardSpecMutation () {
   const spec = useServiceGuardSpec()
   const editMode = !spec.isUninitialized
   const create = useCreateServiceGuardSpecMutation()
+  if (editMode) {
+    localToDb(spec.data)
+  }
   const update = useUpdateServiceGuardSpecMutation()
 
   const [submit, response] = editMode ? update : create
