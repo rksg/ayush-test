@@ -143,9 +143,7 @@ describe('ScheduleFirmwareDrawer', () => {
     expect(await screen.findByText('Schedule updates manually')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Change' }))
     expect(await screen.findByText('Scheduled Days')).toBeVisible()
-    expect(await screen.findByText('Saturday')).toBeVisible()
     expect(await screen.findByText('Scheduled Time Slots')).toBeVisible()
-    expect(await screen.findByText('00:00 - 02:00')).toBeVisible()
 
     const inputs = screen.getAllByRole('combobox')
     expect(inputs).toHaveLength(2)
@@ -159,10 +157,15 @@ describe('ScheduleFirmwareDrawer', () => {
       expect(screen.getAllByText('Sunday')).toHaveLength(3)
     })
 
-    // Assert no more options are able to be selected after max 2 selected
     await userEvent.click(screen.getAllByText('Monday')[1])
     await waitFor(() => {
-      expect(screen.getAllByText('Monday')).toHaveLength(2)
+      expect(screen.getAllByText('Monday')).toHaveLength(3)
+    })
+
+    // Assert no more options are able to be selected after max 2 selected
+    await userEvent.click(screen.getAllByText('Tuesday')[1])
+    await waitFor(() => {
+      expect(screen.getAllByText('Tuesday')).toHaveLength(2)
     })
   })
   it('should save correctly', async () => {
@@ -181,14 +184,37 @@ describe('ScheduleFirmwareDrawer', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(await screen.findByText('Schedule updates manually')).toBeVisible()
-    // const radios = await screen.findAllByRole('radio')
-    // await userEvent.click(radios[1])
-    // expect(await screen.findByText('Enter Specific Date')).toBeVisible()
-    // expect(await screen.findByText('Scheduled Time Slots')).toBeVisible()
-    // await userEvent.click(screen.getByRole('combobox'))
-    // await userEvent.click(screen.getByRole('combobox'))
-    // fireEvent.mouseDown(await screen.findByText('12 AM - 02 AM'))
+    await userEvent.click(screen.getByRole('button', { name: 'Change' }))
+    expect(screen.getAllByRole('combobox')).toHaveLength(2)
+    await userEvent.click(screen.getAllByRole('combobox')[0])
+    await userEvent.click(screen.getAllByRole('combobox')[0])
+    const sundays = await screen.findAllByText('Sunday')
+
+    // Assert day option is added to selected list
+    await userEvent.click(sundays[1])
+    await waitFor(() => {
+      expect(screen.getAllByText('Sunday')).toHaveLength(3)
+    })
+
+    await userEvent.click(screen.getAllByRole('combobox')[1])
+    await userEvent.click(screen.getAllByRole('combobox')[1])
+    await userEvent.click((await screen.findAllByText('12 AM - 02 AM'))[0])
+    await waitFor(() => {
+      expect(screen.getAllByText('12 AM - 02 AM')).toHaveLength(2)
+    })
+    // Assert time slot option is added to selected list
+    await userEvent.click((await screen.findAllByText('12 AM - 02 AM'))[0])
+    await waitFor(() => {
+      expect(screen.getAllByText('12 AM - 02 AM')).toHaveLength(3)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(await screen.findByRole('button', { name: 'Schedule Update' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Schedule Update' })).toBeEnabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Schedule Update' }))
     await waitFor(() => {

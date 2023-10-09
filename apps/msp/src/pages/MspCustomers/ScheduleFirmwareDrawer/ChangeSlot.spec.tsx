@@ -20,7 +20,9 @@ describe('ChangeSlot', () => {
     render(
       <Provider>
         <ChangeSlot
-          visible={true}
+          setChangedValueDays={jest.fn()}
+          setChangedValueTimes={jest.fn()}
+          setSaveEnabled={jest.fn()}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
@@ -39,9 +41,11 @@ describe('ChangeSlot', () => {
     render(
       <Provider>
         <ChangeSlot
-          visible={true}
+          setChangedValueDays={jest.fn()}
+          setChangedValueTimes={jest.fn()}
           days={['Monday', 'Tuesday']}
           times={['02 AM - 04 AM', '04 AM - 06 AM']}
+          setSaveEnabled={jest.fn()}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
@@ -61,9 +65,11 @@ describe('ChangeSlot', () => {
     render(
       <Provider>
         <ChangeSlot
-          visible={true}
+          setChangedValueDays={jest.fn()}
+          setChangedValueTimes={jest.fn()}
           days={['Monday']}
           times={['02 AM - 04 AM', '04 AM - 06 AM']}
+          setSaveEnabled={jest.fn()}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
@@ -96,9 +102,11 @@ describe('ChangeSlot', () => {
     render(
       <Provider>
         <ChangeSlot
-          visible={true}
+          setChangedValueDays={jest.fn()}
+          setChangedValueTimes={jest.fn()}
           days={['Monday']}
           times={['02 AM - 04 AM', '04 AM - 06 AM']}
+          setSaveEnabled={jest.fn()}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }

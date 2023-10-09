@@ -11,16 +11,16 @@ import {
 import type { SelectProps  } from 'antd'
 
 export interface ChangeSlotProps {
-    visible?: boolean,
-    onCancel?: () => void,
-    onSubmit?: (data: { valueDays: string[], valueTimes: string[] }) => void,
+    setChangedValueDays: (valueDays: string[]) => void,
+    setChangedValueTimes: (valueTimes: string[]) => void,
     days?: string[],
-    times?: string[]
+    times?: string[],
+    setSaveEnabled: (enabled: boolean) => void,
 }
 
 const ChangeSlot = (props: ChangeSlotProps) => {
   const { $t } = useIntl()
-  const { days, times } = props
+  const { setChangedValueDays, setChangedValueTimes, days, times, setSaveEnabled } = props
   const { Option } = Select
   const [valueDays, setValueDays] = useState<string[]>([])
   const [disabledDays, setDisabledDays] = useState(false)
@@ -56,6 +56,13 @@ const ChangeSlot = (props: ChangeSlotProps) => {
         setDisabledDays(false)
       }
       setValueDays(newValue)
+      setChangedValueDays(newValue)
+      if(newValue.length > 0 && valueTimes.length > 0) {
+        setSaveEnabled(true)
+      }
+      else {
+        setSaveEnabled(false)
+      }
     //   if (newValue.length === 0 || valueTimes.length ===0) {
     //     setDisableSave(true)
     //   } else {
@@ -85,6 +92,13 @@ const ChangeSlot = (props: ChangeSlotProps) => {
         setDisabledTimes(false)
       }
       setValueTimes(newValue)
+      setChangedValueTimes(newValue)
+      if(newValue.length > 0 && valueDays.length > 0) {
+        setSaveEnabled(true)
+      }
+      else {
+        setSaveEnabled(false)
+      }
     //   if (valueDays.length === 0 || newValue.length ===0) {
     //     setDisableSave(true)
     //   } else {

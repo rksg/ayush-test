@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Select, Space } from 'antd'
 import { useForm }                                      from 'antd/lib/form/Form'
+import moment                                           from 'moment'
+import { Moment }                                       from 'moment-timezone'
 import { useIntl }                                      from 'react-intl'
 
 import {
@@ -58,15 +60,19 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [scheduleUpdatePage, setScheduleUpdatePage] = useState(false)
   const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
-  // const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
-  // const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
+  const [valueDays, setValueDays] = useState<string[]>([])
+  const [valueTimes, setValueTimes] = useState<string[]>([])
+  const [changedValueDays, setChangedValueDays] = useState<string[]>([])
+  const [changedValueTimes, setChangedValueTimes] = useState<string[]>([])
   const [onSlotChange, setOnSlotChange] = useState(false)
+  const [updateEnabled, setUpdateEnabled] = useState(false)
+  const [slotChangeSaveEnabled, setSlotChangeSaveEnabled] = useState(false)
   const params = useParams()
   const [form] = useForm()
   const { Option } = Select
 
-  const valueDays = ['Saturday']
-  const valueTimes = ['00:00 - 02:00']
+  // const valueDays = ['Saturday']
+  // const valueTimes = ['00:00 - 02:00']
 
   const onClose = () => {
     setVisible(false)
@@ -79,7 +85,25 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
 
   const onScheduleModeChange = (e: RadioChangeEvent) => {
     setScheduleMode(e.target.value)
+    validateValues(e.target.value)
     // setDisableSave(false)
+  }
+
+  const onManualDateChange = () => {
+    validateValues(ScheduleMode.Manually)
+  }
+
+  const onManualTimesChange = () => {
+    validateValues(ScheduleMode.Manually)
+  }
+
+  const validateValues = (scheduleMode: ScheduleMode) => {
+    if (scheduleMode === ScheduleMode.Automatically) {
+      setUpdateEnabled(valueDays.length > 0 && valueTimes.length > 0)
+    }
+    else {
+      setUpdateEnabled(form.getFieldValue('manualDate') && form.getFieldValue('manualTimes'))
+    }
   }
 
   const showSlotChange = () => {
@@ -110,14 +134,23 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
     // case 1
     let manualSchedule
     let autoSchedule
-    manualSchedule = {
-      date: '2023-09-30',
-      timeSlot: '00:00-02:00'
+    if (scheduleMode === ScheduleMode.Manually) {
+      const manualDate = form.getFieldValue('manualDate') as Moment
+      manualSchedule = {
+        date: manualDate.format('YYYY-MM-DD'),
+        timeSlot: form.getFieldValue('manualTimes')
+      }
     }
     // autoSchedule = {
     //   days: ['Sunday','Saturday'],
     //   timeSlots: ['00:00-02:00','02:00-04:00','04:00-06:00']
     // }
+    else {
+      autoSchedule = {
+        days: valueDays,
+        timeSlots: valueTimes
+      }
+    }
     // case 2
     const payload: ScheduleMultiEcFirmware = {
       operation: 'AP_FIRMWARE_UPGRADE',
@@ -186,24 +219,35 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {scheduleMode === ScheduleMode.Manually &&
                 <div style={{ marginTop: 10 }}>
                   <label>{$t({ defaultMessage: 'Enter Specific Date' })}</label>
-                  <DatePicker
-                    showToday={false}
-                    allowClear={false}
-                    style={{ marginTop: 8, marginBottom: 15, width: '100%' }}
-                    // disabledDate={disabledDate}
-                    // onChange={onChange}
-                  />
+                  <label>
+                    <Form.Item name='manualDate'>
+                      <DatePicker
+                        showToday={false}
+                        allowClear={false}
+                        style={{ marginTop: 8, marginBottom: 15, width: '100%' }}
+                        disabledDate={(current) => {
+                          return current && current < moment().endOf('day')
+                        }}
+                        onChange={onManualDateChange}
+                      />
+                    </Form.Item>
+                  </label>
                   <label>{$t({ defaultMessage: 'Scheduled Time Slots' })}</label>
-                  <Select style={{ marginTop: 8, width: '100%' }}>
-                    {
-                      AVAILABLE_SLOTS.map(item => (
-                        <Option
-                          key={item.label}
-                          value={item.value}>{item.label}
-                        </Option>
-                      ))
-                    }
-                  </Select>
+                  <label>
+                    <Form.Item name='manualTimes'>
+                      <Select style={{ marginTop: 8, width: '100%' }}
+                        onChange={onManualTimesChange}>
+                        {
+                          AVAILABLE_SLOTS.map(item => (
+                            <Option
+                              key={item.label}
+                              value={item.value}>{item.label}
+                            </Option>
+                          ))
+                        }
+                      </Select>
+                    </Form.Item>
+                  </label>
                 </div>}
                 </Radio>
               </Space>
@@ -214,24 +258,39 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
     )
   }
 
+  const onSlotChangeSave = async () => {
+    setValueDays(changedValueDays)
+    setValueTimes(changedValueTimes)
+    setUpdateEnabled(true)
+    setOnSlotChange(false)
+  }
+
+  const onSlotChangeCancel = async () => {
+    setChangedValueDays(valueDays)
+    setChangedValueTimes(valueTimes)
+    validateValues(ScheduleMode.Automatically)
+    setOnSlotChange(false)
+  }
+
   const contentScheduleFirmwareUpdate =
     onSlotChange ?
       <ChangeSlot
-        // visible={modelVisible}
-        // onCancel={handleModalCancel}
-        // onSubmit={handleModalSubmit}
         days={valueDays as string[]}
         times={valueTimes as string[]}
+        setChangedValueDays={setChangedValueDays}
+        setChangedValueTimes={setChangedValueTimes}
+        setSaveEnabled={setSlotChangeSaveEnabled}
       /> : <ScheduleFirmware/>
 
   const footerSlotChange =<div>
     <Button
-      onClick={() => setOnSlotChange(false)}
+      onClick={onSlotChangeSave}
+      disabled={!slotChangeSaveEnabled}
       type='primary'>
       {$t({ defaultMessage: 'Save' })}
     </Button>
 
-    <Button onClick={() => { setOnSlotChange(false)}}>
+    <Button onClick={onSlotChangeCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
   </div>
@@ -240,6 +299,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
     {scheduleUpdatePage
       ? <Button
         onClick={() => handleScheduleUpdate()}
+        disabled={!updateEnabled}
         type='primary'>
         {$t({ defaultMessage: 'Schedule Update' })}
       </Button>
