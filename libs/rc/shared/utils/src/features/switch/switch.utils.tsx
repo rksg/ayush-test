@@ -153,6 +153,17 @@ export const getSwitchModel = (serial: string) => {
   return modelMap.get(productCode)
 }
 
+
+export const isSameModelFamily = (sn1: string, sn2: string) => {
+  const model1 = getSwitchModel(sn1) || ''
+  const model2 = getSwitchModel(sn2) || ''
+
+  const family1 = model1.split('-')[0]
+  const family2 = model2.split('-')[0]
+
+  return family1 === family2
+}
+
 export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }

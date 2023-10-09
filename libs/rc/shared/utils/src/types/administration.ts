@@ -130,6 +130,7 @@ export interface Delegation {
   createdDate: string;
   updateDate: string;
   delegatedTo: string;
+  delegatedToAdmin?: string;
   delegatedToName: string;
   type: AdministrationDelegationType;
   status: AdministrationDelegationStatus;

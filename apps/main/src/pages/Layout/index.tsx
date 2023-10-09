@@ -6,8 +6,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
-import { HomeSolid }     from '@acx-ui/icons'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { HomeSolid }                             from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -23,7 +23,8 @@ import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink }                        from '@acx-ui/react-router-dom'
+import { useGetTenantDetailsQuery }                                                 from '@acx-ui/rc/services'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
@@ -38,12 +39,16 @@ function Layout () {
   const navigate = useNavigate()
   const tenantId = useTenantId()
   const params = useParams()
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   const logo = useLogo(tenantId)
 
   const { data: userProfile } = useUserProfileContext()
+  const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+
   const companyName = userProfile?.companyName
-  const tenantType = getJwtTokenPayload().tenantType
+  const tenantType = tenantDetails?.tenantType
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
@@ -52,6 +57,9 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
+  const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
+    tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -91,13 +99,15 @@ function Layout () {
           <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
-              {$t({ defaultMessage: 'Home' })}
+              {isSupportDelegation
+                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
           <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
-              {$t({ defaultMessage: 'Home' })}
+              {isSupportDelegation
+                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a>)
         }
@@ -112,6 +122,12 @@ function Layout () {
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
           <GlobalSearchBar />
+          {showMspHomeButton &&
+            <MspTenantLink to='/dashboard'>
+              <UI.Home>
+                <LayoutUI.Icon children={<HomeSolid />} />
+              </UI.Home>
+            </MspTenantLink>}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         {isDelegationMode()
