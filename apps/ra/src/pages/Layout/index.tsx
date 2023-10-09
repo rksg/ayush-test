@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Menu } from 'antd'
 
-import { HelpButton, UserButton }                    from '@acx-ui/analytics/components'
+import { HelpButton, UserButton, MelissaBot }        from '@acx-ui/analytics/components'
 import { getUserProfile, PERMISSION_VIEW_ANALYTICS } from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
@@ -74,6 +74,7 @@ function Layout () {
         }
         <HelpButton/>
         <UserButton/>
+        <MelissaBot/>
       </>}
     />
   )
