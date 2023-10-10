@@ -22,7 +22,6 @@ import { useApEolFirmware }             from './useApEolFirmware'
 type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
 
 export interface AdvancedUpdateNowDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -33,7 +32,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   // eslint-disable-next-line max-len
   const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
   const intl = useIntl()
-  const { visible, onSubmit, onCancel, data: venuesData = [], availableVersions } = props
+  const { onSubmit, onCancel, data: venuesData = [], availableVersions } = props
   const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
@@ -90,7 +89,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   return (
     <Modal
       title={intl.$t({ defaultMessage: 'Update Now' })}
-      visible={visible}
+      visible={true}
       width={560}
       okText={intl.$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
@@ -199,7 +198,7 @@ function ABFSelector (props: ABFSelectorProps) {
     update(categoryId, getFirmwareResult())
   }
 
-  const onSelectModeChange = (e: RadioChangeEvent) => {
+  const onSelectedVersionChange = (e: RadioChangeEvent) => {
     setSelectedVersion(e.target.value)
   }
 
@@ -218,7 +217,7 @@ function ABFSelector (props: ABFSelectorProps) {
     </UI.TitleActive>
     <UI.ValueContainer>
       <Radio.Group
-        onChange={onSelectModeChange}
+        onChange={onSelectedVersionChange}
         value={selectedVersion}
       >
         <Space direction={'vertical'} size={12}>

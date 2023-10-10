@@ -20,7 +20,6 @@ import {
 import * as UI from './styledComponents'
 
 export interface RevertDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -31,7 +30,7 @@ export function RevertDialog (props: RevertDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const [form] = useForm()
-  const { visible, onSubmit, onCancel, data, availableVersions } = props
+  const { onSubmit, onCancel, data, availableVersions } = props
   // eslint-disable-next-line max-len
   const [selectedVersion, setSelectedVersion] = useState<string>('')
 
@@ -71,7 +70,7 @@ export function RevertDialog (props: RevertDialogProps) {
   return (
     <Modal
       title={$t({ defaultMessage: 'Revert Now' })}
-      visible={visible}
+      visible={true}
       width={560}
       okText={$t({ defaultMessage: 'Run Revert' })}
       onOk={triggerSubmit}
