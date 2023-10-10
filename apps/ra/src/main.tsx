@@ -13,13 +13,11 @@ export async function initialize () {
     import('@acx-ui/components'),
     import('@acx-ui/config')
   ])
+  await config.initialize()
 
   const isMaintenanceModeOn = config.get('ENABLED_FEATURES')?.split('|')
     .includes('maintenance_mode')
 
-  if (window.location.pathname === '/analytics/maintenance.html') {
-    return
-  }
   if (isMaintenanceModeOn) {
     window.location.href = '/analytics/maintenance.html'
     return
@@ -29,8 +27,6 @@ export async function initialize () {
   const root = createRoot(container!)
 
   root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
-
-  await config.initialize()
 
   const bootstrap = await import('./bootstrap')
   await bootstrap.init(root)
