@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
-import * as fixtures          from './__tests__/fixtures'
+import * as fixtures from './__tests__/fixtures'
 import {
   specToDto,
   useServiceGuardSpec,
@@ -20,7 +20,8 @@ import {
   useDeleteServiceGuardTestMutation,
   useRunServiceGuardTestMutation,
   useCloneServiceGuardTestMutation,
-  useMutationResponseEffect
+  useMutationResponseEffect,
+  localToDb
 } from './services'
 import {
   TestResultByAP,
@@ -680,5 +681,52 @@ describe('useMutationResponseEffect', () => {
     } as MutationResponse<{ userErrors?: MutationUserError[] }>
     renderHook(() => useMutationResponseEffect(response), { wrapper: Provider })
     expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
+  })
+})
+
+describe('localToDb', () => {
+  const timezone = 'Africa/Abidjan'
+  beforeEach(() => {
+    jest.resetModules()
+    jest.doMock('moment-timezone', () => {
+      const moment = jest.requireActual('moment-timezone')
+      moment.tz.guess = () => timezone
+      return moment
+    })
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2021-05-01')))
+  })
+  it('should convert timezone', () => {
+    const spec = {
+      id: 'spec-id',
+      clientType: ClientType.VirtualClient,
+      schedule: {
+        timezone: 'Asia/Singapore',
+        frequency: ScheduleFrequency.Daily,
+        day: null,
+        hour: 8,
+        type: 'service_guard'
+      } as Schedule,
+      type: TestType.Scheduled,
+      name: 'ScheduledTest',
+      configs: [{
+        authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+        dnsServer: '10.10.10.10',
+        pingAddress: '10.10.10.10',
+        radio: Band.Band6,
+        tracerouteAddress: '10.10.10.10',
+        wlanName: 'WLAN Name',
+        wlanPassword: '12345',
+        wlanUsername: 'user',
+        networkPaths: { networkNodes }
+      }]
+    }
+    expect(localToDb(spec)?.schedule).toEqual({
+      timezone: 'Africa/Abidjan',
+      frequency: ScheduleFrequency.Daily,
+      day: null,
+      hour: 8,
+      type: 'service_guard'
+    })
   })
 })
