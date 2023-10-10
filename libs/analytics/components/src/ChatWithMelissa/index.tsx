@@ -14,6 +14,11 @@ export function ChatWithMelissa () {
       // TODO: open chatbot when it's ready with this button
       // <Button size='small'>Ask Anything</Button>
     }
-    <Button size='small' disabled>Coming Soon</Button>
+    <Button size='small'
+      onClick={()=>{
+        const event = new CustomEvent('showMelissaBot',
+          { detail: {} })
+        window.dispatchEvent(event)
+      }}>Ask Anything</Button>
   </Card></UI.Wrapper>
 }

@@ -82,6 +82,15 @@ export function MelissaBot (){
       setShowFloatingButton(true)
     }
   },[pathname,responseCount])
+  const eventHandler:EventListener = ()=>{
+    setOpen(true)
+  }
+  useEffect(()=>{
+    window.addEventListener('showMelissaBot',eventHandler)
+    return ()=>{
+      window.removeEventListener('showMelissaBot',eventHandler)
+    }
+  },[])
   useEffect(()=>{
     if(initCount.current === 0){
       initCount.current +=1
