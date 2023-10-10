@@ -1,8 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { Checkbox, Form } from 'antd'
+import moment             from 'moment-timezone'
+import { useIntl }        from 'react-intl'
 
 import {
   Drawer,
@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
   useMspCustomerListQuery,
@@ -40,6 +41,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [original, setOriginal] = useState({} as MspEc)
   const [form] = Form.useForm()
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   const [getAssignedEc] = useLazyGetAssignedMspEcToIntegratorQuery()
 
@@ -189,6 +191,16 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
+    {techPartnerAssignEcsEnabled && <Form.Item>
+      <Checkbox
+        // onChange={handleEnableMFAChange}
+        // checked={isMfaEnabled}
+        // value={isMfaEnabled}
+      >
+        {$t({ defaultMessage:
+          'Automatically assign Customers to Tech Partner Administrators.' })}
+      </Checkbox>
+    </Form.Item>}
     <Subtitle level={4}>{selectedCustomer}</Subtitle>
     <IntegratorTable />
   </Form>

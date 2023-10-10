@@ -1,6 +1,7 @@
 import { Key, useState } from 'react'
 
 import {
+  Checkbox,
   Form,
   Input
   // Radio,
@@ -17,6 +18,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAssignMspEcToIntegratorMutation,
   useGetAssignedMspEcToIntegratorQuery,
@@ -44,6 +46,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const { visible, setVisible, setSelected, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
+  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   const isSkip = tenantId === undefined
 
@@ -195,6 +198,17 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
+    {techPartnerAssignEcsEnabled && <Form.Item>
+      <Checkbox
+        // onChange={handleEnableMFAChange}
+        // checked={isMfaEnabled}
+        // value={isMfaEnabled}
+      >
+        {$t({ defaultMessage:
+          'Automatically assign selected Customers to Tech Partner Administrators.' })}
+      </Checkbox>
+    </Form.Item>}
+
     {tenantId && <div>
       <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
       {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
@@ -237,7 +251,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage Customers Assigned' })}
+      title={$t({ defaultMessage: 'Manage Assigned Customers' })}
       visible={visible}
       onClose={onClose}
       children={content}
