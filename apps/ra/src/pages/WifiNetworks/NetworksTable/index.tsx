@@ -7,6 +7,7 @@ import { defaultSort, sortProp }                           from '@acx-ui/analyti
 import { Table, TableProps, useDateRange, Loader, Filter } from '@acx-ui/components'
 import { formatter }                                       from '@acx-ui/formatter'
 import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent }                         from '@acx-ui/utils'
 
 export function NetworkList ({ searchVal = '' }: { searchVal?: string }) {
   const { $t } = useIntl()
@@ -38,7 +39,7 @@ export function NetworkList ({ searchVal = '' }: { searchVal?: string }) {
       render: (_, row : Network, __, highlightFn) => {
         const { name } = row
         return <TenantLink
-          to={`/networks/wireless/${name}/network-details/incidents`}
+          to={`/networks/wireless/${fixedEncodeURIComponent(name)}/network-details/incidents`}
         >
           {highlightFn(name)}
         </TenantLink>
