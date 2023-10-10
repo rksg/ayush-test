@@ -1,4 +1,5 @@
 import '@acx-ui/theme'
+import { get } from '@acx-ui/config'
 
 /* istanbul ignore next */
 export async function initialize () {
@@ -13,6 +14,17 @@ export async function initialize () {
     import('@acx-ui/components'),
     import('@acx-ui/config')
   ])
+
+  const isMaintenanceModeOn = get('ENABLED_FEATURES')?.split('|')
+    .includes('maintenance_mode')
+
+  if (window.location.pathname === '/analytics/maintenance.html') {
+    return
+  }
+  if (isMaintenanceModeOn) {
+    window.location.href = '/analytics/maintenance.html'
+    return
+  }
 
   const container = document.getElementById('root')
   const root = createRoot(container!)
