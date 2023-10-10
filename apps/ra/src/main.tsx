@@ -1,5 +1,4 @@
 import '@acx-ui/theme'
-import { get } from '@acx-ui/config'
 
 /* istanbul ignore next */
 export async function initialize () {
@@ -15,7 +14,7 @@ export async function initialize () {
     import('@acx-ui/config')
   ])
 
-  const isMaintenanceModeOn = get('ENABLED_FEATURES')?.split('|')
+  const isMaintenanceModeOn = config.get('ENABLED_FEATURES')?.split('|')
     .includes('maintenance_mode')
 
   if (window.location.pathname === '/analytics/maintenance.html') {
