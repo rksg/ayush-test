@@ -27,10 +27,12 @@ import {
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
   useDelegateToMspEcPath,
-  useCheckDelegateAdmin
+  useCheckDelegateAdmin,
+  useGetMspEcAlarmListQuery
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MspEcAlarmList,
   MspEc,
   MSPUtils
 } from '@acx-ui/msp/utils'
@@ -125,12 +127,14 @@ export function MspCustomers () {
   const isUpgradeMultipleEcEnabled = useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
+  const [mspEcAlarmList, setEcAlarmData] = useState({} as MspEcAlarmList)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -339,6 +343,15 @@ export function MspCustomers () {
       sorter: true,
       show: false
     },
+    ...(!isSupportEcAlarmCount ? [] : [{
+      title: $t({ defaultMessage: 'Alarm Count' }),
+      dataIndex: 'mspEcAlarmCount',
+      key: 'mspEcAlarmCount',
+      sorter: false,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return mspUtils.transformAlarmCount(row, mspEcAlarmList)
+      }
+    }]),
     ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
@@ -485,6 +498,7 @@ export function MspCustomers () {
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
     const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -493,6 +507,21 @@ export function MspCustomers () {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       }
     })
+
+    const alarmList = useGetMspEcAlarmListQuery(
+      { params, payload: { mspEcTenants: mspEcTenantList } },
+      { skip: !isSupportEcAlarmCount || mspEcTenantList.length === 0 })
+
+    useEffect(() => {
+      if (tableQuery?.data?.data) {
+        const ecList = tableQuery?.data.data.map(item => item.id)
+        setMspEcTenantList(ecList)
+      }
+      if (alarmList?.data) {
+        setEcAlarmData(alarmList?.data)
+      }
+    }, [])
+
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),

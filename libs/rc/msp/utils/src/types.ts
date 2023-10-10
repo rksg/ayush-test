@@ -389,6 +389,13 @@ export interface MspAggregations {
   ecExclusionEnabled: boolean
 }
 
+export interface MspEcAlarmList {
+  mspEcAlarmCountList: {
+    tenantId?: string;
+    alarmCount?: number;
+  }[]
+}
+
 export interface RecommendFirmwareUpgrade {
   defaultABF: string,
   defaultApBranchFamilyApFirmwares: UpgradeFirmwareVer[]

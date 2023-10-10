@@ -301,6 +301,10 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/notificationAggregations',
     newApi: true
   },
+  getMspEcAlarmList: {
+    method: 'post',
+    url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
+  },
   getRecommandFirmwareUpgrade: {
     method: 'get',
     url: '/apFirmwares?status=default',

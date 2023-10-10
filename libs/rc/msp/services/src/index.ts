@@ -25,6 +25,7 @@ import {
   ParentLogoUrl,
   NewMspEntitlementSummary,
   MspAggregations,
+  MspEcAlarmList,
   RecommendFirmwareUpgrade
 } from '@acx-ui/msp/utils'
 import {
@@ -754,6 +755,12 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getMspEcAlarmList: build.query<MspEcAlarmList, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( MspUrlsInfo.getMspEcAlarmList, params )
+        return { ...req, body: payload }
+      }
+    }),
     getRecommandFirmwareUpgrade: build.query<RecommendFirmwareUpgrade, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.getRecommandFirmwareUpgrade, params)
@@ -832,6 +839,7 @@ export const {
   useAddMspAggregationsMutation,
   useUpdateMspAggregationsMutation,
   useDeleteMspAggregationsMutation,
+  useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
   useMspEcFirmwareUpgradeSchedulesMutation
 } = mspApi
