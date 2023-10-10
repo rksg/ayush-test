@@ -266,7 +266,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       render: (_, row : Network) => {
         const { name } = row
         return <TenantLink
-          to={`/networks/wireless/${name}/network-details/reports`}
+          to={`/networks/wireless/${fixedEncodeURIComponent(name)}/network-details/reports`}
         >
           {(name)}
         </TenantLink>

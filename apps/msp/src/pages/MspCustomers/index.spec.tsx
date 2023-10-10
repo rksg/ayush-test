@@ -136,6 +136,23 @@ const list = {
     }
   ]
 }
+const alarmList = {
+  mspEcAlarmCountList: [
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc04',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc05',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+      alarmCount: 0
+    }
+  ]
+}
+
 const userProfile = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -196,6 +213,7 @@ describe('MspCustomers', () => {
     jest.spyOn(services, 'useDeleteMspEcMutation')
     jest.spyOn(services, 'useDeactivateMspEcMutation')
     jest.spyOn(services, 'useReactivateMspEcMutation')
+    jest.spyOn(services, 'useGetMspEcAlarmListQuery')
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
@@ -220,6 +238,10 @@ describe('MspCustomers', () => {
       rest.post(
         MspUrlsInfo.getIntegratorCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...list }))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspEcAlarmList.url,
+        (req, res, ctx) => res(ctx.json(alarmList))
       )
     )
     params = {
