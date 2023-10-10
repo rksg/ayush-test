@@ -45,6 +45,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const { visible, setVisible, setSelected, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
+  const [assignedEcAdmin, setAssignedEcAdmin] = useState(false)
   const [form] = Form.useForm()
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
@@ -63,15 +64,20 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
 
   const handleSave = () => {
-    let payload = {
-      delegation_type: tenantType,
+    let payload = techPartnerAssignEcsEnabled ? {
+      delegation_type: tenantType as string,
+      number_of_days: form.getFieldValue(['number_of_days']),
+      mspec_list: [] as string[],
+      manageAllEcs: assignedEcAdmin
+    } : {
+      delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[]
     }
     const selectedRows = form.getFieldsValue(['ecCustomers'])
     if (selectedRows && selectedRows.ecCustomers) {
       selectedRows.ecCustomers.forEach((element: MspEc) => {
-        payload.mspec_list.push ( element.id)
+        (payload.mspec_list as string[]).push ( element.id)
       })
     }
 
@@ -200,9 +206,9 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   <Form layout='vertical' form={form} onFinish={onClose}>
     {techPartnerAssignEcsEnabled && <Form.Item>
       <Checkbox
-        // onChange={handleEnableMFAChange}
-        // checked={isMfaEnabled}
-        // value={isMfaEnabled}
+        onChange={(e)=> {
+          setAssignedEcAdmin(e.target.checked)
+        }}
       >
         {$t({ defaultMessage:
           'Automatically assign selected Customers to Tech Partner Administrators.' })}

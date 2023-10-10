@@ -38,6 +38,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const { visible, tenantId, tenantType, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
+  const [assignedEcAdmin, setAssignedEcAdmin] = useState(false)
   const [original, setOriginal] = useState({} as MspEc)
   const [form] = Form.useForm()
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
@@ -69,7 +70,12 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         const newEcList = ecData?.mspec_list.filter(e => e !== tenantId)
         const numOfDays = moment(ecData?.expiry_date).diff(moment(Date()), 'days')
 
-        let payload = {
+        let payload = techPartnerAssignEcsEnabled ? {
+          delegation_type: tenantType,
+          number_of_days: numOfDays,
+          mspec_list: newEcList,
+          manageAllEcs: assignedEcAdmin
+        } : {
           delegation_type: tenantType,
           number_of_days: numOfDays,
           mspec_list: newEcList
@@ -87,7 +93,12 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         const ecData = await getAssignedEc({ params: { mspIntegratorId: integrtorId,
           mspIntegratorType: tenantType } }).unwrap()
 
-        let payload = {
+        let payload = techPartnerAssignEcsEnabled ? {
+          delegation_type: tenantType,
+          number_of_days: '',
+          mspec_list: [] as string[],
+          manageAllEcs: assignedEcAdmin
+        } : {
           delegation_type: tenantType,
           number_of_days: '',
           mspec_list: [] as string[]
@@ -193,9 +204,9 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   <Form layout='vertical' form={form} onFinish={onClose}>
     {techPartnerAssignEcsEnabled && <Form.Item>
       <Checkbox
-        // onChange={handleEnableMFAChange}
-        // checked={isMfaEnabled}
-        // value={isMfaEnabled}
+        onChange={(e)=> {
+          setAssignedEcAdmin(e.target.checked)
+        }}
       >
         {$t({ defaultMessage:
           'Automatically assign Customers to Tech Partner Administrators.' })}
