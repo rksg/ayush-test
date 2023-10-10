@@ -29,7 +29,7 @@ export  function APList () {
       searchable: true,
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row : AP, __, highlightFn) => (
-        <TenantLink to={`/wifi/${row.macAddress}/details/reports`}>
+        <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
           {highlightFn(row.apName)}</TenantLink>
       )
     },

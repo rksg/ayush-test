@@ -16,7 +16,7 @@ import {
   authMethodsByCode
 } from '../../authMethods'
 import * as contents             from '../../contents'
-import { useWlanAuthMethodsMap } from '../../services'
+import { useNetworks }           from '../../services'
 import {
   AuthenticationMethod as AuthenticationMethodEnum,
   ServiceGuardFormDto,
@@ -42,7 +42,7 @@ function reset (form: FormInstance, clientType: ClientTypeEnum) {
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<ServiceGuardFormDto>()
-  const map = useWlanAuthMethodsMap()
+  const { map, states } = useNetworks(true)
   const [clientType, wlanName] = [
     Form.useWatch(ClientType.fieldName, form),
     Form.useWatch(WlanName.fieldName, form)
@@ -50,8 +50,8 @@ export function AuthenticationMethod () {
   const methods = authMethodsByClientType[clientType]
 
   let options: ReactNode
-  if (map.data?.[wlanName]?.length) {
-    const suggestedCodes = map.data?.[wlanName]
+  if (map[wlanName]?.authMethods.length) {
+    const suggestedCodes = map[wlanName].authMethods
     const suggestedMethods = suggestedCodes?.map(code => authMethodsByCode[code])
     const othersMethods = methods.filter(method => !suggestedCodes?.includes(method.code))
     options = <>
@@ -92,7 +92,7 @@ export function AuthenticationMethod () {
     />
   </>
 
-  return <Loader style={{ height: 'auto', minHeight: 71 }} states={[map]}>
+  return <Loader style={{ height: 'auto', minHeight: 71 }} states={states}>
     <Form.Item required label={mainLabel}>
       <Form.Item
         noStyle
