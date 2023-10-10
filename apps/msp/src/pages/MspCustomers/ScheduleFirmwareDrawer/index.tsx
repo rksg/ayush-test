@@ -71,9 +71,6 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   const [form] = useForm()
   const { Option } = Select
 
-  // const valueDays = ['Saturday']
-  // const valueTimes = ['00:00 - 02:00']
-
   const onClose = () => {
     setVisible(false)
   }
@@ -110,20 +107,6 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
     setOnSlotChange(true)
   }
 
-  // const handleModalCancel = () => {
-  //   setModelVisible(false)
-  // }
-
-  // const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
-  //   setValueDays(data.valueDays)
-  //   setValueTimes(data.valueTimes)
-  //   if (data.valueDays.length === 0 || data.valueTimes.length ===0) {
-  //     setDisableSave(true)
-  //   } else {
-  //     setDisableSave(false)
-  //   }
-  // }
-
   const [ updateFirmwareUpgradeSchedules ] = useMspEcFirmwareUpgradeSchedulesMutation()
 
   const handleNextClick = () => {
@@ -131,7 +114,6 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   }
 
   const handleScheduleUpdate = () => {
-    // case 1
     let manualSchedule
     let autoSchedule
     if (scheduleMode === ScheduleMode.Manually) {
@@ -141,17 +123,12 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
         timeSlot: form.getFieldValue('manualTimes')
       }
     }
-    // autoSchedule = {
-    //   days: ['Sunday','Saturday'],
-    //   timeSlots: ['00:00-02:00','02:00-04:00','04:00-06:00']
-    // }
     else {
       autoSchedule = {
         days: valueDays,
         timeSlots: valueTimes
       }
     }
-    // case 2
     const payload: ScheduleMultiEcFirmware = {
       operation: 'AP_FIRMWARE_UPGRADE',
       data: {

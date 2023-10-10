@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import moment    from 'moment'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { ScheduleFirmwareDrawer } from '.'
 
@@ -167,8 +168,13 @@ describe('ScheduleFirmwareDrawer', () => {
     await waitFor(() => {
       expect(screen.getAllByText('Tuesday')).toHaveLength(2)
     })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(await screen.findByText('Schedule updates manually')).toBeVisible()
+    expect(screen.queryByText('Sunday')).toBeNull()
+    expect(screen.queryByText('Monday')).toBeNull()
   })
-  it('should save correctly', async () => {
+  it('should save correctly for automatic schedule selected', async () => {
     render(
       <Provider>
         <ScheduleFirmwareDrawer
@@ -214,7 +220,59 @@ describe('ScheduleFirmwareDrawer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(await screen.findByRole('button', { name: 'Schedule Update' })).toBeVisible()
+
+    await userEvent.click(screen.getAllByRole('radio')[1])
+    await userEvent.click(screen.getAllByRole('radio')[0])
+
     expect(await screen.findByRole('button', { name: 'Schedule Update' })).toBeEnabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Schedule Update' }))
+    await waitFor(() => {
+      expect(mockedSetVisible).toHaveBeenCalledTimes(3)
+    })
+    expect(mockedSetVisible).toHaveBeenLastCalledWith(false)
+    expect(services.useMspEcFirmwareUpgradeSchedulesMutation).toHaveBeenCalled()
+  })
+  it('should save correctly for manual schedule selected', async () => {
+    render(
+      <Provider>
+        <ScheduleFirmwareDrawer
+          visible={true}
+          tenantIds={[params.tenantId]}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('Schedule Firmware Update')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Next' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getAllByRole('radio')[1])
+    expect(await screen.findByText('Enter Specific Date')).toBeVisible()
+
+    // Input date into datepicker
+    const datepicker = screen.getByRole('img', { name: 'calendar' })
+    expect(datepicker).toBeEnabled()
+    await userEvent.click(datepicker)
+    const date = moment().add(1, 'days')
+    expect(await screen.findByRole('cell', { name: date.format('YYYY-MM-DD') })).toBeEnabled()
+    await userEvent.click(screen.getByRole('cell', { name: date.format('YYYY-MM-DD') }))
+    expect(await screen.findByDisplayValue(date.format('MM/DD/YYYY'))).toBeVisible()
+
+    // Select time slot
+    const dropdown = await screen.findByRole('combobox')
+    await userEvent.click(dropdown)
+    await userEvent.click(screen.getByRole('combobox'))
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: '12 AM - 02 AM' })).toBeVisible()
+    })
+    fireEvent.click(screen.getByText('12 AM - 02 AM'))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Schedule Update' })).toBeEnabled()
+    })
 
     await userEvent.click(screen.getByRole('button', { name: 'Schedule Update' }))
     await waitFor(() => {

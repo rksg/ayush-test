@@ -92,11 +92,6 @@ describe('ChangeSlot', () => {
     await waitFor(() => {
       expect(screen.getAllByText('Tuesday')).toHaveLength(1)
     })
-
-    // fireEvent.change(inputs[0], { target: { value: ['Monday'] } })
-    // await waitFor(() => {
-    //   expect(screen.getAllByText('Sunday')).toHaveLength(1)
-    // })
   })
   it('should work correctly when time slots selected is changed', async () => {
     render(
@@ -104,7 +99,6 @@ describe('ChangeSlot', () => {
         <ChangeSlot
           setChangedValueDays={jest.fn()}
           setChangedValueTimes={jest.fn()}
-          days={['Monday']}
           times={['02 AM - 04 AM', '04 AM - 06 AM']}
           setSaveEnabled={jest.fn()}
         />

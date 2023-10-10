@@ -15,7 +15,7 @@ export interface ChangeSlotProps {
     setChangedValueTimes: (valueTimes: string[]) => void,
     days?: string[],
     times?: string[],
-    setSaveEnabled: (enabled: boolean) => void,
+    setSaveEnabled: (enabled: boolean) => void
 }
 
 const ChangeSlot = (props: ChangeSlotProps) => {
@@ -26,7 +26,6 @@ const ChangeSlot = (props: ChangeSlotProps) => {
   const [disabledDays, setDisabledDays] = useState(false)
   const [valueTimes, setValueTimes] = useState<string[]>([])
   const [disabledTimes, setDisabledTimes] = useState(false)
-  //   const [disableSave, setDisableSave] = useState(true)
 
   useEffect(() => {
     if (days) {
@@ -63,14 +62,8 @@ const ChangeSlot = (props: ChangeSlotProps) => {
       else {
         setSaveEnabled(false)
       }
-    //   if (newValue.length === 0 || valueTimes.length ===0) {
-    //     setDisableSave(true)
-    //   } else {
-    //     setDisableSave(false)
-    //   }
     },
     placeholder: $t({ defaultMessage: 'Selected 2 days' })
-    // maxTagCount: 2
   }
 
   const timeOptions = AVAILABLE_SLOTS.map(item =>
@@ -99,20 +92,13 @@ const ChangeSlot = (props: ChangeSlotProps) => {
       else {
         setSaveEnabled(false)
       }
-    //   if (valueDays.length === 0 || newValue.length ===0) {
-    //     setDisableSave(true)
-    //   } else {
-    //     setDisableSave(false)
-    //   }
     },
     placeholder: $t({ defaultMessage: 'Selected 3 time slots' })
-    // maxTagCount: 3
   }
 
   return (
     <Space size={18} direction='vertical'>
       <Form
-        // form={form}
         layout='vertical'
         style={{ marginTop: 10 }}
       >
