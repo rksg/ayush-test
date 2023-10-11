@@ -234,7 +234,8 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
 
-  if (action?.payload && typeof action.payload !== 'string' && 'meta' in action.payload
+  if (action?.payload && typeof action.payload !== 'string'
+    && action.payload?.hasOwnProperty('meta')
     && action.meta && !action.meta?.baseQueryMeta) {
     // baseQuery (for retry API)
     const payload = action.payload as { meta?: QueryMeta }
