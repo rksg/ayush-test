@@ -62,7 +62,6 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const uniqueSwitchCount = impactedSwitches?.length || 0
   const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
     ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
-
   const impactedTypes = [
     {
       icon: 'switch',
@@ -78,9 +77,11 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       max: 3,
       count: uniqueVlanCount,
       data: uniqImpactedVlans.map(([id, { macs, names }]) => {
+        const macsCount = macs.length
         return {
           name: macs.length > 1
-            ? `VLAN ${id} (${macs.length} switches)` : `VLAN ${id}`,
+            ? $t({ defaultMessage: 'VLAN {id} ({macsCount} switches)' }, { id, macsCount })
+            : $t({ defaultMessage: 'VLAN {id}' }, { id }),
           title: names.join(',')
         }
       }),
@@ -110,7 +111,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
                 <span>{d.name}</span>
               </div>)}
               {remaining > 0 && <div><span>
-                And {remaining} more{'\u2026'}
+                {$t({ defaultMessage: 'And {remaining} more…' }, { remaining } )}
               </span></div>}
             </UI.SummaryList>
           </UI.SummaryType>
