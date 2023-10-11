@@ -7,24 +7,30 @@ import {
   CrrmDetails,
   VideoCallQoe,
   VideoCallQoeForm,
-  VideoCallQoeDetails
+  VideoCallQoeDetails,
+  ServiceGuardForm,
+  ServiceGuardSpecGuard,
+  ServiceGuardTestGuard,
+  ServiceGuardDetails
 } from '@acx-ui/analytics/components'
 import { setUserProfile, PERMISSION_VIEW_ANALYTICS, getUserProfile }     from '@acx-ui/analytics/utils'
 import { showToast }                                                     from '@acx-ui/components'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import ClientDetails                 from './pages/ClientDetails'
-import Clients, { AIClientsTabEnum } from './pages/Clients'
-import ConfigChange                  from './pages/ConfigChange'
-import IncidentDetails               from './pages/IncidentDetails'
-import Incidents                     from './pages/Incidents'
-import Layout                        from './pages/Layout'
-import Recommendations               from './pages/Recommendations'
-import SearchResults                 from './pages/SearchResults'
-import { WiFiPage, WifiTabsEnum }    from './pages/Wifi'
-import ApDetails                     from './pages/Wifi/ApDetails'
-import Wired, { AISwitchTabsEnum }   from './pages/Wired'
-import SwitchDetails                 from './pages/Wired/SwitchDetails'
+import ClientDetails                         from './pages/ClientDetails'
+import Clients, { AIClientsTabEnum }         from './pages/Clients'
+import ConfigChange                          from './pages/ConfigChange'
+import IncidentDetails                       from './pages/IncidentDetails'
+import Incidents                             from './pages/Incidents'
+import Layout                                from './pages/Layout'
+import Recommendations                       from './pages/Recommendations'
+import SearchResults                         from './pages/SearchResults'
+import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
+import ApDetails                             from './pages/Wifi/ApDetails'
+import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
+import NetworkDetails                        from './pages/WifiNetworks/NetworkDetails'
+import Wired, { AISwitchTabsEnum }           from './pages/Wired'
+import SwitchDetails                         from './pages/Wired/SwitchDetails'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -76,7 +82,22 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='wifi'>
+      <Route path='networks/wireless'>
+        <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />
+        <Route
+          path='reports/wlans'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.WLANS_REPORT} />} />
+        <Route
+          path='reports/applications'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.APPLICATIONS_REPORT} />} />
+        <Route
+          path='reports/wireless'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.WIRELESS_REPORT} />} />
+        <Route path=':networkId/network-details'>
+          <Route path=':activeTab' element={<NetworkDetails />} />
+        </Route>
+      </Route>
+      <Route path='devices/wifi'>
         <Route index={true}
           element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
@@ -86,13 +107,33 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/reports'
+          path=':apId/details/overview'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
       <Route path='reports/*' element={<ReportsRoutes />} />
       <Route path='dataStudio/*' element={<ReportsRoutes />} />
-      <Route path='serviceValidation' element={<div>Service Validation</div>} />
+      <Route path='serviceValidation/*'>
+        <Route index
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />} />
+        <Route path='add' element={<ServiceGuardForm />} />
+        <Route path=':specId'>
+          <Route
+            path='edit'
+            element={<ServiceGuardSpecGuard children={<ServiceGuardForm />} />}
+          />
+          <Route path='tests/:testId'>
+            <Route
+              index
+              element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+            />
+            <Route
+              path='tab/:activeTab'
+              element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+            />
+          </Route>
+        </Route>
+      </Route>
       <Route path='videoCallQoe' >
         <Route index element={<VideoCallQoe />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />
@@ -107,16 +148,17 @@ function AllRoutes () {
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
-      <Route path='switch' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
-      <Route path='switch/reports/wired'
-        element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-      <Route path='switch/:switchId/details' element={<SwitchDetails/>} />
+      <Route path='devices/switch'>
+        <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
+        <Route path='reports/wired'
+          element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
+        <Route path=':switchId/serial/details/overview' element={<SwitchDetails/>} />
+      </Route>
       <Route path='users'>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
           <Route path=':activeTab'>
-            <Route path='' element={<Navigate replace to='./troubleshooting' />} />
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>

@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -24,6 +25,10 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   hasRoles: jest.fn()
 }))
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
 describe('administrators delegation list', () => {
   let params: { tenantId: string }
 
@@ -33,12 +38,11 @@ describe('administrators delegation list', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeDelegationList }
+    })
 
     mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
-        (req, res, ctx) => res(ctx.json(fakeDelegationList))
-      ),
       rest.delete(
         AdministrationUrlsInfo.revokeInvitation.url,
         (req, res, ctx) => {
@@ -50,12 +54,10 @@ describe('administrators delegation list', () => {
   })
 
   it('should be able to invite 3rd Party Administrator', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
-        (req, res, ctx) => res(ctx.json([]))
-      )
-    )
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
+      return { data: [] }
+    })
 
     render(
       <Provider>
@@ -75,6 +77,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <AdministrationDelegationsTable isSupport={false}/>
@@ -83,6 +86,7 @@ describe('administrators delegation list', () => {
       })
     const row = await screen.findAllByRole('row')
     expect(row.length).toBe(2)
+    expect(screen.queryByText('Email')).toBeNull()
     expect(await screen.findByRole('row', { name: /Invitation Sent/i })).toBeValid()
     expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeDisabled()
 
@@ -114,6 +118,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should be able to revoke 3rd party administrator invitation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const fakeDelegationListAccepted = [ ...fakeDelegationList ]
     fakeDelegationListAccepted[0].status = 'ACCEPTED'
 
@@ -150,6 +155,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should render correctly when it is support user', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const fakeDelegationListAccepted = [ ...fakeDelegationList ]
     fakeDelegationListAccepted[0].status = 'ACCEPTED'
 
@@ -172,6 +178,41 @@ describe('administrators delegation list', () => {
     expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
     expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+  })
+  it('should render correctly when multi var feature flag on', async () => {
+    const delegation = {
+      id: 'ggc2146b0f9041fa85caec2537a57d10',
+      createdDate: '2023-02-13T11:51:07.793+00:00',
+      updatedDate: '2023-02-13T11:51:07.793+00:00',
+      delegatedTo: '3fde9aa0ef9a4d2181394095725d27a5',
+      type: 'VAR',
+      status: 'ACCEPTED',
+      delegatedBy: 'dog2662@email.com',
+      delegatedToName: 'RUCKUS NETWORKS, INC',
+      delegatedToAdmin: 'amy.cheng@ruckuswireless.com'
+    }
+    const delegationList = [ ...fakeDelegationList, delegation ]
+    services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
+      return { data: delegationList }
+    })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AdministrationDelegationsTable isSupport={false}/>
+      </Provider>, {
+        route: { params }
+      })
+    const row = await screen.findAllByRole('row')
+    expect(row.length).toBe(3)
+    screen.getByText('Partner Name')
+    screen.getByText('Email')
+    screen.getByText('Status')
+    screen.getByText('Action')
+    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeEnabled()
+
+    await userEvent.click(screen.getByText('Action'))
+    await userEvent.click(screen.getByRole('img', { name: 'caret-up' }))
   })
 })
 
@@ -204,13 +245,9 @@ describe('when use it not permitted role', () => {
   it('Revoke Invitation button should disappear when use does not has permmision', async () => {
     const fakeDelegationListAccepted = [ ...fakeDelegationList ]
     fakeDelegationListAccepted[0].status = 'ACCEPTED'
-
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
-        (req, res, ctx) => res(ctx.json(fakeDelegationListAccepted))
-      )
-    )
+    services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeDelegationListAccepted }
+    })
 
     render(
       <Provider>

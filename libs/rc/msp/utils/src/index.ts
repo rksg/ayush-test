@@ -2,6 +2,8 @@ import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
 
 import {
   DelegationEntitlementRecord,
+  MspEcAlarmList,
+  MspEc,
   MspEcProfile,
   MspProfile
 } from './types'
@@ -75,11 +77,18 @@ export const MSPUtils = () => {
     }
   }
 
+  const transformAlarmCount = (row: MspEc, alarmCountData: MspEcAlarmList) => {
+    const count = alarmCountData?.mspEcAlarmCountList?.find(item =>
+      item.tenantId === row.id)?.alarmCount
+    return (count || 0)
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
     transformInstalledDevice,
     transformDeviceEntitlement,
-    transformDeviceUtilization
+    transformDeviceUtilization,
+    transformAlarmCount
   }
 }

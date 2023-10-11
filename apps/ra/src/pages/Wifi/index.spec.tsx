@@ -97,7 +97,7 @@ describe('WiFi Page', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     userEvent.click(await screen.findByText('Airtime Utilization Report'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/ai/wifi/reports/airtime', hash: '', search: ''
+      pathname: '/ai/devices/wifi/reports/airtime', hash: '', search: ''
     }))
   })
 })

@@ -253,4 +253,32 @@ describe('Edge Table', () => {
       expect(rebootDialg).not.toBeVisible()
     })
   })
+
+  it('should show reboot & reset for allowed statuses', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    const row5 = await screen.findByRole('row', { name: /Smart Edge 5/i })
+    await user.click(within(row5).getByRole('checkbox'))
+    expect(screen.queryByText('Reboot')).toBeVisible()
+    expect(screen.queryByText('Reset & Recover')).toBeVisible()
+  })
+
+  it('should not show reboot & reset for the reset statuses', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    const row6 = await screen.findByRole('row', { name: /Smart Edge 6/i })
+    await user.click(within(row6).getByRole('checkbox'))
+    expect(screen.queryByText('Reboot')).toBeNull()
+    expect(screen.queryByText('Reset & Recover')).toBeNull()
+  })
 })

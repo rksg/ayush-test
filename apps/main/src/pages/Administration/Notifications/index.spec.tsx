@@ -47,6 +47,10 @@ jest.mock('@acx-ui/msp/utils', () => ({
   ...jest.requireActual('@acx-ui/msp/utils')
 }))
 
+jest.mock('./AINotificationDrawer', () => ({
+  AINotificationDrawer: () => <div data-testid='AIDrawer'>AI Notification Drawer</div>
+}))
+
 describe('Notification List', () => {
   let params: { tenantId: string }
 
@@ -192,5 +196,21 @@ describe('Notification List', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Preference' }))
     expect(await screen.findByRole('dialog')).toBeVisible()
+  })
+
+  it('should show ai notification button if feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NotificationList />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'AI Notifications' }))
+    expect(await screen.findByTestId('AIDrawer')).toBeVisible()
   })
 })

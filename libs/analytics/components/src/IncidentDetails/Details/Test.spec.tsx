@@ -39,7 +39,6 @@ import { SwitchPoePd }             from './SwitchPoePd'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
 
-
 jest.mock('../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
@@ -57,6 +56,9 @@ jest.mock('../Charts/PoeLowTable', () => ({
 }))
 jest.mock('../Charts/PoePdTable', () => ({
   PoePdTable: () => <div data-testid='poePdTable' />
+}))
+jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
+  ImpactedSwitchVLANsTable: () => <div data-testid='ImpactedSwitchVLANsTable' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
