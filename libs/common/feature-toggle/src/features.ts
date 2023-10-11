@@ -106,10 +106,13 @@ export enum Features {
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
-  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle'
+  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
+  MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_MESH = 'BETA-MESH',
-  BETA_CLB = 'BETA-CLB'
+  BETA_CLB = 'BETA-CLB',
+  BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
+  AP_CCD = 'AP-CCD'
 }
