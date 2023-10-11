@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Space, Switch } from 'antd'
+import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Tooltip }                                         from '@acx-ui/components'
+import { Loader, StepsFormLegacy }                                                  from '@acx-ui/components'
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
+import { ApMgmtVlan }                                                               from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../../index'
 
@@ -33,8 +34,8 @@ export function ApManagementVlan () {
   }, [getVenueApManagementVlan])
 
   const handleChanged = (checked: boolean, vlanId: number) => {
-    const newData = { enabled: checked, vlan: vlanId }
-    setEnableApManagementVlan(newData.enabled)
+    const newData = { vlanOverrideEnabled: checked, vlanId: vlanId }
+    setEnableApManagementVlan(newData.vlanOverrideEnabled)
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
@@ -44,18 +45,15 @@ export function ApManagementVlan () {
 
     setEditAdvancedContextData && setEditAdvancedContextData({
       ...editAdvancedContextData,
-      updateApManagementVlan: () => updateApManagementVlan(newData.enabled, newData.vlan)
+      updateApManagementVlan: () => updateApManagementVlan(newData)
     })
   }
 
-  const updateApManagementVlan = async (checked: boolean, vlanId: number) => {
+  const updateApManagementVlan = async (newData: ApMgmtVlan) => {
     try {
       await updateVenueApManagementVlan({
         params: { tenantId, venueId },
-        payload: {
-          vlanOverrideEnabled: checked,
-          vlanId: vlanId
-        }
+        payload: newData
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -67,17 +65,26 @@ export function ApManagementVlan () {
       isLoading: getVenueApManagementVlan.isLoading,
       isFetching: isUpdatingVenueManagementVlan
     }]}>
-      <Space align='start'>
-        <StepsFormLegacy.FieldLabel
-          width='max-content'
-          style={{ height: '32px', display: 'flex', alignItems: 'center', paddingLeft: '10px' }}
-        >
-          <span>{$t({ defaultMessage: 'AP Management VLAN' })}</span>
-          <div style={{ margin: '2px' }}></div>
-
-          
-        </StepsFormLegacy.FieldLabel>
-      </Space>
+      <Row>
+        <Col span={colSpan}>
+          <Form.Item
+            name='steeringMode'
+            label={$t({ defaultMessage: 'Steering Mode' })}
+          >
+            <Radio.Group>
+              <Space direction='vertical'>
+                <Radio
+                  defaultChecked>
+                  {$t({ defaultMessage: 'Use AP’s settings' })}
+                </Radio>
+                <Radio>
+                  {$t({ defaultMessage: 'VLAN ID' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+      </Row>
     </Loader>
   )
 
