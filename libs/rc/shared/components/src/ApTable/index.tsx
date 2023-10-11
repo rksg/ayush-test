@@ -140,6 +140,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   })
   const tableQuery = props.tableQuery || apListTableQuery
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -186,8 +187,10 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
-        )) {
+        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
+            isAPLowPower(row.apStatusData?.afcInfo)&&
+            AFC_Featureflag)
+        ){
 
           const afcInfo = row.apStatusData?.afcInfo
 
