@@ -8,8 +8,10 @@ import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { ApContextProvider } from '../ApContextProvider'
 
 import { mockedAp, mockedApRfNeighbors, mockedSocket, tabPath } from './__tests__/fixtures'
-import ApRfNeighbors, { compareChannelAndSnr, emtpyRenderer }   from './ApRfNeighbors'
+import ApRfNeighbors, { compareChannelAndSnr }                  from './ApRfNeighbors'
 import { defaultSocketTimeout }                                 from './constants'
+
+import { apNeighborValueRender } from '.'
 
 const mockedInitPokeSocketFn = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -61,8 +63,8 @@ describe('ApRfNeighbors', () => {
   })
 
   it('should render empty column', () => {
-    expect(emtpyRenderer()).toBe('N/A')
-    expect(emtpyRenderer(<div>Test</div>)).toStrictEqual(<div>Test</div>)
+    expect(apNeighborValueRender()).toBe('N/A')
+    expect(apNeighborValueRender('TEST')).toBe('TEST')
   })
 
   it('should render RF Neighbors view', async () => {

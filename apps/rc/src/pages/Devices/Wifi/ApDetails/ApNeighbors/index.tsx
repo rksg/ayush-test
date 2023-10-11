@@ -5,6 +5,7 @@ import { Tabs, Tooltip }    from '@acx-ui/components'
 import { InformationSolid } from '@acx-ui/icons'
 import { useApContext }     from '@acx-ui/rc/utils'
 import { useTenantLink }    from '@acx-ui/react-router-dom'
+import { getIntl }          from '@acx-ui/utils'
 
 import ApLldpNeighbors        from './ApLldpNeighbors'
 import ApRfNeighbors          from './ApRfNeighbors'
@@ -60,4 +61,14 @@ export function ApNeighborsTab () {
     </Tabs>
     : null
   )
+}
+
+
+export function apNeighborValueRender (
+  value?: string | null,
+  highlightFn?: (value: string) => React.ReactNode
+): string | React.ReactNode {
+  if (!value) return getIntl().$t({ defaultMessage: 'N/A' })
+
+  return highlightFn ? highlightFn(value) : value
 }
