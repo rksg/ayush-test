@@ -315,8 +315,13 @@ export function StackForm () {
   const [updateSwitch] = useUpdateSwitchMutation()
   const [convertToStack] = useConvertToStackMutation()
 
+  const hasBlockingTsb = function () {
+    return !checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch
+
+  }
+
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
-    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+    if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -348,7 +353,7 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
-    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
+    if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
