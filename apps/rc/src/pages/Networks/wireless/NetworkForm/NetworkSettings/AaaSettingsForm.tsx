@@ -8,6 +8,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import { isUndefined }               from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -67,7 +68,8 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const wlanSecurity = useWatch('wlanSecurity')
+  const form = Form.useFormInstance()
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
@@ -92,28 +94,43 @@ function SettingsForm () {
     defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
   })
 
+  useEffect(() => {
+    if (!isUndefined(wlanSecurity)) {
+      form.setFieldValue(['wlanSecurity'], wlanSecurity)
+    }
+  }, [wlanSecurity])
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
         {triBandRadioFeatureFlag &&
-          <Form.Item
-            label='Security Protocol'
-            name='wlanSecurity'
-            initialValue={WlanSecurityEnum.WPA2Enterprise}
-            extra={
-              wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-                ? wpa2Description
-                : wpa3Description
-            }
-          >
-            <Select>
-              <Option value={WlanSecurityEnum.WPA2Enterprise}>
-                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
-              </Option>
-              <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
-            </Select>
-          </Form.Item>
+          (
+            <>
+              <Form.Item
+                name='wlanSecurity'
+                initialValue={wlanSecurity}
+                hidden
+              />
+              <Form.Item
+                label='Security Protocol'
+                name={['wlan', 'wlanSecurity']}
+                initialValue={WlanSecurityEnum.WPA2Enterprise}
+                extra={
+                  wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+                    ? wpa2Description
+                    : wpa3Description
+                }
+              >
+                <Select>
+                  <Option value={WlanSecurityEnum.WPA2Enterprise}>
+                    { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+                  </Option>
+                  <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
+                </Select>
+              </Form.Item>
+            </>
+          )
         }
       </div>
       <div>
@@ -124,15 +141,8 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
-    const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = form.getFieldValue('enableAccountingService')
-    const onProxyChange = (value: boolean, fieldName: string) => {
-      setData && setData({ ...data, [fieldName]: value })
-    }
-    useEffect(()=>{
-      form.setFieldsValue(data)
-    },[data])
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionMarkCircleOutlined />}
@@ -153,7 +163,7 @@ function SettingsForm () {
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
+              children={<Switch />}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}
@@ -165,7 +175,7 @@ function SettingsForm () {
             name='enableAccountingService'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
+            children={<Switch />}
           />
           {enableAccountingService && (
             <>
@@ -177,8 +187,7 @@ function SettingsForm () {
                   name='enableAccountingProxy'
                   valuePropName='checked'
                   initialValue={false}
-                  children={<Switch
-                    onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
+                  children={<Switch />}
                 />
                 <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
                 {proxyServiceTooltip}

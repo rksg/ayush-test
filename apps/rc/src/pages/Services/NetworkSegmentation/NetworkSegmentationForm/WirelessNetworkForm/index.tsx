@@ -139,7 +139,7 @@ export const WirelessNetworkForm = () => {
             {
               $t({
                 defaultMessage: `Apply the tunnel profile to the following
-                networks that you want to enable network segmentation:`
+                networks that you want to enable personal identity network:`
               })
             }
             <Space size={1}>
