@@ -162,16 +162,18 @@ export interface VersionHistory {
 export interface switchVersion {
   id: string;
   name: string;
-  version: string;
+  version?: string;
   category: FirmwareCategory;
 }
 
 export interface switchSchedule {
   timeSlot: {
-    startDateTime: string;
-    versionInfo: ScheduleVersionInfo;
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
   };
   version?: {
+    id: string;
     name: string;
     category: FirmwareCategory;
   }
@@ -187,14 +189,16 @@ export interface FirmwareSwitchVenue {
   preDownload: boolean;
   switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;
-  updatedAdvice: VenueUpdateAdvice;
+  updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
   nextSchedule: switchSchedule;
-  lastSkippedVersions: SkippedVersion[];
-  versionHistory: VersionHistory[];
+  lastSkippedVersions?: SkippedVersion[];
+  versionHistory?: VersionHistory[];
   lastScheduleUpdateTime: string;
   switchCount?: number;
   aboveTenSwitchCount?: number;
+  status: string;
+  scheduleCount: number;
 }
 
 export interface CurrentVersions {

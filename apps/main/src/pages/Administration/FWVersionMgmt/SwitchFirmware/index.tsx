@@ -10,6 +10,7 @@ const SwitchFirmware = () => {
     <>
       <VersionBanner />
       {allowUpgradeBySwitch ?
+        // <VenueFirmwareList /> :
         <VenueFirmwareList /> :
         <VenueFirmwareListLegacy />}
     </>

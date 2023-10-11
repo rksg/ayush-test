@@ -67,6 +67,9 @@ export const FieldGroup = styled.div`
 
 export const ExpanderTableWrapper = styled.div`
 
+  min-height: 50vh;
+  margin-bottom: 30px;
+
   .ant-table-cell-fix-right-first{
     /* display: none; */
   }

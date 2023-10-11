@@ -52,9 +52,8 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ChangeScheduleDialog }      from './ChangeScheduleDialog'
-import { NestedSwitchFirmwareTable } from './NestedSwitchFirmwareTable'
-import { UpdateNowDialog } from './UpdateNowDialog'
+import { ChangeScheduleDialog } from './ChangeScheduleDialog'
+import { UpdateNowWizard }      from './UpdateNow/UpdateNowWizard'
 
 function useColumns (
   searchable?: boolean,
@@ -146,10 +145,10 @@ export const VenueFirmwareTable = (
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
   const [modelVisible, setModelVisible] = useState(false)
-  const [updateModelVisible, setUpdateModelVisible] = useState(false)
+  const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
-  const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
+  const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
@@ -206,10 +205,6 @@ export const VenueFirmwareTable = (
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
-  }
-
-  const handleUpdateModalCancel = () => {
-    setUpdateModelVisible(false)
   }
 
   const handleUpdateModalSubmit = async (data: UpdateScheduleRequest) => {
@@ -277,7 +272,7 @@ export const VenueFirmwareTable = (
     //     '' : $t({ defaultMessage: 'No available versions' })
     // },
     onClick: (selectedRows) => {
-      setVenues(selectedRows)
+      setSelectedVenueList(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       let nonIcx8200Count = 0, icx8200Count = 0
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
@@ -293,7 +288,7 @@ export const VenueFirmwareTable = (
       setUpgradeVersions(filterVersions)
       setNonIcx8200Count(nonIcx8200Count)
       setIcx8200Count(icx8200Count)
-      setUpdateModelVisible(true)
+      setUpdateNowWizardVisible(true)
     }
   },
   {
@@ -320,7 +315,7 @@ export const VenueFirmwareTable = (
     //     '' : $t({ defaultMessage: 'No available versions' })
     // },
     onClick: (selectedRows) => {
-      setVenues(selectedRows)
+      setSelectedVenueList(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       let nonIcx8200Count = 0, icx8200Count = 0
 
@@ -415,19 +410,16 @@ export const VenueFirmwareTable = (
           onClick: () => setModelVisible(true)
         }]}
       />
-      {/* <NestedSwitchFirmwareTable
-        data={tableQuery.data?.data as FirmwareSwitchVenue[]}
-      /> */}
 
-      <UpdateNowDialog
-        visible={updateModelVisible}
-        data={tableQuery.data?.data as FirmwareSwitchVenue[]}
-        onCancel={() => { }}
+      <UpdateNowWizard
+        visible={updateNowWizardVisible}
+        data={selectedVenueList as FirmwareSwitchVenue[]}
+        onCancel={() => {setUpdateNowWizardVisible(false)}}
         onSubmit={() => { }}
-      ></UpdateNowDialog>
+      ></UpdateNowWizard>
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
-        data={venues}
+        data={selectedVenueList}
         availableVersions={filterVersions(changeUpgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
