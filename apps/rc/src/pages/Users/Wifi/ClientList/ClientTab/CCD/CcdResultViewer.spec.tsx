@@ -1,8 +1,7 @@
 import { rest } from 'msw'
 
-import { apApi }                       from '@acx-ui/rc/services'
 import { WifiUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider, store }             from '@acx-ui/store'
+import { Provider }                    from '@acx-ui/store'
 import { mockServer, render, waitFor } from '@acx-ui/test-utils'
 
 import {  mockCcdDataAnotherAp, mockCcdDataFail, mockCcdDataNoAp, mockCcdDataSuccess, mockedSocket } from './__tests__/fixtures'
