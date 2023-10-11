@@ -13,7 +13,13 @@ import type { ChartProps } from '../types.d'
 export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
   const { $t, formatList } = useIntl()
   const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const rows = response.data?.map((item) => {
+    const filteredResponse = response.data?.reduce((agg, row) => {
+      const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
+      if (!agg[key]) agg[key] = { ...row, key }
+      return agg
+    }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
+    const result = Object.values(filteredResponse)
+    const rows = result.map((item) => {
       const vlans = item.mismatchedVlans
         .concat(item.mismatchedUntaggedVlan || [])
       return {
