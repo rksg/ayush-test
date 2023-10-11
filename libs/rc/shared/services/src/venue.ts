@@ -1170,6 +1170,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
+    notifyPropertyUnits: build.mutation<null, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.notifyPropertyUnits, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
@@ -1339,6 +1348,7 @@ export const {
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
+  useNotifyPropertyUnitsMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,

@@ -9,6 +9,7 @@ import styled        from 'styled-components/macro'
 import {
   Loader,
   showActionModal,
+  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -39,7 +40,8 @@ import {
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useGetVenueQuery
+  useGetVenueQuery,
+  useNotifyPropertyUnitsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -47,6 +49,7 @@ import {
   FILTER,
   Persona,
   PropertyUnit,
+  PropertyUnitMessages,
   PropertyUnitStatus,
   SEARCH,
   SwitchViewModel,
@@ -144,6 +147,7 @@ export function VenuePropertyTab () {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
+  const [notifyUnits] = useNotifyPropertyUnitsMutation()
 
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
@@ -394,6 +398,21 @@ export function VenuePropertyTab () {
       onClick: ([{ id }], clearSelection) => {
         directToPortal(id)
         clearSelection()
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Resend' }),
+      onClick: (selectedItems, clearSelection) => {
+        notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+          .unwrap()
+          .then(() => {
+            showToast({
+              type: 'success',
+              content: $t(PropertyUnitMessages.RESEND_NOTIFICATION)
+            })
+          })
+          .catch(() => {})
+          .finally(clearSelection)
       }
     },
     {
