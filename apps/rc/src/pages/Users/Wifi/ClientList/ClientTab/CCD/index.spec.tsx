@@ -9,7 +9,7 @@ import { ClientContext } from '..'
 
 import { mockApListByApGroup, mockVenueList } from './__tests__/fixtures'
 
-import ClientConnectionDiagnosis from '.'
+import { ClientConnectionDiagnosis } from '.'
 
 
 const params = {
