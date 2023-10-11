@@ -49,6 +49,7 @@ import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }           
 import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
+import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -123,6 +124,7 @@ export function MspCustomers () {
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
+  const isUpgradeMultipleEcEnabled = useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
@@ -494,6 +496,7 @@ export function MspCustomers () {
     const [modalVisible, setModalVisible] = useState(false)
     const [selTenantId, setSelTenantId] = useState('')
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
+    const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
@@ -543,6 +546,18 @@ export function MspCustomers () {
           const selectedEcIds = selectedRows.map(item => item.id)
           setSelEcTenantIds(selectedEcIds)
           setDrawerAssignEcMspAdminsVisible(true)
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        visible: (selectedRows) => {
+          const len = selectedRows.length
+          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+        },
+        onClick: (selectedRows) => {
+          const selectedEcIds = selectedRows.map(item => item.id)
+          setSelEcTenantIds(selectedEcIds)
+          setDrawerScheduleFirmwareVisible(true)
         }
       },
       {
@@ -658,6 +673,11 @@ export function MspCustomers () {
           tenantIds={selEcTenantIds}
           setVisible={setDrawerAssignEcMspAdminsVisible}
           setSelected={() => {}}
+        />}
+        {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
+          visible={drawerScheduleFirmwareVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerScheduleFirmwareVisible}
         />}
       </Loader>
     )
