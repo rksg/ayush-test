@@ -676,11 +676,11 @@ export const getAdminPassword = (
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const fwUpdatingStatus
-    = [SwitchStatusEnum.FIRMWARE_UPD_START, SwitchStatusEnum.APPLYING_FIRMWARE]
+  const fwUpdatingStatus = [SwitchStatusEnum.FIRMWARE_UPD_START, SwitchStatusEnum.APPLYING_FIRMWARE]
   const isFirmwareUpdating = fwUpdatingStatus.includes(data?.deviceStatus as SwitchStatusEnum)
 
-  return !(data?.configReady && data?.syncedSwitchConfig) || isFirmwareUpdating
+  // id will be serial number when migrating from alto
+  return !(data?.configReady && data?.syncedSwitchConfig) || (isFirmwareUpdating && !data?.id?.includes(':'))
     ? noDataDisplay
     : (data?.syncedAdminPassword
       ? PasswordCoomponent && <PasswordCoomponent
