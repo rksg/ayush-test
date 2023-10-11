@@ -218,7 +218,7 @@ function PersonaDetails () {
             </Button>
           </Space> : undefined)
     },
-    { label: $t({ defaultMessage: 'Network Segmentation' }),
+    { label: $t({ defaultMessage: 'Personal Identity Network' }),
       value:
       personaGroupData?.nsgId
         && <NetworkSegmentationLink
@@ -267,7 +267,7 @@ function PersonaDetails () {
           <Col span={12}>
             {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Network Segmentation' })}
+                {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
             }
           </Col>
