@@ -4,8 +4,8 @@ import { WifiUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { mockServer, render, waitFor } from '@acx-ui/test-utils'
 
-import {  mockCcdDataAnotherAp, mockCcdDataFail, mockCcdDataNoAp, mockCcdDataSuccess, mockedSocket } from './__tests__/fixtures'
-import { CcdResultViewer }                                                                           from './CcdResultViewer'
+import { mockCcdDataAnotherAp, mockCcdDataFail, mockCcdDataNoAp, mockCcdDataSuccess, mockedSocket } from './__tests__/fixtures'
+import { CcdResultViewer }                                                                          from './CcdResultViewer'
 
 
 const mockedInitCcdSocketFn = jest.fn()
@@ -22,7 +22,6 @@ describe('CcdResultViewer', () => {
   const venueId = '_VENUE_ID_'
   const clientMac = '11:11:11:11:11:11'
   const aps = ['22:22:22:22:22:22']
-  //store.dispatch(apApi.util.resetApiState())
 
   beforeEach(() => {
     jest.useFakeTimers()
@@ -163,7 +162,7 @@ describe('CcdResultViewer', () => {
   })
 
 
-  xit('should render correctly after clicking Stop', async () => {
+  it('should render correctly after clicking Stop', async () => {
     const state = 'STOP'
     const payload = {
       state,
@@ -186,18 +185,24 @@ describe('CcdResultViewer', () => {
         />
       </Provider>
     )
+
+    await waitFor(() => expect(mockedInitCcdSocketFn).not.toHaveBeenCalled())
   })
 
-  xit('should render correctly after clicking Clear', async () => {
+  it('should render correctly after clicking Clear', async () => {
     const state = 'CLEAR'
+    const mockCleanCcdAps = jest.fn()
 
     render(
       <Provider>
         <CcdResultViewer
           state={state}
           venueId={venueId}
+          cleanCcdAps={mockCleanCcdAps}
         />
       </Provider>
     )
+
+    await waitFor(() => expect(mockCleanCcdAps).toHaveBeenCalled())
   })
 })
