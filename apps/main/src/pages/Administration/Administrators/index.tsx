@@ -41,6 +41,7 @@ const Administrators = () => {
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
         isMspEc={isMspEc}
+        tenantType={tenantDetailsData.data?.tenantType}
       />
       {isDelegationReady &&
         <DelegationsTable

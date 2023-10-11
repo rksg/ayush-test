@@ -21,7 +21,7 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
+import { Administrator, sortProp, defaultSort, TenantType }     from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 
@@ -34,6 +34,7 @@ interface AdministratorsTableProps {
   currentUserMail: string | undefined;
   isPrimeAdminUser: boolean;
   isMspEc: boolean;
+  tenantType?: string;
 }
 
 interface TooltipRowProps extends React.PropsWithChildren {
@@ -42,7 +43,7 @@ interface TooltipRowProps extends React.PropsWithChildren {
 
 const AdministratorsTable = (props: AdministratorsTableProps) => {
   const { $t } = useIntl()
-  const { isPrimeAdminUser, isMspEc } = props
+  const { isPrimeAdminUser, isMspEc, tenantType } = props
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -54,9 +55,13 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const currentUserDetailLevel = userProfileData?.detailLevel
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING)
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const isTechPartner =
+     tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
-  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile) ||
+     (techPartnerAssignEcsEanbled && isTechPartner)
 
   const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
 
