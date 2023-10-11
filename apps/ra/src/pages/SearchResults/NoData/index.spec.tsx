@@ -10,9 +10,10 @@ describe('SearchResults - NoData', () => {
   const allLinks = [
     'Dashboard',
     'Incidents',
-    'Network Assurance',
-    'Reports',
-    'Data Studio'
+    'Clients',
+    'APs',
+    'Switches',
+    'Wi-Fi Networks'
   ]
 
   it('should render correctly for snapshot test with toggles on', async () => {
