@@ -3,8 +3,7 @@ import React from 'react'
 import {
   Form,
   Radio,
-  RadioChangeEvent,
-  Typography
+  RadioChangeEvent
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
