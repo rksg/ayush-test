@@ -9,15 +9,15 @@ import { useIntl } from 'react-intl'
 import { useRunCcdMutation }  from '@acx-ui/rc/services'
 import { CatchErrorResponse } from '@acx-ui/rc/utils'
 
-import { CcdEndPoints, CcdEndPointRectX, CcdDataMessage, CcdStatus, CcdMsg } from './contents'
-import { useCcd }                                                            from './useCcd'
+import { CcdEndPoints, CcdEndPointRectX, CcdDataMessage, CcdStatus, CcdMsg }           from './contents'
+import { DrawRectangle, DrawRectangleArrow, GetInfo, RectArrowHeight, RectArrowWidth } from './DrawCcdUtils'
+import { useCcd }                                                                      from './useCcd'
 
 
 const msgWidth = 220
 const columnWidth = 24
 const initColumnHeight = 400
-const rectArrowWidth = 56
-const rectArrowHeight = 10
+
 const initRowY = 30
 const rowHeight = 40
 const rowSeperatorHeight = 0
@@ -28,6 +28,8 @@ let rowX = 10
 let rowY = 30
 let hasInitSvg = false
 let columnHeight = 400
+let historicalData: any[][] = []
+let curApHistroicalData: any[] = []
 
 export interface CcdResultViewerProps {
   state?: string,
@@ -37,17 +39,18 @@ export interface CcdResultViewerProps {
     clientMac: string,
     aps?: string[]
   },
-  currentViewAp?: string,
-  currentCcdAp?: string,
-  updateCcdAp?: (apMac: string) => void
+  addCcdAp?: (apMac: string) => void
+  cleanCcdAps?: () => void
+  historicalIndex?: number
 }
 
 export function CcdResultViewer (props: CcdResultViewerProps) {
   const { $t } = useIntl()
   const graphRef = useRef<SVGSVGElement>(null)
   const endPointXsRef = useRef<CcdEndPointRectX[]>([])
+  const currentCcdApRef = useRef<string>('')
 
-  const { state, venueId, payload, currentViewAp, currentCcdAp, updateCcdAp } = props
+  const { state, venueId, payload, addCcdAp, cleanCcdAps, historicalIndex } = props
 
   const { setRequestId, handleError } = useCcd(socketHandler)
 
@@ -58,6 +61,13 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
 
       if (state === 'START') {
         //console.log('Action is STARTING')
+        select(graphRef.current).selectAll('*').remove()
+        historicalData = []
+        curApHistroicalData = []
+        hasInitSvg = false
+        currentCcdApRef.current = ''
+        cleanCcdAps?.()
+
         try {
           const result = await diagnosisClientConnection({
             params: { venueId },
@@ -79,6 +89,8 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
             params: { venueId },
             payload: payload
           }).unwrap()
+
+          saveCurrentApCcdData()
         } catch (error) {
           setRequestId('')
           handleError(error as CatchErrorResponse)
@@ -88,12 +100,47 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
         //console.log('Action is CLEAR')
         hasInitSvg = false
         select(graphRef.current).selectAll('*').remove()
-        updateCcdAp?.('')
+        currentCcdApRef.current = ''
+        historicalData = []
+        curApHistroicalData = []
+        cleanCcdAps?.()
+      } else if (state === 'HISTORICAL') {
+        //console.log('Action is drawing the HISTORICAL data')
+        if (historicalIndex !== undefined) {
+          hasInitSvg = false
+          select(graphRef.current).selectAll('*').remove()
+          currentCcdApRef.current = ''
+          const data = historicalData[historicalIndex]
+          drawHistoricalData(data)
+        }
       }
     }
 
     doActions()
-  }, [state])
+  }, [state, historicalIndex])
+
+  const drawHistoricalData = (data: any[]) => {
+    if (!data) return
+
+    data.forEach(messageData => {
+      if (!hasInitSvg) {
+        initSvg(messageData)
+        hasInitSvg = true
+      }
+
+      const hasDraw = drawProcessToRow(messageData)
+
+      if (hasDraw) {
+        // jump to next row
+        rowY += rowHeight + rowSeperatorHeight
+
+        if (rowY > columnHeight) {
+          const newHeight = rowY + 30
+          adjustmentHeight(newHeight)
+        }
+      }
+    })
+  }
 
   async function socketHandler (msg: string) {
     const data = JSON.parse(msg)
@@ -115,17 +162,14 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       //console.log('currentCcdAp:', currentCcdAp)
       //console.log('currentViewAp:', currentViewAp)
 
-      if (mac !== currentCcdAp) {
-        updateCcdAp?.(mac)
+      if (mac !== currentCcdApRef.current) {
+        currentCcdApRef.current = mac
+        addCcdAp?.(mac)
+        saveCurrentApCcdData()
+        // clean and redraw
+        hasInitSvg = false
       }
 
-      if (mac !== currentViewAp) {
-        if (hasInitSvg) {
-          hasInitSvg = false
-          select(graphRef.current).selectAll('*').remove()
-        }
-        return
-      }
 
       if (!hasInitSvg) {
         initSvg(messageData)
@@ -143,9 +187,20 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
           adjustmentHeight(newHeight)
         }
       }
+
+      curApHistroicalData.push(messageData)
     } /*else {
       console.log('probeData: ', messageData)
     }*/
+  }
+
+  const saveCurrentApCcdData = () => {
+    if (curApHistroicalData?.length > 0) {
+      historicalData.push([ ...curApHistroicalData ])
+      curApHistroicalData = []
+
+      //console.log('historicalData: ', historicalData)
+    }
   }
 
   const initSvg = (data: CcdDataMessage) => {
@@ -181,11 +236,11 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       let identity = fullName
 
       if ( name === 'AP' && data?.apMac) {
-        identity += ` (${ data.apMac })`
+        identity += ` (${ data.apMac.toUpperCase() })`
       }
 
       group = containerGroup.append('g') as any
-      rectangle = drawRectangle(group, rectX, rectY, columnWidth, columnHeight)
+      rectangle = DrawRectangle(group, rectX, rectY, columnWidth, columnHeight)
       rectangle.attr('fill', '#555555').attr('class', 'endpoint')
 
       group.append('text')
@@ -208,7 +263,7 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
         x2: rectX + columnWidth
       })
 
-      rectX += columnWidth + rectArrowWidth
+      rectX += columnWidth + RectArrowWidth
     })
 
     endPointXsRef.current = endPointsXs
@@ -277,28 +332,28 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
     }
 
     const group = containerGroup.append('g') as any
-    const rectArrowY = rowY + (rowHeight - rectArrowHeight) / 2
+    const rectArrowY = rowY + (rowHeight - RectArrowHeight) / 2
 
     let rectArrow = null
 
     if (statusCode !== CcdStatus.WARRING) {
       const statusArrowColor = (statusCode === CcdStatus.SUCCESS)? '#74D7C7' : '#941100'
-      rectArrow = drawRectangleArrow(group, headX, tailX, rectArrowY)
+      rectArrow = DrawRectangleArrow(group, headX, tailX, rectArrowY)
       rectArrow.attr('fill', statusArrowColor)
     }
 
-    const info = getInfo(data)
+    const info = GetInfo(data)
     if (info) {
       const infoRectDisplayText = (statusCode === CcdStatus.SUCCESS)? 'Info'
         : (statusCode === CcdStatus.FAIL)? 'Fail' : 'Warning'
       const infoRectColor = (statusCode === CcdStatus.SUCCESS)? '#74D7C7' : statusTextColor
       const infoRectY = rowY + 13
-      const infoRect = drawRectangle(group, infoRectX, infoRectY,
+      const infoRect = DrawRectangle(group, infoRectX, infoRectY,
         infoRectWidth, infoRectHeight, 5, 5 )
       infoRect.attr('fill', infoRectColor)
       infoRect.append('title').text(info)
 
-      const infoRectTextY = rectArrowY + rectArrowHeight / 2
+      const infoRectTextY = rectArrowY + RectArrowHeight / 2
       const infoRectText = group.append('text')
         .attr('x', infoRectX + 5)
         .attr('y', infoRectTextY)
@@ -306,8 +361,6 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
         .text(infoRectDisplayText)
       infoRectText.attr('fill', 'white')
         .append('title').text(info)
-        //.attr('data-qtip', info)
-        //.style('font-size', '14px')
 
       const infoIcon = group.append('text')
         .attr('x', infoRectX + 50)
@@ -316,106 +369,12 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
         .text('\u24D8')
 
       infoIcon.attr('fill', 'white')
-        //.attr('data-qtip', info)
         .style('font-weight', 'bold')
         .append('title').text(info)
     }
 
     return true
   }
-
-  const getInfo = (data: CcdDataMessage) => {
-    const { info, protocol } = data
-    let infoList = []
-
-    if (info) {
-      infoList.push(`Info: ${info}`)
-    }
-
-    if(protocol) {
-      infoList.push(`Protocol: ${protocol}`)
-    }
-
-    return (infoList.length === 0) ? ''
-      : infoList.join('<br/>').replace(/[;|,]/g, '<br/>')
-  }
-
-  const drawRectangle = (svg: d3.Selection<SVGElement, {}, HTMLElement, any>,
-    x: number, y: number,
-    width: number, height: number,
-    rx?: number, ry?: number) => {
-
-    const rect = svg.append('rect')
-      .attr('x', x).attr('y', y)
-      .attr('width', width).attr('height', height)
-
-    if (rx) rect.attr('rx', rx)
-    if (ry) rect.attr('ry', ry)
-
-    return rect
-  }
-
-  const drawRectangleArrow = (svg: d3.Selection<SVGElement, {}, HTMLElement, any>,
-    headX: number, tailX: number, y: number) => {
-
-    const arrowWidth = rectArrowHeight + rectArrowHeight / 2
-    let pointData
-
-    if (headX > tailX) {
-      pointData = [{
-        x: tailX,
-        y: y
-      }, {
-        x: headX - arrowWidth,
-        y: y
-      }, {
-        x: headX - arrowWidth,
-        y: y - rectArrowHeight / 2
-      }, {
-        x: headX,
-        y: y + rectArrowHeight / 2
-      }, {
-        x: headX - arrowWidth,
-        y: y + rectArrowHeight + rectArrowHeight / 2
-      }, {
-        x: headX - arrowWidth,
-        y: y + rectArrowHeight
-      }, {
-        x: tailX,
-        y: y + rectArrowHeight
-      }]
-    } else {
-      pointData = [{
-        x: tailX,
-        y: y
-      }, {
-        x: headX + arrowWidth,
-        y: y
-      }, {
-        x: headX + arrowWidth,
-        y: y - rectArrowHeight / 2
-      }, {
-        x: headX,
-        y: y + rectArrowHeight / 2
-      }, {
-        x: headX + arrowWidth,
-        y: y + rectArrowHeight + rectArrowHeight / 2
-      }, {
-        x: headX + arrowWidth,
-        y: y + rectArrowHeight
-      }, {
-        x: tailX,
-        y: y + rectArrowHeight
-      }]
-    }
-
-    return svg.append('polygon').data([pointData]).attr('points', function (d) {
-      return d.map(function (d) {
-        return [d.x, d.y].join(',')
-      }).join(' ')
-    })
-  }
-
 
 
   return (
