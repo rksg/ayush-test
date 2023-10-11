@@ -37,6 +37,7 @@ type RAEnvironment = {
   MLISA_VERSION: string
   MLISA_UI_USER_TRACKING: string
   DRUID_ROLLUP_DAYS: string
+  ENABLED_FEATURES: string
 }
 
 type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
