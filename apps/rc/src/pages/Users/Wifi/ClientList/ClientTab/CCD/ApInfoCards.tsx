@@ -13,7 +13,6 @@ export interface ApInfoCradsProps {
   selectedApIndex: number,
   onSelectApChanged: (index: number) => void,
   disabled?: boolean
-  ccdApMac?: string
 }
 
 export function ApInfoCards (props: ApInfoCradsProps) {

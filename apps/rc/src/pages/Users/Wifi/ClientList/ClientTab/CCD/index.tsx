@@ -28,7 +28,7 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined) => {
+export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<unknown> | undefined) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
@@ -106,7 +106,6 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
 
   const handleSelectedApsInfo = (apsInfo: ApInfo[]) => {
     const apInfoList = apsInfo || []
-    //const curViewAp = apInfoList[0]?.apMac?.toUpperCase() || ''
     setSelectedApsInfo(apInfoList)
   }
 
@@ -343,6 +342,4 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
     </CcdResultContainer>
     }
   </>)
-}
-
-export default forwardRef(ClientConnectionDiagnosis)
+})
