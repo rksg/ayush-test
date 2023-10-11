@@ -3,11 +3,14 @@ import React from 'react'
 import {
   Form,
   Radio,
-  RadioChangeEvent
+  RadioChangeEvent,
+  Typography
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { SpaceWrapper } from '@acx-ui/rc/components'
+
+import * as UI from './styledComponents'
 
 
 interface AuthenticationSelectorProps {
@@ -77,6 +80,21 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
               </React.Fragment>
             )})}
         </SpaceWrapper>
+
+        <Form.Item
+          noStyle
+          dependencies={['authType']}
+        >
+          {({ getFieldValue }) => {
+            return (getFieldValue('authType') === AuthTypeRadioButtonEnum.idm)
+              ? (
+                <UI.RadioLabel>
+                  {$t({ defaultMessage: 'To use this authentication type,'+
+                            ' a new administrator must be activated on the RUCKUS One account.' })}
+                </UI.RadioLabel>)
+              : null
+          }}
+        </Form.Item>
       </Radio.Group>
     </Form.Item>
   )
