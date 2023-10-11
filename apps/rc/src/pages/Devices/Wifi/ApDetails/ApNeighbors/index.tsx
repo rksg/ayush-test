@@ -1,16 +1,16 @@
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { Tabs, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
-import { useApContext }           from '@acx-ui/rc/utils'
-import { useTenantLink }          from '@acx-ui/react-router-dom'
+import { Tabs, Tooltip }    from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
+import { useApContext }     from '@acx-ui/rc/utils'
+import { useTenantLink }    from '@acx-ui/react-router-dom'
 
-import ApLldpNeighbors     from './ApLldpNeighbors'
-import ApRfNeighbors       from './ApRfNeighbors'
-import { ApNeighborTypes } from './constants'
-import * as UI             from './styledComponents'
+import ApLldpNeighbors        from './ApLldpNeighbors'
+import ApRfNeighbors          from './ApRfNeighbors'
+import { ApNeighborTypes }    from './constants'
+import * as UI                from './styledComponents'
+import { useIsApNeighborsOn } from './useApNeighbors'
 
 export function ApNeighborsTab () {
   const { $t } = useIntl()
@@ -38,7 +38,7 @@ export function ApNeighborsTab () {
 
   const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
-  const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
+  const isApNeighborsOn = useIsApNeighborsOn()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/neighbors/`)
   const onTabChange = (tab: string) => {
     navigate({

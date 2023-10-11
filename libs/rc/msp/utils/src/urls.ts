@@ -300,5 +300,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/notificationAggregations',
     newApi: true
+  },
+  getMspEcAlarmList: {
+    method: 'post',
+    url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
   }
 }

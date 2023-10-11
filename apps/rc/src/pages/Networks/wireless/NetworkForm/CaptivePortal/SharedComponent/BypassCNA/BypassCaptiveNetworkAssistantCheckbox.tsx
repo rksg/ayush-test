@@ -71,7 +71,7 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
           </Checkbox>
         }
       />
-      <Tooltip title={$t({ defaultMessage: 'When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.' })}
+      <Tooltip title={$t({ defaultMessage: 'Enabling \'Bypass Captive Network Assistant\' prevents the controller from using the mini-browser on mobile devices. With CNA bypass enabled, portal login is achieved by opening a standard browser to any unauthenticated http page to get redirected to the login portal.' })}
         placement='bottom'>
         <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>

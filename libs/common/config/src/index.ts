@@ -37,6 +37,7 @@ type RAEnvironment = {
   MLISA_VERSION: string
   MLISA_UI_USER_TRACKING: string
   DRUID_ROLLUP_DAYS: string
+  ENABLED_FEATURES: string
 }
 
 type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
@@ -49,8 +50,8 @@ export async function initialize () {
   config.value = await fetch(envConfigUrl).then(res => res.json())
 }
 
-export function get (key: keyof EnvironmentConfig) {
-  if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA as string
+export function get (key: keyof EnvironmentConfig): string {
+  if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA || ''
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
 }

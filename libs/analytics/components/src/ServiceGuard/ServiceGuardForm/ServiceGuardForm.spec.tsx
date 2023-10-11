@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { get }            from '@acx-ui/config'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { networkApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -32,6 +33,8 @@ import { ServiceGuardSpecGuard } from '../ServiceGuardGuard'
 import { ServiceGuardForm } from './ServiceGuardForm'
 
 const { click, type, selectOptions } = userEvent
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -215,5 +218,23 @@ describe('ServiceGuardForm', () => {
 
     expect(await screen.findByText('Duplicate test name exist')).toBeVisible()
     expect(mockedNavigate).not.toBeCalled()
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('renders tooltip in heading', async () => {
+      render(<ServiceGuardForm />, {
+        wrapper: Provider,
+        route: { params: { tenantId: 't-id' } }
+      })
+
+      const form = within(await screen.findByTestId('steps-form'))
+      const body = within(form.getByTestId('steps-form-body'))
+
+      const heading = await body.findByRole('heading', { name: 'Settings' })
+      expect(heading).toBeVisible()
+      expect(await within(heading).findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
+    })
   })
 })

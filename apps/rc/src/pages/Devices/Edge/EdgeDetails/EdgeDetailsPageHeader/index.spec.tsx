@@ -160,11 +160,11 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset and Recover' })
+    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset & Recover' })
     await userEvent.click(resetBtn)
 
     const resetDialog = await screen.findByRole('dialog')
-    await within(resetDialog).findByText(`Reset and recover "${currentEdge.name}"?`)
+    await within(resetDialog).findByText(`Reset & Recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
@@ -237,7 +237,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 
@@ -264,7 +264,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 
@@ -291,7 +291,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 })

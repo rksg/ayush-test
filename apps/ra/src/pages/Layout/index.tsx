@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Menu } from 'antd'
 
-import { HelpButton, UserButton } from '@acx-ui/analytics/components'
-import { getUserProfile }         from '@acx-ui/analytics/utils'
+import { HelpButton, UserButton }                    from '@acx-ui/analytics/components'
+import { getUserProfile, PERMISSION_VIEW_ANALYTICS } from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI,
@@ -38,7 +38,7 @@ function AccountsDropdown ({
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}`,
-        search: `?selectedTenants=${btoa(JSON.stringify([matchedAccount.id]))}`
+        search: `?selectedTenants=${window.btoa(JSON.stringify([matchedAccount.id]))}`
       })
     }}
     items={accounts.map(account => ({ key: account.id, label: account.name }))}
@@ -53,6 +53,7 @@ function Layout () {
   const userProfile = getUserProfile()
   const accounts = userProfile.tenants
   const selectedAccountName = userProfile?.selectedTenant.name
+  const hasAnalytics = userProfile.selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
@@ -64,7 +65,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <GlobalSearchBar />
+          {hasAnalytics && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         { accounts.length > 1

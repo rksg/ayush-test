@@ -121,7 +121,7 @@ interface APCountResponse <APCountForNode> {
 }
 type KpisHavingThreshold = keyof KpiThresholdType
 
-export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
+export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
 const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => { // we do not want to filter switches to always display poe info
   const { filter: { ssids, networkNodes } } = getFilterPayload(payload)
@@ -179,7 +179,7 @@ export const healthApi = dataApi.injectEndpoints({
     }),
     getKpiThresholds: build.query<
       ThresholdsApiResponse,
-      KpiThresholsPayload
+      KpiThresholdPayload
     >({
       query: (payload) => {
         let kpis:KpisHavingThreshold[] = payload.kpis && payload.kpis.length ?

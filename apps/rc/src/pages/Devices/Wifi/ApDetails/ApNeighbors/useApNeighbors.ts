@@ -5,6 +5,7 @@ import { MessageDescriptor } from 'react-intl'
 import { v4 as uuidv4 }      from 'uuid'
 
 import { showToast }                                                                    from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
 import { useDetectApNeighborsMutation }                                                 from '@acx-ui/rc/services'
 import { ApErrorHandlingMessages, CatchErrorResponse, closePokeSocket, initPokeSocket } from '@acx-ui/rc/utils'
 import { getIntl }                                                                      from '@acx-ui/utils'
@@ -128,4 +129,11 @@ function showError (errorMessage: string) {
     type: 'error',
     content: errorMessage
   })
+}
+
+export function useIsApNeighborsOn (): boolean {
+  const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
+  const isBetaApNeighborsOn = useIsTierAllowed(TierFeatures.BETA_AP_NEIGHBORS)
+
+  return isApNeighborsOn && isBetaApNeighborsOn
 }
