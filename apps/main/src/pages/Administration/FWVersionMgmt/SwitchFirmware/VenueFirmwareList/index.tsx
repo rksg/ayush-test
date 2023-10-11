@@ -52,8 +52,9 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { UpdateNowWizard }      from './UpdateNow/UpdateNowWizard'
+import { ScheduleUpdatesWizard } from './ScheduleUpdates/ScheduleUpdatesWizard'
+import { UpdateNowWizard }       from './UpdateNow/UpdateNowWizard'
+import { SkipUpdatesWizard } from './SkipUpdates/SkipUpdatesWizard'
 
 function useColumns (
   searchable?: boolean,
@@ -146,14 +147,11 @@ export const VenueFirmwareTable = (
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
-  const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
+  const [scheduleWizardVisible, setScheduleWizardVisible] = useState(false)
+  const [skipWizardVisible, setSkipWizardVisible] = useState(false)
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
-  const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [currentSchedule, setCurrentSchedule] = useState<switchSchedule>()
-  const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
-  const [icx8200Count, setIcx8200Count] = useState<number>(0)
 
   const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
@@ -206,35 +204,6 @@ export const VenueFirmwareTable = (
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  const handleUpdateModalSubmit = async (data: UpdateScheduleRequest) => {
-    try {
-      updateVenueSchedules({
-        params: { ...params },
-        payload: data
-      }).unwrap()
-      setSelectedRowKeys([])
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const handleChangeScheduleModalCancel = () => {
-    setChangeScheduleModelVisible(false)
-  }
-  const handleChangeScheduleModalSubmit = (data: UpdateScheduleRequest) => {
-    try {
-      updateVenueSchedules({
-        params: { ...params },
-        payload: data
-      }).unwrap()
-      setSelectedRowKeys([])
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
 
   const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
@@ -267,10 +236,6 @@ export const VenueFirmwareTable = (
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
-    // tooltip: (selectedRows) => {
-    //   return hasAvailableSwitchFirmware(selectedRows) ?
-    //     '' : $t({ defaultMessage: 'No available versions' })
-    // },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -285,9 +250,6 @@ export const VenueFirmwareTable = (
         }
       })
 
-      setUpgradeVersions(filterVersions)
-      setNonIcx8200Count(nonIcx8200Count)
-      setIcx8200Count(icx8200Count)
       setUpdateNowWizardVisible(true)
     }
   },
@@ -333,12 +295,7 @@ export const VenueFirmwareTable = (
           icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
         }
       })
-
-      setChangeUpgradeVersions(filterVersions)
-      setNonIcx8200Count(nonIcx8200Count)
-      setIcx8200Count(icx8200Count)
-      setCurrentSchedule(currentSchedule)
-      setChangeScheduleModelVisible(true)
+      setScheduleWizardVisible(true)
     }
   },
   {
@@ -349,46 +306,30 @@ export const VenueFirmwareTable = (
           skipUpdateEnabled = false
         }
       })
-      return !skipUpdateEnabled
+      return false// !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows, clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        width: 460,
-        title: $t({ defaultMessage: 'Skip This Update?' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
-        okText: $t({ defaultMessage: 'Skip' }),
-        cancelText: $t({ defaultMessage: 'Cancel' }),
-        onOk () {
-          skipSwitchUpgradeSchedules({
-            params: { ...params },
-            payload: selectedRows.map((row) => row.id)
-          }).then(clearSelection)
-        },
-        onCancel () {}
-      })
+      setSelectedVenueList(selectedRows)
+      setSkipWizardVisible(true)
+      // showActionModal({
+      //   type: 'confirm',
+      //   width: 460,
+      //   title: $t({ defaultMessage: 'Skip This Update?' }),
+      //   // eslint-disable-next-line max-len
+      //   content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+      //   okText: $t({ defaultMessage: 'Skip' }),
+      //   cancelText: $t({ defaultMessage: 'Cancel' }),
+      //   onOk () {
+      //     skipSwitchUpgradeSchedules({
+      //       params: { ...params },
+      //       payload: selectedRows.map((row) => row.id)
+      //     }).then(clearSelection)
+      //   },
+      //   onCancel () {}
+      // })
     }
   }]
-
-  const [form] = Form.useForm()
-  const handleAddCli = async () => {
-    try {
-      // await addCliTemplate({
-      //   params, payload: {
-      //     ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
-      //     applyLater: !data.applyNow,
-      //     venueSwitches: transformVenueSwitches(
-      //       data.venueSwitches as unknown as Map<string, string[]>[]
-      //     )
-      //   }
-      // }).unwrap()
-      // navigate(linkToNetworks, { replace: true })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
 
   return (
     <Loader states={[
@@ -414,19 +355,21 @@ export const VenueFirmwareTable = (
       <UpdateNowWizard
         visible={updateNowWizardVisible}
         data={selectedVenueList as FirmwareSwitchVenue[]}
-        onCancel={() => {setUpdateNowWizardVisible(false)}}
-        onSubmit={() => { }}
-      ></UpdateNowWizard>
-      <ChangeScheduleDialog
-        visible={changeScheduleModelVisible}
-        data={selectedVenueList}
-        availableVersions={filterVersions(changeUpgradeVersions)}
-        nonIcx8200Count={nonIcx8200Count}
-        icx8200Count={icx8200Count}
-        currentSchedule={currentSchedule}
-        onCancel={handleChangeScheduleModalCancel}
-        onSubmit={handleChangeScheduleModalSubmit}
-      />
+        onCancel={() => { setUpdateNowWizardVisible(false) }}
+        onSubmit={() => { }}/>
+      <ScheduleUpdatesWizard
+        visible={scheduleWizardVisible}
+        data={selectedVenueList as FirmwareSwitchVenue[]}
+        onCancel={() => { setScheduleWizardVisible(false) }}
+        onSubmit={() => { }} />
+
+      <SkipUpdatesWizard
+        visible={skipWizardVisible}
+        data={selectedVenueList as FirmwareSwitchVenue[]}
+        onCancel={() => { setSkipWizardVisible(false) }}
+        onSubmit={() => { }} />
+
+        SkipUpdatesWizard
       <PreferencesDialog
         visible={modelVisible}
         data={preferences}
