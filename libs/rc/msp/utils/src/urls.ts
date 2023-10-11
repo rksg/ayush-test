@@ -204,14 +204,16 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   assignMspEcToIntegrator: {
-    method: 'post',
-    // method: 'PATCH',
-    // url: '/mspCustomers/:mspEcTenantId/delegations'
-    url: '/api/mspservice/tenant/assign/:mspIntegratorId'
+    method: 'PATCH',
+    url: '/mspIntegrators/:mspIntegratorId',
+    oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId',
+    newApi: true
   },
   getAssignedMspEcToIntegrator: {
     method: 'get',
-    url: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType'
+    url: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
+    oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType',
+    newApi: true
   },
   updateAssignedMspEcDelegatedAdmins: {
     method: 'put',

@@ -166,6 +166,29 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Airtime Utilization Report' })
               }
             ]
+          },
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Wi-Fi Networks' }),
+            children: [
+              {
+                uri: '/networks/wireless',
+                label: $t({ defaultMessage: 'Wi-Fi Networks List' }),
+                isActiveCheck: new RegExp('^/networks/wireless(?!(/reports))')
+              },
+              {
+                uri: '/networks/wireless/reports/wlans',
+                label: $t({ defaultMessage: 'WLANs Report' })
+              },
+              {
+                uri: '/networks/wireless/reports/applications',
+                label: $t({ defaultMessage: 'Applications Report' })
+              },
+              {
+                uri: '/networks/wireless/reports/wireless',
+                label: $t({ defaultMessage: 'Wireless Report' })
+              }
+            ]
           }
         ]
       }
