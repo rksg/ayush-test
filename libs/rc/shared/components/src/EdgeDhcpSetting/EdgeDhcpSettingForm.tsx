@@ -145,7 +145,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                 children={<Input />}
               />
               <StepsForm.FieldLabel width='90%'>
-                {$t({ defaultMessage: 'Use for Network Segmentation' })}
+                {$t({ defaultMessage: 'Use for Personal Identity Network' })}
                 <Form.Item
                   name='usedForNSG'
                   valuePropName='checked'
