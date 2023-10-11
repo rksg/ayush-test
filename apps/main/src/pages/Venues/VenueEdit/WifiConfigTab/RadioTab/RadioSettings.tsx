@@ -174,7 +174,7 @@ export function RadioSettings () {
   /* eslint-disable max-len */
   const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
     const lowerPowerModeAP = response.filter((ap) => {
-      return ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo) && AFC_Featureflag
+      return AFC_Featureflag && ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
     })
 
     setLowPowerAPQuantity({

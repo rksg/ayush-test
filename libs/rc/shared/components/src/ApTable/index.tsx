@@ -187,9 +187,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-            isAPLowPower(row.apStatusData?.afcInfo)&&
-            AFC_Featureflag)
+        if ((AFC_Featureflag &&
+            ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
+            isAPLowPower(row.apStatusData?.afcInfo))
         ){
 
           const afcInfo = row.apStatusData?.afcInfo
