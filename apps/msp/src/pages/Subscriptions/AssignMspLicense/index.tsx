@@ -20,7 +20,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useAddMspAssignmentMutation,
-  useUpdateMspAssignmentMutation
+  useUpdateMspAssignmentMutation,
+  useDeleteMspAssignmentMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -82,6 +83,7 @@ export function AssignMspLicense () {
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
+  const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
 
   const getAssignmentId = (deviceType: string) => {
     const license =
@@ -141,17 +143,22 @@ export function AssignMspLicense () {
 
       const addAssignment = []
       const updateAssignment = []
+      const deleteAssignment = []
       if (isDeviceAgnosticEnabled) {
         // device assignment
         const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
         const quantityApsw = ecFormData.apswLicenses || 0
         apswAssignId ?
-          updateAssignment.push({
-            startDate: today,
-            endDate: expirationDate,
-            quantity: quantityApsw,
-            assignmentId: apswAssignId
-          })
+          quantityApsw > 0 ?
+            updateAssignment.push({
+              startDate: today,
+              endDate: expirationDate,
+              quantity: quantityApsw,
+              assignmentId: apswAssignId
+            }) :
+            deleteAssignment.push({
+              assignmentId: apswAssignId
+            })
           : addAssignment.push({
             quantity: quantityApsw,
             deviceType: EntitlementDeviceType.MSP_APSW
@@ -198,6 +205,9 @@ export function AssignMspLicense () {
       }
       if (updateAssignment.length > 0) {
         await updateMspSubscription({ payload: updateAssignment }).unwrap()
+      }
+      if (deleteAssignment.length > 0) {
+        await deleteMspSubscription({ payload: deleteAssignment }).unwrap()
       }
       navigate(linkToSubscriptions, { replace: true })
     } catch (error) {
