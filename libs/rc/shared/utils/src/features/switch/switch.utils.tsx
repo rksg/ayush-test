@@ -11,7 +11,8 @@ import {
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  SWITCH_TYPE
+  SWITCH_TYPE,
+  SWITCH_SERIAL_PATTERN
 } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
@@ -678,10 +679,11 @@ export const getAdminPassword = (
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
+  const serialNumberRegExp = new RegExp(SWITCH_SERIAL_PATTERN)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
-  return !(data?.configReady && data?.syncedSwitchConfig) || !data?.id?.includes(':')
+  return !(data?.configReady && data?.syncedSwitchConfig) || serialNumberRegExp.test(data?.id)
     ? noDataDisplay
     : (data?.syncedAdminPassword
       ? PasswordCoomponent && <PasswordCoomponent
