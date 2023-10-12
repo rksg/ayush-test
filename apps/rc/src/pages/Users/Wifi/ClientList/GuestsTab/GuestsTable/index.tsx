@@ -362,6 +362,7 @@ export const GuestsTable = () => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
+        filterableWidth={155}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
