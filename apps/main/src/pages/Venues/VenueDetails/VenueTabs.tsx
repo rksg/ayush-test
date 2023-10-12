@@ -23,7 +23,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortOrder: 'ASC'
     }
   }, { skip: !enableProperty })
-  const { data: propertyConfig } = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
+  const propertyConfig = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -61,7 +61,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
         key='networks'
       />
-      {(enableProperty && propertyConfig?.status === PropertyConfigStatus.ENABLED) &&
+      {(enableProperty
+          && !propertyConfig?.isError
+          && propertyConfig?.currentData?.status === PropertyConfigStatus.ENABLED
+      ) &&
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })}
           key='units'
