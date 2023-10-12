@@ -71,11 +71,11 @@ function useGraph (
 const detailsZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 20, 30, 63, 125, 250, 375, 500, 750])
-  .range([1.75, 0.6, 0.4, 0.35, 0.2, 0.15, 0.11, 0.09, 0.075, 0.06])
+  .range([1.75, 0.6, 0.4, 0.35, 0.2, 0.15, 0.11, 0.09, 0.02, 0.01])
 const drawerZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 63, 125, 250, 375, 500])
-  .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.1])
+  .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.04])
 
 export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
