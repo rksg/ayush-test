@@ -3,15 +3,16 @@ import { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
-import { useGetAvailableSwitchesQuery }              from '@acx-ui/rc/services'
-import { AccessSwitch, DistributionSwitch }          from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { Alert, StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
+import { useGetAvailableSwitchesQuery, useGetEdgeQuery }    from '@acx-ui/rc/services'
+import { AccessSwitch, DistributionSwitch }                 from '@acx-ui/rc/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 import { DistributionSwitchTable }  from './DistributionSwitchTable'
+import { StaticRouteModel }         from './StaticRouteModel'
 
 
 export function DistributionSwitchForm () {
@@ -25,6 +26,8 @@ export function DistributionSwitchForm () {
     form.getFieldValue('distributionSwitchInfos')
   const accessSwitchInfos = form.getFieldValue('accessSwitchInfos') as AccessSwitch []
   const venueId = form.getFieldValue('venueId')
+  const edgeId = form.getFieldValue('edgeId') as string
+  const edgeName = form.getFieldValue('edgeName') as string
 
   const { availableSwitches, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
     params: { tenantId, venueId }
@@ -38,6 +41,10 @@ export function DistributionSwitchForm () {
       ) || []
     })
   })
+
+  const { data: edgeData } = useGetEdgeQuery({
+    params: { serialNumber: edgeId }
+  }, { skip: !!edgeName || !edgeId })
 
   useEffect(()=>{
     if (distributionSwitchInfos) {
@@ -115,11 +122,20 @@ export function DistributionSwitchForm () {
         }
       }} />
     <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
-    <DistributionSwitchDrawer
+    { openDrawer && <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches}
       onSaveDS={handleSaveDS}
-      onClose={()=>setOpenDrawer(false)} />
+      onClose={()=>setOpenDrawer(false)} /> }
+    { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
+      description={$t({ defaultMessage:
+        'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
+        'for the distribution switch’s lookback IP addresses to establish the connection.' }, {
+        staticRoute: <StaticRouteModel edgeId={edgeId} edgeName={edgeName || edgeData?.name!} />,
+        edgeName: edgeName || edgeData?.name
+      })}
+      showIcon
+    /> }
   </>)
 }
