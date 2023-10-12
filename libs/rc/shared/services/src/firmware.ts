@@ -13,7 +13,8 @@ import {
   onActivityMessageReceived,
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
-  EdgeFirmwareVersion
+  EdgeFirmwareVersion,
+  SwitchFirmwareStatus
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -221,11 +222,91 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           }
         }
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       transformResponse (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) {
+        const data = [
+          {
+            id: '156c8b7daa464b06b4fd59ae38dcce30',
+            name: 'kittoVenue',
+            switchFirmwareVersion: {
+              id: '09010f_b403',
+              name: '09010f_b403',
+              category: 'RECOMMENDED'
+            },
+            switchFirmwareVersionAboveTen: {
+              id: '10010_b214',
+              name: '10010_b214',
+              category: 'RECOMMENDED'
+            },
+            availableVersions: [
+              {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              },
+              {
+                id: '10010_b214',
+                name: '10010_b214',
+                category: 'RECOMMENDED'
+              }
+            ],
+            nextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-05T00:00:00-07:00',
+                endDateTime: '2023-10-05T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            lastScheduleUpdateTime: '2023-09-22T09:00:00.030+00:00',
+            preDownload: false,
+            switchCount: 0,
+            aboveTenSwitchCount: 0,
+            upgradeVenueViewList: null,
+            status: 'SUCCESS',
+            scheduleCount: 1
+          },
+          {
+            id: '9b68bd5cafbf4bc282dc0434102ceca9',
+            name: 'My-Venue',
+            switchFirmwareVersion: {
+              id: '09010f_b403',
+              name: '09010f_b403',
+              category: 'RECOMMENDED'
+            },
+            switchFirmwareVersionAboveTen: {
+              id: '10010_b214',
+              name: '10010_b214',
+              category: 'RECOMMENDED'
+            },
+            availableVersions: [
+              {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              },
+              {
+                id: '10010_b214',
+                name: '10010_b214',
+                category: 'RECOMMENDED'
+              }
+            ],
+            lastScheduleUpdateTime: '2023-10-03T04:00:00.069+00:00',
+            preDownload: false,
+            switchCount: 0,
+            aboveTenSwitchCount: 0,
+            upgradeVenueViewList: null,
+            status: 'NONE',
+            scheduleCount: 0
+          }
+        ]
         return {
-          data: result.upgradeVenueViewList,
+          data: data,
           page: 1,
-          totalCount: result.upgradeVenueViewList.length
+          totalCount: data.length
         } as TableResult<FirmwareSwitchVenue>
       },
       keepUnusedDataFor: 0,
@@ -250,6 +331,91 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+
+    getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareVersionIdList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse () {
+        const data = [
+          {
+            switchId: 'c0:c5:20:aa:32:55',
+            switchName: 'kittoSwitch',
+            status: 'FW_UPD_DOWNLOADING',
+            targetFirmware: '09010h_cd1_b3'
+          }
+        ]
+
+        return {
+          data,
+          page: 1,
+          totalCount: data?.length
+        } as unknown as TableResult<SwitchFirmwareStatus>
+      } }),
+
+
+
+    getSwitchFirmwareList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareVersionIdList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse () {
+        const data =[
+          {
+            venueId: '156c8b7daa464b06b4fd59ae38dcce30',
+            venueName: 'kittoVenue',
+            switchId: 'c0:c5:20:aa:32:55',
+            switchName: 'kittoSwitch',
+            isStack: false,
+            model: 'ICX7150-48P',
+            currentFirmware: '09010f_b403',
+            availableVersion:
+                  {
+                    id: '09010h_cd1_b3',
+                    name: '09010h_cd1_b3',
+                    category: 'RECOMMENDED'
+                  },
+            switchNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-05T00:00:00-07:00',
+                endDateTime: '2023-10-05T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            venueNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-08T00:00:00-07:00',
+                endDateTime: '2023-10-08T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            preDownload: false
+          }
+        ]
+        return {
+          data,
+          page: 1,
+          totalCount: data?.length
+        } as unknown as TableResult<FirmwareSwitchVenue>
+      } }),
+
+
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwarePredownload, params)
@@ -392,5 +558,9 @@ export const {
   useUpdateEdgeUpgradePreferencesMutation,
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeVenueSchedulesMutation,
-  useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useGetSwitchFirmwareListQuery,
+  useLazyGetSwitchFirmwareListQuery,
+  useGetSwitchFirmwareStatusListQuery,
+  useLazyGetSwitchFirmwareStatusListQuery
 } = firmwareApi

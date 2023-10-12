@@ -201,6 +201,15 @@ export interface FirmwareSwitchVenue {
   scheduleCount: number;
 }
 
+export interface SwitchFirmwareStatus {
+  switchId: string;
+  switchName: string;
+  status: string;
+  targetFirmware: string;
+}
+
+
+
 export interface CurrentVersions {
   currentVersions: string[];
   currentVersionsAboveTen: string[]

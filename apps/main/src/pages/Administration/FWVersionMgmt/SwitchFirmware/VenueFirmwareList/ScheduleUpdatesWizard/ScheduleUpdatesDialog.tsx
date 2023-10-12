@@ -23,7 +23,7 @@ import {
 } from '../../../FirmwareUtils'
 import { PreDownload } from '../../../PreDownload'
 
-import * as UI from './../styledComponents'
+import * as UI from '../styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'

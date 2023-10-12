@@ -5,14 +5,11 @@ import * as _            from 'lodash'
 import { useIntl }       from 'react-intl'
 
 import {
-  showActionModal,
   ColumnType,
   Table,
   TableProps,
   Loader,
-  Modal,
-  ModalType,
-  StepsForm
+  Button,
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
@@ -30,13 +27,11 @@ import {
   UpgradePreferences,
   FirmwareSwitchVenue,
   FirmwareVersion,
-  UpdateScheduleRequest,
   TableQuery,
   useTableQuery,
   sortProp,
   defaultSort,
-  FirmwareCategory,
-  switchSchedule
+  FirmwareCategory
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -52,76 +47,10 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ScheduleUpdatesWizard } from './ScheduleUpdates/ScheduleUpdatesWizard'
-import { UpdateNowWizard }       from './UpdateNow/UpdateNowWizard'
-import { SkipUpdatesWizard } from './SkipUpdates/SkipUpdatesWizard'
-
-function useColumns (
-  searchable?: boolean,
-  filterables?: { [key: string]: ColumnType['filterable'] }
-) {
-  const intl = useIntl()
-
-  const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
-    {
-      title: intl.$t({ defaultMessage: 'Venue' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
-      searchable: searchable,
-      defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return row.name
-      }
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Current Firmware' }),
-      key: 'version',
-      dataIndex: 'version',
-      // sorter: true,
-      sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
-      filterable: filterables ? filterables['version'] : false,
-      filterMultiple: false,
-      render: function (_, row) {
-        let versionList = []
-        if (row.switchFirmwareVersion?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
-        }
-        if (row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
-        }
-        return versionList.length > 0 ? versionList.join(', ') : '--'
-      }
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Last Update' }),
-      key: 'lastUpdate',
-      dataIndex: 'lastUpdate',
-      sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
-      render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
-      }
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Scheduling' }),
-      key: 'nextSchedule',
-      dataIndex: 'nextSchedule',
-      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
-      render: function (_, row) {
-        // return getNextScheduleTpl(intl, row)
-        return (!isSwitchNextScheduleTooltipDisabled(row)
-          ? getNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-          </Tooltip>
-        )
-      }
-    }
-  ]
-
-  return columns
-}
+import { ScheduleUpdatesWizard } from './ScheduleUpdatesWizard'
+import { SkipUpdatesWizard }     from './SkipUpdatesWizard'
+import { UpdateNowWizard }       from './UpdateNowWizard'
+import { UpdateStatusDrawer } from './UpdateStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -141,6 +70,7 @@ type VenueTableProps = {
 export const VenueFirmwareTable = (
   { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
+  const intl = useIntl()
   const params = useParams()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
@@ -149,6 +79,10 @@ export const VenueFirmwareTable = (
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [scheduleWizardVisible, setScheduleWizardVisible] = useState(false)
   const [skipWizardVisible, setSkipWizardVisible] = useState(false)
+  const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
+  const [clickedUpdateStatusData, setClickedUpdateStatusData] =
+    useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
+
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
@@ -204,7 +138,110 @@ export const VenueFirmwareTable = (
       console.log(error) // eslint-disable-line no-console
     }
   }
-  const columns = useColumns(searchable, filterables)
+  const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Venue' }),
+      key: 'name',
+      dataIndex: 'name',
+      sorter: { compare: sortProp('name', defaultSort) },
+      searchable: true,
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
+        return row.name
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Current Firmware' }),
+      key: 'version',
+      dataIndex: 'version',
+      sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
+      filterable: filterables ? filterables['version'] : false,
+      filterMultiple: false,
+      render: function (_, row) {
+        let versionList = []
+        if (row.switchFirmwareVersion?.id) {
+          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
+        }
+        if (row.switchFirmwareVersionAboveTen?.id) {
+          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
+        }
+        return versionList.length > 0 ? versionList.join(', ') : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Available Firmware' }),
+      key: 'availableVersions',
+      dataIndex: 'availableVersions',
+      render: function (_, row) {
+        const availableVersions = row.availableVersions
+        if (availableVersions.length === 0) {
+          return '--'
+        } else {
+          const count09010 = availableVersions.filter(
+            version => version.id.startsWith('09010')).length
+          const count10010 = availableVersions.filter(
+            version => version.id.startsWith('10010')).length
+
+          if (count09010 > 1 || count10010 > 1) {
+            return 'Multiple'
+          } else {
+            return availableVersions.map(version => version.id).join(',')
+          }
+        }
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      dataIndex: 'status',
+      render: function (__, row) {
+        if(_.isEmpty(row.name)){
+          return '--'
+        }
+
+        return <>{row.name}<Button
+          size='small'
+          ghost={true}
+          style={{
+            color: '#5496EA',
+            padding: '0',
+            marginLeft: '5px',
+            alignItems: 'end'
+          }}
+          onClick={() => {
+            setClickedUpdateStatusData(row)
+            setUpdateStatusDrawerVisible(true)
+          }}>
+          Check Status
+        </Button></>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Last Update' }),
+      key: 'lastUpdate',
+      dataIndex: 'lastUpdate',
+      sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
+      render: function (_, row) {
+        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Scheduling' }),
+      key: 'nextSchedule',
+      dataIndex: 'nextSchedule',
+      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
+      render: function (_, row) {
+        // return getNextScheduleTpl(intl, row)
+        return (!isSwitchNextScheduleTooltipDisabled(row)
+          ? getNextScheduleTpl(intl, row)
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
+          </Tooltip>
+        )
+      }
+    }
+  ]
 
   const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -378,6 +415,10 @@ export const VenueFirmwareTable = (
         isSwitch={true}
         preDownload={preDownload?.preDownload}
       />
+      <UpdateStatusDrawer
+        visible={updateStatusDrawerVisible}
+        setVisible={setUpdateStatusDrawerVisible}
+        data={clickedUpdateStatusData} />
     </Loader>
   )
 }

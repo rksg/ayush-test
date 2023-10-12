@@ -17,7 +17,7 @@ import {
 
 import { getSwitchVersionLabel } from '../../../FirmwareUtils'
 
-import * as UI from './../styledComponents'
+import * as UI from '../styledComponents'
 
 export interface UpdateNowDialogProps {
   visible: boolean,
