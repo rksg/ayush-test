@@ -6,11 +6,12 @@ import { useIntl } from 'react-intl'
 import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
 import { useNavigateToPath }                from '@acx-ui/react-router-dom'
 
-import * as contents          from '../contents'
+import * as contents from '../contents'
 import {
   specToDto,
   useServiceGuardSpecMutation,
-  useMutationResponseEffect
+  useMutationResponseEffect,
+  localToDb
 } from '../services'
 import {
   Band,
@@ -72,7 +73,9 @@ export function ServiceGuardForm () {
     <StepsForm
       editMode={editMode}
       initialValues={specToDto(spec.data) ?? initialValues}
-      onFinish={async (values) => { await submit(values).unwrap() }}
+      onFinish={async (values) => {
+        await submit({ ...values, schedule: localToDb(values.schedule!) }).unwrap()
+      }}
       onCancel={navigateToList}
       buttonLabel={({
         submit: $t({ defaultMessage: 'Create' })

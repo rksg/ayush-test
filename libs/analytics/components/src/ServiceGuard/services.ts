@@ -33,7 +33,8 @@ import type {
   MutationResponse,
   ClientType,
   AuthenticationMethod,
-  Wlan
+  Wlan,
+  Schedule
 } from './types'
 
 const fetchServiceGuardSpec = gql`
@@ -442,18 +443,11 @@ export function specToDto (
   }
 }
 
-export function localToDb (
-  spec?: Omit<ServiceGuardSpec, 'apsCount' | 'userId' | 'tests' | 'configs'> & {
-    configs: Omit<ServiceGuardConfig, 'id' | 'specId' | 'updatedAt' | 'createdAt'>[]
-}) {
-  if (!spec) return undefined
-  const schedule = { ...(spec.schedule! || initialValues.schedule) }
-  const { frequency } = schedule
-  frequency && (schedule.timezone = moment.tz.guess())
-  return {
-    ..._.omit(spec, ['schedule']),
-    schedule
-  }
+export const localToDb = (schedule: Schedule) => {
+  const dbSchedule = { ...schedule }
+  const { frequency } = dbSchedule
+  frequency && (dbSchedule.timezone = moment.tz.guess())
+  return dbSchedule
 }
 
 type CreateUpdateCloneMutationResult = MutationResult<{
@@ -567,9 +561,6 @@ export function useServiceGuardSpecMutation () {
   const spec = useServiceGuardSpec()
   const editMode = !spec.isUninitialized
   const create = useCreateServiceGuardSpecMutation()
-  if (editMode) {
-    localToDb(spec.data)
-  }
   const update = useUpdateServiceGuardSpecMutation()
 
   const [submit, response] = editMode ? update : create
