@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitFor }     from '@acx-ui/test-utils'
 import { mockNsgData, mockNsgSwitchInfoData, switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
 import { AccessSwitchDrawer }  from './AccessSwitchDrawer'
-import { NetworkSegAuthModel } from './NetworkSegAuthModel'
+import { NetworkSegAuthModal } from './NetworkSegAuthModal'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -139,7 +139,7 @@ describe('AccessSwitchDrawer', () => {
 describe('NetworkSegAuthModel', () => {
   const setWebAuthTemplateId = jest.fn()
   it('Should render successfully', async () => {
-    render(<NetworkSegAuthModel setWebAuthTemplateId={setWebAuthTemplateId} />)
+    render(<NetworkSegAuthModal setWebAuthTemplateId={setWebAuthTemplateId} />)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 

@@ -6,7 +6,7 @@ import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
 
 import StaticRoutes from '../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes'
 
-export const StaticRouteModel = (props: { edgeId: string, edgeName: string }) => {
+export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
 

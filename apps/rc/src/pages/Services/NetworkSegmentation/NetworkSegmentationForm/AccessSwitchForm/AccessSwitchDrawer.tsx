@@ -35,7 +35,7 @@ import {
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { NetworkSegAuthModel } from './NetworkSegAuthModel'
+import { NetworkSegAuthModal } from './NetworkSegAuthModal'
 import * as UI                 from './styledComponents'
 
 export function AccessSwitchDrawer (props: {
@@ -331,7 +331,7 @@ export function AccessSwitchDrawer (props: {
               }))} />
           </Form.Item>
           { (!isMultipleEdit || webAuthPageOverwrite) && webAuthPageType !== 'USER_DEFINED' &&
-          <NetworkSegAuthModel setWebAuthTemplateId={(id)=>{
+          <NetworkSegAuthModal setWebAuthTemplateId={(id)=>{
             form.setFieldValue('templateId', id)
           }}/>}
         </Space>

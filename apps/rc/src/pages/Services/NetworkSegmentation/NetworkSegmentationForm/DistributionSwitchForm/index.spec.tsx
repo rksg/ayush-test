@@ -23,6 +23,8 @@ import {
   mockNsgSwitchInfoData
 } from '../../__tests__/fixtures'
 
+import { StaticRouteModal } from './StaticRouteModal'
+
 import { DistributionSwitchForm } from './'
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -45,6 +47,11 @@ jest.mock('./DistributionSwitchDrawer', () => ({
         onClose()
       }}>Cancel</button>
     </div>
+}))
+
+jest.mock('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes', () => ({
+  ...jest.requireActual('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes'),
+  default: () => <div data-testid={'StaticRoutes'}></div>
 }))
 
 
@@ -143,5 +150,19 @@ describe('DistributionSwitchForm', () => {
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+})
+
+describe('StaticRouteModal', () => {
+  it('Should render successfully', async () => {
+    render(<StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Static Route' }))
+
+    expect(await screen.findByTestId('StaticRoutes')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(await screen.findByTestId('StaticRoutes')).not.toBeVisible()
   })
 })

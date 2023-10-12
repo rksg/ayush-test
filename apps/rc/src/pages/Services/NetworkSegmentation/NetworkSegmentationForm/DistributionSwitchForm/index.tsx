@@ -12,7 +12,7 @@ import { NetworkSegmentationGroupFormData } from '..'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 import { DistributionSwitchTable }  from './DistributionSwitchTable'
-import { StaticRouteModel }         from './StaticRouteModel'
+import { StaticRouteModal }         from './StaticRouteModal'
 
 
 export function DistributionSwitchForm () {
@@ -132,7 +132,7 @@ export function DistributionSwitchForm () {
       description={$t({ defaultMessage:
         'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
         'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
-        staticRoute: <StaticRouteModel edgeId={edgeId} edgeName={edgeName || edgeData?.name!} />,
+        staticRoute: <StaticRouteModal edgeId={edgeId} edgeName={edgeName || edgeData?.name!} />,
         edgeName: edgeName || edgeData?.name
       })}
       showIcon

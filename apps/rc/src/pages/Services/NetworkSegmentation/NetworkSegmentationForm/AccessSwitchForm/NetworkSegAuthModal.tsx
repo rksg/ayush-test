@@ -6,7 +6,7 @@ import { Button, Modal, ModalType } from '@acx-ui/components'
 
 import NetworkSegAuthForm from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
 
-export const NetworkSegAuthModel = (props: {
+export const NetworkSegAuthModal = (props: {
   setWebAuthTemplateId: (id: string) => void
 }) => {
   const { $t } = useIntl()
