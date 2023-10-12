@@ -4,9 +4,8 @@ import { Col, Row, Space, Tag, Typography } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                                                 from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import {
   ConnectionMeteringLink,
   DpskPoolLink,
@@ -14,7 +13,8 @@ import {
   NetworkSegmentationLink,
   IdentityGroupLink,
   PropertyUnitLink,
-  useDpskNewConfigFlowParams
+  useDpskNewConfigFlowParams,
+  PassphraseViewer
 } from '@acx-ui/rc/components'
 import {
   useLazyGetDpskQuery,
@@ -167,22 +167,9 @@ function PersonaDetails () {
     },
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
-        <>
-          <PasswordInput
-            readOnly
-            bordered={false}
-            style={{ paddingLeft: 0 }}
-            value={personaDetailsQuery.data?.dpskPassphrase}
-          />
-          <Button
-            ghost
-            data-testid={'copy'}
-            icon={<CopyOutlined />}
-            onClick={() =>
-              navigator.clipboard.writeText(personaDetailsQuery.data?.dpskPassphrase ?? '')
-            }
-          />
-        </>
+        <PassphraseViewer
+          passphrase={personaDetailsQuery.data?.dpskPassphrase ?? ''}
+        />
     },
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
