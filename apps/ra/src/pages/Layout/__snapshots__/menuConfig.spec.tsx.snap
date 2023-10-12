@@ -236,6 +236,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -617,6 +665,54 @@ Array [
           Object {
             "type": 0,
             "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
           },
         ],
         "type": "group",
@@ -1076,6 +1172,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -1517,6 +1661,54 @@ Array [
           Object {
             "type": 0,
             "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
           },
         ],
         "type": "group",
@@ -2021,6 +2213,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -2476,6 +2716,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -2927,6 +3215,54 @@ Array [
           Object {
             "type": 0,
             "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
           },
         ],
         "type": "group",
