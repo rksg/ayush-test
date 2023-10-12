@@ -4,10 +4,10 @@ import { Tabs }                                  from '@acx-ui/components'
 import { RWG }                                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function RWGTabs (props:{ gatewayDetail: RWG }) {
+function RWGTabs (props:{ gatewayDetail: RWG, dnsRecordsCount: number }) {
   const { $t } = useIntl()
   const params = useParams()
-  const { gatewayDetail } = props
+  const { gatewayDetail, dnsRecordsCount } = props
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayDetail?.id}/gateway-details`)
   const navigate = useNavigate()
 
@@ -16,8 +16,6 @@ function RWGTabs (props:{ gatewayDetail: RWG }) {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-
-  const dnsRecordsCount = 0 // TODO
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>

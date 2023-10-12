@@ -4694,7 +4694,7 @@
   "xsvEdn": "DE-{count, plural, one {{apGroupName}} other {{count} AP Groups} }",
   "xtmiaw": "DE-Yes, create guest pass",
   "xu6eM8": "DE-Test",
-  "xuA+Xj": "When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.",
+  "xuA+Xj": "Enabling 'Bypass Captive Network Assistant' prevents the controller from using the mini-browser on mobile devices. With CNA bypass enabled, portal login is achieved by opening a standard browser to any unauthenticated http page to get redirected to the login portal.",
   "xuRIYt": "DE-Add IP Address",
   "xukzKg": "DE-Networks",
   "xvA/HS": "DE-Select ...",

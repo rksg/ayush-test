@@ -1,19 +1,20 @@
 import { gql }           from 'graphql-request'
+import _                 from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
 import {
   nodeTypes,
-  getFilterPayload,
   formattedPath,
   productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import { recommendationApi }              from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
-import type { AnalyticsFilter }           from '@acx-ui/utils'
+import type { PathFilter }                from '@acx-ui/utils'
 
-import { states,
+import {
+  states,
   codes,
   StatusTrail,
   IconValue,
@@ -25,12 +26,37 @@ import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 
 export type CrrmListItem = {
   id: string
+  code: string
   status: StateType
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
   crrmInterferingLinksText?: React.ReactNode
+  summary?: string
 } & Partial<RecommendationKpi>
+
+export type CrrmList = {
+  crrmCount: number
+  zoneCount: number
+  optimizedZoneCount: number
+  crrmScenarios: number
+  recommendations: CrrmListItem[]
+}
+
+export type AiOpsListItem = {
+  id: string
+  code: string
+  updatedAt: string
+  sliceValue: string
+  priority?: IconValue
+  category?: string
+  summary?: string
+}
+
+export type AiOpsList = {
+  aiOpsCount: number
+  recommendations: AiOpsListItem[]
+}
 
 export type Recommendation = {
   id: string
@@ -137,8 +163,9 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
   })
 }
 
+const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+
 export const getCrrmOptimizedState = (state: StateType) => {
-  const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
   return optimizedStates.includes(state)
     ? crrmStates.optimized
     : crrmStates.nonOptimized
@@ -177,84 +204,115 @@ export const getCrrmInterferingLinksText = (
   }, { before, after })
 }
 
-export function transformCrrmList (recommendations: CrrmListItem[]): CrrmListItem[] {
-  return recommendations.map(recommendation => {
-    const { status, kpi_number_of_interfering_links } = recommendation
-    return {
-      ...recommendation,
-      crrmOptimizedState: getCrrmOptimizedState(recommendation.status),
-      crrmInterferingLinksText: getCrrmInterferingLinksText(
-        status,
-        kpi_number_of_interfering_links!
-      )
-    } as unknown as CrrmListItem
-  })
-}
-
-function transformRecommendationList (recommendations: Recommendation[]): RecommendationListItem[] {
-  const { $t } = getIntl()
-  return recommendations.map(recommendation => {
-    const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
-    const statusEnum = status as StateType
-    return {
-      ...recommendation,
-      scope: formattedPath(path, sliceValue),
-      type: nodeTypes(sliceType as NodeType),
-      priority: codes[code as keyof typeof codes].priority,
-      category: $t(codes[code as keyof typeof codes].category),
-      summary: $t(codes[code as keyof typeof codes].summary),
-      status: $t(states[statusEnum].text),
-      statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
-      statusEnum,
-      ...(code.includes('crrm') && {
-        crrmOptimizedState: getCrrmOptimizedState(statusEnum)
-      })
-    }
-  })
-}
-
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
-      CrrmListItem[],
-      AnalyticsFilter & { n: number }
+      CrrmList,
+      PathFilter & { n: number }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
         document: gql`
         query CrrmList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $n: Int
+          $startDate: DateTime, $endDate: DateTime,
+          $path: [HierarchyNodeInput], $n: Int, $status: [String]
         ) {
-          recommendations(start: $start, end: $end, path: $path, n: $n, crrm: true) {
-            id
-            status
-            sliceValue
-            ${kpiHelper('c-crrm-channel24g-auto')}
+          crrmCount: recommendationCount(start: $startDate, end: $endDate, path: $path, crrm: true)
+          zoneCount: recommendationCount(
+            start: $startDate,
+            end: $endDate,
+            path: $path,
+            crrm: true,
+            uniqueBy: "sliceValue"
+          )
+          optimizedZoneCount: recommendationCount(
+            start: $startDate,
+            end: $endDate,
+            path: $path,
+            crrm: true,
+            status: $status,
+            uniqueBy: "sliceValue"
+          )
+          crrmScenarios(start: $startDate, end: $endDate, path: $path)
+          recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
+            id code status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
           }
         }
         `,
         variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          n: payload.n,
-          ...getFilterPayload(payload)
+          ..._.pick(payload, ['path', 'startDate', 'endDate', 'n']),
+          status: optimizedStates
         }
       }),
-      transformResponse: (response: Response<CrrmListItem>) => {
-        return transformCrrmList(response.recommendations)
+      transformResponse: (response: CrrmList) => {
+        const { $t } = getIntl()
+        return {
+          crrmCount: response.crrmCount,
+          zoneCount: response.zoneCount,
+          optimizedZoneCount: response.optimizedZoneCount,
+          crrmScenarios: response.crrmScenarios,
+          recommendations: response.recommendations.map(recommendation => {
+            const { code, status, kpi_number_of_interfering_links } = recommendation
+            return {
+              ...recommendation,
+              crrmOptimizedState: getCrrmOptimizedState(status),
+              crrmInterferingLinksText: getCrrmInterferingLinksText(
+                status,
+                kpi_number_of_interfering_links!
+              ),
+              summary: $t(codes[code as keyof typeof codes].summary)
+            } as unknown as CrrmListItem
+          })
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    aiOpsList: build.query<
+      AiOpsList,
+      PathFilter & { n: number }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query AiOpsList(
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $n: Int
+        ) {
+          aiOpsCount: recommendationCount(
+            start: $startDate, end: $endDate, path: $path, crrm: false
+          )
+          recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
+            id code updatedAt sliceValue
+          }
+        }
+        `,
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'n'])
+      }),
+      transformResponse: (response: AiOpsList) => {
+        const { $t } = getIntl()
+        return {
+          aiOpsCount: response.aiOpsCount,
+          recommendations: response.recommendations.map(recommendation => {
+            const { code } = recommendation
+            return {
+              ...recommendation,
+              priority: codes[code as keyof typeof codes].priority,
+              category: $t(codes[code as keyof typeof codes].category),
+              summary: $t(codes[code as keyof typeof codes].summary)
+            } as unknown as AiOpsListItem
+          })
+        }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      AnalyticsFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean }
     >({
       query: (payload) => ({
         document: gql`
         query RecommendationList(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput], $crrm: Boolean
         ) {
-          recommendations(start: $start, end: $end, path: $path, crrm: $crrm) {
+          recommendations(start: $startDate, end: $endDate, path: $path, crrm: $crrm) {
             id
             code
             status
@@ -273,15 +331,28 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          crrm: payload.crrm,
-          ...getFilterPayload(payload)
-        }
+        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'crrm'])
       }),
       transformResponse: (response: Response<Recommendation>) => {
-        return transformRecommendationList(response.recommendations)
+        const { $t } = getIntl()
+        return response.recommendations.map(recommendation => {
+          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+          const statusEnum = status as StateType
+          return {
+            ...recommendation,
+            scope: formattedPath(path, sliceValue),
+            type: nodeTypes(sliceType as NodeType),
+            priority: codes[code as keyof typeof codes].priority,
+            category: $t(codes[code as keyof typeof codes].category),
+            summary: $t(codes[code as keyof typeof codes].summary),
+            status: $t(states[statusEnum].text),
+            statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
+            statusEnum,
+            ...(code.includes('crrm') && {
+              crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+            })
+          }
+        })
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
@@ -358,12 +429,14 @@ export const api = recommendationApi.injectEndpoints({
   })
 })
 
+
 export interface Response<Recommendation> {
   recommendations: Recommendation[]
 }
 
 export const {
   useCrrmListQuery,
+  useAiOpsListQuery,
   useRecommendationListQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,

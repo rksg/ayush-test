@@ -30,19 +30,14 @@ const EditDhcp = () => {
   useEffect(() => {
     if(edgeDhcpData) {
       form.resetFields()
-      form.setFieldsValue(edgeDhcpData)
-      form.setFieldValue(
-        'enableSecondaryDNSServer',
-        !!form.getFieldValue('secondaryDnsIp')
-      )
-      form.setFieldValue(
-        'leaseTimeType',
-        edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
-      )
-      form.setFieldValue(
-        'usedForNSG',
-        (edgeDhcpData.dhcpPools?.length ?? -1) > 0
-      )
+      form.setFieldsValue({
+        ...edgeDhcpData,
+        enableSecondaryDNSServer: !!form.getFieldValue('secondaryDnsIp'),
+        leaseTimeType: edgeDhcpData.leaseTime === -1 ?
+          LeaseTimeType.INFINITE :
+          LeaseTimeType.LIMITED,
+        usedForNSG: (edgeDhcpData.dhcpPools?.length ?? -1) > 0
+      })
     }
   }, [edgeDhcpData])
 
