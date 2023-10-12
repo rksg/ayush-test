@@ -7,6 +7,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
@@ -34,6 +35,8 @@ function ApPageHeader () {
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
+
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -128,7 +131,11 @@ function ApPageHeader () {
         ])
       ]}
       footer={<>
-        {isAPLowPower(ApStatusData?.afcInfo) && <LowPowerBannerAndModal parent='ap' />}
+        {
+          AFC_Featureflag &&
+          isAPLowPower(ApStatusData?.afcInfo) &&
+          <LowPowerBannerAndModal parent='ap' />
+        }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
     />
