@@ -29,6 +29,11 @@ const UserButton = () => {
           case 'logout':
             const token = sessionStorage.getItem('jwt')?? null
             sessionStorage.removeItem('jwt')
+
+            Object.keys(localStorage)
+              ?.filter(s => s.startsWith('ACX'))
+              ?.forEach(s => localStorage.removeItem(s))
+
             window.location.href = token? `/logout?token=${token}` : '/logout'
             break
         }

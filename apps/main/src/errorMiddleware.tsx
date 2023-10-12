@@ -252,6 +252,11 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (needLogout && !isDevModeOn) {
       const token = sessionStorage.getItem('jwt')?? null
       sessionStorage.removeItem('jwt')
+
+      Object.keys(localStorage)
+        ?.filter(s => s.startsWith('ACX'))
+        ?.forEach(s => localStorage.removeItem(s))
+
       window.location.href = token? `/logout?token=${token}` : '/logout'
     }
   }
