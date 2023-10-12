@@ -27,7 +27,7 @@ import { CloudMessageBanner }                                           from '@a
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
-import { PverName, getJwtTokenPayload, isDelegationMode }  from '@acx-ui/utils'
+import { PverName, getJwtTokenPayload, isDelegationMode }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
