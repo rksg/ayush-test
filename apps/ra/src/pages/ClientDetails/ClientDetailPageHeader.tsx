@@ -29,7 +29,7 @@ export const ClientDetailPageHeader = () => {
   const hostname = useClientListQuery({
     start: startDate,
     end: endDate,
-    limit: 10,
+    limit: 1,
     query: clientId as string
   })?.data?.clients?.[0]?.hostname
   return (
