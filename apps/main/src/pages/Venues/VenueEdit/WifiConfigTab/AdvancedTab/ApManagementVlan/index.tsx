@@ -9,6 +9,8 @@ import { InformationSolid }                                                     
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 
 import { VenueEditContext } from '../../../index'
+import { color } from 'echarts'
+import { textAlign } from 'libs/rc/shared/components/src/NetworkSegmentationServiceInfo/styledComponents'
 
 const { useWatch } = Form
 
@@ -78,7 +80,11 @@ export function ApManagementVlan () {
       title: $t({ defaultMessage: 'AP Management VLAN' }),
       content:
         // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'The VLAN tag configuration for managing traffic will be applied throughout the venue. An incorrect settings between APs and switches could result in losing access to your APs. Are you sure you want to continue?' }),
+        $t({ defaultMessage:
+          `The VLAN tag configuration for managing traffic will be applied
+           throughout the venue. An incorrect settings between APs and
+           switches could result in losing access to your APs. Are you sure
+           you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
@@ -129,6 +135,7 @@ export function ApManagementVlan () {
                     children={<InputNumber
                       min={1}
                       max={4094}
+                      onChange={onFormDataChanged}
                       style={{
                         width: '81px',
                         marginLeft: '13px'
