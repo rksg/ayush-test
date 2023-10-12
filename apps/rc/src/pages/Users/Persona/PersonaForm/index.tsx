@@ -40,7 +40,7 @@ export function PersonaForm (props: {
   }
 
   return (
-    <Space direction={'vertical'} size={20} style={{ display: 'flex' }}>
+    <>
       <PersonaContextForm
         form={form}
         defaultValue={defaultValue}
@@ -65,6 +65,6 @@ export function PersonaForm (props: {
             </Form>
           </>
       }
-    </Space>
+    </>
   )
 }
