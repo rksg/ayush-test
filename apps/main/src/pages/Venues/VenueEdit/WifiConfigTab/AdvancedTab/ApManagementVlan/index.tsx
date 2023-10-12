@@ -4,7 +4,7 @@ import { InputNumber, Form, Radio, Space, Row, Col } from 'antd'
 import { FormattedMessage, useIntl }                 from 'react-intl'
 import { useParams }                                 from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, cssStr }                                          from '@acx-ui/components'
+import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
 import { InformationSolid }                                                         from '@acx-ui/icons'
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 
@@ -71,16 +71,28 @@ export function ApManagementVlan () {
   }
 
   const handleUpdateApManagementVlan = async () => {
-    try {
-      const payload = getApManagementVlanDataFromFields()
 
-      await updateVenueApManagementVlan({
-        params: { venueId },
-        payload
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'AP Management VLAN' }),
+      content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'The VLAN tag configuration for managing traffic will be applied throughout the venue. An incorrect settings between APs and switches could result in losing access to your APs. Are you sure you want to continue?' }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          const payload = getApManagementVlanDataFromFields()
+
+          await updateVenueApManagementVlan({
+            params: { venueId },
+            payload
+          }).unwrap()
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+      }
+    })
   }
 
   return (
