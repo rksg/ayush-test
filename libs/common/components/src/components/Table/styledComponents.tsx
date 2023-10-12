@@ -409,7 +409,7 @@ export const Header = styled.div`
   z-index: 3;
   background-color: var(--acx-primary-white);
   :has(.ant-picker.ant-picker-focused) {
-    z-index: 4;
+    z-index: 20;
   }
 `
 
