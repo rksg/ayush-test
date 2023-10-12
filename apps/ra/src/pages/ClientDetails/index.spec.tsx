@@ -68,7 +68,7 @@ describe('ClientDetails', () => {
       search: ''
     })
   })
-  it('should render unknown when hostname is not known', async () => {
+  it('should handle when hostname is undefined', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: {
         search: {
@@ -83,7 +83,7 @@ describe('ClientDetails', () => {
         path: '/users/wifi/clients/:clientId/details/:activeTab'
       }
     })
-    expect(await screen.findByText('mockClientId (Unknown)')).toBeVisible()
+    expect(await screen.findByText('mockClientId')).toBeVisible()
   })
   it('should render with reports correctly', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {

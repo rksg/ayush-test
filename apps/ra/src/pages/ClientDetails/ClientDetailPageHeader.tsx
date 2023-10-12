@@ -29,12 +29,12 @@ export const ClientDetailPageHeader = () => {
   const hostname = useClientListQuery({
     start: startDate,
     end: endDate,
-    limit: 100,
+    limit: 10,
     query: clientId as string
   })?.data?.clients?.[0]?.hostname
   return (
     <PageHeader
-      title={<Space size={4}>{`${clientId} (${hostname ?? $t({ defaultMessage: 'Unknown' })})`}
+      title={<Space size={4}>{`${clientId} ${hostname ? `(${hostname})` : ''}`}
         {<HostnameSpace size={4}>
           {/* TODO: use client detail query to get hostname */}
         </HostnameSpace>}
