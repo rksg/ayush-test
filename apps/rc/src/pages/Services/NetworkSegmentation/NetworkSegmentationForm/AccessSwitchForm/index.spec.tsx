@@ -22,7 +22,7 @@ import {
 
 import { AccessSwitchForm } from './'
 
-const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean

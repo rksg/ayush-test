@@ -102,13 +102,13 @@ const TunnelProfileTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Network Segmentation' }),
-      key: 'networkSegmentationIds',
-      dataIndex: 'networkSegmentationIds',
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
+      key: 'personalIdentityNetworkIds',
+      dataIndex: 'personalIdentityNetworkIds',
       align: 'center',
       filterable: nsgOptions,
       sorter: true,
-      render: (_, row) => row.networkSegmentationIds?.length || 0
+      render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
     {
       title: $t({ defaultMessage: 'Networks' }),

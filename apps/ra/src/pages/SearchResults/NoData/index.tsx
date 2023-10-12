@@ -12,9 +12,10 @@ const useLinkData = () => {
   const linkData = [
     { title: 'Dashboard', to: '/dashboard' },
     { title: 'Incidents', to: '/incidents' },
-    { title: 'Network Assurance', to: '/health' },
-    { title: 'Reports', to: '/reports' },
-    { title: 'Data Studio', to: '/dataStudio' }
+    { title: 'Clients', to: '/users/wifi/clients' },
+    { title: 'APs', to: '/devices/wifi' },
+    { title: 'Switches', to: '/devices/switch' },
+    { title: 'Wi-Fi Networks', to: '/networks/wireless' }
   ]
 
   const data = linkData.map(val => <TenantLink to={val.to}>

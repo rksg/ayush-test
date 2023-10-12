@@ -52,16 +52,32 @@ export const useEdgeActions = () => {
     })
   }
 
-  const factoryReset = (data: EdgeStatus) => {
+  const factoryReset = (data: EdgeStatus, callback?: () => void) => {
     showActionModal({
       type: 'confirm',
       title: $t(
-        { defaultMessage: 'Reset and recover "{edgeName}"?' },
+        { defaultMessage: 'Reset & Recover "{edgeName}"?' },
         { edgeName: data.name }
       ),
-      content: $t({
-        defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
-      }),
+      content: (
+        <UI.Content>
+          <div className='mb-16'>
+            {
+              $t({
+                defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
+              })
+            }
+          </div>
+          <span className='warning-text'>
+            {$t({
+              defaultMessage: `Note: Reset & Recover can address anomalies,
+              but may not resolve all issues, especially for complex,
+              misconfigured, or hardware-related problems.`
+            })}
+          </span>
+        </UI.Content>
+      )
+      ,
       customContent: {
         action: 'CUSTOM_BUTTONS',
         buttons: [{
@@ -75,6 +91,7 @@ export const useEdgeActions = () => {
           closeAfterAction: true,
           handler: () => {
             invokeFactoryResetEdge({ params: { serialNumber: data.serialNumber } })
+              .then(() => callback?.())
           }
         }]
       }

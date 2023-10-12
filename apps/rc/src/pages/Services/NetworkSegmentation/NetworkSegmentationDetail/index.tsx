@@ -97,7 +97,7 @@ const NetworkSegmentationDetail = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
-            text: $t({ defaultMessage: 'Network Segmentation' }),
+            text: $t({ defaultMessage: 'Personal Identity Network' }),
             link: getServiceRoutePath({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.LIST

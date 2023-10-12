@@ -18,7 +18,8 @@ import {
   isRouter,
   isEmpty,
   getSwitchPortLabel,
-  sortPortFunction
+  sortPortFunction,
+  isSameModelFamily
 } from '.'
 
 const switchRow ={
@@ -53,6 +54,12 @@ describe('switch.utils', () => {
       expect(getSwitchModel('FJN4312T00C')).toBe('ICX7150-48ZP')
       expect(getSwitchModel('EZC4312T00C')).toBe('ICX7650-48ZP')
       expect(getSwitchModel('')).toBe('Unknown')
+    })
+    it('should check model family correctly', async () => {
+      expect(isSameModelFamily('', '')).toBe(true)
+      expect(isSameModelFamily('xxxx', '----')).toBe(true)
+      expect(isSameModelFamily('FEK3230S0DA', 'FEK3230S3DA')).toBe(true)
+      expect(isSameModelFamily('FJN3226U73C', 'FNC3333R015')).toBe(false)
     })
   })
 

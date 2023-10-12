@@ -39,7 +39,7 @@ jest.mock('../NetworkSegmentationForm/SummaryForm', () => ({
   SummaryForm: () => <div data-testid='SummaryForm' />
 }))
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('AddNetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
@@ -97,7 +97,7 @@ describe('AddNetworkSegmentation', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Network Segmentation'
+      name: 'Personal Identity Network'
     })).toBeVisible()
     await screen.findByTestId('GeneralSettingsForm')
   })

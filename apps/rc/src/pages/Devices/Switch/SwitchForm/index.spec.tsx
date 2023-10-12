@@ -3,10 +3,10 @@ import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { venueApi }                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { venueApi }                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,7 +16,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { staticRoutes } from '../__tests__/fixtures'
+import { staticRoutes, switchFirmwareVenue } from '../__tests__/fixtures'
 
 import { swtichListResponse, venueListResponse, vlansByVenueListResponse, switchResponse, switchDetailHeader } from './__tests__/fixtures'
 
@@ -38,6 +38,8 @@ describe('Add switch form', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.post(SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(swtichListResponse))),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
@@ -271,6 +273,8 @@ describe('Edit switch form', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.get(SwitchUrlsInfo.getStaticRoutes.url,
         (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
