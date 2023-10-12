@@ -922,7 +922,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+      invalidatesTags: [
+        { type: 'Switch', id: 'DETAIL' },
+        { type: 'Switch', id: 'SWITCH' }
+      ]
     }),
     getLagList: build.query<Lag[], RequestPayload>({
       query: ({ params }) => {
