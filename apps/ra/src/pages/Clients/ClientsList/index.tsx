@@ -90,6 +90,12 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
         return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      dataIndex: 'manufacturer',
+      key: 'manufacturer',
+      sorter: { compare: sortProp('manufacturer', defaultSort) }
     }
   ]
   return <Loader states={[results]}>

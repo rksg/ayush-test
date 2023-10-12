@@ -38,6 +38,7 @@ export interface AggregatedImpactedClient {
   ssid: string[]
   hostname: string[]
   username: string[]
+  osType: string[]
 }
 
 export function column <RecordType> (
@@ -105,7 +106,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       tooltip: tooltips.username
     }),
     column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
-    column('ssid', { title: $t({ defaultMessage: 'Network' }) })
+    column('ssid', { title: $t({ defaultMessage: 'Network' }) }),
+    column('osType', { title: $t({ defaultMessage: 'osType' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
   // TODO: use search from table component

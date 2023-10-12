@@ -45,6 +45,7 @@ export interface ImpactedClient {
   ssid: string | string[]
   hostname: string | string[]
   username: string | string[]
+  osType: string | string[]
 }
 export interface RequestPayload {
   filter: NodesFilter
