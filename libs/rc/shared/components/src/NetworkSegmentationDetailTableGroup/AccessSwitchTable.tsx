@@ -80,7 +80,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       }
     }, {
       key: 'templateId',
-      title: $t({ defaultMessage: 'Net Seg Auth Page' }),
+      title: $t({ defaultMessage: 'Auth Page of Personal Identity Network' }),
       dataIndex: 'templateId',
       sorter: true,
       render: (_, row) => {

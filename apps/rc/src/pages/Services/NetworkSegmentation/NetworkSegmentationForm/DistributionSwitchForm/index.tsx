@@ -131,7 +131,7 @@ export function DistributionSwitchForm () {
     { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
       description={$t({ defaultMessage:
         'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
-        'for the distribution switch’s lookback IP addresses to establish the connection.' }, {
+        'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
         staticRoute: <StaticRouteModel edgeId={edgeId} edgeName={edgeName || edgeData?.name!} />,
         edgeName: edgeName || edgeData?.name
       })}

@@ -6,6 +6,7 @@ import { rest }  from 'msw'
 import { StepsForm }        from '@acx-ui/components'
 import {
   DistributionSwitch,
+  EdgeUrlsInfo,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -69,6 +70,10 @@ describe('DistributionSwitchForm', () => {
             ...mockNsgSwitchInfoData.accessSwitches
           ] }))
         }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json({ serialNumber: '0000000001', name: 'Smart Edge 1' }))
       ),
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
