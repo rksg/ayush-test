@@ -1,25 +1,30 @@
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { defaultSort, sortProp  }                  from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
-
-import { useSwitchtListQuery, Switch } from './services'
+import { useSwitchtListQuery, Switch }                     from '@acx-ui/analytics/services'
+import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
 export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
   const { $t } = useIntl()
   const { timeRange } = useDateRange()
+  const [searchString, setSearchString] = useState(searchVal)
 
   const results = useSwitchtListQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: searchVal,
+    query: searchString,
     metric: 'traffic'
   })
+
+  const updateSearchString = (_: Filter, search: { searchString?: string }) => {
+    setSearchString(search.searchString!)
+  }
 
   const switchesTablecolumnHeaders: TableProps<Switch>['columns'] = [
     {
@@ -30,7 +35,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       searchable: true,
       sorter: { compare: sortProp('switchName', defaultSort) },
       render: (_, row : Switch, __, highlightFn) => (
-        <TenantLink to={`/switch/${row.switchMac}/details`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
           {highlightFn(row.switchName)}</TenantLink>
       )
     },
@@ -62,6 +67,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       dataSource={results.data?.switches as unknown as Switch[]}
       pagination={pagination}
       settingsId='switches-list-table'
+      onFilterChange={updateSearchString}
     />
   </Loader>
 }

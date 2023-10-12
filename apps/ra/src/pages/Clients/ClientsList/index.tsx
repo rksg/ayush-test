@@ -1,11 +1,13 @@
 import { useState } from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { TenantLink }                                      from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange }          from '@acx-ui/utils'
 
 import { useClientListQuery, Client } from './services'
 
@@ -38,10 +40,19 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
       fixed: 'left',
       searchable: true,
       sorter: { compare: sortProp('hostname', defaultSort) },
-      render: (_, row : Client, __, highlightFn) => (
-        <TenantLink to={`/users/wifi/clients/${row.mac}/details`}>
-          {highlightFn(row.hostname)}</TenantLink>
-      )
+      render: (_, row : Client, __, highlightFn) => {
+        const { lastActiveTime, mac, hostname } = row
+        const period = encodeParameter<DateFilter>({
+          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
+          endDate: lastActiveTime,
+          range: DateRange.custom
+        })
+        return <TenantLink
+          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
+        >
+          {highlightFn(hostname)}
+        </TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'Username' }),

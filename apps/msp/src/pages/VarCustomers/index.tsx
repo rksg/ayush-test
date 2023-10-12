@@ -34,6 +34,7 @@ import {
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { isDelegationMode }                from '@acx-ui/utils'
 
 const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
   if (row.entitlements) {
@@ -85,6 +86,8 @@ export function VarCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
@@ -211,13 +214,14 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return (!isSupportToMspDashboardAllowed) ? {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
-        }
+        } : {}
       },
       render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(tenantName)}</Link>
+          (!isSupportToMspDashboardAllowed)
+            ? <Link to=''>{highlightFn(tenantName)}</Link> : tenantName
         )
       }
     },
@@ -306,8 +310,8 @@ export function VarCustomers () {
     }
   ]
 
-  const delegationType =
-    userProfile?.support ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
+  const delegationType = userProfile?.support && !isSupportToMspDashboardAllowed
+    ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',
     fields: [

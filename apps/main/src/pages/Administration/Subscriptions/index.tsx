@@ -77,7 +77,7 @@ const SubscriptionTable = () => {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
-  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
+  const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
@@ -213,12 +213,14 @@ const SubscriptionTable = () => {
       onClick: async () => {
         try {
           await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-          showToast({
-            type: 'success',
-            content: $t({
-              defaultMessage: 'Successfully refreshed.'
+          if (isNewApi === false) {
+            showToast({
+              type: 'success',
+              content: $t({
+                defaultMessage: 'Successfully refreshed.'
+              })
             })
-          })
+          }
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }

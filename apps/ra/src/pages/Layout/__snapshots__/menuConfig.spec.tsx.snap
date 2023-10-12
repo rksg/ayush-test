@@ -20,59 +20,6 @@ Array [
     "uri": "/dashboard",
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -176,7 +123,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -198,54 +145,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -293,6 +192,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -342,6 +390,46 @@ Array [
       },
     ],
   },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "adminItem": true,
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Account Management",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Administration",
+      },
+    ],
+  },
 ]
 `;
 
@@ -363,59 +451,6 @@ Array [
       },
     ],
     "uri": "/dashboard",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
   },
   Object {
     "activeIcon": Object {
@@ -521,7 +556,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -543,54 +578,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -638,6 +625,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -760,6 +896,16 @@ Array [
             "label": Array [
               Object {
                 "type": 0,
+                "value": "Schedules",
+              },
+            ],
+            "openNewTab": true,
+            "uri": "/analytics/admin/schedules",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
                 "value": "Webhooks",
               },
             ],
@@ -808,59 +954,6 @@ Array [
       },
     ],
     "uri": "/dashboard",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
   },
   Object {
     "activeIcon": Object {
@@ -966,7 +1059,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -988,54 +1081,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -1083,6 +1128,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -1255,59 +1449,6 @@ Array [
     "uri": "/dashboard",
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -1411,7 +1552,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -1433,54 +1574,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -1528,6 +1621,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -1639,54 +1881,6 @@ Array [
     },
     "children": Array [
       Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
         "label": Array [
           Object {
             "type": 0,
@@ -1703,16 +1897,6 @@ Array [
           },
         ],
         "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -1849,59 +2033,6 @@ Array [
     "uri": "/dashboard",
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -1978,7 +2109,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -1991,54 +2122,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -2086,6 +2169,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -2268,59 +2500,6 @@ Array [
     "uri": "/dashboard",
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -2424,7 +2603,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -2446,54 +2625,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -2541,6 +2672,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },
@@ -2723,59 +3003,6 @@ Array [
     "uri": "/dashboard",
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -2879,7 +3106,7 @@ Array [
         "label": Array [
           Object {
             "type": 0,
-            "value": "App Insights (coming soon)",
+            "value": "AppInsights (coming soon)",
           },
         ],
       },
@@ -2901,54 +3128,6 @@ Array [
       Object {
         "type": 0,
         "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
       },
     ],
   },
@@ -2996,6 +3175,155 @@ Array [
       Object {
         "type": 0,
         "value": "Clients",
+      },
+    ],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points List",
+              },
+            ],
+            "uri": "/devices/wifi",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Access Points Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/aps",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Utilization Report",
+              },
+            ],
+            "uri": "/devices/wifi/reports/airtime",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Access Points",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wi-Fi",
+      },
+    ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Switch List",
+              },
+            ],
+            "uri": "/devices/switch",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wired Report",
+              },
+            ],
+            "uri": "/devices/switch/reports/wired",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Switches",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Wired",
       },
     ],
   },

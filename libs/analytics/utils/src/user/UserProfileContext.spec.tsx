@@ -6,12 +6,25 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { getUserProfile } from './userProfile'
+import { Tenant }                         from './types'
+import { getUserProfile, setUserProfile } from './userProfile'
 import {
   useUserProfileContext,
   UserProfileProvider
 } from './UserProfileContext'
 
+const permissions = {
+  'view-analytics': true,
+  'view-report-controller-inventory': true,
+  'view-data-explorer': true,
+  'manage-service-guard': true,
+  'manage-call-manager': true,
+  'manage-mlisa': true,
+  'manage-occupancy': true,
+  'manage-label': true,
+  'manage-tenant-settings': true,
+  'manage-config-recommendation': true
+}
 const tenant = {
   id: 'a1',
   name: 'name1',
@@ -20,18 +33,7 @@ const tenant = {
   resourceGroupId: 'rg1',
   isTrial: false,
   isRADEOnly: false,
-  permissions: {
-    'view-analytics': true,
-    'view-report-controller-inventory': true,
-    'view-data-explorer': true,
-    'manage-service-guard': true,
-    'manage-call-manager': true,
-    'manage-mlisa': true,
-    'manage-occupancy': true,
-    'manage-label': true,
-    'manage-tenant-settings': true,
-    'manage-config-recommendation': true
-  },
+  permissions,
   type: 'internal',
   settings: {
     'sla-p1-incidents-count': 's1',
@@ -49,8 +51,9 @@ const mockedUserProfile = {
   email: 'e1',
   accountId: 'a1',
   userId: 'u1',
-  invitations: [tenant],
-  tenants: [tenant]
+  invitations: [tenant] as Tenant[],
+  tenants: [tenant] as Tenant[],
+  selectedTenant: { ...tenant, permissions } as Tenant
 }
 
 function TestUserProfile () {
@@ -63,11 +66,12 @@ const route = { path: '/ai' }
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
-      <UserProfileProvider profile={mockedUserProfile} {...props} />
+      <UserProfileProvider {...props} />
     </Provider>
   )
 
   it('requests for user profile and stores in context', async () => {
+    setUserProfile(mockedUserProfile)
     render(<TestUserProfile />, { wrapper, route })
     expect(await screen.findByText('First Last')).toBeVisible()
     expect(getUserProfile()).toEqual(mockedUserProfile)

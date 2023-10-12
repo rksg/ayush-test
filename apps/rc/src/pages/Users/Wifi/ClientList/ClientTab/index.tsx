@@ -1,25 +1,77 @@
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { ClientDualTable }                       from '@acx-ui/rc/components'
+import { ContentSwitcher, ContentSwitcherProps, CustomButtonProps, showActionModal } from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { ClientDualTable }                                                           from '@acx-ui/rc/components'
+import { UNSAFE_NavigationContext as NavigationContext }                             from '@acx-ui/react-router-dom'
+import { getIntl }                                                                   from '@acx-ui/utils'
 
 import { ClientConnectionDiagnosis } from './CCD'
+import { CcdResultViewerProps }      from './CCD/CcdResultViewer'
+
+import type { History, Transition } from 'history'
+
+export interface CcdControlContextData {
+  isTracing: boolean
+  viewStatus: CcdResultViewerProps
+}
+
+export const ClientContext = createContext({} as {
+  ccdControlContext: CcdControlContextData,
+  setCcdControlContext: (data: CcdControlContextData) => void
+})
+
+interface CcdRefType {
+  stopCcd: Function,
+}
 
 export function ClientTab () {
   const isSupportCCD = useIsSplitOn(Features.CCD_TOGGLE)
+  const isTierAllowApCcd = useIsTierAllowed(TierFeatures.AP_CCD)
   const { $t } = useIntl()
+
+  const [ ccdControlContext, setCcdControlContext ] = useState({} as CcdControlContextData)
+  const { navigator } = useContext(NavigationContext)
+  const blockNavigator = navigator as History
+  const unblockRef = useRef<Function>()
+  const ccdRef = useRef<CcdRefType>()
+
+  useEffect(() => {
+    if (!(isSupportCCD && isTierAllowApCcd)) return
+
+    const { isTracing } = ccdControlContext
+    // Avoid the show modal function to be called twice
+    if (isTracing) {
+      unblockRef.current?.()
+      unblockRef.current = blockNavigator.block((tx: Transition) => {
+        if (tx.location.hash) {
+          return
+        }
+        setCcdControlContext({
+          ...ccdControlContext,
+          isTracing: false
+        })
+        showPageLeaveWarningModal(ccdControlContext, setCcdControlContext, ccdRef, tx.retry)
+      })
+    } else {
+      unblockRef.current?.()
+    }
+
+  }, [isSupportCCD, isTierAllowApCcd, ccdControlContext, blockNavigator])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wireless Clients' }),
       value: 'clientTable',
+      disabled: ccdControlContext?.isTracing,
       children: <ClientDualTable />
     },
     {
       label: $t({ defaultMessage: 'Diagnostics' }),
       value: 'diagnostics',
-      children: <ClientConnectionDiagnosis />
+      children: <ClientConnectionDiagnosis ref={ccdRef}/>
     }
   ]
 
@@ -27,12 +79,65 @@ export function ClientTab () {
     localStorage.setItem('client-tab', value)
   }
 
-  return (isSupportCCD?
-    <ContentSwitcher
-      tabDetails={tabDetails}
-      size='large'
-      defaultValue={localStorage.getItem('client-tab') || tabDetails[0].value}
-      onChange={onTabChange}
-    /> : <ClientDualTable />
+  return ((isSupportCCD && isTierAllowApCcd)?
+    <ClientContext.Provider value={{
+      ccdControlContext: ccdControlContext,
+      setCcdControlContext: setCcdControlContext
+    }} >
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='large'
+        defaultValue={localStorage.getItem('client-tab') || tabDetails[0].value}
+        onChange={onTabChange}
+      />
+    </ClientContext.Provider> : <ClientDualTable />
   )
+}
+
+export const showPageLeaveWarningModal = (ccdContext: CcdControlContextData,
+  setCcdContext: (data: CcdControlContextData) => void,
+  ccdRef?: React.MutableRefObject<CcdRefType | undefined>,
+  callback?: () => void
+) => {
+  const { $t } = getIntl()
+  const title = $t({ defaultMessage: 'Warning' })
+  const content = $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Leaving this page will stop the Diagnostics session and reset all input fields. {br} Are you sure you want to leave this page?'
+  }, {
+    br: <br />
+  })
+
+  const btns = [{
+    text: $t({ defaultMessage: 'OK' }),
+    type: 'primary',
+    key: 'save',
+    closeAfterAction: true,
+    handler: async () => {
+      // stop ccd
+      await ccdRef?.current?.stopCcd()
+      callback?.()
+    }
+  }, {
+    text: $t({ defaultMessage: 'Cancel' }),
+    key: 'close',
+    closeAfterAction: true,
+    handler: async () => {
+      setCcdContext({
+        ...ccdContext,
+        isTracing: true
+      })
+    }
+  }]
+
+  showActionModal({
+    type: 'confirm',
+    width: 450,
+    title: title,
+    content: content,
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: btns as CustomButtonProps[]
+    }
+  })
 }

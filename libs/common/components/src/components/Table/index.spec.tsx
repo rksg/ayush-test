@@ -139,6 +139,15 @@ describe('Table component', () => {
     expect(alert).not.toBeVisible()
   })
 
+  it('renders stickyPagination table', () => {
+    const { asFragment } = render(<div id='root'><Table
+      type='tall'
+      columns={testColumns}
+      dataSource={testData}
+    /></div>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [

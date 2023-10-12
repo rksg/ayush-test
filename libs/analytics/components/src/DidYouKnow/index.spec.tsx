@@ -1,20 +1,20 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                       from '@acx-ui/store'
-import { Provider, store }                  from '@acx-ui/store'
+import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import type { PathFilter }                  from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { api } from './services'
 
 import { DidYouKnow } from './index'
 
-const filters: AnalyticsFilter = {
+const filters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   range: DateRange.last24Hours,
-  filter: {}
+  path: defaultNetworkPath
 }
 
 const sample = [
