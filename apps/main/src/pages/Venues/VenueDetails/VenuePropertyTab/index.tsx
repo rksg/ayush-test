@@ -536,6 +536,7 @@ export function VenuePropertyTab () {
     >
       <Table
         rowKey='name'
+        settingsId='property-units-table'
         columns={columns}
         enableApiFilter
         onFilterChange={handleFilterChange}
