@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
-import * as fixtures from './__tests__/fixtures'
+import * as fixtures          from './__tests__/fixtures'
 import {
   specToDto,
   useServiceGuardSpec,
@@ -20,8 +20,7 @@ import {
   useDeleteServiceGuardTestMutation,
   useRunServiceGuardTestMutation,
   useCloneServiceGuardTestMutation,
-  useMutationResponseEffect,
-  localToDb
+  useMutationResponseEffect
 } from './services'
 import {
   TestResultByAP,
@@ -685,7 +684,8 @@ describe('useMutationResponseEffect', () => {
 })
 
 describe('localToDb', () => {
-  const timezone = 'Africa/Abidjan'
+  const timezone = 'Asia/Singapore'
+  let localToDbFn: (schedule: Schedule) => Schedule
   beforeEach(() => {
     jest.resetModules()
     jest.doMock('moment-timezone', () => {
@@ -693,36 +693,19 @@ describe('localToDb', () => {
       moment.tz.guess = () => timezone
       return moment
     })
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(Date.parse('2021-05-01')))
+    localToDbFn = require('./services').localToDb
   })
   it('should convert timezone', () => {
-    const spec = {
-      id: 'spec-id',
-      clientType: ClientType.VirtualClient,
-      schedule: {
-        timezone: 'Asia/Singapore',
-        frequency: ScheduleFrequency.Daily,
-        day: null,
-        hour: 8,
-        type: 'service_guard'
-      } as Schedule,
-      type: TestType.Scheduled,
-      name: 'ScheduledTest',
-      configs: [{
-        authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-        dnsServer: '10.10.10.10',
-        pingAddress: '10.10.10.10',
-        radio: Band.Band6,
-        tracerouteAddress: '10.10.10.10',
-        wlanName: 'WLAN Name',
-        wlanPassword: '12345',
-        wlanUsername: 'user',
-        networkPaths: { networkNodes }
-      }]
-    }
-    expect(localToDb(spec)?.schedule).toEqual({
-      timezone: 'Africa/Abidjan',
+    const schedule = {
+      timezone: 'Asia/Calcutta',
+      frequency: ScheduleFrequency.Daily,
+      day: null,
+      hour: 8,
+      type: 'service_guard'
+    } as Schedule
+
+    expect(localToDbFn(schedule)).toEqual({
+      timezone: 'Asia/Singapore',
       frequency: ScheduleFrequency.Daily,
       day: null,
       hour: 8,
