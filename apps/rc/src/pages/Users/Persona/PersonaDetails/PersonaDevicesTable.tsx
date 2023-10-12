@@ -342,13 +342,15 @@ export function PersonaDevicesTable (props: {
         pagination={{ defaultPageSize: 5 }}
       />
 
-      <PersonaDevicesImportDialog
-        visible={modelVisible}
-        personaGroupId={persona?.groupId}
-        selectedMacAddress={persona?.devices?.map(d => d.macAddress.replaceAll('-', ':')) ?? []}
-        onCancel={handleModalCancel}
-        onSubmit={handleModalSubmit}
-      />
+      {modelVisible &&
+        <PersonaDevicesImportDialog
+          visible={true}
+          personaGroupId={persona?.groupId}
+          selectedMacAddress={persona?.devices?.map(d => d.macAddress.replaceAll('-', ':')) ?? []}
+          onCancel={handleModalCancel}
+          onSubmit={handleModalSubmit}
+        />
+      }
     </Loader>
 
   )
