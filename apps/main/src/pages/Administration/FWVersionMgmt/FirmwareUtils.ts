@@ -127,7 +127,7 @@ type VersionLabelType = {
   releaseDate?: string
 }
 // eslint-disable-next-line max-len
-export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType: boolean = true): string => {
+export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
