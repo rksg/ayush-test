@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Descriptions, PasswordInput }              from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { GatewayDetailsGeneral }     from '@acx-ui/rc/utils'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { Descriptions, PasswordInput } from '@acx-ui/components'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { GatewayDetailsGeneral }       from '@acx-ui/rc/utils'
+import { TenantLink }                  from '@acx-ui/react-router-dom'
 
 import * as UI from '../../styledComponents'
 
