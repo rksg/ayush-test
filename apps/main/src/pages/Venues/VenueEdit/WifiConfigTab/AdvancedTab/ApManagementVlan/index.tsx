@@ -153,14 +153,10 @@ export function ApManagementVlan () {
                     }}>
                     <Space align='start'>
                       <InformationSolid />
-                      <div>
-                        <FormattedMessage
-                          defaultMessage={
-                            `To avoid the isolation of the APs, it is essential
-                         configure the network switches with the corresponding settings.`
-                          }
-                        />
-                      </div>
+                        {$t({ defaultMessage:
+                          `To avoid the isolation of the APs, it is essential to
+                           configure the network switches with the corresponding settings.`
+                        })}
                     </Space>
                   </Col>
                 </Row>
