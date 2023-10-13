@@ -3,9 +3,7 @@ import userEvent from '@testing-library/user-event'
 
 import {
   setUserProfile,
-  Tenant,
-  UserProfileContext,
-  UserProfileContextProps
+  Tenant
 } from '@acx-ui/analytics/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -46,10 +44,7 @@ describe('UserButton', () => {
     setUserProfile(mockUserProfile)
     render(
       <Provider>
-        <UserProfileContext.Provider
-          value={{ data: mockUserProfile } as UserProfileContextProps}>
-          <UserButton />
-        </UserProfileContext.Provider>
+        <UserButton />
       </Provider>,
       { route: { params } }
     )
@@ -72,10 +67,7 @@ describe('UserButton', () => {
   it('should handle logout', async () => {
     render(
       <Provider>
-        <UserProfileContext.Provider
-          value={{ data: mockUserProfile } as UserProfileContextProps}>
-          <UserButton />
-        </UserProfileContext.Provider>
+        <UserButton />
       </Provider>,
       { route: { params } }
     )
@@ -104,10 +96,7 @@ describe('UserButton', () => {
     setUserProfile(mockUserProfileNotViewAnalytics)
     render(
       <Provider>
-        <UserProfileContext.Provider
-          value={{ data: mockUserProfileNotViewAnalytics } as UserProfileContextProps}>
-          <UserButton />
-        </UserProfileContext.Provider>
+        <UserButton />
       </Provider>,
       { route: { params } }
     )
