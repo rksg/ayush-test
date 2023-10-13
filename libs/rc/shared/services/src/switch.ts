@@ -123,7 +123,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             'ImportSwitches'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
+            api.dispatch(switchApi.util.invalidateTags([
+              { type: 'Switch', id: 'LIST' },
+              { type: 'Switch', id: 'DETAIL' }
+            ]))
           })
         })
       },
@@ -159,7 +162,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     acknowledgeSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -169,7 +172,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
