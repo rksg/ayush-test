@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import * as CommonComponent                                                          from '@acx-ui/components'
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -34,6 +35,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedShowActionModal = jest.fn()
+jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
+  mockedShowActionModal
+)
+
 describe('AdvancedTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -59,6 +65,10 @@ describe('AdvancedTab', () => {
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({})))
     )
+  })
+
+  afterEach(() => {
+    mockedShowActionModal.mockClear()
   })
 
   it('should render correctly', async () => {
@@ -200,6 +210,8 @@ describe('AdvancedTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    const sectionEl = await screen.findByTestId('veneu-mgmt-vlan-ap-section')
+    const section = within(sectionEl)
     await waitFor(() => screen.findByText('Use AP’s settings'))
     await waitFor(() => screen.findByText('VLAN ID'))
     const useApSettings = await screen.findByTestId('venue-mgmt-vlan-use-ap-settings')
@@ -210,6 +222,13 @@ describe('AdvancedTab', () => {
 
     userEvent.click(useApSettings)
     userEvent.click(changeMgmtVlan)
-    userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    expect(await section.findAllByRole('spinbutton')).toHaveLength(1)
+    const inputField = await screen.findByTestId('venue-ap-mgmt-vlan')
+    fireEvent.change(inputField, { target: { value: '17' } })
+    const saveButton = await screen.findByRole('button', { name: 'Save' })
+    await userEvent.click(saveButton)
+    // await waitFor(async () => {
+    //   expect(mockedShowActionModal).toBeCalledTimes(1)
+    // })
   })
 })

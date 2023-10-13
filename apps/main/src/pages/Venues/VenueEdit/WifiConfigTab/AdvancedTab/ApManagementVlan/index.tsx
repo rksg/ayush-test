@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 
 import { InputNumber, Form, Radio, Space, Row, Col } from 'antd'
-import { FormattedMessage, useIntl }                 from 'react-intl'
+import { useIntl }                                   from 'react-intl'
 import { useParams }                                 from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
@@ -106,6 +106,7 @@ export function ApManagementVlan () {
     }]}>
       <Space align='start'>
         <StepsFormLegacy.FieldLabel
+          data-testid='veneu-mgmt-vlan-ap-section'
           width='max-content'
           style={{ marginTop: '6px', display: 'flex', alignItems: 'center', paddingLeft: '10px' }}
         >
@@ -134,6 +135,7 @@ export function ApManagementVlan () {
                     }]}
                     initialValue={1}
                     children={<InputNumber
+                      data-testid='venue-ap-mgmt-vlan'
                       min={1}
                       max={4094}
                       onChange={onFormDataChanged}
