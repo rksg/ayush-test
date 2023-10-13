@@ -34,7 +34,7 @@ export type ErrorAction = {
     // FETCH_ERROR
     error: string
     status: string
-  } | string)
+  } | string | number)
 })
 
 interface ErrorMessageType {
@@ -115,7 +115,7 @@ export const getErrorContent = (action: ErrorAction) => {
   const { $t } = intl
   const queryMeta = action.meta?.baseQueryMeta
   const status = (queryMeta?.response) ? queryMeta.response.status :
-    (typeof action.payload === 'string') ? undefined :
+    (typeof action.payload !== 'object') ? undefined :
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
@@ -125,12 +125,14 @@ export const getErrorContent = (action: ErrorAction) => {
   let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
   if (typeof action.payload === 'string') {
     errors = action.payload
-  } else if('data' in action.payload) {
-    errors = action.payload.data
-  } else if ('error' in action.payload) {
-    errors = action.payload.error
-  } else if ('message' in action.payload) {
-    errors = action.payload.message
+  } else if (typeof action.payload === 'object') {
+    if('data' in action.payload) {
+      errors = action.payload.data
+    } else if ('error' in action.payload) {
+      errors = action.payload.error
+    } else if ('message' in action.payload) {
+      errors = action.payload.message
+    }
   }
   let needLogout = false
   let callback = undefined
@@ -234,7 +236,7 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
 
-  if (action?.payload && typeof action.payload !== 'string' && 'meta' in action.payload
+  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
     && action.meta && !action.meta?.baseQueryMeta) {
     // baseQuery (for retry API)
     const payload = action.payload as { meta?: QueryMeta }

@@ -30,7 +30,6 @@ export const firmwareNote1 = defineMessage({ defaultMessage: 'During firmware up
 export const firmwareNote2 = defineMessage({ defaultMessage: 'Are you sure you want to update the firmware version on devices in all selected venues?' })
 
 export interface UpdateApNowDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -46,7 +45,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const intl = useIntl()
   const [form] = useForm()
   // eslint-disable-next-line max-len
-  const { visible, onSubmit, onCancel, data, availableVersions, eol, eolName, latestEolVersion, eolModels } = props
+  const { onSubmit, onCancel, data, availableVersions, eol, eolName, latestEolVersion, eolModels } = props
   const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
   const [selectedVersion, setSelectedVersion] = useState('')
   const [disableSave, setDisableSave] = useState(false)
@@ -147,7 +146,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   return (
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
-      visible={visible}
+      visible={true}
       width={560}
       okText={$t({ defaultMessage: 'Run Update' })}
       onOk={triggerSubmit}
@@ -210,12 +209,10 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
             </UI.Section>
             : null
           }
-          <UI.Section>
-            <UI.Ul>
-              <UI.Li>{$t(firmwareNote1)}</UI.Li>
-              <UI.Li>{$t(firmwareNote2)}</UI.Li>
-            </UI.Ul>
-          </UI.Section>
+          <UI.Ul>
+            <UI.Li>{$t(firmwareNote1)}</UI.Li>
+            <UI.Li>{$t(firmwareNote2)}</UI.Li>
+          </UI.Ul>
         </Form.Item>
       </Form>
     </Modal>

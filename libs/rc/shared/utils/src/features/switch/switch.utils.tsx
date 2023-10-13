@@ -4,13 +4,16 @@ import _ from 'lodash'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
-import { STACK_MEMBERSHIP,
+import {
+  STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  SWITCH_TYPE } from '../../types'
+  SWITCH_TYPE,
+  SWITCH_SERIAL_PATTERN
+} from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -140,7 +143,7 @@ export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
 }
 
-export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:boolean, syncedSwitchConfig: boolean) => {
+export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady: boolean, syncedSwitchConfig: boolean) => {
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
 }
 
@@ -288,7 +291,7 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
   const isSync = !_.isEmpty(row.syncDataId) && status.isOperational
   const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, !!row.syncedSwitchConfig)
-  let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
+  let switchStatus = (isStrictOperational && row.operationalWarning === true) ?
     $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
 
   return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
@@ -375,7 +378,7 @@ export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
   return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
 }
 
-export const sortPortFunction = (portIdA: { id: string },portIdB: { id: string }) => {
+export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string }) => {
   const splitA = portIdA.id.split('/')
   const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
 
@@ -672,11 +675,15 @@ export const getClientIpAddr = (data?: SwitchClient) => {
 }
 
 export const getAdminPassword = (
-  data?: SwitchViewModel | SwitchRow,
+  data: SwitchViewModel | SwitchRow,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  return !(data?.configReady && data?.syncedSwitchConfig)
+  const serialNumberRegExp = new RegExp(SWITCH_SERIAL_PATTERN)
+
+  // when switch id is the serial number
+  // 1) pre-provision 2) migrate from alto
+  return !(data?.configReady && data?.syncedSwitchConfig) || serialNumberRegExp.test(data?.id)
     ? noDataDisplay
     : (data?.syncedAdminPassword
       ? PasswordCoomponent && <PasswordCoomponent
