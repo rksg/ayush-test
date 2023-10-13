@@ -95,6 +95,7 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
       title: $t({ defaultMessage: 'Manufacturer' }),
       dataIndex: 'manufacturer',
       key: 'manufacturer',
+      searchable: true,
       sorter: { compare: sortProp('manufacturer', defaultSort) }
     }
   ]
