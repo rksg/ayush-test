@@ -109,7 +109,8 @@ export enum Features {
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   AP_AFC_TOGGLE = 'ap-afc-toggle',
-  MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware'
+  MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  ALPHA_POC = 'ALPHA-POC'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
