@@ -14,6 +14,7 @@ import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
+const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -546,13 +547,12 @@ export function emailRegExp (value: string) {
 
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
-  if (value && !re.test(value)) {
+  if (value && !basicPhoneNumberRegExp.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
 
-  if (value && !ValidateMobileNumber(value)){
+  if (value && !validateMobileNumber(value)){
     return Promise.reject($t(validationMessages.phoneNumber))
   }
   return Promise.resolve()
@@ -560,9 +560,8 @@ export function phoneRegExp (value: string) {
 
 export function generalPhoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
-  if (value && !re.test(value)) {
+  if (value && !basicPhoneNumberRegExp.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
 
@@ -694,7 +693,7 @@ export function parsePhoneNumber (phoneNumber: string): {
   return { number, type: phoneNumberType }
 }
 
-export function ValidateMobileNumber (phoneNumber: string) {
+export function validateMobileNumber (phoneNumber: string) {
   const parsedPhone = parsePhoneNumber(phoneNumber)
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
 
