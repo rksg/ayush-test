@@ -12,6 +12,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
+  [ServiceType.EDGE_CENTRALIZED_FORWARDING]: defineMessage({
+    defaultMessage: 'Centralized Forwarding' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
@@ -28,6 +30,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   // eslint-disable-next-line max-len
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
+  [ServiceType.EDGE_CENTRALIZED_FORWARDING]: defineMessage({
+    defaultMessage: 'CENTRALIZED_FORWARDING' }),
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len
