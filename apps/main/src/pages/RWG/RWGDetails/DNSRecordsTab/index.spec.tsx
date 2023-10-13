@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                                     from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                                from '@acx-ui/rc/utils'
+import { Provider }                                                                      from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { DNSRecordsTab } from '.'
 
@@ -57,6 +57,10 @@ describe('RWGDetails DNS Records', () => {
         CommonUrlsInfo.getDNSRecords.url,
         (req, res, ctx) => res(ctx.json(dnsRecords))
       ),
+      rest.get(
+        CommonUrlsInfo.getDNSRecord.url,
+        (req, res, ctx) => res(ctx.json(dnsRecords.response[0]))
+      ),
       rest.post(
         CommonUrlsInfo.addUpdateDnsRecord.url,
         (req, res, ctx) => res(ctx.json([]))
@@ -81,7 +85,7 @@ describe('RWGDetails DNS Records', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Add DNS Record')).toBeInTheDocument()
-    logRoles(document.body)
+
     fireEvent.click(await screen.findByRole('button', { name: 'close-circle' }))
   })
 
@@ -127,14 +131,23 @@ describe('RWGDetails DNS Records', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /wi.fi/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(within(row).getByRole('radio'))
+    })
 
     const editButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(editButton)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(editButton)
+    })
 
     await screen.findByText('Edit DNS Record')
     const editDNSButton = await screen.findByText('Apply')
-    fireEvent.click(editDNSButton)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(editDNSButton)
+    })
   })
 
 })

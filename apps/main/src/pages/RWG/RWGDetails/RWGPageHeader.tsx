@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                    from '@acx-ui/components'
-import { useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
-import { RWG }                                   from '@acx-ui/rc/utils'
+import { Button, PageHeader, showActionModal }                             from '@acx-ui/components'
+import { useDeleteGatewayMutation, useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
+import { RWG }                                                             from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -25,6 +25,9 @@ function RWGPageHeader () {
 
   const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
   const { data: dnsRecordsData } = useGetDNSRecordsQuery({ params: { tenantId, gatewayId } })
+  const [
+    deleteGateway
+  ] = useDeleteGatewayMutation()
 
   useEffect(() => {
     if (gatewayData) {
@@ -39,6 +42,7 @@ function RWGPageHeader () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}`)
+  const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
 
   return (
     <PageHeader
@@ -57,6 +61,32 @@ function RWGPageHeader () {
       ]}
       extra={[
         ...filterByAccess([<Button
+          type='default'
+          onClick={() =>
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: $t({ defaultMessage: 'Gateway' }),
+                entityValue: gatewayData?.name,
+                confirmationText: 'Delete'
+              },
+              onOk: () => {
+                deleteGateway({ params: { tenantId, rwgId: gatewayId } })
+                  .then(() => {
+                    navigate({
+                      ...rwgListBasePath
+                    }, {
+                      state: {
+                        from: location
+                      }
+                    })
+                  })
+              }
+            })
+          }
+        >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+        <Button
           type='primary'
           onClick={() =>
             navigate({
