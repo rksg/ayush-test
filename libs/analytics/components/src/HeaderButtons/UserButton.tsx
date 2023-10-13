@@ -11,9 +11,8 @@ import { NewTabLink }         from '@acx-ui/react-router-dom'
 
 export const UserButton = () => {
   const { $t } = useIntl()
-  const userProfile = getUserProfile()
-  const hasViewAnalyticsPermissions = userProfile
-    .selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
+  const { selectedTenant, firstName, lastName } = getUserProfile()
+  const hasViewAnalyticsPermissions = selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
 
   const menuHeaderDropdown = (
     <Menu
@@ -58,7 +57,7 @@ export const UserButton = () => {
 
   return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft' >{() =>
     <LayoutUI.UserNameButton>
-      {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
+      {`${(firstName[0]||'').toUpperCase()}${(lastName[0]||'').toUpperCase()}`}
     </LayoutUI.UserNameButton>
   }</Dropdown>
 }

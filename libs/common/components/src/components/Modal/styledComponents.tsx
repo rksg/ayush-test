@@ -12,6 +12,7 @@ const withStepsFormStyle = css`
   ${ActionsContainer} {
     position: sticky;
     width: 100%;
+    min-width: 100%;
     &::before {
       border-bottom-left-radius: 12px;
       border-bottom-right-radius: 12px;
