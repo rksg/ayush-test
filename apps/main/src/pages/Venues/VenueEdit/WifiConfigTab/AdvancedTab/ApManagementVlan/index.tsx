@@ -118,10 +118,10 @@ export function ApManagementVlan () {
           >
             <Radio.Group onChange={onApMgmtVlanChange}>
               <Space direction='vertical'>
-                <Radio value={false} style={{ marginTop: '6px' }}>
+                <Radio value={false} style={{ marginTop: '6px' }} data-testid='venue-mgmt-vlan-use-ap-settings'>
                   {$t({ defaultMessage: 'Use AP’s settings' })}
                 </Radio>
-                <Radio value={true}>
+                <Radio value={true} data-testid='venue-mgmt-vlan-ap-toggle'>
                   {$t({ defaultMessage: 'VLAN ID' })}
                   {apMgmtVlanOverrideEnabled && <Form.Item noStyle
                     name='vlanId'
