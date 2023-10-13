@@ -1,7 +1,7 @@
-import { Form, Typography } from 'antd'
-import TextArea             from 'antd/lib/input/TextArea'
-import { useIntl }          from 'react-intl'
-import styled               from 'styled-components'
+import { Typography } from 'antd'
+import TextArea       from 'antd/lib/input/TextArea'
+import { useIntl }    from 'react-intl'
+import styled         from 'styled-components'
 
 import { Drawer }       from '@acx-ui/components'
 import { SpaceWrapper } from '@acx-ui/rc/components'
@@ -19,12 +19,10 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
   const { $t } = useIntl()
 
   const { className, visible, setVisible, recoveryCode } = props
-  const [form] = Form.useForm()
   const linebreakRecoveryCode = recoveryCode.join('\n')
 
   const onClose = () => {
     setVisible(false)
-    form.resetFields()
   }
 
   const handleClickCopyCodes = () => {

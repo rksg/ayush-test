@@ -20,7 +20,7 @@ export const DateContainer = styled.div`
 `
 
 export const Section = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 32px;
 `
 
 export const PreferencesSection = styled.div`
@@ -69,9 +69,12 @@ export const Li = styled.li`
 `
 
 export const ScheduleModal = styled(Modal)`
-.ant-modal-body{
-  overflow: initial;
-}
+  .ant-modal-body{
+    overflow: initial;
+  }
+  .ant-modal-content{
+    max-height: initial;
+  }
 `
 export const ChangeButton = styled(Button)`
   position: absolute;
