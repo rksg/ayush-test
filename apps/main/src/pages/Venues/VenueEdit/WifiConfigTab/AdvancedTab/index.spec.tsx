@@ -55,7 +55,7 @@ describe('AdvancedTab', () => {
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
-        (_, res, ctx) => res(ctx.json({venueApManagementVlan}))),
+        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({})))
     )
@@ -198,7 +198,7 @@ describe('AdvancedTab', () => {
       }}>
         <AdvancedTab />
       </VenueEditContext.Provider>
-    </Provider>, {route: { params }})
+    </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('Use AP’s settings'))
     await waitFor(() => screen.findByText('VLAN ID'))
@@ -210,6 +210,6 @@ describe('AdvancedTab', () => {
 
     userEvent.click(useApSettings)
     userEvent.click(changeMgmtVlan)
-    userEvent.click(await screen.findByRole('button', { name: 'Save'}))
+    userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })

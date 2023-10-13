@@ -9,8 +9,6 @@ import { InformationSolid }                                                     
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 
 import { VenueEditContext } from '../../../index'
-import { color } from 'echarts'
-import { textAlign } from 'libs/rc/shared/components/src/NetworkSegmentationServiceInfo/styledComponents'
 
 const { useWatch } = Form
 
@@ -118,7 +116,10 @@ export function ApManagementVlan () {
           >
             <Radio.Group onChange={onApMgmtVlanChange}>
               <Space direction='vertical'>
-                <Radio value={false} style={{ marginTop: '6px' }} data-testid='venue-mgmt-vlan-use-ap-settings'>
+                <Radio
+                  value={false}
+                  style={{ marginTop: '6px' }}
+                  data-testid='venue-mgmt-vlan-use-ap-settings'>
                   {$t({ defaultMessage: 'Use AP’s settings' })}
                 </Radio>
                 <Radio value={true} data-testid='venue-mgmt-vlan-ap-toggle'>
