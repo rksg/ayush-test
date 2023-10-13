@@ -40,7 +40,7 @@ export const SummaryForm = () => {
     defaultMessage={
       'For segment assignment for <sub5b>AP wired</sub5b>,\
       please go to the <sub5b>Venue/ property Units page</sub5b> to assign an AP\
-      for the specific unit/ persona.'}
+      for the specific unit / identity.'}
 
     values={{
       sub5b: (content) => <Sub5Bold >{content}</Sub5Bold>

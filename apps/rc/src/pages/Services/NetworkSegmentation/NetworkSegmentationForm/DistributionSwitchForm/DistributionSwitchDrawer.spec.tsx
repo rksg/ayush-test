@@ -88,7 +88,7 @@ describe('DistributionSwitchDrawer', () => {
     expect(dsInput).toHaveValue('FMN4221R00H---DS---3')
 
     expect(screen.getByRole('textbox', {
-      name: 'Lookback Interface IP Address' })).toHaveValue('1.2.3.4')
+      name: 'Loopback Interface IP Address' })).toHaveValue('1.2.3.4')
 
     await user.click(await screen.findByRole('button', { name: 'Select' }))
 

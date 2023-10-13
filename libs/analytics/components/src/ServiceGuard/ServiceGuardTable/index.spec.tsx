@@ -31,7 +31,7 @@ jest.mock('@acx-ui/user', () => ({
 }))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  useUserProfileContext: () => ({ data: { userId: 'user-id' } })
+  getUserProfile: () => ({ userId: 'user-id' })
 }))
 
 
