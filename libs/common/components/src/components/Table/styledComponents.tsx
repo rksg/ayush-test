@@ -408,9 +408,10 @@ export const Header = styled.div`
   );
   z-index: 3;
   background-color: var(--acx-primary-white);
-  :has(.ant-picker.ant-picker-focused) {
-    z-index: 20;
-  }
+  // uncomment it once the firefox update is released
+  // :has(.ant-picker.ant-picker-focused) {
+  //   z-index: 20;
+  // }
 `
 
 export const HeaderComps = styled.div`

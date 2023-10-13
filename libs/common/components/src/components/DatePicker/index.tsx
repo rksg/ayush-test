@@ -128,11 +128,24 @@ export const RangePicker = ({
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
-        onClick={() => setIsCalendarOpen(true)}
+        onClick={() => {
+          setIsCalendarOpen(true)
+          // hack to address FF not supporting :has, transition to employing :has once the firefox update is released.
+          const elem = document.querySelector<HTMLElement>('.headerClass')
+          if(elem){
+            elem.style.zIndex = '20'
+          }
+        }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType) =>
+        onCalendarChange={(values: RangeValueType) => {
           setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
+          // hack to address FF not supporting :has, transition to employing :has once the firefox update is released.
+          const elem = document.querySelector<HTMLElement>('.headerClass')
+          if(elem){
+            elem.removeAttribute('style')
+          }
+        }
         }
         mode={['date', 'date']}
         renderExtraFooter={() => (
