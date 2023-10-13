@@ -125,7 +125,7 @@ export function MelissaBot (){
       icon={<img src={icon} alt={imageAlt} style={{ height: '40px' }}/>}
       onClose={onClose}
       visible={open}
-      width={400}
+      width={464}
       footer={<Input ref={inputRef}
         placeholder='Ask Ruckus Chat anything'
         value={inputValue}
