@@ -2,12 +2,19 @@ import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
 import { usePreference }                               from '@acx-ui/rc/components'
+import { TenantLink, useLocation }                     from '@acx-ui/react-router-dom'
 import { LangKey, useLocaleContext, DEFAULT_SYS_LANG } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
+  const location = useLocation()
+  const userProfileLink = <TenantLink
+    state={{ from: location.pathname }}
+    to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
+  </TenantLink>
+
   const {
     currentDefaultLang,
     updatePartial: updatePreferences,
@@ -68,10 +75,11 @@ const DefaultSystemLanguageFormItem = () => {
           </Select>
 
         </Form.Item>
-        <Typography.Paragraph className='description greyText'>
+        <Typography.Paragraph className='description greyText'
+          style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
           {
             $t(MessageMapping.default_system_language_description)
-          }
+          } {userProfileLink}.
         </Typography.Paragraph>
       </Col>
     </Row>)

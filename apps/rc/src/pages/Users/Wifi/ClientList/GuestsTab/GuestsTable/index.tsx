@@ -6,13 +6,16 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
+  Drawer,
+  Alert,
+  cssStr,
+  Modal,
+  ModalType,
   Button,
   Table,
   TableProps,
-  Loader
-} from '@acx-ui/components'
+  Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
@@ -34,8 +37,7 @@ import {
   SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
-import { RequestPayload }                                     from '@acx-ui/types'
-import { RolesEnum }                                          from '@acx-ui/types'
+import { RolesEnum, RequestPayload }                          from '@acx-ui/types'
 import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
 import { DateRange, getIntl  }                                from '@acx-ui/utils'
 
@@ -78,8 +80,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
   }
   const { setGuestCount } = useContext(GuestTabContext)
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
+  const queryOptions = {
     defaultPayload: {
       ...defaultGuestPayload,
       filters: filters
@@ -87,6 +88,11 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetGuestsListQuery,
+    ...queryOptions
   })
 
   useEffect(() => {
@@ -413,6 +419,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
           <GuestsDetail
             triggerClose={onClose}
             currentGuest={currentGuest}
+            queryPayload={tableQuery?.payload}
           />
         }
         width={'550px'}

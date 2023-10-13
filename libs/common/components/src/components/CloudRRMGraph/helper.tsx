@@ -58,30 +58,30 @@ export const tooltipFormatter = (params: TooltipFormatterProps) => {
               b: (contents) => <b>{contents}</b>
             }}
           />
-          <li>{variables.map(vars => <FormattedMessage
+          {variables.map(vars => <li><FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Channel number (radio {radio}): <b>{channel}</b>'
             values={{
               ..._.pick(vars, ['radio', 'channel']),
               b: (contents) => <b>{contents}</b>
             }}
-          />)}</li>
-          <li>{variables.map(vars => <FormattedMessage
+          /></li>)}
+          {variables.map(vars => <li><FormattedMessage
             key={`${vars.radio}-${vars.bandwidth}`}
             defaultMessage='Bandwidth (radio {radio}): <b>{bandwidth}</b>'
             values={{
               ..._.pick(vars, ['radio', 'bandwidth']),
               b: (contents) => <b>{contents}</b>
             }}
-          />)}</li>
-          {showTxPower && <li>{variables.map(vars => <FormattedMessage
+          /></li>)}
+          {showTxPower && variables.map(vars => <li><FormattedMessage
             key={`${vars.radio}-${vars.txPower}`}
             defaultMessage='Tx Power (radio {radio}): <b>{txPower}</b>'
             values={{
               ..._.pick(vars, ['radio', 'txPower']),
               b: (contents) => <b>{contents}</b>
             }}
-          />)}</li>}
+          /></li>)}
         </ul>
       </TooltipWrapper>
     </RawIntlProvider>
@@ -219,6 +219,14 @@ export function deriveInterferingGraphs (
   return graphs.map(graph => deriveInterfering(graph, band))
 }
 
+function trimLinks (
+  nodes: Type.ProcessedCloudRRMNode[],
+  links: Type.ProcessedCloudRRMLink[]
+) {
+  const ids = nodes.map(node => node.id)
+  return links.filter(link => ids.includes(link.source) && ids.includes(link.target))
+}
+
 export function trimGraph (
   graph: Type.ProcessedCloudRRMGraph, maxNumNode: number = 500
 ) : Type.ProcessedCloudRRMGraph {
@@ -226,30 +234,36 @@ export function trimGraph (
     node.category === Type.CategoryState.Normal
       ? Type.CategoryState.Normal : Type.CategoryState.Highlight)
 
-  const left = maxNumNode - highlight.length
+  const remaining = maxNumNode - highlight.length
   const trimmedNodes = [
-    ...(left > 0 && normal.length > 0 ? normal.slice(0, left) : []),
-    ...highlight
+    ...((remaining > 0 && normal.length > 0) ? normal.slice(0, remaining) : []),
+    ...highlight.slice(0, Math.min(highlight.length, maxNumNode))
   ]
-  const ids = trimmedNodes.map(node => node.id)
-  const trimedLinks = graph.links
-    .filter(link => ids.includes(link.source) && ids.includes(link.target))
+  const trimedLinks = trimLinks(trimmedNodes, graph.links)
   return { ...graph, nodes: trimmedNodes, links: trimedLinks }
 }
 
 export function trimPairedGraphs (
   graphs: Type.ProcessedCloudRRMGraph[],
-  maxNumNode?: number
+  maxNumNode: number = 500
 ) : Type.ProcessedCloudRRMGraph[] {
-  const trimmedGraphs = graphs.map(graph => trimGraph(graph, maxNumNode))
-  const nodeList = trimmedGraphs[0].nodes.map(node => node.id)
-  const sortedNode = [
-    ...(nodeList
-      .map(id => trimmedGraphs[1].nodes.find(n => n.id === id))
-      .filter(Boolean) as Type.ProcessedCloudRRMNode[]),
-    ...(trimmedGraphs[1].nodes.filter(node => !nodeList.includes(node.id)))
-  ]
-  return [ trimmedGraphs[0], { ...trimmedGraphs[1], nodes: sortedNode } ]
+  const [ base, sub ] = graphs
+  const left = trimGraph(base, maxNumNode)
+  const baseNodeList = left.nodes.map(node => node.id)
+  const selected = baseNodeList.map(id => sub.nodes.find(n => n.id === id)).filter(Boolean)
+  const { highlight = [], normal = [] } = _.groupBy(
+    sub.nodes,
+    node => baseNodeList.includes(node.id)
+      ? 'selected'
+      : (node.category === 'normal' ? 'normal' : 'highlight')
+  )
+  const remaining = maxNumNode - selected.length
+  const subNodeList = [
+    ...selected,
+    ...((remaining > 0) ? [...highlight, ...normal].slice(0, remaining) : [])
+  ] as Type.ProcessedCloudRRMNode[]
+  const links = trimLinks(subNodeList, sub.links)
+  return [ left, { ...sub, nodes: subNodeList, links }]
 }
 
 export function pairGraphs (graphs: Type.ProcessedCloudRRMGraph[]) : Type.ProcessedCloudRRMGraph[] {

@@ -18,6 +18,9 @@ export function RedirectUrlInput () {
   const REDIRECT_TOOLTIP =
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
+  const REDIRECT_INVALID_MSG =
+    intl.$t({ defaultMessage: 'Please enter the redirect URL. This field cannot be left blank.' })
+
   const form = Form.useFormInstance()
   const { useWatch } = Form
   const [
@@ -57,8 +60,12 @@ export function RedirectUrlInput () {
       <Form.Item
         name={['guestPortal','redirectUrl']}
         rules={[
-          { required: redirectCheckbox },
-          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve() }
+          { required: redirectCheckbox,
+            message: REDIRECT_INVALID_MSG
+          },
+          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve(),
+            message: REDIRECT_INVALID_MSG
+          }
         ]}
         children={
           <Input

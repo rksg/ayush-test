@@ -474,6 +474,8 @@ describe('Aps', () => {
   })
 
   it('Should render the low power warning messages', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider><ApTable /></Provider>, {
       route: { params, path: '/:tenantId' }
     })

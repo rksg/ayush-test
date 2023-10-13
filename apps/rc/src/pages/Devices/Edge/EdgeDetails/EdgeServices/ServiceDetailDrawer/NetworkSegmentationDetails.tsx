@@ -83,7 +83,7 @@ export const NetworkSegmentationDetails = (props: NetworkSegmentationDetailsProp
         isTunnelLoading || isPersonaGroupLoading
     }]}>
       <Subtitle level={3}>
-        { $t({ defaultMessage: 'Network Segmentation Settings' }) }
+        { $t({ defaultMessage: 'Personal Identity Network Settings' }) }
       </Subtitle>
       <Form.Item
         label={$t({ defaultMessage: 'Venue' })}
