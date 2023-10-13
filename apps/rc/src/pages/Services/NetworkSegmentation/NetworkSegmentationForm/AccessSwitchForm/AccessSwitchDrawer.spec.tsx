@@ -143,10 +143,11 @@ describe('NetworkSegAuthModel', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    expect(await screen.findByTestId('NetworkSegAuthForm')).toBeVisible()
+    const form = await screen.findByTestId('NetworkSegAuthForm')
+    await waitFor(() => expect(form).toBeVisible())
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(await screen.findByTestId('NetworkSegAuthForm')).not.toBeVisible()
+    expect(form).not.toBeVisible()
   })
 })

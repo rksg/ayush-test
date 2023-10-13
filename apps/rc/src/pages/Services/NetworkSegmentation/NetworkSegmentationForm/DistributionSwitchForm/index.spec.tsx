@@ -159,10 +159,11 @@ describe('StaticRouteModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Static Route' }))
 
-    expect(await screen.findByTestId('StaticRoutes')).toBeVisible()
+    const form = await screen.findByTestId('StaticRoutes')
+    await waitFor(() => expect(form).toBeVisible())
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(await screen.findByTestId('StaticRoutes')).not.toBeVisible()
+    expect(form).not.toBeVisible()
   })
 })
