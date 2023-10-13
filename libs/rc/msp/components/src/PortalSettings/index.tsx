@@ -43,11 +43,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
-  phoneRegExp,
   Providers,
   UploadUrlResponse,
   networkWifiIpRegExp,
-  networkWifiSecretRegExp
+  networkWifiSecretRegExp,
+  generalPhoneRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -397,6 +397,7 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
+      return
       await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
@@ -414,6 +415,7 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
+      return
       await updateMspLabel({ params, payload: portal }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
@@ -1198,7 +1200,7 @@ export function PortalSettings () {
               style={{ width: '300px' }}
               initialValue={mspLabel?.msp_phone}
               rules={[
-                { validator: (_, value) => phoneRegExp(value) }
+                { validator: (_, value) => generalPhoneRegExp(value) }
               ]}
               children={
                 <PhoneInput
