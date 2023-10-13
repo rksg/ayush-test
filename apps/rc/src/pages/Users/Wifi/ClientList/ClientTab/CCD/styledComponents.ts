@@ -1,7 +1,6 @@
-import { Button as AntButton } from 'antd'
-import styled                  from 'styled-components/macro'
+import { Button as AntButton, Radio as AntRadio } from 'antd'
+import styled                                     from 'styled-components/macro'
 
-import { WarningTriangleSolid } from '@acx-ui/icons'
 
 export const Button = styled(AntButton)`
   display: inline-flex;
@@ -41,20 +40,14 @@ export const CcdResultContainer = styled.div`
   padding: 10px;
 `
 
+export const ApInfoRadio = styled(AntRadio)`
+ .ant-radio-disabled + span {
+   color: unset;
+ }
+`
+
 export const ApInfoRadioExtendInfo =styled.div`
   display: grid;
   grid-template-columns: 80px auto;
   padding-top: 3px;
-`
-
-export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
-  width: 18px;
-  path{
-    &:first-child {
-      fill: var(--acx-semantics-red-50);
-    }
-    &:nth-child(odd) {      
-      stroke: var(--acx-semantics-red-50);
-    }
-  }
 `
