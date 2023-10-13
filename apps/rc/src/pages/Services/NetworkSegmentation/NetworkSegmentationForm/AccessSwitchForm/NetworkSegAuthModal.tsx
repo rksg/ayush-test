@@ -23,6 +23,7 @@ export const NetworkSegAuthModal = (props: {
     <Modal
       title={$t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
       visible={visible}
+      destroyOnClose={true}
       type={ModalType.ModalStepsForm}
       width={700}
       children={

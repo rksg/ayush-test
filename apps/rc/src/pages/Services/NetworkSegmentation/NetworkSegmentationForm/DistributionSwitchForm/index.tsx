@@ -122,14 +122,14 @@ export function DistributionSwitchForm () {
         }
       }} />
     <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
-    { openDrawer && <DistributionSwitchDrawer
+    <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches}
       onSaveDS={handleSaveDS}
-      onClose={()=>setOpenDrawer(false)} /> }
+      onClose={()=>setOpenDrawer(false)} />
     { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
-      description={$t({ defaultMessage:
+      message={$t({ defaultMessage:
         'Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) ' +
         'for the distribution switch’s loopback IP addresses to establish the connection.' }, {
         staticRoute: <StaticRouteModal edgeId={edgeId} edgeName={edgeName || edgeData?.name!} />,

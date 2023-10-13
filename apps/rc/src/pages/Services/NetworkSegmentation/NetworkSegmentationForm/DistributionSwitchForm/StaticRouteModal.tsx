@@ -11,13 +11,14 @@ export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) =>
   const [visible, setVisible] = useState(false)
 
   return <>
-    <Button type='link' onClick={() => setVisible(true)}>
+    <Button type='link' size='small' onClick={() => setVisible(true)}>
       {$t({ defaultMessage: 'Static Route' })}
     </Button>
     <Modal
       title={props.edgeName}
       subTitle={$t({ defaultMessage: 'SmartEdge' })}
       visible={visible}
+      destroyOnClose={true}
       type={ModalType.ModalStepsForm}
       width={540}
       onCancel={() => setVisible(false)}

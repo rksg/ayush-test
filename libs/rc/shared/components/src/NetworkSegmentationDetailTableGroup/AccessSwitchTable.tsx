@@ -83,6 +83,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       title: $t({ defaultMessage: 'Auth Page of Personal Identity Network' }),
       dataIndex: 'templateId',
       sorter: true,
+      width: 300,
       render: (_, row) => {
         let displayText = ''
         if (row.webAuthPageType === 'USER_DEFINED') {
