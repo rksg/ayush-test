@@ -106,7 +106,6 @@ export function ApManagementVlan () {
     }]}>
       <Space align='start'>
         <StepsFormLegacy.FieldLabel
-          data-testid='veneu-mgmt-vlan-ap-section'
           width='max-content'
           style={{ marginTop: '6px', display: 'flex', alignItems: 'center', paddingLeft: '10px' }}
         >
@@ -155,10 +154,10 @@ export function ApManagementVlan () {
                     }}>
                     <Space align='start'>
                       <InformationSolid />
-                        {$t({ defaultMessage:
+                      {$t({ defaultMessage:
                           `To avoid the isolation of the APs, it is essential to
                            configure the network switches with the corresponding settings.`
-                        })}
+                      })}
                     </Space>
                   </Col>
                 </Row>
