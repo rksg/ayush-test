@@ -415,33 +415,30 @@ export const VenueFirmwareTable = (
           onClick: () => setModelVisible(true)
         }])}
       />
-      <UpdateNowDialogSwitcher
-        visible={updateModelVisible}
+      {updateModelVisible && <UpdateNowDialogSwitcher
         data={venues}
         availableVersions={upgradeVersions}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
-      />
-      <ChangeScheduleDialog
-        visible={changeScheduleModelVisible}
+      />}
+      {changeScheduleModelVisible && <ChangeScheduleDialog
         data={venues}
         availableVersions={changeUpgradeVersions}
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
-      />
-      <RevertDialog
-        visible={revertModelVisible}
+      />}
+      {revertModelVisible && <RevertDialog
         data={venues}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
         onSubmit={handleUpdateModalSubmit}
-      />
-      <PreferencesDialog
-        visible={modelVisible}
+      />}
+      {modelVisible && <PreferencesDialog
+        visible={true}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
-      />
+      />}
     </Loader>
   )
 }
@@ -482,7 +479,6 @@ function hasApSchedule (venue: FirmwareVenue): boolean {
 }
 
 interface UpdateNowDialogSwitcherProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
