@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
@@ -29,6 +29,7 @@ import {
 } from '../../../FirmwareUtils'
 import * as UI       from '../../../styledComponents'
 import * as SwitchUI from '../styledComponents'
+import _ from 'lodash'
 
 function useColumns () {
   const intl = useIntl()
@@ -104,8 +105,16 @@ type VenueTableProps = {
 
 export const NestedSwitchFirmwareTable = (
   { data }: VenueTableProps) => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
-  const [selectedRowKeys2, setSelectedRowKeys2] = useState([])
+  const [selectedSwitchRowKeys, setSelectedSwitchRowKeys] = useState({} as {
+    [key: string]: Key[]
+  })
+  const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
+  const [nestedData, setNestedData] = useState({} as {
+    [key: string]: {
+      initialData: SwitchFirmware[],
+      selectedData: SwitchFirmware[]
+    }
+  })
   const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
 
@@ -152,32 +161,41 @@ export const NestedSwitchFirmwareTable = (
   ]
 
   const { tenantId } = useParams()
-  const [nestedData, setNestedData] = useState({} as { [key: string]: SwitchFirmware[] })
+
   const [isLoading, setIsLoading] = useState({} as { [key: string]: boolean })
   const handleExpand = async (_expanded: unknown, record: { id: string }) => {
     setIsLoading({
       [record.id]: true
     })
-    setNestedData({ ...nestedData, [record.id]: [] })
 
-    const switchListPayload = {
-      pageSize: 10000,
-      filters: {
-        venueId: [record.id]
-      },
-      fields: ['id', 'isStack', 'formStacking', 'name', 'model', 'serialNumber',
-        'deviceStatus', 'syncedSwitchConfig', 'configReady', 'currentFirmware', 'availableVersion',
-        'switchNextSchedule', 'venueNextSchedule', 'preDownload'
-      ]
+    if (_.isEmpty(nestedData[record.id]?.initialData)) {
+      setNestedData({ ...nestedData, [record.id]: { initialData: [], selectedData: [] } })
+      const switchListPayload = {
+        pageSize: 10000,
+        filters: {
+          venueId: [record.id]
+        },
+        fields: ['id', 'isStack', 'formStacking', 'name', 'model', 'serialNumber',
+          'deviceStatus', 'syncedSwitchConfig', 'configReady', 'currentFirmware',
+          'availableVersion', 'switchNextSchedule', 'venueNextSchedule', 'preDownload'
+        ]
+      }
+      const switchList = record.id
+        ? (await getSwitchList({
+          params: { tenantId: tenantId }, payload: switchListPayload
+        }, true)).data?.data.filter((v) => v.venueId === record.id)
+        : []
+
+      const result = { ...nestedData, [record.id]: { initialData: switchList, selectedData: [] } }
+      setNestedData(result as {
+        [key: string]: {
+          initialData: SwitchFirmware[],
+          selectedData: SwitchFirmware[]
+        }
+      })
     }
-    const switchList = record.id
-      ? (await getSwitchList({
-        params: { tenantId: tenantId }, payload: switchListPayload
-      }, true)).data?.data.filter((v) => v.venueId === record.id)
-      : []
 
-    const result = { ...nestedData, [record.id]: switchList }
-    setNestedData(result as { [key: string]: SwitchFirmware[] })
+
     setIsLoading({
       [record.id]: false
     })
@@ -185,8 +203,8 @@ export const NestedSwitchFirmwareTable = (
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log(selectedRowKeys)
-  }, [selectedRowKeys])
+    console.log(nestedData)
+  }, [nestedData])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
@@ -198,7 +216,7 @@ export const NestedSwitchFirmwareTable = (
         emptyText: 'No data'
       }}
       style={{ paddingLeft: '0px !important' }}
-      dataSource={nestedData[record.id] ?? [] as SwitchFirmware[]}
+      dataSource={nestedData[record.id]?.initialData ?? [] as SwitchFirmware[]}
       // pagination={tableQuery.pagination}
       sticky={false}
       tableAlertRender={false}
@@ -211,12 +229,30 @@ export const NestedSwitchFirmwareTable = (
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
-        selectedRowKeys,
-        onChange: (keys, newRows, info) => {
-          // eslint-disable-next-line no-console
-          console.log(newRows)
-          // eslint-disable-next-line no-console
-          console.log(nestedData[record.id])
+        selectedRowKeys: selectedSwitchRowKeys[record.id],
+        onChange: (selectedKeys, selectedRows) => {
+          const currentSwitchList = nestedData[record.id]?.initialData
+          const result = { ...nestedData,
+            [record.id]: { initialData: currentSwitchList, selectedData: selectedRows } }
+          setNestedData(result as {
+            [key: string]: {
+              initialData: SwitchFirmware[],
+              selectedData: SwitchFirmware[]
+            }
+          })
+
+          if (currentSwitchList.length === selectedRows.length) {
+            setSelectedVenueRowKeys([...selectedVenueRowKeys, record.id])
+          } else {
+            setSelectedVenueRowKeys(selectedVenueRowKeys.filter(
+              venueId => { return venueId !== record.id }))
+          }
+
+          setSelectedSwitchRowKeys({
+            ...selectedSwitchRowKeys,
+            [record.id]: selectedKeys
+          })
+
         }
       }}
     />
@@ -240,10 +276,16 @@ export const NestedSwitchFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowSelection={{
-          type: 'checkbox', selectedRowKeys: selectedRowKeys2,
-          onChange: (keys, newRows, info) => {
+          type: 'checkbox',
+          selectedRowKeys: selectedVenueRowKeys,
+          onChange: (selectedKeys, newRows, info) => {
             // eslint-disable-next-line no-console
-            console.log(newRows)
+            // console.log(newRows)
+            setSelectedVenueRowKeys(selectedKeys)
+            // setSelectedSwitchRowKeys({ //TODO:
+            //   ...selectedSwitchRowKeys,
+            //   [selectedKeys[0]]: selectedKeys
+            // })
           }
         }}
       /></SwitchUI.ExpanderTableWrapper>
