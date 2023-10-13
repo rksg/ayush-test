@@ -14,7 +14,8 @@ import {
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
   EdgeFirmwareVersion,
-  SwitchFirmwareStatus
+  SwitchFirmwareStatus,
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -263,7 +264,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             },
             lastScheduleUpdateTime: '2023-09-22T09:00:00.030+00:00',
             preDownload: false,
-            switchCount: 0,
+            switchCount: 1,
             aboveTenSwitchCount: 0,
             upgradeVenueViewList: null,
             status: 'SUCCESS',
@@ -296,7 +297,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             ],
             lastScheduleUpdateTime: '2023-10-03T04:00:00.069+00:00',
             preDownload: false,
-            switchCount: 0,
+            switchCount: 1,
             aboveTenSwitchCount: 0,
             upgradeVenueViewList: null,
             status: 'NONE',
@@ -359,7 +360,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 
 
 
-    getSwitchFirmwareList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
+    getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareVersionIdList, params)
         return {
@@ -412,7 +413,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           data,
           page: 1,
           totalCount: data?.length
-        } as unknown as TableResult<FirmwareSwitchVenue>
+        } as unknown as TableResult<SwitchFirmware>
       } }),
 
 

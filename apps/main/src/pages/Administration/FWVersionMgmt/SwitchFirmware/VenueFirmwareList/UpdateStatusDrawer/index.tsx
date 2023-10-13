@@ -13,6 +13,7 @@ import {
 import { useGetSwitchAclsQuery, useGetSwitchFirmwareStatusListQuery, useLazyGetSwitchFirmwareStatusListQuery }                                       from '@acx-ui/rc/services'
 import { Acl, FirmwareSwitchVenue, SwitchFirmwareStatus, transformTitleCase, useTableQuery } from '@acx-ui/rc/utils'
 import { Typography } from 'antd'
+import { parseSwitchVersion } from '../../../FirmwareUtils'
 
 export interface UpdateStatusDrawerProps {
   visible: boolean,
@@ -87,7 +88,14 @@ export function UpdateStatusDrawer (props: UpdateStatusDrawerProps) {
       key: 'targetFirmware',
       title: $t({ defaultMessage: 'Target Firmware' }),
       dataIndex: 'targetFirmware',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        if (row.targetFirmware) {
+          return parseSwitchVersion(row.targetFirmware)
+        } else {
+          return '--'
+        }
+      }
     }
   ]
   return (<Drawer

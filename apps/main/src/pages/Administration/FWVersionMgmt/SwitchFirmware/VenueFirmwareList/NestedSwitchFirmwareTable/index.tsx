@@ -9,10 +9,12 @@ import {
 } from '@acx-ui/components'
 import {
   useGetSwitchCurrentVersionsQuery,
+  useLazyGetSwitchFirmwareListQuery,
   useLazyGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
+  SwitchFirmware,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -57,10 +59,15 @@ function useColumns () {
       }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableFw',
-      dataIndex: 'availableFw',
+      key: 'availableVersions',
+      dataIndex: 'availableVersions',
       render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
+        const availableVersions = row.availableVersions
+        if (availableVersions.length === 0) {
+          return '--'
+        } else {
+          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
+        }
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -99,16 +106,16 @@ export const NestedSwitchFirmwareTable = (
   { data }: VenueTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedRowKeys2, setSelectedRowKeys2] = useState([])
-  const [ getSwitchList ] = useLazyGetSwitchListQuery()
+  const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
 
   const columns = useColumns()
   const intl = useIntl()
-  const switchColumns: TableProps<SwitchViewModel>['columns'] = [
+  const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
       title: intl.$t({ defaultMessage: 'Venue' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'switchName',
+      dataIndex: 'switchName',
       defaultSortOrder: 'ascend'
     }, {
       title: '',
@@ -116,13 +123,27 @@ export const NestedSwitchFirmwareTable = (
       dataIndex: 'model'
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
-      key: 'version',
-      dataIndex: 'model',
-      filterMultiple: false
+      key: 'currentFirmware',
+      dataIndex: 'currentFirmware',
+      filterMultiple: false,
+      render: function (_, row) {
+        if (row.currentFirmware) {
+          return parseSwitchVersion(row.currentFirmware)
+        } else {
+          return '--'
+        }
+      }
     }, {
       title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableFw',
-      dataIndex: 'model'
+      key: 'availableVersion',
+      dataIndex: 'availableVersion',
+      render: function (_, row) {
+        if (row.availableVersion?.id) {
+          return parseSwitchVersion(row.availableVersion.id)
+        } else {
+          return '--'
+        }
+      }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
@@ -131,7 +152,7 @@ export const NestedSwitchFirmwareTable = (
   ]
 
   const { tenantId } = useParams()
-  const [nestedData, setNestedData] = useState({} as { [key: string]: SwitchViewModel[] })
+  const [nestedData, setNestedData] = useState({} as { [key: string]: SwitchFirmware[] })
   const [isLoading, setIsLoading] = useState({} as { [key: string]: boolean })
   const handleExpand = async (_expanded: unknown, record: { id: string }) => {
     setIsLoading({
@@ -156,7 +177,7 @@ export const NestedSwitchFirmwareTable = (
       : []
 
     const result = { ...nestedData, [record.id]: switchList }
-    setNestedData(result as { [key: string]: SwitchViewModel[] })
+    setNestedData(result as { [key: string]: SwitchFirmware[] })
     setIsLoading({
       [record.id]: false
     })
@@ -169,7 +190,7 @@ export const NestedSwitchFirmwareTable = (
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
-    return <Table<SwitchViewModel>
+    return <Table<SwitchFirmware>
       columns={switchColumns}
       className='switchTable'
       loading={isLoading[record.id]}
@@ -177,7 +198,7 @@ export const NestedSwitchFirmwareTable = (
         emptyText: 'No data'
       }}
       style={{ paddingLeft: '0px !important' }}
-      dataSource={nestedData[record.id] ?? [] as SwitchViewModel[]}
+      dataSource={nestedData[record.id] ?? [] as SwitchFirmware[]}
       // pagination={tableQuery.pagination}
       sticky={false}
       tableAlertRender={false}

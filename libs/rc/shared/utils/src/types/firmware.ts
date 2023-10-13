@@ -197,8 +197,27 @@ export interface FirmwareSwitchVenue {
   lastScheduleUpdateTime: string;
   switchCount?: number;
   aboveTenSwitchCount?: number;
-  status: string;
+  status: SwitchFirmwareStatusType;
   scheduleCount: number;
+}
+
+export enum SwitchFirmwareStatusType {
+  NONE = 'NONE',
+  INITIATE = 'INITIATE',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED'
+}
+
+export interface SwitchFirmware {
+  id: string;
+  name: string;
+  preDownload: boolean;
+  currentFirmware: string;
+  availableVersion: switchVersion;
+  updatedAdvice?: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  switchNextSchedule: Schedule;
+  venueNextSchedule: Schedule;
 }
 
 export interface SwitchFirmwareStatus {
@@ -207,8 +226,6 @@ export interface SwitchFirmwareStatus {
   status: string;
   targetFirmware: string;
 }
-
-
 
 export interface CurrentVersions {
   currentVersions: string[];

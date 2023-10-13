@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Form, Tooltip } from 'antd'
+import { Form, Tooltip, Typography } from 'antd'
 import * as _            from 'lodash'
 import { useIntl }       from 'react-intl'
 
@@ -9,7 +9,7 @@ import {
   Table,
   TableProps,
   Loader,
-  Button,
+  Button
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
@@ -31,7 +31,8 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  FirmwareCategory
+  FirmwareCategory,
+  SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -50,7 +51,7 @@ import * as UI               from '../../styledComponents'
 import { ScheduleUpdatesWizard } from './ScheduleUpdatesWizard'
 import { SkipUpdatesWizard }     from './SkipUpdatesWizard'
 import { UpdateNowWizard }       from './UpdateNowWizard'
-import { UpdateStatusDrawer } from './UpdateStatusDrawer'
+import { UpdateStatusDrawer }    from './UpdateStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -177,16 +178,7 @@ export const VenueFirmwareTable = (
         if (availableVersions.length === 0) {
           return '--'
         } else {
-          const count09010 = availableVersions.filter(
-            version => version.id.startsWith('09010')).length
-          const count10010 = availableVersions.filter(
-            version => version.id.startsWith('10010')).length
-
-          if (count09010 > 1 || count10010 > 1) {
-            return 'Multiple'
-          } else {
-            return availableVersions.map(version => version.id).join(',')
-          }
+          return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
         }
       }
     },
@@ -195,25 +187,42 @@ export const VenueFirmwareTable = (
       key: 'status',
       dataIndex: 'status',
       render: function (__, row) {
-        if(_.isEmpty(row.name)){
+
+        const switchFirmwareStatusTextMapping: { [key in SwitchFirmwareStatusType]: string } = {
+          [SwitchFirmwareStatusType.NONE]: '--',
+          [SwitchFirmwareStatusType.INITIATE]:
+            $t({ defaultMessage: 'Firmware update initiated.' }),
+          [SwitchFirmwareStatusType.SUCCESS]:
+            $t({ defaultMessage: 'Update successful.' }),
+          [SwitchFirmwareStatusType.FAILED]:
+            $t({ defaultMessage: 'Update failed.' })
+        }
+
+        if (_.isEmpty(row.status) || row.status === SwitchFirmwareStatusType.NONE
+          || _.isEmpty(switchFirmwareStatusTextMapping[row.status])) {
           return '--'
         }
 
-        return <>{row.name}<Button
-          size='small'
-          ghost={true}
-          style={{
-            color: '#5496EA',
-            padding: '0',
-            marginLeft: '5px',
-            alignItems: 'end'
-          }}
-          onClick={() => {
-            setClickedUpdateStatusData(row)
-            setUpdateStatusDrawerVisible(true)
-          }}>
-          Check Status
-        </Button></>
+        return <div>
+          <Typography.Text
+            style={{ lineHeight: '24px' }}>
+            {switchFirmwareStatusTextMapping[row.status]}
+          </Typography.Text>
+          <Button
+            size='small'
+            ghost={true}
+            style={{
+              color: '#5496EA',
+              padding: '0',
+              marginLeft: '5px',
+              marginBottom: '2px'
+            }}
+            onClick={() => {
+              setClickedUpdateStatusData(row)
+              setUpdateStatusDrawerVisible(true)
+            }}>
+            Check Status
+          </Button></div>
       }
     },
     {
@@ -306,9 +315,9 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
-    disabled: (selectedRows) => {
-      return !hasAvailableSwitchFirmware(selectedRows)
-    },
+    // disabled: (selectedRows) => {
+    //   return !hasAvailableSwitchFirmware(selectedRows)
+    // },
     // tooltip: (selectedRows) => {
     //   return hasAvailableSwitchFirmware(selectedRows) ?
     //     '' : $t({ defaultMessage: 'No available versions' })
@@ -406,7 +415,6 @@ export const VenueFirmwareTable = (
         onCancel={() => { setSkipWizardVisible(false) }}
         onSubmit={() => { }} />
 
-        SkipUpdatesWizard
       <PreferencesDialog
         visible={modelVisible}
         data={preferences}
