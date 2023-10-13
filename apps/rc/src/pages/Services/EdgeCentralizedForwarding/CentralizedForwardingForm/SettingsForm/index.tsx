@@ -4,8 +4,8 @@ import { Col, Form, Input, Row, Select, Typography, Space } from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { useParams }                                        from 'react-router-dom'
 
-import { Button, cssStr, StepsForm, useStepFormContext }                                 from '@acx-ui/components'
-import { SpaceWrapper }                                                                  from '@acx-ui/rc/components'
+import { cssStr, StepsForm, useStepFormContext }                                         from '@acx-ui/components'
+import { SpaceWrapper, TunnelProfileAddModal }                                           from '@acx-ui/rc/components'
 import { useGetEdgeListQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { EdgeCentralizeForwardingSetting, EdgeStatusEnum }                               from '@acx-ui/rc/utils'
 import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
@@ -259,7 +259,7 @@ export const SettingsForm = (props: SettingsFormProps) => {
               </Form.Item>
             </Col>
             <Col span={3}>
-              <Button type='link'>{$t({ defaultMessage: 'Add' })}</Button>
+              <TunnelProfileAddModal />
             </Col>
           </Row>
         </Col>

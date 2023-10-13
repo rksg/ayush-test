@@ -6,8 +6,7 @@ import { Button, Loader, Modal, ModalType, showToast, StepsForm }            fro
 import { TunnelProfileForm, TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
 
 
-
-export const TunnelProfileModal = () => {
+export const TunnelProfileAddModal = () => {
 
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
