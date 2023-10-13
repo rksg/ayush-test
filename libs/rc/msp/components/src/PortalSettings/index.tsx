@@ -397,7 +397,6 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      return
       await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
@@ -415,7 +414,6 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      return
       await updateMspLabel({ params, payload: portal }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
