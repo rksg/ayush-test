@@ -1,16 +1,20 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import {
-  setUserProfile,
-  Tenant
-} from '@acx-ui/analytics/utils'
+import { getUserProfile } from '@acx-ui/analytics/utils'
+import type { Tenant }    from '@acx-ui/analytics/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { UserButton } from './UserButton'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+const userProfile = jest.mocked(getUserProfile)
 
 const mockPermissions = {
   'view-analytics': true,
@@ -40,8 +44,10 @@ const mockUserProfile = {
   ] as Tenant[]
 }
 describe('UserButton', () => {
+  beforeEach(() => {
+    userProfile.mockReturnValue(mockUserProfile)
+  })
   it('should render button with user profile', async () => {
-    setUserProfile(mockUserProfile)
     render(
       <Provider>
         <UserButton />
@@ -83,17 +89,31 @@ describe('UserButton', () => {
     window.HTMLFormElement.prototype.submit = submit
   })
 
+  it('does not throw error if names are empty', async () => {
+    userProfile.mockReturnValue({
+      ...mockUserProfile,
+      firstName: '',
+      lastName: ''
+    })
+    render(
+      <Provider>
+        <UserButton />
+      </Provider>,
+      { route: { params } }
+    )
+    expect(screen.getByRole('button')).toHaveTextContent('')
+  })
+
   it('should not render My Profile if view-analytics is false', async () => {
     const permissions = { ...mockPermissions, 'view-analytics': false }
-    const mockUserProfileNotViewAnalytics = {
+    userProfile.mockReturnValue({
       ...mockUserProfile,
       accountId: 'accountId1',
       selectedTenant: { id: 'accountId1', permissions } as Tenant,
       tenants: [
         { id: 'accountId1', permissions }
       ] as Tenant[]
-    }
-    setUserProfile(mockUserProfileNotViewAnalytics)
+    })
     render(
       <Provider>
         <UserButton />
