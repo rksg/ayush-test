@@ -24,7 +24,8 @@ export const clientsList = {
         mac: '18:B4:30:03:E6:03',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.42',
-        lastActiveTime: '2023-08-23T05:08:20.000Z'
+        lastActiveTime: '2023-08-23T05:08:20.000Z',
+        manufacturer: 'manufacturer1'
       },
       {
         hostname: '02AA01AB50120E2Q',
@@ -32,7 +33,8 @@ export const clientsList = {
         mac: '18:B4:30:04:D8:10',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.44',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer2'
       },
       {
         hostname: '02AA01AB50120G7G',
@@ -40,7 +42,8 @@ export const clientsList = {
         mac: '18:B4:30:05:1C:BE',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.69',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer3'
       }
     ]
   }
@@ -67,6 +70,7 @@ describe('Clients List', () => {
     expect(screen.getByText('02AA01AB50120H4M')).toBeVisible()
     expect(screen.getByText('18b43004d810')).toBeVisible()
     expect(screen.getByText('18:B4:30:05:1C:BE')).toBeVisible()
+    expect(screen.getByText('manufacturer3')).toBeVisible()
   })
 
   it('should show no data on empty list', async () => {

@@ -107,7 +107,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
     }),
     column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
     column('ssid', { title: $t({ defaultMessage: 'Network' }) }),
-    column('osType', { title: $t({ defaultMessage: 'osType' }) })
+    column('osType', { title: $t({ defaultMessage: 'OS Type' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
   // TODO: use search from table component
