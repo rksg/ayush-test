@@ -49,6 +49,7 @@ import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }           
 import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
+import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -123,6 +124,7 @@ export function MspCustomers () {
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
+  const isUpgradeMultipleEcEnabled = useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
@@ -175,6 +177,13 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+
+  const allowManageAdmin =
+      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
+  const allowSelectTechPartner =
+      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+  const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
+
   if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
@@ -319,7 +328,7 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+        return allowManageAdmin ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -328,7 +337,7 @@ export function MspCustomers () {
       },
       render: function (_, row) {
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          allowManageAdmin
             ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
@@ -350,12 +359,12 @@ export function MspCustomers () {
         return mspUtils.transformAlarmCount(row, mspEcAlarmList)
       }
     }]),
-    ...(isIntegrator || userProfile?.support ? [] : [{
+    ...(hideTechPartner ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return allowSelectTechPartner ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -366,17 +375,17 @@ export function MspCustomers () {
       render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          allowSelectTechPartner
             ? <Link to=''>{val}</Link> : val
         )
       }
     }]),
-    ...(isIntegrator || userProfile?.support ? [] : [{
+    ...(hideTechPartner ? [] : [{
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return allowSelectTechPartner ? {
           onClick: () => {
             setDrawerIntegratorVisible(false)
             setTenantId(data.id)
@@ -388,7 +397,7 @@ export function MspCustomers () {
       render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          allowSelectTechPartner
             ? <Link to=''>{val}</Link> : val
         )
       }
@@ -494,6 +503,7 @@ export function MspCustomers () {
     const [modalVisible, setModalVisible] = useState(false)
     const [selTenantId, setSelTenantId] = useState('')
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
+    const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const [mspEcTenantList, setMspEcTenantList] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
@@ -543,6 +553,18 @@ export function MspCustomers () {
           const selectedEcIds = selectedRows.map(item => item.id)
           setSelEcTenantIds(selectedEcIds)
           setDrawerAssignEcMspAdminsVisible(true)
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        visible: (selectedRows) => {
+          const len = selectedRows.length
+          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+        },
+        onClick: (selectedRows) => {
+          const selectedEcIds = selectedRows.map(item => item.id)
+          setSelEcTenantIds(selectedEcIds)
+          setDrawerScheduleFirmwareVisible(true)
         }
       },
       {
@@ -658,6 +680,11 @@ export function MspCustomers () {
           tenantIds={selEcTenantIds}
           setVisible={setDrawerAssignEcMspAdminsVisible}
           setSelected={() => {}}
+        />}
+        {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
+          visible={drawerScheduleFirmwareVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerScheduleFirmwareVisible}
         />}
       </Loader>
     )
