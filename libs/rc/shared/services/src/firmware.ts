@@ -373,8 +373,82 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           {
             venueId: '156c8b7daa464b06b4fd59ae38dcce30',
             venueName: 'kittoVenue',
-            switchId: 'c0:c5:20:aa:32:55',
+            switchId: 'c0:c5:20:aa:32:56',
             switchName: 'kittoSwitch',
+            isStack: false,
+            model: 'ICX7150-48P',
+            currentFirmware: '09010f_b403',
+            availableVersion:
+                  {
+                    id: '09010h_cd1_b3',
+                    name: '09010h_cd1_b3',
+                    category: 'RECOMMENDED'
+                  },
+            switchNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-05T00:00:00-07:00',
+                endDateTime: '2023-10-05T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            venueNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-08T00:00:00-07:00',
+                endDateTime: '2023-10-08T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            preDownload: false
+          }, {
+            venueId: '156c8b7daa464b06b4fd59ae38dcce30',
+            venueName: 'kittoVenue',
+            switchId: 'c0:c5:20:aa:32:55',
+            switchName: 'kittoSwitch2',
+            isStack: false,
+            model: 'ICX7150-48P',
+            currentFirmware: '09010f_b403',
+            availableVersion:
+                  {
+                    id: '09010h_cd1_b3',
+                    name: '09010h_cd1_b3',
+                    category: 'RECOMMENDED'
+                  },
+            switchNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-05T00:00:00-07:00',
+                endDateTime: '2023-10-05T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            venueNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-08T00:00:00-07:00',
+                endDateTime: '2023-10-08T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            preDownload: false
+          }, {
+            venueId: '9b68bd5cafbf4bc282dc0434102ceca9',
+            venueName: 'My-Venue',
+            switchId: 'c0:c5:20:aa:32:57',
+            switchName: 'myVenue-Switch1',
             isStack: false,
             model: 'ICX7150-48P',
             currentFirmware: '09010f_b403',

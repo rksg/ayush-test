@@ -1,13 +1,14 @@
 
-import { Col, Form, Row } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import {
-  Modal, ModalType, StepsForm, Subtitle
+  Modal, ModalType, StepsForm
 } from '@acx-ui/components'
 import {
   FirmwareCategory,
   FirmwareSwitchVenue,
+  SwitchFirmwareStatusType,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
@@ -112,7 +113,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
               preDownload: false,
               switchCount: 0,
               aboveTenSwitchCount: 0,
-              status: 'SUCCESS',
+              status: SwitchFirmwareStatusType.SUCCESS,
               scheduleCount: 1
             }]}
             nonIcx8200Count={1}

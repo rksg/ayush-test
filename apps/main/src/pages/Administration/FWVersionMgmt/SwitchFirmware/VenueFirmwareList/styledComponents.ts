@@ -66,45 +66,59 @@ export const FieldGroup = styled.div`
 `
 
 export const ExpanderTableWrapper = styled.div`
-
   min-height: 50vh;
   margin-bottom: 30px;
 
-  .ant-table-cell-fix-right-first{
+  /* Selected Row Styles */
+  .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: #EBEDEE;
+  }
+
+  /* Right-Fixed Cell Styles */
+  .ant-table-cell-fix-right-first {
     /* display: none; */
   }
-  .ant-table-expanded-row-fixed{
+
+  /* Expanded Row Styles */
+  .ant-table-expanded-row-fixed {
     padding-left: 7px;
     padding-right: 0px;
     padding-bottom: 0px;
-    .ant-table-fixed-column{
+
+    .ant-table-fixed-column {
       margin-bottom: 10px;
       top: -3px;
     }
   }
+
+  /* Last Child TD Styles */
   .ant-table-tbody > tr:last-child > td {
-    border: none
+    border: none;
   }
 
-  .ant-table-cell-fix-right:not(.react-resizable){
+  /* Right-Fixed Cell Styles */
+  .ant-table-cell-fix-right:not(.react-resizable) {
     background-color: #EBEDEE;
   }
 
+  /* Table Body Styles */
+  .ant-table-body {
+    background-color: #EBEDEE;
+  }
+
+  /* Switch Table Styles */
+  .switchTable {
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background: white;
+    }
 
     .ant-table-body {
-      background-color: #EBEDEE;
+      background-color: white;
     }
 
-    .switchTable{
-      .ant-table-body {
-        background-color: white;
-      }
-      .ant-table-cell-fix-right{
-        background-color: white;
-      }
-
-
-
-
+    .ant-table-cell-fix-right {
+      background-color: white;
     }
+  }
 `
+

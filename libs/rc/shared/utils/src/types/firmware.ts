@@ -211,6 +211,8 @@ export enum SwitchFirmwareStatusType {
 export interface SwitchFirmware {
   id: string;
   name: string;
+  venueId: string;
+  venueName: string;
   preDownload: boolean;
   currentFirmware: string;
   availableVersion: switchVersion;

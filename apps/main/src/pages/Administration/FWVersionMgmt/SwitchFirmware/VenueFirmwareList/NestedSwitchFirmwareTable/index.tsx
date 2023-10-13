@@ -173,7 +173,7 @@ export const NestedSwitchFirmwareTable = (
     const switchList = record.id
       ? (await getSwitchList({
         params: { tenantId: tenantId }, payload: switchListPayload
-      }, true)).data?.data
+      }, true)).data?.data.filter((v) => v.venueId === record.id)
       : []
 
     const result = { ...nestedData, [record.id]: switchList }
@@ -208,10 +208,16 @@ export const NestedSwitchFirmwareTable = (
       }
       expandable={{ expandedRowRender: () => { return <></> } }}
       // onChange={tableQuery.handleTableChange}
-      rowKey='id'
+      rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
-        selectedRowKeys
+        selectedRowKeys,
+        onChange: (keys, newRows, info) => {
+          // eslint-disable-next-line no-console
+          console.log(newRows)
+          // eslint-disable-next-line no-console
+          console.log(nestedData[record.id])
+        }
       }}
     />
   }
