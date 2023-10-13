@@ -159,9 +159,6 @@ export function ApManagementVlan () {
                             `To avoid the isolation of the APs, it is essential
                          configure the network switches with the corresponding settings.`
                           }
-                          values={{
-                            b: (text: string) => <strong>{text}</strong>
-                          }}
                         />
                       </div>
                     </Space>
