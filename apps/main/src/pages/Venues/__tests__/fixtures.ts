@@ -187,6 +187,11 @@ export const venueBssColoring = {
   bssColoringEnabled: true
 }
 
+export const venueApManagementVlan = {
+  vlanOverrideEnabled: true,
+  vlanId: 7
+}
+
 export const autocompleteResult = {
   address_components: [
     {
