@@ -326,7 +326,7 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Standby' })
   } else if (unitStatus === STACK_MEMBERSHIP.MEMBER) {
     return $t({ defaultMessage: 'Member' })
-  } else if (unitStatus === 'Standalone'){
+  } else if (unitStatus === STACK_MEMBERSHIP.STANDALONE){
     return $t({ defaultMessage: 'Standalone' })
   } else if (isDefaultMember) {
     return $t({ defaultMessage: 'Member' })
