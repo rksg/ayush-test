@@ -41,6 +41,7 @@ export interface CcdResultViewerProps {
   },
   addCcdAp?: (apMac: string) => void
   cleanCcdAps?: () => void
+  resetCcdButtons?: () => void
   historicalIndex?: number
 }
 
@@ -50,13 +51,14 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
   const endPointXsRef = useRef<CcdEndPointRectX[]>([])
   const currentCcdApRef = useRef<string>('')
 
-  const { state, venueId, payload, addCcdAp, cleanCcdAps, historicalIndex } = props
+  const { state, venueId, payload, addCcdAp, cleanCcdAps, resetCcdButtons, historicalIndex } = props
 
-  const { setRequestId, handleError } = useCcd(socketHandler)
+  const { setRequestId, handleError } = useCcd(socketHandler, resetCcdButtons)
 
   const [ diagnosisClientConnection ] = useRunCcdMutation()
 
   useEffect(() => {
+    console.log('state: ', state)
     const doActions = async () => {
 
       if (state === 'START') {
@@ -79,7 +81,6 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
           setRequestId('')
           handleError(error as CatchErrorResponse)
         }
-
       } else if (state === 'STOP') {
         //console.log('Action is STOP')
         try {
@@ -95,7 +96,6 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
           setRequestId('')
           handleError(error as CatchErrorResponse)
         }
-
       } else if (state === 'CLEAR') {
         //console.log('Action is CLEAR')
         hasInitSvg = false
@@ -113,6 +113,8 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
           const data = historicalData[historicalIndex]
           drawHistoricalData(data)
         }
+      } else if (state === 'RESET_BUTTONS') {
+        // do nothing
       }
     }
 
