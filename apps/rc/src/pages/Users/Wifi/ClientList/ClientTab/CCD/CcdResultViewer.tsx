@@ -58,7 +58,6 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
   const [ diagnosisClientConnection ] = useRunCcdMutation()
 
   useEffect(() => {
-    console.log('state: ', state)
     const doActions = async () => {
 
       if (state === 'START') {
