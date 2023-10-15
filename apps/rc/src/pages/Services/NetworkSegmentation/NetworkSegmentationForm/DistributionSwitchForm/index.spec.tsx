@@ -24,8 +24,8 @@ import {
 
 import { DistributionSwitchForm } from './'
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
-const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
+const updateNsgPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
 
 type MockDrawerProps = React.PropsWithChildren<{
   open: boolean
