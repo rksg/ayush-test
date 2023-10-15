@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Root } from 'react-dom/client'
 
-import { getPendoConfig, UserProfileProvider, setUserProfile } from '@acx-ui/analytics/utils'
+import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
@@ -62,13 +62,11 @@ export async function init (root: Root) {
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-            <UserProfileProvider>
-              <BrowserRouter>
-                <React.Suspense fallback={null}>
-                  <AllRoutes />
-                </React.Suspense>
-              </BrowserRouter>
-            </UserProfileProvider>
+            <BrowserRouter>
+              <React.Suspense fallback={null}>
+                <AllRoutes />
+              </React.Suspense>
+            </BrowserRouter>
           </PreferredLangConfigProvider>
         </LocaleProvider>
       </Provider>

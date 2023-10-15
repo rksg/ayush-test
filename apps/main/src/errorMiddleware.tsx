@@ -3,9 +3,9 @@ import React from 'react'
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal }                    from '@acx-ui/components'
-import { CatchErrorResponse }                                                     from '@acx-ui/rc/utils'
-import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal } from '@acx-ui/utils'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
+import { CatchErrorResponse }                                                                 from '@acx-ui/rc/utils'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
 type QueryMeta = {
   response?: Response,
@@ -250,9 +250,7 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {
-      const token = sessionStorage.getItem('jwt')?? null
-      sessionStorage.removeItem('jwt')
-      window.location.href = token? `/logout?token=${token}` : '/logout'
+      userLogout()
     }
   }
   return next(action)
