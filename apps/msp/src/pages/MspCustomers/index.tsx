@@ -237,7 +237,8 @@ export function MspCustomers () {
     searchString: '',
     filters: {
       mspTenantId: [parentTenantid],
-      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+      tenantType: isHspSupportEnabled ? [AccountType.MSP_EC]
+        : [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
     },
     fields: [
       'check-all',

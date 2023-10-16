@@ -41,7 +41,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
           tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP Customers' })
         },
-        ...(!isHspSupportEnabled ? [] : [{
+        ...(!isHspSupportEnabled || isSupport ? [] : [{
           uri: '/dashboard/mspRecCustomers',
           tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP REC Customers' })

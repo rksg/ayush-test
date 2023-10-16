@@ -111,7 +111,7 @@ export enum Features {
   AP_AFC_TOGGLE = 'ap-afc-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
-  MSP_HSP_SUPPORT = 'mspservice-hsp-01'
+  MSP_HSP_SUPPORT = 'mspservice-mspec-adminoptional'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
