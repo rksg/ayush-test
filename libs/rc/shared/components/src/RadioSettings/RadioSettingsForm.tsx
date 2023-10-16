@@ -223,16 +223,19 @@ export function RadioSettingsForm (props:{
     <>
       { ApRadioTypeEnum.Radio6G === radioType &&
         <FieldLabel width='180px' style={(context === 'ap' && isOutdoor) ? { display: 'hidden' } : {}}>
-          {$t({ defaultMessage: 'AFC Power Mode:' })}
-          {/* <Tooltip title={
+          <Tooltip title={
             <FormattedMessage
               values={{ br: () => <br /> }}
               defaultMessage={'These settings apply only to indoor APs.'}
             />
           }
           placement='bottom'>
-            <QuestionMarkCircleOutlined />
-          </Tooltip> */}
+            <div style={{ float: 'left' }}>
+              <p style={{ width: '100px' }}>{$t({ defaultMessage: 'AFC Power Mode:' })}</p>
+            </div>
+            <QuestionMarkCircleOutlined style={{ width: '14px', marginTop: '3px' }}/>
+
+          </Tooltip>
           <Form.Item
             name={lowPowerIndoorModeEnabledFieldName}>
             {isUseVenueSettings ?
