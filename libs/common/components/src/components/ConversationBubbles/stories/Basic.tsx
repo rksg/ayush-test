@@ -17,12 +17,13 @@ export function Basic () {
   ]
 
   const content:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessages }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessages }
   ]
 
   return <Conversation
     content={content}
     classList='conversation'
+    isReplying={false}
     style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
 }

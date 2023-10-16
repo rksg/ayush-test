@@ -38,12 +38,13 @@ export function Withbutton () {
   ]
 
   const content:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithButton }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessagesWithButton }
   ]
 
   return <Conversation
     content={content}
     classList='conversation'
+    isReplying={false}
     style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
 }
