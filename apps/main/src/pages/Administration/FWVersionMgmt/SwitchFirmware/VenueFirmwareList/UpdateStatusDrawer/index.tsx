@@ -61,7 +61,6 @@ export function UpdateStatusDrawer (props: UpdateStatusDrawerProps) {
 
   useEffect(() => {
     if(props.data.id){
-
       setSwitchList()
     }
   }, [props.data.id])

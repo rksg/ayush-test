@@ -265,7 +265,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             lastScheduleUpdateTime: '2023-09-22T09:00:00.030+00:00',
             preDownload: false,
             switchCount: 1,
-            aboveTenSwitchCount: 0,
+            aboveTenSwitchCount: 2,
             upgradeVenueViewList: null,
             status: 'SUCCESS',
             scheduleCount: 1
@@ -377,11 +377,48 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             switchName: 'kittoSwitch',
             isStack: false,
             model: 'ICX7150-48P',
-            currentFirmware: '09010f_b403',
+            currentFirmware: '09010e_b332',
             availableVersion:
                   {
                     id: '09010h_cd1_b3',
                     name: '09010h_cd1_b3',
+                    category: 'RECOMMENDED'
+                  },
+            switchNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-05T00:00:00-07:00',
+                endDateTime: '2023-10-05T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            venueNextSchedule: {
+              timeSlot: {
+                startDateTime: '2023-10-08T00:00:00-07:00',
+                endDateTime: '2023-10-08T02:00:00-07:00'
+              },
+              version: {
+                id: '09010h_cd1_b3',
+                name: '09010h_cd1_b3',
+                category: 'RECOMMENDED'
+              }
+            },
+            preDownload: false
+          }, {
+            venueId: '156c8b7daa464b06b4fd59ae38dcce30',
+            venueName: 'kittoVenue',
+            switchId: 'c0:c5:20:aa:32:59',
+            switchName: 'RodanSwitch',
+            isStack: false,
+            model: 'ICX8200',
+            currentFirmware: '10010_b190',
+            availableVersion:
+                  {
+                    id: '10010_b190',
+                    name: '10010_b190',
                     category: 'RECOMMENDED'
                   },
             switchNextSchedule: {
