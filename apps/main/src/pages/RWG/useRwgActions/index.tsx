@@ -21,7 +21,7 @@ export function useRwgActions () {
           : $t({ defaultMessage: 'Gateways' }),
         entityValue: rows.length === 1 ? rows[0].name : undefined,
         numOfEntities: rows.length,
-        confirmationText: 'Delete'
+        confirmationText: $t({ defaultMessage: 'Delete' })
       },
       onOk: () => { rows.length === 1 ?
         deleteGateway({ params: { tenantId, rwgId: rows[0].id } })
