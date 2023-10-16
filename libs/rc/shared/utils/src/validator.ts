@@ -14,6 +14,7 @@ import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
+const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -546,13 +547,26 @@ export function emailRegExp (value: string) {
 
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
-  if (value && !re.test(value)) {
+  if (value && !basicPhoneNumberRegExp.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
 
-  if (value && !ValidatePhoneNumber(value)){
+  if (value && !validateMobileNumber(value)){
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+  return Promise.resolve()
+}
+
+export function generalPhoneRegExp (value: string) {
+  const { $t } = getIntl()
+
+  if (value && !basicPhoneNumberRegExp.test(value)) {
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+
+  const parsedInfo = parsePhoneNumber(value)
+  if (value && !parsedInfo?.number){
     return Promise.reject($t(validationMessages.phoneNumber))
   }
   return Promise.resolve()
@@ -659,7 +673,10 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function ValidatePhoneNumber (phoneNumber: string) {
+export function parsePhoneNumber (phoneNumber: string): {
+  number: libphonenumber.PhoneNumber,
+  type: PhoneNumberType
+} | undefined {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
   let phoneNumberType
@@ -667,13 +684,25 @@ export function ValidatePhoneNumber (phoneNumber: string) {
     number = phoneNumberUtil.parse(phoneNumber, '')
     phoneNumberType = phoneNumberUtil.getNumberType(number)
   } catch (e) {
-    return false
+    return
   }
   if (!number) {
+    return
+  }
+
+  return { number, type: phoneNumberType }
+}
+
+export function validateMobileNumber (phoneNumber: string) {
+  const parsedPhone = parsePhoneNumber(phoneNumber)
+  const phoneNumberUtil = PhoneNumberUtil.getInstance()
+
+  if (parsedPhone === undefined) {
     return false
   } else {
-    if (!phoneNumberUtil.isValidNumber(number) ||
-      (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
+    const { number, type } = parsedPhone
+    if (!phoneNumberUtil.isValidNumber(number)
+      || (type !== PhoneNumberType.MOBILE && type !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
       return false
     }
   }

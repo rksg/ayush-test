@@ -7,8 +7,6 @@ import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                 from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
-  useAdaptivePolicySetListQuery,
-  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -34,20 +32,18 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   const { setVisible, visible, accessPolicies, setAccessPolicies } = props
 
   const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
-  const [conditionCountMap, setConditionCountMap] = useState(new Map())
   const [selectedPolicies, setSelectedPolicies] = useState(new Map())
-  const [templateIdMap, setTemplateIdMap] = useState(new Map())
-  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
-  const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
-
-  const { data: templateList, isLoading: templateIsLoading } =
-    usePolicyTemplateListQuery({
-      payload: {
-        page: '1',
-        pageSize: '1000',
-        sortField: 'name',
-        sortOrder: 'desc' }
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
+    { payload: { page: '1', pageSize: '2147483647' } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const templateIds = new Map(data?.data.map((template) =>
+          [template.ruleType.toString(), template.id]))
+        return {
+          templateIdMap: templateIds,
+          templateIsLoading: isLoading
+        }
+      }
     })
 
   const adaptivePolicyListTableQuery = useTableQuery({
@@ -56,49 +52,14 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
     defaultPayload: {}
   })
 
-  // eslint-disable-next-line max-len
-  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
-
   useEffect(() => {
-    if(adaptivePolicySetList) {
-      adaptivePolicySetList.data.forEach(policySet => {
-        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-          .then(result => {
-            if (result.data) {
-              const policies : string []= result.data.data.map(p => p.policyId)
-              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-            }
-          })
-      })
-    }
-  }, [adaptivePolicySetList])
-
-  useEffect(() => {
-    if (!visible || adaptivePolicyListTableQuery.isLoading || templateIsLoading)
+    if (!visible || adaptivePolicyListTableQuery.isLoading)
       return
-
-    const templateIds = new Map()
-    templateList?.data.forEach( template => {
-      templateIds.set(template.ruleType, template.id)
-    })
-    setTemplateIdMap(templateIds)
-
-    adaptivePolicyListTableQuery.data?.data.forEach(policy => {
-      const { id, policyType } = policy
-      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
-        .then(result => {
-          if(result.data) {
-            setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
-          }
-        })
-    })
 
     if(accessPolicies && selectedPolicies.size === 0) {
       setSelectedPolicies(new Map(accessPolicies.map(item => [item.id, item])))
     }
-  }, [adaptivePolicyListTableQuery.data, templateList?.data, visible])
+  }, [adaptivePolicyListTableQuery.data, visible])
 
   const onClose = () => {
     setSelectedPolicies(new Map())
@@ -129,25 +90,18 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
       },
       {
         title: $t({ defaultMessage: 'Access Conditions' }),
-        key: 'accessConditions',
-        dataIndex: 'accessConditions',
+        key: 'conditionsCount',
+        dataIndex: 'conditionsCount',
         align: 'center',
-        render: (_, row) => {
-          return conditionCountMap.get(row.id) ?? 0
-        }
+        sorter: true
       },
       {
         title: $t({ defaultMessage: 'Policy Set Membership' }),
         key: 'policySetCount',
         dataIndex: 'policySetCount',
-        align: 'center',
+        sorter: true,
         render: (_, row) => {
-          const policySets = [] as string []
-          policySetPoliciesMap.forEach((value, key) => {
-            if(value.find((item: string) => item === row.id)){
-              policySets.push(key)
-            }
-          })
+          const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
             <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }
@@ -204,7 +158,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   const content = (
     <Form layout={'vertical'}>
       <Loader states={[
-        adaptivePolicyListTableQuery
+        adaptivePolicyListTableQuery,
+        { isLoading: templateIsLoading }
       ]}>
         <Form.Item
           label={$t({ defaultMessage: 'Select Access Policies' })}

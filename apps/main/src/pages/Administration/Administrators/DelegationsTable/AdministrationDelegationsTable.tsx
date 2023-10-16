@@ -12,6 +12,7 @@ import {
   Subtitle,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetDelegationsQuery,
   useRevokeInvitationMutation
@@ -45,10 +46,15 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const [revokeInvitation] = useRevokeInvitationMutation()
   const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
+  const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
+  const MAX_VAR_INVITATIONS = 10
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
 
-  const hasDelegations = Boolean(data?.length)
+  const shouldInvite3rdPartyEnabled =
+  (isMultipleVarEnabled && data?.length && data.length < MAX_VAR_INVITATIONS ) || false
+
+  const maxInvitationReached = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
   const handleClickInviteDelegation = () => {
     setShowDialog(true)
@@ -106,6 +112,15 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         return row.delegatedToName
       }
     },
+    ...(isMultipleVarEnabled ? [{
+      title: $t({ defaultMessage: 'Email' }),
+      key: 'delegatedToAdmin',
+      dataIndex: 'delegatedToAdmin',
+      sorter: { compare: sortProp('delegatedToAdmin', defaultSort) },
+      render: (_: React.ReactNode, row: Delegation) => {
+        return row.delegatedToAdmin
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
@@ -149,7 +164,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
       label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
-      disabled: hasDelegations,
+      disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
   }

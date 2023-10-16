@@ -1,5 +1,5 @@
-import { EdgeServiceStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary }      from '../../types'
+import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import { EdgeAlarmSummary }                      from '../../types'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -15,3 +15,21 @@ export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
 
   return EdgeServiceStatusEnum.UNKNOWN
 }
+
+export const allowRebootForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = rebootableEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
+export const allowResetForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = resettabaleEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
+export const rebootableEdgeStatuses = [
+  EdgeStatusEnum.OPERATIONAL,
+  EdgeStatusEnum.APPLYING_CONFIGURATION,
+  EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
+  EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
+
+export const resettabaleEdgeStatuses = rebootableEdgeStatuses

@@ -171,12 +171,6 @@ function SettingsForm () {
         wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Optional
         break
     }
-    wlanProtocolConfig.macRegistrationListId = value !== WlanSecurityEnum.WPA2Personal
-      ? null
-      : data?.wlan?.macRegistrationListId
-    wlanProtocolConfig.passphrase = value !== WlanSecurityEnum.WPA2Personal
-      ? null
-      : data?.wlan?.passphrase
 
     setData && setData({
       ...data,

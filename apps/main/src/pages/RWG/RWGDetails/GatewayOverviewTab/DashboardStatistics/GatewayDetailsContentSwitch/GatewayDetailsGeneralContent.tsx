@@ -1,9 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { Descriptions }              from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { GatewayDetailsGeneral }     from '@acx-ui/rc/utils'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { Descriptions, PasswordInput } from '@acx-ui/components'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { GatewayDetailsGeneral }       from '@acx-ui/rc/utils'
+import { TenantLink }                  from '@acx-ui/react-router-dom'
+
+import * as UI from '../../styledComponents'
 
 
 export default function GatewayDetailsGeneralContent (props: {
@@ -37,7 +39,13 @@ export default function GatewayDetailsGeneralContent (props: {
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Password' })}
-      children={gatewayDetails?.password}
+      children={<UI.DetailsPassword>
+        <PasswordInput
+          readOnly
+          bordered={false}
+          value={gatewayDetails?.password}
+        />
+      </UI.DetailsPassword>}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Uptime' })}

@@ -208,7 +208,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
         }
       ]}
       children={
-        <>
+        <div style={{ display: 'flex' }}>
           { sortOptions(options).map((option, key) => {
             if (option.name === 'enable6G' && !isEnabled6GHz) {
               return (
@@ -218,38 +218,40 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
                     // eslint-disable-next-line max-len
                     defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption'
                   })}
-                  placement='rightBottom'
+                  placement='right'
                   style={{
                     height: 10,
                     display: 'flex'
                   }}
                   children={
-                    <UI.StyledCheckbox
-                      key={key}
-                      name={option.name}
-                      checked={option.value}
-                      disabled={true}
-                      onChange={handleChange}
-                      children={option.label}
-                    />
+                    <div>
+                      <UI.StyledCheckbox
+                        name={option.name}
+                        checked={option.value}
+                        disabled={true}
+                        onChange={handleChange}
+                        children={option.label}
+                      />
+                    </div>
                   }
                 />
               )
             }
             else {
               return (
-                <UI.StyledCheckbox
-                  key={key}
-                  name={option.name}
-                  checked={option.value}
-                  disabled={option.disabled}
-                  onChange={handleChange}
-                  children={option.label}
-                />
+                <div key={key}>
+                  <UI.StyledCheckbox
+                    name={option.name}
+                    checked={option.value}
+                    disabled={option.disabled}
+                    onChange={handleChange}
+                    children={option.label}
+                  />
+                </div>
               )
             }
           }) }
-        </>
+        </div>
       }
     />
   )
@@ -294,7 +296,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
       <UI.Subtitle>
         {$t({ defaultMessage: 'Wi-Fi 7' })}
         <Tooltip.Question
-          title={$t({ defaultMessage: 'Only work with Wi-Fi Aps, e.g., R770' })}
+          title={$t({ defaultMessage: 'Only work with Wi-Fi 7 Aps, e.g., R770' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />

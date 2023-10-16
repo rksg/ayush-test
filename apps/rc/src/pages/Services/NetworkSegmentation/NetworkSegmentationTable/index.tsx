@@ -261,7 +261,7 @@ const NetworkSegmentationTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network Segmentation' }),
+            entityName: $t({ defaultMessage: 'Personal Identity Network' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -279,7 +279,7 @@ const NetworkSegmentationTable = () => {
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: 'Network Segmentation ({count})' },
+          $t({ defaultMessage: 'Personal Identity Network ({count})' },
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
@@ -292,7 +292,8 @@ const NetworkSegmentationTable = () => {
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.CREATE
             })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
+            {/* eslint-disable-next-line max-len */}
+            <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>
           </TenantLink>
         ])}
       />
