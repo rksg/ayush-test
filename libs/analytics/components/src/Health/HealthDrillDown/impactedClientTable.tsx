@@ -92,6 +92,13 @@ export const ImpactedClientsTable = ({
       sorter: { compare: sortProp('manufacturer', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'OS Type' }),
+      dataIndex: 'osType',
+      key: 'osType',
+      render: (_, { osType }) => renderMultiValue(osType as string[]),
+      sorter: { compare: sortProp('osType', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'SSID' }),
       dataIndex: 'ssid',
       key: 'ssid',
