@@ -50,6 +50,9 @@ const list = {
             radioId: 1
           }
         ],
+        APSystem: {
+          managementVlan: 1
+        },
         lanPortStatus: [
           {
             phyLink: 'Down ',
@@ -96,7 +99,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: '',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -128,7 +134,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -160,7 +169,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
@@ -192,7 +204,10 @@ const list = {
             Rssi: null,
             radioId: 1
           }
-        ]
+        ],
+        APSystem: {
+          managementVlan: 1
+        }
       },
       meshRole: 'EMAP',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',

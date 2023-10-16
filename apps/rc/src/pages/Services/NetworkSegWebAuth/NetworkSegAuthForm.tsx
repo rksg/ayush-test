@@ -112,8 +112,8 @@ export default function NetworkSegAuthForm (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Personal Identity Network Auth page for Switch' }) :
-          $t({ defaultMessage: 'Add Personal Identity Network Auth page for Switch' })}
+          $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
+          $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

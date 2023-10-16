@@ -4,7 +4,10 @@ import {
   isLocalHost, isQA,
   isScale, isStage, isProdEnv,
   isIgnoreErrorModal, isShowApiError,
-  createHttpRequest, getFilters } from './apiService'
+  createHttpRequest,
+  getFilters,
+  getUrlForTest
+} from './apiService'
 
 describe('ApiInfo', () => {
   it('Check the envrionment', async () => {
@@ -64,6 +67,8 @@ describe('ApiInfo', () => {
     expect(enableNewApi(apiInfo2)).toBe(false)
     expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
     expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
+    expect(getUrlForTest(apiInfo1)).toBe('/venues/aaaServers/query')
+    expect(getUrlForTest(apiInfo2)).toBe('/venues/aaaServers/query')
   })
 
 })
