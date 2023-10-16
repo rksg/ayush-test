@@ -76,6 +76,13 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      dataIndex: 'manufacturer',
+      key: 'manufacturer',
+      searchable: true,
+      sorter: { compare: sortProp('manufacturer', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
@@ -90,13 +97,6 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
         return formatter(DateFormatEnum.DateTimeFormat)(lastActiveTime)
       },
       sorter: { compare: sortProp('lastActiveTime', defaultSort) }
-    },
-    {
-      title: $t({ defaultMessage: 'Manufacturer' }),
-      dataIndex: 'manufacturer',
-      key: 'manufacturer',
-      searchable: true,
-      sorter: { compare: sortProp('manufacturer', defaultSort) }
     }
   ]
   return <Loader states={[results]}>
