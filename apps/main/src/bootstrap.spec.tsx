@@ -86,7 +86,8 @@ describe('bootstrap.init', () => {
       account: {
         id: '123',
         name: 'companyName1',
-        productName: 'RuckusOne'
+        productName: 'RuckusOne',
+        tenantId: '123'
       },
       visitor: {
         delegated: false,
