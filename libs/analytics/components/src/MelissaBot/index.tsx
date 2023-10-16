@@ -8,10 +8,12 @@ import { useIntl }     from 'react-intl'
 import { useLocation } from 'react-router-dom'
 
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { Drawer, Conversation, content }      from '@acx-ui/components'
+import { Conversation, content }              from '@acx-ui/components'
 
 
-import icon from './melissaIcon.png'
+import MelissaHeaderIcon from './melissaHeaderIcon.svg'
+import MelissaIcon       from './melissaIcon.svg'
+import { MelissaDrawer } from './styledComponents'
 
 const scrollToBottom=()=>{
   const msgBody=document.querySelector('.ant-drawer-body')
@@ -42,7 +44,13 @@ export function MelissaBot (){
     setOpen(false)
   }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
-  const title = $t({ defaultMessage: 'Melissa infused with ChatGPT' })
+  // const title = $t({ defaultMessage: 'Melissa infused with ChatGPT' })
+  const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>Melissa</span>
+    <span style={{
+      fontSize: '12px',
+      fontWeight: 700,
+      paddingTop: '3px',
+      marginLeft: '-5px' }}>infused with ChatGPT</span></>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const askMelissa = (body:any) => {
     const { userId } = getUserProfileRA()
@@ -106,7 +114,7 @@ export function MelissaBot (){
   },[])
   return (
     <>{showFloatingButton && <img
-      src={icon}
+      src={MelissaIcon}
       alt={imageAlt}
       onClick={showDrawer}
       style={{
@@ -116,9 +124,9 @@ export function MelissaBot (){
         zIndex: 999999,
         cursor: 'pointer'
       }} />}
-    <Drawer
+    <MelissaDrawer
       title={title}
-      icon={<img src={icon} alt={imageAlt} style={{ height: '40px' }}/>}
+      icon={<img src={MelissaHeaderIcon} alt={imageAlt}/>}
       onClose={onClose}
       visible={open}
       width={464}
@@ -126,19 +134,21 @@ export function MelissaBot (){
         placeholder='Ask anything'
         value={inputValue}
         disabled={isInputDisabled}
-        onChange={(e)=>{
+        onChange={(e) => {
           setInputValue(e.target.value)
         }}
-        onKeyDown={(e)=>{
-          if(e.key === 'Enter'){
-            const userMessage:content = { type: 'user',
-              contentList: [{ text: { text: [inputValue] } }] }
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            const userMessage: content = {
+              type: 'user',
+              contentList: [{ text: { text: [inputValue] } }]
+            }
             messages.push(userMessage)
             setIsLoading(true)
             setIsInputDisabled(true)
             setInputValue('')
             setMessages(messages)
-            defer(()=>{
+            defer(() => {
               scrollToBottom()
             })
             askMelissa({
@@ -150,13 +160,13 @@ export function MelissaBot (){
               }
             })
           }
-        }}/>}
+        }} />}
     >
       <Conversation
         content={messages}
         classList='conversation'
-        style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>
-      {isLoading && <Spin/>}
-    </Drawer></>
+        style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
+      {isLoading && <Spin />}
+    </MelissaDrawer></>
   )
 }
