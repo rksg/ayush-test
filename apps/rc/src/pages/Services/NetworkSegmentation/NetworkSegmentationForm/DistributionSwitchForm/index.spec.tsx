@@ -6,6 +6,7 @@ import { rest }  from 'msw'
 import { StepsForm }        from '@acx-ui/components'
 import {
   DistributionSwitch,
+  EdgeUrlsInfo,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -21,6 +22,8 @@ import {
 import {
   mockNsgSwitchInfoData
 } from '../../__tests__/fixtures'
+
+import { StaticRouteModal } from './StaticRouteModal'
 
 import { DistributionSwitchForm } from './'
 
@@ -46,6 +49,11 @@ jest.mock('./DistributionSwitchDrawer', () => ({
     </div>
 }))
 
+jest.mock('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes', () => ({
+  ...jest.requireActual('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes'),
+  default: () => <div data-testid={'StaticRoutes'}></div>
+}))
+
 
 describe('DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -69,6 +77,10 @@ describe('DistributionSwitchForm', () => {
             ...mockNsgSwitchInfoData.accessSwitches
           ] }))
         }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json({ serialNumber: '0000000001', name: 'Smart Edge 1' }))
       ),
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
@@ -138,5 +150,20 @@ describe('DistributionSwitchForm', () => {
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+})
+
+describe('StaticRouteModal', () => {
+  it('Should render successfully', async () => {
+    render(<StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Static Route' }))
+
+    const form = await screen.findByTestId('StaticRoutes')
+    await waitFor(() => expect(form).toBeVisible())
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(form).not.toBeVisible()
   })
 })
