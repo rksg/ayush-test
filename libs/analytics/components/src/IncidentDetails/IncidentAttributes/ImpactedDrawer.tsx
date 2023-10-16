@@ -112,7 +112,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
 
   // TODO: use search from table component
   return <Drawer
-    width={'650px'}
+    width={'800px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
       { count: props.impactedCount }
