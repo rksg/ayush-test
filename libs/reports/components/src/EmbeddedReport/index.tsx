@@ -117,13 +117,14 @@ export const getSupersetRlsClause = (
       }
     }
 
-    clause.networkClause = ` (${[
-      zoneClause,
-      apClause,
-      switchGroupClause,
-      switchClause
-    ].filter(Boolean)
-      .join(' OR ')})`
+    if(zoneClause || apClause || switchGroupClause || switchClause)
+      clause.networkClause = ` (${[
+        zoneClause,
+        apClause,
+        switchGroupClause,
+        switchClause
+      ].filter(Boolean)
+        .join(' OR ')})`
   }
 
   return clause
@@ -214,8 +215,8 @@ export function EmbeddedReport (props: ReportProps) {
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
-  const { filters: { paths, bands } } = useReportsFilter()
   const { pathFilters: { path } } = useAnalyticsFilter()
+  const { filters: { paths, bands } } = useReportsFilter()
 
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState('')
 
@@ -320,43 +321,43 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   useEffect(() => {
+    if (!dashboardEmbeddedId || (isRA && systems.status === 'pending')) return
+
     let timer: ReturnType<typeof setInterval>
     let embeddedObj: Promise<EmbeddedDashboard>
     const jwtToken = getJwtToken()
-    if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0
-      && systems.status === 'fulfilled') {
-      embeddedObj = embedDashboard({
-        id: dashboardEmbeddedId,
-        supersetDomain: `${HOST_NAME}${REPORT_BASE_RELATIVE_URL}`,
-        mountPoint: document.getElementById(
-          `acx-report-${embedDashboardName}`
-        )!,
-        fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: {
-          hideChartControls: true,
-          hideTitle: hideHeader ?? true
-        },
-        // debug: true
-        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
-        locale // i18n locale from R1
-      })
-      embeddedObj.then(async (embObj) => {
-        timer = setInterval(async () => {
-          const { height } = await embObj.getScrollSize()
-          if (height > 0) {
-            const iframeElement = document.querySelector(
-              `div[id="acx-report-${embedDashboardName}"] > iframe`
+
+    embeddedObj = embedDashboard({
+      id: dashboardEmbeddedId,
+      supersetDomain: `${HOST_NAME}${REPORT_BASE_RELATIVE_URL}`,
+      mountPoint: document.getElementById(
+        `acx-report-${embedDashboardName}`
+      )!,
+      fetchGuestToken: () => fetchGuestTokenFromBackend(),
+      dashboardUiConfig: {
+        hideChartControls: true,
+        hideTitle: hideHeader ?? true
+      },
+      // debug: true
+      authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
+      locale // i18n locale from R1
+    })
+    embeddedObj.then(async (embObj) => {
+      timer = setInterval(async () => {
+        const { height } = await embObj.getScrollSize()
+        if (height > 0) {
+          const iframeElement = document.querySelector(
+            `div[id="acx-report-${embedDashboardName}"] > iframe`
+          )
+          if (iframeElement) {
+            iframeElement.setAttribute(
+              'style',
+              `height: ${height}px !important`
             )
-            if (iframeElement) {
-              iframeElement.setAttribute(
-                'style',
-                `height: ${height}px !important`
-              )
-            }
           }
-        }, 1000)
-      })
-    }
+        }
+      }, 1000)
+    })
     return () => {
       if (timer) clearTimeout(timer)
     }
