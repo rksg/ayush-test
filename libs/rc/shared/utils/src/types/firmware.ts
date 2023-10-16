@@ -209,6 +209,7 @@ export enum SwitchFirmwareStatusType {
 }
 
 export interface SwitchFirmware {
+  switchId?: string;
   id: string;
   name: string;
   venueId: string;
