@@ -73,8 +73,9 @@ async function pendoInitalization (): Promise<PendoParameters> {
     },
     account: {
       productName: 'RuckusOne',
-      id: user.tenantId,
-      name: user.companyName
+      id: user.externalId,
+      name: user.companyName,
+      tenantId: user.tenantId
     }
   }
 }
