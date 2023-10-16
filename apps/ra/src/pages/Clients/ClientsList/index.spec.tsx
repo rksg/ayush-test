@@ -100,12 +100,12 @@ describe('Clients List', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     userEvent.click(
       await screen.findByPlaceholderText(
-        'Search Hostname, Username, MAC Address, IP Address, OS Type'
+        'Search Hostname, Username, MAC Address, IP Address, Manufacturer, OS Type'
       )
     )
     userEvent.type(
       await screen.findByPlaceholderText(
-        'Search Hostname, Username, MAC Address, IP Address, OS Type'
+        'Search Hostname, Username, MAC Address, IP Address, Manufacturer, OS Type'
       ),
       '18b43003e603'
     )
