@@ -38,8 +38,8 @@ export function Withbutton () {
   ]
 
   const content:content[] =
-  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', contentList: fulfillmentMessagesWithButton }
+  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithButton }
   ]
 
   return <Conversation

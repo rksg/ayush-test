@@ -2,7 +2,7 @@ import { CSSProperties } from 'styled-components'
 
 import * as UI from './styledComponents'
 
-export type content = { type: 'bot' | 'user',
+export type content = { type: 'bot' | 'user', isReplying: true | false,
 contentList:{ data?: { incidentId: string },
 text?: { text: string[] }, payload?: { richContent: { link: string, type: string,
   icon: { color: string, type: string }, text: string,
@@ -25,11 +25,13 @@ function Conversation ({
         list.contentList.map((content) => (
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>(
-              <UI.Bot>{msg}</UI.Bot>
+              list.isReplying ?
+                <UI.Bot>Typing...</UI.Bot> : <UI.Bot>{msg}</UI.Bot>
             ))
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
-                <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
+                list.isReplying ?
+                  <UI.Bot>Typing...</UI.Bot> : <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
               ))
             ))}
             </>

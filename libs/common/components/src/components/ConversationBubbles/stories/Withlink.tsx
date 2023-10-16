@@ -62,8 +62,8 @@ export function Withlink () {
   ]
 
   const content:content[] =
-  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', contentList: fulfillmentMessagesWithLink }
+  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithLink }
   ]
 
   return <Conversation
