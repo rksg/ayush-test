@@ -84,26 +84,23 @@ const fulfillmentMessagesWithButton = [
   }
 ]
 
-const contentData:content =
-  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', contentList: fulfillmentMessages }
+const contentData:content[] =
+  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isReplying: false, contentList: fulfillmentMessages }
   ]
-const contentLink:content =
-  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', contentList: fulfillmentMessagesWithLink }
+const contentLink:content[] =
+  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithLink }
   ]
-const contentButton:content =
-  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', contentList: fulfillmentMessagesWithButton }
+const contentButton:content[] =
+  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithButton }
   ]
-const props = {
-  style: { height: 410, width: 416, whiteSpace: 'pre-line' }
-}
 describe('Conversation component', () => {
   it('should render Conversation component with text', () => {
     render(<Conversation content={contentData}
       classList='conversation'
-      {...props}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
     />)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band')
     ).toBeVisible()
@@ -111,13 +108,13 @@ describe('Conversation component', () => {
   it('should render Conversation component with link', () => {
     render(<Conversation content={contentLink}
       classList='conversation'
-      {...props}/>)
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('Go to Switch Report')).toBeVisible()
   })
   it('should render Conversation component with button', () => {
     render(<Conversation content={contentButton}
       classList='conversation'
-      {...props}/>)
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('If you have log files, click to upload')).toBeVisible()
   })
 })

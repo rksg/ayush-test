@@ -1,7 +1,7 @@
 import { Conversation, content } from '..'
 
 
-export function Basic () {
+export function Typing () {
   const contentUser = 'List zones with higher co-channel interference in 2.4 GHz band'
 
   const fulfillmentMessages = [
@@ -18,7 +18,7 @@ export function Basic () {
 
   const content:content[] =
   [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessages }
+    { type: 'bot', isReplying: true, contentList: fulfillmentMessages }
   ]
 
   return <Conversation
