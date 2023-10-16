@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react'
 import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button, cssStr }     from '@acx-ui/components'
-import { Android, Apple }     from '@acx-ui/icons'
-import { LowPowerAPQuantity } from '@acx-ui/rc/utils'
+import { Button, cssStr }                         from '@acx-ui/components'
+import { Android, Apple }                         from '@acx-ui/icons'
+import { LowPowerAPQuantity, AFCStatus, AFCInfo } from '@acx-ui/rc/utils'
 
 interface LowerPowerBannerSetting {
   bannerColSpan: number,
@@ -31,9 +31,10 @@ type settings = {
 export function LowPowerBannerAndModal (props: {
     parent: string,
     lowPowerAPs?: LowPowerAPQuantity
+    afcInfo?: AFCInfo
 }) {
 
-  const { lowPowerAPs, parent } = props
+  const { lowPowerAPs, parent, afcInfo } = props
 
 
   const { $t } = useIntl()
@@ -74,7 +75,18 @@ export function LowPowerBannerAndModal (props: {
     const VenueWarningMessage = `${lowPowerAPs?.lowPowerAPCount} ${$t({ defaultMessage: 'out of' })} ${lowPowerAPs?.allAPCount} \
     ${$t({ defaultMessage: 'Access points that support 6 GHz are currently operating in low power mode' })}`
 
-    const APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+    let APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
+    }
+    if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+    }
+    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+    }
+
 
     if(parent === 'venue') {
       setBannerText(VenueWarningMessage)
