@@ -6,7 +6,7 @@ import { DownloadOutlined } from '@acx-ui/icons'
 import { Table, TableProps } from '..'
 import { showToast }         from '../../Toast'
 
-type RecordType = {
+export type RecordType = {
   key: string
   name: string
   givenName: string
