@@ -16,16 +16,13 @@ export function Basic () {
     }
   ]
 
-  const content:content =
+  const content:content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
   ]
 
-  const props = {
-    style: { height: 410, width: 416, whiteSpace: 'pre-line' }
-  }
   return <Conversation
     content={content}
     classList='conversation'
-    {...props}></Conversation>
+    style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
 }

@@ -1,14 +1,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Divider, Input, Spin } from 'antd'
-import { defer, get }           from 'lodash'
-import moment                   from 'moment-timezone'
-import { useIntl }              from 'react-intl'
-import { useLocation }          from 'react-router-dom'
+import { Input, Spin } from 'antd'
+import { defer, get }  from 'lodash'
+import moment          from 'moment-timezone'
+import { useIntl }     from 'react-intl'
+import { useLocation } from 'react-router-dom'
 
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { Drawer }                             from '@acx-ui/components'
+import { Drawer, Conversation, content }      from '@acx-ui/components'
 
 
 import icon from './melissaIcon.png'
@@ -32,7 +32,7 @@ export function MelissaBot (){
   const [showFloatingButton, setShowFloatingButton] = useState(false)
   const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [messages,setMessages] = useState<string[]>([])
+  const [messages,setMessages] = useState<content[]>([])
 
   const showDrawer = () => {
     setOpen(true)
@@ -60,11 +60,7 @@ export function MelissaBot (){
       setResponseCount(responseCount+1)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
-      fulfillmentMessages.forEach(message=>{
-        if(message.text){
-          messages.push(message.text.text[0])
-        }
-      })
+      messages.push({ type: 'bot', contentList: fulfillmentMessages })
       setMessages(messages)
       setIsInputDisabled(false)
       defer(()=>{
@@ -127,7 +123,7 @@ export function MelissaBot (){
       visible={open}
       width={464}
       footer={<Input ref={inputRef}
-        placeholder='Ask Ruckus Chat anything'
+        placeholder='Ask anything'
         value={inputValue}
         disabled={isInputDisabled}
         onChange={(e)=>{
@@ -135,7 +131,9 @@ export function MelissaBot (){
         }}
         onKeyDown={(e)=>{
           if(e.key === 'Enter'){
-            messages.push(inputValue)
+            const userMessage:content = { type: 'user',
+              contentList: [{ text: { text: [inputValue] } }] }
+            messages.push(userMessage)
             setIsLoading(true)
             setIsInputDisabled(true)
             setInputValue('')
@@ -154,8 +152,10 @@ export function MelissaBot (){
           }
         }}/>}
     >
-      {messages.map((message) => <><p style={{ whiteSpace: 'pre-line' }}>
-        {message}</p><Divider /></>)}
+      <Conversation
+        content={messages}
+        classList='conversation'
+        style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>
       {isLoading && <Spin/>}
     </Drawer></>
   )

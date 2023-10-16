@@ -1,14 +1,16 @@
+import { CSSProperties } from 'styled-components'
+
 import * as UI from './styledComponents'
 
 export type content = { type: 'bot' | 'user',
 contentList:{ data?: { incidentId: string },
 text?: { text: string[] }, payload?: { richContent: { link: string, type: string,
   icon: { color: string, type: string }, text: string,
- event?: { parameters: { url: string }, name: string, languageCode: string } }[][] } }[] }[]
+ event?: { parameters: { url: string }, name: string, languageCode: string } }[][] } }[] }
 export interface ConversationProps {
-  content: content
+  content: content[]
   classList: string
-  style: { height: number, width: number }
+  style: CSSProperties
 }
 
 function Conversation ({
@@ -27,7 +29,7 @@ function Conversation ({
             ))
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
-                <UI.Bot><a href={res.event?.parameters.url}>{res.text}</a></UI.Bot>
+                <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
               ))
             ))}
             </>
