@@ -355,12 +355,12 @@ export const codes = {
   },
   'c-txpower-same': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio' }),
     priority: priorities.medium,
     valueFormatter: formatter('txFormat'),
     valueText: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on both 2.4 GHz and 5 Ghz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz.' }),
-    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz and reduces co-channel interference.' }),
+    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on both 2.4 GHz and 5 Ghz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.' }),
+    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz/6 GHz and reduces co-channel interference.' }),
     tradeoffText: defineMessage({ defaultMessage: '2.4 GHz clients at the edge of Wi-Fi coverage may receive poor signal or lose connectivity.' }),
     kpis: [
       {
