@@ -1,7 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Input, Spin } from 'antd'
+import { Input }       from 'antd'
 import { defer, get }  from 'lodash'
 import moment          from 'moment-timezone'
 import { useIntl }     from 'react-intl'
@@ -29,7 +29,7 @@ export function MelissaBot (){
   const inputRef = useRef<any>(null)
   const initCount = useRef(0)
   const [open, setOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isReplying, setIsReplying] = useState(false)
   const [responseCount, setResponseCount] = useState(0)
   const [showFloatingButton, setShowFloatingButton] = useState(false)
   const [isInputDisabled, setIsInputDisabled] = useState(false)
@@ -64,7 +64,7 @@ export function MelissaBot (){
         body: JSON.stringify(body)
       }).then(async (res)=>{
       const json=await res.json()
-      setIsLoading(false)
+      setIsReplying(false)
       setResponseCount(responseCount+1)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
@@ -144,7 +144,7 @@ export function MelissaBot (){
               contentList: [{ text: { text: [inputValue] } }]
             }
             messages.push(userMessage)
-            setIsLoading(true)
+            setIsReplying(true)
             setIsInputDisabled(true)
             setInputValue('')
             setMessages(messages)
@@ -164,9 +164,9 @@ export function MelissaBot (){
     >
       <Conversation
         content={messages}
+        isReplying={isReplying}
         classList='conversation'
         style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
-      {isLoading && <Spin />}
     </MelissaDrawer></>
   )
 }
