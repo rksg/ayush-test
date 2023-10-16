@@ -59,6 +59,11 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           name='selectSwitches'
           title={$t({ defaultMessage: 'Select Switch(es)' })}
           layout='horizontal'
+          onFinish={async (data) => {
+            // eslint-disable-next-line no-console
+            console.log(data)
+            return true
+          }}
         >
           <NestedSwitchFirmwareTable
             data={props.data as FirmwareSwitchVenue[]}

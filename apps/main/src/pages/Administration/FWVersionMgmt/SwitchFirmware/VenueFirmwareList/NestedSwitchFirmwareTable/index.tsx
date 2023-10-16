@@ -6,7 +6,8 @@ import { useIntl } from 'react-intl'
 
 import {
   Table,
-  TableProps
+  TableProps,
+  useStepFormContext
 } from '@acx-ui/components'
 import {
   useGetSwitchCurrentVersionsQuery,
@@ -117,7 +118,7 @@ export const NestedSwitchFirmwareTable = (
   })
   const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
-
+  const { form } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
@@ -213,10 +214,16 @@ export const NestedSwitchFirmwareTable = (
     })
   }
 
+
+  if ((_.isEmpty(nestedData)) && (!_.isEmpty(form.getFieldValue('nestedData')))) {
+    setNestedData(form.getFieldValue('nestedData'))
+    setSelectedSwitchRowKeys(form.getFieldValue('selectedSwitchRowKeys'))
+    setSelectedVenueRowKeys(form.getFieldValue('selectedVenueRowKeys'))
+  }
+
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(nestedData)
-  }, [nestedData])
+    form.setFieldsValue({ selectedSwitchRowKeys, selectedVenueRowKeys, nestedData })
+  }, [selectedSwitchRowKeys, selectedVenueRowKeys, nestedData])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
@@ -290,15 +297,13 @@ export const NestedSwitchFirmwareTable = (
         rowSelection={{
           type: 'checkbox',
           selectedRowKeys: selectedVenueRowKeys,
-          onChange: (selectedKeys, newRows, info) => {
-            // eslint-disable-next-line no-console
-            // console.log(newRows)
+          onChange: (selectedKeys) => {
 
             const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
             const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
 
             if (addedVenue.length == 1) {
-              const selectedAllSwitchList = nestedData[addedVenue[0]].initialData
+              const selectedAllSwitchList = nestedData[addedVenue[0]]?.initialData || []
               const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
 
               setNestedData({
@@ -341,7 +346,7 @@ export const NestedSwitchFirmwareTable = (
 
 
             } else if (deletedVenue.length === 1) {
-              const selectedAllSwitchList = nestedData[deletedVenue[0]].initialData
+              const selectedAllSwitchList = nestedData[deletedVenue[0]]?.initialData || []
               setNestedData({
                 ...nestedData,
                 [deletedVenue[0]]: {
@@ -375,7 +380,6 @@ export const NestedSwitchFirmwareTable = (
               setNestedData(newNestedData)
               setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
             }
-
 
             setSelectedVenueRowKeys(selectedKeys)
           }
