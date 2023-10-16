@@ -2,7 +2,16 @@
 export interface AdaptivePolicySet {
   id: string,
   name: string,
-  description: string
+  description: string,
+  mappedPolicyCount: number,
+  assignmentCount: number,
+  policyNames: string [],
+  externalAssignments: ExternalAssignment []
+}
+
+export interface ExternalAssignment {
+  identityId: string [],
+  identityName: string
 }
 
 export interface AdaptivePolicy {
@@ -10,7 +19,10 @@ export interface AdaptivePolicy {
   name: string,
   description: string,
   policyType: string,
-  onMatchResponse: string
+  onMatchResponse: string,
+  policySetCount: number,
+  conditionsCount: number,
+  policySetNames: string [] | undefined
 }
 
 export interface PrioritizedPolicy {
