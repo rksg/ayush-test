@@ -128,6 +128,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             supportDfsChannels={supportDfsChannels}
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
+            ap={apViewContextData}
           />
         )
         }

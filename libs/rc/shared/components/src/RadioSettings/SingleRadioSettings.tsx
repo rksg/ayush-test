@@ -6,9 +6,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
+import { Button, cssStr }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { LowPowerAPQuantity, ApViewModel } from '@acx-ui/rc/utils'
+
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -64,7 +65,9 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  lowPowerAPs?: LowPowerAPQuantity
+  lowPowerAPs?: LowPowerAPQuantity,
+  isAFCEnabled? : boolean,
+  ap?: ApViewModel
 }) {
 
   const { $t } = useIntl()
@@ -75,7 +78,8 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    lowPowerAPs
+    lowPowerAPs,
+    isAFCEnabled
   } = props
 
   const {
@@ -388,7 +392,7 @@ export function SingleRadioSettings (props:{
               parent={'venue'}
               lowPowerAPs={lowPowerAPs} />
         }
-        <Row gutter={20} data-testid={testId}>
+        <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
               radioType={radioType}
@@ -398,6 +402,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
+              isAFCEnabled={isAFCEnabled}
+              ap={props.ap}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&

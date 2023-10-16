@@ -1,14 +1,16 @@
 /* eslint-disable max-len */
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
-import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
-import { useIntl }                                            from 'react-intl'
+import { Form, Slider, InputNumber, Space, Switch, Checkbox, Radio } from 'antd'
+import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
+import { FormattedMessage, useIntl }                                 from 'react-intl'
 
-import { cssStr, Tooltip }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationOutlined }    from '@acx-ui/icons'
-
+import { cssStr, Tooltip }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { InformationOutlined, QuestionMarkCircleOutlined }       from '@acx-ui/icons'
+import { isAPLowPower, useWifiCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
+import { ApViewModel, AFCStatus }                                from '@acx-ui/rc/utils'
+import { useParams }                                             from '@acx-ui/react-router-dom'
 
 import {
   ApRadioTypeEnum,
@@ -32,9 +34,11 @@ export function RadioSettingsForm (props:{
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,
-  onGUIChanged?: (fieldName: string) => void
+  onGUIChanged?: (fieldName: string) => void,
+  isAFCEnabled? : boolean,
+  ap?: ApViewModel
 }) {
-
+  const [isOutdoor, setIsOutdoor] = useState(false)
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const { radioType,
@@ -43,7 +47,9 @@ export function RadioSettingsForm (props:{
     channelBandwidthOptions,
     context = 'venue',
     isUseVenueSettings = false,
-    onGUIChanged
+    onGUIChanged,
+    isAFCEnabled = true,
+    ap
   } = props
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -58,6 +64,7 @@ export function RadioSettingsForm (props:{
   const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
+  const lowPowerIndoorModeEnabledFieldName = [...radioDataKey, 'lowPowerIndoorModeEnabled']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -70,18 +77,31 @@ export function RadioSettingsForm (props:{
     enableMulticastRateLimiting,
     enableUploadLimit,
     enableDownloadLimit,
-    channelBandwidth
+    channelBandwidth,
+    lowPowerIndoorModeEnabled
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
-    useWatch<string>(channelBandwidthFieldName)
+    useWatch<string>(channelBandwidthFieldName),
+    useWatch<boolean>(lowPowerIndoorModeEnabledFieldName)
   ]
+  const { tenantId, serialNumber } = useParams()
+
+  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
+  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
 
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
 
+    const outDoorModel = wifiCapabilities.data?.apModels.find((apModel) => {
+      return apModel.model === getAp.data?.model && apModel.isOutdoor === true
+    })
+
+    if (outDoorModel){
+      setIsOutdoor(true)
+    }
   }, [] )
 
 
@@ -104,8 +124,131 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
+  function displayLowPowerModeRadioButtonText (button: string, ap?: ApViewModel | undefined ) : JSX.Element[] {
+
+    const afcInfo = ap?.apStatusData?.afcInfo || undefined
+
+    const buttonText = [] as JSX.Element[]
+
+    if (context === 'venue') {
+      if ('standard' === button) {
+        buttonText.push(
+          <p style={{ fontSize: '12px', margin: '0px' }}>
+            {$t({ defaultMessage: 'Standard power' })}
+          </p>
+        )
+      }
+
+      if ('lowPower' === button) {
+        buttonText.push(
+          <p style={{ fontSize: '12px', margin: '0px' }}>
+            {$t({ defaultMessage: 'Low power' })}
+          </p>
+        )
+      }
+      return buttonText
+    }
+
+    if (context === 'ap') {
+      if ('useVenueSetting' === button) {
+        if (lowPowerIndoorModeEnabled) {
+          buttonText.push(
+            <p style={{ fontSize: '12px', margin: '0px' }}>
+              {$t({ defaultMessage: 'Low power' })}
+            </p>
+          )
+        } else {
+          buttonText.push(
+            <p style={{ fontSize: '12px', margin: '0px' }}>
+              {$t({ defaultMessage: 'Standard power' })}
+            </p>
+          )
+        }
+      }
+
+      if ('standard' === button) {
+        if (isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled){
+          buttonText.push(
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+              {$t({ defaultMessage: 'Standard power' })}
+            </p>
+          )
+        } else {
+          buttonText.push(
+            <p style={{ fontSize: '12px', margin: '0px' }}>
+              {$t({ defaultMessage: 'Standard power' })}
+            </p>
+          )
+        }
+      }
+
+      if ('lowPower' === button) {
+        if (isAPLowPower(afcInfo)){
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            buttonText.push(
+              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+                {$t({ defaultMessage: 'Low power [Geo Location not set]' })}
+              </p>
+            )
+          }
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            buttonText.push(
+              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+                {$t({ defaultMessage: 'Low power [Pending response from the AFC server]' })}
+              </p>
+            )
+          }
+
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+            buttonText.push(
+              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+                {$t({ defaultMessage: 'Low power [No channels available]' })}
+              </p>
+            )
+          }
+        } else {
+          buttonText.push(
+            <p style={{ fontSize: '12px', margin: '0px' }}>
+              {$t({ defaultMessage: 'Low power' })}
+            </p>
+          )
+        }
+      }
+    }
+
+    return buttonText
+  }
+
   return (
     <>
+      { ApRadioTypeEnum.Radio6G === radioType &&
+        <FieldLabel width='180px' style={(context === 'ap' && isOutdoor) ? { display: 'hidden' } : {}}>
+          {$t({ defaultMessage: 'AFC Power Mode:' })}
+          {/* <Tooltip title={
+            <FormattedMessage
+              values={{ br: () => <br /> }}
+              defaultMessage={'These settings apply only to indoor APs.'}
+            />
+          }
+          placement='bottom'>
+            <QuestionMarkCircleOutlined />
+          </Tooltip> */}
+          <Form.Item
+            name={lowPowerIndoorModeEnabledFieldName}>
+            {isUseVenueSettings ?
+              displayLowPowerModeRadioButtonText('useVenueSetting') :
+              <Radio.Group
+                disabled={!isAFCEnabled || isUseVenueSettings}
+                onChange={() => onChangedByCustom('lowPowerIndoorModeEnabled')}
+              >
+                <Space direction='vertical'>
+                  <Radio value={false}>{displayLowPowerModeRadioButtonText('standard', ap)}</Radio>
+                  <Radio value={true}>{displayLowPowerModeRadioButtonText('lowPower', ap)}</Radio>
+                </Space>
+              </Radio.Group>}
+          </Form.Item>
+        </FieldLabel>
+      }
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
