@@ -316,5 +316,15 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/mspCustomers/firmwareUpgradeSchedules',
     newApi: true
+  },
+  getAvailableMspRecCustomers: {
+    method: 'get',
+    url: '/mspCustomers/recs?page=0&size=20&searchItem=United States',
+    newApi: true
+  },
+  addMspRecCustomer: {
+    method: 'post',
+    url: '/mspCustomers/mspRecs',
+    newApi: true
   }
 }

@@ -26,7 +26,8 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade
+  RecommendFirmwareUpgrade,
+  AvailableMspRecCustomers
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -778,6 +779,25 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addRecCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspRecCustomer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -841,5 +861,7 @@ export const {
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
-  useMspEcFirmwareUpgradeSchedulesMutation
+  useMspEcFirmwareUpgradeSchedulesMutation,
+  useGetAvailableMspRecCustomersQuery,
+  useAddRecCustomerMutation
 } = mspApi

@@ -11,17 +11,15 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-// import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import {
-} from '@acx-ui/msp/services'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
-// import {
-//   useAddCustomerMutation,
-//   useUpdateCustomerMutation
-// } from '@acx-ui/msp/services'
+import { useAddRecCustomerMutation }                  from '@acx-ui/msp/services'
 import {
   MspAdministrator,
-  MspEc
+  MspEc,
+  MspEcDelegatedAdmins,
+  MspIntegratorDelegated,
+  MspRecCustomer,
+  MspRecData
 } from '@acx-ui/msp/utils'
 import { roleDisplayText } from '@acx-ui/rc/utils'
 import {
@@ -29,7 +27,6 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-// import { useGetUserProfileQuery } from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
@@ -39,14 +36,12 @@ import * as UI                     from './styledComponents'
 
 export function AddRecCustomer () {
   const intl = useIntl()
-  //   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
-
   const navigate = useNavigate()
   const linkToRecCustomers = useTenantLink('/dashboard/mspreccustomers', 'v')
   //   const { action, status, tenantId, mspEcTenantId } = useParams()
-  const { action, mspEcTenantId } = useParams()
+  const { action, tenantId, mspEcTenantId } = useParams()
 
-  const [mspRecCustomer, setRecCustomer] = useState([] as MspAdministrator[])
+  const [mspRecCustomer, setRecCustomer] = useState([] as MspRecCustomer[])
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
@@ -54,207 +49,57 @@ export function AddRecCustomer () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
-  //   const [addCustomer] = useAddCustomerMutation()
-  //   const [updateCustomer] = useUpdateCustomerMutation()
+  const [addRecCustomer] = useAddRecCustomerMutation()
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
 
-  //   const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const handleAddCustomer = async () => {
+    try {
 
-  //   const handleAddCustomer = //async (values: EcFormData) => {
-  // try {
-  //   const ecFormData = { ...values }
-  //   const today = EntitlementUtil.getServiceStartDate()
-  //   const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
-  //   const quantityWifi = _.isString(ecFormData.wifiLicense)
-  //     ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-  //   const quantitySwitch = _.isString(ecFormData.switchLicense)
-  //     ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-  //   const quantityApsw = _.isString(ecFormData.apswLicense)
-  //     ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
-  //   const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
-  //     : isDeviceAgnosticEnabled
-  //       ? { assignments: [{
-  //         quantity: quantityApsw,
-  //         action: AssignActionEnum.ADD,
-  //         isTrial: false,
-  //         deviceType: EntitlementDeviceType.MSP_APSW
-  //       }] }
-  //       : { assignments: [{
-  //         quantity: quantityWifi,
-  //         action: AssignActionEnum.ADD,
-  //         isTrial: false,
-  //         deviceType: EntitlementDeviceType.MSP_WIFI
-  //       },
-  //       {
-  //         quantity: quantitySwitch,
-  //         action: AssignActionEnum.ADD,
-  //         isTrial: false,
-  //         deviceType: EntitlementDeviceType.MSP_SWITCH
-  //       }] }
+      const delegations= [] as MspEcDelegatedAdmins[]
+      mspAdmins.forEach((admin: MspAdministrator) => {
+        delegations.push({
+          msp_admin_id: admin.id,
+          msp_admin_role: admin.role
+        })
+      })
+      const ecDelegations=[] as MspIntegratorDelegated[]
+      if (mspIntegrator.length > 0) {
+        ecDelegations.push({
+          delegation_type: AccountType.MSP_INTEGRATOR,
+          delegation_id: mspIntegrator[0].id
+        })
+      }
+      if (mspInstaller.length > 0) {
+        ecDelegations.push({
+          delegation_type: AccountType.MSP_INSTALLER,
+          delegation_id: mspInstaller[0].id
+        })
+      }
+      const customer: MspRecData = {
+        account_id: mspRecCustomer[0].account_id,
+        admin_delegations: delegations
+      }
 
-  //   const delegations= [] as MspEcDelegatedAdmins[]
-  //   mspAdmins.forEach((admin: MspAdministrator) => {
-  //     delegations.push({
-  //       msp_admin_id: admin.id,
-  //       msp_admin_role: admin.role
-  //     })
-  //   })
-  //   const customer: MspEcData = {
-  //     tenant_type: AccountType.MSP_EC,
-  //     name: ecFormData.name,
-  //     street_address: ecFormData.address.addressLine as string,
-  //     city: address.city,
-  //     country: address.country,
-  //     service_effective_date: today,
-  //     service_expiration_date: expirationDate,
-  //     admin_delegations: delegations,
-  //     licenses: assignLicense
-  //   }
-  //   if (ecFormData.admin_email) {
-  //     customer.admin_email = ecFormData.admin_email
-  //     customer.admin_firstname = ecFormData.admin_firstname
-  //     customer.admin_lastname = ecFormData.admin_lastname
-  //     customer.admin_role = ecFormData.admin_role
-  //   }
-  //   const ecDelegations=[] as MspIntegratorDelegated[]
-  //   if (mspIntegrator.length > 0) {
-  //     ecDelegations.push({
-  //       delegation_type: AccountType.MSP_INTEGRATOR,
-  //       delegation_id: mspIntegrator[0].id
-  //     })
-  //   }
-  //   if (mspInstaller.length > 0) {
-  //     ecDelegations.push({
-  //       delegation_type: AccountType.MSP_INSTALLER,
-  //       delegation_id: mspInstaller[0].id
-  //     })
-  //   }
-  //   if (ecDelegations.length > 0) {
-  //     customer.delegations = ecDelegations
-  //   }
+      if (ecDelegations.length > 0) {
+        customer.delegations = ecDelegations
+      }
 
-  //   const result =
-  //   await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
-  //   if (result) {
-  //   // const ecTenantId = result.tenant_id
-  //   }
-  //   navigate(linkToRecCustomers, { replace: true })
-  //   return true
-  // } catch (error) {
-  //   console.log(error) // eslint-disable-line no-console
-  //   return false
-  // }
-  //   }
+      const result =
+    await addRecCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      if (result) {
+        // const ecTenantId = result.tenant_id
+      }
+      navigate(linkToRecCustomers, { replace: true })
+      return true
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      return false
+    }
+  }
 
-  //   const handleEditCustomer = async (values: EcFormData) => {
-  // try {
-  //   const ecFormData = { ...values }
-  //   const today = EntitlementUtil.getServiceStartDate()
-  //   const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
-  //   const expirationDateOrig = EntitlementUtil.getServiceEndDate(subscriptionOrigEndDate)
-  //   const needUpdateLicense = expirationDate !== expirationDateOrig
-
-  //   const licAssignment = []
-  //   if (isTrialEditMode) {
-  //     const quantityWifi = _.isString(ecFormData.wifiLicense)
-  //       ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-  //     licAssignment.push({
-  //       quantity: quantityWifi,
-  //       action: AssignActionEnum.ADD,
-  //       isTrial: false,
-  //       deviceType: EntitlementDeviceType.MSP_WIFI
-  //     })
-  //     const quantitySwitch = _.isString(ecFormData.switchLicense)
-  //       ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-  //     licAssignment.push({
-  //       quantity: quantitySwitch,
-  //       action: AssignActionEnum.ADD,
-  //       isTrial: false,
-  //       deviceType: EntitlementDeviceType.MSP_SWITCH
-  //     })
-  //     if (isDeviceAgnosticEnabled) {
-  //       const quantityApsw = _.isString(ecFormData.apswLicense)
-  //         ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
-  //       licAssignment.push({
-  //         quantity: quantityApsw,
-  //         action: AssignActionEnum.ADD,
-  //         isTrial: false,
-  //         deviceType: EntitlementDeviceType.MSP_APSW
-  //       })
-  //     }
-  //   } else {
-  //     if (_.isString(ecFormData.wifiLicense) || needUpdateLicense) {
-  //       const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
-  //       const quantityWifi = _.isString(ecFormData.wifiLicense)
-  //         ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-  //       const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
-  //       licAssignment.push({
-  //         quantity: quantityWifi,
-  //         assignmentId: wifiAssignId,
-  //         action: actionWifi,
-  //         isTrial: false,
-  //         deviceType: EntitlementDeviceType.MSP_WIFI
-  //       })
-  //     }
-  //     if (_.isString(ecFormData.switchLicense) || needUpdateLicense) {
-  //       const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
-  //       const quantitySwitch = _.isString(ecFormData.switchLicense)
-  //         ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-  //       const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
-  //       licAssignment.push({
-  //         quantity: quantitySwitch,
-  //         assignmentId: switchAssignId,
-  //         action: actionSwitch,
-  //         deviceSubtype: EntitlementDeviceSubType.ICX,
-  //         deviceType: EntitlementDeviceType.MSP_SWITCH
-  //       })
-  //     }
-
-  //     if (isDeviceAgnosticEnabled ) {
-  //       if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-  //         const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
-  //         const quantityApsw = _.isString(ecFormData.apswLicense)
-  //           ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
-  //         const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
-  //         licAssignment.push({
-  //           quantity: quantityApsw,
-  //           assignmentId: apswAssignId,
-  //           action: actionApsw,
-  //           deviceType: EntitlementDeviceType.MSP_APSW
-  //         })
-  //       }
-  //     }
-  //   }
-
-  //   const customer: MspEcData = {
-  //     tenant_type: AccountType.MSP_EC,
-  //     name: ecFormData.name,
-  //     street_address: ecFormData.address.addressLine as string,
-  //     city: address.city,
-  //     country: address.country,
-  //     service_effective_date: today,
-  //     service_expiration_date: expirationDate
-  //   }
-  //   if (!isTrialMode && licAssignment.length > 0) {
-  //     let assignLicense = {
-  //       subscription_start_date: today,
-  //       subscription_end_date: expirationDate,
-  //       assignments: licAssignment
-  //     }
-  //     customer.licenses = assignLicense
-  //   }
-
-  //   await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
-  //   navigate(linkToRecCustomers, { replace: true })
-  //   return true
-  // } catch (error) {
-  //   console.log(error) // eslint-disable-line no-console
-  //   return false
-  // }
-  //   }
-  const selectedRecCustomer = (selected: MspAdministrator[]) => {
+  const selectedRecCustomer = (selected: MspRecCustomer[]) => {
     setRecCustomer(selected)
   }
 
@@ -269,27 +114,18 @@ export function AddRecCustomer () {
   const displayRecCustomer = () => {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
       return '--'
-    if (mspRecCustomer.length === 1) {
-      return <>
-        <Form.Item
-          label={intl.$t({ defaultMessage: 'Name' })}
-        >
-          <Paragraph>{mspRecCustomer[0].name}</Paragraph>
-        </Form.Item>
-        <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Email' })}
-        >
-          <Paragraph>{mspRecCustomer[0].email}</Paragraph>
-        </Form.Item>
-      </>
-    }
-    return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
-      {mspRecCustomer.map(admin =>
-        <UI.AdminList>
-          {admin.email} {intl.$t(roleDisplayText[admin.role])}
-        </UI.AdminList>
-      )}
-    </div>
+    return <>
+      <Form.Item
+        label={intl.$t({ defaultMessage: 'Name' })}
+      >
+        <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
+      </Form.Item>
+      <Form.Item style={{ marginTop: '-22px' }}
+        label={intl.$t({ defaultMessage: 'Email' })}
+      >
+        <Paragraph>{mspRecCustomer[0].email_id}</Paragraph>
+      </Form.Item>
+    </>
   }
 
   const displayMspAdmins = () => {
@@ -370,14 +206,12 @@ export function AddRecCustomer () {
         ]}
       />
       <StepsForm
-        // formRef={formRef}
-        // onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
+        onFinish={handleAddCustomer}
         onCancel={() => navigate(linkToRecCustomers)}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add' }) }}
       >
-
         <StepsForm.StepForm
           name='accountDetail'
           title={intl.$t({ defaultMessage: 'Account Details' })}
@@ -387,7 +221,6 @@ export function AddRecCustomer () {
 
           <MspAdminsForm></MspAdminsForm>
         </StepsForm.StepForm>
-
       </StepsForm>
 
       {drawerRecVisible && <SelectRecCustomerDrawer

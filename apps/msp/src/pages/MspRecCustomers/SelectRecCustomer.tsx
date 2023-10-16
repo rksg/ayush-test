@@ -11,10 +11,10 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
-  useMspAdminListQuery
+  useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
 import {
-  MspAdministrator
+  MspRecCustomer
 } from '@acx-ui/msp/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -22,7 +22,7 @@ interface SelectRecCustomerDrawerProps {
   visible: boolean
   tenantId?: string
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspAdministrator[]) => void
+  setSelected: (selected: MspRecCustomer[]) => void
 }
 
 export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
@@ -30,9 +30,9 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
 
   const { visible, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
-  const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
+  const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
 
-  const queryResults = useMspAdminListQuery({ params: useParams() })
+  const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams() })
 
   const onClose = () => {
     setVisible(false)
@@ -50,18 +50,18 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
-  const columns: TableProps<MspAdministrator>['columns'] = [
+  const columns: TableProps<MspRecCustomer>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'account_name',
+      key: 'account_name',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
-      dataIndex: 'email',
-      key: 'email',
+      dataIndex: 'email_id',
+      key: 'email_id',
       sorter: true,
       searchable: true
     }
@@ -73,11 +73,10 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       ]}>
         <Table
           columns={columns}
-          dataSource={queryResults?.data}
-          rowKey='email'
+          dataSource={queryResults?.data?.content}
+          rowKey='account_name'
           rowSelection={{
             type: 'radio',
-            // selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
             }

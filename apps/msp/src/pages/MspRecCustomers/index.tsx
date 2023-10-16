@@ -477,7 +477,7 @@ export function MspRecCustomers () {
     const [selTenantId, setSelTenantId] = useState('')
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
-    const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
+    const basePath = useTenantLink('/dashboard/mspRecCustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload: mspPayload,
@@ -486,19 +486,19 @@ export function MspRecCustomers () {
       }
     })
     const rowActions: TableProps<MspEc>['rowActions'] = [
-      {
-        label: $t({ defaultMessage: 'Edit' }),
-        visible: (selectedRows) => {
-          return (selectedRows.length === 1)
-        },
-        onClick: (selectedRows) => {
-          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
-          navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
-          })
-        }
-      },
+      // {
+      //   label: $t({ defaultMessage: 'Edit' }),
+      //   visible: (selectedRows) => {
+      //     return (selectedRows.length === 1)
+      //   },
+      //   onClick: (selectedRows) => {
+      //     const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
+      //     navigate({
+      //       ...basePath,
+      //       pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
+      //     })
+      //   }
+      // },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
@@ -511,74 +511,74 @@ export function MspRecCustomers () {
           setDrawerAssignEcMspAdminsVisible(true)
         }
       },
-      {
-        label: $t({ defaultMessage: 'Resend Invitation Email' }),
-        visible: (selectedRows) => {
-          return (selectedRows.length === 1)
-        },
-        onClick: (selectedRows) => {
-          setSelTenantId(selectedRows[0].id)
-          setModalVisible(true)
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Deactivate' }),
-        visible: (selectedRows) => {
-          if(selectedRows.length === 1 && selectedRows[0] &&
-            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
-            return true
-          }
-          return false
-        },
-        onClick: ([{ name, id }], clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Deactivate Customer "{formattedName}"?' },
-            { formattedName: name }
-          )
+      // {
+      //   label: $t({ defaultMessage: 'Resend Invitation Email' }),
+      //   visible: (selectedRows) => {
+      //     return (selectedRows.length === 1)
+      //   },
+      //   onClick: (selectedRows) => {
+      //     setSelTenantId(selectedRows[0].id)
+      //     setModalVisible(true)
+      //   }
+      // },
+      // {
+      //   label: $t({ defaultMessage: 'Deactivate' }),
+      //   visible: (selectedRows) => {
+      //     if(selectedRows.length === 1 && selectedRows[0] &&
+      //       (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
+      //       return true
+      //     }
+      //     return false
+      //   },
+      //   onClick: ([{ name, id }], clearSelection) => {
+      //     const title = $t(
+      //       { defaultMessage: 'Deactivate Customer "{formattedName}"?' },
+      //       { formattedName: name }
+      //     )
 
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t({
-              defaultMessage: `
-                Deactivate "{formattedName}" will suspend all its services,
-                are you sure you want to proceed?
-              `
-            }, { formattedName: name }),
-            okText: $t({ defaultMessage: 'Deactivate' }),
-            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
-              .then(clearSelection)
-          })
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Reactivate' }),
-        visible: (selectedRows) => {
-          if(selectedRows.length !== 1 || (selectedRows[0] &&
-            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
-            return false
-          }
-          return true
-        },
-        onClick: ([{ name, id }], clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Reactivate Customer "{formattedName}"?' },
-            { formattedName: name }
-          )
+      //     showActionModal({
+      //       type: 'confirm',
+      //       title: title,
+      //       content: $t({
+      //         defaultMessage: `
+      //           Deactivate "{formattedName}" will suspend all its services,
+      //           are you sure you want to proceed?
+      //         `
+      //       }, { formattedName: name }),
+      //       okText: $t({ defaultMessage: 'Deactivate' }),
+      //       onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
+      //         .then(clearSelection)
+      //     })
+      //   }
+      // },
+      // {
+      //   label: $t({ defaultMessage: 'Reactivate' }),
+      //   visible: (selectedRows) => {
+      //     if(selectedRows.length !== 1 || (selectedRows[0] &&
+      //       (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
+      //       return false
+      //     }
+      //     return true
+      //   },
+      //   onClick: ([{ name, id }], clearSelection) => {
+      //     const title = $t(
+      //       { defaultMessage: 'Reactivate Customer "{formattedName}"?' },
+      //       { formattedName: name }
+      //     )
 
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t(
-              { defaultMessage: 'Reactivate this customer "{formattedName}"?' },
-              { formattedName: name }
-            ),
-            okText: $t({ defaultMessage: 'Reactivate' }),
-            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
-              .then(clearSelection)
-          })
-        }
-      },
+      //     showActionModal({
+      //       type: 'confirm',
+      //       title: title,
+      //       content: $t(
+      //         { defaultMessage: 'Reactivate this customer "{formattedName}"?' },
+      //         { formattedName: name }
+      //       ),
+      //       okText: $t({ defaultMessage: 'Reactivate' }),
+      //       onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
+      //         .then(clearSelection)
+      //     })
+      //   }
+      // },
       {
         label: $t({ defaultMessage: 'Delete' }),
         visible: (selectedRows) => {
