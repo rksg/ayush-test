@@ -169,7 +169,6 @@ export const NestedSwitchFirmwareTable = (
     })
 
     if (_.isEmpty(nestedData[record.id]?.initialData)) {
-      setNestedData({ ...nestedData, [record.id]: { initialData: [], selectedData: [] } })
       const switchListPayload = {
         pageSize: 10000,
         filters: {
@@ -186,13 +185,26 @@ export const NestedSwitchFirmwareTable = (
         }, true)).data?.data.filter((v) => v.venueId === record.id)
         : []
 
-      const result = { ...nestedData, [record.id]: { initialData: switchList, selectedData: [] } }
+      const hasSelectedVenue = selectedVenueRowKeys.includes(record.id)
+      const result = {
+        ...nestedData, [record.id]: {
+          initialData: switchList,
+          selectedData: hasSelectedVenue ? switchList : []
+        }
+      }
       setNestedData(result as {
         [key: string]: {
           initialData: SwitchFirmware[],
           selectedData: SwitchFirmware[]
         }
       })
+
+      if (hasSelectedVenue && Array.isArray(switchList)) {
+        setSelectedSwitchRowKeys({
+          ...selectedSwitchRowKeys,
+          [record.id]: switchList.map(s => s.switchId) as Key[]
+        })
+      }
     }
 
 
