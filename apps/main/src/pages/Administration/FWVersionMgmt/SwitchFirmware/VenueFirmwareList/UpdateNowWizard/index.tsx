@@ -22,12 +22,17 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { getReleaseFirmware }        from '../../../FirmwareUtils'
 import { NestedSwitchFirmwareTable } from '../NestedSwitchFirmwareTable'
 
-import { UpdateNowDialog } from './UpdateNowDialog'
+import { ScheduleUpdatesDialog } from './ScheduleUpdatesDialog'
+import { UpdateNowDialog }       from './UpdateNowDialog'
 
 
-
+export enum SwitchFirmwareWizardType {
+  update = 'UPDATE',
+  schedule = 'SCHEDULE'
+}
 
 export interface UpdateNowWizardProps {
+  wizardType: SwitchFirmwareWizardType,
   visible: boolean,
   setVisible: (visible: boolean) => void,
   onSubmit: (data: UpdateScheduleRequest) => void,
@@ -38,6 +43,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
   const [form] = Form.useForm()
   const { $t } = useIntl()
   const params = useParams()
+  const { wizardType } = props
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
   const handleAddCli = async () => {
     try {
@@ -89,8 +95,13 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
   const [hasVenue, setHasVenue] = useState<boolean>(false)
   const [upgradeSwitchList, setUpgradeSwitchList] = useState<string[]>([])
 
+  const wizardTitle = {
+    [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
+    [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Update Schedule' })
+  }
+
   return <Modal
-    title={$t({ defaultMessage: 'Update Now' })}
+    title={wizardTitle[wizardType]}
     type={ModalType.ModalStepsForm}
     visible={props.visible}
     destroyOnClose={true}
@@ -162,13 +173,22 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           name='firmware'
           title={$t({ defaultMessage: 'Select Firmware' })}
         >
-          <UpdateNowDialog
-            visible={true}
-            hasVenue={hasVenue}
-            availableVersions={filterVersions(upgradeVersions)}
-            nonIcx8200Count={nonIcx8200Count}
-            icx8200Count={icx8200Count}
-          />
+          {
+            wizardType === SwitchFirmwareWizardType.update ?
+              <UpdateNowDialog
+                visible={true}
+                hasVenue={hasVenue}
+                availableVersions={filterVersions(upgradeVersions)}
+                nonIcx8200Count={nonIcx8200Count}
+                icx8200Count={icx8200Count}
+              /> : <ScheduleUpdatesDialog
+                visible={true}
+                availableVersions={filterVersions(upgradeVersions)}
+                nonIcx8200Count={nonIcx8200Count}
+                icx8200Count={icx8200Count}
+              />
+          }
+
         </StepsForm.StepForm>
 
       </StepsForm>

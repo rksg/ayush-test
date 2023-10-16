@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
 import { Form, Tooltip, Typography } from 'antd'
-import * as _            from 'lodash'
-import { useIntl }       from 'react-intl'
+import * as _                        from 'lodash'
+import { useIntl }                   from 'react-intl'
 
 import {
   ColumnType,
@@ -48,10 +48,9 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ScheduleUpdatesWizard } from './ScheduleUpdatesWizard'
-import { SkipUpdatesWizard }     from './SkipUpdatesWizard'
-import { UpdateNowWizard }       from './UpdateNowWizard'
-import { UpdateStatusDrawer }    from './UpdateStatusDrawer'
+import { SkipUpdatesWizard }                         from './SkipUpdatesWizard'
+import { SwitchFirmwareWizardType, UpdateNowWizard } from './UpdateNowWizard'
+import { UpdateStatusDrawer }                        from './UpdateStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -84,42 +83,17 @@ export const VenueFirmwareTable = (
   const [clickedUpdateStatusData, setClickedUpdateStatusData] =
     useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
 
+  const [wizardType, setWizardType] =
+    useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
+
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
-
-  const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
-
-
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
-
-  const isLatestVersion = function (currentVersion: FirmwareVersion) {
-    if(_.isEmpty(currentVersion?.id)) return false
-    const latestVersions = getReleaseFirmware(latestReleaseVersions)
-    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
-    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
-    return (currentVersion.id === latestFirmware?.id ||
-      currentVersion.id === latestRodanFirmware?.id)
-  }
-
-
-  const filterVersions = function (availableVersions: FirmwareVersion[]) {
-
-    return availableVersions?.map((version) => {
-      if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
-        return {
-          ...version,
-          id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
-        }
-      } return version
-    })
-  }
-
 
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
@@ -284,18 +258,7 @@ export const VenueFirmwareTable = (
     },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
-      let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-      let nonIcx8200Count = 0, icx8200Count = 0
-      selectedRows.forEach((row: FirmwareSwitchVenue) => {
-        const version = row.switchFirmwareVersion?.id
-        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
-        if (enableSwitchTwoVersionUpgrade) {
-          nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-          icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-        }
-      })
-
+      setWizardType(SwitchFirmwareWizardType.update)
       setUpdateNowWizardVisible(true)
     }
   },
@@ -315,33 +278,10 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
-    // disabled: (selectedRows) => {
-    //   return !hasAvailableSwitchFirmware(selectedRows)
-    // },
-    // tooltip: (selectedRows) => {
-    //   return hasAvailableSwitchFirmware(selectedRows) ?
-    //     '' : $t({ defaultMessage: 'No available versions' })
-    // },
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
-      let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-      let nonIcx8200Count = 0, icx8200Count = 0
-
-      let currentSchedule = enableSwitchTwoVersionUpgrade && selectedRows.length === 1
-        ? (selectedRows[0].nextSchedule || undefined)
-        : undefined
-
-      selectedRows.forEach((row: FirmwareSwitchVenue) => {
-        const version = row.switchFirmwareVersion?.id
-        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
-
-        if (enableSwitchTwoVersionUpgrade) {
-          nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-          icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-        }
-      })
-      setScheduleWizardVisible(true)
+      setWizardType(SwitchFirmwareWizardType.schedule)
+      setUpdateNowWizardVisible(true)
     }
   },
   {
@@ -399,14 +339,10 @@ export const VenueFirmwareTable = (
       />
 
       <UpdateNowWizard
+        wizardType={wizardType}
         visible={updateNowWizardVisible}
         data={selectedVenueList as FirmwareSwitchVenue[]}
         setVisible={setUpdateNowWizardVisible}
-        onSubmit={() => { }}/>
-      <ScheduleUpdatesWizard
-        visible={scheduleWizardVisible}
-        data={selectedVenueList as FirmwareSwitchVenue[]}
-        onCancel={() => { setScheduleWizardVisible(false) }}
         onSubmit={() => { }} />
 
       <SkipUpdatesWizard

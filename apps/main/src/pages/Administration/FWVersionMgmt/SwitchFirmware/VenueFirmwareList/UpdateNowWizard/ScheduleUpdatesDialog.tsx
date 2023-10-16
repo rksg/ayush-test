@@ -7,32 +7,27 @@ import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
-import { Modal, Subtitle }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Modal, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
-  FirmwareSwitchVenue,
   FirmwareVersion,
-  switchSchedule,
-  UpdateScheduleRequest
+  switchSchedule
 } from '@acx-ui/rc/utils'
 
 import {
   getSwitchVersionLabel
 } from '../../../FirmwareUtils'
 import { PreDownload } from '../../../PreDownload'
-
-import * as UI from '../styledComponents'
+import * as UI         from '../styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
 
 export interface ScheduleUpdatesDialogProps {
   visible: boolean,
-  onCancel: () => void,
-  onSubmit: (data: UpdateScheduleRequest) => void,
-  data: FirmwareSwitchVenue[]
+  // data: FirmwareSwitchVenue[]
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
@@ -42,8 +37,8 @@ export interface ScheduleUpdatesDialogProps {
 export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const [form] = useForm()
-  const { visible, onSubmit, onCancel, data, availableVersions, nonIcx8200Count, icx8200Count,
+  const { form } = useStepFormContext()
+  const { visible, availableVersions, nonIcx8200Count, icx8200Count,
     currentSchedule } = props
   const [selectedDateMoment, setSelectedDateMoment] = useState<moment.Moment>()
   const [currentScheduleDateString, setCurrentScheduleDateString] = useState('')
@@ -66,17 +61,17 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
   // eslint-disable-next-line max-len
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen ? currentSchedule.versionAboveTen.name : ''
 
-  useEffect(() => {
-    if (data) {
-      if (data.length === 1 && data[0].preDownload) {
-        setChecked(data[0].preDownload)
-        setCurrentPreDownload(data[0].preDownload)
-      } else {
-        setChecked(false)
-        setCurrentPreDownload(false)
-      }
-    }
-  }, [data])
+  // useEffect(() => {
+  //   if (data) {
+  //     if (data.length === 1 && data[0].preDownload) {
+  //       setChecked(data[0].preDownload)
+  //       setCurrentPreDownload(data[0].preDownload)
+  //     } else {
+  //       setChecked(false)
+  //       setCurrentPreDownload(false)
+  //     }
+  //   }
+  // }, [data])
 
   useEffect(() => {
     const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
@@ -98,6 +93,7 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
       setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
       // eslint-disable-next-line max-len
       setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
+
     }
   }, [enableSwitchTwoVersionUpgrade, currentSchedule, currentScheduleVersion,
     currentScheduleVersionAboveTen])
@@ -153,11 +149,14 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
   const handleChange = (value: RadioChangeEvent) => {
     setSelectionChanged(currentScheduleVersion !== value.target.value)
     setSelectedVersion(value.target.value)
+    form.setFieldValue('switchVersion', value.target.value)
+
   }
 
   const handleChangeForVersionAboveTen = (value: RadioChangeEvent) => {
     setSelectionAboveTenChanged(currentScheduleVersionAboveTen !== value.target.value)
     setSelectedAboveTenVersion(value.target.value)
+    form.setFieldValue('switchVersionAboveTen', value.target.value)
   }
 
   const startDate = dayjs().endOf('day')
@@ -183,55 +182,55 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
     setChecked(checked)
   }
 
-  const createRequest = (): UpdateScheduleRequest => {
-    if (enableSwitchTwoVersionUpgrade) {
-      return {
-        date: selectedDate,
-        time: selectedTime,
-        preDownload: checked, // eslint-disable-next-line max-len
-        venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
-        switchVersion: selectedVersion,
-        switchVersionAboveTen: enableSwitchTwoVersionUpgrade ? selectedAboveTenVersion : ''
-      }
-    }
-    return {
-      date: selectedDate,
-      time: selectedTime,
-      preDownload: checked,
-      venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
-      switchVersion: selectedVersion
-    }
-  }
+  // const createRequest = (): UpdateScheduleRequest => {
+  //   if (enableSwitchTwoVersionUpgrade) {
+  //     return {
+  //       date: selectedDate,
+  //       time: selectedTime,
+  //       preDownload: checked, // eslint-disable-next-line max-len
+  //       venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
+  //       switchVersion: selectedVersion,
+  //       switchVersionAboveTen: enableSwitchTwoVersionUpgrade ? selectedAboveTenVersion : ''
+  //     }
+  //   }
+  //   return {
+  //     date: selectedDate,
+  //     time: selectedTime,
+  //     preDownload: checked,
+  //     venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
+  //     switchVersion: selectedVersion
+  //   }
+  // }
 
-  const triggerSubmit = () => {
-    form.validateFields()
-      .then(() => {
-        onSubmit(createRequest())
-        onModalCancel()
-      })
-  }
+  // const triggerSubmit = () => {
+  //   form.validateFields()
+  //     .then(() => {
+  //       onSubmit(createRequest())
+  //       onModalCancel()
+  //     })
+  // }
 
-  const onModalCancel = () => {
-    form.resetFields()
-    resetValues()
-    setSelectedDate('')
-    setSelectedTime('')
-    onCancel()
-  }
+  // const onModalCancel = () => {
+  //   form.resetFields()
+  //   resetValues()
+  //   setSelectedDate('')
+  //   setSelectedTime('')
+  //   onCancel()
+  // }
 
-  const resetValues = () => {
-    setSelectionChanged(false)
-    setSelectionAboveTenChanged(false)
-    setScheduleTimeChanged(false)
-    setScheduleDateChanged(false)
-    setPreDownloadChanged(false)
-    setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
-    setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
-    // eslint-disable-next-line max-len
-    setSelectedDateMoment(currentScheduleDateString ? moment(currentScheduleDateString) : undefined)
-    setSelectedTime(currentScheduleTime)
-    setChecked(currentPreDownload)
-  }
+  // const resetValues = () => {
+  //   setSelectionChanged(false)
+  //   setSelectionAboveTenChanged(false)
+  //   setScheduleTimeChanged(false)
+  //   setScheduleDateChanged(false)
+  //   setPreDownloadChanged(false)
+  //   setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
+  //   setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
+  //   // eslint-disable-next-line max-len
+  //   setSelectedDateMoment(currentScheduleDateString ? moment(currentScheduleDateString) : undefined)
+  //   setSelectedTime(currentScheduleTime)
+  //   setChecked(currentPreDownload)
+  // }
 
   return (
     <div
