@@ -161,6 +161,7 @@ function processWifiTab (
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
       editAdvancedContextData?.updateBssColoring?.()
+      editAdvancedContextData?.updateApManagementVlan?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)

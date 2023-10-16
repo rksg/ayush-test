@@ -95,13 +95,13 @@ describe('AdaptivePolicySetTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
+    const row = await screen.findByRole('row', { name: new RegExp( 'ps2') })
     fireEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    await screen.findByText('Delete "ps12"?')
+    await screen.findByText('Delete "ps2"?')
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete Policy Set' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())

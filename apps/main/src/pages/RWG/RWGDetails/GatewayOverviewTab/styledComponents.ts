@@ -61,3 +61,12 @@ export const Progress = styled(AntProgress)`
     font-weight: var(--acx-body-font-weight-bold);
   }
 `
+
+export const DetailsPassword = styled.span`
+  .ant-input-password {
+    padding: 0px !important;
+    input { 
+      font-size: var(--acx-body-4-font-size);
+    }
+  }
+`

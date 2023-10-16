@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { rest } from 'msw'
+import { userEvent, waitFor } from '@storybook/testing-library'
+import { rest }               from 'msw'
 
-import { CommonUrlsInfo }                                                                     from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                           from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { DNSRecordsTab } from '.'
 
@@ -47,15 +48,21 @@ const dnsRecords = {
   ]
 }
 
+const mockedReqFn =jest.fn()
 
 describe('RWGDetails DNS Records', () => {
 
   let params: { tenantId: string, gatewayId: string }
   beforeEach(async () => {
+    mockedReqFn.mockClear()
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDNSRecords.url,
         (req, res, ctx) => res(ctx.json(dnsRecords))
+      ),
+      rest.get(
+        CommonUrlsInfo.getDNSRecord.url,
+        (req, res, ctx) => res(ctx.json(dnsRecords.response[0]))
       ),
       rest.post(
         CommonUrlsInfo.addUpdateDnsRecord.url,
@@ -63,7 +70,10 @@ describe('RWGDetails DNS Records', () => {
       ),
       rest.delete(
         CommonUrlsInfo.deleteDnsRecords.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
+        (req, res, ctx) => {
+          mockedReqFn()
+          return res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
+        }
       )
     )
     params = {
@@ -81,7 +91,7 @@ describe('RWGDetails DNS Records', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Add DNS Record')).toBeInTheDocument()
-    logRoles(document.body)
+
     fireEvent.click(await screen.findByRole('button', { name: 'close-circle' }))
   })
 
@@ -109,14 +119,19 @@ describe('RWGDetails DNS Records', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /wi.fi/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     await screen.findByText('Delete "wi.fi"?')
     const deleteGatewayButton = await screen.findByText('Delete DNS Record')
-    fireEvent.click(deleteGatewayButton)
+    await userEvent.click(deleteGatewayButton)
+
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
+
+    await waitFor( async () =>
+      expect(await screen.findByText('Delete DNS Record')).not.toBeInTheDocument())
   })
 
   it('should edit selected row', async () => {
@@ -127,14 +142,19 @@ describe('RWGDetails DNS Records', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /wi.fi/i })
-    fireEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(editButton)
+
+    await userEvent.click(editButton)
 
     await screen.findByText('Edit DNS Record')
     const editDNSButton = await screen.findByText('Apply')
-    fireEvent.click(editDNSButton)
+
+    await userEvent.click(editDNSButton)
+
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loading' })[0])
   })
 
 })
