@@ -2,7 +2,7 @@ import { CSSProperties } from 'styled-components'
 
 import * as UI from './styledComponents'
 
-export type content = { type: 'bot' | 'user', isReplying: true | false,
+export type content = { type: 'bot' | 'user',
 contentList:{ data?: { incidentId: string },
 text?: { text: string[] }, payload?: { richContent: { link: string, type: string,
   icon: { color: string, type: string }, text: string,
@@ -11,11 +11,13 @@ export interface ConversationProps {
   content: content[]
   classList: string
   style: CSSProperties
+  isReplying: boolean
 }
 
 function Conversation ({
   content,
   classList,
+  isReplying,
   style
   // ...props
 }: ConversationProps) {
@@ -25,13 +27,11 @@ function Conversation ({
         list.contentList.map((content) => (
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>(
-              list.isReplying ?
-                <UI.Bot>Typing...</UI.Bot> : <UI.Bot>{msg}</UI.Bot>
+              <UI.Bot>{msg}</UI.Bot>
             ))
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
-                list.isReplying ?
-                  <UI.Bot>Typing...</UI.Bot> : <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
+                <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
               ))
             ))}
             </>
@@ -42,6 +42,7 @@ function Conversation ({
           )
         ))
       ))}
+      {isReplying ? <UI.Bot>Typing...</UI.Bot> : null }
     </UI.Wrapper>
   )
 }

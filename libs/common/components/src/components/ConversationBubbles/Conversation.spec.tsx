@@ -85,21 +85,22 @@ const fulfillmentMessagesWithButton = [
 ]
 
 const contentData:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessages }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessages }
   ]
 const contentLink:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithLink }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessagesWithLink }
   ]
 const contentButton:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: false, contentList: fulfillmentMessagesWithButton }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessagesWithButton }
   ]
 describe('Conversation component', () => {
   it('should render Conversation component with text', () => {
     render(<Conversation content={contentData}
       classList='conversation'
+      isReplying={false}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
     />)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band')
@@ -108,12 +109,14 @@ describe('Conversation component', () => {
   it('should render Conversation component with link', () => {
     render(<Conversation content={contentLink}
       classList='conversation'
+      isReplying={false}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('Go to Switch Report')).toBeVisible()
   })
   it('should render Conversation component with button', () => {
     render(<Conversation content={contentButton}
       classList='conversation'
+      isReplying={false}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('If you have log files, click to upload')).toBeVisible()
   })

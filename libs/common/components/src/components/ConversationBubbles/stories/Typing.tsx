@@ -17,12 +17,13 @@ export function Typing () {
   ]
 
   const content:content[] =
-  [ { type: 'user', isReplying: false, contentList: [{ text: { text: [contentUser] } }] },
-    { type: 'bot', isReplying: true, contentList: fulfillmentMessages }
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessages }
   ]
 
   return <Conversation
     content={content}
     classList='conversation'
+    isReplying={true}
     style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
 }
