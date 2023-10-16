@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, showActionModal }                             from '@acx-ui/components'
-import { useDeleteGatewayMutation, useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
-import { RWG }                                                             from '@acx-ui/rc/utils'
+import { Button, PageHeader }                    from '@acx-ui/components'
+import { useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
+import { RWG }                                   from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -13,6 +13,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { useRwgActions } from '../useRwgActions'
 
 import RWGTabs from './RWGTabs'
 
@@ -25,9 +27,6 @@ function RWGPageHeader () {
 
   const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
   const { data: dnsRecordsData } = useGetDNSRecordsQuery({ params: { tenantId, gatewayId } })
-  const [
-    deleteGateway
-  ] = useDeleteGatewayMutation()
 
   useEffect(() => {
     if (gatewayData) {
@@ -43,6 +42,16 @@ function RWGPageHeader () {
   const location = useLocation()
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}`)
   const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
+  const rwgActions = useRwgActions()
+
+  const redirectToList = function () {
+    navigate({
+      ...rwgListBasePath
+    }, {
+      state: {
+        from: location
+      }
+    })}
 
   return (
     <PageHeader
@@ -63,27 +72,7 @@ function RWGPageHeader () {
         ...filterByAccess([<Button
           type='default'
           onClick={() =>
-            showActionModal({
-              type: 'confirm',
-              customContent: {
-                action: 'DELETE',
-                entityName: $t({ defaultMessage: 'Gateway' }),
-                entityValue: gatewayData?.name,
-                confirmationText: 'Delete'
-              },
-              onOk: () => {
-                deleteGateway({ params: { tenantId, rwgId: gatewayId } })
-                  .then(() => {
-                    navigate({
-                      ...rwgListBasePath
-                    }, {
-                      state: {
-                        from: location
-                      }
-                    })
-                  })
-              }
-            })
+            rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
           }
         >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
         <Button

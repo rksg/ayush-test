@@ -18,7 +18,7 @@ const dnsRecord = {
   response: {
     id: '2',
     name: 'wi.fi',
-    host: 'http://wi.fi',
+    host: 'test.com',
     ttl: 60,
     dataType: 'AAAA',
     data: 'any-data'
@@ -118,7 +118,7 @@ describe('RWGDetails DNS Records Drawer', () => {
     await userEvent.click(options[1])
 
     const hostnameInput = screen.getByLabelText('Host')
-    await userEvent.type(hostnameInput, 'https://test.com')
+    await userEvent.type(hostnameInput, 'test.com')
     const dataInput = screen.getByLabelText('Data')
     await userEvent.type(dataInput, 'Temp')
 
