@@ -15,13 +15,13 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 // import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
-  ResendInviteModal,
+  // ResendInviteModal,
   SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
 import {
-  useDeactivateMspEcMutation,
+  // useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
-  useReactivateMspEcMutation,
+  // useReactivateMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
@@ -128,8 +128,8 @@ export function MspRecCustomers () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const [deactivateMspEc] = useDeactivateMspEcMutation()
-  const [reactivateMspEc] = useReactivateMspEcMutation()
+  // const [deactivateMspEc] = useDeactivateMspEcMutation()
+  // const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
@@ -473,8 +473,8 @@ export function MspRecCustomers () {
   ]
 
   const MspEcTable = () => {
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selTenantId, setSelTenantId] = useState('')
+    // const [modalVisible, setModalVisible] = useState(false)
+    // const [selTenantId, setSelTenantId] = useState('')
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspRecCustomers/edit', 'v')
@@ -486,19 +486,19 @@ export function MspRecCustomers () {
       }
     })
     const rowActions: TableProps<MspEc>['rowActions'] = [
-      // {
-      //   label: $t({ defaultMessage: 'Edit' }),
-      //   visible: (selectedRows) => {
-      //     return (selectedRows.length === 1)
-      //   },
-      //   onClick: (selectedRows) => {
-      //     const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
-      //     navigate({
-      //       ...basePath,
-      //       pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
-      //     })
-      //   }
-      // },
+      {
+        label: $t({ defaultMessage: 'Edit' }),
+        visible: (selectedRows) => {
+          return (selectedRows.length === 1)
+        },
+        onClick: (selectedRows) => {
+          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
+          })
+        }
+      },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
         visible: (selectedRows) => {
@@ -614,11 +614,11 @@ export function MspRecCustomers () {
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
-        {modalVisible && <ResendInviteModal
+        {/* {modalVisible && <ResendInviteModal
           visible={modalVisible}
           setVisible={setModalVisible}
           tenantId={selTenantId}
-        />}
+        />} */}
         {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
           visible={drawerAssignEcMspAdminsVisible}
           tenantIds={selEcTenantIds}

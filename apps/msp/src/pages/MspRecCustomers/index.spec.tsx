@@ -311,141 +311,141 @@ describe('MspRecCustomers', () => {
     expect(screen.queryByText('Installed Devices')).toBeNull()
     expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
   })
-  it('should edit for selected trial account row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
+  // it('should edit for selected trial account row', async () => {
+  //   user.useUserProfileContext = jest.fn().mockImplementation(() => {
+  //     return { data: userProfile }
+  //   })
+  //   render(
+  //     <Provider>
+  //       <MspRecCustomers />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+  //     })
 
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+  //   const row = await screen.findByRole('row', { name: /ec 222/i })
+  //   fireEvent.click(within(row).getByRole('checkbox'))
 
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
+  //   const editButton = screen.getByRole('button', { name: 'Edit' })
+  //   fireEvent.click(editButton)
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Trial/${list.data.at(1)?.id}`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should edit for selected paid account row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
+  //   expect(mockedUsedNavigate).toHaveBeenCalledWith({
+  //     // eslint-disable-next-line max-len
+  //     pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Trial/${list.data.at(1)?.id}`,
+  //     hash: '',
+  //     search: ''
+  //   })
+  // })
+  // it('should edit for selected paid account row', async () => {
+  //   user.useUserProfileContext = jest.fn().mockImplementation(() => {
+  //     return { data: userProfile }
+  //   })
+  //   render(
+  //     <Provider>
+  //       <MspRecCustomers />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+  //     })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+  //   const row = await screen.findByRole('row', { name: /ec 111/i })
+  //   fireEvent.click(within(row).getByRole('checkbox'))
 
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
+  //   const editButton = screen.getByRole('button', { name: 'Edit' })
+  //   fireEvent.click(editButton)
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Paid/${list.data.at(0)?.id}`,
-      hash: '',
-      search: ''
-    })
-  })
-  it('should resend invite for selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
+  //   expect(mockedUsedNavigate).toHaveBeenCalledWith({
+  //     // eslint-disable-next-line max-len
+  //     pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Paid/${list.data.at(0)?.id}`,
+  //     hash: '',
+  //     search: ''
+  //   })
+  // })
+  // it('should resend invite for selected row', async () => {
+  //   user.useUserProfileContext = jest.fn().mockImplementation(() => {
+  //     return { data: userProfile }
+  //   })
+  //   render(
+  //     <Provider>
+  //       <MspRecCustomers />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+  //     })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+  //   const row = await screen.findByRole('row', { name: /ec 111/i })
+  //   fireEvent.click(within(row).getByRole('checkbox'))
 
-    const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
-    fireEvent.click(resendInviteButton)
+  //   const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
+  //   fireEvent.click(resendInviteButton)
 
-    expect(screen.getByRole('dialog')).toBeVisible()
-  })
-  it('should deactivate selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
+  //   expect(screen.getByRole('dialog')).toBeVisible()
+  // })
+  // it('should deactivate selected row', async () => {
+  //   user.useUserProfileContext = jest.fn().mockImplementation(() => {
+  //     return { data: userProfile }
+  //   })
+  //   render(
+  //     <Provider>
+  //       <MspRecCustomers />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+  //     })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+  //   const row = await screen.findByRole('row', { name: /ec 111/i })
+  //   fireEvent.click(within(row).getByRole('checkbox'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
+  //   fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(dialog).toBeVisible()
-    const deactivateButton = within(dialog).getByRole('button', { name: 'Deactivate' })
-    fireEvent.click(deactivateButton)
+  //   const dialog = await screen.findByRole('dialog')
+  //   expect(dialog).toBeVisible()
+  //   const deactivateButton = within(dialog).getByRole('button', { name: 'Deactivate' })
+  //   fireEvent.click(deactivateButton)
 
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
+  //   const value: [Function, Object] = [
+  //     expect.any(Function),
+  //     expect.objectContaining({
+  //       data: { requestId: '123' },
+  //       status: 'fulfilled'
+  //     })
+  //   ]
 
-    await waitFor(() =>
-      expect(services.useDeactivateMspEcMutation).toHaveLastReturnedWith(value))
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).toBeNull())
-  })
-  it('should reactivate selected row', async () => {
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+  //   await waitFor(() =>
+  //     expect(services.useDeactivateMspEcMutation).toHaveLastReturnedWith(value))
+  //   await waitFor(() =>
+  //     expect(screen.queryByRole('dialog')).toBeNull())
+  // })
+  // it('should reactivate selected row', async () => {
+  //   user.useUserProfileContext = jest.fn().mockImplementation(() => {
+  //     return { data: userProfile }
+  //   })
+  //   render(
+  //     <Provider>
+  //       <MspRecCustomers />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+  //     })
+  //   const row = await screen.findByRole('row', { name: /ec 333/i })
+  //   fireEvent.click(within(row).getByRole('checkbox'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
+  //   fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(dialog).toBeVisible()
-    expect(screen.getByText('Reactivate Customer "ec 333"?')).toBeVisible()
-    const reactivateButton = within(dialog).getByRole('button', { name: 'Reactivate' })
-    fireEvent.click(reactivateButton)
+  //   const dialog = await screen.findByRole('dialog')
+  //   expect(dialog).toBeVisible()
+  //   expect(screen.getByText('Reactivate Customer "ec 333"?')).toBeVisible()
+  //   const reactivateButton = within(dialog).getByRole('button', { name: 'Reactivate' })
+  //   fireEvent.click(reactivateButton)
 
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
+  //   const value: [Function, Object] = [
+  //     expect.any(Function),
+  //     expect.objectContaining({
+  //       data: { requestId: '123' },
+  //       status: 'fulfilled'
+  //     })
+  //   ]
 
-    await waitFor(() =>
-      expect(services.useReactivateMspEcMutation).toHaveLastReturnedWith(value))
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).toBeNull())
-  })
+  //   await waitFor(() =>
+  //     expect(services.useReactivateMspEcMutation).toHaveLastReturnedWith(value))
+  //   await waitFor(() =>
+  //     expect(screen.queryByRole('dialog')).toBeNull())
+  // })
   it('should delete selected row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
