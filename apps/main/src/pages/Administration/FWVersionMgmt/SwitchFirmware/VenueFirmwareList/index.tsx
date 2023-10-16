@@ -401,7 +401,7 @@ export const VenueFirmwareTable = (
       <UpdateNowWizard
         visible={updateNowWizardVisible}
         data={selectedVenueList as FirmwareSwitchVenue[]}
-        onCancel={() => { setUpdateNowWizardVisible(false) }}
+        setVisible={setUpdateNowWizardVisible}
         onSubmit={() => { }}/>
       <ScheduleUpdatesWizard
         visible={scheduleWizardVisible}

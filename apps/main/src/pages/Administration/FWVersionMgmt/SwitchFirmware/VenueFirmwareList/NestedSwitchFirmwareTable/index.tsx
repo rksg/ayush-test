@@ -101,7 +101,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type VenueTableProps = {
-  data: FirmwareSwitchVenue[],
+  data: FirmwareSwitchVenue[]
 }
 
 export const NestedSwitchFirmwareTable = (
@@ -116,6 +116,8 @@ export const NestedSwitchFirmwareTable = (
       selectedData: SwitchFirmware[] //Need to removed
     }
   })
+
+
   const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
   const { form } = useStepFormContext()

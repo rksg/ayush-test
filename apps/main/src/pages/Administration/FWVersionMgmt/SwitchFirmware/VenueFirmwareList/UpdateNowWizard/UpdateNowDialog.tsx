@@ -5,7 +5,7 @@ import { useForm }                              from 'antd/lib/form/Form'
 import { useIntl }                              from 'react-intl'
 
 import {
-  Modal, Subtitle
+  Modal, Subtitle, useStepFormContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -33,7 +33,7 @@ export interface UpdateNowDialogProps {
 export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const [form] = useForm()
+  const { form } = useStepFormContext()
   const { availableVersions,hasVenue,
     nonIcx8200Count, icx8200Count } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
@@ -59,48 +59,14 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const onChangeRegular = (e: RadioChangeEvent) => {
     setSelectionChanged(e.target.value)
     setSelectedVersion(e.target.value)
+    form.setFieldValue('switchVersion', e.target.value)
   }
 
   const onChangeRegularForVersionAboveTen = (e: RadioChangeEvent) => {
     setSelectionAboveTenChanged(e.target.value)
     setSelectedAboveTenVersion(e.target.value)
+    form.setFieldValue('switchVersionAboveTen', e.target.value)
   }
-
-  // const createRequest = (): UpdateScheduleRequest => {
-  //   if (enableSwitchTwoVersionUpgrade) {
-  //     return {
-  //       // eslint-disable-next-line max-len
-  //       venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
-  //       switchVersion: selectedVersion,
-  //       switchVersionAboveTen: enableSwitchTwoVersionUpgrade ? selectedAboveTenVersion : ''
-  //     }
-  //   }
-  //   return {
-  //     venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
-  //     switchVersion: selectedVersion
-  //   }
-  // }
-
-  // const triggerSubmit = () => {
-  //   form.validateFields()
-  //     .then(() => {
-  //       onSubmit()
-  //       onModalCancel()
-  //     })
-  // }
-
-  // const onModalCancel = () => {
-  //   form.resetFields()
-  //   resetValues()
-  //   onCancel()
-  // }
-
-  // const resetValues = () => {
-  //   setSelectionChanged(false)
-  //   setSelectionAboveTenChanged(false)
-  //   setSelectedVersion('')
-  //   setSelectedAboveTenVersion('')
-  // }
 
   return (
     <div
