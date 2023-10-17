@@ -158,10 +158,10 @@ describe('PersonaDevicesTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it.skip('should render persona device table with dpsk devices', async () => {
+  it('should render persona device table with dpsk devices', async () => {
     mockServer.use(
       rest.get(
-        DpskUrls.getPassphraseDevices.url.split('?')[0],
+        DpskUrls.getNewFlowPassphraseDevices.url,
         (_, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       )
     )
@@ -184,7 +184,7 @@ describe('PersonaDevicesTable', () => {
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
     await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
-    await screen.findByRole('heading', { name: /devices \(4\)/i })
+    await screen.findByRole('heading', { name: /devices \(4\)/i })   // 3 mac devices + 1 connected dpsk device
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done
   })
