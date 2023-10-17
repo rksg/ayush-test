@@ -6,7 +6,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
-  Modal, ModalType, StepsForm
+  Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
 import { useGetSwitchAvailableFirmwareListQuery, useGetSwitchLatestFirmwareListQuery, useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
@@ -28,7 +28,8 @@ import { UpdateNowDialog }       from './UpdateNowDialog'
 
 export enum SwitchFirmwareWizardType {
   update = 'UPDATE',
-  schedule = 'SCHEDULE'
+  schedule = 'SCHEDULE',
+  skip = 'SKIP'
 }
 
 export interface UpdateNowWizardProps {
@@ -97,7 +98,8 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
 
   const wizardTitle = {
     [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
-    [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Update Schedule' })
+    [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Update Schedule' }),
+    [SwitchFirmwareWizardType.skip]: $t({ defaultMessage: 'Skip Updates' })
   }
 
   const wizardFinish = {
@@ -137,6 +139,34 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
       }
+    },
+    [SwitchFirmwareWizardType.skip]: async () => {
+      showActionModal({
+        type: 'confirm',
+        width: 460,
+        title: $t({ defaultMessage: 'Skip This Update?' }),
+        // eslint-disable-next-line max-len
+        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        okText: $t({ defaultMessage: 'Skip' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        async onOk() {
+          try {
+            await updateVenueSchedules({
+              params: { ...params },
+              payload: {
+                venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
+                switchIdList: upgradeSwitchList
+              }
+            }).unwrap()
+            form.resetFields()
+            props.setVisible(false)
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        },
+        onCancel () { }
+      })
+
     }
   }
 
@@ -209,27 +239,30 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             data={props.data as FirmwareSwitchVenue[]}
           />
         </StepsForm.StepForm>
-        <StepsForm.StepForm
-          name='firmware'
-          title={$t({ defaultMessage: 'Select Firmware' })}
-        >
-          {
-            wizardType === SwitchFirmwareWizardType.update ?
-              <UpdateNowDialog
-                visible={true}
-                hasVenue={hasVenue}
-                availableVersions={filterVersions(upgradeVersions)}
-                nonIcx8200Count={nonIcx8200Count}
-                icx8200Count={icx8200Count}
-              /> : <ScheduleUpdatesDialog
-                visible={true}
-                availableVersions={filterVersions(upgradeVersions)}
-                nonIcx8200Count={nonIcx8200Count}
-                icx8200Count={icx8200Count}
-              />
-          }
 
-        </StepsForm.StepForm>
+        {(wizardType !== SwitchFirmwareWizardType.skip) &&
+          <StepsForm.StepForm
+            name='firmware'
+            title={$t({ defaultMessage: 'Select Firmware' })}
+          >
+            {
+              wizardType === SwitchFirmwareWizardType.update ?
+                <UpdateNowDialog
+                  visible={true}
+                  hasVenue={hasVenue}
+                  availableVersions={filterVersions(upgradeVersions)}
+                  nonIcx8200Count={nonIcx8200Count}
+                  icx8200Count={icx8200Count}
+                /> : <ScheduleUpdatesDialog
+                  visible={true}
+                  availableVersions={filterVersions(upgradeVersions)}
+                  nonIcx8200Count={nonIcx8200Count}
+                  icx8200Count={icx8200Count}
+                />
+            }
+
+          </StepsForm.StepForm>
+        }
 
       </StepsForm>
 

@@ -11,7 +11,6 @@ import {
   Loader,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -21,7 +20,6 @@ import {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -31,7 +29,6 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  FirmwareCategory,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -39,7 +36,6 @@ import { RequestPayload } from '@acx-ui/types'
 
 import {
   getNextScheduleTpl,
-  getReleaseFirmware,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion,
@@ -48,8 +44,7 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { SkipUpdatesWizard }                         from './SkipUpdatesWizard'
-import { SwitchFirmwareWizardType, UpdateNowWizard } from './UpdateNowWizard'
+import { SwitchFirmwareWizardType, UpdateNowWizard } from './switchUpgradeWizard'
 import { UpdateStatusDrawer }                        from './UpdateStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
@@ -297,7 +292,8 @@ export const VenueFirmwareTable = (
     label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows, clearSelection) => {
       setSelectedVenueList(selectedRows)
-      setSkipWizardVisible(true)
+      setUpdateNowWizardVisible(true)
+      setWizardType(SwitchFirmwareWizardType.skip)
       // showActionModal({
       //   type: 'confirm',
       //   width: 460,
@@ -345,11 +341,6 @@ export const VenueFirmwareTable = (
         setVisible={setUpdateNowWizardVisible}
         onSubmit={() => { }} />
 
-      <SkipUpdatesWizard
-        visible={skipWizardVisible}
-        data={selectedVenueList as FirmwareSwitchVenue[]}
-        onCancel={() => { setSkipWizardVisible(false) }}
-        onSubmit={() => { }} />
 
       <PreferencesDialog
         visible={modelVisible}
