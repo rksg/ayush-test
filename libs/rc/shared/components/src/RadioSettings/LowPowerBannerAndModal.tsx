@@ -78,13 +78,13 @@ export function LowPowerBannerAndModal (props: {
     let APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '[Geo Location not set]' })
     }
     if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '[No channels available]' })
     }
     if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '[Pending response from the AFC server]' })
     }
 
 
