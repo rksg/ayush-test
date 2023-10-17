@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-// import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -12,16 +11,12 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-// import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
-  // ResendInviteModal,
   SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
 import {
-  // useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
-  // useReactivateMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
@@ -30,7 +25,6 @@ import {
   useCheckDelegateAdmin
 } from '@acx-ui/msp/services'
 import {
-  // DelegationEntitlementRecord,
   MspEc,
   MSPUtils
 } from '@acx-ui/msp/utils'
@@ -54,71 +48,19 @@ const getStatus = (row: MspEc) => {
   return value
 }
 
-// const transformApEntitlement = (row: MspEc) => {
-//   return row.wifiLicenses ? row.wifiLicenses : 0
-// }
-
-// const transformUtilization = (row: MspEc, deviceType: EntitlementNetworkDeviceType) => {
-//   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-//     en.entitlementDeviceType === deviceType)
-//   if (entitlement.length > 0) {
-//     const apEntitlement = entitlement[0]
-//     const quantity = parseInt(apEntitlement.quantity, 10)
-//     const consumed = parseInt(apEntitlement.consumed, 10)
-//     if (quantity > 0) {
-//       const value =
-//       (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
-//       return value
-//     } else {
-//       return '0%'
-//     }
-//   }
-//   return '0%'
-// }
-
-// const transformSwitchEntitlement = (row: MspEc) => {
-//   return row.switchLicenses ? row.switchLicenses : 0
-// }
-
-// const transformCreationDate = (row: MspEc) => {
-//   const creationDate = row.creationDate
-//   if (!creationDate || isNaN(creationDate)) {
-//     return ''
-//   }
-//   const Epoch = creationDate - (creationDate % 1000)
-//   const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
-//   return activeDate
-// }
-
-// const transformExpirationDate = (row: MspEc) => {
-//   let expirationDate = '--'
-//   const entitlements = row.entitlements
-//   let target: DelegationEntitlementRecord
-//   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-//     const consumed = parseInt(entitlement.consumed, 10)
-//     const quantity = parseInt(entitlement.quantity, 10)
-//     if (consumed > 0 || quantity > 0) {
-//       if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
-//         target = entitlement
-//       }
-//     }
-//     expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
-//   })
-//   return expirationDate
-// }
-
 export function MspRecCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const edgeEnabled = useIsTierAllowed(Features.EDGES)
+  const params = useParams()
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const params = useParams()
-  const isAssignMultipleEcEnabled =
-    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
+
+  const edgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
+     && isPrimeAdmin
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const MAX_ALLOWED_SELECTED_EC = 200
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -128,8 +70,6 @@ export function MspRecCustomers () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
-  // const [deactivateMspEc] = useDeactivateMspEcMutation()
-  // const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
@@ -408,7 +348,6 @@ export function MspRecCustomers () {
         title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
         dataIndex: 'wifiLicense',
         key: 'wifiLicense',
-        // align: 'center',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
           return mspUtils.transformApEntitlement(row)
@@ -417,7 +356,6 @@ export function MspRecCustomers () {
       {
         title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
         dataIndex: 'wifiLicensesUtilization',
-        // align: 'center',
         key: 'wifiLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
@@ -427,7 +365,6 @@ export function MspRecCustomers () {
       {
         title: $t({ defaultMessage: 'Switch Licenses' }),
         dataIndex: 'switchLicense',
-        // align: 'center',
         key: 'switchLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
@@ -437,7 +374,6 @@ export function MspRecCustomers () {
       {
         title: $t({ defaultMessage: 'SmartEdge Licenses' }),
         dataIndex: 'edgeLicenses',
-        // align: 'center',
         key: 'edgeLicenses',
         sorter: true,
         show: edgeEnabled,
@@ -473,8 +409,6 @@ export function MspRecCustomers () {
   ]
 
   const MspEcTable = () => {
-    // const [modalVisible, setModalVisible] = useState(false)
-    // const [selTenantId, setSelTenantId] = useState('')
     const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
     const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
     const basePath = useTenantLink('/dashboard/mspRecCustomers/edit', 'v')
@@ -511,74 +445,6 @@ export function MspRecCustomers () {
           setDrawerAssignEcMspAdminsVisible(true)
         }
       },
-      // {
-      //   label: $t({ defaultMessage: 'Resend Invitation Email' }),
-      //   visible: (selectedRows) => {
-      //     return (selectedRows.length === 1)
-      //   },
-      //   onClick: (selectedRows) => {
-      //     setSelTenantId(selectedRows[0].id)
-      //     setModalVisible(true)
-      //   }
-      // },
-      // {
-      //   label: $t({ defaultMessage: 'Deactivate' }),
-      //   visible: (selectedRows) => {
-      //     if(selectedRows.length === 1 && selectedRows[0] &&
-      //       (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
-      //       return true
-      //     }
-      //     return false
-      //   },
-      //   onClick: ([{ name, id }], clearSelection) => {
-      //     const title = $t(
-      //       { defaultMessage: 'Deactivate Customer "{formattedName}"?' },
-      //       { formattedName: name }
-      //     )
-
-      //     showActionModal({
-      //       type: 'confirm',
-      //       title: title,
-      //       content: $t({
-      //         defaultMessage: `
-      //           Deactivate "{formattedName}" will suspend all its services,
-      //           are you sure you want to proceed?
-      //         `
-      //       }, { formattedName: name }),
-      //       okText: $t({ defaultMessage: 'Deactivate' }),
-      //       onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
-      //         .then(clearSelection)
-      //     })
-      //   }
-      // },
-      // {
-      //   label: $t({ defaultMessage: 'Reactivate' }),
-      //   visible: (selectedRows) => {
-      //     if(selectedRows.length !== 1 || (selectedRows[0] &&
-      //       (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
-      //       return false
-      //     }
-      //     return true
-      //   },
-      //   onClick: ([{ name, id }], clearSelection) => {
-      //     const title = $t(
-      //       { defaultMessage: 'Reactivate Customer "{formattedName}"?' },
-      //       { formattedName: name }
-      //     )
-
-      //     showActionModal({
-      //       type: 'confirm',
-      //       title: title,
-      //       content: $t(
-      //         { defaultMessage: 'Reactivate this customer "{formattedName}"?' },
-      //         { formattedName: name }
-      //       ),
-      //       okText: $t({ defaultMessage: 'Reactivate' }),
-      //       onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
-      //         .then(clearSelection)
-      //     })
-      //   }
-      // },
       {
         label: $t({ defaultMessage: 'Delete' }),
         visible: (selectedRows) => {
@@ -614,11 +480,6 @@ export function MspRecCustomers () {
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
-        {/* {modalVisible && <ResendInviteModal
-          visible={modalVisible}
-          setVisible={setModalVisible}
-          tenantId={selTenantId}
-        />} */}
         {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
           visible={drawerAssignEcMspAdminsVisible}
           tenantIds={selEcTenantIds}

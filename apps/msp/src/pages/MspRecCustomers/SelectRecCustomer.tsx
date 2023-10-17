@@ -56,14 +56,14 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       dataIndex: 'account_name',
       key: 'account_name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email_id',
       key: 'email_id',
-      sorter: true,
-      searchable: true
+      sorter: true
     }
   ]
 
