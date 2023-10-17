@@ -40,12 +40,10 @@ export const initialValues: ServiceGuardFormDto = {
   isDnsServerCustom: false
 }
 
-export const localToDb = (schedule: Schedule) => {
-  const dbSchedule = { ...schedule }
-  const { frequency } = dbSchedule
-  frequency && (dbSchedule.timezone = moment.tz.guess())
-  return dbSchedule
-}
+export const localToDb = (schedule: Schedule) => ({
+  ...schedule,
+  ...(schedule.frequency && { timezone: moment.tz.guess() })
+})
 
 export function ServiceGuardForm () {
   const { $t } = useIntl()
