@@ -69,6 +69,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { getIntl } from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
@@ -88,6 +89,33 @@ const defaultPayload = {
   search: '', updateAvailable: ''
 }
 
+const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+
+export const validatorSwitchModel = (serialNumber: string, tableData: { id: string }[]) => {
+  const { $t } = getIntl()
+  const re = new RegExp(SWITCH_SERIAL_PATTERN)
+  if (serialNumber && !re.test(serialNumber)) {
+    return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
+  }
+
+  const model = getSwitchModel(serialNumber) || ''
+
+  if (modelNotSupportStack.indexOf(model) > -1) {
+    return Promise.reject(
+      $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
+    )
+  }
+  const allSameModelFamily = tableData
+    .filter(item => item.id && item.id !== serialNumber)
+    .every(item => isSameModelFamily(item.id, serialNumber))
+  if (serialNumber && !allSameModelFamily) {
+    return Promise.reject(
+      $t({ defaultMessage: 'All switch models should belong to the same family.' })
+    )
+  }
+  return Promise.resolve()
+}
+
 export function StackForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, action, venueId, stackList } = useParams()
@@ -96,7 +124,6 @@ export function StackForm () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/devices/')
-  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
 
@@ -433,30 +460,6 @@ export function StackForm () {
     setTableData(tableData.filter((item) => item.key !== row.key))
   }
 
-  const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
-    if (serialNumber && !re.test(serialNumber)) {
-      return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
-    }
-
-    const model = getSwitchModel(serialNumber) || ''
-
-    if (modelNotSupportStack.indexOf(model) > -1) {
-      return Promise.reject(
-        $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
-      )
-    }
-    const allSameModelFamily = tableData
-      .filter(item => item.id && item.id !== serialNumber)
-      .every(item => isSameModelFamily(item.id, serialNumber))
-    if (serialNumber && !allSameModelFamily) {
-      return Promise.reject(
-        $t({ defaultMessage: 'All switch models should belong to the same family.' })
-      )
-    }
-    return Promise.resolve()
-  }
-
   const validatorUniqueMember = (serialNumber: string) => {
     const memberExistCount = tableData.filter((item: SwitchTable) => {
       return item.id === serialNumber
@@ -518,7 +521,7 @@ export function StackForm () {
               required: activeRow === row.key ? true : false,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value) },
+            { validator: (_, value) => validatorSwitchModel(value, tableData) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
