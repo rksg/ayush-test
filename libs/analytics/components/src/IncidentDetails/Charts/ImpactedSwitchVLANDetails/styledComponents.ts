@@ -27,18 +27,15 @@ export const SummaryCount = styled.div`
 `
 
 export const SummaryList = styled.div`
+  color: var(--acx-primary-black);
   font-size: var(--acx-body-4-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-  line-height: 1.5;
-  & > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  line-height: var(--acx-body-4-line-height);
+  > div {
     text-align: left;
-    & > span:last-child {
-      opacity: 0.6;
-    }
+    > * { vertical-align: middle; }
+    span { margin-left: 6px; }
   }
+  > span { padding-left: 4px; }
 `
 
 export const SummaryTitle = styled.div`

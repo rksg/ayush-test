@@ -108,9 +108,9 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
                 {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
                 <span>{d.name}</span>
               </div>)}
-              {remaining > 0 && <div><span>
-                {$t({ defaultMessage: 'And {remaining} more…' }, { remaining } )}
-              </span></div>}
+              {remaining > 0 && <span>
+                {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
+              </span>}
             </UI.SummaryList>
           </UI.SummaryType>
         })}
