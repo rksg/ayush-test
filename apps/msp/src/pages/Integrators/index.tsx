@@ -11,6 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
@@ -30,7 +31,7 @@ import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams 
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
-  AccountType
+  AccountType, isDelegationMode
 } from '@acx-ui/utils'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
@@ -58,6 +59,8 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -77,12 +80,12 @@ export function Integrators () {
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return isSupportToMspDashboardAllowed ? {} : {
           onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (_, { name }, __, highlightFn) {
-        return (
+        return (isSupportToMspDashboardAllowed ? name :
           <Link to=''>{highlightFn(name)}</Link>
         )
       }

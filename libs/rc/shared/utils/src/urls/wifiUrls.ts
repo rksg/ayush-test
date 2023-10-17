@@ -574,5 +574,15 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/clientConnectionDiagnosis',
     newApi: true
+  },
+  getVenueApManagementVlan: {
+    method: 'get',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateVenueApManagementVlan: {
+    method: 'put',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
   }
 }

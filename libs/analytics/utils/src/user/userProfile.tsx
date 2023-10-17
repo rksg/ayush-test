@@ -40,13 +40,17 @@ const extractTenantFromUrl = (tenantFromUrl: string | null) => {
 }
 export const getUserProfile = () => user.profile
 export const setUserProfile = (profile: UserProfile) => {
-  const searchParams = new URLSearchParams(window.location.search)
-  const selectedTenantId = extractTenantFromUrl(searchParams.get('selectedTenants'))
-    || profile.accountId
-  if (selectedTenantId === (getUserProfile())?.selectedTenant?.id) return
-  const selectedTenant = profile.tenants.find(tenant => tenant.id === selectedTenantId) as Tenant
-  // Do not call this manually except in test env & UserProfileProvider
+  const selectedTenant = profile.tenants.find(tenant => tenant.id === profile.accountId) as Tenant
+  // Do not call this manually except in test env & bootstrap
   user.profile = { ...profile, selectedTenant }
+}
+export const updateSelectedTenant = (tenant: string | null) => {
+  const currentProfile = getUserProfile()
+  const selectedTenantId = extractTenantFromUrl(tenant)
+    || currentProfile.accountId
+  if (selectedTenantId === currentProfile.selectedTenant.id) return
+  const selectedTenant = currentProfile.tenants.find(t => t.id === selectedTenantId) as Tenant
+  user.profile.selectedTenant = selectedTenant
   updatePendo(
     /* istanbul ignore next */
     () => getPendoConfig()
