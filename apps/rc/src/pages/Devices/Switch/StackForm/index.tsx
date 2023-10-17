@@ -102,9 +102,9 @@ export function StackForm () {
   const { data: venuesList, isLoading: isVenuesListLoading } =
   useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
-  const { data: switchData, isLoading: isSwitchDataLoading } =
+  const { data: switchData, refetch: refetchSwitchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
+  const { data: switchDetail, refetch: refetchSwitchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
@@ -196,7 +196,7 @@ export function StackForm () {
         const stackMembersList = switchDetail?.activeSerial
           ? (await getStackMemberList({
             params: { tenantId, switchId }, payload: stackMembersPayload
-          }, true))
+          }, false))
           : []
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
@@ -243,7 +243,7 @@ export function StackForm () {
         }
         const switchList = venueId
           ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
-          }, true))?.data?.data
+          }, false))?.data?.data
           : []
 
         const switchTableData = stackSwitches?.map((serialNumber, index) => ({
@@ -312,7 +312,7 @@ export function StackForm () {
   }
 
   const [saveSwitch] = useSaveSwitchMutation()
-  const [updateSwitch] = useUpdateSwitchMutation()
+  const [updateSwitch, updateSwitchResponse] = useUpdateSwitchMutation()
   const [convertToStack] = useConvertToStackMutation()
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
@@ -383,6 +383,11 @@ export function StackForm () {
       }
 
       await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+
+      if (updateSwitchResponse.isSuccess) {
+        refetchSwitchData()
+        refetchSwitchDetail()
+      }
 
       dataFetchedRef.current = false
 
