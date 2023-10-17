@@ -8,7 +8,7 @@ export const SummaryType = styled.div`
   text-align: center;
   line-height: 1;
   &:not(:first-of-type) {
-    border-left: 1px solid rgba(0, 0, 0, .2);
+    border-left: 1px solid var(--acx-neutrals-30);
   }
   padding-top: 10px;
   margin-bottom: 50px;
