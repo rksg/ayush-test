@@ -1,14 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { initialize }                                      from '@googlemaps/jest-mocks'
-import { fireEvent, userEvent, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                            from 'msw'
+import { initialize }                           from '@googlemaps/jest-mocks'
+import { userEvent, waitForElementToBeRemoved } from '@storybook/testing-library'
+import { rest }                                 from 'msw'
 
-import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { rwgApi }                                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                           from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { rwgApi }                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { DNSRecordDrawer } from '.'
 
@@ -18,7 +18,7 @@ const dnsRecord = {
   response: {
     id: '2',
     name: 'wi.fi',
-    host: 'http://wi.fi',
+    host: 'test.com',
     ttl: 60,
     dataType: 'AAAA',
     data: 'any-data'
@@ -31,11 +31,11 @@ const mockedReqFn =jest.fn()
 
 describe('RWGDetails DNS Records Drawer', () => {
   let params: { tenantId: string, gatewayId: string }
-  store.dispatch(rwgApi.util.resetApiState())
-  initialize()
-  mockFn.mockClear()
-  mockedReqFn.mockClear()
+
   beforeEach(async () => {
+    store.dispatch(rwgApi.util.resetApiState())
+    initialize()
+    mockedReqFn.mockClear()
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDNSRecord.url,
@@ -76,12 +76,8 @@ describe('RWGDetails DNS Records Drawer', () => {
       route: { params }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await waitFor(() => expect(mockFn).toBeCalled())
-
-    // eslint-disable-next-line max-len
-    await waitFor(async () => expect(await screen.findByRole('textbox', { name: 'DNS Record Name' })).toHaveValue('wi.fi'))
+    await waitFor(async () => expect(await screen.findByRole('textbox',
+      { name: 'DNS Record Name' })).toHaveValue('wi.fi'))
 
     await expect(await screen.findByText('Edit DNS Record')).toBeInTheDocument()
 
@@ -90,6 +86,7 @@ describe('RWGDetails DNS Records Drawer', () => {
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
   })
 
   it('should draw drawer for DNS Record add correctly', async () => {
@@ -107,37 +104,30 @@ describe('RWGDetails DNS Records Drawer', () => {
     await expect(await screen.findByText('Add DNS Record')).toBeInTheDocument()
 
     const dnsInput = await screen.findByLabelText('DNS Record Name')
-    userEvent.type(dnsInput, 'ruckusdemos1')
+    await userEvent.type(dnsInput, 'ruckusdemos1')
 
     const combo = await screen.findByRole('combobox')
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      userEvent.click(combo)
-    })
-
-    expect(screen.getAllByText('AAAA')[1]).toBeInTheDocument()
+    await userEvent.click(combo)
+    await waitFor(() =>
+      expect(screen.getAllByText('AAAA')[1]).toBeInTheDocument()
+    )
 
     const options = await screen.findAllByText('AAAA')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      userEvent.click(options[1])
-    })
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      const hostnameInput = screen.getByLabelText('Host')
-      userEvent.type(hostnameInput, 'https://test.com')
+    await userEvent.click(options[1])
 
-      const dataInput = screen.getByLabelText('Data')
-      userEvent.type(dataInput, 'Temp')
+    const hostnameInput = screen.getByLabelText('Host')
+    await userEvent.type(hostnameInput, 'test.com')
+    const dataInput = screen.getByLabelText('Data')
+    await userEvent.type(dataInput, 'Temp')
 
-      const ttlInput = screen.getByLabelText('TTL')
-      fireEvent.change(ttlInput, { target: { value: 60 } })
+    const ttlInput = screen.getByLabelText('TTL')
+    await userEvent.type(ttlInput, '60')
 
-      const saveButton = screen.getByRole('button', { name: 'Add' })
-      fireEvent.click(saveButton)
-    })
+    const saveButton = screen.getByRole('button', { name: 'Add' })
+
+    await userEvent.click(saveButton)
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
 
@@ -157,7 +147,7 @@ describe('RWGDetails DNS Records Drawer', () => {
 
     const closeButton = screen.getByRole('button', { name: 'Close' })
 
-    userEvent.click(closeButton)
+    await userEvent.click(closeButton)
     expect(onCloseFn).toBeCalled()
   })
 
