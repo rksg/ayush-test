@@ -25,11 +25,12 @@ onClose: () => void
 
   const handleLink = (node: Node) => {
     let link
-    if(node.type &&
+    if(node && node.type &&
       [DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
         .includes(node.type)) {
       link = `${wifiBasePath.pathname}/${node?.mac}/details/overview`
-    } else if (node.type && [DeviceTypes.Switch, DeviceTypes.SwitchStack].includes(node.type)) {
+    } else if (node && node.type &&
+      [DeviceTypes.Switch, DeviceTypes.SwitchStack].includes(node.type)) {
       // eslint-disable-next-line max-len
       link = `${switchBasePath.pathname}/${node?.id || node?.serial}/${node?.serial}/details/overview`
     }
