@@ -682,34 +682,3 @@ describe('useMutationResponseEffect', () => {
     expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
   })
 })
-
-describe('localToDb', () => {
-  const timezone = 'Asia/Singapore'
-  let localToDbFn: (schedule: Schedule) => Schedule
-  beforeEach(() => {
-    jest.resetModules()
-    jest.doMock('moment-timezone', () => {
-      const moment = jest.requireActual('moment-timezone')
-      moment.tz.guess = () => timezone
-      return moment
-    })
-    localToDbFn = require('./services').localToDb
-  })
-  it('should convert timezone', () => {
-    const schedule = {
-      timezone: 'Asia/Calcutta',
-      frequency: ScheduleFrequency.Daily,
-      day: null,
-      hour: 8,
-      type: 'service_guard'
-    } as Schedule
-
-    expect(localToDbFn(schedule)).toEqual({
-      timezone: 'Asia/Singapore',
-      frequency: ScheduleFrequency.Daily,
-      day: null,
-      hour: 8,
-      type: 'service_guard'
-    })
-  })
-})

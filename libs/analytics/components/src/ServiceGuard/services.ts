@@ -33,8 +33,7 @@ import type {
   MutationResponse,
   ClientType,
   AuthenticationMethod,
-  Wlan,
-  Schedule
+  Wlan
 } from './types'
 
 const fetchServiceGuardSpec = gql`
@@ -441,13 +440,6 @@ export function specToDto (
     ..._.omit(spec, ['schedule']),
     schedule
   }
-}
-
-export const localToDb = (schedule: Schedule) => {
-  const dbSchedule = { ...schedule }
-  const { frequency } = dbSchedule
-  frequency && (dbSchedule.timezone = moment.tz.guess())
-  return dbSchedule
 }
 
 type CreateUpdateCloneMutationResult = MutationResult<{

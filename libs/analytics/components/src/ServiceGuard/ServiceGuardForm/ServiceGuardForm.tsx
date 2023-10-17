@@ -6,17 +6,17 @@ import { useIntl } from 'react-intl'
 import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
 import { useNavigateToPath }                from '@acx-ui/react-router-dom'
 
-import * as contents from '../contents'
+import * as contents          from '../contents'
 import {
   specToDto,
   useServiceGuardSpecMutation,
-  useMutationResponseEffect,
-  localToDb
+  useMutationResponseEffect
 } from '../services'
 import {
   Band,
   ClientType,
   MutationResponse,
+  Schedule,
   ServiceGuardFormDto
 } from '../types'
 
@@ -38,6 +38,13 @@ export const initialValues: ServiceGuardFormDto = {
     speedTestEnabled: false
   }],
   isDnsServerCustom: false
+}
+
+export const localToDb = (schedule: Schedule) => {
+  const dbSchedule = { ...schedule }
+  const { frequency } = dbSchedule
+  frequency && (dbSchedule.timezone = moment.tz.guess())
+  return dbSchedule
 }
 
 export function ServiceGuardForm () {
