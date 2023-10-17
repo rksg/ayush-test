@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
@@ -173,5 +174,67 @@ describe.skip('RadioSettingForm component', () => {
     // eslint-disable-next-line testing-library/no-node-access
     const comboboxes = asFragment().querySelectorAll('.ant-select-borderless')
     expect(comboboxes).toHaveLength(3)
+  })
+})
+
+describe('LPI mode toggle Unit Test', () => {
+  it('should render Low Power Mode toggle in Venue Radio 6G', async () => {
+    const radioType = ApRadioTypeEnum.Radio6G
+    const radioDataKey = ApRadioTypeDataKeyMap[radioType]
+    const bandwidthOptions = channelBandwidth5GOptions
+    let isUseVenueSettings = false
+    render(
+      <Provider>
+        <Form>
+          <RadioSettingsForm
+            context='venue'
+            radioType={radioType}
+            radioDataKey={radioDataKey}
+            channelBandwidthOptions={bandwidthOptions}
+            isUseVenueSettings={isUseVenueSettings}
+          />
+        </Form>
+      </Provider>)
+    expect(await screen.findByText('Standard power')).toBeInTheDocument()
+  })
+
+  it('should render Low Power Mode toggle in AP Radio 6G', async () => {
+    const radioType = ApRadioTypeEnum.Radio6G
+    const radioDataKey = ApRadioTypeDataKeyMap[radioType]
+    const bandwidthOptions = channelBandwidth5GOptions
+    let isUseVenueSettings = false
+    render(
+      <Provider>
+        <Form>
+          <RadioSettingsForm
+            context='ap'
+            radioType={radioType}
+            radioDataKey={radioDataKey}
+            channelBandwidthOptions={bandwidthOptions}
+            isUseVenueSettings={isUseVenueSettings}
+          />
+        </Form>
+      </Provider>)
+    expect(await screen.findByText('Standard power')).toBeInTheDocument()
+  })
+
+  it('should not render Low Power Mode toggle in Venue Radio 5G', async () => {
+    const radioType = ApRadioTypeEnum.Radio5G
+    const radioDataKey = ApRadioTypeDataKeyMap[radioType]
+    const bandwidthOptions = channelBandwidth5GOptions
+    let isUseVenueSettings = false
+    render(
+      <Provider>
+        <Form>
+          <RadioSettingsForm
+            context='venue'
+            radioType={radioType}
+            radioDataKey={radioDataKey}
+            channelBandwidthOptions={bandwidthOptions}
+            isUseVenueSettings={isUseVenueSettings}
+          />
+        </Form>
+      </Provider>)
+    expect(screen.queryByTestId('Standard power')).not.toBeInTheDocument()
   })
 })
