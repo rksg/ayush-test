@@ -12,6 +12,7 @@ import { SwitchCliSession, SwitchStatus, useSwitchActions }                     
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
+  useSwitchDetailHeaderQuery,
   useLazyGetSwitchVenueVersionListQuery
 }                         from '@acx-ui/rc/services'
 import {
@@ -70,6 +71,9 @@ function SwitchPageHeader () {
   const [venueFW, setVenueFW] = useState('')
   const [venueAboveTenFw, setVenueAboveTenFw] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
+
+  const { data: switchDetail } =
+    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
   const isStack = switchDetailHeader?.isStack || false
@@ -175,15 +179,15 @@ function SwitchPageHeader () {
   }, [switchDetailHeader])
 
   useEffect(() => {
-    if(switchDetailHeader?.stackMembers){
-      const switchModel = switchDetailHeader?.model || ''
-      const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
-      const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
+    if(switchDetail?.stackMembers){
+      const switchModel = switchDetail?.model || ''
+      const currentFW = switchDetail?.firmwareVersion || venueFW || ''
+      const currentAboveTenFW = switchDetail?.firmwareVersion || venueAboveTenFw || ''
       const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
 
-      setMaxMembers(maxUnits - switchDetailHeader?.stackMembers.length)
+      setMaxMembers(maxUnits - switchDetail?.stackMembers.length)
     }
-  }, [switchDetailHeader, venueFW, venueAboveTenFw])
+  }, [switchDetail, venueFW, venueAboveTenFw])
 
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {
