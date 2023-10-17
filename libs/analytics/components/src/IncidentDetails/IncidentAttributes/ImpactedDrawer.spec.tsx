@@ -71,7 +71,6 @@ describe('Drawer', () => {
         hostname: 'hostname 2',
         username: 'username 2',
         osType: 'osType2'
-
       }
     ] as ImpactedClient[]
     it('should render loader', () => {
@@ -95,7 +94,7 @@ describe('Drawer', () => {
       screen.getByText(`${sample[0].osType} (2)`)
       screen.getByText(`${sample[0].ssid} (2)`)
       expect(screen.getByRole('link').textContent)
-        .toEqual(`${sample[0].hostname}${sample[1].hostname}`)
+        .toEqual(`${sample[0].hostname} (2)`)
       screen.getByText(`${sample[0].username} (2)`)
       screen.getByText('1 Impacted Client')
       screen.getByText('Hostname')

@@ -33,6 +33,7 @@ describe.only('Search Results', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getByText('APs (3)')).toBeVisible()
     expect(screen.getByText('Clients (3)')).toBeVisible()
+    expect(screen.getByText('manufacturer-1')).toBeVisible()
     expect(screen.getByText('Switches (1)')).toBeVisible()
     expect(screen.getByText('Network Hierarchy (3)')).toBeVisible()
   })

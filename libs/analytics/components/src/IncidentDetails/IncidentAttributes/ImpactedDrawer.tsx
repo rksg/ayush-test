@@ -98,7 +98,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       render: (_, { mac, hostname }) =>
         <TenantLink
           to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >{hostname}</TenantLink>
+          title={hostname.join(', ')}
+        >{`${hostname[0]} ${hostname.length > 1 ? `(${hostname.length})` : ''}`}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
