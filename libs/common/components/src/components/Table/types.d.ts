@@ -70,6 +70,10 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterSearchable?: boolean
   /**
+   * Allow filter to appear as one of the type specified
+   */
+  filterComponent?: ({ type: 'checkbox' | 'rangepicker', label?: string })
+  /**
    * Set the key for Coordinated filters that have a hierarchical dependency
    * the relevant filter will be reset by key when changing the value
    * @default undefined
@@ -79,7 +83,6 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */
-  filterComponent?: ({ type: string, label?: string })
   render?: (
     dom: ReactNode,
     entity: RecordType,
