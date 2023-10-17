@@ -10,7 +10,7 @@ import {
   trailingNorLeadingSpaces,
   DNSRecord,
   DNSDataType,
-  URLProtocolRegExp
+  domainNameRegExp
 } from '@acx-ui/rc/utils'
 
 
@@ -142,7 +142,7 @@ export function DNSRecordDrawer (props: DNSRecordsProps) {
                 { type: 'string', required: true },
                 { min: 2, transform: (value) => value.trim() },
                 { max: 64, transform: (value) => value.trim() },
-                { validator: (_, value) => URLProtocolRegExp(value) }
+                { validator: (_, value) => domainNameRegExp(value) }
               ]}
               children={<Input />}
             />
