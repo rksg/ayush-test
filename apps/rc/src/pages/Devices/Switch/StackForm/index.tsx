@@ -122,6 +122,7 @@ export function StackForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
   const [currentFW, setCurrentFw] = useState('')
+  const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
@@ -163,7 +164,10 @@ export function StackForm () {
       const switchFw = switchData.firmwareVersion
       const venueFw = venuesList.data.find(
         venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+      const venueAboveTenFw = venuesList.data.find(
+        venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
       setCurrentFw(switchFw || venueFw || '')
+      setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModule',
@@ -634,7 +638,11 @@ export function StackForm () {
 
     if(venuesList){
       const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      // eslint-disable-next-line max-len
+      const venueAboveTenFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+
       setCurrentFw(venueFw || '')
+      setCurrentAboveTenFw(venueAboveTenFw || '')
 
       const switchModel =
         getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
@@ -643,7 +651,7 @@ export function StackForm () {
         (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
 
       if (switchModel?.includes('ICX8200')) {
-        miniMembers = checkVersionAtLeast10010b(venueFw || '') ? 12 : 4
+        miniMembers = checkVersionAtLeast10010b(venueAboveTenFw || '') ? 12 : 4
       }
 
       setTableData(tableData.splice(0, miniMembers))
@@ -701,7 +709,7 @@ export function StackForm () {
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
       return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
     } else if (switchModel?.includes('ICX8200')) {
-      return 4
+      return tableData.length < (checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4)
     } else {
       return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
     }
@@ -711,7 +719,7 @@ export function StackForm () {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
     if (switchModel?.includes('ICX8200')) {
-      return checkVersionAtLeast10010b(currentFW) ? 12 : 4
+      return checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4
     }
     return switchModel?.includes('ICX7150') ?
       (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
