@@ -20,7 +20,6 @@ import {
 import {
   Switch,
   SwitchTable,
-  SWITCH_SERIAL_PATTERN,
   getSwitchModel,
   checkVersionAtLeast09010h
 } from '@acx-ui/rc/utils'
@@ -28,6 +27,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { validatorSwitchModel }     from '../../StackForm'
 import {
   getTsbBlockedSwitch,
   showTsbBlockedSwitchErrorDialog
@@ -99,7 +99,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const { $t } = useIntl()
   const { tenantId, switchId, stackList } = useParams()
   const { form, maxMembers, venueFirmwareVersion } = props
-  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
@@ -132,7 +131,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value) },
+            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchDetail?.stackMembers || [])]) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
@@ -176,24 +175,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       )
     }
   ]
-
-  const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
-    if (serialNumber && !re.test(serialNumber)) {
-      return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
-    }
-
-    const model = getSwitchModel(serialNumber) || ''
-
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
-      )
-      : Promise.resolve()
-  }
 
   const validatorUniqueMember = (serialNumber: string) => {
     const member = switchDetail?.stackMembers || []
