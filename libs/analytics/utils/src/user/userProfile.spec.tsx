@@ -50,7 +50,7 @@ describe('User Profile', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
-  afterAll(() => {
+  afterEach(() => {
     Object.defineProperty(window, 'location', {
       writable: true,
       value: { search: '' }
@@ -65,10 +65,14 @@ describe('User Profile', () => {
   })
   it('should set selected tenant from url', () => {
     setUserProfile(defaultMockUserProfile.data)
-    const t = window.btoa(
+    const search = '?selectedTenants=' + window.btoa(
       JSON.stringify([defaultMockUserProfile.data.tenants[1].id])
     )
-    updateSelectedTenant(t)
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { search }
+    })
+    updateSelectedTenant()
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[1] }
@@ -77,7 +81,7 @@ describe('User Profile', () => {
   })
   it('should set selected tenant to own account', () => {
     setUserProfile(defaultMockUserProfile.data)
-    updateSelectedTenant('')
+    updateSelectedTenant()
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
