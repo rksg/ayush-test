@@ -44,6 +44,7 @@ export function RadioSettingsForm (props:{
   const [LPILowPowerModeButtonText, setLPILowPowerModeButtonText] = useState([] as JSX.Element[])
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { radioType,
     disabled = false,
     radioDataKey,
@@ -172,28 +173,28 @@ export function RadioSettingsForm (props:{
       switch(afcInfo?.afcStatus) {
         case AFCStatus.WAIT_FOR_LOCATION:
           buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message' data-testid='geo-warning-message'>
               {$t({ defaultMessage: 'Standard power [Geo Location not set]' })}
             </p>
           )
           break
         case AFCStatus.WAIT_FOR_RESPONSE:
           buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='response-warning-message' data-testid='response-warning-message'>
               {$t({ defaultMessage: 'Standard power [Pending response from the AFC server]' })}
             </p>
           )
           break
         case AFCStatus.REJECTED:
           buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='reject-warning-message' data-testid='reject-warning-message'>
               {$t({ defaultMessage: 'Standard power [No channels available]' })}
             </p>
           )
           break
         default:
           buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='reject-warning-message' data-testid='default-message'>
               {$t({ defaultMessage: 'Standard power' })}
             </p>
           )
@@ -211,7 +212,7 @@ export function RadioSettingsForm (props:{
 
   return (
     <>
-      { ApRadioTypeEnum.Radio6G === radioType &&
+      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
         <FieldLabel width='180px' style={(context === 'ap' && isOutdoor) ? { display: 'hidden' } : {}}>
           <Tooltip title={
             <FormattedMessage
