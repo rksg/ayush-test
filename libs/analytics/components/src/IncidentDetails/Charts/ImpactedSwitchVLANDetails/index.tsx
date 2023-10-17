@@ -100,10 +100,8 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
           return <UI.SummaryType key={index}>
             <UI.Summary>
               <UI.SummaryCount>{type.count}</UI.SummaryCount>
-              <div>
-                <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
-                <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
-              </div>
+              <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
+              <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
             </UI.Summary>
             <UI.SummaryList>
               {items.map((d, i) => <div key={i} title={d.title}>

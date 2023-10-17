@@ -10,7 +10,8 @@ export const SummaryType = styled.div`
   &:not(:first-of-type) {
     border-left: 1px solid rgba(0, 0, 0, .2);
   }
-  padding-bottom: 10px;
+  padding-top: 10px;
+  margin-bottom: 50px;
 `
 
 export const Summary = styled.div`
@@ -21,6 +22,8 @@ export const Summary = styled.div`
 export const SummaryCount = styled.div`
   font-size: var(--acx-headline-2-font-size);
   font-weight: var(--acx-body-font-weight-bold);
+  line-height: var(--acx-headline-2-line-height);
+  font-family: var(--acx-accent-brand-font);
 `
 
 export const SummaryList = styled.div`
@@ -39,12 +42,13 @@ export const SummaryList = styled.div`
 `
 
 export const SummaryTitle = styled.div`
-  margin-top: 10px;
-  font-size: var(--acx-body-3-font-size);
-  font-weight: 550;
+  margin-top: 4px;
+  font-size: var(--acx-subtitle-4-font-size);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  line-height: var(--acx-subtitle-4-line-height);
 `
 
 export const SummaryDetails = styled.div`
-  margin-top: 6px;
   font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
 `
