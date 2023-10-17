@@ -49,6 +49,7 @@ function useColumns (
   dpskDeviceCount: Map<string, number>
 ) {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
 
   const personaGroupList = useGetPersonaGroupListQuery({
     payload: {
@@ -163,13 +164,13 @@ function useColumns (
       },
       ...props.ethernetPorts
     },
-    {
+    ...(networkSegmentationEnabled ? [{
       key: 'vni',
       dataIndex: 'vni',
       title: $t({ defaultMessage: 'Segment No.' }),
       sorter: true,
       ...props.vni
-    }
+    }] : [])
   ]
 
   return columns
