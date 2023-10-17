@@ -60,7 +60,8 @@ import {
   VenueMessages,
   SwitchRow,
   isSameModelFamily,
-  checkVersionAtLeast09010h
+  checkVersionAtLeast09010h,
+  checkVersionAtLeast10010b
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -642,7 +643,7 @@ export function StackForm () {
         (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
 
       if (switchModel?.includes('ICX8200')) {
-        miniMembers = 4
+        miniMembers = checkVersionAtLeast10010b(vennueFw || '') ? 12 : 4
       }
 
       setTableData(tableData.splice(0, miniMembers))
@@ -710,7 +711,7 @@ export function StackForm () {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
     if (switchModel?.includes('ICX8200')) {
-      return 4
+      return checkVersionAtLeast10010b(currentFW) ? 12 : 4
     }
     return switchModel?.includes('ICX7150') ?
       (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :

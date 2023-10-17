@@ -1,10 +1,10 @@
 import _ from 'lodash'
 
-export const checkVersionAtLeast10010a = (version: string): boolean => {
-  if (_.isString(version) && version.includes('10010a')) {
+export const checkVersionAtLeast10010b = (version: string): boolean => {
+  if (_.isString(version) && version.includes('10010b')) {
     return true
   } else {
-    return compareSwitchVersion(version, '10010a') > 0
+    return compareSwitchVersion(version, '10010b') > 0
   }
 }
 
