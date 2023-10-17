@@ -121,4 +121,3 @@ export const ExpanderTableWrapper = styled.div`
     }
   }
 `
-

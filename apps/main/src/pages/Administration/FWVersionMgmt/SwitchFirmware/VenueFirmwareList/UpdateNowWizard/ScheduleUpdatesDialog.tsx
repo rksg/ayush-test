@@ -19,11 +19,11 @@ import {
 import {
   getSwitchVersionLabel
 } from '../../../FirmwareUtils'
-import { PreDownload } from '../../../PreDownload'
 import * as UI         from '../styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
+import { PreDownload } from './PreDownload'
 
 export interface ScheduleUpdatesDialogProps {
   visible: boolean,
