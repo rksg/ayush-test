@@ -14,12 +14,12 @@ export enum EntitlementDeviceType {
   WIFI='WIFI',
   LTE='LTE',
   SWITCH='SWITCH',
+  APSW='APSW',
   ANALYTICS='ANALYTICS',
   MSP_WIFI='MSP_WIFI',
   MSP_SWITCH='MSP_SWITCH',
   EDGE='EDGE',
-  MSP_APSW='MSP_APSW',
-  APSW='APSW'
+  MSP_APSW='MSP_APSW'
 }
 
 export enum EntitlementNetworkDeviceType {

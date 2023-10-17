@@ -5,12 +5,12 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupById: {
     method: 'get',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   },
   getNetworkSegmentationGroupList: {
     method: 'get',
     newApi: true,
-    url: '/networkSegmentationGroups?size=:pageSize&page=:page&sort=:sort'
+    url: '/personalIdentityNetworks?size=:pageSize&page=:page&sort=:sort'
   },
   getWebAuthTemplate: {
     method: 'get',
@@ -45,48 +45,43 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
 
   getAvailableSwitches: {
     method: 'get',
-    url: '/venues/:venueId/networkSegmentations',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations',
+    url: '/venues/:venueId/personalIdentityNetworks',
     newApi: true
   },
   getSwitchInfoByNSGId: {
     method: 'get',
-    url: '/venues/:venueId/networkSegmentations/:serviceId',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId',
+    url: '/venues/:venueId/personalIdentityNetworks/:serviceId',
     newApi: true
   },
 
   validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/venues/:venueId/networkSegmentations/distributionSwitchInfo',
-    // eslint-disable-next-line max-len
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo',
+    url: '/venues/:venueId/personalIdentityNetworks/distributionSwitchInfo',
     newApi: true
   },
   validateAccessSwitchInfo: {
     method: 'post',
-    url: '/venues/:venueId/networkSegmentations/accessSwitchInfo',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo',
+    url: '/venues/:venueId/personalIdentityNetworks/accessSwitchInfo',
     newApi: true
   },
   createNetworkSegmentationGroup: {
     method: 'post',
     newApi: true,
-    url: '/networkSegmentationGroups'
+    url: '/personalIdentityNetworks'
   },
   getNetworkSegmentationStatsList: {
     method: 'post',
     newApi: true,
-    url: '/networkSegmentationGroups/query'
+    url: '/personalIdentityNetworks/query'
   },
   deleteNetworkSegmentationGroup: {
     method: 'delete',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   },
   updateNetworkSegmentationGroup: {
     method: 'put',
     newApi: true,
-    url: '/networkSegmentationGroups/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId'
   }
 }

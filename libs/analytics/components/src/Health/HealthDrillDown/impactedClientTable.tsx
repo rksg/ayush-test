@@ -78,7 +78,7 @@ export const ImpactedClientsTable = ({
       dataIndex: 'mac',
       key: 'mac',
       render: (_, { mac }) => (
-        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/overview`}>
+        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/troubleshooting`}>
           {mac}
         </TenantLink>
       ),
@@ -135,7 +135,7 @@ export const ImpactedClientsTable = ({
       </TableHeading>
       <Table
         columns={columns}
-        dataSource={queryResults.data as ImpactedClient[]}
+        dataSource={(queryResults.data)?.slice(0, topImpactedClientLimit) as ImpactedClient[]}
         rowKey='id'
         type='compactBordered'
       />

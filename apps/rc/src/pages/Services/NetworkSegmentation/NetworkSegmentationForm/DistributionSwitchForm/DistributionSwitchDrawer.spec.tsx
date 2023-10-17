@@ -21,7 +21,7 @@ describe('DistributionSwitchDrawer', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
-  const path = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
+  const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
   it('Should render successfully', async () => {
     const user = userEvent.setup()
@@ -88,7 +88,7 @@ describe('DistributionSwitchDrawer', () => {
     expect(dsInput).toHaveValue('FMN4221R00H---DS---3')
 
     expect(screen.getByRole('textbox', {
-      name: 'Lookback Interface IP Address' })).toHaveValue('1.2.3.4')
+      name: 'Loopback Interface IP Address' })).toHaveValue('1.2.3.4')
 
     await user.click(await screen.findByRole('button', { name: 'Select' }))
 

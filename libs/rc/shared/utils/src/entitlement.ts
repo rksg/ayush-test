@@ -150,7 +150,7 @@ export class EntitlementUtil {
   public static getServiceStartDate (startDate?: string) {
     const today = startDate ? new Date(startDate) : new Date()
     const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
-    return moment(today.toUTCString()).format(dateFormat)
+    return moment(today.toISOString()).utc().format(dateFormat)
   }
 
   public static getServiceEndDate (endDate?: string | Moment) {
@@ -160,7 +160,7 @@ export class EntitlementUtil {
     // expiredDate.setSeconds(59);
     const expiredDate = endDate ? new Date(endDate.toString()) : undefined
     const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
-    return moment(expiredDate?.toUTCString()).format(dateFormat)
+    return moment(expiredDate?.toISOString()).utc().format(dateFormat)
   }
 }
 

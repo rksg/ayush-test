@@ -1,13 +1,13 @@
-import { gql }  from 'graphql-request'
-import { omit } from 'lodash'
+import { gql }        from 'graphql-request'
+import { omit, pick } from 'lodash'
 
-import type { ConfigChange } from '@acx-ui/components'
-import { dataApi }           from '@acx-ui/store'
-import { PathNode }          from '@acx-ui/utils'
+import type { ConfigChange }       from '@acx-ui/components'
+import { dataApi }                 from '@acx-ui/store'
+import { NetworkPath, PathFilter } from '@acx-ui/utils'
 
 interface KpiChangesParams {
   kpis: string[],
-  path: PathNode[],
+  path: NetworkPath,
   beforeStart: string,
   beforeEnd: string,
   afterStart: string,
@@ -17,18 +17,17 @@ interface KpiChangesParams {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
-      ConfigChange[], { path: PathNode[], start: string, end: string }
+      ConfigChange[],
+      PathFilter
     >({
-      query: (variables) => ({
-        variables,
+      query: (payload) => ({
         document: gql`
           query ConfigChange(
             $path: [HierarchyNodeInput],
-            $start: DateTime,
-            $end: DateTime,
-            $filter: FilterInput
+            $startDate: DateTime,
+            $endDate: DateTime
           ) {
-            network(start: $start, end: $end, filter: $filter) {
+            network(start: $startDate, end: $endDate) {
               hierarchyNode(path: $path) {
                 configChanges {
                   timestamp
@@ -41,7 +40,8 @@ export const api = dataApi.injectEndpoints({
               }
             }
           }
-        `
+        `,
+        variables: pick(payload, ['path', 'startDate', 'endDate'])
       }),
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
@@ -53,8 +53,7 @@ export const api = dataApi.injectEndpoints({
       { before: Record<string, number>, after: Record<string, number> },
       KpiChangesParams
     >({
-      query: (variables) => ({
-        variables: omit(variables, ['kpis']),
+      query: (payload) => ({
         document: gql`
           query ConfigChangeKPIChanges(
             $path: [HierarchyNodeInput],
@@ -64,14 +63,15 @@ export const api = dataApi.injectEndpoints({
           ) {
               network(filter: $filter) {
                 before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
-                  ${variables.kpis.join('\n')}
+                  ${payload.kpis.join('\n')}
                 }
                 after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
-                  ${variables.kpis.join('\n')}
+                  ${payload.kpis.join('\n')}
                 }
               }
           }
-        `
+        `,
+        variables: omit(payload, ['kpis'])
       }),
       transformResponse: (response: { network: {
         before: Record<string, number>, after: Record<string, number>

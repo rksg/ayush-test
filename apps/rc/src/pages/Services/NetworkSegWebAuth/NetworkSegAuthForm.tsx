@@ -112,12 +112,13 @@ export default function NetworkSegAuthForm (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Network Segmentation Auth page for Switch' }) :
-          $t({ defaultMessage: 'Add Network Segmentation Auth page for Switch' })}
+          $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
+          $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }), link: path }
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }), link: path }
         ]}
       />}
       <StepsFormLegacy<WebAuthTemplate>

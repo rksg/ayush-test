@@ -1,3 +1,7 @@
+import { Navigate, useSearchParams } from 'react-router-dom'
+
+import { getUserProfile } from '@acx-ui/analytics/utils'
+import { showToast }      from '@acx-ui/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -13,11 +17,97 @@ jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  Navigate: jest.fn(() => <div />),
+  useSearchParams: jest.fn(() => [new URLSearchParams()])
+}))
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
 
 describe('AllRoutes', () => {
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      permissions: { 'view-analytics': true }
+    }
+  }
   beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
+  })
+
+  it('redirects analytics users to dashboard', async () => {
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/dashboard', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects report users to reports', async () => {
+    userProfile.mockReturnValue({
+      accountId: 'aid',
+      tenants: [],
+      invitations: [],
+      selectedTenant: {
+        id: 'aid',
+        permissions: { 'view-analytics': false }
+      }
+    })
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('shows toast for invitations', async () => {
+    userProfile.mockReturnValue({
+      accountId: 'aid',
+      tenants: [],
+      invitations: ['some invitations'],
+      selectedTenant: { permissions: { 'view-analytics': false } }
+    })
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(showToast).toHaveBeenCalledWith({
+      content: <div>
+        You have pending invitations,&nbsp;
+        <u>
+          <a
+            href='/analytics/profile/tenants'
+            style={{ color: 'white' }}
+            target='_blank'
+          >
+           please click here to view them
+          </a>
+        </u>
+      </div>,
+      type: 'success'
+    })
+  })
+
+  it('redirects to return url', async () => {
+    const search = new URLSearchParams()
+    search.set('return', '/ai/incidents')
+    jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/incidents', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
   })
 
   it('should render incidents correctly', async () => {

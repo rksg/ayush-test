@@ -29,6 +29,8 @@ export default function DiskFileSystemUtilization () {
     return bytesFormatter(numberInMb)
   }
 
+  const rowKey = (record: GatewayFileSystem)=> record.partition + '' + Math.random()
+
   const columns: TableProps<GatewayFileSystem>['columns'] = [
     {
       title: $t({ defaultMessage: 'Partition' }),
@@ -91,7 +93,7 @@ export default function DiskFileSystemUtilization () {
           }}
           columns={columns}
           dataSource={fileSystemData}
-          rowKey='partition'
+          rowKey={rowKey}
           pagination={{
             defaultPageSize: 4,
             pageSize: 4,

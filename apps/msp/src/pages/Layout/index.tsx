@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { HomeSolid }                             from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -24,10 +27,13 @@ import { CloudMessageBanner }                                           from '@a
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
+import { PverName, getJwtTokenPayload, isDelegationMode }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
+import * as UI           from './styledComponents'
 
 function Layout () {
+  const { $t } = useIntl()
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [hasLicense, setHasLicense] = useState(false)
@@ -46,6 +52,11 @@ function Layout () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
+    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -64,7 +75,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile?.support || userProfile?.dogfood) {
+      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
@@ -87,6 +98,20 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
+        { showSupportHomeButton && (isBackToRC ?
+          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Support Home' })}
+            </UI.Home>
+          </a> :
+          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Support Home' }) }
+            </UI.Home>
+          </a>)
+        }
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>

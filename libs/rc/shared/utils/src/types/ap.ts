@@ -20,6 +20,7 @@ export interface IpSettings {
 export interface APSystem extends IpSettings {
   uptime?: number
   secureBootEnabled?: boolean
+  managementVlan?: number
 }
 
 export interface APNetworkSettings extends IpSettings {
