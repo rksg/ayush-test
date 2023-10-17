@@ -2,9 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm }            from '@acx-ui/components'
-import { TunnelProfileForm, TunnelProfileFormType, useTunnelProfileActions } from '@acx-ui/rc/components'
+import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
 
+import { TunnelProfileForm, TunnelProfileFormType } from '../TunnelProfileForm'
+import { useTunnelProfileActions }                  from '../TunnelProfileForm/useTunnelProfileActions'
 
 export const TunnelProfileAddModal = () => {
 

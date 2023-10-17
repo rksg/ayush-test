@@ -1,4 +1,4 @@
-export interface EdgeCentralizeForwardingSetting {
+export interface EdgeCentralizedForwardingSetting {
   id: string;
   serviceName: string;
   venueId: string;

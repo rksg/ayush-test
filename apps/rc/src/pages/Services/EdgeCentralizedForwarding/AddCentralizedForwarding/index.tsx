@@ -36,20 +36,18 @@ const AddEdgeCentralizedForwarding = () => {
     }
   ]
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinish = async (formData: CentralizedForwardingFormModel) => {
-    console.log(JSON.stringify(formData))
-
     try {
-      const payload = {
-        serviceName: formData.serviceName,
-        venueId: formData.venueId,
-        edgeId: formData.edgeId,
-        corePort: formData.corePort,
-        networkIds: formData.activatedNetworks.map(network => network.id),
-        tunnelProfileId: formData.tunnelProfileId
-      }
-
       // TODO: waiting for API ready.
+      // const payload = {
+      //   serviceName: formData.serviceName,
+      //   venueId: formData.venueId,
+      //   edgeId: formData.edgeId,
+      //   corePort: formData.corePortId,
+      //   networkIds: formData.activatedNetworks.map(network => network.id),
+      //   tunnelProfileId: formData.tunnelProfileId
+      // }
       // await addEdgeCentralizedForwarding({ payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {

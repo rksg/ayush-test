@@ -70,9 +70,9 @@ export interface Network {
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
   activated: {
-     isActivated: boolean, 
+     isActivated: boolean,
      isDisabled?: boolean,
-      errors?: string[] 
+      errors?: string[]
     }
   allApDisabled?: boolean
   children?: Network[]

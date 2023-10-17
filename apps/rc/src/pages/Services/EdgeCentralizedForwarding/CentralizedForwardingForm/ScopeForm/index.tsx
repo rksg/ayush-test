@@ -4,10 +4,10 @@ import { Col, Form, Row, Switch, Typography } from 'antd'
 import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { StepsForm, Table, TableProps, useStepFormContext }               from '@acx-ui/components'
-import { useVenueNetworkActivationsDataListQuery }                        from '@acx-ui/rc/services'
-import { EdgeCentralizeForwardingSetting, NetworkSaveData, networkTypes } from '@acx-ui/rc/utils'
-import { useParams }                                                      from '@acx-ui/react-router-dom'
+import { StepsForm, Table, TableProps, useStepFormContext }                from '@acx-ui/components'
+import { useVenueNetworkActivationsDataListQuery }                         from '@acx-ui/rc/services'
+import { EdgeCentralizedForwardingSetting, NetworkSaveData, networkTypes } from '@acx-ui/rc/utils'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 export type ActivatedNetwork = Pick<NetworkSaveData, 'id' | 'name'>
 
@@ -17,10 +17,10 @@ interface ActivatedNetworksTableProps {
 }
 
 const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
-  const { data: activated = [], venueId } = props
+  const { data: activated, venueId } = props
   const params = useParams()
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeCentralizeForwardingSetting>()
+  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
 
   const { networkList } = useVenueNetworkActivationsDataListQuery({
     params: { ...params },
@@ -61,7 +61,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
           newSelected = _.unionBy(activated,
             [_.pick(row, ['id', 'name'])], 'id')
         } else {
-          newSelected = [...activated]
+          newSelected = [...activated!]
           _.remove(newSelected,
             _.pick(row, ['id', 'name']))
         }
@@ -105,6 +105,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
   return (
     <Table
+      rowKey='id'
       columns={columns}
       dataSource={networkList}
     />
@@ -112,7 +113,7 @@ const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeCentralizeForwardingSetting>()
+  const { form } = useStepFormContext<EdgeCentralizedForwardingSetting>()
   const venueId = form.getFieldValue('venueId')
   const venueName = form.getFieldValue('venueName')
 

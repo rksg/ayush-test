@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                                                                                           from '@acx-ui/components'
-import { EdgeCentralizeForwardingSetting, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                                   from '@acx-ui/react-router-dom'
+import { Loader, PageHeader }                                                                                            from '@acx-ui/components'
+import { EdgeCentralizedForwardingSetting, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
@@ -19,6 +19,7 @@ const EditEdgeCentralizedForwarding = () => {
   // TODO: waiting for API ready.
   // const [updateEdgeCentralizedForwarding] = useUpdateEdgeCentralizedForwardingMutation()
   // const { data, isLoading } = useGetEdgeCentralizedForwardingQuery({ params })
+
   const data = {
     id: 'mocked_cf_id',
     serviceName: 'testEditData',
@@ -27,7 +28,7 @@ const EditEdgeCentralizedForwarding = () => {
     corePortId: 'p2',
     networkIds: ['32e06116667b4749855ffbb991d8ac4b'],
     tunnelProfileId: 'f93802759efc49628c572df8af0718b8'
-  } as EdgeCentralizeForwardingSetting
+  } as EdgeCentralizedForwardingSetting
   const isLoading = false
   // TODO: end of mocked data
 
@@ -42,15 +43,15 @@ const EditEdgeCentralizedForwarding = () => {
     }
   ]
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinish = async (formData: CentralizedForwardingFormModel) => {
-
     try {
-      const payload = {
-        serviceName: formData.serviceName,
-        networkIds: formData.activatedNetworks.map(network => network.id),
-        tunnelProfileId: formData.tunnelProfileId
-      }
-
+      // TODO: waiting for API ready.
+      // const payload = {
+      //   serviceName: formData.serviceName,
+      //   networkIds: formData.activatedNetworks.map(network => network.id),
+      //   tunnelProfileId: formData.tunnelProfileId
+      // }
       // await updateEdgeCentralizedForwarding({ params, payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {

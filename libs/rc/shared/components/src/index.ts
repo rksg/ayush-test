@@ -116,7 +116,8 @@ export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
 export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
-
+export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
+export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
