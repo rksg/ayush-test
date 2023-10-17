@@ -42,7 +42,7 @@ function Conversation ({
           )
         ))
       ))}
-      {isReplying ? <UI.Bot>Typing...</UI.Bot> : null }
+      {isReplying ? <UI.Bot><UI.ChatTyping/></UI.Bot> : null }
     </UI.Wrapper>
   )
 }
