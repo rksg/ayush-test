@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Form,
+  Switch,
   Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
@@ -9,10 +10,19 @@ import { useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Subtitle
+  Subtitle,
+  showToast
 } from '@acx-ui/components'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
-import { useAddRecCustomerMutation }                  from '@acx-ui/msp/services'
+import {
+  useAddRecCustomerMutation,
+  useDisableMspEcSupportMutation,
+  useEnableMspEcSupportMutation,
+  useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcSupportQuery,
+  useMspAdminListQuery,
+  useMspCustomerListQuery
+} from '@acx-ui/msp/services'
 import {
   MspAdministrator,
   MspEc,
@@ -21,18 +31,17 @@ import {
   MspRecCustomer,
   MspRecData
 } from '@acx-ui/msp/utils'
-import { roleDisplayText } from '@acx-ui/rc/utils'
+import { roleDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }   from '@acx-ui/types'
 import { AccountType } from '@acx-ui/utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 import * as UI                     from './styledComponents'
-
-
 
 export function AddRecCustomer () {
   const intl = useIntl()
@@ -45,6 +54,7 @@ export function AddRecCustomer () {
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
+  const [ecSupportEnabled, setEcSupport] = useState(false)
   const [drawerRecVisible, setDrawerRecVisible] = useState(false)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
@@ -53,6 +63,92 @@ export function AddRecCustomer () {
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
+
+  const { data: Administrators } =
+      useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
+  const { data: delegatedAdmins } =
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+  const { data: ecSupport } =
+      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+  const { data: techPartners } = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
+    defaultPayload: {
+      filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
+      fields: [
+        'id',
+        'name',
+        'tenantType'
+      ],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    option: { skip: !isEditMode }
+  })
+
+  const [
+    enableMspEcSupport
+  ] = useEnableMspEcSupportMutation()
+
+  const [
+    disableMspEcSupport
+  ] = useDisableMspEcSupportMutation()
+
+  const ecSupportOnChange = (checked: boolean) => {
+    if (checked) {
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support enabled' })
+          })
+          setEcSupport(true)
+        })
+    } else {
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support disabled' })
+          })
+          setEcSupport(false)
+        })
+    }
+  }
+
+  useEffect(() => {
+    if (delegatedAdmins && Administrators) {
+      let selDelegateAdmins: MspAdministrator[] = []
+      const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
+      selAdmins.forEach((element:MspAdministrator) => {
+        const role =
+        delegatedAdmins.find(row => row.msp_admin_id=== element.id)?.msp_admin_role ?? element.role
+        const rec = { ...element }
+        rec.role = role as RolesEnum
+        selDelegateAdmins.push(rec)
+      })
+      setAdministrator(selDelegateAdmins)
+    }
+    if (isEditMode) {
+      setEcSupport((ecSupport && ecSupport?.length > 0) || false)
+    }
+  }, [delegatedAdmins, Administrators])
+
+  useEffect(() => {
+    if (techPartners?.data && mspEcTenantId) {
+      const assignedIntegrator = techPartners.data.filter(mspEc =>
+        mspEc.assignedMspEcList?.includes(mspEcTenantId)
+        && mspEc.tenantType === AccountType.MSP_INTEGRATOR)
+      const assignedInstaller = techPartners.data.filter(mspEc =>
+        mspEc.assignedMspEcList?.includes(mspEcTenantId)
+        && mspEc.tenantType === AccountType.MSP_INSTALLER)
+      setIntegrator(assignedIntegrator)
+      setInstaller(assignedInstaller)
+    }
+  }, [techPartners])
 
   const handleAddCustomer = async () => {
     try {
@@ -193,6 +289,21 @@ export function AddRecCustomer () {
     </>
   }
 
+  const EnableSupportForm = () => {
+    return <>
+      <div>
+        <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
+          {intl.$t({ defaultMessage: 'Enable access to Ruckus Support' })}</h4>
+        <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
+      <div><label>
+        {intl.$t({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary' +
+  ' administrator-level access for 21 days.' })}</label>
+      </div>
+      <label>
+        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
+    </>
+  }
+
   return (
     <>
       <PageHeader
@@ -220,6 +331,8 @@ export function AddRecCustomer () {
             { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
 
           <MspAdminsForm></MspAdminsForm>
+          {isEditMode && <EnableSupportForm />}
+
         </StepsForm.StepForm>
       </StepsForm>
 

@@ -2,14 +2,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ToastProps }                                                                from '@acx-ui/components'
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                                    from '@acx-ui/rc/utils'
-import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor } from '@acx-ui/test-utils'
-import { RolesEnum }                                                                 from '@acx-ui/types'
-import { UserUrlsInfo }                                                              from '@acx-ui/user'
+import { ToastProps }                                                                        from '@acx-ui/components'
+import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor }         from '@acx-ui/test-utils'
+import { RolesEnum }                                                                         from '@acx-ui/types'
+import { UserUrlsInfo }                                                                      from '@acx-ui/user'
 
 import { AddRecCustomer } from './AddRecCustomer'
 
@@ -77,31 +77,19 @@ const list = {
   ]
 }
 
-const ecAdministrators: MspAdministrator[] = [
+const ecSupport: SupportDelegation[] = [
   {
-    id: 'deb5d270540840adad117bb982c86429',
-    email: 'newec@eee.com',
-    name: 'first',
-    lastName: 'last',
-    role: RolesEnum.ADMINISTRATOR,
-    delegateToAllECs: true,
-    detailLevel: 'debug'
+    id: '',
+    type: '',
+    status: '',
+    createdDate: '',
+    delegatedBy: '',
+    delegatedTo: '',
+    delegatedToName: '',
+    expiryDate: '',
+    updatedDate: ''
   }
 ]
-
-// const ecSupport: SupportDelegation[] = [
-//   {
-//     id: '',
-//     type: '',
-//     status: '',
-//     createdDate: '',
-//     delegatedBy: '',
-//     delegatedTo: '',
-//     delegatedToName: '',
-//     expiryDate: '',
-//     updatedDate: ''
-//   }
-// ]
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -142,25 +130,25 @@ describe('AddRecCustomer', () => {
       rest.post(
         MspUrlsInfo.addMspEcAccount.url,
         (_req, res, ctx) => res(ctx.json({ requestId: 'add' }))
-      )//,
-    //   rest.put(
-    //     MspUrlsInfo.updateMspEcAccount.url,
-    //     (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
-    //   ),
-    //   rest.post(
-    //     MspUrlsInfo.enableMspEcSupport.url,
-    //     (_req, res, ctx) => res(ctx.json({ requestId: 'enable' }))
-    //   ),
-    //   rest.delete(
-    //     MspUrlsInfo.disableMspEcSupport.url,
-    //     (_req, res, ctx) => res(ctx.json({ requestId: 'disable' }))
-    //   ),
+      ),
+      //   rest.put(
+      //     MspUrlsInfo.updateMspEcAccount.url,
+      //     (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
+      //   ),
+      rest.post(
+        MspUrlsInfo.enableMspEcSupport.url,
+        (_req, res, ctx) => res(ctx.json({ requestId: 'enable' }))
+      ),
+      rest.delete(
+        MspUrlsInfo.disableMspEcSupport.url,
+        (_req, res, ctx) => res(ctx.json({ requestId: 'disable' }))
+      )
     )
 
     jest.spyOn(services, 'useAddCustomerMutation')
     jest.spyOn(services, 'useUpdateCustomerMutation')
-    // jest.spyOn(services, 'useEnableMspEcSupportMutation')
-    // jest.spyOn(services, 'useDisableMspEcSupportMutation')
+    jest.spyOn(services, 'useEnableMspEcSupportMutation')
+    jest.spyOn(services, 'useDisableMspEcSupportMutation')
     services.useGetMspEcQuery = jest.fn().mockImplementation(() => {
       return { data: mspEcAccount }
     })
@@ -170,12 +158,12 @@ describe('AddRecCustomer', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: delegatedAdmins }
     })
-    services.useMspEcAdminListQuery = jest.fn().mockImplementation(() => {
-      return { data: ecAdministrators }
-    })
-    // services.useGetMspEcSupportQuery = jest.fn().mockImplementation(() => {
-    //   return { data: ecSupport }
+    // services.useMspEcAdminListQuery = jest.fn().mockImplementation(() => {
+    //   return { data: ecAdministrators }
     // })
+    services.useGetMspEcSupportQuery = jest.fn().mockImplementation(() => {
+      return { data: ecSupport }
+    })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })
@@ -315,7 +303,7 @@ describe('AddRecCustomer', () => {
     expect(await screen.findByRole('alert')).toBeVisible()
   })
 
-  xit('should enable/disable support correctly', async () => {
+  it('should enable/disable support correctly', async () => {
     params.action = 'edit'
     render(
       <Provider>

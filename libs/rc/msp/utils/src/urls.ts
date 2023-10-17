@@ -319,7 +319,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAvailableMspRecCustomers: {
     method: 'get',
-    url: '/mspCustomers/recs?page=0&size=20&searchItem=United States',
+    url: '/mspCustomers/recs?page=0&size=20',
     newApi: true
   },
   addMspRecCustomer: {
