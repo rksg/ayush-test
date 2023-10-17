@@ -787,24 +787,21 @@ export const apApi = baseApApi.injectEndpoints({
     getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     getApLldpNeighbors: build.query<ApLldpNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, {
-          ...ignoreErrorModal
-        })
         return {
-          ...req,
+          ...createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, { ...ignoreErrorModal }),
           body: payload
         }
       }
