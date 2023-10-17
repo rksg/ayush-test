@@ -8,6 +8,24 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
   }
 }
 
+export const checkVersionAtLeast10010b = (version: string): boolean => {
+  if (_.isString(version) && version.includes('10010b')) {
+    return true
+  } else {
+    return compareSwitchVersion(version, '10010b') > 0
+  }
+}
+
+export const getStackUnitsMinLimitation = (
+  switchModel: string, firmwareVersion: string, firmwareVersionAboveTen: string): number => {
+  if (switchModel?.includes('ICX8200')) {
+    return checkVersionAtLeast10010b(firmwareVersionAboveTen) ? 12 : 4
+  }
+  return switchModel?.includes('ICX7150') ?
+    (checkVersionAtLeast09010h(firmwareVersion) ? 4 : 2) :
+    (checkVersionAtLeast09010h(firmwareVersion) ? 8 : 4)
+}
+
 export const compareSwitchVersion = (a: string, b: string): number => {
   // eslint-disable-next-line max-len
   const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
