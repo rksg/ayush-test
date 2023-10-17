@@ -71,7 +71,7 @@ export function VideoCallQoeTable () {
             </Button>
             : row.name
       },
-      sorter: { compare: sortProp('name', defaultSort) }
+      sorter: { compare: sortProp('role', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Created Time' }),
