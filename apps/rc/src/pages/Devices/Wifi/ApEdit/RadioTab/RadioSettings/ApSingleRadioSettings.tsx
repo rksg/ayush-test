@@ -68,7 +68,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-            {$t({ defaultMessage: 'until its geo-location has been established' })}
+            {$t({ defaultMessage: '[Geo Location not set]"' })}
           </p>
         )
       }
@@ -76,7 +76,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: 'Wait for AFC server response.' })}
+            {$t({ defaultMessage: '[No channels available]' })}
           </p>
         )
       }
@@ -84,7 +84,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: 'FCC DB replies that there is no channel available.' })}
+            {$t({ defaultMessage: '[Pending response from the AFC server]' })}
           </p>
         )
       }
