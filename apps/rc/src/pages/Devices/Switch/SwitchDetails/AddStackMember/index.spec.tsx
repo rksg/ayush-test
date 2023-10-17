@@ -4,9 +4,9 @@ import { Modal }      from 'antd'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { switchApi }                        from '@acx-ui/rc/services'
-import { FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,8 +14,7 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import {
-  editStackDetail, switchFirmwareVenue } from '../../__tests__/fixtures'
+import { editStackDetail } from '../../__tests__/fixtures'
 
 import AddStackMember from '.'
 
@@ -26,7 +25,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const editStackData = {
-  id: 'FEK4124R28X',
+  id: 'FJN3227U0G0',
   venueId: '5c05180d54d84e609a4d653a3a8332d1',
   enableStack: true,
   igmpSnooping: 'none',
@@ -50,8 +49,6 @@ describe('Add Stack Member Form', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
-      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
       rest.get(SwitchUrlsInfo.getSwitch.url,
         (_, res, ctx) => res(ctx.json(editStackData))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
@@ -64,7 +61,12 @@ describe('Add Stack Member Form', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <AddStackMember visible={true} setVisible={jest.fn()} />
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
       </Provider>, {
         route: {
           params,
@@ -83,7 +85,12 @@ describe('Add Stack Member Form', () => {
   it('should render add and delete member field correctly', async () => {
     render(
       <Provider>
-        <AddStackMember visible={true} setVisible={jest.fn()} />
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
       </Provider>, {
         route: {
           params,
@@ -112,7 +119,12 @@ describe('Add Stack Member Form', () => {
   it('should render not support stacking correctly', async () => {
     render(
       <Provider>
-        <AddStackMember visible={true} setVisible={jest.fn()} />
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
       </Provider>, {
         route: {
           params,
@@ -139,7 +151,12 @@ describe('Add Stack Member Form', () => {
   it('should render invalid serial number correctly', async () => {
     render(
       <Provider>
-        <AddStackMember visible={true} setVisible={jest.fn()} />
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
       </Provider>, {
         route: {
           params,
@@ -162,7 +179,12 @@ describe('Add Stack Member Form', () => {
   it('should render none unique serial number message correctly', async () => {
     render(
       <Provider>
-        <AddStackMember visible={true} setVisible={jest.fn()} />
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
       </Provider>, {
         route: {
           params,
