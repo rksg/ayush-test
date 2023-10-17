@@ -8,7 +8,7 @@ export const SummaryType = styled.div`
   text-align: center;
   line-height: 1;
   &:not(:first-of-type) {
-    border-left: 1px solid black;
+    border-left: 1px solid rgba(0, 0, 0, .2);
   }
   padding-bottom: 10px;
 `
@@ -41,11 +41,10 @@ export const SummaryList = styled.div`
 export const SummaryTitle = styled.div`
   margin-top: 10px;
   font-size: var(--acx-body-3-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
+  font-weight: 550;
 `
 
 export const SummaryDetails = styled.div`
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: var(--acx-body-4-font-size);
-  opacity: 0.6;
 `

@@ -16,7 +16,7 @@ import * as UI from './styledComponents'
 
 import type { ChartProps } from '../types.d'
 
-interface impactedVlans {
+interface ImpactedVlans {
   id: number
   mac: string
   name: string
@@ -45,7 +45,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       ? []
       : _.uniqBy(impactedSwitches, (item) => item.mismatchedVlans[0].id)
 
-  const impactedVlans: impactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
+  const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
     ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
       .map(({ id, name }) => ({ mac, id, name }))
     )
@@ -99,7 +99,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
           const remaining = type.data.length - items?.length
           return <UI.SummaryType key={index}>
             <UI.Summary>
-              <div><UI.SummaryCount>{type.count}</UI.SummaryCount></div>
+              <UI.SummaryCount>{type.count}</UI.SummaryCount>
               <div>
                 <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
                 <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
