@@ -42,7 +42,7 @@ const CcdErrorTypeMapping: { [code in string]: ErrorMessageType } = {
 }
 
 
-export function useCcd (handler: (msg: string) => void) {
+export function useCcd (handler: (msg: string) => void, errorCallback?: ()=> void) {
   const { $t } = useIntl()
   const [ requestId, setRequestId ] = useState<string>()
 
@@ -101,6 +101,7 @@ export function useCcd (handler: (msg: string) => void) {
       const message = ccdError?.message
       showErrorModal('', message)
     }
+    errorCallback?.()
   }
 
   const showErrorModal = (title: string, message: string) => {
@@ -118,6 +119,8 @@ export function useCcd (handler: (msg: string) => void) {
     })
 
     showErrorModal(title, message)
+    errorCallback?.()
+    setRequestId('')
   }
 
   return {

@@ -63,7 +63,8 @@ import {
   ApMeshTopologyData,
   FloorPlanMeshAP,
   VenueClientAdmissionControl,
-  RogueApLocation
+  RogueApLocation,
+  ApManagementVlan
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1235,6 +1236,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
         })
       }
+    }),
+    getVenueApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApManagementVlan, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueApManagementVlan, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1346,5 +1364,7 @@ export const {
   useUpdateVenueRadiusOptionsMutation,
   useGetVenueClientAdmissionControlQuery,
   useLazyGetVenueClientAdmissionControlQuery,
-  useUpdateVenueClientAdmissionControlMutation
+  useUpdateVenueClientAdmissionControlMutation,
+  useGetVenueApManagementVlanQuery,
+  useUpdateVenueApManagementVlanMutation
 } = venueApi
