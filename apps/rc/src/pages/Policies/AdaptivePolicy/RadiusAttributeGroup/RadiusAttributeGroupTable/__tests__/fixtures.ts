@@ -17,7 +17,40 @@ export const groupList = {
           dataType: 'INTEGER',
           operator: 'DOES_NOT_EXIST'
         }
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 2,
+      externalServiceAssignments: [
+        {
+          serviceName: 'policy-management',
+          externalAssignmentIdentifier: [
+            '0c641adc-2053-43e1-a684-0fddc3382e1a',
+            'd4973820-0d43-4a1a-8110-53b11761da9d'
+          ]
+        }
       ]
+    },
+    {
+      name: 'group2',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4c9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 0,
+      externalServiceAssignments: []
     }
   ],
   pageable: {

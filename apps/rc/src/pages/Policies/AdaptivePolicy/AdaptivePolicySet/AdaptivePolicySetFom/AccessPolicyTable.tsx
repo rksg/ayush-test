@@ -5,13 +5,13 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Loader, Table, TableProps }                                                                  from '@acx-ui/components'
-import { Drag }                                                                                       from '@acx-ui/icons'
-import { SimpleListTooltip }                                                                          from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Drag }                      from '@acx-ui/icons'
+import { SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
+  useAdaptivePolicyListQuery,
   useGetPrioritizedPoliciesQuery,
-  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
+  usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -39,22 +39,21 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   const { editMode, accessPolicies, setAccessPolicies } = props
   const { policyId } = useParams()
 
-  const [conditionCountMap, setConditionCountMap] = useState(new Map())
-  const [templateIdMap, setTemplateIdMap] = useState(new Map())
-  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   // eslint-disable-next-line max-len
   const [adaptivePoliciesSelectDrawerVisible, setAdaptivePoliciesSelectDrawerVisible] = useState(false)
 
-  const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
-
-  // eslint-disable-next-line max-len
-  const { data: templateListData, isLoading: isGetTemplateListLoading } = usePolicyTemplateListQuery({ payload: {
-    page: '1',
-    pageSize: '1000',
-    sortField: 'name',
-    sortOrder: 'desc' }
-  })
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
+    { payload: { page: '1', pageSize: '2147483647' } }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const templateIds = new Map(data?.data.map((template) =>
+          [template.ruleType.toString(), template.id]))
+        return {
+          templateIdMap: templateIds,
+          templateIsLoading: isLoading
+        }
+      }
+    })
 
   // eslint-disable-next-line max-len
   const { data: prioritizedPoliciesData, isLoading: isGetPrioritizedPoliciesLoading } = useGetPrioritizedPoliciesQuery({
@@ -69,21 +68,10 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     }
   })
 
-  // eslint-disable-next-line max-len
-  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
-
   useEffect(() => {
     // eslint-disable-next-line max-len
-    if(adaptivePolicyListTableQuery.isLoading || isGetPrioritizedPoliciesLoading || isGetTemplateListLoading)
+    if(adaptivePolicyListTableQuery.isLoading || isGetPrioritizedPoliciesLoading)
       return
-
-    const templateIds = new Map()
-    templateListData?.data.forEach( template => {
-      templateIds.set(template.ruleType, template.id)
-    })
-    setTemplateIdMap(templateIds)
 
     const accessPolicy: AdaptivePolicy[] = []
     Array.from(prioritizedPoliciesData?.data ?? []).sort((p1, p2) => p1.priority - p2.priority)
@@ -94,32 +82,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
         }
       })
     setAccessPolicies(accessPolicy)
-  }, [adaptivePolicyListTableQuery.data, prioritizedPoliciesData?.data, templateListData])
-
-  useEffect(() => {
-    accessPolicies.forEach(policy => {
-      const id = policy.id
-      // eslint-disable-next-line max-len
-      getConditionsPolicy({ params: { policyId: id, templateId: templateIdMap.get(policy.policyType) } })
-        .then(result => {
-          setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
-        })
-    })
-  }, [accessPolicies])
-
-  useEffect(() => {
-    if(adaptivePolicySetList) {
-      adaptivePolicySetList.data.forEach(policySet => {
-        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-          .then(result => {
-            if (result.data) {
-              const policies : string []= result.data.data.map(p => p.policyId)
-              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-            }
-          })
-      })
-    }
-  }, [adaptivePolicySetList])
+  }, [adaptivePolicyListTableQuery.data, prioritizedPoliciesData?.data])
 
   const basicColumns: TableProps<AdaptivePolicy>['columns'] = [
     {
@@ -148,25 +111,16 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Access Conditions' }),
-      key: 'accessConditions',
-      dataIndex: 'accessConditions',
-      align: 'center',
-      render: (_, row) => {
-        return conditionCountMap.get(row.id) ?? 0
-      }
+      key: 'conditionsCount',
+      dataIndex: 'conditionsCount',
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Policy Set Membership' }),
       key: 'policySetMembership',
       dataIndex: 'policySetMembership',
-      align: 'center',
       render: (_, row) => {
-        const policySets = [] as string []
-        policySetPoliciesMap.forEach((value, key) => {
-          if(value.find((item: string) => item === row.id)){
-            policySets.push(key)
-          }
-        })
+        const policySets = row.policySetNames ?? []
         return policySets.length === 0 ? '0' :
           <SimpleListTooltip items={policySets} displayText={policySets.length} />
       }
@@ -252,7 +206,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
 
   return (
     <Loader states={[{ isLoading: adaptivePolicyListTableQuery.isLoading
-        || isGetPrioritizedPoliciesLoading } ]}>
+        || isGetPrioritizedPoliciesLoading || templateIsLoading } ]}>
       <DndProvider backend={HTML5Backend} >
         <Table
           rowKey='name'
