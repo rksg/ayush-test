@@ -198,13 +198,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
           if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '[Geo Location not set]' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Geo Location not set)' })
           }
           if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '[No channels available]' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
           }
           if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '[Pending response from the AFC server]' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Wait for AFC server response)' })
           }
 
           return (
