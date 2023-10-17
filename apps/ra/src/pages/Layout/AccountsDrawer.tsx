@@ -38,7 +38,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      sorter: { compare: sortProp('name', defaultSort) },
+      sorter: { compare: sortProp('role', defaultSort) },
       render: (_, { role }) => roles[role],
       searchable: true,
       dataIndex: 'role',
