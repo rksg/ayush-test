@@ -50,7 +50,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
       await updateVenueSchedules({
         params: { ...params },
         payload: {
-          venueIdList: form.getFieldValue('selectedVenueRowKeys') || [],
+          venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
           switchIdList: upgradeSwitchList,
           switchVersion: form.getFieldValue('switchVersion') || '',
           switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
@@ -100,6 +100,46 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Update Schedule' })
   }
 
+  const wizardFinish = {
+    [SwitchFirmwareWizardType.update]: async () => {
+      try {
+        await updateVenueSchedules({
+          params: { ...params },
+          payload: {
+            venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
+            switchIdList: upgradeSwitchList,
+            switchVersion: form.getFieldValue('switchVersion') || '',
+            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+          }
+        }).unwrap()
+        form.resetFields()
+        props.setVisible(false)
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    },
+    [SwitchFirmwareWizardType.schedule]: async () => {
+      try {
+        await updateVenueSchedules({
+          params: { ...params },
+          payload: {
+            date: form.getFieldValue('selectedDate') || '',
+            time: form.getFieldValue('selectedTime') || '',
+            preDownload: form.getFieldValue('preDonloadChecked') || false,
+            venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
+            switchIdList: upgradeSwitchList,
+            switchVersion: form.getFieldValue('switchVersion') || '',
+            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+          }
+        }).unwrap()
+        form.resetFields()
+        props.setVisible(false)
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
+  }
+
   return <Modal
     title={wizardTitle[wizardType]}
     type={ModalType.ModalStepsForm}
@@ -113,7 +153,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         onCancel={()=>{
           form.resetFields()
           props.setVisible(false)}}
-        onFinish={handleAddCli}
+        onFinish={wizardFinish[wizardType]}
       >
         <StepsForm.StepForm
           key='selectSwitches'

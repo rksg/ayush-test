@@ -88,6 +88,8 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
       } else {
         setSelectedDate('')
         setSelectedTime('')
+        form.setFieldValue('selectedDate', '')
+        form.setFieldValue('selectedTime', '')
       }
 
       setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
@@ -124,6 +126,7 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
       setCurrentScheduleDateString(dateAndTime[0])
       setSelectedDate(dateAndTime[0])
       setSelectedDateMoment(moment(dateAndTime[0]))
+      form.setFieldValue('selectedDate', dateAndTime[0])
 
       const timeZoneKeyWords = ['-', '+', 'Z']
       for (let value of timeZoneKeyWords) {
@@ -140,6 +143,7 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
 
           setCurrentScheduleTime(scheduleStartTime)
           setSelectedTime(scheduleStartTime)
+          form.setFieldValue('selectedTime', scheduleStartTime)
           break
         }
       }
@@ -170,16 +174,19 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
     setScheduleDateChanged(currentScheduleDateString !== dateString)
     setSelectedDateMoment(moment(dateString))
     setSelectedDate(dateString)
+    form.setFieldValue('selectedDate', dateString)
   }
 
   const onChangeRegular = (e: RadioChangeEvent) => {
     setScheduleTimeChanged(currentScheduleTime !== e.target.value)
     setSelectedTime(e.target.value)
+    form.setFieldValue('selectedTime', e.target.value)
   }
 
   const onPreDownloadChange = (checked: boolean) => {
     setPreDownloadChanged(currentPreDownload !== checked)
     setChecked(checked)
+    form.setFieldValue('preDonloadChecked', checked)
   }
 
   // const createRequest = (): UpdateScheduleRequest => {

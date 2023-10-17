@@ -24,8 +24,6 @@ export function PreDownload (props: PreDownloadProps) {
         <Subtitle level={4} style={{ marginTop: '10px' }}>
           {$t({ defaultMessage: 'Pre-download the firmware:' })}
         </Subtitle>
-      {/* </Col>
-      <Col span={8}> */}
         <Switch checked={checked} onChange={setChecked} />
       </Col>
       <Col>
