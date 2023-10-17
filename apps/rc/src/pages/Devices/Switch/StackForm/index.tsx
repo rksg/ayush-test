@@ -643,7 +643,7 @@ export function StackForm () {
         (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
 
       if (switchModel?.includes('ICX8200')) {
-        miniMembers = checkVersionAtLeast10010b(vennueFw || '') ? 12 : 4
+        miniMembers = checkVersionAtLeast10010b(venueFw || '') ? 12 : 4
       }
 
       setTableData(tableData.splice(0, miniMembers))
