@@ -102,6 +102,12 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: $t({ defaultMessage: 'Skip Updates' })
   }
 
+  const wizardWidth = {
+    [SwitchFirmwareWizardType.update]: '95%',
+    [SwitchFirmwareWizardType.schedule]: '95%',
+    [SwitchFirmwareWizardType.skip]: '75%'
+  }
+
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
@@ -176,6 +182,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     visible={props.visible}
     destroyOnClose={true}
     mask={true}
+    width={wizardWidth[wizardType]}
     children={
       <StepsForm
         form={form}
