@@ -39,6 +39,9 @@ export function RadioSettingsForm (props:{
   ap?: ApViewModel
 }) {
   const [isOutdoor, setIsOutdoor] = useState(false)
+  const [LPIisVenueSetting, setLPIisVenueSetting] = useState([] as JSX.Element[])
+  const [LPIStandardModeButtonText, setLPIStandardModeButtonText] = useState([] as JSX.Element[])
+  const [LPILowPowerModeButtonText, setLPILowPowerModeButtonText] = useState([] as JSX.Element[])
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const { radioType,
@@ -102,7 +105,14 @@ export function RadioSettingsForm (props:{
     if (outDoorModel){
       setIsOutdoor(true)
     }
+
   }, [] )
+
+  useEffect(()=> {
+    setLPIisVenueSetting(displayLPIuseVenueSettingRadioButtonText())
+    setLPIStandardModeButtonText(displayStandardModeRadioButtonText())
+    setLPILowPowerModeButtonText(displayLowPowerModeRadioButtonText())
+  }, [lowPowerIndoorModeEnabled])
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -124,98 +134,78 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
-  function displayLowPowerModeRadioButtonText (button: string, ap?: ApViewModel | undefined ) : JSX.Element[] {
+  function displayLPIuseVenueSettingRadioButtonText () : JSX.Element[] {
+    const buttonText = [] as JSX.Element[]
+    if (lowPowerIndoorModeEnabled) {
+      buttonText.push(
+        <p style={{ fontSize: '12px', margin: '0px' }}>
+          {$t({ defaultMessage: 'Low power' })}
+        </p>
+      )
+    } else {
+      buttonText.push(
+        <p style={{ fontSize: '12px', margin: '0px' }}>
+          {$t({ defaultMessage: 'Standard power' })}
+        </p>
+      )
+    }
+    return buttonText
+  }
+
+  function displayLowPowerModeRadioButtonText () : JSX.Element[] {
+    const buttonText = [] as JSX.Element[]
+    buttonText.push(
+      <p style={{ fontSize: '12px', margin: '0px' }}>
+        {$t({ defaultMessage: 'Low power' })}
+      </p>
+    )
+    return buttonText
+  }
+
+  function displayStandardModeRadioButtonText () : JSX.Element[] {
 
     const afcInfo = ap?.apStatusData?.afcInfo || undefined
 
     const buttonText = [] as JSX.Element[]
 
-    if (context === 'venue') {
-      if ('standard' === button) {
-        buttonText.push(
-          <p style={{ fontSize: '12px', margin: '0px' }}>
-            {$t({ defaultMessage: 'Standard power' })}
-          </p>
-        )
-      }
-
-      if ('lowPower' === button) {
-        buttonText.push(
-          <p style={{ fontSize: '12px', margin: '0px' }}>
-            {$t({ defaultMessage: 'Low power' })}
-          </p>
-        )
-      }
-      return buttonText
-    }
-
-    if (context === 'ap') {
-      if ('useVenueSetting' === button) {
-        if (lowPowerIndoorModeEnabled) {
+    if (context === 'ap' && isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled) {
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
           buttonText.push(
-            <p style={{ fontSize: '12px', margin: '0px' }}>
-              {$t({ defaultMessage: 'Low power' })}
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+              {$t({ defaultMessage: 'Standard power [Geo Location not set]' })}
             </p>
           )
-        } else {
+          break
+        case AFCStatus.WAIT_FOR_RESPONSE:
           buttonText.push(
-            <p style={{ fontSize: '12px', margin: '0px' }}>
-              {$t({ defaultMessage: 'Standard power' })}
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+              {$t({ defaultMessage: 'Standard power [Pending response from the AFC server]' })}
             </p>
           )
-        }
-      }
-
-      if ('standard' === button) {
-        if (isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled){
+          break
+        case AFCStatus.REJECTED:
+          buttonText.push(
+            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
+              {$t({ defaultMessage: 'Standard power [No channels available]' })}
+            </p>
+          )
+          break
+        default:
           buttonText.push(
             <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }}>
               {$t({ defaultMessage: 'Standard power' })}
             </p>
           )
-        } else {
-          buttonText.push(
-            <p style={{ fontSize: '12px', margin: '0px' }}>
-              {$t({ defaultMessage: 'Standard power' })}
-            </p>
-          )
-        }
       }
-
-      if ('lowPower' === button) {
-        if (isAPLowPower(afcInfo)){
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            buttonText.push(
-              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-                {$t({ defaultMessage: 'Low power [Geo Location not set]' })}
-              </p>
-            )
-          }
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            buttonText.push(
-              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-                {$t({ defaultMessage: 'Low power [Pending response from the AFC server]' })}
-              </p>
-            )
-          }
-
-          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-            buttonText.push(
-              <p style={{ fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-                {$t({ defaultMessage: 'Low power [No channels available]' })}
-              </p>
-            )
-          }
-        } else {
-          buttonText.push(
-            <p style={{ fontSize: '12px', margin: '0px' }}>
-              {$t({ defaultMessage: 'Low power' })}
-            </p>
-          )
-        }
-      }
+      return buttonText
     }
 
+    buttonText.push(
+      <p style={{ fontSize: '12px', margin: '0px' }}>
+        {$t({ defaultMessage: 'Standard power' })}
+      </p>
+    )
     return buttonText
   }
 
@@ -239,14 +229,14 @@ export function RadioSettingsForm (props:{
           <Form.Item
             name={lowPowerIndoorModeEnabledFieldName}>
             {isUseVenueSettings ?
-              displayLowPowerModeRadioButtonText('useVenueSetting') :
+              LPIisVenueSetting :
               <Radio.Group
                 disabled={!isAFCEnabled || isUseVenueSettings}
                 onChange={() => onChangedByCustom('lowPowerIndoorModeEnabled')}
               >
                 <Space direction='vertical'>
-                  <Radio value={false}>{displayLowPowerModeRadioButtonText('standard', ap)}</Radio>
-                  <Radio value={true}>{displayLowPowerModeRadioButtonText('lowPower', ap)}</Radio>
+                  <Radio value={false}>{LPIStandardModeButtonText}</Radio>
+                  <Radio value={true}>{LPILowPowerModeButtonText}</Radio>
                 </Space>
               </Radio.Group>}
           </Form.Item>
