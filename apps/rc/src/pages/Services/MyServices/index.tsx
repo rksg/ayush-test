@@ -36,6 +36,7 @@ export default function MyServices () {
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const centralizeForwardingEnabled = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
 
   const services = [
     {
@@ -67,6 +68,16 @@ export default function MyServices () {
         skip: !isEdgeEnabled || !isEdgeReady
       }),
       disabled: !isEdgeEnabled || !isEdgeReady
+    },
+    {
+      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      tableQuery: useGetNetworkSegmentationViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !centralizeForwardingEnabled
+      }),
+      disabled: !centralizeForwardingEnabled
     },
     {
       type: ServiceType.EDGE_FIREWALL,

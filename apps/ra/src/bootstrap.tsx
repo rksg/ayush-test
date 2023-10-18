@@ -1,11 +1,13 @@
 import React from 'react'
 
-import { Root } from 'react-dom/client'
+import { Root }          from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
+  showActionModal,
   SuspenseBoundary
 } from '@acx-ui/components'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
@@ -16,12 +18,14 @@ import {
   LangKey,
   DEFAULT_SYS_LANG,
   LocaleProvider,
-  setUpIntl
+  setUpIntl,
+  getIntl
 } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
+import type { AnyAction } from '@reduxjs/toolkit'
 
 // Needed for Browser language detection
 const supportedLocales: Record<string, LangKey> = {
@@ -53,10 +57,33 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
+function showExpiredSessionModal () {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'info',
+    title: $t({ defaultMessage: 'Session Expired' }),
+    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
+    onOk: () => window.location.reload()
+  })
+}
+
+function detectExpiredSession (action: AnyAction, next: CallableFunction) {
+  if (action.meta?.baseQueryMeta?.response?.status === 401) {
+    showExpiredSessionModal()
+  } else {
+    return next(action)
+  }
+}
+
 export async function init (root: Root) {
-  const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
-  setUserProfile(user)
+  addMiddleware(() => next => action => detectExpiredSession(action, next))
   setUpIntl({ locale: 'en-US' })
+  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
+  if (user.status === 401) {
+    showExpiredSessionModal()
+  } else {
+    setUserProfile(await(user).json())
+  }
   root.render(
     <React.StrictMode>
       <Provider>

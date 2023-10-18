@@ -353,6 +353,7 @@ export enum STACK_MEMBERSHIP {
   ACTIVE = 'Active',
   STANDBY = 'Standby',
   MEMBER = 'Member',
+  STANDALONE = 'Standalone'
 }
 
 export interface SwitchTable {
