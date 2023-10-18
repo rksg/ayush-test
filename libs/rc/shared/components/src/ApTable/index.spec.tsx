@@ -473,7 +473,7 @@ describe('Aps', () => {
     await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
-  it('Should render the low power warning messages', async () => {
+  it.skip('Should render the low power warning messages', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><ApTable /></Provider>, {

@@ -1,13 +1,19 @@
 import { useState } from 'react'
 
-import userEvent from '@testing-library/user-event'
+import userEvent         from '@testing-library/user-event'
+import { BrowserRouter } from 'react-router-dom'
 
 import { DownloadOutlined }                                                                 from '@acx-ui/icons'
 import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
-import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
-import { GroupTable }                                       from './stories/GroupTable'
-import { defaultColumnWidth, settingsKeyWidth }             from './useColumnsState'
+import {
+  columns as filteredColumns,
+  data as filteredData,
+  RecordType,
+  dataWithStatus
+} from './stories/FilteredTable'
+import { GroupTable }                           from './stories/GroupTable'
+import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
 import { Table, TableProps } from '.'
 
@@ -1295,6 +1301,61 @@ describe('Table component', () => {
       expect(targetElems).toHaveLength(1)
 
       jest.useRealTimers()
+    })
+  })
+  describe('checkbox and range picker filter', () => {
+    it('should render checkbox and range picker  filter', async () => {
+      const columns: TableProps<RecordType>['columns'] = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name'
+        },
+        {
+          title: 'Age',
+          dataIndex: 'age',
+          key: 'age',
+          align: 'center'
+        },
+        {
+          title: 'Description',
+          dataIndex: 'description',
+          key: 'description'
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address'
+        },
+        {
+          title: 'Status',
+          dataIndex: 'status',
+          key: 'status',
+          align: 'center',
+          filterComponent: { type: 'checkbox', label: 'Show online users' },
+          filterKey: 'status',
+          defaultFilteredValue: [false],
+          filterable: true,
+          render: function (_, row) {
+            return row.status === 'true' ? 'Online' : 'Offline'
+          }
+        },
+        {
+          title: 'Date of Employment',
+          dataIndex: 'hiredate',
+          key: 'hiredate',
+          align: 'center',
+          filterable: true,
+          filterKey: 'hiredate',
+          filterMultiple: false,
+          filterComponent: { type: 'rangepicker' }
+        }
+      ]
+      render(<BrowserRouter><Table
+        columns={columns}
+        dataSource={dataWithStatus}
+        enableApiFilter={true}
+      /></BrowserRouter>)
     })
   })
 })

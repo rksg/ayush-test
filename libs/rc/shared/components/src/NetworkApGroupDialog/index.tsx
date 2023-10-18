@@ -14,8 +14,9 @@ import {
   Spin,
   Select
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Modal,
@@ -23,7 +24,8 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useGetNetworkApGroupsQuery
+  useGetNetworkApGroupsQuery,
+  useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import {
   RadioEnum,
@@ -141,6 +143,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
+  const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        vlanPoolSelectOptions: data
+      }
+    }
+  })
+
 
   const RadioSelect = (props: SelectProps) => {
     const isWPA3 = IsSecuritySupport6g(wlan?.wlanSecurity)
@@ -231,7 +241,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         <Col span={8}>
           <UI.FormItemRounded>
             { selected &&
-            (<VlanInput apgroup={apgroup} wlan={wlan} onChange={handleVlanInputChange}/>) }
+            (<VlanInput apgroup={apgroup} wlan={wlan} vlanPoolSelectOptions={vlanPoolSelectOptions} onChange={handleVlanInputChange}/>) }
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
