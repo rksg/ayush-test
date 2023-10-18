@@ -41,6 +41,7 @@ export const clientListApi = dataApiSearch.injectEndpoints({
               osType
               ipAddress
               lastActiveTime
+              manufacturer
             }
           }
         }

@@ -5,9 +5,9 @@ import { TunnelProfileUrls }                           from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { TunnelProfileModal } from './TunnelProfileModal'
+import { TunnelProfileAddModal } from './'
 
-describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileModal', () => {
+describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -23,7 +23,7 @@ describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileModal', () =>
     const user = userEvent.setup()
     render(
       <Provider>
-        <TunnelProfileModal />
+        <TunnelProfileAddModal />
       </Provider>
     )
     const addButton = screen.getByRole('button', { name: 'Add' })
@@ -40,7 +40,7 @@ describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileModal', () =>
     const user = userEvent.setup()
     render(
       <Provider>
-        <TunnelProfileModal />
+        <TunnelProfileAddModal />
       </Provider>
     )
     const addButton = screen.getByRole('button', { name: 'Add' })
