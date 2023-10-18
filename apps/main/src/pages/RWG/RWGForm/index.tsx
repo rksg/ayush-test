@@ -187,7 +187,7 @@ export function RWGForm () {
                 <Form.Item
                   name='loginUrl'
                   initialValue={data?.loginUrl}
-                  label={$t({ defaultMessage: 'Hostname' })}
+                  label={$t({ defaultMessage: 'URL' })}
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
