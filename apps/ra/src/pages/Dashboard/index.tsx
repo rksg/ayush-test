@@ -63,9 +63,9 @@ export const useDashBoardUpdatedFilters = () => {
 }
 
 export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
-  if (pathFilters.range !== DateRange.last8Hours)
+  if (![DateRange.last8Hours, DateRange.last24Hours].includes(pathFilters.range))
     return pathFilters
-  return { ...pathFilters, ...getDateRangeFilter(DateRange.last24Hours) }
+  return { ...pathFilters, ...getDateRangeFilter(DateRange.last7Days) }
 }
 
 export default function Dashboard () {

@@ -15,7 +15,8 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../Header', () => ({
   ...jest.requireActual('../Header'),
-  useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ]
+  useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ],
+  useHeaderExtraWithDropDown: () => [ <div data-testid='HeaderExtraWithDropDown' /> ]
 }))
 jest.mock('../Health', () => ({
   ...jest.requireActual('../Health'),
@@ -41,6 +42,7 @@ jest.mock('../VideoCallQoe', () => ({
 }))
 
 jest.mock('../ConfigChange', () => ({
+  ...jest.requireActual('../ConfigChange'),
   ConfigChange: () => <div data-testid='ConfigChange' />
 }))
 

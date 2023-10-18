@@ -11,8 +11,6 @@ import { OptimizedIcon }                            from '../Recommendations/sty
 
 import * as UI from './styledComponents'
 
-export { AIDrivenRRMWidget as AIDrivenRRM }
-
 const { countFormat } = intlFormats
 
 type AIDrivenRRMProps = {
@@ -108,4 +106,4 @@ function AIDrivenRRMWidget ({
   </Loader>
 }
 
-export default AIDrivenRRMWidget
+export { AIDrivenRRMWidget as AIDrivenRRM }

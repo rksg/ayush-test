@@ -1,9 +1,9 @@
 import moment from 'moment-timezone'
 
-import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
-import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
-import { useDateFilter }                            from '@acx-ui/utils'
+import { PageHeader, PageHeaderProps, RangePicker, TimeRangeDropDown } from '@acx-ui/components'
+import { get }                                                         from '@acx-ui/config'
+import { getShowWithoutRbacCheckKey }                                  from '@acx-ui/user'
+import { useDateFilter }                                               from '@acx-ui/utils'
 
 import { NetworkFilter }   from '../NetworkFilter'
 import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
@@ -57,6 +57,16 @@ export const useHeaderExtra = (props: UseHeaderExtraProps) => {
       showTimePicker
       selectionType={range}
     />
+  ]
+}
+
+export const useHeaderExtraWithDropDown = (props: UseHeaderExtraProps) => {
+  return [
+    <Filter
+      key={getShowWithoutRbacCheckKey('network-filter')}
+      {...props}
+    />,
+    <TimeRangeDropDown/>
   ]
 }
 
