@@ -7,7 +7,8 @@ export const searchFixture = {
         mac: '18:B4:30:03:E6:03',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.42',
-        lastActiveTime: '2023-08-23T05:08:20.000Z'
+        lastActiveTime: '2023-08-23T05:08:20.000Z',
+        manufacturer: 'manufacturer-1'
       },
       {
         hostname: '02AA01AB50120E2Q',
@@ -15,7 +16,8 @@ export const searchFixture = {
         mac: '18:B4:30:04:D8:10',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.44',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer-2'
       },
       {
         hostname: '02AA01AB50120G7G',
@@ -23,7 +25,8 @@ export const searchFixture = {
         mac: '18:B4:30:05:1C:BE',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.69',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer-3'
       }
     ],
     networkHierarchy: [
