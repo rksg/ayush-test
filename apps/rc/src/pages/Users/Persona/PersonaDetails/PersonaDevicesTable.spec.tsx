@@ -187,9 +187,9 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
     await waitFor(() => expect(getPassphraseDevicesSpy).toHaveBeenCalled())
-    await screen.findByRole('heading', { name: /devices \(4\)/i })   // 3 mac devices + 1 connected dpsk device
+    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
+    await waitFor(async () => await screen.findByRole('heading', { name: /devices \(4\)/i }))   // 3 mac devices + 1 connected dpsk device
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: /dpsk-hostname/i })  // to make sure that clients/metas api done
   })
