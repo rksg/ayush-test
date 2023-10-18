@@ -116,11 +116,13 @@ export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
 export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
+export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
+export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 
-
-export { TunnelProfileForm } from './TunnelProfileForm'
-export { useTunnelProfileActions } from './TunnelProfileForm/useTunnelProfileActions'
-export type { TunnelProfileFormType } from './TunnelProfileForm'
+export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
+export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
+export type { TunnelProfileFormType } from './TunnelProfile/TunnelProfileForm'
+export { TunnelProfileAddModal } from './TunnelProfile/TunnelProfileAddModal'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 export type { ConnectionMeteringFormProps } from './ConnectionMeteringForm'
