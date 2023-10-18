@@ -130,10 +130,9 @@ export function renderFilter <RecordType> (
       key={index}
       checked={(filterValues[column?.filterKey as keyof Filter] === undefined &&
         column?.defaultFilteredValue?.[0] as boolean) ||
-        filterValues[column?.filterKey as keyof Filter]?.[0] === 'true'}
+        !!filterValues[column?.filterKey as keyof Filter]?.[0]}
       onChange={(e: CheckboxChangeEvent) => {
-        const isChecked = e.target.checked.toString() ||
-          (column?.defaultFilteredValue && column?.defaultFilteredValue[0])
+        const isChecked = e.target.checked
         if (column.filterValueNullable === false) {
           setFilterValues({ ...filterValues, [key]: undefined })
         } else {

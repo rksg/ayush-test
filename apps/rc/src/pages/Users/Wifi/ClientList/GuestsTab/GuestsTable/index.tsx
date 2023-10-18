@@ -349,6 +349,12 @@ export const GuestsTable = () => {
     if (customFilters.guestType?.includes('SelfSign')) {
       customFilters.guestType.push('HostGuest')
     }
+    if(customFilters?.includeExpired){
+      customFilters = {
+        ...customFilters,
+        includeExpired: [customFilters.includeExpired[0].toString()]
+      }
+    }
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
