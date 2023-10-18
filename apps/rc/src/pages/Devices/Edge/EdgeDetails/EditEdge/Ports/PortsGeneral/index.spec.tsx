@@ -1,16 +1,18 @@
 import React from 'react'
 
-import userEvent        from '@testing-library/user-event'
-import { FormInstance } from 'antd'
-import { rest }         from 'msw'
+import userEvent              from '@testing-library/user-event'
+import { Form, FormInstance } from 'antd'
+import { rest }               from 'msw'
 
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
+  act,
   mockServer,
   render,
   renderHook,
-  screen } from '@acx-ui/test-utils'
+  screen,
+  waitFor } from '@acx-ui/test-utils'
 
 import { EdgeEditContext }                                    from '../..'
 import { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } from '../../../../__tests__/fixtures'
@@ -28,25 +30,32 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 
+interface MockedPortsFormType {
+  form: FormInstance,
+  onValuesChange: (form: FormInstance, hasError: boolean) => void
+  onFinish: () => void
+  onCancel: () => void
+}
+
+const MockedPortsForm = (props: MockedPortsFormType) => {
+  const onFormChange = () => {
+    props.onValuesChange({
+      getFieldsValue: () => {},
+      resetFields: () => {}
+    } as FormInstance, false)
+  }
+
+  return <Form data-testid='rc-EdgePortsGeneral' form={props.form}>
+    <button onClick={onFormChange}>FormChange</button>
+    <button onClick={props.onFinish}>Submit</button>
+    <button onClick={props.onCancel}>Cancel</button>
+  </Form>
+}
+
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgePortsGeneral: (props:{
-    onValuesChange: (form: FormInstance, hasError: boolean) => void
-    onFinish: () => void
-    onCancel: () => void }) => {
-
-    const onFormChange = () => {
-      props.onValuesChange({
-        getFieldsValue: () => {},
-        resetFields: () => {}
-      } as FormInstance, false)
-    }
-
-    return <div data-testid='rc-EdgePortsGeneral'>
-      <button onClick={onFormChange}>FormChange</button>
-      <button onClick={props.onFinish}>Submit</button>
-      <button onClick={props.onCancel}>Cancel</button>
-    </div>
+  EdgePortsGeneral: (props: MockedPortsFormType) => {
+    return <MockedPortsForm {...props}/>
   }
 }))
 
@@ -74,6 +83,7 @@ const defaultContextData = {
 
 describe('EditEdge ports - ports general', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  const mockedUpdateReq = jest.fn()
 
   beforeEach(() => {
     params = {
@@ -85,11 +95,19 @@ describe('EditEdge ports - ports general', () => {
 
     mockedContextSetActiveSubTab.mockClear()
     mockedSetFormControl.mockClear()
+    mockedUpdateReq.mockClear()
 
     mockServer.use(
       rest.get(
         EdgeUrlsInfo.getPortConfig.url,
         (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
+      ),
+      rest.patch(
+        EdgeUrlsInfo.updatePortConfig.url,
+        (req, res, ctx) => {
+          mockedUpdateReq(req.body)
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -129,8 +147,13 @@ describe('EditEdge ports - ports general', () => {
     await screen.findByTestId('rc-EdgePortsGeneral')
     await user.click(await screen.findByRole('button', { name: 'FormChange' }))
     expect(mockedContextSetActiveSubTab).toHaveBeenCalledTimes(1)
-    formControlRef.current.data.applyFn()
-    formControlRef.current.data.discardFn()
+    act(() => {
+      formControlRef.current.data.applyFn()
+      formControlRef.current.data.discardFn()
+    })
+    await waitFor(() => {
+      expect(mockedUpdateReq).toHaveBeenCalledTimes(1)
+    })
   })
 
   it('should correctly handle with form finished', async () => {
