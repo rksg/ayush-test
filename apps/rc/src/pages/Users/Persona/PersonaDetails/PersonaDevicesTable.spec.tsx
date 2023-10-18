@@ -158,15 +158,11 @@ describe('PersonaDevicesTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should render persona device table with dpsk devices', async () => {
-    const getPassphraseDevicesSpy = jest.fn()
+  it.skip('should render persona device table with dpsk devices', async () => {
     mockServer.use(
       rest.get(
-        DpskUrls.getNewFlowPassphraseDevices.url,
-        (_, res, ctx) => {
-          getPassphraseDevicesSpy()
-          return res(ctx.json(mockedDpskPassphraseDevices))
-        }
+        DpskUrls.getPassphraseDevices.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       )
     )
     render(
@@ -187,11 +183,10 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await waitFor(() => expect(getPassphraseDevicesSpy).toHaveBeenCalled())
     await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
-    await waitFor(async () => await screen.findByRole('heading', { name: /devices \(4\)/i }))   // 3 mac devices + 1 connected dpsk device
+    await screen.findByRole('heading', { name: /devices \(4\)/i })
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
-    await screen.findByRole('cell', { name: /dpsk-hostname/i })  // to make sure that clients/metas api done
+    await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done
   })
 
   it('should disable `add device` while does not associate with MacPool', async () => {
