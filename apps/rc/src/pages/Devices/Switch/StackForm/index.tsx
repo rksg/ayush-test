@@ -130,9 +130,9 @@ export function StackForm () {
   const { data: venuesList, isLoading: isVenuesListLoading } =
   useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
-  const { data: switchData, refetch: refetchSwitchData, isLoading: isSwitchDataLoading } =
+  const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const { data: switchDetail, refetch: refetchSwitchDetail, isLoading: isSwitchDetailLoading } =
+  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
@@ -344,7 +344,7 @@ export function StackForm () {
   }
 
   const [saveSwitch] = useSaveSwitchMutation()
-  const [updateSwitch, updateSwitchResponse] = useUpdateSwitchMutation()
+  const [updateSwitch] = useUpdateSwitchMutation()
   const [convertToStack] = useConvertToStackMutation()
 
   const hasBlockingTsb = function () {
@@ -420,11 +420,6 @@ export function StackForm () {
       }
 
       await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
-
-      if (updateSwitchResponse.isSuccess) {
-        refetchSwitchData()
-        refetchSwitchDetail()
-      }
 
       dataFetchedRef.current = false
 
