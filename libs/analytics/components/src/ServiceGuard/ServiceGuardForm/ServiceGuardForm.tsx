@@ -16,7 +16,6 @@ import {
   Band,
   ClientType,
   MutationResponse,
-  Schedule,
   ServiceGuardFormDto
 } from '../types'
 
@@ -39,11 +38,6 @@ export const initialValues: ServiceGuardFormDto = {
   }],
   isDnsServerCustom: false
 }
-
-export const localToDb = (schedule: Schedule) => ({
-  ...schedule,
-  ...(schedule.frequency && { timezone: moment.tz.guess() })
-})
 
 export function ServiceGuardForm () {
   const { $t } = useIntl()
@@ -78,9 +72,7 @@ export function ServiceGuardForm () {
     <StepsForm
       editMode={editMode}
       initialValues={specToDto(spec.data) ?? initialValues}
-      onFinish={async (values) => {
-        await submit({ ...values, schedule: localToDb(values.schedule!) }).unwrap()
-      }}
+      onFinish={async (values) => { await submit(values).unwrap() }}
       onCancel={navigateToList}
       buttonLabel={({
         submit: $t({ defaultMessage: 'Create' })

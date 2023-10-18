@@ -356,7 +356,7 @@ describe('specToDto', () => {
           timezone: 'Europe/London'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
-        const expectedResult = { ...dailySchedule, hour: 0.5 }
+        const expectedResult = { ...dailySchedule, timezone, hour: 0.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -368,7 +368,7 @@ describe('specToDto', () => {
           timezone: 'Asia/Tokyo'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 6, hour: 23.5 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 6, hour: 23.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -380,7 +380,7 @@ describe('specToDto', () => {
           timezone: 'America/Vancouver'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 0, hour: 8.5 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 0, hour: 8.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -392,7 +392,7 @@ describe('specToDto', () => {
           timezone: 'America/New_York'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 6, hour: 12.5 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 6, hour: 12.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -404,7 +404,7 @@ describe('specToDto', () => {
           timezone: 'America/New_York'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 1, hour: 8.5 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 1, hour: 8.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -416,7 +416,7 @@ describe('specToDto', () => {
           timezone: 'America/Los_Angeles'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 2, hour: 3.5 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 2, hour: 3.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -428,7 +428,7 @@ describe('specToDto', () => {
           timezone: 'Asia/Singapore'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 31, hour: 22.5 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 31, hour: 22.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
     })
@@ -454,7 +454,7 @@ describe('specToDto', () => {
           timezone: 'Europe/London'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
-        const expectedResult = { ...dailySchedule, hour: 23.25 }
+        const expectedResult = { ...dailySchedule, timezone, hour: 23.25 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -466,7 +466,7 @@ describe('specToDto', () => {
           timezone: 'Asia/Calcutta'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 0, hour: 16.5 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 0, hour: 16.5 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -478,7 +478,7 @@ describe('specToDto', () => {
           timezone: 'America/Vancouver'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 0, hour: 2 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 0, hour: 2 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -490,7 +490,7 @@ describe('specToDto', () => {
           timezone: 'Europe/London'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-        const expectedResult = { ...weeklySchedule, day: 6, hour: 20 }
+        const expectedResult = { ...weeklySchedule, timezone, day: 6, hour: 20 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -502,7 +502,7 @@ describe('specToDto', () => {
           timezone: 'America/Vancouver'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 1, hour: 2 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 1, hour: 2 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -514,7 +514,7 @@ describe('specToDto', () => {
           timezone: 'Asia/Singapore'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 31, hour: 22 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 31, hour: 22 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
 
@@ -526,7 +526,7 @@ describe('specToDto', () => {
           timezone: 'Asia/Singapore'
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-        const expectedResult = { ...monthlySchedule, day: 15, hour: 8 }
+        const expectedResult = { ...monthlySchedule, timezone, day: 15, hour: 8 }
         expect(dto!.schedule).toEqual(expectedResult)
       })
     })
@@ -554,7 +554,7 @@ describe('specToDto', () => {
             timezone: 'Etc/GMT-14'
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-          const expectedResult = { ...weeklySchedule, day: 5, hour: 22 }
+          const expectedResult = { ...weeklySchedule, timezone, day: 5, hour: 22 }
           expect(dto!.schedule).toEqual(expectedResult)
         })
 
@@ -567,7 +567,7 @@ describe('specToDto', () => {
             timezone: 'Etc/GMT-14'
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-          const expectedResult = { ...monthlySchedule, day: 30, hour: 23 }
+          const expectedResult = { ...monthlySchedule, timezone, day: 30, hour: 23 }
           expect(dto!.schedule).toEqual(expectedResult)
         })
       })
@@ -594,7 +594,7 @@ describe('specToDto', () => {
             timezone: 'Etc/GMT+12'
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
-          const expectedResult = { ...weeklySchedule, day: 2, hour: 1 }
+          const expectedResult = { ...weeklySchedule, timezone, day: 2, hour: 1 }
           expect(dto!.schedule).toEqual(expectedResult)
         })
 
@@ -607,7 +607,7 @@ describe('specToDto', () => {
             timezone: 'Etc/GMT+12'
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
-          const expectedResult = { ...monthlySchedule, day: 2, hour: 1 }
+          const expectedResult = { ...monthlySchedule, timezone, day: 2, hour: 1 }
           expect(dto!.schedule).toEqual(expectedResult)
         })
       })

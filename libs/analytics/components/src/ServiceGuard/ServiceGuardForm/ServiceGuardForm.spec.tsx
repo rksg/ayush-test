@@ -27,9 +27,8 @@ import {
   fetchServiceGuardSpec,
   serviceGuardSpecNames,
   mockNetworkHierarchy
-}                                 from '../__tests__/fixtures'
-import { ServiceGuardSpecGuard }       from '../ServiceGuardGuard'
-import { Schedule, ScheduleFrequency } from '../types'
+}                                from '../__tests__/fixtures'
+import { ServiceGuardSpecGuard } from '../ServiceGuardGuard'
 
 import { ServiceGuardForm } from './ServiceGuardForm'
 
@@ -236,37 +235,6 @@ describe('ServiceGuardForm', () => {
       const heading = await body.findByRole('heading', { name: 'Settings' })
       expect(heading).toBeVisible()
       expect(await within(heading).findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
-    })
-  })
-})
-
-describe('localToDb', () => {
-  const timezone = 'Asia/Singapore'
-  let localToDbFn: (schedule: Schedule) => Schedule
-  beforeEach(() => {
-    jest.resetModules()
-    jest.doMock('moment-timezone', () => {
-      const moment = jest.requireActual('moment-timezone')
-      moment.tz.guess = () => timezone
-      return moment
-    })
-    localToDbFn = require('./ServiceGuardForm').localToDb
-  })
-  it('should convert timezone', () => {
-    const schedule = {
-      timezone: 'Asia/Calcutta',
-      frequency: ScheduleFrequency.Daily,
-      day: null,
-      hour: 8,
-      type: 'service_guard'
-    } as Schedule
-
-    expect(localToDbFn(schedule)).toEqual({
-      timezone: 'Asia/Singapore',
-      frequency: ScheduleFrequency.Daily,
-      day: null,
-      hour: 8,
-      type: 'service_guard'
     })
   })
 })
