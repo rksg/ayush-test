@@ -201,7 +201,7 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.get(CommonUrlsInfo.getVlanPoolList.url, (_, res, ctx) =>
+      rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
         res(ctx.json(vlanList))
       ),
       rest.get(AccessControlUrls.getAccessControlProfileList.url, (_, res, ctx) =>

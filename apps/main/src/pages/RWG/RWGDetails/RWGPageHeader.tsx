@@ -14,6 +14,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { useRwgActions } from '../useRwgActions'
+
 import RWGTabs from './RWGTabs'
 
 
@@ -39,6 +41,17 @@ function RWGPageHeader () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}`)
+  const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
+  const rwgActions = useRwgActions()
+
+  const redirectToList = function () {
+    navigate({
+      ...rwgListBasePath
+    }, {
+      state: {
+        from: location
+      }
+    })}
 
   return (
     <PageHeader
@@ -57,6 +70,12 @@ function RWGPageHeader () {
       ]}
       extra={[
         ...filterByAccess([<Button
+          type='default'
+          onClick={() =>
+            rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
+          }
+        >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+        <Button
           type='primary'
           onClick={() =>
             navigate({
