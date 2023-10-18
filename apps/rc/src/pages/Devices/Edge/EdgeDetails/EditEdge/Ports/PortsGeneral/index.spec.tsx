@@ -1,3 +1,5 @@
+import React from 'react'
+
 import userEvent        from '@testing-library/user-event'
 import { FormInstance } from 'antd'
 import { rest }         from 'msw'
@@ -7,6 +9,7 @@ import { Provider }     from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen } from '@acx-ui/test-utils'
 
 import { EdgeEditContext }                                    from '../..'
@@ -93,10 +96,26 @@ describe('EditEdge ports - ports general', () => {
 
   it('value change should handle with edit form context', async () => {
     const user = userEvent.setup()
+    const { result: formControlRef } = renderHook(() => {
+      const [data, setData] = React.useState({
+        isDirty: false,
+        hasError: false,
+        discardFn: () => {},
+        applyFn: () => {}
+      })
+      return { data, setData }
+    })
+
+    const contextData = {
+      ...defaultContextData,
+      formControl: formControlRef.current.data,
+      setFormControl: formControlRef.current.setData
+    }
+
     render(
       <Provider>
         <EdgeEditContext.Provider
-          value={defaultContextData}
+          value={contextData}
         >
           <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
         </EdgeEditContext.Provider>
@@ -110,7 +129,8 @@ describe('EditEdge ports - ports general', () => {
     await screen.findByTestId('rc-EdgePortsGeneral')
     await user.click(await screen.findByRole('button', { name: 'FormChange' }))
     expect(mockedContextSetActiveSubTab).toHaveBeenCalledTimes(1)
-    expect(mockedSetFormControl).toHaveBeenCalledTimes(1)
+    formControlRef.current.data.applyFn()
+    formControlRef.current.data.discardFn()
   })
 
   it('should correctly handle with form finished', async () => {
@@ -131,6 +151,7 @@ describe('EditEdge ports - ports general', () => {
 
     await screen.findByTestId('rc-EdgePortsGeneral')
     await user.click(await screen.findByRole('button', { name: 'Submit' }))
+    expect(mockedSetFormControl).toHaveBeenCalledTimes(1)
   })
 
   it('cancel and go back to edge list', async () => {
