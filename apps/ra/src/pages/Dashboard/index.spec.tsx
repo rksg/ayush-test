@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { defaultNetworkPath }              from '@acx-ui/analytics/utils'
+import { defaultNetworkPath, getUserProfile, PERMISSION_MANAGE_CONFIG_RECOMMENDATION, UserProfile }              from '@acx-ui/analytics/utils'
 import { BrowserRouter }                   from '@acx-ui/react-router-dom'
 import { act, render, renderHook, screen } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
@@ -22,11 +22,51 @@ jest.mock('@acx-ui/components', () => ({
   cssNumber: () => 20
 }))
 
+jest.mock('@acx-ui/analytics/utils', () => (
+  {
+    ...jest.requireActual('@acx-ui/analytics/utils'),
+    getUserProfile: jest.fn()
+  }))
+const defaultMockPermissions = {
+  'view-analytics': true,
+  'view-report-controller-inventory': true,
+  'view-data-explorer': true,
+  'manage-service-guard': true,
+  'manage-call-manager': true,
+  'manage-mlisa': true,
+  'manage-occupancy': true,
+  'manage-label': true,
+  'manage-tenant-settings': true,
+  'manage-config-recommendation': true,
+  'franchisor': true
+}
+const defaultMockUserProfile = {
+  accountId: 'accountId',
+  selectedTenant: {
+    permissions: defaultMockPermissions,
+    id: 'accountId'
+  },
+  tenants: [
+    {
+      id: 'accountId',
+      permissions: defaultMockPermissions
+    },
+    {
+      id: 'accountId2',
+      permissions: defaultMockPermissions
+    }
+  ]
+}
+
 describe('Dashboard', () => {
-  beforeEach(() => mockedUseLayoutContext.mockReturnValue({ pageHeaderY: 100 }))
+  beforeEach(() => {
+    mockedUseLayoutContext.mockReturnValue({ pageHeaderY: 100 })
+  })
   afterEach(() => jest.restoreAllMocks())
 
-  it('renders correct components', async () => {
+  it('renders correct components for admin', async () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -36,6 +76,35 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
     expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
     expect(await screen.findByTestId('AIOperations')).toBeVisible()
+  })
+
+  it('renders correct components for network admin', async () => {
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    const mockPermissions = {
+      ...defaultMockPermissions,
+      'manage-config-recommendation': false
+    }
+    const mockUserProfile = {
+      accountId: 'accountId',
+      selectedTenant: { permissions: mockPermissions },
+      tenants: [
+        {
+          id: 'accountId',
+          permissions: mockPermissions
+        }
+      ]
+    }
+
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    render(<Dashboard />, { route: true })
+
+    expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
+    expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
+    expect(await screen.findByTestId('SLA')).toBeVisible()
+    expect(await screen.findByTestId('ReportTile')).toBeVisible()
+    expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
+    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
+    expect(screen.queryByTestId('AIOperations')).toBeNull()
   })
 
   describe('useMonitorHeight', () => {
