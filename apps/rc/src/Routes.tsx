@@ -90,6 +90,8 @@ import EditDhcp                             from './pages/Services/DHCP/Edge/Edi
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                             from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddCentralizedForwarding             from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
+import EditCentralizedForwarding            from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
 import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
@@ -253,6 +255,22 @@ function NetworkRoutes () {
       />
     </Route>
   )
+}
+
+const centralizeForwardingRoutes = () => {
+  return <>
+    <Route path='*' element={<PageNotFound />} />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.CREATE })}
+      element={<AddCentralizedForwarding />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.EDIT })}
+      element={<EditCentralizedForwarding />}
+    />
+  </>
 }
 
 function ServiceRoutes () {
@@ -448,6 +466,8 @@ function ServiceRoutes () {
           type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
         element={<EditFirewall />}
       />
+
+      {centralizeForwardingRoutes()}
     </Route>
   )
 }
