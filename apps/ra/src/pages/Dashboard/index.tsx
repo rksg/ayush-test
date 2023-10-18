@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import moment from 'moment'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
@@ -12,7 +12,7 @@ import {
   SANetworkFilter,
   AIDrivenRRM,
   AIOperations,
-  ChatWithMelissa,
+  ChatWithMelissa
 } from '@acx-ui/analytics/components'
 import {
   PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
@@ -23,13 +23,13 @@ import {
   PageHeader,
   RangePicker,
   cssNumber,
-  useLayoutContext,
+  useLayoutContext
 } from '@acx-ui/components'
 import {
   DateFilter,
   DateRange,
   getDateRangeFilter,
-  PathFilter,
+  PathFilter
 } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -68,12 +68,13 @@ export const useDashBoardUpdatedFilters = () => {
     startDate,
     endDate,
     range,
-    setDateFilterState,
+    setDateFilterState
   }
 }
 
 export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
-  if (pathFilters.range !== DateRange.last8Hours) return pathFilters
+  if (pathFilters.range !== DateRange.last8Hours)
+    return pathFilters
   return { ...pathFilters, ...getDateRangeFilter(DateRange.last24Hours) }
 }
 
