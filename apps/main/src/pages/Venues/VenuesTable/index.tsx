@@ -209,7 +209,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id'
     ],
-    searchTargetFields: ['name', 'description'],
+    searchTargetFields: ['name'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'

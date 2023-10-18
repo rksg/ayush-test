@@ -17,9 +17,10 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
-  [ServiceType.NETWORK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' }),
+  [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
+    { defaultMessage: 'Personal Identity Network' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
-    { defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+    { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
@@ -40,7 +41,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
-    { defaultMessage: 'Templates of Network Segmentation Auth Page for Switch' }),
+    { defaultMessage: 'Templates of Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage(
     { defaultMessage: 'Resident portal for property management' })
 }

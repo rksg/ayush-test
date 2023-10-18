@@ -1,12 +1,13 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps }      from '@acx-ui/components'
-import { useDeleteGatewayMutation, useGetVenuesQuery, useRwgListQuery }                    from '@acx-ui/rc/services'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                       from '@acx-ui/components'
+import { useGetVenuesQuery, useRwgListQuery }                                              from '@acx-ui/rc/services'
 import { defaultSort, FILTER, RWG, SEARCH, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                                              from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
 
+import { useRwgActions } from '../useRwgActions'
 
 
 function useColumns (
@@ -59,7 +60,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Hostname' }),
+      title: $t({ defaultMessage: 'URL' }),
       dataIndex: 'loginUrl',
       key: 'loginUrl',
       filterMultiple: false,
@@ -94,6 +95,7 @@ export function RWGTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
+  const rwgActions = useRwgActions()
 
   const rwgPayload = {
     fields: [
@@ -141,11 +143,6 @@ export function RWGTable () {
     value: 'Offline'
   }] })
 
-  const [
-    deleteGateway,
-    { isLoading: isDeleteGatewayUpdating }
-  ] = useDeleteGatewayMutation()
-
   const rowActions: TableProps<RWG>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
@@ -156,23 +153,7 @@ export function RWGTable () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: rows.length === 1? $t({ defaultMessage: 'Gateway' })
-            : $t({ defaultMessage: 'Gateways' }),
-          entityValue: rows.length === 1 ? rows[0].name : undefined,
-          numOfEntities: rows.length,
-          confirmationText: 'Delete'
-        },
-        onOk: () => { rows.length === 1 ?
-          deleteGateway({ params: { tenantId, rwgId: rows[0].id } })
-            .then(clearSelection) :
-          deleteGateway({ params: { tenantId }, payload: rows.map(item => item.id) })
-            .then(clearSelection)
-        }
-      })
+      rwgActions.deleteGateways(rows, tenantId, clearSelection)
     }
   }]
 
@@ -193,8 +174,7 @@ export function RWGTable () {
         ])}
       />
       <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeleteGatewayUpdating }
+        tableQuery
       ]}>
         <Table
           settingsId='rgw-table'
