@@ -38,7 +38,7 @@ function Conversation ({
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
                 res.type === 'accordion' ? <UI.Collapse>
-                  <Panel header={res.title} key='1'>
+                  <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
                     <img src={getLink(res.text)} alt={res.title}></img>
                   </Panel></UI.Collapse> :
                   <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>

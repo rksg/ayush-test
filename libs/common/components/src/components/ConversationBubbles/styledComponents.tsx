@@ -18,6 +18,12 @@ export const Collapse = styled(AcxCollapse)`
     padding: 10px !important;
     font-size: 14px !important;
   }
+  .ant-collapse-header-text p {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: normal;
+    padding-top: 5px;
+  }
 `
 
 export const Panel = styled(AcxCollapse.Panel)`
