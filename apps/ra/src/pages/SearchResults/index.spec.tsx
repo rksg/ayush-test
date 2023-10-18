@@ -17,7 +17,7 @@ describe.only('Search Results', () => {
       data: searchFixture
     })
     render(<SearchResults />, { route: { params }, wrapper: Provider })
-    expect(await screen.findByText('Search Results for "test?" (10)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (12)')).toBeVisible()
   })
 
   it('should render tables correctly', async () => {
@@ -36,6 +36,7 @@ describe.only('Search Results', () => {
     expect(screen.getByText('manufacturer-1')).toBeVisible()
     expect(screen.getByText('Switches (1)')).toBeVisible()
     expect(screen.getByText('Network Hierarchy (3)')).toBeVisible()
+    expect(screen.getByText('Wi-Fi Networks (2)')).toBeVisible()
   })
 
   it('should render empty result correctly', async () => {

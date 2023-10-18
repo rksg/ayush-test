@@ -26,7 +26,7 @@ const tenantAccountTierMock = {
 jest.mock('@acx-ui/analytics/utils', () => (
   {
     ...jest.requireActual('@acx-ui/analytics/utils'),
-    useUserProfileContext: jest.fn()
+    getUserProfile: jest.fn()
   }))
 
 jest.mock('@splitsoftware/splitio-react', () => (
@@ -43,10 +43,8 @@ jest.mock('@acx-ui/user', () => ({
 }))
 
 jest.mock('@acx-ui/analytics/utils', () => ({
-  useUserProfileContext: () => ({
-    data: {
-      accountId: 'mockedAccountId'
-    }
+  getUserProfile: () => ({
+    accountId: 'mockedAccountId'
   })
 }))
 
@@ -92,9 +90,7 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
     })
   }))
   jest.doMock('@acx-ui/analytics/utils', () => ({
-    useUserProfileContext: jest.fn().mockImplementation(() => ({
-      data: { accountId: props.tenant }
-    }))
+    getUserProfile: jest.fn().mockImplementation(() => ({ accountId: props.tenant }))
   }))
   jest.doMock('react-router-dom', () => ({
     useParams: () => ({ tenantId: props.tenant })

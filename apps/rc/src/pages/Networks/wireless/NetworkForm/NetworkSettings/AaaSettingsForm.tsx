@@ -124,15 +124,8 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
-    const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = form.getFieldValue('enableAccountingService')
-    const onProxyChange = (value: boolean, fieldName: string) => {
-      setData && setData({ ...data, [fieldName]: value })
-    }
-    useEffect(()=>{
-      form.setFieldsValue(data)
-    },[data])
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionMarkCircleOutlined />}
@@ -153,7 +146,7 @@ function SettingsForm () {
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
+              children={<Switch />}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}
@@ -165,7 +158,7 @@ function SettingsForm () {
             name='enableAccountingService'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
+            children={<Switch />}
           />
           {enableAccountingService && (
             <>
@@ -177,8 +170,7 @@ function SettingsForm () {
                   name='enableAccountingProxy'
                   valuePropName='checked'
                   initialValue={false}
-                  children={<Switch
-                    onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
+                  children={<Switch />}
                 />
                 <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
                 {proxyServiceTooltip}

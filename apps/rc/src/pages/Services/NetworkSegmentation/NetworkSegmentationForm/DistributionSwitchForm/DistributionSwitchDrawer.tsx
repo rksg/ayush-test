@@ -135,17 +135,17 @@ export function DistributionSwitchDrawer (props: {
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceId'
-          label={$t({ defaultMessage: 'Lookback Interface ID' })}
+          label={$t({ defaultMessage: 'Loopback Interface ID' })}
           rules={[{ required: true }, { type: 'number', max: 64, min: 1, transform: Number }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceIp'
-          label={$t({ defaultMessage: 'Lookback Interface IP Address' })}
+          label={$t({ defaultMessage: 'Loopback Interface IP Address' })}
           rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceSubnetMask'
-          label={$t({ defaultMessage: 'Lookback Interface Subnet Mask' })}
+          label={$t({ defaultMessage: 'Loopback Interface Subnet Mask' })}
           rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}>
           <Input />
         </Form.Item>

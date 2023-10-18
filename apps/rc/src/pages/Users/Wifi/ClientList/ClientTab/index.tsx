@@ -3,13 +3,13 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, CustomButtonProps, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { ClientDualTable }                                                           from '@acx-ui/rc/components'
 import { UNSAFE_NavigationContext as NavigationContext }                             from '@acx-ui/react-router-dom'
 import { getIntl }                                                                   from '@acx-ui/utils'
 
-import ClientConnectionDiagnosis from './CCD'
-import { CcdResultViewerProps }  from './CCD/CcdResultViewer'
+import { ClientConnectionDiagnosis } from './CCD'
+import { CcdResultViewerProps }      from './CCD/CcdResultViewer'
 
 import type { History, Transition } from 'history'
 
@@ -29,6 +29,7 @@ interface CcdRefType {
 
 export function ClientTab () {
   const isSupportCCD = useIsSplitOn(Features.CCD_TOGGLE)
+  const isTierAllowApCcd = useIsTierAllowed(TierFeatures.AP_CCD)
   const { $t } = useIntl()
 
   const [ ccdControlContext, setCcdControlContext ] = useState({} as CcdControlContextData)
@@ -38,7 +39,7 @@ export function ClientTab () {
   const ccdRef = useRef<CcdRefType>()
 
   useEffect(() => {
-    if (!isSupportCCD) return
+    if (!(isSupportCCD && isTierAllowApCcd)) return
 
     const { isTracing } = ccdControlContext
     // Avoid the show modal function to be called twice
@@ -58,7 +59,7 @@ export function ClientTab () {
       unblockRef.current?.()
     }
 
-  }, [isSupportCCD, ccdControlContext, blockNavigator])
+  }, [isSupportCCD, isTierAllowApCcd, ccdControlContext, blockNavigator])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -78,7 +79,7 @@ export function ClientTab () {
     localStorage.setItem('client-tab', value)
   }
 
-  return (isSupportCCD?
+  return ((isSupportCCD && isTierAllowApCcd)?
     <ClientContext.Provider value={{
       ccdControlContext: ccdControlContext,
       setCcdControlContext: setCcdControlContext

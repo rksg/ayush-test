@@ -22,8 +22,8 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   emailRegExp,
-  phoneRegExp,
-  CatchErrorResponse
+  CatchErrorResponse,
+  generalPhoneRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -325,7 +325,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
               <Form.Item
                 name='mobile'
                 rules={[
-                  { validator: (_, value) => phoneRegExp(value) }
+                  { validator: (_, value) => generalPhoneRegExp(value) }
                 ]}
                 noStyle
                 initialValue=''
