@@ -367,7 +367,7 @@ export const VenueFirmwareTable = (
             params: { ...params },
             payload: {
               switchIds: [],
-              venueIds: selectedRows.map((row) => row.id)}
+              venueIds: selectedRows.map((row) => row.id) }
           }).then(clearSelection)
         },
         onCancel () {}
