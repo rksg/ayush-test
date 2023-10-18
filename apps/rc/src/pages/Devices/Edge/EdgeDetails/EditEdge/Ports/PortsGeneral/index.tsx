@@ -1,12 +1,13 @@
 import { useContext } from 'react'
 
-import { FormInstance }     from 'antd'
-import { flatMap, isEqual } from 'lodash'
-import { useIntl }          from 'react-intl'
+import { Form, FormInstance } from 'antd'
+import { flatMap, isEqual }   from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import { EdgePortsGeneral, EdgePortConfigFormType } from '@acx-ui/rc/components'
+import { useUpdatePortConfigMutation }              from '@acx-ui/rc/services'
 import { EdgePortWithStatus }                       from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }               from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import { EdgeEditContext } from '../..'
 
@@ -18,10 +19,13 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const { data } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const { serialNumber } = useParams()
+  const [form] = Form.useForm<EdgePortConfigFormType>()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const editEdgeContext = useContext(EdgeEditContext)
+  const [updatePortConfig] = useUpdatePortConfigMutation()
 
-  const handleFormChange = (form: FormInstance<EdgePortConfigFormType>, hasError: boolean) => {
+  const handleFormChange = (_: FormInstance<EdgePortConfigFormType>, hasError: boolean) => {
     const formData = flatMap(form.getFieldsValue(true))
 
     editEdgeContext.setActiveSubTab({
@@ -33,9 +37,22 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       ...editEdgeContext.formControl,
       isDirty: !isEqual(data, formData),
       hasError,
-      discardFn: () => form.resetFields,
-      applyFn: () => handleFinish
+      discardFn: () => form.resetFields(),
+      applyFn: () => handleFormContextApply()
     })
+  }
+
+  const handleFormContextApply = async () => {
+    const formData = flatMap(form.getFieldsValue(true))
+
+    try {
+      await updatePortConfig({
+        params: { serialNumber },
+        payload: { ports: formData } }).unwrap()
+      handleFinish()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const handleFinish = async () => {
@@ -50,6 +67,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   return <EdgePortsGeneral
+    form={form}
     data={data}
     onValuesChange={handleFormChange}
     onFinish={handleFinish}
