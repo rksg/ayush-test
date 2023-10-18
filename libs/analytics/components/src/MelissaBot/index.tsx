@@ -112,15 +112,19 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  // eslint-disable-next-line no-console
+  console.log({ showFloatingButton })
+
   return (
     <>{showFloatingButton && <img
       src={MelissaIcon}
       alt={imageAlt}
       onClick={showDrawer}
       style={{
+        width: '56px',
         position: 'fixed',
-        right: '10px',
-        bottom: '10px',
+        right: '15px',
+        bottom: '15px',
         zIndex: 999999,
         cursor: 'pointer'
       }} />}

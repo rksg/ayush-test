@@ -48,7 +48,7 @@ const ChatTypingWrapper = styled.div`
 }
 .typing .dot {
   animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
-  background-color: #E47B01 ; //rgba(20,105,69,.7);
+  background-color: #E47B01 ;
   border-radius: 50%;
   height: 7px;
   margin-right: 4px;
@@ -75,7 +75,7 @@ const ChatTypingWrapper = styled.div`
     background-color: #E47B01;
   }
   28% {
-    transform: translateY(-7px);
+    transform: translateY(-5px);
     background-color: #F7B41E;
   }
   44% {
