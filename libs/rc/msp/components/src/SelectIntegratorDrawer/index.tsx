@@ -187,7 +187,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           type='form'
           rowKey='id'
           rowSelection={{
-            type: 'radio',
+            type: techPartnerAssignEcsEnabled ? 'checkbox' : 'radio',
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selectedRows) {
               form.setFieldValue('integrator', selectedRows)

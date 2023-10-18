@@ -176,9 +176,12 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           moment(assignedEcs.data.expiry_date).diff(moment(Date()), 'days'))
         : form.setFieldValue(['number_of_days'], '')
 
-      dataSource = tenantType === AccountType.MSP_INSTALLER
-        ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
-        : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
+      techPartnerAssignEcsEnabled
+        ? dataSource = queryResults.data.data
+        : dataSource = tenantType === AccountType.MSP_INSTALLER
+          ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
+          : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
+
     }
 
     return (
