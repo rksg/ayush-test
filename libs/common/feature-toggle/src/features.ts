@@ -15,6 +15,7 @@ export enum Features {
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
+  EDGES_CENTRALIZED_FORWARDING_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
