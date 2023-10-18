@@ -109,6 +109,22 @@ export const RangePicker = ({
     }
   }, [range, onDateApply, translatedOptions])
 
+  useEffect(() => {
+    // hack to address FF not supporting :has, transition to employing :has once the firefox update is released.
+    if(isCalendarOpen){
+      const elem = document.querySelector<HTMLElement>('.headerClass')
+      if (elem) {
+        elem.style.zIndex = '20'
+      }
+    }else{
+      const elem = document.querySelector<HTMLElement>('.headerClass')
+      if(elem){
+        elem.removeAttribute('style')
+      }
+    }
+  }, [isCalendarOpen])
+
+
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
   const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
@@ -119,6 +135,7 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       <AntRangePicker
@@ -127,11 +144,14 @@ export const RangePicker = ({
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
-        onClick={() => setIsCalendarOpen(true)}
+        onClick={() => {
+          setIsCalendarOpen(true)
+        }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType) =>
+        onCalendarChange={(values: RangeValueType) => {
           setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
+        }
         }
         mode={['date', 'date']}
         renderExtraFooter={() => (
