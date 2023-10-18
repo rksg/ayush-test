@@ -219,26 +219,32 @@ function CloudpathFormItems () {
         />
         {isPolicyManagementEnabled &&
           <>
-            <Form.Item
-              name='policySetId'
-              label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-              rules={[{ required: false }]}
-            >
-              <Select style={{ width: 200 }}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                allowClear
-                options={policySetOptions}
-              />
+            <div style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <Form.Item
+                name='policySetId'
+                label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                rules={[{ required: false }]}
+              >
+                <Select style={{ width: 200 }}
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  allowClear
+                  options={policySetOptions}
+                />
+              </Form.Item>
               <Button
                 type='link'
-                style={{ marginLeft: '5px' }}
+                style={{ marginLeft: '8px', top: '0.25rem' }}
                 onClick={async () => {
                   navigate(adaptivePolicySetsPath)
                 }}
               >
                 {$t({ defaultMessage: 'Add' })}
               </Button>
-            </Form.Item>
+            </div>
+
             {policySetId &&
               <Form.Item
                 name='policyDefaultAccess'
