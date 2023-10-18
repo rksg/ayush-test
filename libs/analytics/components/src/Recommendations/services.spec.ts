@@ -161,7 +161,7 @@ describe('Recommendation services', () => {
         ...aiOpsListResult.recommendations[0],
         priority: priorities.medium,
         category: 'Wi-Fi Client Experience',
-        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio'
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio'
       },
       {
         ...aiOpsListResult.recommendations[1],
@@ -208,7 +208,7 @@ describe('Recommendation services', () => {
         type: 'Venue',
         priority: priorities.medium,
         category: 'Wi-Fi Client Experience',
-        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio',
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio',
         status: 'Revert Failed',
         statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
         statusEnum: 'revertfailed'
