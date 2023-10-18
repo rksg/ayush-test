@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { defaultNetworkPath, getUserProfile, PERMISSION_MANAGE_CONFIG_RECOMMENDATION, UserProfile }              from '@acx-ui/analytics/utils'
-import { BrowserRouter }                   from '@acx-ui/react-router-dom'
-import { act, render, renderHook, screen } from '@acx-ui/test-utils'
-import { DateRange }                       from '@acx-ui/utils'
+import { defaultNetworkPath, getUserProfile } from '@acx-ui/analytics/utils'
+import { BrowserRouter }                                                                            from '@acx-ui/react-router-dom'
+import { act, render, renderHook, screen }                                                          from '@acx-ui/test-utils'
+import { DateRange }                                                                                from '@acx-ui/utils'
 
 import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters, getFiltersForRecommendationWidgets } from '.'
 

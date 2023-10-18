@@ -17,7 +17,7 @@ import {
 import {
   PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
   useAnalyticsFilter,
-  getUserProfile,
+  getUserProfile
 } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
@@ -147,7 +147,7 @@ const DashboardView = () => {
   )
 }
 
-export default function Dashboard() {
+export default function Dashboard () {
   const { $t } = useIntl()
   const { filters, startDate, endDate, range, setDateFilterState } =
     useDashBoardUpdatedFilters()
@@ -160,17 +160,17 @@ export default function Dashboard() {
           <>
             <SANetworkFilter overrideFilters={filters} />
             <RangePicker
-              key="range-picker"
+              key='range-picker'
               selectedRange={{
                 startDate: moment(startDate),
-                endDate: moment(endDate),
+                endDate: moment(endDate)
               }}
               onDateApply={setDateFilterState as CallableFunction}
               showTimePicker
               selectionType={range}
               showLast8hours
             />
-          </>,
+          </>
         ]}
       />
       <DashboardView />
