@@ -146,15 +146,15 @@ function PersonaGroupDetails () {
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
     },
-    {
-      title: $t({ defaultMessage: 'Network Segmentation' }),
+    ...(networkSegmentationEnabled ? [{
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
         <NetworkSegmentationLink
           showNoData={true}
           name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
         />
-    }
+    }] : [])
   ]
 
   return (

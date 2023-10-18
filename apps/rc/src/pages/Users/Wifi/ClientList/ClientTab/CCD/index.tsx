@@ -129,6 +129,21 @@ export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<un
     setCurrentViewApIndex(newCcdApInfoList.length - 1)
   }
 
+  const handleResetCcdButtons = () => {
+    setIsTracing(false)
+    const statusData = {
+      ...viewerStatus,
+      state: 'RESET_BUTTONS'
+    }
+
+    setViewerStatus(statusData)
+
+    setCcdControlContext({
+      isTracing: false,
+      viewStatus: { ...statusData }
+    })
+  }
+
 
   const handleSwitchDiagnosis = async () => {
     const wantToStart = !isTracing
@@ -140,6 +155,7 @@ export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<un
       clientMac: ConvertToStandardMacAddress(clientMac),
       ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
     }
+
     const statusData = {
       ...viewerStatus,
       state,
@@ -337,6 +353,7 @@ export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<un
         <CcdResultViewer {...viewerStatus}
           addCcdAp={handleAddCcdAP}
           cleanCcdAps={handleCleanAllCcdAps}
+          resetCcdButtons={handleResetCcdButtons}
         />
       </div>
     </CcdResultContainer>

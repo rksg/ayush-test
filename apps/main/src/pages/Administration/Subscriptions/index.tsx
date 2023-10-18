@@ -1,5 +1,4 @@
 import { Space }              from 'antd'
-import moment                 from 'moment-timezone'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
@@ -229,8 +228,8 @@ const SubscriptionTable = () => {
   ]
 
   const GetStatus = (expirationDate: string) => {
-    const isValid = moment(expirationDate).isAfter(Date.now())
-    return isValid ? 'active' : 'expired'
+    const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
+    return remainingDays < 0 ? 'expired' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
