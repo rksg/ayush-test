@@ -38,6 +38,7 @@ export interface AggregatedImpactedClient {
   ssid: string[]
   hostname: string[]
   username: string[]
+  osType: string[]
 }
 
 export function column <RecordType> (
@@ -97,7 +98,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       render: (_, { mac, hostname }) =>
         <TenantLink
           to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >{hostname}</TenantLink>
+          title={hostname.join(', ')}
+        >{`${hostname[0]} ${hostname.length > 1 ? `(${hostname.length})` : ''}`}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
@@ -105,12 +107,13 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       tooltip: tooltips.username
     }),
     column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
+    column('osType', { title: $t({ defaultMessage: 'OS Type' }) }),
     column('ssid', { title: $t({ defaultMessage: 'Network' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
   // TODO: use search from table component
   return <Drawer
-    width={'650px'}
+    width={'800px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
       { count: props.impactedCount }

@@ -42,6 +42,7 @@ export interface ImpactedClients {
 export interface ImpactedClient {
   mac: string | string[]
   manufacturer: string | string[]
+  osType: string | string[]
   ssid: string | string[]
   hostname: string | string[]
   username: string | string[]
@@ -176,6 +177,7 @@ export const api = dataApi.injectEndpoints({
                 ssid
                 hostname
                 username
+                osType
               }`
         }
         return {
