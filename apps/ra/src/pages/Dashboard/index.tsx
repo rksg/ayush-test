@@ -25,12 +25,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import {
-  DateFilter,
-  DateRange,
-  getDateRangeFilter,
-  PathFilter
-} from '@acx-ui/utils'
+import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -57,10 +52,9 @@ export const useDashBoardUpdatedFilters = () => {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
-  const { startDate, endDate, range } =
-    dateFilterState.range !== DateRange.custom
-      ? getDateRangeFilter(dateFilterState.range)
-      : dateFilterState
+  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
+    ? getDateRangeFilter(dateFilterState.range)
+    : dateFilterState
   const { filters, pathFilters } = useAnalyticsFilter()
   return {
     filters: { ...filters, startDate, endDate, range },
