@@ -293,6 +293,14 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
   return <div data-testid='ConnectionMeteringPageForm' />
 })
 
+jest.mock('./pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding', () => () => {
+  return <div data-testid='AddEdgeCentralizedForwarding' />
+})
+
+jest.mock('./pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding', () => () => {
+  return <div data-testid='EditEdgeCentralizedForwarding' />
+})
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   test('should redirect devices to devices/wifi', async () => {
@@ -619,6 +627,27 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+  })
+
+  test('should navigate to create Edge Centralized Forwarding page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdgeCentralizedForwarding')).toBeVisible()
+  })
+
+  test('should navigate to edit Edge Centralized Forwarding page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdgeCentralizedForwarding')).toBeVisible()
   })
 })
 

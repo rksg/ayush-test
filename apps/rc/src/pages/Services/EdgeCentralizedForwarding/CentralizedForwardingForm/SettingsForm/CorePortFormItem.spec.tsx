@@ -9,7 +9,6 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
