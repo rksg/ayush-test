@@ -50,7 +50,7 @@ export async function lanPortsubnetValidator (
   return Promise.resolve()
 }
 
-export async function edgePortIpValidator (ip: string, subnetMask: string) {
+async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
 
   try {
