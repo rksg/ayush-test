@@ -408,6 +408,10 @@ export const Header = styled.div`
   );
   z-index: 3;
   background-color: var(--acx-primary-white);
+  // uncomment it once the firefox update is released
+  // :has(.ant-picker.ant-picker-focused) {
+  //   z-index: 20;
+  // }
 `
 
 export const HeaderComps = styled.div`
@@ -636,4 +640,13 @@ export const disableStickyPagination = css`
       background-color: var(--acx-primary-white);
     }
   }
+`
+
+export const FilterRangePicker = styled.div`
+.ant-picker {
+  border: 1px solid var(--acx-neutrals-50);
+}
+.ant-picker-focused {
+  border-color: var(--acx-neutrals-70) !important;
+}
 `
