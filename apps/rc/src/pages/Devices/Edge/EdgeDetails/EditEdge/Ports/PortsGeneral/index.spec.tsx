@@ -186,6 +186,48 @@ describe('EditEdge ports - ports general', () => {
     await screen.findByText('Please enter a valid subnet mask')
   })
 
+  it('Broadcast and IPs above 224.0.0.0 should be blocked', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    await userEvent.clear(subnetInput)
+    await userEvent.type(subnetInput, '255.255.192.0')
+
+    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+
+    // Multicast IP
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '224.0.0.0')
+    await screen.findByText('Please enter a valid IP address')
+
+    // Broadcast IP
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '192.168.63.255')
+    await screen.findByText('Can not be a broadcast address')
+
+    // Class-E IP
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '240.0.0.0')
+    await screen.findByText('Please enter a valid IP address')
+
+    // Below multicast IP
+    await userEvent.clear(ipInput)
+    await userEvent.type(ipInput, '192.168.62.255')
+    expect(screen.queryByText('Please enter a valid IP address')).toBeNull()
+  })
+
   it('should be blocked by overlapped subnet check', async () => {
     const user = userEvent.setup()
     render(

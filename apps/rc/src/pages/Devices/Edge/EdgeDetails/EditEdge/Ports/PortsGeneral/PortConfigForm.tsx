@@ -5,8 +5,18 @@ import TextArea                                                from 'antd/lib/in
 import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsFormLegacy }                                                                                        from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsFormLegacy } from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePort,
+  EdgePortTypeEnum,
+  IpUtilsService,
+  isSubnetOverlap,
+  multicastIpAddressRegExp,
+  networkWifiIpRegExp,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -38,6 +48,32 @@ export async function lanPortsubnetValidator (
     }
   }
   return Promise.resolve()
+}
+
+export async function edgePortIpValidator (ip: string, subnetMask: string) {
+  const { $t } = getIntl()
+
+  try {
+    await networkWifiIpRegExp(ip)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+
+  if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
+    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
+  } else {
+    // If the subnet is unavailable, no matter due to being empty or invalid, there's no further need to validate broadcast IP
+    return Promise.resolve()
+  }
+}
+
+async function isSubnetAvailable (subnetMask: string) {
+  try {
+    await subnetMaskIpRegExp(subnetMask)
+    return true
+  } catch {
+    return false
+  }
 }
 
 const { useWatch, useFormInstance } = Form
@@ -106,7 +142,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             validateFirst
             rules={[
               { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) },
+              { validator: (_, value) =>
+                edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+              },
               {
                 validator: () =>
                   lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
@@ -157,7 +195,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 validateFirst
                 rules={[
                   { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  { validator: (_, value) =>
+                    edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+                  },
                   {
                     validator: () =>
                       lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
