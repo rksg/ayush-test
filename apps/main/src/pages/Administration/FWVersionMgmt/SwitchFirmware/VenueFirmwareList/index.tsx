@@ -365,7 +365,9 @@ export const VenueFirmwareTable = (
         onOk () {
           skipSwitchUpgradeSchedules({
             params: { ...params },
-            payload: selectedRows.map((row) => row.id)
+            payload: {
+              switchIds: [],
+              venueIds: selectedRows.map((row) => row.id)}
           }).then(clearSelection)
         },
         onCancel () {}
