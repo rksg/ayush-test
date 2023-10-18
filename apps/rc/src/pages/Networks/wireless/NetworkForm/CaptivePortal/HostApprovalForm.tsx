@@ -4,13 +4,25 @@ import { useState, useContext, useEffect } from 'react'
 import {
   Checkbox,
   Form,
-  Input
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Row
 } from 'antd'
-import { useIntl } from 'react-intl'
+import _                             from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip }        from '@acx-ui/components'
-import { CaptivePassphraseExpirationEnum, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum, domainsNameRegExp } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import {
+  CaptivePassphraseExpirationEnum,
+  NetworkSaveData,
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  domainsNameRegExp,
+  emailsRegExp,
+  emailsSameDomainValidation } from '@acx-ui/rc/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
@@ -33,10 +45,12 @@ export function HostApprovalForm () {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const passwordExpiration = useWatch(['guestPortal','hostGuestConfig','hostDurationChoices'])
+  const [domainOrEmail, setDomainOrEmail] = useState('domain')
   const [passwordExp, setPasswordExp]=useState((passwordExpiration||[
     '1','4','24']))
   const expirationKey = Object.keys(CaptivePassphraseExpirationEnum) as Array<
   keyof typeof CaptivePassphraseExpirationEnum>
+  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
@@ -44,37 +58,114 @@ export function HostApprovalForm () {
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
+
+      if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostDomains)) {
+        setDomainOrEmail('domain')
+      } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {
+        setDomainOrEmail('email')
+      }
     }
   }, [data])
+
+  const changeDomainOrEmailList = (e: RadioChangeEvent) => {
+    setDomainOrEmail(e.target.value)
+  }
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsFormLegacy.Title>
-        <Form.Item
-          name={['guestPortal','hostGuestConfig', 'hostDomains']}
-          label={<>
-            {$t({ defaultMessage: 'Host Domains' })}
-            <Tooltip.Question title={$t({ defaultMessage:
-            'Only hosts from these domains will be allowed to approve guest requests' })}
-            placement='bottom' />
-          </>}
-          rules={[
-            { required: true },
-            { validator: (_, value) => domainsNameRegExp(
-              (Array.isArray(value)? value : value.split(',')), true)
-            }]
-          }
-          validateFirst
-          hasFeedback
-          children={
-            <Input onChange={(e)=>
-              form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
-                e.target.value.split(','))
-            }
-            placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
+        <span style={{ color: '#808284', fontSize: '12px' }}>Host Contacts</span>
+        {HAEmailList_FeatureFlag ?
+          <Radio.Group onChange={changeDomainOrEmailList} value={domainOrEmail}>
+            <Row>
+              <Radio value={'domain'} style={{ marginBottom: '5px' }}>
+              Entire Domain
+                { /* eslint-disable max-len */ }
+                <Tooltip title={
+                  <FormattedMessage
+                    values={{ br: () => <br />, b: (chunks) => <b>{chunks}</b> }}
+                    defaultMessage={
+                      `<b>Entire Domain:</b> Guests can request approval from any email address within the domain to connect to the network.<br></br>
+                    <b>Specific Email Contacts:</b> Guests must seek approval only from the provided email addresses to connect to the network.`
+                    }
+                  />
+                }
+                placement='bottom'>
+                  <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: 3, marginBottom: -5 }} />
+                </Tooltip>
+              </Radio>
+            </Row>
+            {domainOrEmail === 'domain' &&
+            <Form.Item
+              name={['guestPortal','hostGuestConfig', 'hostDomains']}
+              rules={[
+                { required: true },
+                { validator: (_, value) => domainsNameRegExp(
+                  (Array.isArray(value)? value : value.split(',')), true)
+                }]
+              }
+              validateFirst
+              hasFeedback
+              style={{ marginBottom: '5px' }}
+              children={
+                <Input onChange={(e)=>
+                  form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
+                    e.target.value.split(','))
+                }
+                placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
+                />
+              }
             />
-          }
-        />
+            }
+            <Row>
+              <Radio value={'email'} style={{ marginBottom: '5px' }}>
+              Specific E-mail Contacts
+              </Radio>
+            </Row>
+            { domainOrEmail === 'email' &&
+            <Form.Item
+              name={['guestPortal','hostGuestConfig', 'hostEmails']}
+              rules={[
+                { required: true },
+                { validator: (rule, value) => emailsRegExp((Array.isArray(value)? value : value.split(','))) },
+                { validator: (rule, value) => emailsSameDomainValidation((Array.isArray(value)? value : value.split(','))) }
+              ]
+              }
+              normalize={(value: string) => value.split(',').map((text: string)=>text.replace(/\n/, '').trim())}
+              validateFirst
+              hasFeedback
+              style={{ marginBottom: '5px' }}
+              children={
+                <Input.TextArea
+                  placeholder={$t({ defaultMessage: 'Enter email addresses, separated by commas. Ensure all addresses are from the same domain' })}
+                />
+              }
+            />
+            }
+          </Radio.Group>
+          :
+          <Form.Item
+            name={['guestPortal','hostGuestConfig', 'hostDomains']}
+            rules={[
+              { required: true },
+              { validator: (_, value) => domainsNameRegExp(
+                (Array.isArray(value)? value : value.split(',')), true)
+              }]
+            }
+            validateFirst
+            hasFeedback
+            children={
+              <Input onChange={(e)=>
+                form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
+                  e.target.value.split(','))
+              }
+              placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
+              />
+            }
+          />
+        }
+
         <Form.Item
           name={['guestPortal','hostGuestConfig', 'hostDurationChoices']}
           initialValue={['1','4','24']}
