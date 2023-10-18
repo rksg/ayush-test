@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useRef, useEffect, createContext, useState } from 'react'
 
 import { Col, Row }            from 'antd'
 import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
@@ -18,6 +18,11 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
+export const AnchorContext = createContext({} as {
+  readyToScroll: boolean,
+  setReadyToScroll: (isReady: boolean) => void
+})
+
 export const AnchorLayout = ({ items, offsetTop = 0 } : {
   items: AnchorPageItem[],
   offsetTop?: number
@@ -27,13 +32,23 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
   const location = useLocation()
   const layout = useLayoutContext()
 
+  const [ readyToScroll, setReadyToScroll ] = useState(false)
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     const hash = (e.target as HTMLElement).title.split(' ').join('-')
     navigate({ pathname: `${location.pathname}`, hash: hash })
   }
 
-  return <Row gutter={20}>
+  useEffect(()=>{
+    if (location.hash && readyToScroll) {
+      setTimeout(() =>
+        anchorRef?.current?.handleScrollTo(`${location.hash}`)
+      , 500)
+    }
+  }, [location.hash, readyToScroll])
+
+  return <AnchorContext.Provider value={{ readyToScroll, setReadyToScroll }}><Row gutter={20}>
     <AnchorLayoutSidebar span={4}
       $offsetTop={offsetTop + layout.pageHeaderY}>
       <Anchor ref={anchorRef}
@@ -54,5 +69,5 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
         </Container>
       })
     }</Col>
-  </Row>
+  </Row></AnchorContext.Provider>
 }

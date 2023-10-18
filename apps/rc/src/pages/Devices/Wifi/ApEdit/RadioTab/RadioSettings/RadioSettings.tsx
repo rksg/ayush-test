@@ -6,8 +6,8 @@ import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
 import { cloneDeep, includes, isEmpty, dropRight }        from 'lodash'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { AnchorContext, Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -46,6 +46,7 @@ export function RadioSettings () {
     editRadioContextData,
     setEditRadioContextData
   } = useContext(ApEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
@@ -199,6 +200,8 @@ export function RadioSettings () {
       }
 
       setData()
+
+      setReadyToScroll(true)
     }
   }, [apData, apCapabilities, getApAvailableChannels, apDataLoaded])
 
