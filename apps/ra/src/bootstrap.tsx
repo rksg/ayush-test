@@ -81,7 +81,7 @@ export async function init (root: Root) {
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
   if (user.status === 401) {
     showExpiredSessionModal()
-  }else{
+  } else {
     setUserProfile(await(user).json())
   }
   root.render(
