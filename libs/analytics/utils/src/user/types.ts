@@ -14,12 +14,12 @@ export type Tenant = {
   id: string
   name: string
   support: boolean
-  role: string
+  type: 'tenant' | 'super-tenant'
+  role: 'admin' | 'network-admin' | 'report-only'
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
   permissions: Permissions
-  type: string
   settings: Settings
 }
 
