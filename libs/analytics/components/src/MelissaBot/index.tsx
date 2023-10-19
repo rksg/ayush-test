@@ -22,7 +22,17 @@ const scrollToBottom=()=>{
   }
 }
 
-const MELISSA_URL_ORIGIN=window.location.origin
+const isLocal = true
+
+let MELISSA_URL_ORIGIN=window.location.origin
+let MELISSA_URL_BASE_PATH='/analytics'
+let MELISSA_ROUTE_PATH='/api/ask-mlisa'
+
+if(isLocal){
+  MELISSA_URL_ORIGIN='http://localhost:31337'
+  MELISSA_URL_BASE_PATH=''
+  MELISSA_ROUTE_PATH=''
+}
 
 export function MelissaBot (){
   const { $t } = useIntl()
@@ -62,15 +72,15 @@ export function MelissaBot (){
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const askMelissa = (body:any) => {
     const { userId } = getUserProfileRA()
-    const MELISSA_URL_BASE_PATH='/analytics'
     // eslint-disable-next-line max-len
-    const MELISSA_API_ENDPOINT=`/api/ask-mlisa/v1/integrations/messenger/webhook/melissa-agent/sessions/dfMessenger-${userId}`
+    const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger/webhook/melissa-agent/sessions/dfMessenger-${userId}`
     const MELISSA_API_URL=`${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}${MELISSA_API_ENDPOINT}`
     fetch(MELISSA_API_URL,
       { method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Mlisa-Timezone': moment.tz.guess()
+          'X-Mlisa-Timezone': moment.tz.guess(),
+          'X-Set-New-Ui': 'true'
         },
         body: JSON.stringify(body)
       }).then(async (res)=>{
