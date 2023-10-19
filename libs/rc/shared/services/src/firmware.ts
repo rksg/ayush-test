@@ -339,29 +339,36 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
 
     getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareVersionIdList, params)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
-      transformResponse () {
-        const data = [
-          {
-            switchId: 'c0:c5:20:aa:32:55',
-            switchName: 'kittoSwitch',
-            status: 'FW_UPD_DOWNLOADING',
-            targetFirmware: '09010h_cd1_b3'
-          }
-        ]
-
+      transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
         return {
-          data,
-          page: 1,
-          totalCount: data?.length
+          data: result.upgradeStatusDetailsViewList
         } as unknown as TableResult<SwitchFirmwareStatus>
-      } }),
+      }
+      // transformResponse () {
+      //   const data = [
+      //     {
+      //       switchId: 'c0:c5:20:aa:32:55',
+      //       switchName: 'kittoSwitch',
+      //       status: 'FW_UPD_DOWNLOADING',
+      //       targetFirmware: '09010h_cd1_b3'
+      //     }
+      //   ]
+
+      //   return {
+      //     data,
+      //     page: 1,
+      //     totalCount: data?.length
+      //   } as unknown as TableResult<SwitchFirmwareStatus>
+      // }
+     }),
 
 
 
