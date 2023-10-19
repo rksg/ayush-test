@@ -220,8 +220,8 @@ export interface SwitchFirmware {
   availableVersion: switchVersion;
   updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
-  switchNextSchedule: Schedule;
-  venueNextSchedule: Schedule;
+  switchNextSchedule: switchSchedule;
+  venueNextSchedule: switchSchedule;
 }
 
 export interface SwitchFirmwareStatus {

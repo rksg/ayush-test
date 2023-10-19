@@ -13,14 +13,14 @@ import { FirmwareSwitchVenue, SwitchFirmwareStatus } from '@acx-ui/rc/utils'
 
 import { parseSwitchVersion } from '../../../FirmwareUtils'
 
-export interface UpdateStatusDrawerProps {
+export interface VenueStatusDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
   data: FirmwareSwitchVenue
 }
 
 
-export function UpdateStatusDrawer (props: UpdateStatusDrawerProps) {
+export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
   // const [currentRow, setCurrentRow] = useState({} as Acl)
   // const [drawerVisible, setDrawerVisible] = useState(false)

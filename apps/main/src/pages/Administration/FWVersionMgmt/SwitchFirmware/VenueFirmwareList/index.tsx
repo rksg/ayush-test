@@ -47,7 +47,7 @@ import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
 import { SwitchFirmwareWizardType, UpdateNowWizard } from './switchUpgradeWizard'
-import { UpdateStatusDrawer }                        from './UpdateStatusDrawer'
+import { VenueStatusDrawer }                         from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -352,7 +352,7 @@ export const VenueFirmwareTable = (
         isSwitch={true}
         preDownload={preDownload?.preDownload}
       />
-      <UpdateStatusDrawer
+      <VenueStatusDrawer
         visible={updateStatusDrawerVisible}
         setVisible={setUpdateStatusDrawerVisible}
         data={clickedUpdateStatusData} />

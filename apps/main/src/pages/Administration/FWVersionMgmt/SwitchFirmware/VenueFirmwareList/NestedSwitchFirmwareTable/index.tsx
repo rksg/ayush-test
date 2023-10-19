@@ -162,7 +162,18 @@ export const NestedSwitchFirmwareTable = (
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
-      dataIndex: 'model'
+      dataIndex: 'model',
+      render: function (_, row) {
+        // return getNextScheduleTpl(intl, row)
+
+        return parseSwitchVersion(row.switchNextSchedule?.version?.id || 'Not scheduled')
+        // <Tooltip title={<UI.ScheduleTooltipText>{
+        //   parseSwitchVersion(row.switchNextSchedule?.version?.id)}</UI.ScheduleTooltipText>}
+        //   placement='bottom'>
+        //   <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
+        // </Tooltip>
+
+      }
     }
   ]
 
