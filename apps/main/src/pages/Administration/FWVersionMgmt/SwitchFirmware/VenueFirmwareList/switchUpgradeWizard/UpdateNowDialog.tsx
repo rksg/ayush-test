@@ -16,8 +16,7 @@ import {
 
 
 import { getSwitchVersionLabel } from '../../../FirmwareUtils'
-
-import * as UI from '../styledComponents'
+import * as UI                   from '../styledComponents'
 
 export interface UpdateNowDialogProps {
   visible: boolean,
@@ -38,7 +37,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
     nonIcx8200Count, icx8200Count } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
-  const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
+  const enableSwitchTwoVersionUpgrade = true//useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
   const [disableSave, setDisableSave] = useState(true)
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
@@ -49,12 +48,8 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const firmware90AvailableVersions = availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
 
   useEffect(() => {
-    if (enableSwitchTwoVersionUpgrade) {
-      setDisableSave(!selectionChanged && !selectionAboveTenChanged)
-    } else {
-      setDisableSave(!selectionChanged)
-    }
-  }, [enableSwitchTwoVersionUpgrade, selectionChanged, selectionAboveTenChanged])
+    setDisableSave(!selectionChanged && !selectionAboveTenChanged)
+  }, [selectionChanged, selectionAboveTenChanged])
 
   const onChangeRegular = (e: RadioChangeEvent) => {
     setSelectionChanged(e.target.value)
@@ -75,46 +70,28 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
         marginBottom: '30px'
       }}>
       <Form.Item>
-        {!enableSwitchTwoVersionUpgrade && <>
+        { (hasVenue || icx8200Count > 0) && <>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
-          </Subtitle>
-          <Radio.Group
-            style={{ margin: 12 }}
-            // eslint-disable-next-line max-len
-            defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
-            onChange={onChangeRegular}
-            value={selectedVersion}>
-            <Space direction={'vertical'}>
-              {availableVersions?.map(v =>
-                <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
-            </Space>
-          </Radio.Group>
-        </>
-        }
-        {enableSwitchTwoVersionUpgrade && <>
-          { (hasVenue || icx8200Count > 0) && <>
-            <Subtitle level={4}>
-              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+            {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
               &nbsp;
               ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-            </Subtitle>
+          </Subtitle>
 
-            <Radio.Group
-              style={{ margin: 12 }}
-              onChange={onChangeRegularForVersionAboveTen}
-              value={selectedAboveTenVersion}>
-              <Space direction={'vertical'}>
-                {firmware10AvailableVersions?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    {getSwitchVersionLabel(intl, v)}</Radio>)}
-                <Radio value='' key='0'>
-                  {$t({ defaultMessage: 'Do not update firmware on these switches' })}
-                </Radio>
-              </Space>
-            </Radio.Group>
-          </>}
-          {(hasVenue || nonIcx8200Count > 0) &&
+          <Radio.Group
+            style={{ margin: 12 }}
+            onChange={onChangeRegularForVersionAboveTen}
+            value={selectedAboveTenVersion}>
+            <Space direction={'vertical'}>
+              {firmware10AvailableVersions?.map(v =>
+                <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                  {getSwitchVersionLabel(intl, v)}</Radio>)}
+              <Radio value='' key='0'>
+                {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </>}
+        {(hasVenue || nonIcx8200Count > 0) &&
             <UI.Section>
               <Subtitle level={4}>
                 {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
@@ -135,7 +112,6 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
                 </Space>
               </Radio.Group>
             </UI.Section>}
-        </>}
 
         <UI.Section>
           <UI.Ul>

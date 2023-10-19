@@ -175,7 +175,7 @@ export const NestedSwitchFirmwareTable = (
       const switchList = record.id
         ? (await getSwitchList({
           params: { tenantId: tenantId }, payload: switchListPayload
-        }, true)).data?.data.filter((v) => v.venueId === record.id)
+        }, true)).data?.data//.filter((v) => v.venueId === record.id)
         : []
 
       const hasSelectedVenue = selectedVenueRowKeys.includes(record.id)

@@ -8,7 +8,11 @@ import { useIntl } from 'react-intl'
 import {
   Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
-import { useGetSwitchAvailableFirmwareListQuery, useGetSwitchLatestFirmwareListQuery, useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
+import {
+  useGetSwitchAvailableFirmwareListQuery,
+  useGetSwitchLatestFirmwareListQuery,
+  useSkipSwitchUpgradeSchedulesMutation,
+  useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
   FirmwareCategory,
   FirmwareSwitchVenue,
@@ -108,6 +112,8 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: '75%'
   }
 
+  const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
+
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
@@ -157,13 +163,13 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         cancelText: $t({ defaultMessage: 'Cancel' }),
         async onOk() {
           try {
-            await updateVenueSchedules({
+            await skipSwitchUpgradeSchedules({
               params: { ...params },
               payload: {
                 venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-                switchIdList: upgradeSwitchList
+                switchIds: upgradeSwitchList
               }
-            }).unwrap()
+            })
             form.resetFields()
             props.setVisible(false)
           } catch (error) {
