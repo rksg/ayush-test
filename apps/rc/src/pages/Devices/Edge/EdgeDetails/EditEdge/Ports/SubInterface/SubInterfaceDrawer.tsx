@@ -136,7 +136,6 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
             <Form.Item
               name='subnet'
               label={$t({ defaultMessage: 'Subnet Mask' })}
-              validateFirst
               rules={[
                 { required: true },
                 { validator: (_, value) => generalSubnetMskRegExp(value) }

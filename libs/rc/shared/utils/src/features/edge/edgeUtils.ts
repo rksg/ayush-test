@@ -42,19 +42,15 @@ export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
 
   try {
-    console.log('validate ip')
     await networkWifiIpRegExp(ip)
   } catch (error) {
-    console.log('return ip reject')
     return Promise.reject(error)
   }
 
   if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
-    console.log('return broadcast reject')
     return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
   } else {
     // If the subnet is unavailable, either because it's empty or invalid, there's no need to validate broadcast IP further
-    console.log('return resolve')
     return Promise.resolve()
   }
 }
@@ -66,10 +62,8 @@ async function isSubnetAvailable (subnetMask: string) {
 
   try {
     await subnetMaskIpRegExp(subnetMask)
-    console.log('return true')
     return true
   } catch {
-    console.log('return false')
     return false
   }
 }
