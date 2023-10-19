@@ -10,7 +10,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 lKtIj"
+        class="styledComponents__Header-sc-1abm7iv-10 lKtIj headerClass"
       >
         <div>
           <div

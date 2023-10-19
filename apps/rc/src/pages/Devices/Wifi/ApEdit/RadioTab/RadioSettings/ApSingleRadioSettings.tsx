@@ -5,7 +5,7 @@ import { Form, Switch, Row } from 'antd'
 import { NamePath }          from 'antd/es/form/interface'
 import { useIntl }           from 'react-intl'
 
-
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
 import { isAPLowPower }                                           from '@acx-ui/rc/services'
 import { ApViewModel, AFCStatus }                                 from '@acx-ui/rc/utils'
@@ -35,6 +35,8 @@ export interface ApSingleRadioSettingsPorps {
 export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { isEnabled, enabledFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
     handleChanged, supportDfsChannels, isUseVenueSettings } = props
@@ -56,7 +58,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     const afcInfo = data?.apStatusData?.afcInfo || undefined
     const warningMessages = [] as JSX.Element[]
 
-    if(isAPLowPower(afcInfo)) {
+    if(AFC_Featureflag && isAPLowPower(afcInfo)) {
       warningMessages.push(
         <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='main-warning-message'>
           {$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}
@@ -66,7 +68,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-            {$t({ defaultMessage: 'until its geo-location has been established' })}
+            {$t({ defaultMessage: '[Geo Location not set]"' })}
           </p>
         )
       }
@@ -74,7 +76,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: 'Wait for AFC server response.' })}
+            {$t({ defaultMessage: '[No channels available]' })}
           </p>
         )
       }
@@ -82,7 +84,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
         warningMessages.push(
           <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: 'FCC DB replies that there is no channel available.' })}
+            {$t({ defaultMessage: '[Pending response from the AFC server]' })}
           </p>
         )
       }

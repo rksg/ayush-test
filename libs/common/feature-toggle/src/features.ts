@@ -15,6 +15,7 @@ export enum Features {
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
+  EDGES_CENTRALIZED_FORWARDING_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
@@ -34,7 +35,6 @@ export enum Features {
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
   WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
-  CLOUDMOTE_BETA = 'BETA-ZD2R1',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
@@ -106,10 +106,16 @@ export enum Features {
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
-  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle'
+  MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
+  MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
+  AP_AFC_TOGGLE = 'ap-afc-toggle',
+  MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
+  VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_MESH = 'BETA-MESH',
-  BETA_CLB = 'BETA-CLB'
+  BETA_CLB = 'BETA-CLB',
+  BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
+  AP_CCD = 'AP-CCD'
 }

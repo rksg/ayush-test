@@ -19,7 +19,7 @@ const radiusType: { [key:string]:string }={
 }
 const AAAInstance = (props:{
   serverLabel: string,
-  type: string
+  type: 'authRadius' | 'accountingRadius'
 }) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -40,10 +40,12 @@ const AAAInstance = (props:{
   },[aaaListQuery])
 
   useEffect(() => {
-    if (radiusValue && radiusValue.name) {
+    const currentDataAaaProfileId = data && data[props.type]?.id
+    if (radiusValue && radiusValue.name && radiusValue.id !== currentDataAaaProfileId) {
       setData && setData({
         ...data,
-        [props.type]: radiusValue
+        [props.type]: radiusValue,
+        [props.type + 'Id']: radiusValue.id
       })
     }
 

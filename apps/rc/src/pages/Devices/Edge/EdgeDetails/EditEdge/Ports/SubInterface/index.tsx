@@ -9,11 +9,10 @@ import { Loader, NoData, showActionModal, Table, TableProps, Tabs }             
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
-import { EdgeSubInterface, useTableQuery }                                                             from '@acx-ui/rc/utils'
+import { EdgePortWithStatus, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                   from '@acx-ui/user'
 
-import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 

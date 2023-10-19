@@ -425,6 +425,7 @@ export function specToDto (
     const totalHours = hour! + differenceInHours
     const rolloverHours = totalHours > 0 ? totalHours - 24 : Math.abs(totalHours)
     const differenceInDays = Math.ceil(rolloverHours / 24) * Math.sign(totalHours)
+    schedule.timezone = localTimezone
     schedule.hour = mod(totalHours, 24)
     if (frequency === ScheduleFrequency.Weekly) {
       schedule.day = mod(day! + differenceInDays, 7)

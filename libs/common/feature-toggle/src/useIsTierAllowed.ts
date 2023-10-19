@@ -8,7 +8,7 @@ import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode } fr
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'
-type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList'
+type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList' | 'alphaList'
 
 /* eslint-disable max-len, key-spacing */
 const defaultConfig: Partial<Record<TierKey, string[]>> = {
@@ -16,11 +16,12 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
   'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD'],
   'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
   'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
-  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-MESH', 'BETA-ZD2R1']
+  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-MESH', 'BETA-ZD2R1', 'AP-NEIGHBORS']
 }
 /* eslint-enable */
 
-export function useFFList (): { featureList?: string[], betaList?: string[] } {
+export function useFFList (): { featureList?: string[], betaList?: string[],
+  alphaList?: string[] } {
   const params = useParams()
   const jwtPayload = getJwtTokenPayload()
   // only if it's delgation flow and FF true then call -
@@ -58,17 +59,20 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   return {
     featureList: userFFConfig[featureKey],
-    betaList: betaEnabled? userFFConfig['betaList'] : []
+    betaList: betaEnabled? userFFConfig['betaList'] : [],
+    alphaList: userFFConfig['alphaList']
   }
 }
 
 export function useIsTierAllowed (featureId: string): boolean {
   const {
     featureList = [],
-    betaList = []
+    betaList = [],
+    alphaList = []
   } = useFFList()
-  const enabled = featureList?.includes(featureId) || betaList.includes(featureId)
+  const enabled =
+  featureList?.includes(featureId) || betaList.includes(featureId) || alphaList.includes(featureId)
   // eslint-disable-next-line max-len
-  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, ${featureId}: ${enabled}`)
+  useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList}, alphaList: ${alphaList}, ${featureId}: ${enabled}`)
   return enabled
 }
