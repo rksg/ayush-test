@@ -564,7 +564,6 @@ function Table <RecordType extends Record<string, any>> ({
     {hasRowActionsOffset && shouldRenderHeader && <UI.Header
       style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
       children={headerItems}
-      className='headerClass'
     />}
     <ProTable<RecordType>
       {...props}

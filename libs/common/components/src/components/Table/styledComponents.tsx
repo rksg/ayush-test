@@ -406,12 +406,8 @@ export const Header = styled.div`
     var(--sticky-offset) +
     (${actionsHeight} * var(--sticky-has-actions))
   );
-  z-index: 3;
+  z-index: 4;
   background-color: var(--acx-primary-white);
-  // uncomment it once the firefox update is released
-  // :has(.ant-picker.ant-picker-focused) {
-  //   z-index: 20;
-  // }
 `
 
 export const HeaderComps = styled.div`
