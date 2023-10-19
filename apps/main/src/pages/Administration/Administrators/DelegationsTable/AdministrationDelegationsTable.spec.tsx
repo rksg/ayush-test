@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }       from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -54,7 +54,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should be able to invite 3rd Party Administrator', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
@@ -77,7 +77,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     render(
       <Provider>
         <AdministrationDelegationsTable isSupport={false}/>
@@ -118,7 +118,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should be able to revoke 3rd party administrator invitation', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     const fakeDelegationListAccepted = [ ...fakeDelegationList ]
     fakeDelegationListAccepted[0].status = 'ACCEPTED'
 
@@ -155,7 +155,7 @@ describe('administrators delegation list', () => {
   })
 
   it('should render correctly when it is support user', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     const fakeDelegationListAccepted = [ ...fakeDelegationList ]
     fakeDelegationListAccepted[0].status = 'ACCEPTED'
 
@@ -196,7 +196,7 @@ describe('administrators delegation list', () => {
       return { data: delegationList }
     })
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <AdministrationDelegationsTable isSupport={false}/>
