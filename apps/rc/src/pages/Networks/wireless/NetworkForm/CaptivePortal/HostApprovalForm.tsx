@@ -28,6 +28,7 @@ import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AsteriskFormTitle }         from '../styledComponents'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
@@ -75,25 +76,29 @@ export function HostApprovalForm () {
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsFormLegacy.Title>
-        <span style={{ color: '#808284', fontSize: '12px' }}>Host Contacts</span>
+        <Row>
+          <AsteriskFormTitle>
+          Host Contacts
+          </AsteriskFormTitle>
+          { /* eslint-disable max-len */ }
+          <Tooltip title={
+            <FormattedMessage
+              values={{ br: () => <br />, b: (chunks) => <b>{chunks}</b> }}
+              defaultMessage={
+                `<b>Entire Domain:</b> Guests can request approval from any email address within the domain to connect to the network.<br></br>
+                    <b>Specific Email Contacts:</b> Guests must seek approval only from the provided email addresses to connect to the network.`
+              }
+            />
+          }
+          placement='bottom'>
+            <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: 3, marginTop: -3 }} />
+          </Tooltip>
+        </Row>
         {HAEmailList_FeatureFlag ?
           <Radio.Group onChange={changeDomainOrEmailList} value={domainOrEmail}>
             <Row>
               <Radio value={'domain'} style={{ marginBottom: '5px' }}>
               Entire Domain
-                { /* eslint-disable max-len */ }
-                <Tooltip title={
-                  <FormattedMessage
-                    values={{ br: () => <br />, b: (chunks) => <b>{chunks}</b> }}
-                    defaultMessage={
-                      `<b>Entire Domain:</b> Guests can request approval from any email address within the domain to connect to the network.<br></br>
-                    <b>Specific Email Contacts:</b> Guests must seek approval only from the provided email addresses to connect to the network.`
-                    }
-                  />
-                }
-                placement='bottom'>
-                  <QuestionMarkCircleOutlined style={{ width: '16px', marginLeft: 3, marginBottom: -5 }} />
-                </Tooltip>
               </Radio>
             </Row>
             {domainOrEmail === 'domain' &&
