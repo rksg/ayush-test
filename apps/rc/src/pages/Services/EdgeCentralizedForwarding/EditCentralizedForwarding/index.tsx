@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                                                                                            from '@acx-ui/components'
-import { EdgeCentralizedForwardingSetting, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { EdgeCentralizedForwardingSetting, getServiceListRoutePath } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
@@ -11,10 +11,12 @@ import { SettingsForm }                                              from '../Ce
 const EditEdgeCentralizedForwarding = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-    oper: ServiceOperation.LIST
-  })
+  // TODO: this should redirect to CF service list when page is ready
+  // const cfListRoute = getServiceRoutePath({
+  //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+  //   oper: ServiceOperation.LIST
+  // })
+  const cfListRoute = getServiceListRoutePath()
   const linkToServiceList = useTenantLink(cfListRoute)
   // TODO: waiting for API ready.
   // const [updateEdgeCentralizedForwarding] = useUpdateEdgeCentralizedForwardingMutation()

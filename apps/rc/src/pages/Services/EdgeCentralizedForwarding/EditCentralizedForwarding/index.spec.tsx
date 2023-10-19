@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { getServiceListRoutePath } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -61,10 +61,12 @@ describe('Edit Edge Centralized Forwarding service', () => {
     mockedSubmitDataGen.mockReturnValueOnce({
       serviceName: 'testEditCFService'
     })
-    const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
-      oper: ServiceOperation.LIST
-    })
+    // TODO: this should redirect to CF service list when page is ready
+    // const targetPath = getServiceRoutePath({
+    //   type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+    //   oper: ServiceOperation.LIST
+    // })
+    const targetPath = getServiceListRoutePath()
 
     render(<EditEdgeCentralizedForwarding />, {
       wrapper: Provider,
