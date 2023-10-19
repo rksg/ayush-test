@@ -10,13 +10,10 @@ import {
   EdgeIpModeEnum,
   EdgePort,
   EdgePortTypeEnum,
-  IpUtilsService,
+  edgePortIpValidator,
   isSubnetOverlap,
-  multicastIpAddressRegExp,
-  networkWifiIpRegExp,
   serverIpAddressRegExp,
   subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -48,32 +45,6 @@ export async function lanPortsubnetValidator (
     }
   }
   return Promise.resolve()
-}
-
-async function edgePortIpValidator (ip: string, subnetMask: string) {
-  const { $t } = getIntl()
-
-  try {
-    await networkWifiIpRegExp(ip)
-  } catch (error) {
-    return Promise.reject(error)
-  }
-
-  if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
-    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
-  } else {
-    // If the subnet is unavailable, no matter due to being empty or invalid, there's no further need to validate broadcast IP
-    return Promise.resolve()
-  }
-}
-
-async function isSubnetAvailable (subnetMask: string) {
-  try {
-    await subnetMaskIpRegExp(subnetMask)
-    return true
-  } catch {
-    return false
-  }
 }
 
 const { useWatch, useFormInstance } = Form

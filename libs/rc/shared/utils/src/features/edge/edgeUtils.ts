@@ -1,5 +1,9 @@
-import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeAlarmSummary }                      from '../../types'
+import { getIntl, validationMessages } from '@acx-ui/utils'
+
+import { IpUtilsService }                          from '../../ipUtilsService'
+import { EdgeServiceStatusEnum, EdgeStatusEnum }   from '../../models/EdgeEnum'
+import { EdgeAlarmSummary }                        from '../../types'
+import { networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -33,3 +37,39 @@ export const rebootableEdgeStatuses = [
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
 export const resettabaleEdgeStatuses = rebootableEdgeStatuses
+
+export async function edgePortIpValidator (ip: string, subnetMask: string) {
+  const { $t } = getIntl()
+
+  try {
+    console.log('validate ip')
+    await networkWifiIpRegExp(ip)
+  } catch (error) {
+    console.log('return ip reject')
+    return Promise.reject(error)
+  }
+
+  if (await isSubnetAvailable(subnetMask) && IpUtilsService.isBroadcastAddress(ip, subnetMask)) {
+    console.log('return broadcast reject')
+    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
+  } else {
+    // If the subnet is unavailable, either because it's empty or invalid, there's no need to validate broadcast IP further
+    console.log('return resolve')
+    return Promise.resolve()
+  }
+}
+
+async function isSubnetAvailable (subnetMask: string) {
+  if (!subnetMask) {
+    return false
+  }
+
+  try {
+    await subnetMaskIpRegExp(subnetMask)
+    console.log('return true')
+    return true
+  } catch {
+    console.log('return false')
+    return false
+  }
+}
