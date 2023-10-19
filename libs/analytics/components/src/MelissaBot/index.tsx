@@ -22,6 +22,8 @@ const scrollToBottom=()=>{
   }
 }
 
+const MELISSA_URL_ORIGIN=window.location.origin
+
 export function MelissaBot (){
   const { $t } = useIntl()
   const { pathname } = useLocation()
@@ -43,6 +45,12 @@ export function MelissaBot (){
   const onClose = () => {
     setOpen(false)
   }
+  const doAfterResponse = ()=>{
+    scrollToBottom()
+    if(inputRef.current){
+      inputRef.current.focus()
+    }
+  }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
   // const title = $t({ defaultMessage: 'Melissa infused with ChatGPT' })
   const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>Melissa</span>
@@ -54,8 +62,11 @@ export function MelissaBot (){
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const askMelissa = (body:any) => {
     const { userId } = getUserProfileRA()
+    const MELISSA_URL_BASE_PATH='/analytics'
     // eslint-disable-next-line max-len
-    fetch(`${window.location.origin}/analytics/api/ask-mlisa/v1/integrations/messenger/webhook/melissa-agent/sessions/dfMessenger-${userId}`,
+    const MELISSA_API_ENDPOINT=`/api/ask-mlisa/v1/integrations/messenger/webhook/melissa-agent/sessions/dfMessenger-${userId}`
+    const MELISSA_API_URL=`${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}${MELISSA_API_ENDPOINT}`
+    fetch(MELISSA_API_URL,
       { method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,15 +79,30 @@ export function MelissaBot (){
       setResponseCount(responseCount+1)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
-      messages.push({ type: 'bot', contentList: fulfillmentMessages })
+      if(fulfillmentMessages){
+        messages.push({ type: 'bot', contentList: fulfillmentMessages })
+        setMessages(messages)
+        setIsInputDisabled(false)
+        defer(doAfterResponse)
+      }else{
+        const errorMessage:string=get(json,'error')
+        if(errorMessage)
+          throw new Error(errorMessage)
+        else
+          throw new Error('Something went wrong.')
+      }
+    }).catch((error)=>{
+      setIsReplying(false)
+      // eslint-disable-next-line no-console
+      console.error(error)
+      const errorMessage: content = {
+        type: 'bot',
+        contentList: [{ text: { text: [error.message] } }]
+      }
+      messages.push(errorMessage)
       setMessages(messages)
       setIsInputDisabled(false)
-      defer(()=>{
-        scrollToBottom()
-        if(inputRef.current){
-          inputRef.current.focus()
-        }
-      })
+      defer(doAfterResponse)
     })
   }
   useEffect(()=>{
@@ -112,8 +138,6 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  // eslint-disable-next-line no-console
-  console.log({ showFloatingButton })
 
   return (
     <>{showFloatingButton && <img
