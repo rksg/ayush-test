@@ -4,7 +4,6 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }                 from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   usePolicyTemplateListQuery
@@ -16,6 +15,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { AdaptivePolicyFormDrawer } from './AdaptivePolicyFormDrawer'
 

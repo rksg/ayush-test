@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
 import moment                        from 'moment'

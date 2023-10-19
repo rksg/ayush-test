@@ -1,6 +1,8 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { PassphraseFormatEnum, PolicyDefaultAccess } from '@acx-ui/rc/utils'
+import { PassphraseFormatEnum } from '../../models/PassphraseFormatEnum'
+import { PolicyDefaultAccess }  from '../../types'
+
 
 export const passphraseFormatDescription: Record<PassphraseFormatEnum, MessageDescriptor> = {
   // eslint-disable-next-line max-len

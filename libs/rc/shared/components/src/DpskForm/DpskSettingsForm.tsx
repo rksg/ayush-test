@@ -10,10 +10,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import {
-  ExpirationDateSelector, useDpskNewConfigFlowParams
-} from '@acx-ui/rc/components'
-import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery } from '@acx-ui/rc/services'
+import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery }                 from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -22,12 +19,15 @@ import {
   PolicyDefaultAccess,
   DeviceNumberType,
   unlimitedNumberOfDeviceLabel,
-  NEW_MAX_DEVICES_PER_PASSPHRASE, 
+  NEW_MAX_DEVICES_PER_PASSPHRASE,
   OLD_MAX_DEVICES_PER_PASSPHRASE,
   defaultAccessLabelMapping,
   passphraseFormatDescription
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ExpirationDateSelector }     from '../ExpirationDateSelector'
+import { useDpskNewConfigFlowParams } from '../services/useDpskNewConfigFlowParams'
 
 import { FieldSpace } from './styledComponents'
 

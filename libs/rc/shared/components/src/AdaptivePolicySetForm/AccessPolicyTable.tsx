@@ -7,7 +7,6 @@ import { useParams }                     from 'react-router-dom'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Drag }                      from '@acx-ui/icons'
-import { SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery,
   useGetPrioritizedPoliciesQuery,
@@ -20,6 +19,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
 

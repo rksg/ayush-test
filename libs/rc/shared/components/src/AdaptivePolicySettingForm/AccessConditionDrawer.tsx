@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input, Radio, Select, Space, TimePicker } from 'antd'
 import moment                                            from 'moment-timezone'
@@ -8,9 +8,10 @@ import { Drawer, Loader }                              from '@acx-ui/components'
 import { useLazyGetPolicyTemplateAttributesListQuery } from '@acx-ui/rc/services'
 import {
   AccessCondition,
-  checkObjectNotExists, CriteriaFormData,
+  CriteriaFormData,
   CriteriaOption, EvaluationRule,
-  RuleAttribute
+  RuleAttribute,
+  checkObjectNotExists
 } from '@acx-ui/rc/utils'
 
 

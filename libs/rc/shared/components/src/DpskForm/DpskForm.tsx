@@ -9,8 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useGetDpskListQuery,
@@ -34,6 +33,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { useDpskNewConfigFlowParams } from '../services/useDpskNewConfigFlowParams'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'

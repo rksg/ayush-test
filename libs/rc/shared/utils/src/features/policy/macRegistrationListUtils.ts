@@ -1,11 +1,8 @@
 import moment from 'moment-timezone'
 
-import {
-  ExpirationDateEntity, ExpirationMode,
-  ExpirationType,
-  MacRegistrationPool
-} from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ExpirationDateEntity, ExpirationMode, ExpirationType, MacRegistrationPool } from '../..'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',

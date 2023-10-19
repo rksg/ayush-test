@@ -1,10 +1,6 @@
 import moment from 'moment-timezone'
 
-import {
-  ExpirationDateEntity, ExpirationMode,
-  ExpirationType,
-  MacRegistrationPool
-} from '@acx-ui/rc/utils'
+import { ExpirationDateEntity, ExpirationMode, ExpirationType, MacRegistrationPool } from '../..'
 
 import { transferDataToExpirationFormFields, transferExpirationFormFieldsToData } from './macRegistrationListUtils'
 
