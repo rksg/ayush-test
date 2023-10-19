@@ -121,7 +121,8 @@ export enum ServiceType {
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
-  RESIDENT_PORTAL = 'Resident Portal'
+  RESIDENT_PORTAL = 'Resident Portal',
+  EDGE_CENTRALIZED_FORWARDING = 'Centralized Forwarding'
 }
 
 export enum ServiceStatus {

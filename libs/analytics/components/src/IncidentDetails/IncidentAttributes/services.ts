@@ -15,6 +15,7 @@ export interface ImpactedClient {
   ssid: string
   hostname: string
   username: string
+  osType: string
 }
 
 export interface RequestPayload {
@@ -63,6 +64,7 @@ export const impactedApi = dataApi.injectEndpoints({
                 ssid
                 hostname
                 username
+                osType
               }
             }
           }
