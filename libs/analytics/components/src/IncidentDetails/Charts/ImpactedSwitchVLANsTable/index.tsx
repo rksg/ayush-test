@@ -229,7 +229,7 @@ function MismatchedDevice ({ data, gridArea }: {
     <UI.PopoverTitle children={$t({ defaultMessage: 'VLANs' })} />
     <Table
       columns={columns}
-      dataSource={data.vlans}
+      dataSource={uniqueVlans(data.vlans, data.untaggedVlan)}
       rowKey='id'
       pagination={{ pageSize: 5, showSizeChanger: false, hideOnSinglePage: true }}
     />
