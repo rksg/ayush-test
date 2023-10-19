@@ -7,8 +7,7 @@ import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
-import { Modal, Subtitle }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Modal, Subtitle } from '@acx-ui/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,

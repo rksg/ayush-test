@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
-  Button,
   Table,
   TableProps,
-  Loader,
-  Drawer,
-  Subtitle
+  Drawer
 } from '@acx-ui/components'
-import { useGetSwitchAclsQuery, useGetSwitchFirmwareStatusListQuery, useLazyGetSwitchFirmwareStatusListQuery }                                       from '@acx-ui/rc/services'
-import { Acl, FirmwareSwitchVenue, SwitchFirmwareStatus, transformTitleCase, useTableQuery } from '@acx-ui/rc/utils'
-import { Typography } from 'antd'
+import { useLazyGetSwitchFirmwareStatusListQuery }   from '@acx-ui/rc/services'
+import { FirmwareSwitchVenue, SwitchFirmwareStatus } from '@acx-ui/rc/utils'
+
 import { parseSwitchVersion } from '../../../FirmwareUtils'
 
 export interface UpdateStatusDrawerProps {
@@ -24,8 +22,8 @@ export interface UpdateStatusDrawerProps {
 
 export function UpdateStatusDrawer (props: UpdateStatusDrawerProps) {
   const { $t } = useIntl()
-  const [currentRow, setCurrentRow] = useState({} as Acl)
-  const [drawerVisible, setDrawerVisible] = useState(false)
+  // const [currentRow, setCurrentRow] = useState({} as Acl)
+  // const [drawerVisible, setDrawerVisible] = useState(false)
 
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
     useState([] as SwitchFirmwareStatus[])

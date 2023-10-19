@@ -225,7 +225,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       transformResponse (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) {
         return {
-          data: result.upgradeVenueViewList,
+          data: result.upgradeVenueViewList
         } as unknown as TableResult<FirmwareSwitchVenue>
       },
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -376,7 +376,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
         return {
-          data: result.upgradeSwitchViewList,
+          data: result.upgradeSwitchViewList
         } as unknown as TableResult<SwitchFirmware>
       }
       // transformResponse () {

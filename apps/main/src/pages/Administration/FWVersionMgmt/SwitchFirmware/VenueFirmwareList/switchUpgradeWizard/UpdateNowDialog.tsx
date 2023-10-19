@@ -1,17 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
+
 import { Form, Radio, RadioChangeEvent, Space } from 'antd'
-import { useForm }                              from 'antd/lib/form/Form'
 import { useIntl }                              from 'react-intl'
 
 import {
-  Modal, Subtitle, useStepFormContext
+  Subtitle, useStepFormContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  FirmwareSwitchVenue,
-  FirmwareVersion,
-  UpdateScheduleRequest
+  FirmwareVersion
 } from '@acx-ui/rc/utils'
 
 
@@ -20,9 +18,6 @@ import * as UI                   from '../styledComponents'
 
 export interface UpdateNowDialogProps {
   visible: boolean,
-  // onCancel: () => void,
-  // onSubmit: () => void,
-  // data: FirmwareSwitchVenue[],
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
@@ -37,7 +32,6 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
     nonIcx8200Count, icx8200Count } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
-  const enableSwitchTwoVersionUpgrade = true//useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
   const [disableSave, setDisableSave] = useState(true)
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)

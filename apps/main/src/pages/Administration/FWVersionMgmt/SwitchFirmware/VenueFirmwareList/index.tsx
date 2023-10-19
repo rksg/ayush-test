@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react'
+
 
 import { Form, Tooltip, Typography } from 'antd'
 import * as _                        from 'lodash'
@@ -19,7 +21,7 @@ import {
   useGetSwitchCurrentVersionsQuery,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
-  useGetSwitchFirmwarePredownloadQuery,
+  useGetSwitchFirmwarePredownloadQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -290,7 +292,7 @@ export const VenueFirmwareTable = (
       return false// !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
-    onClick: (selectedRows, clearSelection) => {
+    onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       setUpdateNowWizardVisible(true)
       setWizardType(SwitchFirmwareWizardType.skip)

@@ -1,5 +1,3 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-
 import { VenueFirmwareList }       from './VenueFirmwareList'
 import { VenueFirmwareListLegacy } from './VenueFirmwareListLegacy'
 import VersionBanner               from './VersionBanner'
@@ -10,7 +8,6 @@ const SwitchFirmware = () => {
     <>
       <VersionBanner />
       {allowUpgradeBySwitch ?
-        // <VenueFirmwareList /> :
         <VenueFirmwareList /> :
         <VenueFirmwareListLegacy />}
     </>

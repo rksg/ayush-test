@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
@@ -7,8 +8,7 @@ import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
-import { Modal, Subtitle, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
@@ -28,7 +28,6 @@ import type { RangePickerProps } from 'antd/es/date-picker'
 
 export interface ScheduleUpdatesDialogProps {
   visible: boolean,
-  // data: FirmwareSwitchVenue[]
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
@@ -39,7 +38,7 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const { form } = useStepFormContext()
-  const { visible, availableVersions, nonIcx8200Count, icx8200Count,
+  const { availableVersions, nonIcx8200Count, icx8200Count,
     currentSchedule } = props
   const [selectedDateMoment, setSelectedDateMoment] = useState<moment.Moment>()
   const [currentScheduleDateString, setCurrentScheduleDateString] = useState('')

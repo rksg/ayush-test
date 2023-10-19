@@ -303,7 +303,7 @@ export const NestedSwitchFirmwareTable = (
         size='middle'
         placeholder={intl.$t({ defaultMessage: 'Search Switch, Model' })}
         prefix={<SearchOutlined />}
-        style={{ width: '220px', maxHeight: '180px', marginBottom: '5px'}}
+        style={{ width: '220px', maxHeight: '180px', marginBottom: '5px' }}
         data-testid='search-input'
         onChange={(ev: ChangeEvent) => {
           const text = (ev.target as HTMLInputElement).value

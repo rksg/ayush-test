@@ -18,7 +18,6 @@ import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   SwitchFirmware,
-  SwitchFirmwareStatusType,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -50,26 +49,6 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
   const params = useParams()
   const { wizardType } = props
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
-  const handleAddCli = async () => {
-    try {
-      await updateVenueSchedules({
-        params: { ...params },
-        payload: {
-          venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-          switchIdList: upgradeSwitchList,
-          switchVersion: form.getFieldValue('switchVersion') || '',
-          switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-        }
-      }).unwrap()
-      form.resetFields()
-      props.setVisible(false)
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  // const nestedData = form.getFieldValue('nestedData')
-  // const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
 
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const filterVersions = function (availableVersions: FirmwareVersion[]) {
@@ -161,7 +140,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
-        async onOk() {
+        async onOk () {
           try {
             await skipSwitchUpgradeSchedules({
               params: { ...params },
