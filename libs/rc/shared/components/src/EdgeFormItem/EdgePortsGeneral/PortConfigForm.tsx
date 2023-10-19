@@ -5,23 +5,12 @@ import TextArea                                                from 'antd/lib/in
 import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsFormLegacy } from '@acx-ui/components'
-import {
-  EdgeIpModeEnum,
-  EdgePort,
-  EdgePortTypeEnum,
-  edgePortIpValidator,
-  isSubnetOverlap,
-  serverIpAddressRegExp,
-  subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsFormLegacy }                                                                                                                       from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import * as UI from './styledComponents'
 
-import { PortConfigFormType } from '.'
-
-export interface EdgePortWithStatus extends EdgePort {
-  statusIp: string
-}
+import { EdgePortConfigFormType } from '.'
 
 interface ConfigFormProps {
   formListKey: number
@@ -52,7 +41,7 @@ const { useWatch, useFormInstance } = Form
 export const PortConfigForm = (props: ConfigFormProps) => {
   const { index, formListKey } = props
   const { $t } = useIntl()
-  const form = useFormInstance<PortConfigFormType>()
+  const form = useFormInstance<EdgePortConfigFormType>()
 
   const getFieldPath = useCallback((fieldName: string) =>
     [formListKey, fieldName],
