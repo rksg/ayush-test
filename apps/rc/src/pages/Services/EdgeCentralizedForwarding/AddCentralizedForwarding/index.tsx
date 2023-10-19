@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                                                  from '@acx-ui/components'
-import { getServiceListRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
+import { PageHeader }                 from '@acx-ui/components'
+import { getServiceListRoutePath }    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import CentralizedForwardingForm, { CentralizedForwardingFormModel } from '../CentralizedForwardingForm'
 import { ScopeForm }                                                 from '../CentralizedForwardingForm/ScopeForm'
