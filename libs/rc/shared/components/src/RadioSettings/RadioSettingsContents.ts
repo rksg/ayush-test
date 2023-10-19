@@ -17,6 +17,12 @@ export interface ChannelBars {
   upper5GChannels: string[]
 }
 
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean
+}
+
 export const channelSelectionMethodsOptions = [
   { label: defineMessage({ defaultMessage: 'ChannelFly' }), value: 'CHANNELFLY' },
   { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }

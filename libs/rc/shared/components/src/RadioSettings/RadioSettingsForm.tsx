@@ -5,12 +5,12 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox, Radio } from 'antd'
 import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
 import { FormattedMessage, useIntl }                                 from 'react-intl'
 
-import { cssStr, Tooltip }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { InformationOutlined, QuestionMarkCircleOutlined }       from '@acx-ui/icons'
-import { isAPLowPower, useWifiCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApViewModel, AFCStatus }                                from '@acx-ui/rc/utils'
-import { useParams }                                             from '@acx-ui/react-router-dom'
+import { cssStr, Tooltip }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useWifiCapabilitiesQuery, useGetApQuery }         from '@acx-ui/rc/services'
+import { ApViewModel }                                     from '@acx-ui/rc/utils'
+import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import {
   ApRadioTypeEnum,
@@ -21,7 +21,8 @@ import {
   mgmtTxRate6GOptions,
   txPowerAdjustment6GOptions,
   apChannelSelectionMethodsOptions,
-  apChannelSelectionMethods6GOptions
+  apChannelSelectionMethods6GOptions,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
@@ -36,12 +37,9 @@ export function RadioSettingsForm (props:{
   isUseVenueSettings?: boolean,
   onGUIChanged?: (fieldName: string) => void,
   isAFCEnabled? : boolean,
-  ap?: ApViewModel
+  LPIButtonText?: LPIButtonText
 }) {
   const [isOutdoor, setIsOutdoor] = useState(false)
-  const [LPIisVenueSetting, setLPIisVenueSetting] = useState([] as JSX.Element[])
-  const [LPIStandardModeButtonText, setLPIStandardModeButtonText] = useState([] as JSX.Element[])
-  const [LPILowPowerModeButtonText, setLPILowPowerModeButtonText] = useState([] as JSX.Element[])
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
@@ -53,7 +51,7 @@ export function RadioSettingsForm (props:{
     isUseVenueSettings = false,
     onGUIChanged,
     isAFCEnabled = true,
-    ap
+    LPIButtonText
   } = props
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -110,9 +108,9 @@ export function RadioSettingsForm (props:{
   }, [] )
 
   useEffect(()=> {
-    setLPIisVenueSetting(displayLPIuseVenueSettingRadioButtonText())
-    setLPIStandardModeButtonText(displayStandardModeRadioButtonText())
-    setLPILowPowerModeButtonText(displayLowPowerModeRadioButtonText())
+    if(LPIButtonText?.LPIModeState !== lowPowerIndoorModeEnabled) {
+      LPIButtonText?.LPIModeOnChange(lowPowerIndoorModeEnabled)
+    }
   }, [lowPowerIndoorModeEnabled])
 
 
@@ -135,81 +133,6 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
-  function displayLPIuseVenueSettingRadioButtonText () : JSX.Element[] {
-    const buttonText = [] as JSX.Element[]
-    if (lowPowerIndoorModeEnabled) {
-      buttonText.push(
-        <p style={{ fontSize: '12px', margin: '0px' }}>
-          {$t({ defaultMessage: 'Low power' })}
-        </p>
-      )
-    } else {
-      buttonText.push(
-        <p style={{ fontSize: '12px', margin: '0px' }}>
-          {$t({ defaultMessage: 'Standard power' })}
-        </p>
-      )
-    }
-    return buttonText
-  }
-
-  function displayLowPowerModeRadioButtonText () : JSX.Element[] {
-    const buttonText = [] as JSX.Element[]
-    buttonText.push(
-      <p style={{ fontSize: '12px', margin: '0px' }}>
-        {$t({ defaultMessage: 'Low power' })}
-      </p>
-    )
-    return buttonText
-  }
-
-  function displayStandardModeRadioButtonText () : JSX.Element[] {
-
-    const afcInfo = ap?.apStatusData?.afcInfo || undefined
-
-    const buttonText = [] as JSX.Element[]
-
-    if (context === 'ap' && isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled) {
-      switch(afcInfo?.afcStatus) {
-        case AFCStatus.WAIT_FOR_LOCATION:
-          buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message' data-testid='geo-warning-message'>
-              {$t({ defaultMessage: 'Standard power [Geo Location not set]' })}
-            </p>
-          )
-          break
-        case AFCStatus.WAIT_FOR_RESPONSE:
-          buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='response-warning-message' data-testid='response-warning-message'>
-              {$t({ defaultMessage: 'Standard power [Pending response from the AFC server]' })}
-            </p>
-          )
-          break
-        case AFCStatus.REJECTED:
-          buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='reject-warning-message' data-testid='reject-warning-message'>
-              {$t({ defaultMessage: 'Standard power [No channels available]' })}
-            </p>
-          )
-          break
-        default:
-          buttonText.push(
-            <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='reject-warning-message' data-testid='default-message'>
-              {$t({ defaultMessage: 'Standard power' })}
-            </p>
-          )
-      }
-      return buttonText
-    }
-
-    buttonText.push(
-      <p style={{ fontSize: '12px', margin: '0px' }}>
-        {$t({ defaultMessage: 'Standard power' })}
-      </p>
-    )
-    return buttonText
-  }
-
   return (
     <>
       { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
@@ -228,16 +151,24 @@ export function RadioSettingsForm (props:{
 
           </Tooltip>
           <Form.Item
-            name={lowPowerIndoorModeEnabledFieldName}>
+            name={lowPowerIndoorModeEnabledFieldName}
+            initialValue={false}>
             {isUseVenueSettings ?
-              LPIisVenueSetting :
+              LPIButtonText?.buttonText :
               <Radio.Group
                 disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => onChangedByCustom('lowPowerIndoorModeEnabled')}
+                onChange={() => {
+                  onChangedByCustom('lowPowerIndoorModeEnabled')
+                  LPIButtonText?.LPIModeOnChange()
+                }}
               >
                 <Space direction='vertical'>
-                  <Radio value={false}>{LPIStandardModeButtonText}</Radio>
-                  <Radio value={true}>{LPILowPowerModeButtonText}</Radio>
+                  <Radio value={false}>{LPIButtonText?.buttonText}</Radio>
+                  <Radio value={true}>
+                    <p style={{ fontSize: '12px', margin: '0px' }}>
+                      {$t({ defaultMessage: 'Low power' })}
+                    </p>
+                  </Radio>
                 </Space>
               </Radio.Group>}
           </Form.Item>
