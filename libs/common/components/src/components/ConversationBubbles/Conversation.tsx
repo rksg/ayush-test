@@ -1,4 +1,3 @@
-import { Collapse }      from 'antd'
 import { CSSProperties } from 'styled-components'
 
 import * as UI from './styledComponents'
@@ -14,7 +13,7 @@ export interface ConversationProps {
   style: CSSProperties
   isReplying: boolean
 }
-const { Panel } = Collapse
+const { Panel } = UI.Collapse
 
 function getLink (text: string): string {
   let doc = new DOMParser().parseFromString(text, 'text/html')
@@ -38,10 +37,10 @@ function Conversation ({
             ))
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
-                res.type === 'accordion' ? <Collapse>
+                res.type === 'accordion' ? <UI.Collapse>
                   <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
                     <img src={getLink(res.text)} alt={res.title}></img>
-                  </Panel></Collapse> :
+                  </Panel></UI.Collapse> :
                   <UI.Bot><a href={'#'}>{res.text}</a></UI.Bot>
               ))
             ))}

@@ -1,39 +1,55 @@
-import styled from 'styled-components/macro'
-// import { Collapse as AcxCollapse } from '@acx-ui/components'
+import { Collapse as AntdCollapse } from 'antd'
+import styled                       from 'styled-components/macro'
 
-// export const Collapse = styled(AcxCollapse)`
-//   width: 416px;
-//   border: 1px solid #E3E4E5;
-//   margin-top: 16px;
-//   padding: 10px;
-//   border-radius: 5px;
-//   .ant-collapse-content {
-//     background-color: var(--acx-primary-white) !important;
-//   }
-//   .ant-collapse-content-box {
-//     padding: 0px 2px 2px 2px;
-//   }
-//   .ant-collapse-item .ant-collapse-header {
-//     border-bottom: none !important;
-//     padding: 10px !important;
-//     font-size: 14px !important;
-//   }
-//   .ant-collapse-header-text p {
-//     margin-bottom: 0;
-//     font-size: 13px;
-//     font-weight: normal;
-//     padding-top: 5px;
-//   }
-// `
+export const Collapse = styled(AntdCollapse)`
+  width: 416px;
+  border: 1px solid #E3E4E5;
+  margin-top: 16px;
+  border-radius: 5px;
+  .ant-collapse-content-box {
+    padding: 0px 2px 2px 2px;
+    border-top: none !important;
+    text-align: center;
+  }
+  .ant-collapse-content {
+    border-top: none !important;
+  }
+  .ant-collapse-item {
+    border-bottom: none !important;
+  }
+  .ant-collapse-item .ant-collapse-header {
+    background: linear-gradient(0deg, #F7F7F7, #F7F7F7);
+    border-bottom: none !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: stretch;
+    .ant-collapse-expand-icon {
+      display: flex;
+      align-items: center;
+      .ant-collapse-arrow {
+        font-size: 18px;
+      }
+    }
+  }
+  .ant-collapse-header-text p {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: normal;
+    padding-top: 5px;
+  }
+`
 
-// export const Panel = styled(AcxCollapse.Panel)`
-//   .ant-collapse-header {
-//     padding: 13px 10px !important;
-//   }
-//   .ant-collapse-header > .ant-collapse-expand-icon > .ant-collapse-arrow {
-//     right: 18px !important;
-//   }
-// `
+export const Panel = styled(AntdCollapse.Panel)`
+  .ant-collapse-header {
+    padding: 13px 10px !important;
+  }
+  .ant-collapse-header > .ant-collapse-expand-icon > .ant-collapse-arrow {
+    right: 18px !important;
+  }
+`
 
 export const Wrapper = styled.div`
   border-radius: 8px;
