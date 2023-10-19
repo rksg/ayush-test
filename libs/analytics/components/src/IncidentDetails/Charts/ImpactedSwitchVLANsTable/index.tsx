@@ -91,10 +91,7 @@ function VLANsTable (props: {
       onChange ([selected]) { props.onChange(Number(selected)) }
     }}
     tableAlertRender={false}
-    pagination={{
-      pageSize: rows?.length,
-      hideOnSinglePage: true
-    }}
+    pagination={{ defaultPageSize: rows?.length }}
   />
 }
 
@@ -231,7 +228,7 @@ function MismatchedDevice ({ data, gridArea }: {
       columns={columns}
       dataSource={uniqueVlans(data.vlans, data.untaggedVlan)}
       rowKey='id'
-      pagination={{ pageSize: 5, showSizeChanger: false, hideOnSinglePage: true }}
+      pagination={{ defaultPageSize: 5, showSizeChanger: false }}
     />
     {listNotMatched && <UI.FootNote
       // eslint-disable-next-line max-len

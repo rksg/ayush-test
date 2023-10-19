@@ -126,6 +126,8 @@ export const Highlight = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: 700;
+  text-align: center;
+  height: 24px;
 
   margin: 0 20px; // prevent text render close to edge
 `
