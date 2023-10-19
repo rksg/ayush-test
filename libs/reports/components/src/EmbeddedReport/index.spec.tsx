@@ -1,13 +1,14 @@
 import { rest } from 'msw'
 
 import { RadioBand }                          from '@acx-ui/components'
+import { showActionModal }                    from '@acx-ui/components'
 import * as config                            from '@acx-ui/config'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
 import { Provider, store }                    from '@acx-ui/store'
-import { render, mockServer }                 from '@acx-ui/test-utils'
-import { NetworkPath }                        from '@acx-ui/utils'
+import { render, mockServer, act }            from '@acx-ui/test-utils'
+import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
@@ -21,15 +22,18 @@ jest.mock('@superset-ui/embedded-sdk', () => ({
 jest.mock('@acx-ui/utils', () => ({
   __esModule: true,
   ...jest.requireActual('@acx-ui/utils'),
-  useLocaleContext: () => ({
-    messages: {
-      locale: 'en'
-    }
-  })
+  useLocaleContext: jest.fn()
 }))
+const localeContext = jest.mocked(useLocaleContext)
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
+
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showActionModal: jest.fn()
+}))
+const actionModal = jest.mocked(showActionModal)
 
 const guestTokenReponse = {
   token: 'some token'
@@ -77,6 +81,11 @@ describe('EmbeddedDashboard', () => {
   const params = { tenantId: 'tenant-id' }
   it('should render the dashboard', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
 
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
@@ -106,6 +115,11 @@ describe('EmbeddedDashboard', () => {
   })
   it('should render the dashboard rls clause', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    localeContext.mockReturnValue({
+      messages: { locale: 'en' },
+      lang: 'en-US',
+      setLang: () => {}
+    })
 
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
@@ -116,6 +130,66 @@ describe('EmbeddedDashboard', () => {
         reportName={ReportType.AP_DETAIL}
         rlsClause='venue filter'/>
     </Provider>, { route: { params } })
+  })
+
+  describe('401 Unauthorized', () => {
+    beforeAll(() => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          ...window.location,
+          reload: jest.fn()
+        }
+      })
+    })
+
+    let addEventListenerMock: jest.SpyInstance
+    let removeEventListenerMock: jest.SpyInstance
+
+    beforeEach(() => {
+      addEventListenerMock = jest.spyOn(window, 'addEventListener')
+      removeEventListenerMock = jest.spyOn(window, 'removeEventListener')
+    })
+
+    afterEach(() => {
+      addEventListenerMock.mockRestore()
+      removeEventListenerMock.mockRestore()
+      jest.resetAllMocks()
+    })
+
+    it('should call showExpiredSessionModal when event type is unauthorized', () => {
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'unauthorized' } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(actionModal).toHaveBeenCalled()
+
+      actionModal.mock.calls[0][0].onOk!()
+      expect(window.location.reload).toHaveBeenCalled()
+    })
+
+    it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {
+      const { unmount } = render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message', { data: { type: 'something' } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(actionModal).not.toHaveBeenCalled()
+
+      unmount()
+      expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+    })
   })
 })
 
