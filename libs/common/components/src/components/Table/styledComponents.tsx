@@ -136,6 +136,7 @@ const toolbarHeight = '45px'
 
 type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+  $stickyHeaders?: boolean
   $stickyPagination?: boolean
 }
 
@@ -218,12 +219,6 @@ const tallStyle = css<StyledTable>`
       order: 2;
       height: ${toolbarHeight};
       pointer-events: none; // prevent from blocking table header
-      position: sticky;
-      top: calc(
-        var(--sticky-offset) +
-        (${actionsHeight} * var(--sticky-has-actions)) +
-        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
-      );
       z-index: 4;
       overflow: visible;
       &-container {
@@ -242,11 +237,6 @@ const tallStyle = css<StyledTable>`
     &-alert {
       order: 1;
       margin: 0px;
-      position: sticky;
-      top: calc(
-        var(--sticky-offset) +
-        (${actionsHeight} * var(--sticky-has-actions))
-      );
       z-index: 4;
       overflow: visible;
 
@@ -401,11 +391,6 @@ export const Header = styled.div`
   height: ${rowActionsHeight};
   display: flex;
   justify-content: space-between;
-  position: sticky;
-  top: calc(
-    var(--sticky-offset) +
-    (${actionsHeight} * var(--sticky-has-actions))
-  );
   z-index: 4;
   background-color: var(--acx-primary-white);
 `
@@ -554,6 +539,7 @@ export const Wrapper = styled.div<StyledTable>`
   }
 
   ${props => styles[props.$type]}
+  ${props => props.$stickyHeaders && stickyHeaders}
   ${props => props.$stickyPagination && stickyPagination}
 `
 
@@ -582,10 +568,39 @@ export const ActionsContainer = styled(Space)`
   display: flex;
   justify-content: flex-end;
   padding: 3px 0;
-  position: sticky;
-  top: var(--sticky-offset);
   background-color: var(--acx-primary-white);
   z-index: 3;
+`
+
+const stickyHeaders = css`
+  .ant-pro-table {
+    &-list-toolbar {
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions)) +
+        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
+      );
+    }
+    &-alert {
+      position: sticky;
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions))
+      );
+    }
+  }
+  ${Header} {
+    position: sticky;
+    top: calc(
+      var(--sticky-offset) +
+      (${actionsHeight} * var(--sticky-has-actions))
+    );
+  }
+  ${ActionsContainer} {
+    position: sticky;
+    top: var(--sticky-offset);
+  }
 `
 
 export const disableStickyHeaders = css`
@@ -633,6 +648,7 @@ export const disableStickyPagination = css`
   .ant-pro-table {
     .ant-pagination {
       position: relative;
+      bottom: unset;
       background-color: var(--acx-primary-white);
     }
   }
