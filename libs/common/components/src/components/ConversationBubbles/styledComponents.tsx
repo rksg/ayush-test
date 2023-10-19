@@ -75,7 +75,7 @@ export const User = styled.div`
   padding: 10px;
 `
 export const Bot = styled.div`
-  width: 327px;
+  width: 377px;
   height: auto;
   border: 1px solid #E3E4E5;
   border-radius: 5px;
