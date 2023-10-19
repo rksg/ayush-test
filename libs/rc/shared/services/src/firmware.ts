@@ -368,7 +368,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       //     totalCount: data?.length
       //   } as unknown as TableResult<SwitchFirmwareStatus>
       // }
-     }),
+    }),
 
 
 
