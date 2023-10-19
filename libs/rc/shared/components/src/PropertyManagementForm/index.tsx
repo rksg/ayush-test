@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { FetchBaseQueryError }                                                    from '@reduxjs/toolkit/dist/query'
 import { Col, Form, FormInstance, Input, Row, Select, Space, Switch, Typography } from 'antd'
@@ -136,6 +136,44 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
   const personaGroupHasBound = personaGroupId && hasUnits
+
+  useEffect(() => {
+    if (propertyConfigsQuery.isLoading || !propertyConfigsQuery.data) return
+    let residentPortalType = ResidentPortalType.NO_PORTAL
+    let enabled
+
+    // If the user disable the Property, it will get 404 for this venue.
+    // Therefore, we need to assign to `false` manually to prevent cache issue.
+    if ((propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404) {
+      enabled = false
+    } else {
+      enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
+      form.setFieldsValue(propertyConfigsQuery.data)
+
+      const {
+        unitConfig,
+        residentPortalId
+      } = propertyConfigsQuery.data
+
+      if (unitConfig) {
+        const { residentPortalAllowed = false, residentApiAllowed = false } = unitConfig
+        if (residentPortalId) {
+          residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+        } else {
+          if (residentApiAllowed) {
+            if (residentPortalAllowed) {
+              residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+            } else {
+              residentPortalType = ResidentPortalType.OWN_PORTAL
+            }
+          }
+        }
+      }
+
+    }
+    form.setFieldValue('residentPortalType', residentPortalType)
+    setIsPropertyEnable(enabled)
+  }, [propertyConfigsQuery.data])
 
   const residentPortalTypeOptions = [
     {
