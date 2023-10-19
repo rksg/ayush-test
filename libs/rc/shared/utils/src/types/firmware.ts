@@ -195,10 +195,11 @@ export interface FirmwareSwitchVenue {
   lastSkippedVersions?: SkippedVersion[];
   versionHistory?: VersionHistory[];
   lastScheduleUpdateTime: string;
-  switchCount?: number;
-  aboveTenSwitchCount?: number;
+  switchCount: number;
+  aboveTenSwitchCount: number;
   status: SwitchFirmwareStatusType;
   scheduleCount: number;
+  venueId: string;
 }
 
 export enum SwitchFirmwareStatusType {

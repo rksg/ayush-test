@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react'
+import { ChangeEvent, Key, useEffect, useState } from 'react'
 
 import { Input, Tooltip } from 'antd'
 import _                  from 'lodash'
@@ -103,10 +103,20 @@ type VenueTableProps = {
 
 export const NestedSwitchFirmwareTable = (
   { data }: VenueTableProps) => {
+
+  const { form } = useStepFormContext()
+  const columns = useColumns()
+  const intl = useIntl()
+  const { tenantId } = useParams()
+
+  const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
+
+  const [searchText, setSearchText] = useState('' as string)
+  const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
+  const [searchSwitchList, setSearchSwitchList] = useState([] as SwitchFirmware[])
   const [selectedSwitchRowKeys, setSelectedSwitchRowKeys] = useState({} as {
     [key: string]: Key[]
   })
-  const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
   const [nestedData, setNestedData] = useState({} as {
     [key: string]: {
       initialData: SwitchFirmware[],
@@ -115,19 +125,15 @@ export const NestedSwitchFirmwareTable = (
   })
 
 
-  const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
 
-  const { form } = useStepFormContext()
-  const columns = useColumns()
-  const intl = useIntl()
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
       defaultSortOrder: 'ascend'
     }, {
-      title: '',
+      title: 'Model',
       key: 'model',
       dataIndex: 'model'
     }, {
@@ -160,24 +166,11 @@ export const NestedSwitchFirmwareTable = (
     }
   ]
 
-  const { tenantId } = useParams()
-
-  const [isLoading, setIsLoading] = useState({} as { [key: string]: boolean })
-  const handleExpand = async (_expanded: unknown, record: { id: string }) => {
-    setIsLoading({
-      [record.id]: true
-    })
-
-    if (_.isEmpty(nestedData[record.id]?.initialData)) {
+  const handleExpand = async (_expanded: unknown, record: { id: string, switchCount: number }) => {
+    if (_.isEmpty(nestedData[record.id]?.initialData) ||
+      record.switchCount !== nestedData[record.id]?.initialData.length) {
       const switchListPayload = {
-        pageSize: 10000,
-        filters: {
-          venueId: [record.id]
-        },
-        fields: ['id', 'isStack', 'formStacking', 'name', 'model', 'serialNumber',
-          'deviceStatus', 'syncedSwitchConfig', 'configReady', 'currentFirmware',
-          'availableVersion', 'switchNextSchedule', 'venueNextSchedule', 'preDownload'
-        ]
+        venueId: [record.id]
       }
       const switchList = record.id
         ? (await getSwitchList({
@@ -189,9 +182,11 @@ export const NestedSwitchFirmwareTable = (
       const result = {
         ...nestedData, [record.id]: {
           initialData: switchList,
-          selectedData: hasSelectedVenue ? switchList : []
+          selectedData: hasSelectedVenue ? switchList :
+            (nestedData[record.id]?.selectedData || [])
         }
       }
+
       setNestedData(result as {
         [key: string]: {
           initialData: SwitchFirmware[],
@@ -206,11 +201,6 @@ export const NestedSwitchFirmwareTable = (
         })
       }
     }
-
-
-    setIsLoading({
-      [record.id]: false
-    })
   }
 
 
@@ -229,13 +219,12 @@ export const NestedSwitchFirmwareTable = (
     return <Table<SwitchFirmware>
       columns={switchColumns}
       className='switchTable'
-      loading={isLoading[record.id]}
+      loading={false}
       locale={{
         emptyText: 'No data'
       }}
       style={{ paddingLeft: '0px !important' }}
       dataSource={nestedData[record.id]?.initialData ?? [] as SwitchFirmware[]}
-      // pagination={tableQuery.pagination}
       sticky={false}
       tableAlertRender={false}
       showHeader={false}
@@ -276,6 +265,36 @@ export const NestedSwitchFirmwareTable = (
     />
   }
 
+  useEffect(() => {
+    if(!_.isEmpty(searchText)){
+      setSearchResultData(searchText)
+    }
+  }, [searchText])
+
+  const setSearchResultData = async function (searchText: string) {
+    let selectedKey = [] as Key[]
+    const switchListPayload = {
+      venueId: data.map(d => d.id),
+      search: searchText
+    }
+    const searchSwitchList = (await getSwitchList({
+      params: { tenantId: tenantId }, payload: switchListPayload
+    }, true)).data?.data || []
+    setSearchSwitchList(searchSwitchList)
+
+    searchSwitchList?.forEach(s => {
+      if (selectedVenueRowKeys.includes(s.venueId as Key) ||
+        selectedSwitchRowKeys[s.venueId]?.includes(s.switchId as Key)) {
+        if (s.switchId) {
+          selectedKey.push(s.switchId)
+        }
+      }
+      setSelectedSearchSwitchRowKeys(selectedKey)
+
+    })
+  }
+  const [selectedSearchSwitchRowKeys, setSelectedSearchSwitchRowKeys] = useState([] as Key[])
+
 
   return (
     <>
@@ -286,14 +305,106 @@ export const NestedSwitchFirmwareTable = (
         prefix={<SearchOutlined />}
         style={{ width: '220px', maxHeight: '180px', marginBottom: '5px'}}
         data-testid='search-input'
-        onChange={()=>{}}
+        onChange={(ev: ChangeEvent) => {
+          const text = (ev.target as HTMLInputElement).value
+          setSearchText(text)
+        }}
       />
-      <SwitchUI.ExpanderTableWrapper>
+      {!_.isEmpty(searchText) && <div
+        style={{
+          minHeight: '50vh',
+          marginBottom: '30px'
+        }}><Table<SwitchFirmware>
+          columns={switchColumns}
+          className='switchTable'
+          loading={false}
+          style={{ paddingLeft: '0px !important' }}
+          dataSource={searchSwitchList}
+          sticky={false}
+          rowKey='switchId'
+          rowSelection={{
+            type: 'checkbox',
+            selectedRowKeys: selectedSearchSwitchRowKeys,//selectedSwitchRowKeys[record.id],
+            onChange: (selectedKeys, selectedRows) => {
+              // if()
+              // (nestedData[selectedRows.venueId]?.selectedData
+              // selectedKeys
+              const addedSwitch = _.difference(selectedKeys, selectedSearchSwitchRowKeys)
+              const deletedSwitch = _.difference(selectedSearchSwitchRowKeys, selectedKeys)
+
+
+              if (addedSwitch.length === 1) {
+                const currentRow = selectedRows.filter(s => s.id === selectedRows[0].id)[0]
+
+                const selectedRow =
+                  selectedSwitchRowKeys[currentRow.venueId]?.concat(addedSwitch[0])
+                  ?? [addedSwitch[0]]
+
+                setSelectedSwitchRowKeys({
+                  ...selectedSwitchRowKeys,
+                  [currentRow.venueId]: selectedRow
+                })
+
+                const currentVenue = data.filter(d => d.id === selectedRows[0].venueId)[0]
+                if ((currentVenue.switchCount + currentVenue.aboveTenSwitchCount)
+                  === selectedRow.length) {
+                  setSelectedVenueRowKeys([...selectedVenueRowKeys, currentVenue.id])
+                }
+
+                setNestedData({
+                  ...nestedData,
+                  [currentRow.venueId]: {
+                    initialData: nestedData[currentRow.venueId]?.initialData || [],
+                    selectedData: nestedData[currentRow.venueId]?.selectedData.concat(currentRow)
+                    || currentRow
+                  }
+                })
+
+
+
+              } else if (addedSwitch.length > 1) {
+
+              } else if (deletedSwitch.length === 1) {
+                const deleteRowId = deletedSwitch[0]
+                const deleteRow = searchSwitchList.filter(s => s.switchId === deleteRowId)[0]
+
+
+                setSelectedSwitchRowKeys({
+                  ...selectedSwitchRowKeys,
+                  [deleteRow.venueId]: selectedSwitchRowKeys[deleteRow.venueId].filter(
+                    s => s !== deleteRowId)
+                })
+
+                const currentVenue = data.filter(d => d.id === deleteRow.venueId)[0]
+                if (selectedVenueRowKeys.includes(currentVenue.id)) {
+                  setSelectedVenueRowKeys(selectedVenueRowKeys.filter(v => currentVenue.id !== v))
+                }
+
+                setNestedData({
+                  ...nestedData,
+                  [deleteRow.venueId]: {
+                    initialData: nestedData[deleteRow.venueId]?.initialData || [],
+                    selectedData: nestedData[deleteRow.venueId].selectedData.filter(
+                      s => s.switchId !== deleteRowId)
+                  }
+                })
+
+
+              } else if (deletedSwitch.length > 1) {
+
+              }
+
+              setSelectedSearchSwitchRowKeys(selectedKeys)
+
+            }
+          }}
+        /></div>}
+
+      {_.isEmpty(searchText) &&<SwitchUI.ExpanderTableWrapper>
         <Table
           columns={columns}
           type={'tall'}
           dataSource={data}
-          // pagination={tableQuery.pagination}
           expandable={{
             onExpand: handleExpand,
             expandedRowRender: expandedRowRenderFunc,
@@ -393,8 +504,7 @@ export const NestedSwitchFirmwareTable = (
               setSelectedVenueRowKeys(selectedKeys)
             }
           }}
-        /></SwitchUI.ExpanderTableWrapper>
-
+        /></SwitchUI.ExpanderTableWrapper>}
     </>
   )
 }

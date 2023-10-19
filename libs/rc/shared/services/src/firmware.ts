@@ -265,7 +265,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             lastScheduleUpdateTime: '2023-09-22T09:00:00.030+00:00',
             preDownload: false,
             switchCount: 1,
-            aboveTenSwitchCount: 2,
+            aboveTenSwitchCount: 0,
             upgradeVenueViewList: null,
             status: 'SUCCESS',
             scheduleCount: 1
@@ -308,7 +308,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           data: data,
           page: 1,
           totalCount: data.length
-        } as TableResult<FirmwareSwitchVenue>
+        } as unknown as TableResult<FirmwareSwitchVenue>
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
@@ -377,7 +377,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
             switchName: 'kittoSwitch',
             isStack: false,
             model: 'ICX7150-48P',
-            currentFirmware: '09010e_b332',
+            currentFirmware: '09010f_b',
             availableVersion:
                   {
                     id: '09010h_cd1_b3',

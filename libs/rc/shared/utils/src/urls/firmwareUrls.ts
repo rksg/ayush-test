@@ -122,7 +122,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchFirmwareStatusList: {
     method: 'post',
-    url: '/venues/switchFirmwares/status/query',
+    url: '/venues/switchFirmwares/upgradeStatusDetails/query',
     newApi: true
   },
 
