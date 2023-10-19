@@ -29,7 +29,7 @@ interface AdaptivePolicySetFormProps {
   modalCallBack?: (addedPolicySetId?: string) => void
 }
 
-export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
+export function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
   const { $t } = useIntl()
   const { editMode = false, modalMode = false, modalCallBack } = props
   const { policyId } = useParams()

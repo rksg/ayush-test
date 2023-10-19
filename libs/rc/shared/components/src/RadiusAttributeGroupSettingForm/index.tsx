@@ -8,12 +8,10 @@ import {
   checkObjectNotExists,
   defaultSort,
   OperatorType,
-  sortProp, trailingNorLeadingSpaces
+  sortProp, trailingNorLeadingSpaces,
+  AttributeOperationLabelMapping
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { AttributeOperationLabelMapping } from '../../../contentsMap'
-
 
 function useColumns () {
   const { $t } = useIntl()

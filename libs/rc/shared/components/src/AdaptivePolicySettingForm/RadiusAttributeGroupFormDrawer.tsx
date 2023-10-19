@@ -9,9 +9,7 @@ import { Drawer, showToast }                  from '@acx-ui/components'
 import { useAddRadiusAttributeGroupMutation } from '@acx-ui/rc/services'
 import { AttributeAssignment, OperatorType }  from '@acx-ui/rc/utils'
 
-import {
-  RadiusAttributeGroupSettingForm
-} from '../../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupSettingForm'
+import { RadiusAttributeGroupSettingForm } from '../RadiusAttributeGroupSettingForm'
 
 import { RadiusAttributeDialog } from './RadiusAttributeDialog'
 

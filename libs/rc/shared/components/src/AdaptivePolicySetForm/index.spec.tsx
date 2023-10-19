@@ -13,13 +13,15 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, withi
 
 import {
   adaptivePolicyList,
-  assignConditions, editPolicySet,
+  assignConditions,
+  editPolicySet,
   groupList,
   policySetList,
   prioritizedPolicies,
   templateList
 } from './__test__/fixtures'
-import AdaptivePolicySetForm from './AdaptivePolicySetForm'
+
+import AdaptivePolicySetForm from '.'
 
 describe('AdaptivePolicySetForm', () => {
   // eslint-disable-next-line max-len

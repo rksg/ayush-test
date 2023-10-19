@@ -16,14 +16,13 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
-  MacRegistrationPool
+  MacRegistrationPool,
+  transferDataToExpirationFormFields,
+  transferExpirationFormFieldsToData
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { transferDataToExpirationFormFields, transferExpirationFormFieldsToData } from '../MacRegistrationListUtils'
-
-import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/MacRegistrationListSettingForm'
-
+import { MacRegistrationListSettingForm } from './MacRegistrationListSettingForm'
 
 interface MacRegistrationListFormProps {
   editMode?: boolean,
@@ -31,7 +30,7 @@ interface MacRegistrationListFormProps {
   modalCallBack?: (saveData?: MacRegistrationPool) => void
 }
 
-export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
+export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const intl = useIntl()
   const { editMode = false, modalMode, modalCallBack } = props
   const { policyId } = useParams()

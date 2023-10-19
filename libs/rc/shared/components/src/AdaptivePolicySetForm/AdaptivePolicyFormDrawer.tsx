@@ -7,7 +7,7 @@ import {
   useAddPolicyConditionsMutation
 } from '@acx-ui/rc/services'
 
-import { AdaptivePolicySettingForm } from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicySettingForm'
+import { AdaptivePolicySettingForm } from '../AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormDrawerProps {
   visible: boolean

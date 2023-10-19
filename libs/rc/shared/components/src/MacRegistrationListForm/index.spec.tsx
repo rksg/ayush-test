@@ -11,11 +11,9 @@ import { Path, To, useTenantLink }                                              
 import { Provider }                                                                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import {
-  mockedCreateFormData
-} from '../../../Services/Dpsk/DpskForm/__tests__/fixtures'
+import { mockedCreateFormData } from './__tests__/fixtures'
 
-import MacRegistrationListForm from './MacRegistrationListForm'
+import MacRegistrationListForm from '.'
 
 const mockedTenantId = 'tenant-id'
 

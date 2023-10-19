@@ -2,16 +2,16 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  PolicyTechnology,
-  PolicyType,
-  Layer3ProtocolType,
+  ApplicationAclType,
+  ApplicationRuleType,
+  DeviceTypeEnum,
   FacilityEnum,
   FlowLevelEnum,
-  ProtocolEnum,
+  Layer3ProtocolType,
   OsVendorEnum,
-  DeviceTypeEnum,
-  ApplicationAclType,
-  ApplicationRuleType, OperatorType
+  PolicyTechnology,
+  PolicyType,
+  ProtocolEnum
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
@@ -167,9 +167,4 @@ export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
   [FlowLevelEnum.GENERAL_LOGS]: defineMessage({ defaultMessage: 'General Logs' }),
   [FlowLevelEnum.CLIENT_FLOW]: defineMessage({ defaultMessage: 'Client Flow' }),
   [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
-}
-export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescriptor> = {
-  [OperatorType.ADD]: defineMessage({ defaultMessage: 'Add (Multiple)' }),
-  [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
-  [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add if it Doesn\'t Exist' })
 }

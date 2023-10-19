@@ -21,15 +21,13 @@ import {
   checkObjectNotExists,
   PolicyDefaultAccess,
   DeviceNumberType,
-  unlimitedNumberOfDeviceLabel
-} from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
-
-import { NEW_MAX_DEVICES_PER_PASSPHRASE, OLD_MAX_DEVICES_PER_PASSPHRASE } from '../constants'
-import {
+  unlimitedNumberOfDeviceLabel,
+  NEW_MAX_DEVICES_PER_PASSPHRASE, 
+  OLD_MAX_DEVICES_PER_PASSPHRASE,
   defaultAccessLabelMapping,
   passphraseFormatDescription
-} from '../contentsMap'
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { FieldSpace } from './styledComponents'
 

@@ -8,7 +8,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  checkObjectNotExists, trailingNorLeadingSpaces
+  checkObjectNotExists,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 
 import AccessPolicyTable from './AccessPolicyTable'

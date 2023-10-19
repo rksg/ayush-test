@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, FormInstance, Input, Select } from 'antd'
-import {  useIntl }                          from 'react-intl'
+import { useIntl }                           from 'react-intl'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
-  ipv6RegExp,
-  cliIpAddressRegExp,
+  AttributeOperationLabelMapping,
   DataType,
   OperatorType,
   RadiusAttribute,
-  checkObjectNotExists
+  checkObjectNotExists,
+  cliIpAddressRegExp,
+  ipv6RegExp
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
-
-import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
 import { FieldSpace } from './styledComponents'
 

@@ -5,7 +5,7 @@ import { useIntl }                                      from 'react-intl'
 
 import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
 import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }             from '@acx-ui/rc/components'
+import { AdaptivePolicySetForm, ExpirationDateSelector }             from '@acx-ui/rc/components'
 import {
   useAdaptivePolicySetListQuery,
   useLazySearchMacRegListsQuery
@@ -13,8 +13,6 @@ import {
 import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { useParams }                                      from '@acx-ui/react-router-dom'
 
-import AdaptivePolicySetForm
-  from '../../../AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()

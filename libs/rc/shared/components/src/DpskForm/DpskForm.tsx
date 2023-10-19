@@ -44,7 +44,7 @@ interface DpskFormProps {
   modalCallBack?: (result?: DpskSaveData) => void
 }
 
-export default function DpskForm (props: DpskFormProps) {
+export function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })

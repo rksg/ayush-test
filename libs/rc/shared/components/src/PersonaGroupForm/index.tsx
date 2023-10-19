@@ -5,13 +5,11 @@ import TextArea                                               from 'antd/lib/inp
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
-import { useDpskNewConfigFlowParams }                                                   from '@acx-ui/rc/components'
+import { DpskForm, useDpskNewConfigFlowParams }                                                   from '@acx-ui/rc/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists, DpskSaveData, PersonaGroup, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
-import MacRegistrationListForm
-  from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import DpskForm from '../../../Services/Dpsk/DpskForm/DpskForm'
+import { MacRegistrationListForm } from '../MacRegistrationListForm'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
