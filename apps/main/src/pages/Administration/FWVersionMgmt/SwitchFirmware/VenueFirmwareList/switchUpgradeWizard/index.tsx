@@ -132,6 +132,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
       }
     },
     [SwitchFirmwareWizardType.skip]: async () => {
+      form.validateFields()
       showActionModal({
         type: 'confirm',
         width: 460,
