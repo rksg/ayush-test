@@ -1,7 +1,8 @@
-import { ReactNode, useRef, useEffect, createContext, useState } from 'react'
+import { ReactNode, useRef, useEffect, createContext, useState, SetStateAction, Dispatch } from 'react'
 
 import { Col, Row }            from 'antd'
 import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
+import _                       from 'lodash'
 
 import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
@@ -19,8 +20,8 @@ export interface AnchorPageItem {
 }
 
 export const AnchorContext = createContext({} as {
-  readyToScroll: boolean,
-  setReadyToScroll: (isReady: boolean) => void
+  readyToScroll: string[],
+  setReadyToScroll: Dispatch<SetStateAction<string[]>>
 })
 
 export const AnchorLayout = ({ items, offsetTop = 0 } : {
@@ -32,21 +33,25 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
   const location = useLocation()
   const layout = useLayoutContext()
 
-  const [ readyToScroll, setReadyToScroll ] = useState(false)
+  const [ readyToScroll, setReadyToScroll ] = useState<string[]>([])
+  const [ isScrolled, setIsScrolled ] = useState(false)
+
+  const getHashKey = (title: string) => title.split(' ').join('-')
+  const keyList = items.map(item => getHashKey(item.title))
+  const compareFn = (s1: string[], s2: string[]) => s1.sort().join(',') === s2.sort().join(',')
+
+  useEffect(()=>{
+    if (location.hash && _.isEqualWith(keyList, _.uniq(readyToScroll), compareFn) && !isScrolled) {
+      setIsScrolled(true)
+      anchorRef?.current?.handleScrollTo(`${location.hash}`)
+    }
+  }, [keyList, location.hash, readyToScroll, isScrolled])
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
-    const hash = (e.target as HTMLElement).title.split(' ').join('-')
+    const hash = getHashKey((e.target as HTMLElement).title)
     navigate({ pathname: `${location.pathname}`, hash: hash })
   }
-
-  useEffect(()=>{
-    if (location.hash && readyToScroll) {
-      setTimeout(() =>
-        anchorRef?.current?.handleScrollTo(`${location.hash}`)
-      , 500)
-    }
-  }, [location.hash, readyToScroll])
 
   return <AnchorContext.Provider value={{ readyToScroll, setReadyToScroll }}><Row gutter={20}>
     <AnchorLayoutSidebar span={4}
@@ -56,14 +61,14 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
         onClick={(e) => handleClick(e)}
         $customType='layout'>
         {items.map(item => {
-          const linkId = item.title.split(' ').join('-')
+          const linkId = getHashKey(item.title)
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />
         })}
       </Anchor>
     </AnchorLayoutSidebar>
     <Col span={20}>{
       items.map(item => {
-        const linkId = item.title.split(' ').join('-')
+        const linkId = getHashKey(item.title)
         return <Container id={linkId} key={linkId}>
           {item.content}
         </Container>

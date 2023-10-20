@@ -121,7 +121,7 @@ export function ApMesh () {
         setInitData(meshData)
         setFormInitializing(false)
 
-        setReadyToScroll(true)
+        setReadyToScroll?.(r => [...(new Set(r.concat('Mesh')))])
       }
 
       setData()

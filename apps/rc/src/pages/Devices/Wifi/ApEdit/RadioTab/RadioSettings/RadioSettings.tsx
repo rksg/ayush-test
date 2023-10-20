@@ -201,7 +201,7 @@ export function RadioSettings () {
 
       setData()
 
-      setReadyToScroll(true)
+      setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
   }, [apData, apCapabilities, getApAvailableChannels, apDataLoaded])
 

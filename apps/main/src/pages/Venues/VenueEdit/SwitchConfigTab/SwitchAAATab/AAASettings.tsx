@@ -219,9 +219,10 @@ export const AAASettings = (props: {
       aaaSetting.acctExecThirdServer && initData.selectedExecAcctOrder.push(ACCOUNTING_SERVERS_OBJ[aaaSetting.acctExecThirdServer].key)
 
       form.setFieldsValue(initData)
-      setReadyToScroll(true)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Settings')))])
     }
-  }, [form, aaaSetting])
+  }, [form, aaaSetting, setAAASettingId, setReadyToScroll])
 
   const authnEnabledSsh = Form.useWatch('authnEnabledSsh')
   const authnEnableTelnet = Form.useWatch('authnEnableTelnet')

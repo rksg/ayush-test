@@ -134,7 +134,7 @@ export function CellularOptionsForm () {
       formRef?.current?.setFieldsValue({ editData: venueApModelCellularData })
       setAvailableLteBandsArray(availableLteBandsData)
 
-      setReadyToScroll(true)
+      setReadyToScroll?.(r => [...(new Set(r.concat('Cellular-Options')))])
     }
 
   }, [availableLteBands, venueApModelCellular, venueData, form])

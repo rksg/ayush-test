@@ -76,9 +76,9 @@ export function MdnsFencing () {
     if (isLoading === false && venueMdnsFencing) {
       onInit(venueMdnsFencing, true)
 
-      setReadyToScroll(true)
+      setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Fencing')))])
     }
-  }, [getVenueMdnsFencing])
+  }, [getVenueMdnsFencing, setReadyToScroll])
 
   useEffect(() => {
     if (isUserSetting.current) {

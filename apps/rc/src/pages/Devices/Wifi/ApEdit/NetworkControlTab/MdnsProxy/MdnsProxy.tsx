@@ -94,10 +94,10 @@ export function MdnsProxy () {
   }, [isFormChangedHandled])
 
   useEffect(() => {
-    if (apDetail) {
-      setReadyToScroll(true)
+    if (apDetail && !isLoading) {
+      setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Proxy')))])
     }
-  }, [apDetail])
+  }, [apDetail, isLoading, setReadyToScroll])
 
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()

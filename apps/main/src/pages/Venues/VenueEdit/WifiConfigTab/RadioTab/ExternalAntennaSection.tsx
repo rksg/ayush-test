@@ -80,7 +80,7 @@ export function ExternalAntennaSection () {
       selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
       setSelectOptions(selectItems)
 
-      setReadyToScroll(true)
+      setReadyToScroll?.(r => [...(new Set(r.concat('External-Antenna')))])
     }
   }, [allApModelCapabilities, allApExternalAntennas])
 
