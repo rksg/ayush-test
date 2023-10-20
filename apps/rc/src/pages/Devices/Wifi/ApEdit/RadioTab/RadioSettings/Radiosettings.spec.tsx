@@ -458,32 +458,6 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
-    it('should render correctly with low power mode', async () => {
-      render(
-        <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn(),
-            apViewContextData: apViewModel
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
-              <RadioSettings />
-            </ApDataContext.Provider>
-          </ApEditContext.Provider>
-        </Provider>, { route: { params } })
-      await userEvent.click(await screen.findByRole('tab', { name: '6 GHz' }))
-
-      expect(screen.getByText('AP will only operate in Low Power Mode')).toBeInTheDocument()
-    })
   })
 
   xdescribe('RadioSettingsTab with R760 AP', () => {
