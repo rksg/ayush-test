@@ -9,7 +9,6 @@ import { cssStr, Tooltip }                                 from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useWifiCapabilitiesQuery, useGetApQuery }         from '@acx-ui/rc/services'
-import { ApViewModel }                                     from '@acx-ui/rc/utils'
 import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import {

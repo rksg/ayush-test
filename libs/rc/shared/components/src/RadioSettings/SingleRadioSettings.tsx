@@ -6,9 +6,9 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity, ApViewModel } from '@acx-ui/rc/utils'
+import { Button, cssStr }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
 
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
