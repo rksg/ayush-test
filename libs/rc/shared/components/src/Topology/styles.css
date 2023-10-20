@@ -1,0 +1,57 @@
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.d3-tree-container {
+  width: 100%;
+  height: 100%;
+}
+
+.d3-tree-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.d3-tree-links {
+  fill: none;
+  stroke: #89a19d;
+  stroke-opacity: 1;
+  stroke-width: 1;
+}
+
+.text-call-name {
+  font-size: 6px;
+  fill: black;
+  stroke: black;
+  stroke-width: 0.25;
+}
+
+.rect-test {
+  transform: rotateZ(90);
+  stroke: #89a19d;
+  stroke-opacity: 1;
+}
+
+.rect-text {
+  font-size: 8px;
+  stroke-width: 0;
+  fill: white;
+}
+
+.text-time-stamp {
+  font-size: 6px;
+  stroke-width: 0;
+  fill: #aaa;
+}

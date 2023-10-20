@@ -30,12 +30,7 @@ export const Graph = styled('svg')`
 
 export const Device = styled('div')<{ deviceStatus: DeviceStatus }>`
    svg {
-     width: 32px !important;
-     height: 32px !important;
-
-
-    color: ${props => getDeviceColor(props.deviceStatus)};
-
+     color: ${props => getDeviceColor(props.deviceStatus)};
    }
   `
 
@@ -105,5 +100,61 @@ span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+`
+export const Topology = styled.div`
+font-family: sans-serif;
+text-align: center;
+width: 100%;
+height: 100%;
+
+.d3-tree-container {
+  width: 100%;
+  height: 100%;
+}
+
+.d3-tree-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.d3-tree-links {
+  fill: none;
+  stroke: var(--acx-semantics-green-50);
+  stroke-opacity: 1;
+  stroke-width: 1;
+}
+
+.text-call-name {
+  font-size: 6px;
+  fill: black;
+  stroke: black;
+  stroke-width: 0.25;
+}
+
+.rect-test {
+  transform: rotateZ(90);
+  stroke: var(--acx-semantics-green-50);
+  stroke-opacity: 1;
+}
+
+.rect-text {
+  font-size: 8px;
+  stroke-width: 0;
+  fill: white;
+}
+
+.text-time-stamp {
+  font-size: 6px;
+  stroke-width: 0;
+  fill: #aaa;
+}
+
+marker {
+  fill: var(--acx-semantics-green-50);
+}
+
+svg {
+  color: var(--acx-semantics-green-50);
 }
 `

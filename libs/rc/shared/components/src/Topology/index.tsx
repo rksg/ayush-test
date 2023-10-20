@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, Fragment } from 'react'
 
 import { AutoComplete, Button, Col, Empty, Input, Row, Typography } from 'antd'
 import * as d3                                                      from 'd3'
@@ -17,10 +17,15 @@ import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceT
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
-import LinkTooltip      from './LinkTooltip'
-import NodeTooltip      from './NodeTooltip'
-import * as UI          from './styledComponents'
-import { getPathColor } from './utils'
+import Hex               from './assets/Hex'
+import Logo              from './assets/Logo'
+import LinkTooltip       from './LinkTooltip'
+import data              from './mocks/data.json'
+import NodeTooltip       from './NodeTooltip'
+import * as UI           from './styledComponents'
+import Tree              from './Tree'
+import { getPathColor }  from './utils'
+import { transformData } from './utils/data-transformer'
 
 
 type OptionType = {
@@ -30,7 +35,6 @@ type OptionType = {
   children: string;
   item: Node;
 }
-
 export function TopologyGraph (props:{ venueId?: string,
   showTopologyOn: ShowTopologyFloorplanOn,
   deviceMac?: string }) {
@@ -42,7 +46,13 @@ export function TopologyGraph (props:{ venueId?: string,
   const params = useParams()
 
   const graph = new dagreD3.graphlib.Graph({ multigraph: true })
-    .setGraph({ }) as any
+    .setGraph({
+      nodesep: 70,
+      ranksep: 50,
+      rankdir: 'LR',
+      marginx: 20,
+      marginy: 20
+    }) as any
 
   const _venueId = params.venueId || venueId
 
@@ -50,6 +60,7 @@ export function TopologyGraph (props:{ venueId?: string,
     isLoading: isTopologyLoading } = useGetTopologyQuery({ params: { ...params,
     venueId: _venueId } })
 
+  const [transformedData, setTransformedData] = useState<any>()
   const [topologyGraphData, setTopologyGraphData] = useState<GraphData>()
   const [showLinkTooltip, setShowLinkTooltip] = useState<boolean>(false)
   const [showDeviceTooltip, setShowDeviceTooltip] = useState<boolean>(false)
@@ -71,10 +82,15 @@ export function TopologyGraph (props:{ venueId?: string,
         nodes: nodes
       }
 
+      console.log(_data)
       setTopologyGraphData(_data)
 
     }
-  }, [topologyData])
+    if(data){
+      console.log(data)
+      setTransformedData(transformData(data))
+    }
+  }, [topologyData, data])
 
   useEffect(() => {
 
@@ -108,6 +124,7 @@ export function TopologyGraph (props:{ venueId?: string,
         children: node.label,
         item: node
       })) as OptionType[]
+
       setFilterNodes(_formattedNodes)
 
       // adding default cloud node
@@ -172,6 +189,8 @@ export function TopologyGraph (props:{ venueId?: string,
           label: truncateLabel(node?.label as string, 15),
           width: 64,
           height: 48,
+          rx: 5,
+          ry: 5,
           expanded: false })
       })
 
@@ -179,11 +198,11 @@ export function TopologyGraph (props:{ venueId?: string,
       uiEdges.forEach((edge: Link) => {
 
         graph.setEdge(edge.from, edge.to, {
-          // curveBumpY, curveMonotoneY, curveStepBefore
-          curve: d3.curveMonotoneY,
-          lineInterpolate: 'basis',
-          SVGAnimatedAngle: true,
-          angle: 15,
+          // curveBumpY, curveMonotoneY, curveStepBefore,
+          curve: d3.curveLinear,
+          // SVGAnimatedAngle: true,
+          // angle: 15,
+          width: 40,
           style: `fill:transparent;
           stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` }, edge.id)
       })
@@ -201,11 +220,10 @@ export function TopologyGraph (props:{ venueId?: string,
 
       svg.call(zoom)
       // disable zoom on scrolling and mouse double click
-      svg.on('wheel.zoom', null)
-      svg.on('dblclick.zoom', null)
+      // svg.on('wheel.zoom', null)
+      // svg.on('dblclick.zoom', null)
 
       svg.attr('data-testid', 'topologyGraph')
-
       render(svgGroup, graph)
 
       select(graphRef.current)
@@ -591,7 +609,25 @@ export function TopologyGraph (props:{ venueId?: string,
                 placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}/>
             </AutoComplete>
           }
-          <UI.Graph ref={graphRef} width='100%' height='100%' />
+          <UI.Topology>
+            <Tree
+              data={transformedData}
+              nodeRender={(node: { parent: any }) => {
+                return (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  <Fragment>
+                    {node.parent ? (
+                      Math.random() < 0.5 ?
+                        <Switch width={24} height={24} x={-12} y={-12} /> :
+                        <AccessPointWifi width={24} height={24} x={-12} y={-12} />
+                    ) : (
+                      <CloudSolid width={24} height={24} x={-12} y={-12} />
+                    )}
+                  </Fragment>
+                )
+              }}
+            />
+          </UI.Topology>
         </>
         : <div style={{
           display: 'inline-flex',
@@ -667,11 +703,11 @@ export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: Devi
   function getDeviceIcon () {
     switch (deviceType) {
       case DeviceTypes.Switch:
-        return <Switch />
+        return <Switch width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.SwitchStack:
         return <StackDevice />
       case DeviceTypes.Ap:
-        return <AccessPointWifi />
+        return <AccessPointWifi width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.Cloud:
         return <CloudSolid />
       case DeviceTypes.ApMesh:
