@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Form,
@@ -14,19 +14,20 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                from '@acx-ui/icons'
 import {
   useUpdateSwitchMutation,
-  useSwitchDetailHeaderQuery,
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import {
   Switch,
   SwitchTable,
   getSwitchModel,
-  checkVersionAtLeast09010h
+  checkVersionAtLeast09010h,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { SwitchDetailsContext }     from '..'
 import { validatorSwitchModel }     from '../../StackForm'
 import {
   getTsbBlockedSwitch,
@@ -50,6 +51,9 @@ export default function AddStackMember (props: AddStackMemberProps) {
   const { visible, setVisible, maxMembers, venueFirmwareVersion } = props
   const [form] = Form.useForm<Switch>()
 
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader, switchDetailViewModelQuery } = switchDetailsContextData
+
   const onClose = () => {
     setVisible(false)
   }
@@ -65,6 +69,7 @@ export default function AddStackMember (props: AddStackMemberProps) {
         <AddMemberForm
           form={form}
           maxMembers={maxMembers}
+          switchDetail={switchDetailHeader}
           venueFirmwareVersion={venueFirmwareVersion}
         />
       }
@@ -79,6 +84,11 @@ export default function AddStackMember (props: AddStackMemberProps) {
               await form.validateFields()
               form.submit()
               onClose()
+
+              setTimeout(() => {
+                switchDetailViewModelQuery?.refetch()
+              }, 1500)
+
             } catch (error) {
               if (error instanceof Error) throw error
             }
@@ -92,13 +102,14 @@ export default function AddStackMember (props: AddStackMemberProps) {
 interface DefaultVlanFormProps {
   form: FormInstance<Switch>
   maxMembers: number
+  switchDetail: SwitchViewModel
   venueFirmwareVersion: string
 }
 
 function AddMemberForm (props: DefaultVlanFormProps) {
   const { $t } = useIntl()
   const { tenantId, switchId, stackList } = useParams()
-  const { form, maxMembers, venueFirmwareVersion } = props
+  const { form, maxMembers, switchDetail, venueFirmwareVersion } = props
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
@@ -106,8 +117,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [updateSwitch] = useUpdateSwitchMutation()
   const { data: switchData } =
     useGetSwitchQuery({ params: { tenantId, switchId } })
-  const { data: switchDetail } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', disabled: false }

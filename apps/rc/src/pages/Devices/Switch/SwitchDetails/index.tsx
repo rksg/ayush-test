@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { useSwitchDetailHeaderQuery }                                   from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { UseQueryResult }                                               from '@acx-ui/types'
 import { hasAccess }                                                    from '@acx-ui/user'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
@@ -28,6 +29,7 @@ const tabs = {
 
 export interface SwitchDetails {
   switchDetailHeader: SwitchViewModel
+  switchDetailViewModelQuery: UseQueryResult<SwitchViewModel>
   currentSwitchOperational: boolean
   switchName: string
 }
@@ -37,14 +39,21 @@ export const SwitchDetailsContext = createContext({} as {
   setSwitchDetailsContextData: (data: SwitchDetails) => void
 })
 
+export const SWITCH_POLLING_INTERVAL = 180_000 // TODO: check
+
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
   const [ switchDetailsContextData, setSwitchDetailsContextData ] = useState({} as SwitchDetails)
-  const { data: switchDetailHeader } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+  const switchDetailHeaderQuery = useSwitchDetailHeaderQuery({
+    params: { tenantId, switchId, serialNumber } }, {
+    pollingInterval: SWITCH_POLLING_INTERVAL
+  })
+  const { data: switchDetailHeader } = switchDetailHeaderQuery
 
   useEffect(() => {
     setSwitchDetailsContextData({
       switchDetailHeader: switchDetailHeader as SwitchViewModel,
+      switchDetailViewModelQuery: switchDetailHeaderQuery,
       switchName: switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || '',
       currentSwitchOperational: isStrictOperationalSwitch(
         switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
