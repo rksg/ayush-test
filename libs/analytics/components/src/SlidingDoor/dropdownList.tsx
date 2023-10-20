@@ -34,27 +34,27 @@ export const DropdownList: React.FC<DropdownListProps> = ({
   const items = [
     {
       label: <UI.StyledList
-          split={false}
-          header={
-            <DropdownHeader
-              breadcrumb={breadcrumb}
-              searchText={searchText}
-              currentNode={currentNode}
-              onBack={onBack}
-              onBreadcrumbClick={onBreadcrumbClick}
-            />
-          }
-          footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
-          dataSource={nodesToShow as Node[]}
-          renderItem={(node) => (
-            <ListItemComponent
-              animation={animation}
-              currentNode={currentNode}
-              node={node as Node}
-              onClick={onSelect}
-            />
-          )}
-        />,
+        split={false}
+        header={
+          <DropdownHeader
+            breadcrumb={breadcrumb}
+            searchText={searchText}
+            currentNode={currentNode}
+            onBack={onBack}
+            onBreadcrumbClick={onBreadcrumbClick}
+          />
+        }
+        footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
+        dataSource={nodesToShow as Node[]}
+        renderItem={(node) => (
+          <ListItemComponent
+            animation={animation}
+            currentNode={currentNode}
+            node={node as Node}
+            onClick={onSelect}
+          />
+        )}
+      />,
       key: '1'
     }
   ]

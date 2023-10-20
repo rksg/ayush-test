@@ -1,5 +1,6 @@
+import { IntlProvider } from 'react-intl'
+
 import { render, fireEvent, screen } from '@acx-ui/test-utils'
-import { IntlProvider }              from 'react-intl'
 
 import * as helpers from './helpers'
 
