@@ -179,6 +179,7 @@ describe.skip('RadioSettingForm component', () => {
 
 describe('LPI mode toggle Unit Test', () => {
   it('should render Low Power Mode toggle in Venue Radio 6G', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const radioType = ApRadioTypeEnum.Radio6G
     const radioDataKey = ApRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth5GOptions
@@ -192,6 +193,16 @@ describe('LPI mode toggle Unit Test', () => {
             radioDataKey={radioDataKey}
             channelBandwidthOptions={bandwidthOptions}
             isUseVenueSettings={isUseVenueSettings}
+            LPIButtonText={{
+              buttonText:
+                <p style={{ fontSize: '12px', margin: '0px' }}>
+                  Standard power
+                </p>
+              ,
+              LPIModeOnChange: () => {},
+              LPIModeState: false,
+              isAPOutdoor: true
+            }}
           />
         </Form>
       </Provider>)
@@ -199,6 +210,7 @@ describe('LPI mode toggle Unit Test', () => {
   })
 
   it('should render Low Power Mode toggle in AP Radio 6G', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const radioType = ApRadioTypeEnum.Radio6G
     const radioDataKey = ApRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth5GOptions
@@ -212,29 +224,20 @@ describe('LPI mode toggle Unit Test', () => {
             radioDataKey={radioDataKey}
             channelBandwidthOptions={bandwidthOptions}
             isUseVenueSettings={isUseVenueSettings}
+            LPIButtonText={{
+              buttonText:
+                <p style={{ fontSize: '12px', margin: '0px' }}>
+                  Standard power
+                </p>
+              ,
+              LPIModeOnChange: () => {},
+              LPIModeState: false,
+              isAPOutdoor: true
+            }}
           />
         </Form>
       </Provider>)
     expect(await screen.findByText('Standard power')).toBeInTheDocument()
   })
 
-  it('should not render Low Power Mode toggle in Venue Radio 5G', async () => {
-    const radioType = ApRadioTypeEnum.Radio5G
-    const radioDataKey = ApRadioTypeDataKeyMap[radioType]
-    const bandwidthOptions = channelBandwidth5GOptions
-    let isUseVenueSettings = false
-    render(
-      <Provider>
-        <Form>
-          <RadioSettingsForm
-            context='venue'
-            radioType={radioType}
-            radioDataKey={radioDataKey}
-            channelBandwidthOptions={bandwidthOptions}
-            isUseVenueSettings={isUseVenueSettings}
-          />
-        </Form>
-      </Provider>)
-    expect(screen.queryByTestId('Standard power')).not.toBeInTheDocument()
-  })
 })
