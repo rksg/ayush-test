@@ -146,7 +146,15 @@ export function RadioSettingsForm (props:{
                 }}
               >
                 <Space direction='vertical'>
-                  <Radio value={false}>{LPIButtonText?.buttonText}</Radio>
+                  <Radio value={false}>
+                    {context === 'venue' ?
+                      <p style={{ fontSize: '12px', margin: '0px' }}>
+                        {$t({ defaultMessage: 'Standard power' })}
+                      </p>
+                      :
+                      LPIButtonText?.buttonText
+                    }
+                  </Radio>
                   <Radio value={true}>
                     <p style={{ fontSize: '12px', margin: '0px' }}>
                       {$t({ defaultMessage: 'Low power' })}

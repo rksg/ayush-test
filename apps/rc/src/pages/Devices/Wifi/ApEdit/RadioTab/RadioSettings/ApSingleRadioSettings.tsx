@@ -92,7 +92,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             defaultButtonText = $t({ defaultMessage: 'Standard power [No channels available]' })
             break
           default:
-            defaultStyle = { color: '#FFFFFF', fontSize: '12px', margin: '0px' }
+            defaultStyle = { color: '#000000', fontSize: '12px', margin: '0px' }
         }
         newButtonText = (<p style={defaultStyle}> {defaultButtonText} </p>)
       }
