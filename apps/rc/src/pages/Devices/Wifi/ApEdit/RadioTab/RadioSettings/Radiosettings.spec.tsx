@@ -18,8 +18,7 @@ import {
   venuelist,
   venueRadioDetail,
   validRadioChannels,
-  venueRadioCustomization,
-  apViewModel
+  venueRadioCustomization
 } from '../../../../__tests__/fixtures'
 
 import { RadioSettings } from './RadioSettings'
