@@ -3,12 +3,12 @@ import { gql } from 'graphql-request'
 import { Incident } from '@acx-ui/analytics/utils'
 import { dataApi }  from '@acx-ui/store'
 
-interface VLAN {
+export interface VLAN {
   id: number
   name: string
 }
 
-interface SwitchPortConnectedDevice <Metadata = Record<string, unknown>> {
+export interface SwitchPortConnectedDevice <Metadata = Record<string, unknown>> {
   isAP: boolean
   type: string
   name: string
@@ -17,21 +17,21 @@ interface SwitchPortConnectedDevice <Metadata = Record<string, unknown>> {
   port: string
   description: string
   vlans: VLAN[]
-  untaggedVlan: VLAN
-  metadata: Metadata
+  untaggedVlan: VLAN | null
+  metadata?: Metadata
 }
 
 interface ImpactedSwitchPort {
   portNumber: string
   portMac: string
   vlans: VLAN[]
-  untaggedVlan: VLAN
+  untaggedVlan: VLAN | null
   mismatchedVlans: VLAN[]
-  mismatchedUntaggedVlan: VLAN
+  mismatchedUntaggedVlan: VLAN | null
   connectedDevice: SwitchPortConnectedDevice
 }
 
-interface ImpactedSwitch {
+export interface ImpactedSwitch {
   name: string
   mac: string
   ports: ImpactedSwitchPort[]
@@ -39,7 +39,7 @@ interface ImpactedSwitch {
 
 export type ImpactedSwitchPortRow = ImpactedSwitchPort
   & Pick<ImpactedSwitch, 'name' | 'mac'>
-  & { key?: string }
+  & { key?: string, index: number }
 
 interface Response <T> {
   incident: T
@@ -76,11 +76,12 @@ export const impactedApi = dataApi.injectEndpoints({
       transformResponse: (response: Response<{ impactedSwitchVLANs: ImpactedSwitch[] }>) => {
         const results = response.incident.impactedSwitchVLANs
           .flatMap(({ name, mac, ports }) => ports.map(port => ({ name, mac, ...port })))
-        return Object.values(results)
+        return Object.values(results)?.map((item, index) => ({ ...item, index }))
       }
     })
   })
 })
+
 export const {
   useImpactedSwitchVLANsQuery
 } = impactedApi

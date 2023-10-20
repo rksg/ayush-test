@@ -96,6 +96,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               osType
               ipAddress
               lastActiveTime
+              manufacturer
             },
             networkHierarchy {
               name
