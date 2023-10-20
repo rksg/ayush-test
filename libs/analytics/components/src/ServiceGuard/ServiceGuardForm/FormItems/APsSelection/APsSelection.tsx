@@ -46,7 +46,7 @@ function checkAP (
   if (requirements.excludedTargetAPs.find(a => a.model === node.model &&
       !meetVersionRequirements(a.requiredAPFirmware, node.firmware))) return false
   return meetVersionRequirements(requirements.requiredAPFirmware, node.firmware)
-    ? node : false
+    ? { type: 'AP', name: node.name, mac: node.mac } : false
 }
 
 function transformSANetworkHierarchy (
