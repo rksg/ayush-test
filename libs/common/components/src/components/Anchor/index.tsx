@@ -24,9 +24,10 @@ export const AnchorContext = createContext({} as {
   setReadyToScroll: Dispatch<SetStateAction<string[]>>
 })
 
-export const AnchorLayout = ({ items, offsetTop = 0 } : {
+export const AnchorLayout = ({ items, offsetTop = 0, waitForReady = false } : {
   items: AnchorPageItem[],
-  offsetTop?: number
+  offsetTop?: number,
+  waitForReady?: boolean
 }) => {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
@@ -34,7 +35,7 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
   const layout = useLayoutContext()
 
   const [ readyToScroll, setReadyToScroll ] = useState<string[]>([])
-  const [ isScrolled, setIsScrolled ] = useState(false)
+  const [ isScrolled, setIsScrolled ] = useState(!waitForReady)
 
   const getHashKey = (title: string) => title.split(' ').join('-')
   const keyList = items.map(item => getHashKey(item.title))
@@ -46,6 +47,12 @@ export const AnchorLayout = ({ items, offsetTop = 0 } : {
       anchorRef?.current?.handleScrollTo(`${location.hash}`)
     }
   }, [keyList, location.hash, readyToScroll, isScrolled])
+
+  useEffect(() => {
+    if (location.hash && !waitForReady) {
+      setTimeout(() => anchorRef?.current?.handleScrollTo(`${location.hash}`), 500)
+    }
+  }, [location.hash, waitForReady])
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
