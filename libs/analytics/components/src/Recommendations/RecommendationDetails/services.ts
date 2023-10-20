@@ -6,8 +6,8 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail }           from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText } from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText }           from '../services'
 
 
 export type BasicRecommendation = {
@@ -27,8 +27,8 @@ export type RecommendationDetails = {
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
-  originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
-  currentValue: string;
+  originalValue: ConfigurationValue;
+  currentValue: ConfigurationValue;
   recommendedValue: string;
   metadata: object;
   sliceType: string;

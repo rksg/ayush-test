@@ -162,7 +162,7 @@ export const mockRecommendationNoKPI = {
   originalValue: null,
   currentValue: null,
   recommendedValue: true,
-  metadata: {},
+  metadata: { channelSelectionMode: 'BACKGROUND_SCANNING' },
   sliceType: 'system',
   sliceValue: 'ruckus-62',
   statusTrail: [

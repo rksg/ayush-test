@@ -37,7 +37,7 @@ export const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     heading: codes[code].valueText,
     original: valueFormatter(originalValue),
-    current: currentValue ? valueFormatter(currentValue) : null,
+    current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
     tooltipContent: typeof recommendedValueTooltipContent === 'function'
       ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
