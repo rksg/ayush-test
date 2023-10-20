@@ -28,22 +28,23 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn()
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
 }))
 const userProfile = getUserProfile as jest.Mock
 
 describe('AllRoutes', () => {
-  beforeEach(() => {
-    userProfile.mockReturnValue({
-      accountId: 'aid',
-      tenants: [],
-      invitations: [],
-      selectedTenant: {
-        id: 'aid',
-        permissions: { 'view-analytics': true }
-      }
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      permissions: { 'view-analytics': true }
     }
-    )
+  }
+  beforeEach(() => {
+    userProfile.mockReturnValue(defaultUserProfile)
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
   })

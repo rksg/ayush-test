@@ -1,5 +1,4 @@
 import { Space }              from 'antd'
-import moment                 from 'moment-timezone'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
@@ -77,7 +76,7 @@ const SubscriptionTable = () => {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
-  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
+  const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
@@ -213,12 +212,14 @@ const SubscriptionTable = () => {
       onClick: async () => {
         try {
           await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-          showToast({
-            type: 'success',
-            content: $t({
-              defaultMessage: 'Successfully refreshed.'
+          if (isNewApi === false) {
+            showToast({
+              type: 'success',
+              content: $t({
+                defaultMessage: 'Successfully refreshed.'
+              })
             })
-          })
+          }
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -227,8 +228,8 @@ const SubscriptionTable = () => {
   ]
 
   const GetStatus = (expirationDate: string) => {
-    const isValid = moment(expirationDate).isAfter(Date.now())
-    return isValid ? 'active' : 'expired'
+    const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
+    return remainingDays < 0 ? 'expired' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
