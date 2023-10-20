@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 
+import { Space }   from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -41,12 +42,15 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EntitlementNetworkDeviceType,
+  EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
+
+import * as UI from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
@@ -489,7 +493,16 @@ export function MspCustomers () {
       key: 'expirationDate',
       sorter: true,
       render: function (_, row) {
-        return transformExpirationDate(row)
+        const nextExpirationDate = transformExpirationDate(row)
+        if (nextExpirationDate === '--')
+          return nextExpirationDate
+        const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>
+          {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
+        </TimeLeftWrapper>
       }
     },
     {
