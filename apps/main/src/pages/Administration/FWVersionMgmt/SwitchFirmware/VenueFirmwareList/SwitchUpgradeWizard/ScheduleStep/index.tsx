@@ -31,6 +31,7 @@ export interface ScheduleStepProps {
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
+  hasVenue: boolean,
   currentSchedule?: switchSchedule
 }
 
@@ -39,7 +40,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const intl = useIntl()
   const { form } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
-    currentSchedule } = props
+    currentSchedule, hasVenue } = props
   const [selectedDateMoment, setSelectedDateMoment] = useState<moment.Moment>()
   const [currentScheduleDateString, setCurrentScheduleDateString] = useState('')
   const [currentScheduleTime, setCurrentScheduleTime] = useState('')
@@ -217,38 +218,19 @@ export function ScheduleStep (props: ScheduleStepProps) {
             validateFirst
             children={<> </>}
           />
-          <Subtitle level={4}>
-            {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
-                &nbsp;
-                ({icx8200Count} {$t({ defaultMessage: 'switches' })})
-          </Subtitle>
-          <Radio.Group
-            style={{ margin: 12 }}
-            onChange={handleChangeForVersionAboveTen}
-            value={selectedAboveTenVersion}>
-            <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
-                getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    {getSwitchVersionLabel(intl, v)}</Radio>)}
-              <Radio value='' key='0'>
-                {$t({ defaultMessage: 'Do not update firmware on these switches' })}
-              </Radio>
-            </Space>
-          </Radio.Group>
-          <UI.Section>
+          {(hasVenue || icx8200Count > 0) && <>
             <Subtitle level={4}>
-              {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
-                  &nbsp;
-                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              &nbsp;
+              ({icx8200Count} {$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={handleChange}
-              value={selectedVersion}>
+              onChange={handleChangeForVersionAboveTen}
+              value={selectedAboveTenVersion}>
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
-                  getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
+                  getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       {getSwitchVersionLabel(intl, v)}</Radio>)}
                 <Radio value='' key='0'>
@@ -256,7 +238,30 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-          </UI.Section>
+          </>}
+          {(hasVenue || nonIcx8200Count > 0) &&
+            <UI.Section>
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                &nbsp;
+                ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+              </Subtitle>
+              <Radio.Group
+                style={{ margin: 12 }}
+                onChange={handleChange}
+                value={selectedVersion}>
+                <Space direction={'vertical'}>
+                  { // eslint-disable-next-line max-len
+                    getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
+                      <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                        {getSwitchVersionLabel(intl, v)}</Radio>)}
+                  <Radio value='' key='0'>
+                    {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            </UI.Section>
+          }
         </div>
 
       </Form.Item>

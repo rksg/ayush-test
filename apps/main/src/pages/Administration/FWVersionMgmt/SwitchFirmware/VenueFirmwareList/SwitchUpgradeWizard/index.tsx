@@ -208,10 +208,10 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                   if (row.switchId) {
                     currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row.switchId)
                   }
-                  if (fw.startsWith('090')) {
+                  if (fw.includes('090')) { //Need use regular expression
                     filterVersions = checkCurrentVersions(fw, '', filterVersions)
                     nonIcx8200Count = nonIcx8200Count +1
-                  } else if (fw.startsWith('100')) {
+                  } else if (fw.includes('100')) {
                     filterVersions = checkCurrentVersions('', fw, filterVersions)
                     icx8200Count = icx8200Count+1
                   }
@@ -248,6 +248,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                   icx8200Count={icx8200Count}
                 /> : <ScheduleStep
                   visible={true}
+                  hasVenue={hasVenue}
                   availableVersions={filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}
