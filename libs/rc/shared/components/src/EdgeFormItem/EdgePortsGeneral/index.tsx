@@ -25,6 +25,7 @@ interface TabData {
 
 interface PortsGeneralProps {
   data: EdgePortWithStatus[]
+  form?: FormInstance<EdgePortConfigFormType>;
   onValuesChange?: (form: FormInstance<EdgePortConfigFormType>, hasError: boolean) => void
   onFinish?: () => void
   onCancel?: () => void
@@ -39,8 +40,8 @@ export const EdgePortsGeneral = (props: PortsGeneralProps) => {
   const { data, onValuesChange, onFinish, onCancel, buttonLabel, edgeId } = props
   const { $t } = useIntl()
   const params = useParams()
+  const [form] = Form.useForm(props.form)
   const [currentTab, setCurrentTab] = useState<string>('port_0')
-  const [form] = Form.useForm<EdgePortConfigFormType>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
 

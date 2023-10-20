@@ -37,7 +37,7 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
   const [ search ] = useSearchParams()
-  updateSelectedTenant(search.get('selectedTenants'))
+  updateSelectedTenant()
   const { invitations, selectedTenant } = getUserProfile()
   const { id, permissions } = selectedTenant
   const previousURL = search.get('return')!

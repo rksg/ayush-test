@@ -4,10 +4,10 @@ import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Alert, Drawer }                                                                                                             from '@acx-ui/components'
-import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                                               from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, generalSubnetMskRegExp, multicastIpAddressRegExp, networkWifiIpRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                                                        from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                   from '@acx-ui/components'
+import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                     from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                              from '@acx-ui/utils'
 
 interface StaticRoutesDrawerProps {
   mac: string
@@ -128,10 +128,10 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
               validateFirst
               rules={[
                 { required: true },
-                { validator: (_, value) => networkWifiIpRegExp(value) },
-                { validator: (_, value) => multicastIpAddressRegExp(value, true) }
+                { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) }
               ]}
               children={<Input />}
+              dependencies={['subnet']}
             />
             <Form.Item
               name='subnet'
