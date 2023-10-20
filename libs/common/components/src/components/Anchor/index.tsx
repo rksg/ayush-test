@@ -44,7 +44,7 @@ export const AnchorLayout = ({ items, offsetTop = 0, waitForReady = false } : {
   useEffect(()=>{
     if (location.hash && _.isEqualWith(keyList, _.uniq(readyToScroll), compareFn) && !isScrolled) {
       setIsScrolled(true)
-      anchorRef?.current?.handleScrollTo(`${location.hash}`)
+      setTimeout(() => anchorRef?.current?.handleScrollTo(`${location.hash}`), 500)
     }
   }, [keyList, location.hash, readyToScroll, isScrolled])
 
@@ -56,6 +56,7 @@ export const AnchorLayout = ({ items, offsetTop = 0, waitForReady = false } : {
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
+    setIsScrolled(true)
     const hash = getHashKey((e.target as HTMLElement).title)
     navigate({ pathname: `${location.pathname}`, hash: hash })
   }
