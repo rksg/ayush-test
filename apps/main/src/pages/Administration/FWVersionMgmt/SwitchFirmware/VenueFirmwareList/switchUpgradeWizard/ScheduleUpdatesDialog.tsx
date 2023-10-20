@@ -151,13 +151,14 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
     setSelectionChanged(currentScheduleVersion !== value.target.value)
     setSelectedVersion(value.target.value)
     form.setFieldValue('switchVersion', value.target.value)
-
+    form.validateFields(['selectVersionStep'])
   }
 
   const handleChangeForVersionAboveTen = (value: RadioChangeEvent) => {
     setSelectionAboveTenChanged(currentScheduleVersionAboveTen !== value.target.value)
     setSelectedAboveTenVersion(value.target.value)
     form.setFieldValue('switchVersionAboveTen', value.target.value)
+    form.validateFields(['selectVersionStep'])
   }
 
   const startDate = dayjs().endOf('day')
@@ -172,12 +173,14 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
     setSelectedDateMoment(moment(dateString))
     setSelectedDate(dateString)
     form.setFieldValue('selectedDate', dateString)
+    form.validateFields(['selectDateStep'])
   }
 
   const onChangeRegular = (e: RadioChangeEvent) => {
     setScheduleTimeChanged(currentScheduleTime !== e.target.value)
     setSelectedTime(e.target.value)
     form.setFieldValue('selectedTime', e.target.value)
+    form.validateFields(['selectTimeStep'])
   }
 
   const onPreDownloadChange = (checked: boolean) => {
@@ -196,7 +199,24 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
     >
       <Form.Item>
         <div>
+          <UI.ValidateField
+            name='selectVersionStep'
+            rules={[
+              {
+                validator: () => {
+                  const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
+                  const switchVersion = form.getFieldValue('switchVersion')
+                  if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
+                    return Promise.reject('Please select at least 1 version.')
+                  }
 
+                  return Promise.resolve()
+                }
+              }
+            ]}
+            validateFirst
+            children={<> </>}
+          />
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
                 &nbsp;
@@ -250,29 +270,63 @@ export function ScheduleUpdatesDialog (props: ScheduleUpdatesDialogProps) {
           })}
         </UI.TitleActive>}
 
-      <UI.DateContainer>
-        <label>{$t({ defaultMessage: 'Update date:' })}</label>
-        <DatePicker
-          showToday={false}
-          disabledDate={disabledDate}
-          onChange={onChange}
-          value={selectedDate ? moment(selectedDateMoment) : undefined}
-        />
-      </UI.DateContainer>
+      <Form.Item
+        name='selectDateStep'
+        rules={[
+          {
+            validator: () => {
+              const selectedDate = form.getFieldValue('selectedDate')
+              if (_.isEmpty(selectedDate)) {
+                return Promise.reject('This field is required.')
+              }
+              return Promise.resolve()
+            }
+          }
+        ]}
+        validateFirst
+        children={<UI.DateContainer>
+          <label>{$t({ defaultMessage: 'Update date:' })}</label>
+          <DatePicker
+            showToday={false}
+            disabledDate={disabledDate}
+            onChange={onChange}
+            value={selectedDate ? moment(selectedDateMoment) : undefined}
+          />
+        </UI.DateContainer>}
+      />
+
 
       {selectedDate ?
-        <UI.DateContainer>
-          <label>{$t({ defaultMessage: 'Update time:' })}</label>
-          <Radio.Group
-            style={{ margin: 12 }}
-            onChange={onChangeRegular}
-            value={selectedTime}>
-            <Space direction={'vertical'}>
-              { AVAILABLE_SLOTS.map(v =>
-                <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
-            </Space>
-          </Radio.Group>
-        </UI.DateContainer>
+
+        <Form.Item
+          name='selectTimeStep'
+          rules={[
+            {
+              validator: () => {
+                const selectedTime = form.getFieldValue('selectedTime')
+                if (_.isEmpty(selectedTime)) {
+                  return Promise.reject('This field is required.')
+                }
+
+                return Promise.resolve()
+              }
+            }
+          ]}
+          validateFirst
+          children={<UI.DateContainer>
+            <label>{$t({ defaultMessage: 'Update time:' })}</label>
+            <Radio.Group
+              style={{ margin: 12 }}
+              onChange={onChangeRegular}
+              value={selectedTime}>
+              <Space direction={'vertical'}>
+                {AVAILABLE_SLOTS.map(v =>
+                  <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
+              </Space>
+            </Radio.Group>
+          </UI.DateContainer>}
+        />
+
         : null
       }
       <PreDownload

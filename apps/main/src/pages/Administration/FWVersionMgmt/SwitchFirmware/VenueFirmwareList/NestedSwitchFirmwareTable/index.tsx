@@ -269,6 +269,8 @@ export const NestedSwitchFirmwareTable = (
             [record.id]: selectedKeys
           })
 
+          form.validateFields()
+
         }
       }}
     />
@@ -306,6 +308,24 @@ export const NestedSwitchFirmwareTable = (
 
   return (
     <>
+      <SwitchUI.ValidateField
+        name='selectSwitchStep'
+        rules={[
+          {
+            validator: ( ) => {
+              const selectedSwitches = form.getFieldValue('selectedSwitchRowKeys')
+              const selectedVenues = form.getFieldValue('selectedVenueRowKeys')
+              if(_.isEmpty(selectedVenues) && _.isEmpty(selectedSwitches)){
+                return Promise.reject('Please select at least 1 item.')
+              }
+
+              return Promise.resolve()
+            }
+          }
+        ]}
+        validateFirst
+        children={<> </>}
+      />
       <Input
         allowClear
         size='middle'
@@ -396,6 +416,7 @@ export const NestedSwitchFirmwareTable = (
 
               }
               setSelectedSearchSwitchRowKeys(selectedKeys)
+              form.validateFields()
             }
           }}
         /></div>}
@@ -501,6 +522,7 @@ export const NestedSwitchFirmwareTable = (
               }
 
               setSelectedVenueRowKeys(selectedKeys)
+              form.validateFields()
             }
           }}
         /></SwitchUI.ExpanderTableWrapper>}

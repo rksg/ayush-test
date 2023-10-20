@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Form } from 'antd'
+import styled   from 'styled-components/macro'
 
 import { Button } from '@acx-ui/components'
 
@@ -63,6 +64,11 @@ export const FieldGroup = styled.div`
   display: grid;
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
+`
+export const ValidateField = styled(Form.Item)`
+  .ant-form-item-control-input{
+    display: none;
+  }
 `
 
 export const ExpanderTableWrapper = styled.div`

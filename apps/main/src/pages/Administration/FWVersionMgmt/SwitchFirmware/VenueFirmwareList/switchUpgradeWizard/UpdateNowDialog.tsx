@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 
 import { Form, Radio, RadioChangeEvent, Space } from 'antd'
+import _                                        from 'lodash'
 import { useIntl }                              from 'react-intl'
 
 import {
@@ -49,12 +50,14 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
     setSelectionChanged(e.target.value)
     setSelectedVersion(e.target.value)
     form.setFieldValue('switchVersion', e.target.value)
+    form.validateFields()
   }
 
   const onChangeRegularForVersionAboveTen = (e: RadioChangeEvent) => {
     setSelectionAboveTenChanged(e.target.value)
     setSelectedAboveTenVersion(e.target.value)
     form.setFieldValue('switchVersionAboveTen', e.target.value)
+    form.validateFields()
   }
 
   return (
@@ -64,6 +67,24 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
         marginBottom: '30px'
       }}>
       <Form.Item>
+        <UI.ValidateField
+          name='selectVersionStep'
+          rules={[
+            {
+              validator: () => {
+                const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
+                const switchVersion = form.getFieldValue('switchVersion')
+                if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
+                  return Promise.reject('Please select at least 1 version.')
+                }
+
+                return Promise.resolve()
+              }
+            }
+          ]}
+          validateFirst
+          children={<> </>}
+        />
         { (hasVenue || icx8200Count > 0) && <>
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
