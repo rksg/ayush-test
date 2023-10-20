@@ -181,7 +181,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
         }
         trigger={[]}
         visible={visible}
-        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}>
+        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
+        destroyPopupOnHide
+        >
         <UI.StyledInput
           ref={inputRef}
           prefix={<SearchOutlined />}

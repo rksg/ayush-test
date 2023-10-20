@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Menu } from 'antd'
-
 import {  DropdownFooter }   from './dropdownFooter'
 import { DropdownHeader }    from './dropdownHeader'
 import { ListItemComponent } from './dropdownListItem'
@@ -32,31 +30,36 @@ export const DropdownList: React.FC<DropdownListProps> = ({
   onBack,
   onBreadcrumbClick,
   animation
-}) => (
-  <UI.StyledMenu>
-    <Menu.Item key='1'>
-      <UI.StyledList
-        split={false}
-        header={
-          <DropdownHeader
-            breadcrumb={breadcrumb}
-            searchText={searchText}
-            currentNode={currentNode}
-            onBack={onBack}
-            onBreadcrumbClick={onBreadcrumbClick}
-          />
-        }
-        footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
-        dataSource={nodesToShow as Node[]}
-        renderItem={(node) => (
-          <ListItemComponent
-            animation={animation}
-            currentNode={currentNode}
-            node={node as Node}
-            onClick={onSelect}
-          />
-        )}
-      />
-    </Menu.Item>
-  </UI.StyledMenu>
-)
+}) => {
+  const items = [
+    {
+      label: <UI.StyledList
+          split={false}
+          header={
+            <DropdownHeader
+              breadcrumb={breadcrumb}
+              searchText={searchText}
+              currentNode={currentNode}
+              onBack={onBack}
+              onBreadcrumbClick={onBreadcrumbClick}
+            />
+          }
+          footer={<DropdownFooter onCancel={onCancel} onApply={onApply} />}
+          dataSource={nodesToShow as Node[]}
+          renderItem={(node) => (
+            <ListItemComponent
+              animation={animation}
+              currentNode={currentNode}
+              node={node as Node}
+              onClick={onSelect}
+            />
+          )}
+        />,
+      key: '1'
+    }
+  ]
+  return <UI.StyledMenu
+    items={items}
+  />
+}
+
