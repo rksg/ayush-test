@@ -230,7 +230,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     if(subPath.length === 0) {
       return {
         name: hierarchyName(path, true),
-        count: getSAAPCount(hierarchies) //.children?.length || 0
+        count: getSAAPCount(hierarchies)
       }
     }
     const [ target, ...rest ] = subPath
@@ -240,7 +240,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
   }
 
   function getSAAPCount (hierarchies: NetworkNode) : number {
-    if(hierarchies.type as string === 'ap') return 1
+    if(hierarchies.type === 'AP') return 1
     if(hierarchies.children && hierarchies.children.length > 0) {
       return hierarchies.children.map(getSAAPCount).reduce((sum, count) => {
         sum = sum + count
