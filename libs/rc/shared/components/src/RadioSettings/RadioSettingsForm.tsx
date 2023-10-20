@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Slider, InputNumber, Space, Switch, Checkbox, Radio } from 'antd'
 import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
@@ -8,8 +8,6 @@ import { FormattedMessage, useIntl }                                 from 'react
 import { cssStr, Tooltip }                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useWifiCapabilitiesQuery, useGetApQuery }         from '@acx-ui/rc/services'
-import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import {
   ApRadioTypeEnum,
