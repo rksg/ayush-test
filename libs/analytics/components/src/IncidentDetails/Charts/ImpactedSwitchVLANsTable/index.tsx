@@ -38,8 +38,6 @@ export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
     })
     return { ...response, rows }
   } })
-  console.log('response', response)
-  console.log('responsedata', response.data)
   const [selected, setSelected] = useState(0)
 
   return <Loader states={[response]}>
