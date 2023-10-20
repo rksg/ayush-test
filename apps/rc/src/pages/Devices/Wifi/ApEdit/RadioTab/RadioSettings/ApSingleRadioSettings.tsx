@@ -12,8 +12,8 @@ import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings, LPIButtonText }
 import { isAPLowPower }                                                          from '@acx-ui/rc/services'
 import { AFCStatus }                                                             from '@acx-ui/rc/utils'
 
-import { ApEditContext }           from '../..'
-import { DisabledDiv, FieldLabel } from '../../styledComponents'
+import { ApEditContext, ApDataContext } from '../..'
+import { DisabledDiv, FieldLabel }      from '../../styledComponents'
 
 export interface ApSingleRadioSettingsPorps {
   isEnabled: boolean,
@@ -49,6 +49,9 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const {
     apViewContextData
   } = useContext(ApEditContext)
+  const {
+    apCapabilities
+  } = useContext(ApDataContext)
 
   const defaultButtonTextSetting: LPIButtonText = {
     buttonText:
@@ -57,7 +60,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       </p>
     ,
     LPIModeOnChange: setLowPowerIndoorModeEnabled,
-    LPIModeState: lowPowerIndoorModeEnabled
+    LPIModeState: lowPowerIndoorModeEnabled,
+    isAPOutdoor: apCapabilities?.isOutdoor
   }
 
   function setLPIToggleText () {

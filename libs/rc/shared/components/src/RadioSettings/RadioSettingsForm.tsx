@@ -38,7 +38,6 @@ export function RadioSettingsForm (props:{
   isAFCEnabled? : boolean,
   LPIButtonText?: LPIButtonText
 }) {
-  const [isOutdoor, setIsOutdoor] = useState(false)
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
@@ -87,23 +86,10 @@ export function RadioSettingsForm (props:{
     useWatch<string>(channelBandwidthFieldName),
     useWatch<boolean>(lowPowerIndoorModeEnabledFieldName)
   ]
-  const { tenantId, serialNumber } = useParams()
-
-  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
-  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
 
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
-
-    const outDoorModel = wifiCapabilities.data?.apModels.find((apModel) => {
-      return apModel.model === getAp.data?.model && apModel.isOutdoor === true
-    })
-
-    if (outDoorModel){
-      setIsOutdoor(true)
-    }
-
   }, [] )
 
   useEffect(()=> {
@@ -135,7 +121,7 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
-        <FieldLabel width='180px' style={(context === 'ap' && isOutdoor) ? { display: 'hidden' } : {}}>
+        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : {}}>
           <Tooltip title={
             <FormattedMessage
               values={{ br: () => <br /> }}

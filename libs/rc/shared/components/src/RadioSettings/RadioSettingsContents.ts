@@ -20,7 +20,8 @@ export interface ChannelBars {
 export interface LPIButtonText {
   buttonText: JSX.Element,
   LPIModeOnChange: Function,
-  LPIModeState: boolean
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
 }
 
 export const channelSelectionMethodsOptions = [
