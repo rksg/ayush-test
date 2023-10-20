@@ -20,8 +20,6 @@ import { Link, useParams  }                from '@acx-ui/react-router-dom'
 import { useUserProfileContext }           from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
-
 enum DelegationType {
   MSP_EC = 'MSP_EC',
   VAR_REC = 'VAR_REC',
@@ -419,10 +417,10 @@ export function MspEcDropdownList () {
 
   return (
     <>
-      <UI.CompanyNameDropdown onClick={()=>setVisible(true)}>
+      <LayoutUI.CompanyNameDropdown onClick={()=>setVisible(true)}>
         <LayoutUI.CompanyName>{customerName}</LayoutUI.CompanyName>
         <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
-      </UI.CompanyNameDropdown>
+      </LayoutUI.CompanyNameDropdown>
       <Drawer
         width={colWidth}
         title={$t({ defaultMessage: 'Change Customer' })}
