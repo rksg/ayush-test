@@ -271,11 +271,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
       {
         <UI.TitleActive>
           {$t({
-            defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+            defaultMessage: 'Venue\'s local time-zone is applied to the selection below.'
           })}
         </UI.TitleActive>}
 
       <Form.Item
+        label={'Update date:'}
         name='selectDateStep'
         rules={[
           {
@@ -289,22 +290,21 @@ export function ScheduleStep (props: ScheduleStepProps) {
           }
         ]}
         validateFirst
-        children={<UI.DateContainer>
-          <label>{$t({ defaultMessage: 'Update date:' })}</label>
+        children={
           <DatePicker
             showToday={false}
             disabledDate={disabledDate}
             onChange={onChange}
             value={selectedDate ? moment(selectedDateMoment) : undefined}
           />
-        </UI.DateContainer>}
+        }
       />
 
 
       {selectedDate ?
-
         <Form.Item
           name='selectTimeStep'
+          label={$t({ defaultMessage: 'Update time:' })}
           rules={[
             {
               validator: () => {
@@ -318,18 +318,16 @@ export function ScheduleStep (props: ScheduleStepProps) {
             }
           ]}
           validateFirst
-          children={<UI.DateContainer>
-            <label>{$t({ defaultMessage: 'Update time:' })}</label>
+          children={
             <Radio.Group
-              style={{ margin: 12 }}
+              // style={{ margin: 12 }}
               onChange={onChangeRegular}
               value={selectedTime}>
               <Space direction={'vertical'}>
                 {AVAILABLE_SLOTS.map(v =>
                   <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
               </Space>
-            </Radio.Group>
-          </UI.DateContainer>}
+            </Radio.Group>}
         />
 
         : null

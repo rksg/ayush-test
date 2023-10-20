@@ -28,6 +28,7 @@ export const PreferencesSection = styled.div`
 
 export const TitleActive = styled.div`
   color: #7f7f7f;
+  margin-bottom: 15px;
 `
 
 export const TitleLegacy = styled.div`
