@@ -813,7 +813,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   style={{ marginBottom: '10px' }}
                   name={'enableGuestVlan'}
                   valuePropName={'checked'}
-                  initialValue={true}
+                  initialValue={isEdit}
                   children={<Switch />}
                 />
               </StepsForm.FieldLabel>

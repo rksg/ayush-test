@@ -57,7 +57,6 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const {
-    statusTrail,
     category,
     sliceValue,
     status,
@@ -65,9 +64,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     id,
     priority,
     crrmOptimizedState,
-    crrmInterferingLinksText
+    crrmInterferingLinksText,
+    updatedAt
   } = details
-  const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
 
@@ -87,7 +86,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     }),
     {
       label: $t({ defaultMessage: 'Date' }),
-      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt))
+      children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
     },
     (!isRrm && {
       label: $t({ defaultMessage: 'Category' }),
