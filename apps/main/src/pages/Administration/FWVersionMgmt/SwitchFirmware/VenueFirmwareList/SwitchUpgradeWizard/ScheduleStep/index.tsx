@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
@@ -7,42 +8,37 @@ import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
-import { Modal, Subtitle } from '@acx-ui/components'
+import { Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
-  FirmwareSwitchVenue,
   FirmwareVersion,
-  switchSchedule,
-  UpdateScheduleRequest
+  switchSchedule
 } from '@acx-ui/rc/utils'
 
 import {
   getSwitchVersionLabel
-} from '../../FirmwareUtils'
-import { PreDownload } from '../../PreDownload'
+} from '../../../../FirmwareUtils'
+import * as UI from '../../styledComponents'
 
-import * as UI from './styledComponents'
+import { PreDownload } from './PreDownload'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
 
-export interface ChangeScheduleDialogProps {
+export interface ScheduleStepProps {
   visible: boolean,
-  onCancel: () => void,
-  onSubmit: (data: UpdateScheduleRequest) => void,
-  data: FirmwareSwitchVenue[]
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
   icx8200Count: number
   currentSchedule?: switchSchedule
 }
 
-export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
+export function ScheduleStep (props: ScheduleStepProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const [form] = useForm()
-  const { visible, onSubmit, onCancel, data, availableVersions, nonIcx8200Count, icx8200Count,
+  const { form } = useStepFormContext()
+  const { availableVersions, nonIcx8200Count, icx8200Count,
     currentSchedule } = props
   const [selectedDateMoment, setSelectedDateMoment] = useState<moment.Moment>()
   const [currentScheduleDateString, setCurrentScheduleDateString] = useState('')
@@ -64,17 +60,17 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   // eslint-disable-next-line max-len
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen ? currentSchedule.versionAboveTen.name : ''
 
-  useEffect(() => {
-    if (data) {
-      if (data.length === 1 && data[0].preDownload) {
-        setChecked(data[0].preDownload)
-        setCurrentPreDownload(data[0].preDownload)
-      } else {
-        setChecked(false)
-        setCurrentPreDownload(false)
-      }
-    }
-  }, [data])
+  // useEffect(() => {
+  //   if (data) {
+  //     if (data.length === 1 && data[0].preDownload) {
+  //       setChecked(data[0].preDownload)
+  //       setCurrentPreDownload(data[0].preDownload)
+  //     } else {
+  //       setChecked(false)
+  //       setCurrentPreDownload(false)
+  //     }
+  //   }
+  // }, [data])
 
   useEffect(() => {
     const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
@@ -90,11 +86,14 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     } else {
       setSelectedDate('')
       setSelectedTime('')
+      form.setFieldValue('selectedDate', '')
+      form.setFieldValue('selectedTime', '')
     }
 
     setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
     // eslint-disable-next-line max-len
     setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
+
   }, [currentSchedule, currentScheduleVersion,
     currentScheduleVersionAboveTen])
 
@@ -124,6 +123,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       setCurrentScheduleDateString(dateAndTime[0])
       setSelectedDate(dateAndTime[0])
       setSelectedDateMoment(moment(dateAndTime[0]))
+      form.setFieldValue('selectedDate', dateAndTime[0])
 
       const timeZoneKeyWords = ['-', '+', 'Z']
       for (let value of timeZoneKeyWords) {
@@ -140,6 +140,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
           setCurrentScheduleTime(scheduleStartTime)
           setSelectedTime(scheduleStartTime)
+          form.setFieldValue('selectedTime', scheduleStartTime)
           break
         }
       }
@@ -149,11 +150,15 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const handleChange = (value: RadioChangeEvent) => {
     setSelectionChanged(currentScheduleVersion !== value.target.value)
     setSelectedVersion(value.target.value)
+    form.setFieldValue('switchVersion', value.target.value)
+    form.validateFields(['selectVersionStep'])
   }
 
   const handleChangeForVersionAboveTen = (value: RadioChangeEvent) => {
     setSelectionAboveTenChanged(currentScheduleVersionAboveTen !== value.target.value)
     setSelectedAboveTenVersion(value.target.value)
+    form.setFieldValue('switchVersionAboveTen', value.target.value)
+    form.validateFields(['selectVersionStep'])
   }
 
   const startDate = dayjs().endOf('day')
@@ -167,89 +172,83 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setScheduleDateChanged(currentScheduleDateString !== dateString)
     setSelectedDateMoment(moment(dateString))
     setSelectedDate(dateString)
+    form.setFieldValue('selectedDate', dateString)
+    form.validateFields(['selectDateStep'])
   }
 
   const onChangeRegular = (e: RadioChangeEvent) => {
     setScheduleTimeChanged(currentScheduleTime !== e.target.value)
     setSelectedTime(e.target.value)
+    form.setFieldValue('selectedTime', e.target.value)
+    form.validateFields(['selectTimeStep'])
   }
 
   const onPreDownloadChange = (checked: boolean) => {
     setPreDownloadChanged(currentPreDownload !== checked)
     setChecked(checked)
+    form.setFieldValue('preDonloadChecked', checked)
   }
 
-  const createRequest = (): UpdateScheduleRequest => {
-    return {
-      date: selectedDate,
-      time: selectedTime,
-      preDownload: checked, // eslint-disable-next-line max-len
-      venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
-      switchVersion: selectedVersion,
-      switchVersionAboveTen: selectedAboveTenVersion
-    }
-  }
-
-  const triggerSubmit = () => {
-    form.validateFields()
-      .then(() => {
-        onSubmit(createRequest())
-        onModalCancel()
-      })
-  }
-
-  const onModalCancel = () => {
-    form.resetFields()
-    resetValues()
-    setSelectedDate('')
-    setSelectedTime('')
-    onCancel()
-  }
-
-  const resetValues = () => {
-    setSelectionChanged(false)
-    setSelectionAboveTenChanged(false)
-    setScheduleTimeChanged(false)
-    setScheduleDateChanged(false)
-    setPreDownloadChanged(false)
-    setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
-    setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
-    // eslint-disable-next-line max-len
-    setSelectedDateMoment(currentScheduleDateString ? moment(currentScheduleDateString) : undefined)
-    setSelectedTime(currentScheduleTime)
-    setChecked(currentPreDownload)
-  }
 
   return (
-    <Modal
-      title={$t({ defaultMessage: 'Change Update Schedule' })}
-      visible={visible}
-      width={630}
-      okText={$t({ defaultMessage: 'Save' })}
-      onOk={triggerSubmit}
-      onCancel={onModalCancel}
-      destroyOnClose
-      okButtonProps={{ disabled: disableSave }}
+    <div
+      style={{
+        minHeight: '50vh',
+        marginBottom: '30px'
+      }}
     >
-      <Form
-        form={form}
-        name={'changeScheduleModalForm'}
-      >
-        <Form.Item>
-          <div>
+      <Form.Item>
+        <div>
+          <UI.ValidateField
+            name='selectVersionStep'
+            rules={[
+              {
+                validator: () => {
+                  const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
+                  const switchVersion = form.getFieldValue('switchVersion')
+                  if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
+                    return Promise.reject('Please select at least 1 version.')
+                  }
 
-            <Subtitle level={4}>
-              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+                  return Promise.resolve()
+                }
+              }
+            ]}
+            validateFirst
+            children={<> </>}
+          />
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
                 &nbsp;
                 ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+          </Subtitle>
+          <Radio.Group
+            style={{ margin: 12 }}
+            onChange={handleChangeForVersionAboveTen}
+            value={selectedAboveTenVersion}>
+            <Space direction={'vertical'}>
+              { // eslint-disable-next-line max-len
+                getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    {getSwitchVersionLabel(intl, v)}</Radio>)}
+              <Radio value='' key='0'>
+                {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+          <UI.Section>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                  &nbsp;
+                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={handleChangeForVersionAboveTen}
-              value={selectedAboveTenVersion}>
+              onChange={handleChange}
+              value={selectedVersion}>
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
-                  getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
+                  getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       {getSwitchVersionLabel(intl, v)}</Radio>)}
                 <Radio value='' key='0'>
@@ -257,41 +256,35 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-            <UI.Section>
-              <Subtitle level={4}>
-                {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
-                  &nbsp;
-                  ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
-              </Subtitle>
-              <Radio.Group
-                style={{ margin: 12 }}
-                onChange={handleChange}
-                value={selectedVersion}>
-                <Space direction={'vertical'}>
-                  { // eslint-disable-next-line max-len
-                    getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
-                      <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        {getSwitchVersionLabel(intl, v)}</Radio>)}
-                  <Radio value='' key='0'>
-                    {$t({ defaultMessage: 'Do not update firmware on these switches' })}
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            </UI.Section>
-          </div>
+          </UI.Section>
+        </div>
 
-        </Form.Item>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'When do you want the update to run?' })}
-        </Subtitle>
-        {
-          <UI.TitleActive>
-            {$t({
-              defaultMessage: 'Selected time will apply to each venue according to own time-zone'
-            })}
-          </UI.TitleActive>}
+      </Form.Item>
+      <Subtitle level={4}>
+        {$t({ defaultMessage: 'When do you want the update to run?' })}
+      </Subtitle>
+      {
+        <UI.TitleActive>
+          {$t({
+            defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+          })}
+        </UI.TitleActive>}
 
-        <UI.DateContainer>
+      <Form.Item
+        name='selectDateStep'
+        rules={[
+          {
+            validator: () => {
+              const selectedDate = form.getFieldValue('selectedDate')
+              if (_.isEmpty(selectedDate)) {
+                return Promise.reject('This field is required.')
+              }
+              return Promise.resolve()
+            }
+          }
+        ]}
+        validateFirst
+        children={<UI.DateContainer>
           <label>{$t({ defaultMessage: 'Update date:' })}</label>
           <DatePicker
             showToday={false}
@@ -299,29 +292,48 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             onChange={onChange}
             value={selectedDate ? moment(selectedDateMoment) : undefined}
           />
-        </UI.DateContainer>
+        </UI.DateContainer>}
+      />
 
-        {selectedDate ?
-          <UI.DateContainer>
+
+      {selectedDate ?
+
+        <Form.Item
+          name='selectTimeStep'
+          rules={[
+            {
+              validator: () => {
+                const selectedTime = form.getFieldValue('selectedTime')
+                if (_.isEmpty(selectedTime)) {
+                  return Promise.reject('This field is required.')
+                }
+
+                return Promise.resolve()
+              }
+            }
+          ]}
+          validateFirst
+          children={<UI.DateContainer>
             <label>{$t({ defaultMessage: 'Update time:' })}</label>
             <Radio.Group
               style={{ margin: 12 }}
               onChange={onChangeRegular}
               value={selectedTime}>
               <Space direction={'vertical'}>
-                { AVAILABLE_SLOTS.map(v =>
+                {AVAILABLE_SLOTS.map(v =>
                   <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
               </Space>
             </Radio.Group>
-          </UI.DateContainer>
-          : null
-        }
-        <PreDownload
-          checked={checked}
-          setChecked={onPreDownloadChange}
+          </UI.DateContainer>}
         />
 
-      </Form>
-    </Modal>
+        : null
+      }
+      <PreDownload
+        checked={checked}
+        setChecked={onPreDownloadChange}
+      />
+
+    </div>
   )
 }

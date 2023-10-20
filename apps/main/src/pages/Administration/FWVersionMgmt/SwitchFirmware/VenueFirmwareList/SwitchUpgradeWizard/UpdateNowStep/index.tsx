@@ -14,10 +14,10 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-import { getSwitchVersionLabel } from '../../../FirmwareUtils'
-import * as UI                   from '../styledComponents'
+import { getSwitchVersionLabel } from '../../../../FirmwareUtils'
+import * as UI                   from '../../styledComponents'
 
-export interface UpdateNowDialogProps {
+export interface UpdateNowStepProps {
   visible: boolean,
   availableVersions?: FirmwareVersion[]
   nonIcx8200Count: number
@@ -25,7 +25,7 @@ export interface UpdateNowDialogProps {
   hasVenue: boolean
 }
 
-export function UpdateNowDialog (props: UpdateNowDialogProps) {
+export function UpdateNowStep (props: UpdateNowStepProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const { form } = useStepFormContext()

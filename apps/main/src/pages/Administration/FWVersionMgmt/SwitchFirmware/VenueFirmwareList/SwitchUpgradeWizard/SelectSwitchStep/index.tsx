@@ -25,9 +25,9 @@ import {
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion
-} from '../../../FirmwareUtils'
-import * as UI       from '../../../styledComponents'
-import * as SwitchUI from '../styledComponents'
+} from '../../../../FirmwareUtils'
+import * as UI       from '../../../../styledComponents'
+import * as SwitchUI from '../../styledComponents'
 
 function useColumns () {
   const intl = useIntl()
@@ -101,7 +101,7 @@ type VenueTableProps = {
   data: FirmwareSwitchVenue[]
 }
 
-export const NestedSwitchFirmwareTable = (
+export const SelectSwitchStep = (
   { data }: VenueTableProps) => {
 
   const { form } = useStepFormContext()
@@ -532,7 +532,7 @@ export const NestedSwitchFirmwareTable = (
 
 export function VenueFirmwareList (data: FirmwareSwitchVenue[]) {
   return (
-    <NestedSwitchFirmwareTable
+    <SelectSwitchStep
       data={data}
     />
   )

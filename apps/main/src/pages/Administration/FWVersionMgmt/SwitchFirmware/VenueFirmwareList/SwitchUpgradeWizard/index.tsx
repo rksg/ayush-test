@@ -22,11 +22,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getReleaseFirmware }        from '../../../FirmwareUtils'
-import { NestedSwitchFirmwareTable } from '../NestedSwitchFirmwareTable'
+import { getReleaseFirmware } from '../../../FirmwareUtils'
 
-import { ScheduleUpdatesDialog } from './ScheduleUpdatesDialog'
-import { UpdateNowDialog }       from './UpdateNowDialog'
+import { ScheduleStep }     from './ScheduleStep'
+import { SelectSwitchStep } from './SelectSwitchStep'
+import { UpdateNowStep }    from './UpdateNowStep'
 
 
 export enum SwitchFirmwareWizardType {
@@ -228,7 +228,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
 
           }}
         >
-          <NestedSwitchFirmwareTable
+          <SelectSwitchStep
             data={props.data as FirmwareSwitchVenue[]}
           />
         </StepsForm.StepForm>
@@ -240,13 +240,13 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           >
             {
               wizardType === SwitchFirmwareWizardType.update ?
-                <UpdateNowDialog
+                <UpdateNowStep
                   visible={true}
                   hasVenue={hasVenue}
                   availableVersions={filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}
-                /> : <ScheduleUpdatesDialog
+                /> : <ScheduleStep
                   visible={true}
                   availableVersions={filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}

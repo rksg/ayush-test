@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { Subtitle } from '@acx-ui/components'
 
-import * as UI from '../styledComponents'
+import * as UI from '../../styledComponents'
 
 interface PreDownloadProps {
   checked: boolean,

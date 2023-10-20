@@ -46,7 +46,7 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { SwitchFirmwareWizardType, UpdateNowWizard } from './switchUpgradeWizard'
+import { SwitchFirmwareWizardType, UpdateNowWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                         from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
