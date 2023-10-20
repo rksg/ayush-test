@@ -179,7 +179,7 @@ export const SelectSwitchStep = (
     if (_.isEmpty(nestedData[record.id]?.initialData) ||
       record.switchCount !== nestedData[record.id]?.initialData.length) {
       const switchListPayload = {
-        venueId: [record.id]
+        venueIdList: [record.id]
       }
       const switchList = record.id
         ? (await getSwitchList({
