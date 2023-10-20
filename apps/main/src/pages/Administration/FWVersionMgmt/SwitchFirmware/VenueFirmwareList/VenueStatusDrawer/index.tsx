@@ -19,36 +19,12 @@ export interface VenueStatusDrawerProps {
   data: FirmwareSwitchVenue
 }
 
-
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
-  // const [currentRow, setCurrentRow] = useState({} as Acl)
-  // const [drawerVisible, setDrawerVisible] = useState(false)
-
-  const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
-    useState([] as SwitchFirmwareStatus[])
-
-  // eslint-disable-next-line no-console
-  console.log(props.data)
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery()
-
-
-  // const tableQuery = useTableQuery({
-  //   useQuery: useLazyGetSwitchFirmwareStatusListQuery,
-  //   defaultPayload: { venueId: 'test' },
-  //   sorter: {
-  //     sortField: 'name',
-  //     sortOrder: 'ASC'
-  //   }
-  // })
-
-  // const switchList = record.id
-  // ? (await getSwitchList({
-  //   params: { tenantId: tenantId }, payload: switchListPayload
-  // }, true)).data?.data
-  // : []
-
+  const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
+    useState([] as SwitchFirmwareStatus[])
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
@@ -57,16 +33,15 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
     setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
   }
 
+  const onClose = () => {
+    props.setVisible(false)
+  }
+
   useEffect(() => {
     if(props.data.id){
       setSwitchList()
     }
   }, [props.data.id])
-
-
-  const onClose = () => {
-    props.setVisible(false)
-  }
 
   const columns: TableProps<SwitchFirmwareStatus>['columns'] = [
     {
@@ -102,7 +77,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
     width={580}
     children={<>
       <Typography.Text>
-        <b> Venue:</b> {props.data.name}
+        <b>  {$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
       </Typography.Text>
       <Table
         columns={columns}

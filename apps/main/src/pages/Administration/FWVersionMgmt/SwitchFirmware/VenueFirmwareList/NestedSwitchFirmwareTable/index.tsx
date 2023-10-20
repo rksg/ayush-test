@@ -124,8 +124,6 @@ export const NestedSwitchFirmwareTable = (
     }
   })
 
-
-
   const switchColumns: TableProps<SwitchFirmware>['columns'] = [
     {
       title: intl.$t({ defaultMessage: 'Switch' }),
@@ -306,7 +304,6 @@ export const NestedSwitchFirmwareTable = (
   }
   const [selectedSearchSwitchRowKeys, setSelectedSearchSwitchRowKeys] = useState([] as Key[])
 
-
   return (
     <>
       <Input
@@ -337,12 +334,8 @@ export const NestedSwitchFirmwareTable = (
             type: 'checkbox',
             selectedRowKeys: selectedSearchSwitchRowKeys,//selectedSwitchRowKeys[record.id],
             onChange: (selectedKeys, selectedRows) => {
-              // if()
-              // (nestedData[selectedRows.venueId]?.selectedData
-              // selectedKeys
               const addedSwitch = _.difference(selectedKeys, selectedSearchSwitchRowKeys)
               const deletedSwitch = _.difference(selectedSearchSwitchRowKeys, selectedKeys)
-
 
               if (addedSwitch.length === 1) {
                 const currentRow = selectedRows.filter(s => s.id === selectedRows[0].id)[0]
@@ -370,8 +363,6 @@ export const NestedSwitchFirmwareTable = (
                     || currentRow
                   }
                 })
-
-
 
               } else if (addedSwitch.length > 1) {
 
@@ -404,9 +395,7 @@ export const NestedSwitchFirmwareTable = (
               } else if (deletedSwitch.length > 1) {
 
               }
-
               setSelectedSearchSwitchRowKeys(selectedKeys)
-
             }
           }}
         /></div>}
@@ -429,7 +418,6 @@ export const NestedSwitchFirmwareTable = (
             type: 'checkbox',
             selectedRowKeys: selectedVenueRowKeys,
             onChange: (selectedKeys) => {
-
               const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
               const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
 

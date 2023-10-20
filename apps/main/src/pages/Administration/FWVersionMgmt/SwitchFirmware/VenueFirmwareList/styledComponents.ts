@@ -69,6 +69,10 @@ export const ExpanderTableWrapper = styled.div`
   min-height: 50vh;
   margin-bottom: 30px;
 
+  .ant-table-tbody {
+    background-color: #EBEDEE;
+  }
+
   /* Selected Row Styles */
   .ant-table-tbody > tr.ant-table-row-selected > td {
     background: #EBEDEE;
@@ -108,6 +112,10 @@ export const ExpanderTableWrapper = styled.div`
 
   /* Switch Table Styles */
   .switchTable {
+    .ant-table-tbody {
+      background-color: white;
+    }
+
     .ant-table-tbody > tr.ant-table-row-selected > td {
       background: white;
     }
