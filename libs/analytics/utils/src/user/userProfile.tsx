@@ -31,25 +31,22 @@ export function getPendoConfig (): PendoParameters {
     }
   }
 }
-const extractTenantFromUrl = (tenantFromUrl: string | null) => {
-  if (tenantFromUrl) {
-    const [ tenantId ] = JSON.parse(atob(decodeURIComponent(tenantFromUrl))) as [string]
-    return tenantId
-  }
-  return null
+const getSelectedTenant = (profile: UserProfile): Tenant => {
+  const search = new URLSearchParams(window.location.search)
+  const selected = search.get('selectedTenants')
+  const id = selected
+    ? JSON.parse(window.atob(decodeURIComponent(selected)))[0]
+    : profile.accountId
+  return profile.tenants.find(tenant => tenant.id === id)!
 }
 export const getUserProfile = () => user.profile
 export const setUserProfile = (profile: UserProfile) => {
-  const selectedTenant = profile.tenants.find(tenant => tenant.id === profile.accountId) as Tenant
-  // Do not call this manually except in test env & bootstrap
-  user.profile = { ...profile, selectedTenant }
+  user.profile = { ...profile, selectedTenant: getSelectedTenant(profile) }
 }
-export const updateSelectedTenant = (tenant: string | null) => {
+export const updateSelectedTenant = () => {
   const currentProfile = getUserProfile()
-  const selectedTenantId = extractTenantFromUrl(tenant)
-    || currentProfile.accountId
-  if (selectedTenantId === currentProfile.selectedTenant.id) return
-  const selectedTenant = currentProfile.tenants.find(t => t.id === selectedTenantId) as Tenant
+  const selectedTenant = getSelectedTenant(currentProfile)
+  if (selectedTenant.id === currentProfile.selectedTenant.id) return
   user.profile.selectedTenant = selectedTenant
   updatePendo(
     /* istanbul ignore next */
