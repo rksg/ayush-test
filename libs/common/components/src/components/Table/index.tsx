@@ -81,6 +81,7 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number,
     searchableWidth?: number,
+    stickyHeaders?: boolean,
     stickyPagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
@@ -131,7 +132,7 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, stickyPagination, ...props
+  onDisplayRowChange, stickyHeaders, stickyPagination, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -164,9 +165,11 @@ function Table <RecordType extends Record<string, any>> ({
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
 
-  if (stickyPagination === undefined && type === 'tall' && wrapperRef?.current?.closest('#root')) {
-    // stickyPagination is true by default while this Table is under LayoutComponent (not in Modal or Drawer)
-    stickyPagination = true
+  // stickyHeaders/stickyPagination is true by default while this
+  // Table is under LayoutComponent (not in Modal or Drawer)
+  if (type === 'tall' && wrapperRef?.current?.closest('#root')) {
+    if (stickyHeaders === undefined) stickyHeaders = true
+    if (stickyPagination === undefined) stickyPagination = true
   }
 
   useEffect(() => {
@@ -321,7 +324,21 @@ function Table <RecordType extends Record<string, any>> ({
     return all
   }, {} as Record<string, TableColumn<RecordType, 'text'>>))
 
-  const filterables = aggregator(columns, 'filterable')
+  const sortFilterableItems = (
+    a: TableColumn<RecordType, 'text'>,
+    b: TableColumn<RecordType, 'text'>): number => {
+    const aType = a.filterComponent ? _.get(a.filterComponent, 'type') : ''
+    const bType = b.filterComponent ? _.get(b.filterComponent, 'type') : ''
+
+    const priorityOrder: ('rangepicker' | 'checkbox')[] = ['rangepicker', 'checkbox']
+
+    const aIndex = priorityOrder.indexOf(aType as 'rangepicker' | 'checkbox')
+    const bIndex = priorityOrder.indexOf(bType as 'rangepicker' | 'checkbox')
+
+    return aIndex - bIndex
+  }
+
+  const filterables = aggregator(columns, 'filterable').sort(sortFilterableItems)
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
@@ -504,7 +521,7 @@ function Table <RecordType extends Record<string, any>> ({
   let offsetHeader = layout.pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
-  const sticky = type === 'tall' &&
+  const sticky = stickyHeaders &&
     // disable in test env as it will result in 2 tables rendered
     // this is to prevent confusing/inconvenience for implementor
     // to find out themselves when they are using Table and
@@ -521,6 +538,7 @@ function Table <RecordType extends Record<string, any>> ({
     } as React.CSSProperties}
     ref={wrapperRef}
     $type={type}
+    $stickyHeaders={!!stickyHeaders}
     $stickyPagination={!!stickyPagination}
   >
     <UI.TableSettingsGlobalOverride />

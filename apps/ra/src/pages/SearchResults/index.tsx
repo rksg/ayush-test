@@ -145,6 +145,12 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      dataIndex: 'manufacturer',
+      key: 'manufacturer',
+      sorter: { compare: sortProp('manufacturer', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',

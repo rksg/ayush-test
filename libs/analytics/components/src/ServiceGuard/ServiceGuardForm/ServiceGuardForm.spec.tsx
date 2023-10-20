@@ -27,7 +27,7 @@ import {
   fetchServiceGuardSpec,
   serviceGuardSpecNames,
   mockNetworkHierarchy
-}                                 from '../__tests__/fixtures'
+}                                from '../__tests__/fixtures'
 import { ServiceGuardSpecGuard } from '../ServiceGuardGuard'
 
 import { ServiceGuardForm } from './ServiceGuardForm'

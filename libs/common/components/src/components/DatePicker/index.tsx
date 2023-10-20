@@ -119,6 +119,7 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       <AntRangePicker
@@ -131,8 +132,7 @@ export const RangePicker = ({
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
-        }
+          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter
