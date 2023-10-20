@@ -224,10 +224,20 @@ export interface SwitchFirmware {
   venueNextSchedule: switchSchedule;
 }
 
+export enum SwitchFwStatusEnum {
+  FW_UPD_START = 'FW_UPD_START',
+  FW_UPD_VALIDATING_PARAMETERS = 'FW_UPD_VALIDATING_PARAMETERS',
+  FW_UPD_DOWNLOADING = 'FW_UPD_DOWNLOADING',
+  FW_UPD_VALIDATING_IMAGE = 'FW_UPD_VALIDATING_IMAGE',
+  FW_UPD_SYNCING_TO_REMOTE = 'FW_UPD_SYNCING_TO_REMOTE',
+  FW_UPD_WRITING_TO_FLASH = 'FW_UPD_WRITING_TO_FLASH',
+  FW_UPD_COMPLETE = 'FW_UPD_COMPLETE',
+  FW_UPD_FAIL = 'FW_UPD_FAIL'
+}
 export interface SwitchFirmwareStatus {
   switchId: string;
   switchName: string;
-  status: string;
+  status: SwitchFwStatusEnum;
   targetFirmware: string;
 }
 

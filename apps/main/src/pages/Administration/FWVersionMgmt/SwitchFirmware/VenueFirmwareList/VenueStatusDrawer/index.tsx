@@ -8,8 +8,12 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
-import { useLazyGetSwitchFirmwareStatusListQuery }   from '@acx-ui/rc/services'
-import { FirmwareSwitchVenue, SwitchFirmwareStatus } from '@acx-ui/rc/utils'
+import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
+import {
+  FirmwareSwitchVenue,
+  SwitchFirmwareStatus,
+  SwitchFwStatusEnum
+} from '@acx-ui/rc/utils'
 
 import { parseSwitchVersion } from '../../../FirmwareUtils'
 
@@ -55,7 +59,31 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        if (Object.values(SwitchFwStatusEnum).includes(row.status)) {
+          const fwMappings = {
+            [SwitchFwStatusEnum.FW_UPD_START]:
+              $t({ defaultMessage: 'Firmware Updating' }),
+            [SwitchFwStatusEnum.FW_UPD_VALIDATING_PARAMETERS]:
+              $t({ defaultMessage: 'Firmware Update - Validating Parameters' }),
+            [SwitchFwStatusEnum.FW_UPD_DOWNLOADING]:
+              $t({ defaultMessage: 'Firmware Update - Downloading' }),
+            [SwitchFwStatusEnum.FW_UPD_VALIDATING_IMAGE]:
+              $t({ defaultMessage: 'Firmware Update - Validating Image' }),
+            [SwitchFwStatusEnum.FW_UPD_SYNCING_TO_REMOTE]:
+              $t({ defaultMessage: 'Firmware Update - Syncing To Remote' }),
+            [SwitchFwStatusEnum.FW_UPD_WRITING_TO_FLASH]:
+              $t({ defaultMessage: 'Firmware Update - Writing To Flash' }),
+            [SwitchFwStatusEnum.FW_UPD_COMPLETE]:
+              $t({ defaultMessage: 'Firmware Update - Success' }),
+            [SwitchFwStatusEnum.FW_UPD_FAIL]:
+              $t({ defaultMessage: 'Firmware Update - Failed' })
+          }
+          return fwMappings[row.status]
+        }
+        return '--'
+      }
     }, {
       key: 'targetFirmware',
       title: $t({ defaultMessage: 'Target Firmware' }),
