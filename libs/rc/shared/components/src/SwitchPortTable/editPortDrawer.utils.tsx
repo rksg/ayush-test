@@ -221,6 +221,28 @@ export const checkPortEditStatus = (
   }
 }
 
+export const checkPortEditStatusLegacy = (
+  form: FormInstance,
+  portSetting: PortSettingModel,
+  revert: boolean,
+  taggedByVenue: string,
+  untaggedByVenue: string,
+  forceStatus?: string
+) => {
+  const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
+  const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
+
+  if (forceStatus) {
+    return forceStatus.toString()
+  } else if (!revert && (taggedVlans || untaggedVlan)) {
+    return 'port'
+  } else if (revert && (taggedByVenue || untaggedByVenue)) {
+    return 'venue'
+  } else {
+    return 'default'
+  }
+}
+
 export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
   return portSettings?.filter(s => !s.poeCapability)?.length > 0
 }

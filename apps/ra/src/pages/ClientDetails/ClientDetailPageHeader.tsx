@@ -11,30 +11,32 @@ import {
 } from '@acx-ui/react-router-dom'
 import { useDateFilter } from '@acx-ui/utils'
 
+import { useClientListQuery } from '../Clients/ClientsList/services'
+
 import ClientDetailTabs  from './ClientDetailTabs'
 import { HostnameSpace } from './styledComponents'
 
-function DatePicker () {
+export const ClientDetailPageHeader = () => {
+  const { $t } = useIntl()
+  const { clientId } = useParams()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
-  return <RangePicker
+  const DatePicker = <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
     onDateApply={setDateFilter as CallableFunction}
     showTimePicker
     selectionType={range}
   />
-}
-
-export const ClientDetailPageHeader = () => {
-  const { $t } = useIntl()
-  const { clientId } = useParams()
-
+  const hostname = useClientListQuery({
+    start: startDate,
+    end: endDate,
+    limit: 1,
+    query: clientId as string
+  })?.data?.clients?.[0]?.hostname
   return (
     <PageHeader
-      title={<Space size={4}>{clientId}
+      title={<Space size={4}>{`${clientId} ${hostname ? `(${hostname})` : ''}`}
         {<HostnameSpace size={4}>
           {/* TODO: use client detail query to get hostname */}
-          ({$t({ defaultMessage: 'Unknown' })})
         </HostnameSpace>}
       </Space>}
       breadcrumb={[
@@ -42,9 +44,7 @@ export const ClientDetailPageHeader = () => {
         { text: $t({ defaultMessage: 'Wireless' }), link: '' },
         { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ]}
-      extra={[
-        <DatePicker />
-      ]}
+      extra={[DatePicker]}
       footer={<ClientDetailTabs/>}
     />
   )

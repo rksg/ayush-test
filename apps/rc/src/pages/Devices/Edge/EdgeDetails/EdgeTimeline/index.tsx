@@ -77,7 +77,7 @@ export function EdgeTimeline () {
       onChange={onTabChange}
       activeKey={activeSubTab}
       defaultActiveKey='activities'
-      type='second'
+      type='card'
     >
       {Object.keys(tabs)
         .map(

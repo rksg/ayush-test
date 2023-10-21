@@ -1,3 +1,5 @@
+import { ApRadioBands, ApVenueStatusEnum, AFCPowerMode, AFCStatus, ApViewModel } from '@acx-ui/rc/utils'
+
 export const successResponse = {
   requestId: 'request-id'
 }
@@ -3210,6 +3212,119 @@ export const resultOfGetApSnmpAgentProfiles = [
   }
 ]
 
+export const apViewModel: ApViewModel = {
+  serialNumber: '',
+  lastSeenTime: '2022-11-14T09:55:55.495Z',
+  name: 'UI team ONLY',
+  model: '',
+  fwVersion: '',
+  venueId: '16b11938ee934928a796534e2ee47661',
+  venueName: 'venue-dhcp-ui',
+  deviceStatus: '2_00_Operational',
+  deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
+  IP: '',
+  extIp: '',
+  apMac: '',
+  rootAP: {
+    name: 'test'
+  },
+  apDownRssi: 1,
+  apUpRssi: 1,
+  apStatusData: {
+    APRadio: [
+      {
+        channel: 0,
+        band: '2.4G',
+        Rssi: null,
+        radioId: 0
+      },
+      {
+        channel: 0,
+        band: '5G',
+        Rssi: null,
+        radioId: 1
+      },
+      {
+        channel: 0,
+        band: ApRadioBands.band50,
+        Rssi: null,
+        radioId: 2
+      },
+      {
+        channel: 0,
+        band: ApRadioBands.band50,
+        Rssi: null,
+        radioId: 1
+      }
+    ],
+    APSystem: {
+      uptime: 93308
+    },
+    cellularInfo: {
+      cellular3G4GChannel: 0,
+      cellularActiveSim: '',
+      cellularBand: 'string',
+      cellularCardRemovalCountSIM0: '',
+      cellularCardRemovalCountSIM1: '',
+      cellularConnectionStatus: '',
+      cellularCountry: 'string',
+      cellularDHCPTimeoutCountSIM0: '',
+      cellularDHCPTimeoutCountSIM1: '',
+      cellularDefaultGateway: 'string',
+      cellularDownlinkBandwidth: 'string',
+      cellularECIO: 0,
+      cellularICCIDSIM0: '',
+      cellularICCIDSIM1: '',
+      cellularIMEI: '',
+      cellularIMSISIM0: '',
+      cellularIMSISIM1: '',
+      cellularIPaddress: '',
+      cellularIsSIM0Present: 'YES',
+      cellularIsSIM1Present: 'YES',
+      cellularLTEFirmware: 'string',
+      cellularNWLostCountSIM0: '',
+      cellularNWLostCountSIM1: '',
+      cellularOperator: 'string',
+      cellularRSCP: 0,
+      cellularRSRP: 0,
+      cellularRSRQ: 0,
+      cellularRadioUptime: 0,
+      cellularRoamingStatus: 'string',
+      cellularRxBytesSIM0: '',
+      cellularRxBytesSIM1: '',
+      cellularSINR: 0,
+      cellularSignalStrength: '',
+      cellularSubnetMask: 'string',
+      cellularSwitchCountSIM0: '',
+      cellularSwitchCountSIM1: '',
+      cellularTxBytesSIM0: '',
+      cellularTxBytesSIM1: '',
+      cellularUplinkBandwidth: 'string',
+      cellularWanInterface: 'string'
+    },
+    lanPortStatus: [
+      {
+        port: '0',
+        phyLink: 'Down  '
+      },
+      {
+        port: '1',
+        phyLink: 'Up 1000Mbps full'
+      }
+    ],
+    afcInfo: {
+      powerMode: AFCPowerMode.LOW_POWER,
+      afcStatus: AFCStatus.WAIT_FOR_LOCATION
+    }
+  },
+  meshRole: 'DISABLED',
+  deviceGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+  tags: '',
+  deviceGroupName: '',
+  deviceModelType: '',
+  password: 'admin!234',
+  isMeshEnable: true
+}
 export const venueVersionList = [
   {
     id: '0842f2133565438d85e1e46103889744',

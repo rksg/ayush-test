@@ -35,7 +35,7 @@ import {
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { NetworkSegAuthModel } from './NetworkSegAuthModel'
+import { NetworkSegAuthModal } from './NetworkSegAuthModal'
 import * as UI                 from './styledComponents'
 
 export function AccessSwitchDrawer (props: {
@@ -272,7 +272,8 @@ export function AccessSwitchDrawer (props: {
           { isMultipleEdit &&
             <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}></Checkbox>}
           <span>{$t({ defaultMessage: 'VLAN ID' })}</span>
-          <Tooltip title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
+          <Tooltip
+            title={$t({ defaultMessage: 'The VLAN for Personal Identity Network Auth Page' })}
             placement='right'><QuestionMarkCircleOutlined />
           </Tooltip>
         </>}
@@ -295,11 +296,12 @@ export function AccessSwitchDrawer (props: {
             { isMultipleEdit ?
               <Form.Item>
                 <Checkbox onChange={(e)=>setWebAuthPageOverwrite(e.target.checked)}>
-                  <Subtitle level={4}>{$t({ defaultMessage: 'Net Seg Auth page' })}</Subtitle>
+                  <Subtitle level={4}>
+                    {$t({ defaultMessage: 'Personal Identity Network Auth Page' })}</Subtitle>
                 </Checkbox>
               </Form.Item>:
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Net Seg Auth page' })}
+                {$t({ defaultMessage: 'Personal Identity Network Auth Page' })}
               </Subtitle>
             }
           </Col>
@@ -329,7 +331,7 @@ export function AccessSwitchDrawer (props: {
               }))} />
           </Form.Item>
           { (!isMultipleEdit || webAuthPageOverwrite) && webAuthPageType !== 'USER_DEFINED' &&
-          <NetworkSegAuthModel setWebAuthTemplateId={(id)=>{
+          <NetworkSegAuthModal setWebAuthTemplateId={(id)=>{
             form.setFieldValue('templateId', id)
           }}/>}
         </Space>

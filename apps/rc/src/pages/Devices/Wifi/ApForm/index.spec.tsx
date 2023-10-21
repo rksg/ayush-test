@@ -232,7 +232,7 @@ describe('AP Form - Add', () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
-    it('should handle Add AP', async () => {
+    it('should handle Add AP correctly', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
@@ -303,6 +303,10 @@ describe('AP Form - Add', () => {
   })
 
   describe('handle error occurred', () => {
+    beforeEach(async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+    })
+
     it('should handle error occurred', async () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.addAp.url,
@@ -317,7 +321,7 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText('Error occurred while creating AP')
+      expect(await screen.findByText('Error occurred while creating AP')).toBeInTheDocument()
     })
     it('should handle request locking error', async () => {
       mockServer.use(
@@ -333,7 +337,9 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText(/A configuration request is currently being executed/)
+      expect(
+        await screen.findByText(/A configuration request is currently being executed/)
+      ).toBeInTheDocument()
     })
   })
 })

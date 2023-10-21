@@ -1,14 +1,15 @@
 import React from 'react'
 
-import { Root } from 'react-dom/client'
+import { Root }          from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { UserProfile, UserProfileProvider } from '@acx-ui/analytics/utils'
+import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
+  showActionModal,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }           from '@acx-ui/config'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 import { Provider }      from '@acx-ui/store'
 import {
@@ -17,13 +18,14 @@ import {
   LangKey,
   DEFAULT_SYS_LANG,
   LocaleProvider,
-  setUpIntl
+  setUpIntl,
+  getIntl
 } from '@acx-ui/utils'
-import type { PendoParameters } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
+import type { AnyAction } from '@reduxjs/toolkit'
 
 // Needed for Browser language detection
 const supportedLocales: Record<string, LangKey> = {
@@ -48,54 +50,54 @@ export function loadMessages (locales: readonly string[]): LangKey {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { lang } = useLocaleContext()
+  const { children } = props
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
+    children={<ConfigProvider children={children} lang={loadMessages([lang])} />}
   />
 }
 
-function pendoInitalization (user: UserProfile): PendoParameters {
-  const tenant = user.tenants.find(({ id }: { id: string }) => id === user.accountId)! // TODO use selected tenant
-  return {
-    visitor: {
-      id: user.userId,
-      full_name: `${user.firstName} ${user.lastName}`,
-      role: tenant.role,
-      region: get('MLISA_REGION'),
-      version: get('MLISA_VERSION'),
-      varTenantId: user.accountId,
-      support: tenant.support,
-      delegated: user.accountId !== tenant.id,
-      email: user.email
-    },
-    account: {
-      productName: 'RuckusAI',
-      id: tenant.id,
-      name: tenant.name,
-      isTrial: tenant.isTrial
-    }
+function showExpiredSessionModal () {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'info',
+    title: $t({ defaultMessage: 'Session Expired' }),
+    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
+    onOk: () => window.location.reload()
+  })
+}
+
+function detectExpiredSession (action: AnyAction, next: CallableFunction) {
+  if (action.meta?.baseQueryMeta?.response?.status === 401) {
+    showExpiredSessionModal()
+  } else {
+    return next(action)
   }
 }
 
 export async function init (root: Root) {
-  const user = await (await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')).json()
-  renderPendo(() => pendoInitalization(user))
+  addMiddleware(() => next => action => detectExpiredSession(action, next))
   setUpIntl({ locale: 'en-US' })
+  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
+  if (user.status === 401) {
+    showExpiredSessionModal()
+  } else {
+    setUserProfile(await(user).json())
+  }
   root.render(
     <React.StrictMode>
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-            <UserProfileProvider profile={user}>
-              <BrowserRouter>
-                <React.Suspense fallback={null}>
-                  <AllRoutes />
-                </React.Suspense>
-              </BrowserRouter>
-            </UserProfileProvider>
+            <BrowserRouter>
+              <React.Suspense fallback={null}>
+                <AllRoutes />
+              </React.Suspense>
+            </BrowserRouter>
           </PreferredLangConfigProvider>
         </LocaleProvider>
       </Provider>
     </React.StrictMode>
   )
+  renderPendo(() => getPendoConfig())
 }

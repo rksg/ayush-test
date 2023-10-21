@@ -21,6 +21,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);
@@ -104,7 +105,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
             margin: 0;
-            &:hover { cursor: default; }
+            cursor: default;
             &:active { background: unset; }
           }
           &-open {
@@ -143,6 +144,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             border-left: 2px solid var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
+          &.menu-admin-item { margin-top: auto; }
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
@@ -151,7 +153,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               display: none;
             }`)}
           }
-          &.menu-admin-item { margin-top: auto; }
         }
         > div:first-child, .ant-layout-sider {
           flex: 0 0 var(--acx-sider-width) !important;
@@ -177,6 +178,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             padding-top: 8px;
             .ant-menu-item {
+              cursor: default;
               height: 40px;
               width: 100%;
               border-left: unset;
@@ -444,6 +446,22 @@ const ButtonSolid = styled(Button)`
     }
   }
 `
+const CompanyName = styled.div`
+  line-height: var(--acx-body-4-line-height);
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-body-font-weight);
+  text-align: right;
+  flex-shrink: 0;
+  max-width: var(--acx-header-company-name-width);
+  min-width: var(--acx-header-company-name-min-width);
+  max-height: calc(2 * var(--acx-body-4-line-height));
+  overflow: hidden;
+  margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
+  padding-right: 9px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+`
 export const LayoutUI = {
   Icon: styled.span`
     > svg {
@@ -483,21 +501,19 @@ export const LayoutUI = {
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
   `,
-  CompanyName: styled.div`
-    line-height: var(--acx-body-4-line-height);
-    font-size: var(--acx-body-4-font-size);
-    font-weight: var(--acx-body-font-weight);
-    text-align: right;
-    flex-shrink: 0;
-    max-width: var(--acx-header-company-name-width);
-    min-width: var(--acx-header-company-name-min-width);
-    max-height: calc(2 * var(--acx-body-4-line-height));
-    overflow: hidden;
-    margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
-    padding-right: 9px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+  CompanyName,
+  CompanyNameDropdown: styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right: var(--acx-header-company-name-right-space);
+
+    ${CompanyName} {
+      max-width: calc(
+        var(--acx-header-company-name-width) -
+        var(--acx-header-caret-width)
+      );
+    }
   `,
   UserNameButton: styled(ButtonSolid)`
     width: 32px;
@@ -514,3 +530,4 @@ export const LayoutUI = {
     height: 16px;
   `
 }
+

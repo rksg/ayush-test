@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
@@ -61,7 +62,12 @@ describe('PortalDemo', () => {
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (req, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
-            acceptTermsMsg: 'I accept the' }))
+            acceptTermsMsg: 'I accept the',
+            acceptTermsMsg2: 'By clicking the connect button, you are accepting the <1>{{linkText}}</1>',
+            acceptTermsMsgClickthrough: 'By clicking the connect button, you are accepting the <1>{{linkText}}</1>',
+            acceptTermsMsgSelfSign: 'By registering, you are accepting the <1>{{linkText}}</1>',
+            acceptTermsMsgHostApproval: 'By registering, you are accepting the <1>{{linkText}}</1>'
+          }))
         })
     )
   })

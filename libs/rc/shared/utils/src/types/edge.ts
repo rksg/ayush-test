@@ -57,6 +57,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallId?: string
   firewallName?: string
   upTime?: number
+  corePort?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -79,6 +80,10 @@ export interface EdgePort {
   subnet: string
   gateway: string
   natEnabled: boolean
+}
+
+export interface EdgePortWithStatus extends EdgePort {
+  statusIp: string
 }
 
 export interface EdgePortConfig {

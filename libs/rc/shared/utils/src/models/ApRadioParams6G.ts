@@ -39,6 +39,8 @@ export class ApRadioParams6G {
 
   txPower: TxPowerEnum
 
+  lowPowerIndoorModeEnabled: boolean
+
   useVenueSettings?: boolean
 
   constructor () {
@@ -57,6 +59,8 @@ export class ApRadioParams6G {
     this.txPower = TxPowerEnum.MAX
 
     this.channelBandwidth320MhzGroup = Channel320MHzGroupEnum.AUTO
+
+    this.lowPowerIndoorModeEnabled = false
 
     this.useVenueSettings = true
   }

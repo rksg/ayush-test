@@ -7,18 +7,19 @@ export type UserProfile = {
   userId: string
   invitations: Tenant[]
   tenants: Tenant[]
+  selectedTenant: Tenant
 }
 
 export type Tenant = {
   id: string
   name: string
   support: boolean
-  role: string
+  type: 'tenant' | 'super-tenant'
+  role: 'admin' | 'network-admin' | 'report-only'
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
   permissions: Permissions
-  type: string
   settings: Settings
 }
 
@@ -33,6 +34,7 @@ export type Permissions = {
   'manage-label': boolean
   'manage-tenant-settings': boolean
   'manage-config-recommendation': boolean
+  'franchisor': boolean
 }
 
 export type Settings = {

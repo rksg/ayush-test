@@ -47,7 +47,8 @@ export enum EdgeStatusSeverityEnum {
 export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
-  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION'
+  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
+  CENTRALIZED_FORWARDING = 'CENTRALIZED FORWARDING'
 }
 
 export enum EdgeServiceStatusEnum {

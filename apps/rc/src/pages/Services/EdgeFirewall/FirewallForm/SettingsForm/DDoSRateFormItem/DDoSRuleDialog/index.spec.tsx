@@ -64,14 +64,14 @@ describe('DDoS rule dialog', () => {
 
     expect(mockedSubmit).toBeCalledWith({
       ddosAttackType: 'ICMP',
-      rateLimiting: 2566
+      rateLimiting: 10006
     }, false)
   })
 
   it('should correctly when edit mode', async () => {
     const mockedData = {
       ddosAttackType: DdosAttackType.NTP_REFLECTION,
-      rateLimiting: 366
+      rateLimiting: 1366
     } as DdosRateLimitingRule
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -96,7 +96,7 @@ describe('DDoS rule dialog', () => {
     await click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedSubmit).toBeCalledWith({
       ddosAttackType: DdosAttackType.NTP_REFLECTION,
-      rateLimiting: 362
+      rateLimiting: 1362
     }, true)
   })
 
@@ -116,17 +116,17 @@ describe('DDoS rule dialog', () => {
       await screen.findByRole('combobox', { name: 'DDoS Attack Type' }),
       'TCP_SYN')
     await clear(screen.getByRole('spinbutton'))
-    await type(screen.getByRole('spinbutton'), '168')
+    await type(screen.getByRole('spinbutton'), '1500')
 
     await click(await screen.findByRole('checkbox', { name: 'Add another rule' }))
     await click(screen.getByRole('button', { name: 'Add' }))
     expect(mockedSubmit).toBeCalledWith({
       ddosAttackType: DdosAttackType.TCP_SYN,
-      rateLimiting: 168
+      rateLimiting: 1500
     }, false)
 
     // expect form to be reset
-    expect(screen.queryByRole('spinbutton')).toHaveValue('256')
+    expect(screen.queryByRole('spinbutton')).toHaveValue('1000')
     expect(screen.queryByRole('combobox', { name: 'DDoS Attack Type' })).toHaveValue('')
   })
 
@@ -135,7 +135,7 @@ describe('DDoS rule dialog', () => {
       const [ form ] = Form.useForm()
       form.setFieldValue('rules', [{
         ddosAttackType: DdosAttackType.ALL,
-        rateLimiting: 300
+        rateLimiting: 1000
       }])
       return form
     })

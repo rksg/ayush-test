@@ -57,7 +57,7 @@ export function SwitchConfigTab () {
       onChange={onTabChange}
       defaultActiveKey='radio'
       activeKey={params.activeSubTab}
-      type='second'
+      type='card'
     >
       <TabPane tab={tabTitleMap('general')} key='general'>
         <GeneralSettingForm />

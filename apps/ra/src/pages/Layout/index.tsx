@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { HelpButton, UserButton } from '@acx-ui/analytics/components'
-import { useUserProfileContext }  from '@acx-ui/analytics/utils'
+import { HelpButton, UserButton }                    from '@acx-ui/analytics/components'
+import { getUserProfile, PERMISSION_VIEW_ANALYTICS } from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -15,13 +15,13 @@ import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 
 import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
-import { useMenuConfig } from './menuConfig'
+import { AccountsDrawer } from './AccountsDrawer'
+import { useMenuConfig }  from './menuConfig'
 
 function Layout () {
   const params = useParams()
-  const { data: userProfile } = useUserProfileContext()
-  const companyName = userProfile?.tenants
-    .find(tenant => tenant.id === userProfile?.accountId)?.name
+  const userProfile = getUserProfile()
+  const hasAnalytics = userProfile.selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
@@ -33,10 +33,13 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <GlobalSearchBar />
+          {hasAnalytics && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
+        { userProfile.tenants.length > 1
+          ? <AccountsDrawer user={userProfile} />
+          : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
+        }
         <HelpButton/>
         <UserButton/>
       </>}

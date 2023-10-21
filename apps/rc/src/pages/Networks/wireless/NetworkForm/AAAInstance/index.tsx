@@ -19,7 +19,7 @@ const radiusType: { [key:string]:string }={
 }
 const AAAInstance = (props:{
   serverLabel: string,
-  type: string
+  type: 'authRadius' | 'accountingRadius'
 }) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -30,6 +30,7 @@ const AAAInstance = (props:{
   const [aaaList, setAaaList]= useState(aaaServices)
   const [aaaData, setAaaData]= useState([] as AAATempType[])
   const { data, setData } = useContext(NetworkFormContext)
+
   useEffect(()=>{
     if(aaaListQuery?.data){
       setAaaData([...aaaListQuery.data])
@@ -37,6 +38,18 @@ const AAAInstance = (props:{
         .map(m => ({ label: m.name, value: m.id })))
     }
   },[aaaListQuery])
+
+  useEffect(() => {
+    const currentDataAaaProfileId = data && data[props.type]?.id
+    if (radiusValue && radiusValue.name && radiusValue.id !== currentDataAaaProfileId) {
+      setData && setData({
+        ...data,
+        [props.type]: radiusValue,
+        [props.type + 'Id']: radiusValue.id
+      })
+    }
+
+  }, [radiusValue])
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
@@ -53,10 +66,6 @@ const AAAInstance = (props:{
             onChange={(value)=>{
               form.setFieldValue(props.type,
                 aaaData?.filter(d => d.id === value)[0])
-              setData && setData({
-                ...data,
-                [props.type]: aaaData?.filter(d => d.id === value)[0]
-              })
             }}
             options={[
               { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },

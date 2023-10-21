@@ -150,7 +150,7 @@ export function useApEolFirmware () {
 
     const target = releasedABFList.find(abf => abf.id === eolVersion)
 
-    return target ? getVersionLabel(intl, target) : ''
+    return target ? getVersionLabel(intl, target, false) : ''
   }
 
   return {

@@ -395,7 +395,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
-    { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
+    { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringEnabled }
   )
 
 
@@ -549,12 +549,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     const dpsks: PropertyDpskSetting[] = [
       {
         type: PropertyDpskType.UNIT,
-        passphrase: diffUnitPersona?.dpskPassphrase,
+        passphrase: diffUnitPersona?.dpskPassphrase === ''
+          ? undefined : diffUnitPersona?.dpskPassphrase,
         vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
       },
       {
         type: PropertyDpskType.GUEST,
-        passphrase: diffGuestPersona?.dpskPassphrase,
+        passphrase: diffGuestPersona?.dpskPassphrase === ''
+          ? undefined : diffGuestPersona?.dpskPassphrase,
         vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan ?? unitPersona?.vlan
       }
     ]
@@ -811,7 +813,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   style={{ marginBottom: '10px' }}
                   name={'enableGuestVlan'}
                   valuePropName={'checked'}
-                  initialValue={true}
+                  initialValue={isEdit}
                   children={<Switch />}
                 />
               </StepsForm.FieldLabel>

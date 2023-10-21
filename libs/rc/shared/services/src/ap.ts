@@ -49,7 +49,10 @@ import {
   ApLldpNeighborsResponse,
   SupportCcdVenue,
   SupportCcdApGroup,
-  ApClientAdmissionControl
+  ApClientAdmissionControl,
+  AFCInfo,
+  AFCPowerMode,
+  AFCStatus
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -784,22 +787,21 @@ export const apApi = baseApApi.injectEndpoints({
     getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     getApLldpNeighbors: build.query<ApLldpNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
         return {
-          ...req,
+          ...createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, { ...ignoreErrorModal }),
           body: payload
         }
       }
@@ -822,7 +824,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     runCcd: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.runCcd, params)
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -1086,4 +1090,12 @@ const transformApViewModel = (result: ApViewModel) => {
     } as RadioProperties
   }
   return ap
+}
+
+
+export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
+  if (!afcInfo) return false
+  return (
+    afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+    afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
 }

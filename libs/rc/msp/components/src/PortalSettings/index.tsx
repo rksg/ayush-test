@@ -43,11 +43,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
-  phoneRegExp,
   Providers,
   UploadUrlResponse,
   networkWifiIpRegExp,
-  networkWifiSecretRegExp
+  networkWifiSecretRegExp,
+  generalPhoneRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -1198,7 +1198,7 @@ export function PortalSettings () {
               style={{ width: '300px' }}
               initialValue={mspLabel?.msp_phone}
               rules={[
-                { validator: (_, value) => phoneRegExp(value) }
+                { validator: (_, value) => generalPhoneRegExp(value) }
               ]}
               children={
                 <PhoneInput

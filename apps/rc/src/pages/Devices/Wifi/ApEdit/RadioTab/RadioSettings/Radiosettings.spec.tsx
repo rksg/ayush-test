@@ -476,6 +476,7 @@ describe('RadioSettingsTab', ()=> {
 
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
+
   })
 
   describe('RadioSettingsTab with R760 AP', () => {

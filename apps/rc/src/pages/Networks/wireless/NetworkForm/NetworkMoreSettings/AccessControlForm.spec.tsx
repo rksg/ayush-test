@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AccessControlUrls, CommonUrlsInfo, NetworkSaveData, PskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
-import { Provider }                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within }                                    from '@acx-ui/test-utils'
+import { AccessControlUrls, CommonUrlsInfo, NetworkSaveData, PskWlanAdvancedCustomization, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within }                                                  from '@acx-ui/test-utils'
 
 import {
   accessControlListResponse,
@@ -45,7 +45,7 @@ describe('AccessControlForm', () => {
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
-      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+      rest.get(WifiUrlsInfo.getVlanPools.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(accessControlListResponse))),

@@ -2,8 +2,7 @@ import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  useUserProfileContext,
-  Tenant,
+  getUserProfile,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
 import { LayoutUI, Dropdown } from '@acx-ui/components'
@@ -12,13 +11,8 @@ import { NewTabLink }         from '@acx-ui/react-router-dom'
 
 export const UserButton = () => {
   const { $t } = useIntl()
-  const { data: userProfile } = useUserProfileContext()
-
-  const currentAccountPermissions = userProfile?.tenants?.filter(
-    // Hardcoded to current account for now
-    (tenent: Tenant) => tenent.id === userProfile?.accountId
-  )[0].permissions
-  const hasViewAnalyticsPermissions = currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
+  const { selectedTenant, firstName, lastName } = getUserProfile()
+  const hasViewAnalyticsPermissions = selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
 
   const menuHeaderDropdown = (
     <Menu
@@ -63,7 +57,7 @@ export const UserButton = () => {
 
   return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft' >{() =>
     <LayoutUI.UserNameButton>
-      {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
+      {`${(firstName[0]||'').toUpperCase()}${(lastName[0]||'').toUpperCase()}`}
     </LayoutUI.UserNameButton>
   }</Dropdown>
 }

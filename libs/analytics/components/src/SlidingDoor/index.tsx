@@ -3,11 +3,14 @@ import { useState, useEffect, useRef } from 'react'
 import { Dropdown } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { SearchOutlined, CloseSymbol, CaretDownSolid } from '@acx-ui/icons'
+import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { SearchOutlined }     from '@acx-ui/icons'
 
 import { DropdownList }                 from './dropdownList'
 import { searchTree, findMatchingNode } from './helpers'
 import * as UI                          from './styledComponents'
+
+import type { InputRef } from 'antd'
 
 export interface Node {
   id?: string;
@@ -48,20 +51,25 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const { $t } = useIntl()
   const { data: rootNode, setNetworkPath, defaultSelectedNode: selectedNode } = props
   const defaultPath = [{ name: 'Network', type: 'network' }]
-  const initialBreadcrumb = findMatchingNode(
+  const availableNode = findMatchingNode(
     rootNode,
     selectedNode?.[selectedNode.length - 1]
-  )?.path || [rootNode]
+  )
+  const initialBreadcrumb = availableNode?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
   const { breadcrumb, onBreadcrumbClick, addNodeToBreadcrumb, setBreadcrumbPath } =
     useBreadcrumbState(initialBreadcrumb, setIsAnimationSlideIn)
   const nodeToInputValue = (node: Node[]) => node.slice(1).map(node => node.name).join(' / ')
   const [searchText, setSearchText] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>(nodeToInputValue(selectedNode))
+  const [inputValue, setInputValue] = useState<string>(
+    nodeToInputValue(availableNode?.path || defaultNetworkPath)
+  )
   const [searchResults, setSearchResults] = useState<Node[]>([])
   const [visible, setVisible] = useState<boolean>(false)
+  const [hover, setHover] = useState<boolean>(false)
 
   const componentRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<InputRef>(null)
   const currentNode = breadcrumb[breadcrumb.length - 1]
   const isLeaf = currentNode?.children?.length === 0 || !Boolean(currentNode?.children)
 
@@ -72,6 +80,7 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   }
   const onApply = () => {
     setVisible(false)
+    setHover(false)
     setInputValue(nodeToInputValue(breadcrumb))
     const selectedNodePath = breadcrumb.map((node) => {
       const nodeInfo = {
@@ -143,9 +152,18 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     : breadcrumb?.[breadcrumb.length - (isLeaf ? 2 : 1)]?.children
   )?.slice().sort((a, b) => a.name.localeCompare(b.name))
   const placeHolderText = inputValue || $t({ defaultMessage: 'Entire Organization' })
-  const open = () => setVisible(true)
+
+  const toggleOpen = () => {
+    const isVisible = !visible
+    setVisible(isVisible)
+    isVisible && inputRef.current?.focus()
+  }
   return (
-    <UI.DropdownWrapper ref={componentRef}>
+    <UI.DropdownWrapper
+      ref={componentRef}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
       <Dropdown
         overlay={
           <DropdownList
@@ -161,21 +179,23 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
             animation={searchText ? 'none' : (isAnimationSlideIn ? 'rtl' : 'ltr')}
           />
         }
+        trigger={[]}
         visible={visible}
         getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}>
         <UI.StyledInput
+          ref={inputRef}
           prefix={<SearchOutlined />}
           type='search'
           title={placeHolderText}
           placeholder={placeHolderText}
-          onClick={open}
+          onClick={toggleOpen}
           onChange={(e) => {
             setSearchText(e.target.value)
           }}
           value={searchText}
-          suffix={visible || searchText || inputValue
-            ? <CloseSymbol style={{ cursor: 'pointer' }} onClick={onClose} />
-            : <CaretDownSolid style={{ cursor: 'pointer' }} onClick={open} />
+          suffix={hover && inputValue
+            ? <UI.Close onClick={onClose} />
+            : <UI.CaretDownSolid onClick={toggleOpen} />
           }
         />
       </Dropdown>

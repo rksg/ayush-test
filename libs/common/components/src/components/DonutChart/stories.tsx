@@ -112,6 +112,21 @@ storiesOf('Donut Chart', module)
         </AutoSizer>
       </Card>
     </div>)
+  .add('No Data with custom value', () =>
+    <div style={{ width: 238, height: 176 }}>
+      <Card title='Switch'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              title='Ports'
+              value='Switch disconnected'
+              data={[]}
+              onClick={clickHandler}/>
+          )}
+        </AutoSizer>
+      </Card>
+    </div>)
   .add('With Knobs', () => {
     const { $t } = useIntl()
     return <div style={{ width: 238, height: 176 }}>

@@ -1,5 +1,9 @@
+import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
+
 import {
   DelegationEntitlementRecord,
+  MspEcAlarmList,
+  MspEc,
   MspEcProfile,
   MspProfile
 } from './types'
@@ -29,7 +33,11 @@ export const MSPUtils = () => {
 
   const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[]) => {
     let installedDevices = 0
-    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+    const consumedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+
+    consumedEntitlements.forEach((entitlement:DelegationEntitlementRecord) => {
       const consumed = parseInt(entitlement.consumed, 10)
       installedDevices += consumed
     })
@@ -38,7 +46,11 @@ export const MSPUtils = () => {
 
   const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[]) => {
     let assignedDevices = 0
-    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+    const assignedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+
+    assignedEntitlements.forEach((entitlement:DelegationEntitlementRecord) => {
       const quantity = parseInt(entitlement.quantity, 10)
       assignedDevices += quantity
     })
@@ -48,7 +60,11 @@ export const MSPUtils = () => {
   const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
     let consumed = 0
     let quantity = 0
-    entitlements?.forEach((entitlement:DelegationEntitlementRecord) => {
+    const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+    const utilizationEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+
+    utilizationEntitlements.forEach((entitlement:DelegationEntitlementRecord) => {
       consumed += parseInt(entitlement.consumed, 10)
       quantity += parseInt(entitlement.quantity, 10)
     })
@@ -61,11 +77,18 @@ export const MSPUtils = () => {
     }
   }
 
+  const transformAlarmCount = (row: MspEc, alarmCountData: MspEcAlarmList) => {
+    const count = alarmCountData?.mspEcAlarmCountList?.find(item =>
+      item.tenantId === row.id)?.alarmCount
+    return (count || 0)
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
     transformInstalledDevice,
     transformDeviceEntitlement,
-    transformDeviceUtilization
+    transformDeviceUtilization,
+    transformAlarmCount
   }
 }
