@@ -1,21 +1,9 @@
 import React from 'react'
 
-const linkCustom = ({ source, target }, radius) => {
-  const breakY = source.y + 25
-  if (source.x === target.x) {
-    return `M${source.y + 15} ${source.x} L${target.y - 16} ${target.x}`
-  } else {
-    const isClockwise = target.x < source.x
-    return `M${source.y + 15} ${source.x} L${breakY - radius} ${
-      source.x
-    } a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${radius},${
-      isClockwise ? -radius : radius
-    } L${breakY} ${
-      isClockwise ? target.x + radius : target.x - radius
-    } a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${radius},${
-      isClockwise ? -radius : radius
-    } L${target.y - 16} ${target.x}`
-  }
+const linkCustom = ({ source, target }) => {
+  const elbowX = source.y + (target.y - source.y) // Calculate the x-coordinate for the elbow
+  // eslint-disable-next-line max-len
+  return `M${source.y} ${source.x - 35} L${elbowX} ${source.x - 35} L${elbowX} ${target.x - 160} L${target.y} ${target.x - 150}`
 }
 
 const Links = (props) => {
@@ -23,7 +11,7 @@ const Links = (props) => {
   return (
     <g className='d3-tree-links'>
       {links.map((link, i) => (
-        <g key={i}>
+        <g key={i} transform={`translate(0, ${link.source.depth * -65})`}>
           <path
           //eslint-disable-next-line max-len
             d={linkCustom(link, 12)}

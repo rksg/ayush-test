@@ -33,11 +33,22 @@ const Svg = (props) => {
 
   const { nodes, links, translate, scale } = useMemo(() => {
     if (width && height && data) {
-      const treeLayout = tree().size([width, height]).nodeSize(NODE_SIZE)(data)
+      const treeLayout = tree()
+        .size([height, width]) // Swap height and width for vertical layout
+        .nodeSize(NODE_SIZE)(data)
+
       const nodes = treeLayout.descendants()
       const links = treeLayout.links()
-      const translate = [NODE_SIZE[1] / 2, height / 2]
-      const scale = width / ((data.height + 1) * NODE_SIZE[1])
+
+      // Swap x and y coordinates for vertical layout
+      nodes.forEach((node) => {
+        const x = node.x
+        node.x = node.y
+        node.y = x
+      })
+
+      const translate = [width / 2, NODE_SIZE[1] / 2] // Adjust translate
+      const scale = height / ((data.height + 1) * NODE_SIZE[1]) // Adjust scale
       return { nodes, links, translate, scale }
     } else {
       return {

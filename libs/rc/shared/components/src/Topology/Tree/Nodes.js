@@ -30,7 +30,7 @@ const Nodes = (props) => {
         return (
           <g
             key={i}
-            transform={`translate(${node.y},${node.x})`}
+            transform={`translate(${node.y},${node.x - (65 * node.ancestors().length)})`}
             style={{ fill: color[ancestorName] }}
           >
             <g>{nodeRender(node, i)}</g>
