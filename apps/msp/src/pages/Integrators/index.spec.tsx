@@ -2,9 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, within, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { isDelegationMode }                                       from '@acx-ui/utils'
 
 import { Integrators } from '.'
 
@@ -63,6 +65,10 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(true)
 }))
 
 describe('Integrators', () => {
@@ -237,5 +243,29 @@ describe('Integrators', () => {
     const row = await screen.findByRole('row', { name: /integrator 168/i })
     expect(within(row).queryByRole('link', { name: '1' })).toBeNull()
     expect(within(row).queryByRole('link', { name: '0' })).toBeNull()
+  })
+  it('should render correctly for support delegate MSP dashboard toggle on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    const row = await screen.findByRole('row', { name: /integrator 168/i })
+    expect(within(row).queryByRole('link', { name: 'integrator 168' })).toBeNull()
+    expect(within(row).queryByRole('link', { name: 'installer 888' })).toBeNull()
   })
 })

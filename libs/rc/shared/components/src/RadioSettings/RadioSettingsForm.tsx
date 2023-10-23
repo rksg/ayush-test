@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
 import { useEffect } from 'react'
 
-import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
-import { useIntl }                                            from 'react-intl'
+import { Form, Slider, InputNumber, Space, Switch, Checkbox, Radio } from 'antd'
+import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
+import { FormattedMessage, useIntl }                                 from 'react-intl'
 
-import { cssStr, Tooltip }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationOutlined }    from '@acx-ui/icons'
-
+import { cssStr, Tooltip }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import {
   ApRadioTypeEnum,
@@ -19,7 +18,8 @@ import {
   mgmtTxRate6GOptions,
   txPowerAdjustment6GOptions,
   apChannelSelectionMethodsOptions,
-  apChannelSelectionMethods6GOptions
+  apChannelSelectionMethods6GOptions,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
@@ -32,18 +32,22 @@ export function RadioSettingsForm (props:{
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,
-  onGUIChanged?: (fieldName: string) => void
+  onGUIChanged?: (fieldName: string) => void,
+  isAFCEnabled? : boolean,
+  LPIButtonText?: LPIButtonText
 }) {
-
   const { $t } = useIntl()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { radioType,
     disabled = false,
     radioDataKey,
     channelBandwidthOptions,
     context = 'venue',
     isUseVenueSettings = false,
-    onGUIChanged
+    onGUIChanged,
+    isAFCEnabled = true,
+    LPIButtonText
   } = props
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -58,6 +62,7 @@ export function RadioSettingsForm (props:{
   const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
+  const lowPowerIndoorModeEnabledFieldName = [...radioDataKey, 'lowPowerIndoorModeEnabled']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -70,19 +75,26 @@ export function RadioSettingsForm (props:{
     enableMulticastRateLimiting,
     enableUploadLimit,
     enableDownloadLimit,
-    channelBandwidth
+    channelBandwidth,
+    lowPowerIndoorModeEnabled
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
-    useWatch<string>(channelBandwidthFieldName)
+    useWatch<string>(channelBandwidthFieldName),
+    useWatch<boolean>(lowPowerIndoorModeEnabledFieldName)
   ]
 
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
-
   }, [] )
+
+  useEffect(()=> {
+    if(LPIButtonText?.LPIModeState !== lowPowerIndoorModeEnabled) {
+      LPIButtonText?.LPIModeOnChange(lowPowerIndoorModeEnabled)
+    }
+  }, [lowPowerIndoorModeEnabled])
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,6 +118,53 @@ export function RadioSettingsForm (props:{
 
   return (
     <>
+      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
+        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : {}}>
+          <Tooltip title={
+            <FormattedMessage
+              values={{ br: () => <br /> }}
+              defaultMessage={'These settings apply only to indoor APs.'}
+            />
+          }
+          placement='bottom'>
+            <div style={{ float: 'left' }}>
+              <p style={{ width: '100px' }}>{$t({ defaultMessage: 'AFC Power Mode:' })}</p>
+            </div>
+            <QuestionMarkCircleOutlined style={{ width: '14px', marginTop: '3px' }}/>
+
+          </Tooltip>
+          <Form.Item
+            name={lowPowerIndoorModeEnabledFieldName}
+            initialValue={false}>
+            {isUseVenueSettings ?
+              LPIButtonText?.buttonText :
+              <Radio.Group
+                disabled={!isAFCEnabled || isUseVenueSettings}
+                onChange={() => {
+                  onChangedByCustom('lowPowerIndoorModeEnabled')
+                  LPIButtonText?.LPIModeOnChange()
+                }}
+              >
+                <Space direction='vertical'>
+                  <Radio value={false}>
+                    {context === 'venue' ?
+                      <p style={{ fontSize: '12px', margin: '0px' }}>
+                        {$t({ defaultMessage: 'Standard power' })}
+                      </p>
+                      :
+                      LPIButtonText?.buttonText
+                    }
+                  </Radio>
+                  <Radio value={true}>
+                    <p style={{ fontSize: '12px', margin: '0px' }}>
+                      {$t({ defaultMessage: 'Low power' })}
+                    </p>
+                  </Radio>
+                </Space>
+              </Radio.Group>}
+          </Form.Item>
+        </FieldLabel>
+      }
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>

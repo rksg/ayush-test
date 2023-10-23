@@ -228,7 +228,7 @@ export function StackForm () {
         const stackMembersList = switchDetail?.activeSerial
           ? (await getStackMemberList({
             params: { tenantId, switchId }, payload: stackMembersPayload
-          }, true))
+          }, false))
           : []
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
@@ -275,7 +275,7 @@ export function StackForm () {
         }
         const switchList = venueId
           ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
-          }, true))?.data?.data
+          }, false))?.data?.data
           : []
 
         const switchTableData = stackSwitches?.map((serialNumber, index) => ({
