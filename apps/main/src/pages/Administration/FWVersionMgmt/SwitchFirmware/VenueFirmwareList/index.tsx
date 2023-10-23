@@ -308,15 +308,14 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     disabled: (selectedRows) => {
-      // let skipUpdateEnabled = true
-      // selectedRows.forEach((row) => {
-      //   if (!hasSchedule(row)) {
-      //     skipUpdateEnabled = false
-      //   }
-      // })
-      return false// !skipUpdateEnabled
+      let disabledUpdate = true
+      selectedRows.forEach((row) => {
+        if (row.nextSchedule || row.scheduleCount > 0) {
+          disabledUpdate = false
+        }
+      })
+      return disabledUpdate
     },
     label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows) => {
