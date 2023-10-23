@@ -97,7 +97,7 @@ export function HostApprovalForm () {
         {HAEmailList_FeatureFlag ?
           <Radio.Group onChange={changeDomainOrEmailList} value={domainOrEmail}>
             <Row>
-              <Radio value={'domain'} style={{ marginBottom: '5px' }}>
+              <Radio value='domain' style={{ marginBottom: '5px' }}>
               Entire Domain
               </Radio>
             </Row>
@@ -124,7 +124,7 @@ export function HostApprovalForm () {
             />
             }
             <Row>
-              <Radio value={'email'} style={{ marginBottom: '5px' }}>
+              <Radio value='email' style={{ marginBottom: '5px' }}>
               Specific E-mail Contacts
               </Radio>
             </Row>
