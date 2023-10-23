@@ -74,7 +74,6 @@ function useColumns () {
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       render: function (_, row) {
-        // return getNextScheduleTpl(intl, row)
         return (!isSwitchNextScheduleTooltipDisabled(row)
           ? getNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
@@ -305,10 +304,25 @@ export const SelectSwitchStep = (
     })
   }
   const [selectedSearchSwitchRowKeys, setSelectedSearchSwitchRowKeys] = useState([] as Key[])
+  const isIndeterminate = (record: FirmwareSwitchVenue) => {
+    const venueId = record.id
+    if (selectedVenueRowKeys.includes(record.id)) {
+      return false
+    }
+
+    if (Array.isArray(selectedSwitchRowKeys[venueId])
+      && selectedSwitchRowKeys[venueId].length > 0) {
+      return true
+    }
+
+    return false
+  }
+
 
   return (
     <>
       <SwitchUI.ValidateField
+        style={{ marginBottom: '5px' }}
         name='selectSwitchStep'
         rules={[
           {
@@ -316,7 +330,7 @@ export const SelectSwitchStep = (
               const selectedSwitches = form.getFieldValue('selectedSwitchRowKeys')
               const selectedVenues = form.getFieldValue('selectedVenueRowKeys')
               if(_.isEmpty(selectedVenues) && _.isEmpty(selectedSwitches)){
-                return Promise.reject('Please select at least 1 item.')
+                return Promise.reject('Please select at least 1 item')
               }
 
               return Promise.resolve()
@@ -438,6 +452,10 @@ export const SelectSwitchStep = (
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedVenueRowKeys,
+            getCheckboxProps: record => ({
+              indeterminate: isIndeterminate(record),
+              name: record.name
+            }),
             onChange: (selectedKeys) => {
               const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
               const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)

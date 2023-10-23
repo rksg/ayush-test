@@ -37,10 +37,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
 
-  // eslint-disable-next-line max-len
-  const firmware10AvailableVersions = availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
-  // eslint-disable-next-line max-len
-  const firmware90AvailableVersions = availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+  const firmware10AvailableVersions =
+    availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
+  const firmware90AvailableVersions =
+    availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
 
   useEffect(() => {
     setDisableSave(!selectionChanged && !selectionAboveTenChanged)
@@ -75,7 +75,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
                 const switchVersion = form.getFieldValue('switchVersion')
                 if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
-                  return Promise.reject('Please select at least 1 version.')
+                  return Promise.reject('Please select at least 1 firmware version')
                 }
 
                 return Promise.resolve()

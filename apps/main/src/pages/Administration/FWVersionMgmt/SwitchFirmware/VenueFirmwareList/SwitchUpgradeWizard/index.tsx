@@ -100,7 +100,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           params: { ...params },
           payload: {
             venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIdList: upgradeSwitchList,
+            switchIds: upgradeSwitchList,
             switchVersion: form.getFieldValue('switchVersion') || '',
             switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
           }
@@ -120,7 +120,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             time: form.getFieldValue('selectedTime') || '',
             preDownload: form.getFieldValue('preDonloadChecked') || false,
             venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIdList: upgradeSwitchList,
+            switchIds: upgradeSwitchList,
             switchVersion: form.getFieldValue('switchVersion') || '',
             switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
           }
@@ -137,8 +137,10 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         type: 'confirm',
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        content: $t({
+          defaultMessage:
+            'Please confirm that you wish to exclude the selected venues from this scheduled update'
+        }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         async onOk () {
@@ -202,7 +204,6 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                 icx8200Count = icx8200Count +
                   (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
               } else if (nestedData[row.id]) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
                   const fw = row.currentFirmware
                   if (row.switchId) {
@@ -228,9 +229,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
 
           }}
         >
-          <SelectSwitchStep
-            data={props.data as FirmwareSwitchVenue[]}
-          />
+          <SelectSwitchStep data={props.data as FirmwareSwitchVenue[]} />
         </StepsForm.StepForm>
 
         {(wizardType !== SwitchFirmwareWizardType.skip) &&

@@ -61,18 +61,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   // eslint-disable-next-line max-len
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen ? currentSchedule.versionAboveTen.name : ''
 
-  // useEffect(() => {
-  //   if (data) {
-  //     if (data.length === 1 && data[0].preDownload) {
-  //       setChecked(data[0].preDownload)
-  //       setCurrentPreDownload(data[0].preDownload)
-  //     } else {
-  //       setChecked(false)
-  //       setCurrentPreDownload(false)
-  //     }
-  //   }
-  // }, [data])
-
   useEffect(() => {
     const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
     // eslint-disable-next-line max-len
@@ -98,8 +86,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }, [currentSchedule, currentScheduleVersion,
     currentScheduleVersionAboveTen])
 
-  // eslint-disable-next-line max-len
-  const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[], aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
+  const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
+    aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
     let firmwareAvailableVersions = availableVersions?.filter(
       (v: FirmwareVersion) => aboveTenPrefix ? v.id.startsWith('100') : !v.id.startsWith('100')
     )
