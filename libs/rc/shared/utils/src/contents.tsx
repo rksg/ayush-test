@@ -361,3 +361,9 @@ export const EditPropertyConfigMessages = {
   BIND_IDENTITY_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the identity group is not allowed.' })
   /* eslint-enable */
 }
+
+export const PropertyUnitMessages = {
+  /* eslint-disable max-len */
+  RESEND_NOTIFICATION: defineMessage({ defaultMessage: 'The unit assignment SMS and/or Email has been sent to the unit contact.' })
+  /* eslint-enable */
+}

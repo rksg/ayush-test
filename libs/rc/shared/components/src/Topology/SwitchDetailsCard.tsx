@@ -6,6 +6,7 @@ import { Card, Descriptions, Loader }                           from '@acx-ui/co
 import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
 import { CloseSymbol }                                          from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                           from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
 import type { AnalyticsFilter }                                 from '@acx-ui/utils'
 
@@ -22,6 +23,8 @@ export function SwitchDetailsCard (props: {
   const { switchDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/switch')
 
   const filters = {
     ...dateFilter,
@@ -47,6 +50,13 @@ export function SwitchDetailsCard (props: {
           style={{
             padding: 0
           }}
+          onClick={
+            () =>{
+              navigate({
+                // eslint-disable-next-line max-len
+                pathname: `${basePath.pathname}/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`
+              })
+            }}
           size='small'
           type='link'>
           {switchDetail?.name
