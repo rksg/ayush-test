@@ -187,6 +187,7 @@ export function ManageCustomer () {
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [assignedApswLicense, setApswLicense] = useState(0)
+  const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
@@ -265,8 +266,15 @@ export function ManageCustomer () {
           en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         const apsw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW && en.status === 'VALID')
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+        const apswTrial = assigned.filter(en =>
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === true)
+        const apswTrialLic = apswTrial.length > 0 ?
+          apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+
         isTrialEditMode ? checkAvailableLicense(licenseSummary)
           : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
 
@@ -287,6 +295,7 @@ export function ManageCustomer () {
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
           setApswLicense(apswLic)
+          setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
@@ -874,6 +883,11 @@ export function ManageCustomer () {
         <label>
           {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
             availableApswLicense: availableApswLicense })}
+          {assignedApswTrialLicense > 0 &&
+          <span style={{ marginLeft: 10 }}>
+            {intl.$t({ defaultMessage: '(active trial license : {apswTrial})' },
+              { apswTrial: assignedApswTrialLicense })}
+          </span>}
         </label>
       </UI.FieldLabelSubs>
     </div>

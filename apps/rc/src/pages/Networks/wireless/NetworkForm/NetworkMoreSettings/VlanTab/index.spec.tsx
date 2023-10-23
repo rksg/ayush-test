@@ -1,10 +1,10 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
-import { BasicServiceSetPriorityEnum, CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, OpenWlanAdvancedCustomization, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                                                    from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                        from '@acx-ui/feature-toggle'
+import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, OpenWlanAdvancedCustomization, TunnelProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                                                                  from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData } from '../../../../../Policies/TunnelProfile/__tests__/fixtures'
 import NetworkFormContext              from '../../NetworkFormContext'
@@ -34,7 +34,7 @@ const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 describe('Network More settings - Vlan Tab', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+      rest.get(WifiUrlsInfo.getVlanPools.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData)))
