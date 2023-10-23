@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
 import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
 import {
@@ -50,6 +51,7 @@ export function PersonaDevicesTable (props: {
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
   const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const [getClientList] = useLazyGetClientListQuery()
   const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
@@ -113,7 +115,9 @@ export function PersonaDevicesTable (props: {
         ? {
           ...device,
           os: client.osType,
-          deviceName: client.hostname
+          deviceName: client.hostname,
+          // lastSeenAt exist means that this device is connecting, so use the Client info to update the timestamp
+          lastSeenAt: device.lastSeenAt ? client.lastUpdateTime : undefined
         }
         : {
           ...device,
@@ -150,11 +154,16 @@ export function PersonaDevicesTable (props: {
   }
 
   const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
+    // Show all dpsk devices, but only connected devices show lastSeenAt.
     return dpskDevices
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
+        lastSeenAt: isNewConfigFlow
+          ? device.deviceConnectivity === 'CONNECTED'
+            ? device.lastConnectedTime ?? undefined
+            : undefined
+          : moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
