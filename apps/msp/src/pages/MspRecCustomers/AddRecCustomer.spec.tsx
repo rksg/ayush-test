@@ -7,7 +7,7 @@ import { useIsSplitOn }                                                         
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, waitFor }         from '@acx-ui/test-utils'
+import { mockServer, render, screen, fireEvent, waitFor }                                    from '@acx-ui/test-utils'
 import { RolesEnum }                                                                         from '@acx-ui/types'
 import { UserUrlsInfo }                                                                      from '@acx-ui/user'
 
@@ -91,6 +91,24 @@ const ecSupport: SupportDelegation[] = [
   }
 ]
 
+const recList = {
+  totalElements: 24,
+  totalPages: 1,
+  number: 0,
+  content: [
+    {
+      account_name: 'Aloft Lexington',
+      account_id: '0012J00002ZKO5FQAX',
+      email_id: 'msprec2@email.com'
+    },
+    {
+      account_name: 'Springhill Suites Las Vegas',
+      account_id: '0012J00002ZKO68QAH',
+      email_id: 'msprec3@email.com'
+    }
+  ]
+}
+
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
@@ -131,6 +149,10 @@ describe('AddRecCustomer', () => {
         MspUrlsInfo.addMspEcAccount.url,
         (_req, res, ctx) => res(ctx.json({ requestId: 'add' }))
       ),
+      rest.post(
+        MspUrlsInfo.addMspRecCustomer.url,
+        (_req, res, ctx) => res(ctx.json({ requestId: 'add' }))
+      ),
       //   rest.put(
       //     MspUrlsInfo.updateMspEcAccount.url,
       //     (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
@@ -146,9 +168,13 @@ describe('AddRecCustomer', () => {
     )
 
     jest.spyOn(services, 'useAddCustomerMutation')
+    jest.spyOn(services, 'useAddRecCustomerMutation')
     jest.spyOn(services, 'useUpdateCustomerMutation')
     jest.spyOn(services, 'useEnableMspEcSupportMutation')
     jest.spyOn(services, 'useDisableMspEcSupportMutation')
+    services.useGetAvailableMspRecCustomersQuery = jest.fn().mockImplementation(() => {
+      return { data: recList }
+    })
     services.useGetMspEcQuery = jest.fn().mockImplementation(() => {
       return { data: mspEcAccount }
     })
@@ -390,7 +416,7 @@ describe('AddRecCustomer', () => {
 
   })
 
-  xit('should save correctly for add', async () => {
+  it('should save correctly for add for data with integrator', async () => {
     render(
       <Provider>
         <AddRecCustomer />
@@ -398,48 +424,69 @@ describe('AddRecCustomer', () => {
         route: { params }
       })
 
-    const inputs = screen.getAllByRole('textbox')
-    fireEvent.change(inputs[4], { target: { value: 'Smith' } })
-    expect(await screen.findByDisplayValue('Smith')).toBeVisible()
-    fireEvent.change(inputs[0], { target: { value: 'JohnSmith' } })
-    expect(await screen.findByDisplayValue('JohnSmith')).toBeVisible()
-    fireEvent.change(inputs[2], { target: { value: 'john@mail.com' } })
-    expect(await screen.findByDisplayValue('john@mail.com')).toBeVisible()
-    fireEvent.change(inputs[3], { target: { value: 'John' } })
-    expect(await screen.findByDisplayValue('John')).toBeVisible()
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Customer')
+    await screen.findByRole('button', { name: 'Save' })
 
-
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(screen.queryByRole('alert')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.getByText('Start service in')).toBeVisible()
+      expect(screen.queryByText('Manage Customer')).toBeNull()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    // Select adminstrators
+    await userEvent.click(screen.getAllByText('Manage')[1])
+    await screen.findByText('Manage MSP Administrators')
+    await screen.findByRole('button', { name: 'Save' })
+
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Summary' })).toBeVisible()
+      expect(screen.queryByText('Manage MSP Administrators')).toBeNull()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add Customer' }))
+    // Select integrators
+    await userEvent.click(screen.getAllByText('Manage')[2])
+    await screen.findByText('Manage Integrator')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Integrator')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     // Wait for form to finish
-    await waitFor(() => {
-      expect(screen.getAllByRole('textbox')[0]).toHaveValue('')
-    })
+    // await waitFor(() => {
+    //   expect(screen.getAllByRole('textbox')[0]).toHaveValue('')
+    // })
+
+    // screen.getByRole('test')
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
       data: { requestId: 'add' },
       status: 'fulfilled'
     })]
 
+    // const add = screen.getByRole('button', { name: 'Add' })
+    // await waitFor(() => {
+    //   expect(add.getAttribute('ant-click-animating-without-extra-node')).not.toBeTruthy()
+    // })
+
     await waitFor(() => {
-      expect(services.useAddCustomerMutation).toHaveLastReturnedWith(value)
+      expect(services.useAddRecCustomerMutation).toHaveLastReturnedWith(value)
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -447,6 +494,136 @@ describe('AddRecCustomer', () => {
       hash: '',
       search: ''
     }, { replace: true })
+
+  })
+  it('should save correctly for add for data with installer', async () => {
+    const installerList = { ...list }
+    installerList.data[0].tenantType = 'MSP_INSTALLER'
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: installerList }
+    })
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Customer')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Customer')).toBeNull()
+    })
+
+    // Select installers
+    await userEvent.click(screen.getAllByText('Manage')[3])
+    await screen.findByText('Manage Installer')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Installer')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    // Wait for form to finish
+    // await waitFor(() => {
+    //   expect(screen.getAllByRole('textbox')[0]).toHaveValue('')
+    // })
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: 'add' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(() => {
+      expect(services.useAddRecCustomerMutation).toHaveLastReturnedWith(value)
+    })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspreccustomers`,
+      hash: '',
+      search: ''
+    }, { replace: true })
+  })
+  it('should save correctly for add for data with no installer nor integrator', async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: {} }
+    })
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Customer')
+    await screen.findByRole('button', { name: 'Save' })
+
+    fireEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Customer')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    // Wait for form to finish
+    // await waitFor(() => {
+    //   expect(screen.getAllByRole('textbox')[0]).toHaveValue('')
+    // })
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: 'add' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(() => {
+      expect(services.useAddRecCustomerMutation).toHaveLastReturnedWith(value)
+    })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspreccustomers`,
+      hash: '',
+      search: ''
+    }, { replace: true })
+  })
+
+  it('cancel should correctly close', async () => {
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspreccustomers`,
+      hash: '',
+      search: ''
+    })
   })
 
 })

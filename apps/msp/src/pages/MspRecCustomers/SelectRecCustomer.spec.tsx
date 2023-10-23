@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { Provider }                                                              from '@acx-ui/store'
-import { render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }                          from '@acx-ui/store'
+import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 
@@ -100,7 +100,7 @@ describe('SelectRecCustomerDrawer', () => {
 
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  xit('should handle save without selected rows', async () => {
+  it('close button should close drawer', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -112,26 +112,28 @@ describe('SelectRecCustomerDrawer', () => {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Clear selection' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await screen.findByText('Aloft Lexington')
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
 
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() => {
-      expect(services.useAssignMspEcToIntegratorMutation).toHaveLastReturnedWith(value)
-    })
-    await waitFor(() => {
-      expect(mockedCloseDialog).toHaveBeenCalledTimes(3)
-    })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  xit('should handle save with selected rows', async () => {
+  it('should not save without selected rows', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <SelectRecCustomerDrawer visible={true}
+          setVisible={mockedCloseDialog}
+          setSelected={jest.fn()}
+          tenantId={params.tenantId} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
+      })
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(mockedCloseDialog).not.toHaveBeenCalled()
+  })
+  it('should handle save with selected rows', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -146,50 +148,9 @@ describe('SelectRecCustomerDrawer', () => {
     const radios = screen.getAllByRole('radio')
     fireEvent.click(radios.at(0)!)
     expect(screen.getByText('1 selected')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
-    await waitFor(() => {
-      expect(services.useAssignMspEcToIntegratorMutation).toHaveLastReturnedWith(value)
-    })
-    await waitFor(() => {
-      expect(mockedCloseDialog).toHaveBeenCalledTimes(3)
-    })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
-  })
-  xit('should handle save when tenantId not given', async () => {
-    const mockedCloseDialog = jest.fn()
-    const mockedSetSelected = jest.fn()
-    render(
-      <Provider>
-        <SelectRecCustomerDrawer visible={true}
-          setVisible={mockedCloseDialog}
-          setSelected={mockedSetSelected} />
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
-      })
-
-    // expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(2)
-    const radios = screen.getAllByRole('radio')
-    fireEvent.click(radios.at(0)!)
-    expect(screen.getByText('1 selected')).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
-
-    const integrator = [expect.objectContaining({
-      id: 'b1c3860e3cb644c5913b75d5a391e914'
-    })]
-    // expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(2)
-    await waitFor(() => {
-      expect(mockedSetSelected).toHaveBeenLastCalledWith(undefined, integrator)
-    })
-    expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loading/ }))
   })
 })

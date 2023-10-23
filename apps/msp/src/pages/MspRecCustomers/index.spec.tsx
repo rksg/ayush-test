@@ -190,6 +190,14 @@ describe('MspRecCustomers', () => {
     rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
+    services.useDelegateToMspEcPath = jest.fn().mockImplementation(() => {
+      const delegateToMspEcPath = jest.fn()
+      return { delegateToMspEcPath }
+    })
+    services.useCheckDelegateAdmin = jest.fn().mockImplementation(() => {
+      const checkDelegateAdmin = jest.fn()
+      return { checkDelegateAdmin }
+    })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
     jest.spyOn(services, 'useIntegratorCustomerListQuery')
@@ -349,6 +357,52 @@ describe('MspRecCustomers', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).toBeNull())
   })
+  it('should edit selected non-trial row', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('checkbox'))
+
+    const editButton = screen.getByRole('button', { name: 'Edit' })
+    fireEvent.click(editButton)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspRecCustomers/edit/Paid/${list.data[0].id}`,
+      hash: '',
+      search: ''
+    })
+  })
+  it('should edit selected trial row', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const trialRow = await screen.findByRole('row', { name: /ec 222/i })
+    fireEvent.click(within(trialRow).getByRole('checkbox'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard/mspRecCustomers/edit/Trial/${list.data[1].id}`,
+      hash: '',
+      search: ''
+    })
+
+  })
   it('should open drawer for multi-selected rows', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
@@ -400,6 +454,40 @@ describe('MspRecCustomers', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
+  })
+  it('should work correctly for customer name clicked for non-support user', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getAllByRole('link')[0])
+
+    expect(services.useCheckDelegateAdmin).toHaveBeenCalled()
+  })
+  it('should work correctly for customer name clicked for support user', async () => {
+    const supportUserProfile = { ...userProfile }
+    supportUserProfile.support = true
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: supportUserProfile }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link'))
+
+    expect(services.useDelegateToMspEcPath).toHaveBeenCalled()
   })
   it('should render table for integrator', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

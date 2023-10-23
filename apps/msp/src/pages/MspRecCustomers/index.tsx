@@ -322,7 +322,7 @@ export function MspRecCustomers () {
         key: 'apswLicenseInstalled',
         sorter: true,
         render: function (_: React.ReactNode, row: MspEc) {
-          return mspUtils.transformInstalledDevice(row.entitlements ?? [])
+          return mspUtils.transformInstalledDevice(row.entitlements)
         }
       },
       {
@@ -331,7 +331,7 @@ export function MspRecCustomers () {
         key: 'apswLicense',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements ?? [])
+          return mspUtils.transformDeviceEntitlement(row.entitlements)
         }
       },
       {
@@ -340,7 +340,7 @@ export function MspRecCustomers () {
         key: 'apswLicensesUtilization',
         sorter: true,
         render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformDeviceUtilization(row.entitlements ?? [])
+          return mspUtils.transformDeviceUtilization(row.entitlements)
         }
       }
     ] : [
