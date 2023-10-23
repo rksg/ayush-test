@@ -36,7 +36,7 @@ export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
         mismatchedVlans: _.uniqBy(vlans, 'id').sort((a, b) => a.id - b.id)
       }
     })
-    return { ...response, rows }
+    return { ...response, data: rows }
   } })
   const [selected, setSelected] = useState(0)
 
