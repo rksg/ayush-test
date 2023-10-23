@@ -41,6 +41,7 @@ interface PropertyManagementFormProps {
   isSubmitting?: boolean
   submitButtonLabel?: string
   form?: FormInstance
+  preSubmit?: () => void
   postSubmit?: () => void
 }
 
@@ -84,7 +85,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const {
     form: customForm, venueId, onFinish, onCancel,
     onValueChange, isSubmitting, submitButtonLabel,
-    postSubmit
+    preSubmit, postSubmit
   } = props
   const { tenantId } = useParams()
   const { $t } = useIntl()
@@ -229,6 +230,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
       residentPortalType,
       ...formValues
     } = values
+
+    preSubmit?.()
 
     try {
       if (isPropertyEnable) {

@@ -22,11 +22,15 @@ export function PropertyManagementTab () {
       pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
     })
   }
-  const postSubmit = () => {
+
+  const preSubmit = () => {
     setEditContextData({
       ...editContextData,
       isDirty: false
     })
+  }
+
+  const postSubmit = () => {
     navigateToVenueOverview()
   }
 
@@ -45,6 +49,7 @@ export function PropertyManagementTab () {
       venueId={venueId ?? ''}
       onCancel={navigateToVenueOverview}
       onValueChange={handleFormChange}
+      preSubmit={preSubmit}
       postSubmit={postSubmit}
     />
   )
