@@ -94,6 +94,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const [isPropertyEnable, setIsPropertyEnable] = useState<boolean>(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const [residentPortalModalVisible, setResidentPortalModalVisible] = useState(false)
+  const [initialValues, setInitialValues] = useState<PropertyConfigs>(defaultPropertyConfigs)
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
@@ -148,8 +149,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
       enabled = false
     } else {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
-      form.setFieldsValue(propertyConfigsQuery.data)
-
       const {
         unitConfig,
         residentPortalId
@@ -169,11 +168,18 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
           }
         }
       }
-
+      setInitialValues({
+        ...defaultPropertyConfigs,
+        ...propertyConfigsQuery.data,
+        residentPortalType
+      })
     }
-    form.setFieldValue('residentPortalType', residentPortalType)
     setIsPropertyEnable(enabled)
   }, [propertyConfigsQuery.data])
+
+  useEffect(() => {
+    form.resetFields()
+  }, [initialValues])
 
   const residentPortalTypeOptions = [
     {
@@ -283,7 +289,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         onValuesChange={onValueChange}
         onCancel={onCancel}
         buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
-        initialValues={defaultPropertyConfigs}
+        initialValues={initialValues}
       >
         <StepsForm.StepForm>
           <Row gutter={20} style={{ marginBottom: '12px' }}>
