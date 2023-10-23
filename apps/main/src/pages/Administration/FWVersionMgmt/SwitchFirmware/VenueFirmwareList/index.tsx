@@ -2,9 +2,9 @@
 import React, { useState } from 'react'
 
 
-import { Form, Tooltip, Typography } from 'antd'
-import * as _                        from 'lodash'
-import { useIntl }                   from 'react-intl'
+import { Tooltip, Typography } from 'antd'
+import * as _                  from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import {
   ColumnType,
@@ -19,8 +19,6 @@ import {
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
-  useSkipSwitchUpgradeSchedulesMutation,
-  useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchFirmwarePredownloadQuery
 } from '@acx-ui/rc/services'
 import {
@@ -46,6 +44,7 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
+import { SwitchScheduleDrawer }                      from './SwitchScheduleDrawer'
 import { SwitchFirmwareWizardType, UpdateNowWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                         from './VenueStatusDrawer'
 
@@ -65,25 +64,26 @@ type VenueTableProps = {
 }
 
 export const VenueFirmwareTable = (
-  { tableQuery, searchable, filterables }: VenueTableProps) => {
+  { tableQuery, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
-  const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
-  const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
-  const [scheduleWizardVisible, setScheduleWizardVisible] = useState(false)
-  const [skipWizardVisible, setSkipWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
   const [clickedUpdateStatusData, setClickedUpdateStatusData] =
     useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
+  const [switchScheduleDrawerVisible, setSwitchScheduleDrawerVisible] = useState(false)
+  const [clickedSwitchScheduleData, setClickedSwitchScheduleData] =
+      useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
+
 
   const [wizardType, setWizardType] =
     useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
 
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
 
@@ -210,12 +210,38 @@ export const VenueFirmwareTable = (
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
-      render: function (_, row) {
-        // return getNextScheduleTpl(intl, row)
+      render: function (__, row) {
+        const hasMultipleSchedule = (_.isEmpty(row.nextSchedule) && row.scheduleCount === 1) ||
+          (!_.isEmpty(row.nextSchedule) && row.scheduleCount > 1)
+        if (hasMultipleSchedule) {
+          return <div>
+            <Typography.Text
+              style={{ lineHeight: '24px' }}>
+              {intl.$t({ defaultMessage: 'Multiple.' })}
+            </Typography.Text>
+            <Button
+              size='small'
+              ghost={true}
+              style={{
+                color: '#5496EA',
+                padding: '0',
+                marginLeft: '5px',
+                marginBottom: '2px'
+              }}
+              onClick={() => {
+                setSwitchScheduleDrawerVisible(true)
+                setClickedSwitchScheduleData(row)
+              }}>
+              {intl.$t({ defaultMessage: 'View schedule' })}
+            </Button></div>
+        }
         return (!isSwitchNextScheduleTooltipDisabled(row)
           ? getNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+          : <Tooltip
+            title={<UI.ScheduleTooltipText>
+              {getSwitchNextScheduleTplTooltip(row)}
+            </UI.ScheduleTooltipText>}
+            placement='bottom'>
             <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
           </Tooltip>
         )
@@ -282,13 +308,14 @@ export const VenueFirmwareTable = (
     }
   },
   {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     disabled: (selectedRows) => {
-      let skipUpdateEnabled = true
-      selectedRows.forEach((row) => {
-        if (!hasSchedule(row)) {
-          skipUpdateEnabled = false
-        }
-      })
+      // let skipUpdateEnabled = true
+      // selectedRows.forEach((row) => {
+      //   if (!hasSchedule(row)) {
+      //     skipUpdateEnabled = false
+      //   }
+      // })
       return false// !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
@@ -296,22 +323,6 @@ export const VenueFirmwareTable = (
       setSelectedVenueList(selectedRows)
       setUpdateNowWizardVisible(true)
       setWizardType(SwitchFirmwareWizardType.skip)
-      // showActionModal({
-      //   type: 'confirm',
-      //   width: 460,
-      //   title: $t({ defaultMessage: 'Skip This Update?' }),
-      //   // eslint-disable-next-line max-len
-      //   content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
-      //   okText: $t({ defaultMessage: 'Skip' }),
-      //   cancelText: $t({ defaultMessage: 'Cancel' }),
-      //   onOk () {
-      //     skipSwitchUpgradeSchedules({
-      //       params: { ...params },
-      //       payload: selectedRows.map((row) => row.id)
-      //     }).then(clearSelection)
-      //   },
-      //   onCancel () {}
-      // })
     }
   }]
 
@@ -356,6 +367,10 @@ export const VenueFirmwareTable = (
         visible={updateStatusDrawerVisible}
         setVisible={setUpdateStatusDrawerVisible}
         data={clickedUpdateStatusData} />
+      <SwitchScheduleDrawer
+        visible={switchScheduleDrawerVisible}
+        setVisible={setSwitchScheduleDrawerVisible}
+        data={clickedSwitchScheduleData} />
     </Loader>
   )
 }
