@@ -35,7 +35,10 @@ interface CodeMirrorWidgetProps {
 CodeMirror.defineMode('cliMode', function () {
   return {
     token: function (stream) {
-      if (stream.match(/^\${[^{}]*}/)) {
+      if (stream.match(/password/gi) || stream?.string?.match(/password/gi)) {
+        stream.next()
+        return null
+      } else if (stream.match(/^\${[^{}]*}/)) {
         return 'variable'
       } else if (stream.match(/<([^>]*)>/)) {
         return 'attribute'
