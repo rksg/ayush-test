@@ -7,9 +7,15 @@ import { LayoutUI as UI, Drawer, Table, TableProps }  from '@acx-ui/components'
 import { CaretDownSolid, HomeSolid }                  from '@acx-ui/icons'
 import { Link, useTenantLink }                        from '@acx-ui/react-router-dom'
 
+type Invitation = {
+  accountName: string
+  role: string
+  type: string
+}
 // AccountCircleSolid
 export function AccountsDrawer ({ user }: { user: UserProfile }) {
-  const { accountId, selectedTenant, tenants } = user
+  const { accountId, selectedTenant, tenants, invitations } = user
+  console.log(invitations, tenants)
   const { $t } = useIntl()
   const roles = {
     'admin': $t({ defaultMessage: 'Admin' }),
@@ -54,6 +60,12 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
       visible={visible}
       onClose={() => setVisible(false)}
     >
+      <div><b>Invitations</b>
+        {(invitations as unknown as Invitation[]).map(({ accountName, role, type } : Invitation) => (type === 'tenant'
+          ? <div>You have been invited to {accountName} as {role}. Please <a href='#'> accept</a> or <a href='#'> reject</a> the invitation</div>
+          : <div>You have <a href='#'>pending brand invitation(s)</a></div>
+        ))}
+      </div>
       <Table<Tenant>
         settingsId='rai-tenant-table'
         columns={columns}
