@@ -1,18 +1,19 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useContext } from 'react'
+import { useState, useContext } from 'react'
 
-import { Form, Switch, Row } from 'antd'
-import { NamePath }          from 'antd/es/form/interface'
-import { useIntl }           from 'react-intl'
 
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
-import { isAPLowPower }                                           from '@acx-ui/rc/services'
-import { ApViewModel, AFCStatus }                                 from '@acx-ui/rc/utils'
+import { Form, Switch } from 'antd'
+import { NamePath }     from 'antd/es/form/interface'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
 
-import { ApEditContext }           from '../..'
-import { DisabledDiv, FieldLabel } from '../../styledComponents'
+import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings, LPIButtonText } from '@acx-ui/rc/components'
+import { isAPLowPower }                                                          from '@acx-ui/rc/services'
+import { AFCStatus }                                                             from '@acx-ui/rc/utils'
 
+import { ApEditContext, ApDataContext } from '../..'
+import { DisabledDiv, FieldLabel }      from '../../styledComponents'
 
 export interface ApSingleRadioSettingsPorps {
   isEnabled: boolean,
@@ -35,8 +36,6 @@ export interface ApSingleRadioSettingsPorps {
 export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
-
   const { isEnabled, enabledFieldName, radioTypeName, onEnableChanged } = props
   const { radioType, supportChannels, bandwidthOptions,
     handleChanged, supportDfsChannels, isUseVenueSettings } = props
@@ -45,53 +44,64 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     onEnableChanged(checked)
   }
 
+  const [lowPowerIndoorModeEnabled, setLowPowerIndoorModeEnabled] = useState(false)
+
   const {
     apViewContextData
   } = useContext(ApEditContext)
+  const {
+    apCapabilities
+  } = useContext(ApDataContext)
 
-  /* eslint-disable max-len */
-  const displayLowPowerMode = (data?: ApViewModel) => {
+  const defaultButtonTextSetting: LPIButtonText = {
+    buttonText:
+      <p style={{ fontSize: '12px', margin: '0px' }}>
+        {$t({ defaultMessage: 'Standard power' })}
+      </p>
+    ,
+    LPIModeOnChange: setLowPowerIndoorModeEnabled,
+    LPIModeState: lowPowerIndoorModeEnabled,
+    isAPOutdoor: apCapabilities?.isOutdoor
+  }
 
-    if (!data || !data.apStatusData || !data.apStatusData.afcInfo) {}
-    if (radioType !== ApRadioTypeEnum.Radio6G) return
+  function setLPIToggleText () {
+    let newButtonTextSetting = _.clone(defaultButtonTextSetting)
+    const afcInfo = apViewContextData?.apStatusData?.afcInfo || undefined
+    let newButtonText : JSX.Element = (<p style={{ fontSize: '12px', margin: '0px' }}> {$t({ defaultMessage: 'Standard power' })} </p>)
 
-    const afcInfo = data?.apStatusData?.afcInfo || undefined
-    const warningMessages = [] as JSX.Element[]
-
-    if(AFC_Featureflag && isAPLowPower(afcInfo)) {
-      warningMessages.push(
-        <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='main-warning-message'>
-          {$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}
-        </p>
-      )
-
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        warningMessages.push(
-          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='geo-warning-message'>
-            {$t({ defaultMessage: '[Geo Location not set]"' })}
-          </p>
-        )
-      }
-
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        warningMessages.push(
-          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: '[No channels available]' })}
-          </p>
-        )
-      }
-
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        warningMessages.push(
-          <p style={{ color: '#910012', fontSize: '12px', margin: '0px' }} key='pending-warning-message'>
-            {$t({ defaultMessage: '[Pending response from the AFC server]' })}
-          </p>
-        )
+    if(isUseVenueSettings){
+      newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
+        {lowPowerIndoorModeEnabled ?
+          $t({ defaultMessage: 'Low power' }) :
+          $t({ defaultMessage: 'Standard power' })
+        }
+      </p>)
+    }
+    else {
+      if (isAPLowPower(afcInfo) && !lowPowerIndoorModeEnabled) {
+        let defaultButtonText = $t({ defaultMessage: 'Standard power' })
+        let defaultStyle = { color: '#910012', fontSize: '12px', margin: '0px' }
+        switch(afcInfo?.afcStatus) {
+          case AFCStatus.WAIT_FOR_LOCATION:
+            defaultButtonText = $t({ defaultMessage: 'Standard power [Geo Location not set]' })
+            break
+          case AFCStatus.WAIT_FOR_RESPONSE:
+            defaultButtonText = $t({ defaultMessage: 'Standard power [Pending response from the AFC server]' })
+            break
+          case AFCStatus.REJECTED:
+            defaultButtonText = $t({ defaultMessage: 'Standard power [No channels available]' })
+            break
+          default:
+            defaultStyle = { color: '#000000', fontSize: '12px', margin: '0px' }
+        }
+        newButtonText = (<p style={defaultStyle}> {defaultButtonText} </p>)
       }
     }
-    return warningMessages
+
+    _.set(newButtonTextSetting, 'buttonText', newButtonText)
+    return newButtonTextSetting
   }
-  /* eslint-enable max-len */
+
 
   return (
     (bandwidthOptions.length > 0)?
@@ -109,14 +119,6 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             }
           </Form.Item>
         </FieldLabel>
-        <Row>
-          {/* First div is for padding, match the field label width */}
-          <div style={{ width: '180px', height: '30px', float: 'left' }}></div>
-          <div style={{ width: '500px', height: '30px', float: 'left' }}>
-            { displayLowPowerMode(apViewContextData) }
-          </div>
-        </Row>
-
         { (!isEnabled && !isUseVenueSettings) ? (
           <DisabledDiv>
             {$t({ defaultMessage: '{radioTypeName} Radio is disabled' },
@@ -130,6 +132,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             supportDfsChannels={supportDfsChannels}
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
+            LPIButtonText={setLPIToggleText()}
           />
         )
         }

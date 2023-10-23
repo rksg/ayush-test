@@ -10,6 +10,12 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export type ConfigurationValue =
+  string |
+  Array<{ channelMode: string, channelWidth: string, radio: string }> |
+  boolean |
+  null
+
 export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
   nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
@@ -47,7 +53,9 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string |
+    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
+      MessageDescriptor);
 }
 
 const categories = {
@@ -328,7 +336,11 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (
+      status: StateType,
+      currentValue: ConfigurationValue,
+      recommendedValue: string
+    ) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -336,7 +348,9 @@ export const codes = {
         'revertscheduled',
         'revertscheduleinprogress',
         'revertfailed'
-      ].includes(status) && currentValue && compareVersion(currentValue, recommendedValue) > -1)
+      ].includes(status) &&
+        currentValue &&
+        compareVersion(currentValue as string, recommendedValue) > -1)
         ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this recommendation is still valid.' })
         : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this recommendation is applied.' }),
     actionText: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
