@@ -26,8 +26,9 @@ import {
   isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI       from '../../../../styledComponents'
-import * as SwitchUI from '../../styledComponents'
+import * as UI                                                                         from '../../../../styledComponents'
+import * as SwitchUI                                                                   from '../../styledComponents'
+import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../switch.upgrade.util'
 
 function useColumns () {
   const intl = useIntl()
@@ -163,14 +164,13 @@ export const SelectSwitchStep = (
       dataIndex: 'model',
       render: function (_, row) {
         // return getNextScheduleTpl(intl, row)
-
-        return parseSwitchVersion(row.switchNextSchedule?.version?.id || 'Not scheduled')
-        // <Tooltip title={<UI.ScheduleTooltipText>{
-        //   parseSwitchVersion(row.switchNextSchedule?.version?.id)}</UI.ScheduleTooltipText>}
-        //   placement='bottom'>
-        //   <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-        // </Tooltip>
-
+        return (!enableSwitchScheduleTooltip(row) //disabledSwitchItemNextScheduleTooltip
+          ? getSwitchNextScheduleTpl(intl, row)
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchScheduleTpl(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
+          </Tooltip>
+        )
       }
     }
   ]
