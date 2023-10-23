@@ -85,6 +85,12 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue({ ...data })
   },[data])
+
+  useEffect(() => {
+    if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
+      form.setFieldValue('isCloudpathEnabled', false)
+  }, [dpskWlanSecurity])
+
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
 
