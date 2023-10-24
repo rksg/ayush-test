@@ -399,6 +399,43 @@ export const SelectSwitchStep = (
                 })
 
               } else if (addedSwitch.length > 1) {
+                let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+                let newNestedData = nestedData
+                let newSelectedVenueRowKeys = selectedVenueRowKeys
+
+                addedSwitch.forEach((a: Key) => {
+                  const currentRow = selectedRows.filter(s => s.switchId === a)[0]
+                  const selectedRow =
+                    selectedSwitchRowKeys[currentRow.venueId]?.concat(a)
+                    ?? [a]
+
+                  newSelectedSwitchRowKeys = ({
+                    ...newSelectedSwitchRowKeys,
+                    [currentRow.venueId]:
+                      newSelectedSwitchRowKeys[currentRow.venueId]?.concat(selectedRow)
+                      || selectedRow
+                  })
+
+                  const currentVenue = data.filter(d => d.id === currentRow.venueId)[0]
+                  if ((currentVenue.switchCount + currentVenue.aboveTenSwitchCount)
+                    === newSelectedSwitchRowKeys[currentRow.venueId].length) {
+                    newSelectedVenueRowKeys = [...newSelectedVenueRowKeys, currentVenue.id]
+                  }
+
+                  newNestedData = {
+                    ...newNestedData,
+                    [currentRow.venueId]: {
+                      initialData: newNestedData[currentRow.venueId]?.initialData || [],
+                      selectedData:
+                        newNestedData[currentRow.venueId]?.selectedData.concat(currentRow)
+                        || [currentRow]
+                    }
+                  }
+                })
+
+                setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                setSelectedVenueRowKeys(newSelectedVenueRowKeys)
+                setNestedData(newNestedData)
 
               } else if (deletedSwitch.length === 1) {
                 const deleteRowId = deletedSwitch[0]
@@ -427,6 +464,39 @@ export const SelectSwitchStep = (
 
 
               } else if (deletedSwitch.length > 1) {
+                let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+                let newNestedData = nestedData
+                let newSelectedVenueRowKeys = selectedVenueRowKeys
+
+                deletedSwitch.forEach((a: Key) => {
+                  const deleteRowId = a
+                  const deleteRow = searchSwitchList.filter(s => s.switchId === deleteRowId)[0]
+
+                  newSelectedSwitchRowKeys = {
+                    ...newSelectedSwitchRowKeys,
+                    [deleteRow.venueId]: newSelectedSwitchRowKeys[deleteRow.venueId].filter(
+                      s => s !== deleteRowId)
+                  }
+                  const currentVenue = data.filter(d => d.id === deleteRow.venueId)[0]
+                  if (newSelectedVenueRowKeys.includes(currentVenue.id)) {
+                    newSelectedVenueRowKeys =
+                      newSelectedVenueRowKeys.filter(v => currentVenue.id !== v)
+                  }
+
+
+                  newNestedData = {
+                    ...newNestedData,
+                    [deleteRow.venueId]: {
+                      initialData: newNestedData[deleteRow.venueId]?.initialData || [],
+                      selectedData: newNestedData[deleteRow.venueId].selectedData.filter(
+                        s => s.switchId !== deleteRowId)
+                    }
+                  }
+                })
+
+                setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                setSelectedVenueRowKeys(newSelectedVenueRowKeys)
+                setNestedData(newNestedData)
 
               }
               setSelectedSearchSwitchRowKeys(selectedKeys)
