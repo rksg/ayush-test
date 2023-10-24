@@ -7,11 +7,11 @@ export interface PersonaGroup {
   macRegistrationPoolId?: string,
   dpskPoolId?: string,
   propertyId?: string,
-  nsgId?: string,
+  personalIdentityNetworkId?: string,
   createdAt?: string,
   updatedAt?: string,
-  personas?: Persona[],
-  personaCount?: number
+  identities?: Persona[],
+  identityCount?: number
 }
 
 export interface Persona {

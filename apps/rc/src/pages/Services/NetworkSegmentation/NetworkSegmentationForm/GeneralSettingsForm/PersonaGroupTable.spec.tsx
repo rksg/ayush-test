@@ -54,7 +54,7 @@ describe('NSG GeneralSettings Form - Persona Table Page', () => {
     const cells = await within(rows[1] as HTMLTableRowElement).findAllByRole('cell')
     expect((cells[0] as HTMLTableCellElement).innerHTML).toMatch(mockPersonaGroup.name)
     expect((cells[1] as HTMLTableCellElement).innerHTML)
-      .toBe(String(mockPersonaGroup.personas.length))
+      .toBe(String(mockPersonaGroup.identities?.length))
 
   })
 

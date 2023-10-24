@@ -130,22 +130,22 @@ function useColumns (
         />
     },
     ...(networkSegmentationEnabled ? [{
-      key: 'nsgId',
+      key: 'personalIdentityNetworkId',
       title: $t({ defaultMessage: 'Personal Identity Network' }),
-      dataIndex: 'nsgId',
+      dataIndex: 'personalIdentityNetworkId',
       sorter: true,
       filterMultiple: false,
       filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
-          nsgId={row.nsgId}
-          name={nsgMap.get(row.nsgId ?? '')}
+          id={row.personalIdentityNetworkId}
+          name={nsgMap.get(row.personalIdentityNetworkId ?? '')}
         />
     } as TableColumn<PersonaGroup>] : []),
     {
-      key: 'personaCount',
+      key: 'identityCount',
       title: $t({ defaultMessage: 'Identities' }),
-      dataIndex: 'personaCount',
+      dataIndex: 'identityCount',
       align: 'center'
     }
   ]
@@ -201,7 +201,12 @@ export function PersonaGroupTable () {
     const nsgPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
+      const {
+        macRegistrationPoolId,
+        dpskPoolId,
+        propertyId,
+        personalIdentityNetworkId
+      } = personaGroup
 
       if (propertyId) {
         venueIds.push(propertyId)
@@ -225,11 +230,11 @@ export function PersonaGroupTable () {
           })
       }
 
-      if (nsgId) {
-        getNsgById({ params: { tenantId, serviceId: nsgId } })
+      if (personalIdentityNetworkId) {
+        getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {
-              nsgPools.set(nsgId, result.data.name)
+              nsgPools.set(personalIdentityNetworkId, result.data.name)
             }
           })
       }
@@ -263,7 +268,10 @@ export function PersonaGroupTable () {
       $t({ defaultMessage: 'Identity Group' }),
       selectedRow.name,
       [
-        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Personal Identity Network' }) },
+        {
+          fieldName: 'personalIdentityNetworkId',
+          fieldText: $t({ defaultMessage: 'Personal Identity Network' })
+        },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id } })
@@ -297,8 +305,8 @@ export function PersonaGroupTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       disabled: (([selectedItem]) =>
-        (selectedItem && selectedItem.personaCount)
-          ? selectedItem.personaCount > 0 : false
+        (selectedItem && selectedItem.identityCount)
+          ? selectedItem.identityCount > 0 : false
       ),
       onClick: ([selectedRow], clearSelection) => {
         doDelete(selectedRow, clearSelection)
@@ -314,7 +322,8 @@ export function PersonaGroupTable () {
         ? customFilters?.dpskPoolId[0] : undefined,
       macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
         ? customFilters?.macRegistrationPoolId[0] : undefined,
-      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined,
+      personalIdentityNetworkId: Array.isArray(customFilters?.personalIdentityNetworkId)
+        ? customFilters?.personalIdentityNetworkId[0] : undefined,
       propertyId: Array.isArray(customFilters?.propertyId)
         ? customFilters?.propertyId[0] : undefined
     }

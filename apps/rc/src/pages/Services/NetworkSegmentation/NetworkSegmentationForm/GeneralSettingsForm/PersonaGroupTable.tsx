@@ -49,7 +49,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
         {
           personaGroupName: personaGroupData?.name,
           personaGroupId: personaGroupData?.id,
-          personaCount: personaGroupData?.personas?.length || 0,
+          personaCount: personaGroupData?.identities?.length || 0,
           dpskName: dpskData?.name,
           dpskId: dpskData?.id,
           dpskNetworkCount: dpskData?.networkIds?.length

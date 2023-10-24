@@ -76,7 +76,7 @@ function PersonaGroupDetails () {
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const { macRegistrationPoolId, dpskPoolId, nsgId, propertyId }
+    const { macRegistrationPoolId, dpskPoolId, personalIdentityNetworkId, propertyId }
     = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
@@ -97,11 +97,11 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (nsgId && networkSegmentationEnabled) {
+    if (personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: nsgId } })
+      getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgDisplay({ id: nsgId, name }))
+        .finally(() => setNsgDisplay({ id: personalIdentityNetworkId, name }))
     }
 
     if (propertyId) {
@@ -126,7 +126,7 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Identities' }),
-      content: detailsQuery.data?.personas?.length ?? 0
+      content: detailsQuery.data?.identities?.length ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
@@ -152,7 +152,7 @@ function PersonaGroupDetails () {
         <NetworkSegmentationLink
           showNoData={true}
           name={nsgDisplay?.name}
-          nsgId={detailsQuery.data?.nsgId}
+          id={detailsQuery.data?.personalIdentityNetworkId}
         />
     }] : [])
   ]
@@ -175,7 +175,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

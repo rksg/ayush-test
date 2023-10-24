@@ -86,11 +86,14 @@ export function VenueClientsTab () {
         key='switch'>
         <SwitchClientsTable filterBySwitch={true}/>
       </Tabs.TabPane>
-      {(isCloudpathBetaEnabled && personaGroupData?.nsgId && personaGroupData?.id) &&
+      {(isCloudpathBetaEnabled
+          && personaGroupData?.personalIdentityNetworkId
+          && personaGroupData?.id
+      ) &&
         <Tabs.TabPane
           tab={$t(
             { defaultMessage: 'Identity ({count})' },
-            { count: personaGroupData?.personas?.length ?? 0 }
+            { count: personaGroupData?.identities?.length ?? 0 }
           )}
           key={'identity'}
         >

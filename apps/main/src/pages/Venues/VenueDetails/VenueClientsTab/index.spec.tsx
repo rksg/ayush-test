@@ -47,7 +47,7 @@ describe('VenueClientsTab', () => {
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (_, res, ctx) => res(ctx.json({ id: 'group-id', nsgId: 'nsg-id' }))
+        (_, res, ctx) => res(ctx.json({ id: 'group-id', personalIdentityNetworkId: 'pin-id' }))
       )
     )
   })
