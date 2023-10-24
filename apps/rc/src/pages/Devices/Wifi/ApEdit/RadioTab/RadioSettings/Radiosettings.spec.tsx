@@ -41,7 +41,7 @@ import {
   RadioSettings,
   StateOfIsUseVenueSettings, StateOfIsUseVenueSettingsHandler,
   StateOfIsUseVenueSettingsHandlerFactory,
-  Type
+  RadioType
 } from './RadioSettings'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
@@ -664,12 +664,12 @@ describe('StateOfIsUseVenueSettingsHandlerFactory', () => {
     it('should return handlerOfOldVersion when isEnablePerApRadioCustomizationFlag is false', function () {
       const isEnablePerApRadioCustomizationFlag = false
 
-      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualC = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-      const actualD = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualE = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualF = StateOfIsUseVenueSettingsHandlerFactory.getInstance('aaa' as Type, isEnablePerApRadioCustomizationFlag)
+      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
+      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualC = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
+      const actualD = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualE = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualF = StateOfIsUseVenueSettingsHandlerFactory.getInstance('aaa' as RadioType, isEnablePerApRadioCustomizationFlag)
 
       const expected = new HandlerOfOldVersion()
       expect(actualA).toEqual(expected)
@@ -682,11 +682,11 @@ describe('StateOfIsUseVenueSettingsHandlerFactory', () => {
     it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
       const isEnablePerApRadioCustomizationFlag = true
 
-      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualC = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-      const actualD = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualE = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
+      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualC = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
+      const actualD = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
+      const actualE = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
 
       expect(actualA).toEqual(new HandlerOfNewVersion24G())
       expect(actualB).toEqual(new HandlerOfNewVersion5G())
@@ -695,13 +695,13 @@ describe('StateOfIsUseVenueSettingsHandlerFactory', () => {
       expect(actualE).toEqual(new HandlerOfNewVersionUpper5G())
     })
     it('should return NULL when type is not matched and isEnablePerApRadioCustomizationFlag is true', function () {
-      const actual = StateOfIsUseVenueSettingsHandlerFactory.getInstance('aaa' as Type, true)
+      const actual = StateOfIsUseVenueSettingsHandlerFactory.getInstance('aaa' as RadioType, true)
 
       expect(actual).toBeNull()
     })
     it('should return same instance', function () {
-      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal24GHz, true)
-      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(Type.Normal24GHz, true)
+      const actualA = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal24GHz, true)
+      const actualB = StateOfIsUseVenueSettingsHandlerFactory.getInstance(RadioType.Normal24GHz, true)
 
       expect(actualA === actualB).toBe(true)
     })
@@ -1018,11 +1018,11 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettingsUpper5G: true,
         isUseVenueSettings: true
       }
-      const typeNormal24GHz = Type.Normal24GHz
-      const typeNormal5GHz = Type.Normal5GHz
-      const typeNormal6GHz = Type.Normal6GHz
-      const typeLower5GHz = Type.Lower5GHz
-      const typeUpper5GHz = Type.Upper5GHz
+      const typeNormal24GHz = RadioType.Normal24GHz
+      const typeNormal5GHz = RadioType.Normal5GHz
+      const typeNormal6GHz = RadioType.Normal6GHz
+      const typeLower5GHz = RadioType.Lower5GHz
+      const typeUpper5GHz = RadioType.Upper5GHz
       const isEnablePerApRadioCustomizationFlag = false
 
       const actualAA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, typeNormal24GHz, isEnablePerApRadioCustomizationFlag)
@@ -1065,7 +1065,7 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettings: false
       }
       const isEnablePerApRadioCustomizationFlag = true
-      const type = Type.Normal24GHz
+      const type = RadioType.Normal24GHz
 
       const actualA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
       const actualB = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
@@ -1091,7 +1091,7 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettings: false
       }
       const isEnablePerApRadioCustomizationFlag = true
-      const type = Type.Normal5GHz
+      const type = RadioType.Normal5GHz
 
       const actualA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
       const actualB = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
@@ -1117,7 +1117,7 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettings: false
       }
       const isEnablePerApRadioCustomizationFlag = true
-      const type = Type.Normal6GHz
+      const type = RadioType.Normal6GHz
 
       const actualA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
       const actualB = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
@@ -1143,7 +1143,7 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettings: false
       }
       const isEnablePerApRadioCustomizationFlag = true
-      const type = Type.Lower5GHz
+      const type = RadioType.Lower5GHz
 
       const actualA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
       const actualB = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
@@ -1169,7 +1169,7 @@ describe('StateOfIsUseVenueSettingsHandler', () => {
         isUseVenueSettings: false
       }
       const isEnablePerApRadioCustomizationFlag = true
-      const type = Type.Upper5GHz
+      const type = RadioType.Upper5GHz
 
       const actualA = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
       const actualB = StateOfIsUseVenueSettingsHandler.isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
