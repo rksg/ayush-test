@@ -18,7 +18,7 @@ import {
   mockPersonaGroup,
   mockPersonaGroupTableResult,
   replacePagination
-} from '../__tests__/fixtures'
+} from './__tests__/fixtures'
 
 import { PersonaGroupDrawer } from './index'
 

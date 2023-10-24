@@ -1,14 +1,8 @@
 
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-// import {
-//   mockDpskList,
-//   mockMacRegistrationList,
-//   mockPersonaGroupList,
-//   replacePagination
-// } from 'apps/rc/src/pages/Users/Persona/__tests__/fixtures'
-import { rest } from 'msw'
+import { rest }            from 'msw'
+import { useNavigate }     from 'react-router-dom'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -20,15 +14,19 @@ import {
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroupList,
+  replacePagination,
   mockedTemplateScope,
   mockEnabledNoNSGPropertyConfig,
   mockPropertyUnitList,
   mockResidentPortalProfileList
-} from '../../__tests__/fixtures'
+} from './__tests__/fixtures'
 
 import { PropertyManagementForm } from '.'
 
@@ -38,17 +36,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Property Config Tab', () => {
+describe('Property Config Form', () => {
   const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 
   const enabledParams = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
   const disabledParams = { tenantId, venueId: '206f35d341834d48a526eed6f3afbf99' }
 
-  const setEditContextDataFn = jest.fn()
+  const mockedPostSubmit = jest.fn()
   const saveConfigFn = jest.fn()
 
   beforeEach(async () => {
-    setEditContextDataFn.mockClear()
+    mockedPostSubmit.mockClear()
     saveConfigFn.mockClear()
 
     mockServer.use(
@@ -109,8 +107,25 @@ describe('Property Config Tab', () => {
   })
 
   it('should redirect while cancel form', async () => {
+    const { tenantId, venueId } = enabledParams
+    const { result } = renderHook(() => {
+      const navigate = useNavigate()
+      return { navigate }
+    })
+
+    const navigateToVenueOverview = () => {
+      result.current.navigate({
+        hash: '',
+        search: '',
+        pathname: `/${tenantId}/t/venues/${venueId}/venue-details/overview`
+      })
+    }
+
     render(<Provider>
-      <PropertyManagementForm />
+      <PropertyManagementForm
+        venueId={enabledParams.venueId}
+        onCancel={navigateToVenueOverview}
+      />
     </Provider>, { route: { params: enabledParams } })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -118,7 +133,6 @@ describe('Property Config Tab', () => {
     const cancelFormBtn = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelFormBtn)
 
-    const { tenantId, venueId } = enabledParams
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${tenantId}/t/venues/${venueId}/venue-details/overview`,
       hash: '',
@@ -128,7 +142,10 @@ describe('Property Config Tab', () => {
 
   it('should render simple Property config tab with 404 api response', async () => {
     render(<Provider>
-      <PropertyManagementForm />
+      <PropertyManagementForm
+        venueId={disabledParams.venueId}
+        postSubmit={mockedPostSubmit}
+      />
     </Provider>, { route: { params: disabledParams } })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -144,13 +161,15 @@ describe('Property Config Tab', () => {
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
 
     await userEvent.click(formSaveBtn)
-    expect(setEditContextDataFn).toBeCalled()
+    expect(mockedPostSubmit).not.toBeCalled()
   })
 
   it.skip('should render Property config tab', async () => {
     render(
       <Provider>
-        <PropertyManagementForm />
+        <PropertyManagementForm
+          venueId={enabledParams.venueId}
+        />
       </Provider>, { route: { params: enabledParams } }
     )
 
@@ -183,7 +202,9 @@ describe('Property Config Tab', () => {
 
     render(
       <Provider>
-        <PropertyManagementForm />
+        <PropertyManagementForm
+          venueId={enabledParams.venueId}
+        />
       </Provider>, { route: { params: enabledParams } }
     )
 
@@ -198,7 +219,9 @@ describe('Property Config Tab', () => {
   it('should pop up warning dialog while disable property', async () => {
     render(
       <Provider>
-        <PropertyManagementForm />
+        <PropertyManagementForm
+          venueId={enabledParams.venueId}
+        />
       </Provider>, { route: { params: enabledParams } }
     )
 

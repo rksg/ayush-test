@@ -30,7 +30,7 @@ import{
   mockedDpskList,
   policySetList
 } from './__tests__/fixtures'
-import DpskForm from './DpskForm'
+import { DpskForm } from './DpskForm'
 
 
 const mockedUseNavigate = jest.fn()

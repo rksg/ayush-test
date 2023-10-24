@@ -1,6 +1,6 @@
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { OperatorType } from '../..'
+import { OperatorType } from '../../types/policies/radiusAttributeGroup'
 
 export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescriptor> = {
   [OperatorType.ADD]: defineMessage({ defaultMessage: 'Add (Multiple)' }),

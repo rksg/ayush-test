@@ -260,7 +260,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
           payload: { status: PropertyConfigStatus.DISABLED }
         }).unwrap()
       }
-
       postSubmit?.()
     } catch (e) {
       console.log(e) // eslint-disable-line no-console

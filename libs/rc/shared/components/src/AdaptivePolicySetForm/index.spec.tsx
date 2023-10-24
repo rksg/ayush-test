@@ -21,7 +21,7 @@ import {
   templateList
 } from './__test__/fixtures'
 
-import AdaptivePolicySetForm from '.'
+import { AdaptivePolicySetForm } from '.'
 
 describe('AdaptivePolicySetForm', () => {
   // eslint-disable-next-line max-len

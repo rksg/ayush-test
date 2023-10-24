@@ -174,3 +174,61 @@ export const groupList = {
   number: 0,
   empty: false
 }
+
+export const attributeGroupReturnByQuery = {
+  totalCount: 1,
+  page: 0,
+  pageSize: 10,
+  data: [
+    {
+      name: 'group1',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ]
+    }
+  ]
+}
+
+export const vendorList = {
+  supportedVendors: [
+    'Bay-Networks',
+    'UKERNA',
+    'Packeteer',
+    '3GPP'
+  ]
+}
+
+export const radiusAttributeList = {
+  totalCount: 2,
+  page: 1,
+  pageSize: 10000,
+  data: [
+    {
+      id: 19910001,
+      name: 'Foundry-Privilege-Level',
+      vendorName: 'Foundry',
+      dataType: 'INTEGER',
+      showOnDefault: true
+    },
+    {
+      id: 19910002,
+      name: 'Foundry-Command-String',
+      vendorName: 'Foundry',
+      dataType: 'STRING',
+      showOnDefault: true
+    }
+  ]
+}
