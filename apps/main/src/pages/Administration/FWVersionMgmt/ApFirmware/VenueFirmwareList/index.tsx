@@ -42,6 +42,7 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -128,8 +129,7 @@ function useColumns (
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (_, row) {
-        if (!row.lastScheduleUpdate) return '--'
-        return toUserDate(row.lastScheduleUpdate)
+        return toUserDate(row.lastScheduleUpdate || noDataDisplay)
       }
     },
     {
