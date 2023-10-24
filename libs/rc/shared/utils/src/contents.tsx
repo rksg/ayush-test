@@ -8,7 +8,7 @@ import { BridgeServiceEnum } from './models'
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',
-  WPA23Mixed = 'WPA3/WPA2 mixed mode',
+  WPA23Mixed = 'WPA2/WPA3 mixed mode',
   WPAPersonal = 'WPA',
   WEP = 'WEP'
 }
@@ -17,7 +17,7 @@ export enum SecurityOptionsDescription {
   /* eslint-disable max-len */
   WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
   WPA3 = 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  WPA23Mixed = 'WPA3/WPA2 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
+  WPA23Mixed = 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
   WPAPersonal = 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.',
   WEP = 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.',
   WPA2_DESCRIPTION_WARNING = '6GHz radios are only supported with WPA3.'

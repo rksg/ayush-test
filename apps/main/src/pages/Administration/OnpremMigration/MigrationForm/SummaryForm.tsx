@@ -136,7 +136,7 @@ const SummaryForm = (props: SummaryFormProps) => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Validation Failure' }),
+      title: $t({ defaultMessage: 'Validation Failure Reason' }),
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {
