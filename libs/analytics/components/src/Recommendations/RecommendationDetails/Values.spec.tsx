@@ -6,7 +6,8 @@ import { render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   mockedRecommendationPower,
   mockedRecommendationFirmware,
-  mockRecommendationAutoBackground
+  mockRecommendationAutoBackground,
+  mockRecommendationNoKPI
 } from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 import { Values }                                          from './Values'
@@ -50,5 +51,41 @@ describe('Recommendation Overview', () => {
     render(<Values details={powerDetails} />, { wrapper: Provider })
     const backgroundScan = await screen.findByText(/"ChannelFly*/i)
     expect(backgroundScan).toBeVisible()
+  })
+
+  it('does not show config when null', async () => {
+    const nullValuesDetails = transformDetailsResponse({
+      ...mockRecommendationNoKPI,
+      status: 'new',
+      statusTrail: [
+        { status: 'new', createdAt: '2021-10-27T06:02:06.973Z' }
+      ],
+      originalValue: null,
+      currentValue: null,
+      recommendedValue: true
+    } as unknown as RecommendationDetails)
+    render(<Values details={nullValuesDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Recommended Configuration')).toBeVisible()
+    expect(screen.queryByText('Original Configuration')).not.toBeInTheDocument()
+    expect(screen.queryByText('Current Configuration')).not.toBeInTheDocument()
+  })
+
+  it('shows config when false', async () => {
+    const nullValuesDetails = transformDetailsResponse({
+      ...mockRecommendationNoKPI,
+      status: 'applied',
+      statusTrail: [
+        { status: 'applied', createdAt: '2021-10-27T10:36:01.934Z' },
+        { status: 'applyscheduleinprogress', createdAt: '2021-10-27T10:35:01.934Z' },
+        { status: 'applyscheduled', createdAt: '2021-10-27T08:35:01.934Z' },
+        { status: 'new', createdAt: '2021-10-27T06:02:06.973Z' }
+      ],
+      originalValue: null,
+      currentValue: false
+    } as unknown as RecommendationDetails)
+    render(<Values details={nullValuesDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Current Configuration')).toBeVisible()
+    expect(screen.queryByText('Original Configuration')).not.toBeInTheDocument()
+    expect(screen.queryByText('Recommended Configuration')).not.toBeInTheDocument()
   })
 })
