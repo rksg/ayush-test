@@ -23,8 +23,8 @@ export function dateSort (a: unknown, b: unknown): SortResult {
 }
 
 export function clientImpactSort (a: unknown, b: unknown): SortResult {
-  let c = (a === noDataDisplay) ? -1 : parseKString(a as string)
-  let d = (b === noDataDisplay) ? -1 : parseKString(b as string)
+  let c = (a === noDataDisplay) ? -1 : parseFloat(a as string)
+  let d = (b === noDataDisplay) ? -1 : parseFloat(b as string)
   if (isNaN(c)) c = -2
   if (isNaN(d)) d = -2
   if (c > d) return 1
@@ -51,10 +51,4 @@ export function sortProp<RecordType> (
     const valueB = _.get(b, prop)
     return sortFn(valueA, valueB)
   }
-}
-export function parseKString (str : string | number) {
-  if (typeof str === 'string' && str.toUpperCase().endsWith('K')) {
-    return parseFloat(str.slice(0, -1)) * 1000
-  }
-  return parseFloat(str as string)
 }

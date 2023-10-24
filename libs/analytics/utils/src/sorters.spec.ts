@@ -5,8 +5,7 @@ import {
   dateSort,
   clientImpactSort,
   severitySort,
-  sortProp,
-  parseKString
+  sortProp
 } from './sorters'
 
 describe('defaultSort', () => {
@@ -109,13 +108,6 @@ describe('clientImpactSort', () => {
     expect(clientImpactSort(b, a)).toBe(1)
   })
 
-  it('should return negative on 13.77K < 13.77', () => {
-    expect(clientImpactSort('13.77K', '13.77')).toBe(1)
-  })
-
-  it('should return positive on 13.77K > 13.77', () => {
-    expect(clientImpactSort('13.77', '13.77k')).toBe(-1)
-  })
   it('should return negative when a has noDataDisplay', () => {
     const noDataA = clientImpactSort(noDataDisplay, b)
     expect(noDataA).toBe(-1)
@@ -134,22 +126,6 @@ describe('clientImpactSort', () => {
   it('should return 0 on undefined inputs', () => {
     const noDefined = clientImpactSort(undefined, undefined)
     expect(noDefined).toBe(0)
-  })
-
-  it('should return 0 for "0K"', () => {
-    expect(parseKString('0K')).toBe(0)
-  })
-
-  it('should handle very large numbers like "1e7K" to 10000000000', () => {
-    expect(parseKString('1e7K')).toBe(10000000000)
-  })
-
-  it('should return 13.77 for "13.77"', () => {
-    expect(parseKString('13.77')).toBe(13.77)
-  })
-
-  it('should correctly parse "13.77K" to 13770', () => {
-    expect(parseKString('13.77K')).toBe(13770)
   })
 })
 
