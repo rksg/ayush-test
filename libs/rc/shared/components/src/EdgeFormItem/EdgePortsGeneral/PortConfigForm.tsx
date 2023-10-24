@@ -5,8 +5,8 @@ import TextArea                                                from 'antd/lib/in
 import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsFormLegacy }                                                                                                  from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsFormLegacy }                                                                                                                       from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePortWithStatus, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp, edgePortIpValidator } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -102,7 +102,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             validateFirst
             rules={[
               { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) },
+              { validator: (_, value) =>
+                edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+              },
               {
                 validator: () =>
                   lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
@@ -153,7 +155,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 validateFirst
                 rules={[
                   { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  { validator: (_, value) =>
+                    edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+                  },
                   {
                     validator: () =>
                       lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())

@@ -203,6 +203,19 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[1],
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: priorities.high,
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
+        status: 'Revert Scheduled',
+        statusTooltip: 'A reversion to undo the configuration change has been scheduled for 06/17/2023 00:00. Note that the actual reversion of configuration will happen asynchronously within 1 hour of the scheduled time.',
+        statusEnum: 'revertscheduled',
+        crrmOptimizedState: crrmStates.nonOptimized
+      },
+      {
+        ...recommendationListResult.recommendations[2],
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
@@ -214,7 +227,7 @@ describe('Recommendation services', () => {
         statusEnum: 'revertfailed'
       },
       {
-        ...recommendationListResult.recommendations[2],
+        ...recommendationListResult.recommendations[3],
         scope: `vsz34 (SZ Cluster)
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
