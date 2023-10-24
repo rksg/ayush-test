@@ -8,7 +8,7 @@ const Container = (props) => {
 
   return (
     <div className='d3-tree-container' ref={ref}>
-      {rect && <Svg width={rect.width} height={500} {...props} />}
+      {rect && <Svg width={rect.width} height={rect.height} ref={props.ref} {...props} />}
     </div>
   )
 }

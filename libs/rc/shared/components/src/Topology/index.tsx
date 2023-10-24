@@ -17,8 +17,6 @@ import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceT
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
-import Hex               from './assets/Hex'
-import Logo              from './assets/Logo'
 import LinkTooltip       from './LinkTooltip'
 import data              from './mocks/data.json'
 import NodeTooltip       from './NodeTooltip'
@@ -72,7 +70,7 @@ export function TopologyGraph (props:{ venueId?: string,
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
 
   useEffect(() => {
-    if(topologyData) {
+    if(topologyData && data) {
       const nodes: Node[] = topologyData?.nodes
 
       const _data: GraphData = {
@@ -82,12 +80,9 @@ export function TopologyGraph (props:{ venueId?: string,
         nodes: nodes
       }
 
-      console.log(_data)
       setTopologyGraphData(_data)
-
     }
     if(data){
-      console.log(data)
       setTransformedData(transformData(data))
     }
   }, [topologyData, data])
@@ -439,14 +434,29 @@ export function TopologyGraph (props:{ venueId?: string,
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
     setShowDeviceTooltip(true)
-    setTooltipNode(node.config)
-    setTooltipPosition({ x: d?.layerX + 30
-      , y: d?.layerY })
+    const tempNode = {
+      type: 'Ap',
+      name: '302002015736-DEV',
+      mac: '34:20:E3:19:79:F0',
+      serial: '302002015736',
+      id: '302002015736',
+      status: 'Operational',
+      childCount: 0,
+      meshRole: 'DOWN',
+      uplink: [],
+      downlink: [],
+      downlinkChannel: '36(5G)',
+      isMeshEnable: true
+    }
+    setTooltipNode(tempNode as typeof node)
+    setTooltipPosition({ x: d?.nativeEvent.layerX + 30
+      , y: d?.nativeEvent.layerY })
   }, 100)
 
   function onNodeClick () {
     const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
+    console.log(svg, allnodes)
 
     allnodes
       .on('click',function (d: any, node: any){
@@ -611,13 +621,14 @@ export function TopologyGraph (props:{ venueId?: string,
           }
           <UI.Topology>
             <Tree
+              ref={graphRef}
               data={transformedData}
-              nodeRender={(node: { parent: any }) => {
+              nodeRender={(node: { parent: any, data: any }) => {
                 return (
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <Fragment>
                     {node.parent ? (
-                      Math.random() < 0.5 ?
+                      node.data.type === 'Switch' ?
                         <Switch width={24} height={24} x={-12} y={-12} /> :
                         <AccessPointWifi width={24} height={24} x={-12} y={-12} />
                     ) : (
@@ -626,6 +637,7 @@ export function TopologyGraph (props:{ venueId?: string,
                   </Fragment>
                 )
               }}
+              onNodeClick={debouncedHandleMouseEnter}
             />
           </UI.Topology>
         </>

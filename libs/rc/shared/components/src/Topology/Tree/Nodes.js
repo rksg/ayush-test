@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 const Nodes = (props) => {
   const [color, setColor] = useState({})
-  const { nodes, nodeRender } = props
+  const { nodes, nodeRender, expColEvent, onClick } = props
 
   useEffect(() => {
     nodes
@@ -31,10 +31,21 @@ const Nodes = (props) => {
           <g
             key={i}
             transform={`translate(${node.y},${node.x - (65 * node.ancestors().length)})`}
-            style={{ fill: color[ancestorName] }}
+            style={{
+              fill: color[ancestorName],
+              cursor: node.data.DisplayName !=='Cloud' ? 'pointer' : 'default'
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault()
+              expColEvent(node.data.DisplayName)
+            }}
+            onClick={(e) => {
+              onClick(node, e)
+            }}
+            id={node.DisplayName}
           >
-            <g>{nodeRender(node, i)}</g>
-            <g>
+            <g id={node.DisplayName}>{nodeRender(node, i)}</g>
+            <g id={node.DisplayName}>
               <text
                 className='text-call-name'
                 style={{
