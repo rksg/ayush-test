@@ -321,4 +321,10 @@ export { ReactComponent as APMeshRoleRoot } from './icons/APMeshRoleRoot.svg'
 export { ReactComponent as Blocked } from './icons/Blocked.svg'
 export { ReactComponent as Reload } from './icons/Reload.svg'
 
+export { ReactComponent as GoogleMeets } from './appInsight/GoogleMeets.svg'
+export { ReactComponent as Teams } from './appInsight/Teams.svg'
+export { ReactComponent as Webex } from './appInsight/Webex.svg'
+export { ReactComponent as Workplace } from './appInsight/Workplace.svg'
+export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
+
 export * from './styledComponents'

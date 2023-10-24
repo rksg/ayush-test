@@ -12,7 +12,8 @@ import {
   SANetworkFilter,
   AIDrivenRRM,
   AIOperations,
-  ChatWithMelissa
+  ChatWithMelissa,
+  AppInsights
 } from '@acx-ui/analytics/components'
 import {
   PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
@@ -25,6 +26,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -76,6 +78,7 @@ const DashboardView = () => {
   const height = useMonitorHeight(536)
   const { filters, pathFilters } = useDashBoardUpdatedFilters()
   const userProfile = getUserProfile()
+  const enableAppInsights = !useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation =
     userProfile.selectedTenant.permissions[
       PERMISSION_MANAGE_CONFIG_RECOMMENDATION
@@ -106,6 +109,42 @@ const DashboardView = () => {
           <ChatWithMelissa />
         </div>
       </UI.NetworkAdminGrid>
+    )
+  }
+
+  if(enableAppInsights) {
+    return (
+      <UI.AppInsightGrid style={{ height }}>
+        <div style={{ gridArea: 'a1' }}>
+          <ReportTile pathFilters={pathFilters} />
+        </div>
+        <div style={{ gridArea: 'a2' }}>
+          <AppInsights />
+        </div>
+        <div style={{ gridArea: 'b1' }}>
+          <IncidentsCountBySeverities filters={filters} />
+        </div>
+        <div style={{ gridArea: 'b2' }}>
+          <AIDrivenRRM
+            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+          />
+        </div>
+        <div style={{ gridArea: 'c2' }}>
+          <AIOperations
+            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+          />
+        </div>
+        <div style={{ gridArea: 'd1' }}>
+          <DidYouKnow
+            filters={pathFilters}
+            maxFactPerSlide={3}
+            maxSlideChar={290}
+          />
+        </div>
+        <div style={{ gridArea: 'd2' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+      </UI.AppInsightGrid>
     )
   }
 
