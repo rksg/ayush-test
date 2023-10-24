@@ -111,13 +111,12 @@ export function PersonaDevicesTable (props: {
       //  via DPSK,     the authmethod would be: "Standard+Open"
       const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
 
-      return client && !isMacAuth
+      return client && !isMacAuth && device.online
         ? {
           ...device,
           os: client.osType,
           deviceName: client.hostname,
-          // lastSeenAt exist means that this device is connecting, so use the Client info to update the timestamp
-          lastSeenAt: device.lastSeenAt ? client.lastUpdateTime : undefined
+          lastSeenAt: client.lastUpdateTime
         }
         : {
           ...device,
@@ -159,6 +158,7 @@ export function PersonaDevicesTable (props: {
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
+        online: isNewConfigFlow ? device.deviceConnectivity === 'CONNECTED' : device.online,
         lastSeenAt: isNewConfigFlow
           ? device.deviceConnectivity === 'CONNECTED'
             ? device.lastConnectedTime ?? undefined
