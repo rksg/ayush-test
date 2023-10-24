@@ -6,14 +6,18 @@ import { useIntl }    from 'react-intl'
 import {
   Table,
   TableProps,
-  Drawer
+  Drawer,
+  Button,
+  showToast
 } from '@acx-ui/components'
+import { useSwitchActions }                        from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { parseSwitchVersion } from '../../../FirmwareUtils'
 
@@ -25,6 +29,7 @@ export interface VenueStatusDrawerProps {
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
+  const params = useParams()
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery()
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
@@ -46,6 +51,8 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       setSwitchList()
     }
   }, [props.data.id])
+
+  const switchAction = useSwitchActions()
 
   const columns: TableProps<SwitchFirmwareStatus>['columns'] = [
     {
@@ -79,6 +86,35 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Success' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
               $t({ defaultMessage: 'Firmware Update - Failed' })
+          }
+
+          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
+            return <div>
+              <Typography.Text
+                style={{ lineHeight: '24px' }}>
+                {fwMappings[row.status]}.
+              </Typography.Text>
+              <Button
+                size='small'
+                ghost={true}
+                style={{
+                  color: '#5496EA',
+                  padding: '0',
+                  marginLeft: '5px',
+                  marginBottom: '2px'
+                }}
+                onClick={() => {
+                  const switchId = row.switchId
+                  const callback = () => {
+                    showToast({
+                      type: 'success',
+                      content: $t({ defaultMessage: 'Start firmware upgrade retry' })
+                    })
+                  }
+                  switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
+                }}>
+                {$t({ defaultMessage: 'Retry' })}
+              </Button></div>
           }
           return fwMappings[row.status]
         }
