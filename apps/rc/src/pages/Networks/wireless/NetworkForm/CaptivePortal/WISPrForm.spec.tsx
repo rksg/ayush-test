@@ -118,7 +118,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.blur(hexKey)
     await userEvent.click(await screen.findByText('Generate'))
     await userEvent.click((await screen.findAllByTitle('WEP'))[0])
-    await userEvent.click((await screen.findAllByTitle('WPA3/WPA2 mixed mode'))[0])
+    await userEvent.click((await screen.findAllByTitle('WPA2/WPA3 mixed mode'))[0])
     const wpa2Pass = await screen.findByLabelText(/WPA2 Passphrase/)
     fireEvent.change(wpa2Pass, { target: { value: 'wpa233333333' } })
     fireEvent.blur(wpa2Pass)
