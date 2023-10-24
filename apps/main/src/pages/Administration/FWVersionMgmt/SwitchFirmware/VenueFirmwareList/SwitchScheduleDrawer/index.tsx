@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Tooltip, Typography } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Row, Tooltip, Typography } from 'antd'
+import { useIntl }                  from 'react-intl'
 
 import {
   Table,
@@ -14,6 +14,7 @@ import {
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 
+import { getNextScheduleTpl }                                                          from '../../../FirmwareUtils'
 import * as UI                                                                         from '../../../styledComponents'
 import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../SwitchUpgradeWizard/switch.upgrade.util'
 export interface SwitchScheduleDrawerProps {
@@ -33,7 +34,15 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     const switchList = (await getSwitchFirmwareStatusList({
       payload: { venueIdList: [props.data.id] }
     }, true)).data?.data
-    setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmware[])
+    if(switchList){
+      const venueDate = getNextScheduleTpl(intl, props.data)
+      const filterSwitchList = switchList.filter(row => {
+        const switchSchedule = getSwitchNextScheduleTpl(intl, row)
+        return switchSchedule !== venueDate
+      })
+      setSwitchFirmwareStatusList(filterSwitchList as unknown as SwitchFirmware[])
+    }
+
   }
 
   useEffect(() => {
@@ -79,10 +88,19 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     onClose={onClose}
     width={580}
     children={<>
-      <Typography.Text>
-        <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name} <br/>
-        {/* <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {props.data.name}  TODO****/}
-      </Typography.Text>
+
+      <Row style={{ lineHeight: '24px' }}>
+        <Typography.Text>
+          <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+        </Typography.Text>
+      </Row>
+      <Row style={{ lineHeight: '24px' }}>
+        <Typography.Text>
+          <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {
+            getNextScheduleTpl(intl, props.data)}
+        </Typography.Text>
+      </Row>
+
       <Table
         columns={columns}
         type={'tall'}
