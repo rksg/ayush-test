@@ -86,7 +86,7 @@ export const unsupportedAuthMethods = {
     <ul>
       <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li>
       <li>WEP encryption</li>
-      <li>WPA3/WPA2 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
+      <li>WPA2/WPA3 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
       <li>Captive portal</li>
       <li>Cloudpath</li>
       <li>DPSK</li>
