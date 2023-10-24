@@ -35,9 +35,8 @@ interface CodeMirrorWidgetProps {
 CodeMirror.defineMode('cliMode', function () {
   return {
     token: function (stream) {
-      if (stream.match(/password/gi) || stream?.string?.match(/password/gi)) {
-        stream.next()
-        return null
+      if (stream.match(/^\s+password\s+\S+/gi)) {
+        return 'bypass-validation'
       } else if (stream.match(/^\${[^{}]*}/)) {
         return 'variable'
       } else if (stream.match(/<([^>]*)>/)) {
