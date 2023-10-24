@@ -9,6 +9,8 @@ import { defaultSort, sortProp }                   from '@acx-ui/analytics/utils
 import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
 import { getIntl }                                 from '@acx-ui/utils'
 
+import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
+
 import {
   ImpactedSwitchPortRow,
   SwitchPortConnectedDevice,
@@ -27,15 +29,8 @@ export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
       if (!agg[key]) agg[key] = { ...row, key }
       return agg
     }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
-    const result = Object.values(filteredResponse)
-    const rows = result.map((item) => {
-      const vlans = item.mismatchedVlans
-        .concat(item.mismatchedUntaggedVlan || [])
-      return {
-        ...item,
-        mismatchedVlans: _.uniqBy(vlans, 'id').sort((a, b) => a.id - b.id)
-      }
-    })
+    const result = Object.values(filteredResponse).map((item, index) => ({ ...item, index }))
+    const rows = result.map(concatMismatchedVlans)
     return { ...response, data: rows }
   } })
   const [selected, setSelected] = useState(0)

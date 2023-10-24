@@ -22,19 +22,20 @@ interface ImpactedVlans {
   name: string
 }
 
+export function concatMismatchedVlans (item: ImpactedSwitchPortRow) {
+  const vlans = item.mismatchedVlans
+    .concat(item.mismatchedUntaggedVlan || [])
+  return {
+    ...item,
+    mismatchedVlans: _.uniqBy(vlans, 'id').sort((a, b) => a.id - b.id)
+  }
+}
+
 export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const { id, switchCount, vlanCount } = incident
   const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const rows = response.data?.map((item) => {
-      const vlans = item.mismatchedVlans
-        .concat(item.mismatchedUntaggedVlan || [])
-      return {
-        ...item,
-        mismatchedVlans: _.uniqBy(vlans, 'id').sort((a, b) => a.id - b.id)
-      }
-    })
-
+    const rows = response.data?.map(concatMismatchedVlans)
     return { ...response, rows }
   } })
 
