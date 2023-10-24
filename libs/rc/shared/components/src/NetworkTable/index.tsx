@@ -34,7 +34,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = intl.$t({ defaultMessage: 'WPA' })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2/WPA3 mixed mode' })
         break
       case WlanSecurityEnum.OWE:
         _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
