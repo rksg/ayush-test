@@ -53,7 +53,8 @@ export const EdgeDhcp = () => {
       'subnetMask',
       'poolRange',
       'gateway',
-      'edgeId'
+      'edgeId',
+      'utilization'
     ],
     filters: { edgeIds: [serialNumber] },
     sortField: 'name',
