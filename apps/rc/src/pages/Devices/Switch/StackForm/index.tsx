@@ -248,7 +248,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 !!switchDetail.cliApplied ||
-                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
           })
 
@@ -265,7 +266,7 @@ export function StackForm () {
           filters: {
             venueId: [venueId],
             isStack: [false],
-            deviceStatus: [SwitchStatusEnum.OPERATIONAL],
+            deviceStatus: [SwitchStatusEnum.OPERATIONAL, SwitchStatusEnum.FIRMWARE_UPD_FAIL],
             syncedSwitchConfig: [true],
             configReady: [true]
           },

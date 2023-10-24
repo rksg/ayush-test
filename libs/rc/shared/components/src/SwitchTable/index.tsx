@@ -369,7 +369,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
-      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+      const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      const isOperational = row.deviceStatus === SwitchStatusEnum.OPERATIONAL
+      return !(isOperational || isUpgradeFail)
     },
     onClick: async (rows) => {
       const row = rows[0]
@@ -396,7 +398,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+          row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
         return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
