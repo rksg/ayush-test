@@ -80,7 +80,8 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     width={580}
     children={<>
       <Typography.Text>
-        <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+        <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name} <br/>
+        {/* <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {props.data.name}  TODO****/}
       </Typography.Text>
       <Table
         columns={columns}
