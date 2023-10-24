@@ -51,10 +51,10 @@ export const SwitchVlanMismatch = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
           <ImpactedSwitchVLANsDetails incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
           <ImpactedSwitchVLANsTable incident={incident} />
         </GridCol>
       </GridRow>

@@ -1,7 +1,7 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Card, GridRow, Loader } from '@acx-ui/components'
+import { Card, Loader } from '@acx-ui/components'
 import {
   Switch,
   VLANIcon
@@ -93,7 +93,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      <GridRow>
+      <UI.SummaryWrapper>
         {impactedSwitches && impactedTypes.map((type, index) => {
           const items = type.data.slice(0, type.max)
           const remaining = type.data.length - items?.length
@@ -114,7 +114,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
             </UI.SummaryList>
           </UI.SummaryType>
         })}
-      </GridRow>
+      </UI.SummaryWrapper>
     </Card>
   </Loader>
 }

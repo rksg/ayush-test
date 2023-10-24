@@ -1,5 +1,10 @@
 import styled from 'styled-components'
 
+export const SummaryWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
 export const SummaryType = styled.div`
   display: flex;
   justify-content: center;
@@ -10,32 +15,43 @@ export const SummaryType = styled.div`
   &:not(:first-of-type) {
     border-left: 1px solid var(--acx-neutrals-30);
   }
-  padding-top: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 `
 
 export const Summary = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin-right: 20px;
 `
 
 export const SummaryCount = styled.div`
   font-size: var(--acx-headline-2-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
+  font-weight: var(--acx-headline-2-font-weight-bold);
   line-height: var(--acx-headline-2-line-height);
   font-family: var(--acx-accent-brand-font);
 `
 
 export const SummaryList = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   color: var(--acx-primary-black);
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
+  text-align: left;
   > div {
-    text-align: left;
-    > * { vertical-align: middle; }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    svg[width="32"] { margin-left: -2px; } // switch icon has extra space around
     span { margin-left: 6px; }
   }
-  > span { padding-left: 4px; }
+  > span {
+    line-height: 24px;
+    padding-left: 3px;
+  }
 `
 
 export const SummaryTitle = styled.div`

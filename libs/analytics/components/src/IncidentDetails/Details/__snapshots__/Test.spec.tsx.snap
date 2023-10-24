@@ -10156,6 +10156,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 129px;"
       >
         <div
           class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
@@ -10201,6 +10202,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 326px;"
       >
         <div
           data-testid="ImpactedSwitchVLANsTable"

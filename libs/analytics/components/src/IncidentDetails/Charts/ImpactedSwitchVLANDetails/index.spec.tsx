@@ -110,7 +110,7 @@ const response = {
   }
 }
 
-describe('ImpactedSwitchVLANsTable', () => {
+describe('ImpactedSwitchVLANDetails', () => {
   it('should render', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response })
     render(<ImpactedSwitchVLANsDetails
