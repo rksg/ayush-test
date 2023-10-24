@@ -99,6 +99,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         title: $t({ defaultMessage: 'Policy Set Membership' }),
         key: 'policySetCount',
         dataIndex: 'policySetCount',
+        align: 'center',
         sorter: true,
         render: (_, row) => {
           const policySets = row.policySetNames ?? []
