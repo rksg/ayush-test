@@ -5,7 +5,7 @@ import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { System, useSystems }                                     from '@acx-ui/analytics/services'
+import { System, SystemMap, useSystems }                          from '@acx-ui/analytics/services'
 import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
 import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
@@ -27,15 +27,15 @@ const label = defineMessage({ defaultMessage: 'APs Selection' })
 
 function checkSystem (
   node: NetworkNode,
-  systems: System[],
+  systemMap: SystemMap,
   requirements: DeviceRequirementsType
 ) {
-  const system = systems.find(sys => sys.deviceName === node.name)
-  return (system &&
+  const matchedSystems = systemMap[node.name]
+  const checkRequirement = (system: System) =>
     (system.onboarded || !_.isEmpty(node.children)) &&
-    meetVersionRequirements(requirements.requiredSZVersion, system.controllerVersion))
-    ? { type: node.type, name: node.name, deviceId: system.deviceId }
-    : false
+    meetVersionRequirements(requirements.requiredSZVersion, system.controllerVersion)
+  return (matchedSystems.length > 0 && matchedSystems.some(system => checkRequirement(system)))
+    ? { type: node.type, name: node.name } : false
 }
 
 function checkAP (
@@ -54,7 +54,7 @@ function transformSANetworkHierarchy (
 ) : CascaderOption[] {
   return nodes.map(node => {
     const path = [
-      ...parentPath, { type: node.type, name: node.deviceId ?? node.mac ?? node.name }
+      ...parentPath, { type: node.type, name: node.mac ?? node.name }
     ] as PathNode[]
     return{
       label: `${node.name} (${nodeTypes(node.type)})` as string,
@@ -67,18 +67,18 @@ function transformSANetworkHierarchy (
 }
 
 function filterSANetworkHierarchy (
-  nodes: NetworkNode[], systems: System[], requirements: DeviceRequirementsType
+  nodes: NetworkNode[], systemMap: SystemMap, requirements: DeviceRequirementsType
 ) {
   return _.sortBy(nodes.reduce((agg, node) => {
     const formattedNode = (node.type as string === 'ap')
       ? checkAP(node, requirements)
       : (node.type === 'system')
-        ? checkSystem(node, systems, requirements)
+        ? checkSystem(node, systemMap, requirements)
         : { type: node.type, name: node.name }
     formattedNode && agg.push({
       ...formattedNode,
       ...(node.children && {
-        children: filterSANetworkHierarchy(node.children, systems, requirements)
+        children: filterSANetworkHierarchy(node.children, systemMap, requirements)
       })
     } as NetworkNode)
     return agg
@@ -100,7 +100,7 @@ function useSANetworkHierarchy () {
         ...rest,
         data: { ...defaultNetworkPath[0], children: filterSANetworkHierarchy(
           data?.children ?? [],
-          systems.data?.networkNodes ?? [],
+          systems.data ?? {},
           deviceRequirements[
             form.getFieldValue(ClientType.fieldName) as keyof typeof deviceRequirements
           ] as DeviceRequirementsType)
@@ -180,15 +180,8 @@ APsSelection.label = label
 APsSelection.FieldSummary = function APsSelectionFieldSummary () {
   const { $t } = useIntl()
   const response = useOptions()
-  const systems = useSystems()
   const convert = (value: unknown) => {
-    const paths = (value as NetworkPaths).map(path =>
-      path.map(node => node.type === 'system'
-        ? { ...node,
-          name: (systems.data?.networkNodes ?? [])
-            .find(sys => sys.deviceId === node.name)?.deviceName
-        } : node)) as NetworkPaths
-
+    const paths = value as NetworkPaths
     const nodes = paths
       .filter(isNetworkNodes)
       .map(path => get('IS_MLISA_SA')
