@@ -75,7 +75,8 @@ function SwitchPageHeader () {
   const { data: switchDetail } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
-  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+    switchDetailHeader?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
@@ -251,7 +252,9 @@ function SwitchPageHeader () {
       <PageHeader
         title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
         titleExtra={
-          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
+          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow}
+            showText={!currentSwitchOperational ||
+              (switchDetailHeader.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL)} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },
