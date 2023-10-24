@@ -223,7 +223,17 @@ describe('Property Unit Page', () => {
     await waitFor(async () => await screen.findByRole('columnheader', { name: /Access Point/i }))
   })
 
-  it('should support Suspend, View Portal, Delete actions', async () => {
+  it('should support Suspend, View Portal, Delete, Resend actions', async () => {
+    const spyNotifyFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.notifyPropertyUnits.url,
+        (_, res, ctx) => {
+          spyNotifyFn()
+          return res(ctx.json({}))
+        })
+    )
+
     render(<Provider><VenuePropertyTab /></Provider>, {
       route: {
         params,
@@ -255,11 +265,19 @@ describe('Property Unit Page', () => {
     // 'View Portal' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /view portal/i }))
+    await screen.findByRole('textbox')
 
     // 'Delete' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /delete/i }))
     await userEvent.click(await screen.findByRole('button', { name: /delete unit/i }))
+    await screen.findByRole('textbox')
+
+    // 'Resend' Unit action
+    await userEvent.click(firstRow)
+    await userEvent.click(await screen.findByRole('button', { name: /resend/i }))
+    await waitFor(() => expect(spyNotifyFn).toHaveBeenCalled())
+    await screen.findByText(/The unit assignment SMS/i)
 
     // Make sure clearSelection() be called
     await waitFor(async () => await screen.findByRole('textbox'))

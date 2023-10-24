@@ -69,7 +69,11 @@ export interface Network {
   captiveType: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  activated: {
+     isActivated: boolean,
+     isDisabled?: boolean,
+      errors?: string[]
+    }
   allApDisabled?: boolean
   children?: Network[]
   dsaeOnboardNetwork?: Network

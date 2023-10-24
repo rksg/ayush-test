@@ -44,7 +44,6 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -338,10 +337,10 @@ export function useMenuConfig () {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            ...(isCloudMoteEnabled ? [{
+            {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
-            }] : []),
+            },
             ...(isRadiusClientEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })

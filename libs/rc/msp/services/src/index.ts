@@ -97,6 +97,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
+            'DeleteMspEc',
             'UpdateMspEc',
             'Deactivate MspEc',
             'Reactivate MspEc',
@@ -124,6 +125,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
+            'DeleteMspEc',
             'UpdateMspEc',
             'Deactivate MspEc',
             'Reactivate MspEc',
