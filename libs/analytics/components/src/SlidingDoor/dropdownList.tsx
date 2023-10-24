@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Menu } from 'antd'
-
 import {  DropdownFooter }   from './dropdownFooter'
 import { DropdownHeader }    from './dropdownHeader'
 import { ListItemComponent } from './dropdownListItem'
@@ -32,10 +30,10 @@ export const DropdownList: React.FC<DropdownListProps> = ({
   onBack,
   onBreadcrumbClick,
   animation
-}) => (
-  <UI.StyledMenu>
-    <Menu.Item key='1'>
-      <UI.StyledList
+}) => {
+  const items = [
+    {
+      label: <UI.StyledList
         split={false}
         header={
           <DropdownHeader
@@ -56,7 +54,12 @@ export const DropdownList: React.FC<DropdownListProps> = ({
             onClick={onSelect}
           />
         )}
-      />
-    </Menu.Item>
-  </UI.StyledMenu>
-)
+      />,
+      key: '1'
+    }
+  ]
+  return <UI.StyledMenu
+    items={items}
+  />
+}
+
