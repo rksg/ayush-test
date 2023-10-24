@@ -66,6 +66,7 @@ export interface PersonaSwitch {
 export interface PersonaDevice {
   macAddress: string,
   personaId: string,
+  online?: boolean,
   recentStatus?: string,
   hasMacRegistered?: boolean,     // detect whether the device is connected by MAC auth or not (Persona service provided)
   hasDpskRegistered?: boolean,    // detect whether the device is connected by DPSK passphrase or not (DPSK service provided)
