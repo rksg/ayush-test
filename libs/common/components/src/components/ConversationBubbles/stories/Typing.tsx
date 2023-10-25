@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { Conversation, content } from '..'
 
 
@@ -21,9 +23,11 @@ export function Typing () {
     { type: 'bot', contentList: fulfillmentMessages }
   ]
 
-  return <Conversation
-    content={content}
-    classList='conversation'
-    isReplying={true}
-    style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  return <BrowserRouter>
+    <Conversation
+      content={content}
+      classList='conversation'
+      isReplying={true}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  </BrowserRouter>
 }

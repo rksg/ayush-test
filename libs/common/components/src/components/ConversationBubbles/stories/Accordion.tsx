@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { Conversation, content } from '..'
 
 
@@ -53,11 +55,13 @@ export function Withaccordion () {
     { type: 'bot', contentList: fulfillmentMessagesWithAccordion }
   ]
 
-  return <Conversation
-    content={content}
-    classList='conversation'
-    isReplying={false}
-    style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  return <BrowserRouter>
+    <Conversation
+      content={content}
+      classList='conversation'
+      isReplying={false}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  </BrowserRouter>
 }
 
 

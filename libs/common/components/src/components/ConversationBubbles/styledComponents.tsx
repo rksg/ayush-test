@@ -1,6 +1,16 @@
 import { Collapse as AntdCollapse } from 'antd'
 import styled                       from 'styled-components/macro'
 
+import { Button as AcxButton } from '../Button'
+
+export const Button = styled(AcxButton)`
+  text-wrap: wrap;
+  margin-top: 16px;
+  text-align: left;
+  height: auto !important;
+  width: 377px !important;
+`
+
 export const Collapse = styled(AntdCollapse)`
   width: 416px;
   border: 1px solid #E3E4E5;
