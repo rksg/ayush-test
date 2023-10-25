@@ -11,7 +11,7 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { devicePolicyListResponse } from '../../__tests__/fixtures'
+import { devicePolicyDetailResponse, devicePolicyListResponse } from '../../__tests__/fixtures'
 
 import DeviceOSDrawer from './index'
 
@@ -86,55 +86,9 @@ const queryDeviceUpdate = [
   }
 ]
 
-const deviceDetail = {
-  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-  name: 'device1-another',
-  defaultAccess: 'ALLOW',
-  rules: [
-    {
-      name: 'vlan101',
-      action: 'ALLOW',
-      deviceType: 'Tablet',
-      osVendor: 'Ios'
-    },
-    {
-      name: 'rule_f',
-      action: 'ALLOW',
-      deviceType: 'Smartphone',
-      osVendor: 'Ios',
-      downloadRateLimit: 107.7,
-      uploadRateLimit: 200,
-      vlan: 12
-    }
-  ],
-  id: 'fdd2bc421cb445daac8937dbb2366f5e'
-}
-
-const deviceResponse = {
+const addDevicePolicyResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
-  response: {
-    tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-    name: 'device1-another',
-    defaultAccess: 'ALLOW',
-    rules: [
-      {
-        name: 'vlan101',
-        action: 'ALLOW',
-        deviceType: 'Laptop',
-        osVendor: 'All'
-      },
-      {
-        name: 'rule_f',
-        action: 'ALLOW',
-        deviceType: 'Smartphone',
-        osVendor: 'Ios',
-        downloadRateLimit: 107.7,
-        uploadRateLimit: 200,
-        vlan: 12
-      }
-    ],
-    id: '173f4a0aa7da4711804b065dcec2c6a4'
-  }
+  response: devicePolicyDetailResponse
 }
 
 jest.mock('antd', () => {
@@ -203,7 +157,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => {
-          return res(ctx.json(deviceResponse))
+          return res(ctx.json(addDevicePolicyResponse))
         }
       ))
 
@@ -267,7 +221,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -314,7 +268,7 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -370,14 +324,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDeviceUpdate)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -422,14 +376,14 @@ describe('DeviceOSDrawer Component setting II', () => {
   it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
     mockServer.use(
       rest.get(
-        AccessControlUrls.getDevicePolicy.url,
+        AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(
           ctx.json(queryDevice)
         )
       ), rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -490,14 +444,14 @@ describe('DeviceOSDrawer Component setting II', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -547,14 +501,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with Printer & HpPrinter', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -598,14 +552,14 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   it('Render DeviceOSDrawer component successfully with IotDevice & NextCamera', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -660,14 +614,14 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -711,14 +665,14 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   it('Render DeviceOSDrawer component successfully with WdsDevice & TelenetCpe', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicy.url,
+      AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceResponse)
+        ctx.json(addDevicePolicyResponse)
       )
     ))
 
@@ -776,7 +730,7 @@ describe('DeviceOSDrawer Component', () => {
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceResponse)
+          ctx.json(addDevicePolicyResponse)
         )
       ))
 
@@ -861,7 +815,7 @@ describe('DeviceOSDrawer Component', () => {
     ), rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(deviceDetail)
+        ctx.json(devicePolicyDetailResponse)
       )
     ))
 

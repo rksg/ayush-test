@@ -283,7 +283,7 @@ export const networkListResponse = {
   ]
 }
 
-export const deviceDetailResponse = {
+export const devicePolicyDetailResponse = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
   name: 'device1-another',
   defaultAccess: 'ALLOW',
