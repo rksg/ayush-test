@@ -173,7 +173,7 @@ export default function Dashboard () {
           </>
         ]}
       />
-      <DashboardView />
+      <DashboardView key={startDate + endDate + range} />
     </>
   )
 }
