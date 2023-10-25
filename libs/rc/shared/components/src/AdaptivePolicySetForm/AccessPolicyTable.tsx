@@ -34,7 +34,7 @@ type DragItemProps = {
   name: string
 }
 
-const AccessPolicyTable = (props: AccessPolicyTableProps) => {
+export const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const { editMode, accessPolicies, setAccessPolicies } = props
@@ -229,5 +229,3 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     </Loader>
   )
 }
-
-export default AccessPolicyTable

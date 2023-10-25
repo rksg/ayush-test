@@ -1,108 +1,104 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent       from '@testing-library/user-event'
+import { Form, Input } from 'antd'
+import { rest }        from 'msw'
 
-import { RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within }         from '@acx-ui/test-utils'
+import { RulesManagementUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { adaptivePolicyList, attributeList, templateList, groupList, mockGroup } from './__test__/fixtures'
-import { AdaptivePolicyFormDrawer }                                              from './AdaptivePolicyFormDrawer'
+import { AdaptivePolicyFormDrawer } from './AdaptivePolicyFormDrawer'
 
+const requiredFormItem = () => <>
+  <Form.Item
+    name='templateTypeId'
+    initialValue='templateTypeId'
+    children={<Input />}
+  />
+  <Form.Item
+    name='evaluationRules'
+    initialValue={['testRule']}
+    children={<Input />}
+  />
+</>
+
+jest.mock('../AdaptivePolicySettingForm', () => ({
+  AdaptivePolicySettingForm: () => (
+    <>
+      <div data-testid='AdaptivePolicySettingForm' />
+      {requiredFormItem()}
+    </>
+  )
+}))
+
+const mockedSetVisible = jest.fn()
+const createPolicyBeingCalled = jest.fn()
+const addConditionsBeingCalled = jest.fn()
 
 describe('AdaptivePolicyFormDrawer', () => {
-  const mockedCloseDialog = jest.fn()
-
   beforeEach(() => {
+    mockedSetVisible.mockClear()
+    createPolicyBeingCalled.mockClear()
+    addConditionsBeingCalled.mockClear()
+
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(attributeList))
-      ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(templateList))
+      rest.post(
+        RulesManagementUrlsInfo.createPolicy.url,
+        (req, res, ctx) => {
+          createPolicyBeingCalled()
+          return res(ctx.json({ id: 'testId' }))
+        }
       ),
       rest.post(
-        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
-      ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(templateList))
-      ),
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-        (req, res, ctx) => res(ctx.json(mockGroup))
+        RulesManagementUrlsInfo.addConditions.url,
+        (req, res, ctx) => {
+          addConditionsBeingCalled()
+          return res(ctx.status(202))
+        }
       )
     )
   })
 
-  it.skip('should add new policy successfully', async () => {
-    mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(groupList))
-      ),
-      rest.post(
-        RulesManagementUrlsInfo.createPolicy.url,
-        (req, res, ctx) => res(ctx.json({
-          id: 'policy_id'
-        }))
-      ),
-      rest.post(
-        RulesManagementUrlsInfo.addConditions.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
+  it('should render AdaptivePolicyFormDrawer successfully', async () => {
 
     render(
       <Provider>
         <AdaptivePolicyFormDrawer
-          setVisible={mockedCloseDialog}
+          setVisible={mockedSetVisible}
           visible={true}/>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenant-id' },
-          path: '/:tenantId'
-        }
-      }
+      </Provider>
     )
 
-    // set policy name
-    await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Policy Name' }), 'testPolicy'
-    )
-
-    // select policy type
-    await userEvent.click(await screen.findByRole('radio', { name: /RADIUS/i }))
-
-    // add condition
-    let addBtns = await screen.findAllByText('Add')
-    await userEvent.click(addBtns[0])
-
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Condition Type' }))
-    await userEvent.click(await screen.findByText('NAS Identifier (Regex)'))
-    const inputs = await screen.findAllByRole('textbox')
-    expect(inputs).toHaveLength(5)
-    await userEvent.type(inputs[4], 'testValue')
-
-    addBtns = await screen.findAllByText('Add')
-    await userEvent.click(addBtns[2])
-    await screen.findByRole('row', { name: new RegExp('NAS Identifier') })
-
-    // select group
-    await userEvent.click(screen.getByText('Select Group'))
-    await screen.findByText('Select RADIUS Attribute Group')
-
-    const row = await screen.findByRole('row', { name: new RegExp(groupList.content[0].name) })
-    fireEvent.click(within(row).getByRole('radio'))
-    await userEvent.click(screen.getByText('Select'))
-
-    await screen.findByText('group1')
-
-    await userEvent.click(addBtns[1])
-
-    await screen.findByText('Policy testPolicy was added')
+    expect(screen.getByText('Add Adaptive Policy')).toBeVisible()
+    expect(screen.getByTestId('AdaptivePolicySettingForm')).toBeVisible()
   })
 
+  it('should add adaptive policy successfully', async () => {
+
+    render(
+      <Provider>
+        <AdaptivePolicyFormDrawer
+          setVisible={mockedSetVisible}
+          visible={true}/>
+      </Provider>
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(createPolicyBeingCalled).toBeCalled())
+    await waitFor(() => expect(addConditionsBeingCalled).toBeCalled())
+    await waitFor(() => expect(mockedSetVisible).toBeCalled())
+  })
+
+  it('should cancel adaptive policy successfully', async () => {
+
+    render(
+      <Provider>
+        <AdaptivePolicyFormDrawer
+          setVisible={mockedSetVisible}
+          visible={true}/>
+      </Provider>
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(mockedSetVisible).toBeCalled())
+  })
 })

@@ -1,16 +1,11 @@
-import React from 'react'
-
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
-
 
 import { Drawer, showToast }                                         from '@acx-ui/components'
 import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
 import { PersonaGroup }                                              from '@acx-ui/rc/utils'
 
-import { PersonaGroupForm } from '../PersonaGroupForm'
-
-
+import { PersonaGroupForm } from './PersonaGroupForm'
 
 interface PersonaGroupDrawerProps {
   isEdit: boolean,

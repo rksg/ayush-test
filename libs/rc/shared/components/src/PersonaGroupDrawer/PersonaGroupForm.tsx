@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
@@ -6,7 +6,7 @@ import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, DpskSaveData, PersonaGroup, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
+import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
 
 import { DpskForm }                   from '../DpskForm/DpskForm'
 import { MacRegistrationListForm }    from '../MacRegistrationListForm'

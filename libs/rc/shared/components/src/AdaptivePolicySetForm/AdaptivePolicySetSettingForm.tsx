@@ -12,7 +12,7 @@ import {
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 
-import AccessPolicyTable from './AccessPolicyTable'
+import { AccessPolicyTable } from './AccessPolicyTable'
 
 interface AdaptivePolicySetSettingFormProps {
   editMode?: boolean
