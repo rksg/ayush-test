@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Card, Tooltip, ColorPill }           from '@acx-ui/components'
+import { Loader, Card }                               from '@acx-ui/components'
 import { GoogleMeets, Teams, Webex, Workplace, Zoom } from '@acx-ui/icons'
 import { TenantLink }                                 from '@acx-ui/react-router-dom'
 
@@ -11,7 +11,7 @@ type InsightType = {
   id: number,
   metric: string,
   icon: JSX.Element,
-  value: JSX.Element
+  latency: string
 }
 
 export function AppInsights () {
@@ -23,68 +23,63 @@ export function AppInsights () {
   const subtitle = $t({
     defaultMessage: 'Empower yourself to proactively enhance user experience for pivotal apps.' })
 
-  const Insights = [
+  const Insights = [ // static data
     {
       name: 'Microsoft Teams',
       id: 1,
       metric: 'Overall QoE Score',
-      icon: <Teams />
+      icon: <Teams />,
+      latency: '10ms'
     },
     {
       name: 'Zoom',
       id: 2,
       metric: 'Overall QoE Score',
-      icon: <Zoom />
+      icon: <Zoom />,
+      latency: '20ms'
     },
     {
       name: 'Cisco WebEx',
       id: 3,
       metric: 'Overall QoE Score',
-      icon: <Webex />
+      icon: <Webex />,
+      latency: '30ms'
     },
     {
       name: 'Google Meet',
       id: 4,
       metric: 'Overall QoE Score',
-      icon: <GoogleMeets />
+      icon: <GoogleMeets />,
+      latency: '40ms'
     },
     {
       name: 'Workplace',
       id: 5,
       metric: 'Overall QoE Score',
       icon: <Workplace />,
-      value: <ColorPill
-        color='var(--acx-accents-orange-50)'
-        value='80'
-      />
+      latency: '50ms'
     }
   ]
 
   return <Loader>
     <Card title={title} subTitle={subtitle}>
+      <UI.Button
+        type='primary'
+      >
+        {$t({ defaultMessage: 'Get started now!' })}
+      </UI.Button>
       <UI.List
         dataSource={Insights}
         renderItem={item => {
           const insight = item as InsightType
-          const { name, metric, id, icon, value } = insight
-          return <UI.List.Item key={id}>
-            <TenantLink to={`/appInsights/${id}`}>
-              <Tooltip
-                placement='top'
-                title={$t(
-                  { defaultMessage: '{name}' },
-                  { name }
-                )}
-              >
-                <UI.List.Item.Meta
-                  avatar={icon}
-                  title={name}
-                  description={metric}
-                >
-                  {value}
-                  <div>test</div>
-                </UI.List.Item.Meta>
-              </Tooltip>
+          const { name, metric, id, icon, latency } = insight
+          return <UI.List.Item key={id} actions={[latency]}>
+            <TenantLink to={''}>
+              <UI.List.Item.Meta
+                avatar={icon}
+                title={name}
+                description={metric}
+              />
             </TenantLink>
           </UI.List.Item>
         }}
