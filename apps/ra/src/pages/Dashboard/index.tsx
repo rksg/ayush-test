@@ -78,7 +78,7 @@ const DashboardView = () => {
   const height = useMonitorHeight(536)
   const { filters, pathFilters } = useDashBoardUpdatedFilters()
   const userProfile = getUserProfile()
-  const enableAppInsights = !useIsSplitOn(Features.APP_INSIGHTS)
+  const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation =
     userProfile.selectedTenant.permissions[
       PERMISSION_MANAGE_CONFIG_RECOMMENDATION
