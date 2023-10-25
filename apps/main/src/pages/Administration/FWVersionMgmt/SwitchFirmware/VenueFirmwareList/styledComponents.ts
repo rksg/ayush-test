@@ -1,7 +1,9 @@
 import { Form } from 'antd'
 import styled   from 'styled-components/macro'
 
-import { Button } from '@acx-ui/components'
+import { Button, StepsForm } from '@acx-ui/components'
+
+import { SwitchFirmwareWizardType } from './SwitchUpgradeWizard'
 
 export const DateContainer = styled.div`
   height: auto;
@@ -70,6 +72,15 @@ export const ValidateField = styled(Form.Item)`
   .ant-form-item-control-input{
     display: none;
   }
+`
+
+export const SwitchFirmwareStepsForm = styled(StepsForm)<{ wizardtype: SwitchFirmwareWizardType }>`
+    ${(props) => (props.wizardtype === SwitchFirmwareWizardType.skip ? `
+    [class*="styledComponents__ActionsContainer"]{
+      display: flex;
+      justify-content: flex-end;
+    }
+    ` : '')}
 `
 
 export const ExpanderTableWrapper = styled.div`

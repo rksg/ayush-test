@@ -24,6 +24,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { getReleaseFirmware } from '../../../FirmwareUtils'
+import * as UI                from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
@@ -85,6 +86,12 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
     [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Update Schedule' }),
     [SwitchFirmwareWizardType.skip]: $t({ defaultMessage: 'Skip Updates' })
+  }
+
+  const wizardSubmitButton = {
+    [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Run Update' }),
+    [SwitchFirmwareWizardType.schedule]: $t({ defaultMessage: 'Save' }),
+    [SwitchFirmwareWizardType.skip]: $t({ defaultMessage: 'Skip' })
   }
 
   const wizardWidth = {
@@ -174,9 +181,11 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     mask={true}
     width={wizardWidth[wizardType]}
     children={
-      <StepsForm
+      <UI.SwitchFirmwareStepsForm
+        wizardtype={wizardType}
         form={form}
         editMode={false}
+        buttonLabel={{ submit: wizardSubmitButton[wizardType] }}
         onCancel={()=>{
           form.resetFields()
           props.setVisible(false)}}
@@ -264,7 +273,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             }
           </StepsForm.StepForm>
         }
-      </StepsForm>
+      </UI.SwitchFirmwareStepsForm>
     }
   />
 }
