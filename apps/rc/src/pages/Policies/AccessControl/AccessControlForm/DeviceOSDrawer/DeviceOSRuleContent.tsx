@@ -269,6 +269,31 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
               defaultMessage: 'Please select the OS or Manufacturer option'
             }))
           }
+          if (isNewOsVendorFeatureEnabled && deviceOSRuleList.length >= 30) {
+            if (value === OsVendorEnum.PlayStation) {
+              if (deviceOSRuleList.length === 30 &&
+                deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              return Promise.reject($t({
+                defaultMessage: 'Must reserve 2 additional rule slots for PlayStation'
+              }))
+            }
+            if (value === OsVendorEnum.Xbox) {
+              if (deviceOSRuleList.length === 30 &&
+                // eslint-disable-next-line max-len
+                deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              return Promise.reject($t({
+                defaultMessage: 'Must reserve 1 additional rule slot for Xbox'
+              }))
+            }
+          }
           return Promise.resolve()
         }
         }

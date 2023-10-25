@@ -126,21 +126,16 @@ jest.mock('antd', () => {
 })
 
 const selectOptionSet = async (device: string, vendor: string) => {
-  await screen.findByRole('option', { name: 'Select...' })
+  await screen.findByRole('combobox', { name: 'Device Type' })
 
-  await userEvent.selectOptions(
-    screen.getAllByRole('combobox')[1],
-    screen.getByRole('option', { name: device })
-  )
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Device Type' }), device)
 
   expect(screen.queryByRole('option', { name: device })).toBeVisible()
 
   await screen.findByRole('option', { name: vendor })
 
-  await userEvent.selectOptions(
-    screen.getAllByRole('combobox')[2],
-    screen.getByRole('option', { name: vendor })
-  )
+  // eslint-disable-next-line max-len
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'OS or Manufacturer' }), vendor)
 
   expect(screen.queryByRole('option', { name: vendor })).toBeVisible()
 }
@@ -726,6 +721,7 @@ describe('DeviceOSDrawer Component', () => {
         ctx.json(devicePolicyListResponse)
       )
     ))
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 
   it('Render DeviceOSDrawer component successfully', async () => {
@@ -810,6 +806,8 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   it('Render DeviceDrawer component successfully with max number of rules validation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
@@ -861,9 +859,40 @@ describe('DeviceOSDrawer Component', () => {
 
     expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
 
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    expect(screen.queryByText(/please select the device type option/i)).toBeNull()
+
+    expect(screen.queryByText(/please select the os or manufacturer option/i)).toBeNull()
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation/i)).not.toBeNull()
+
+    await selectOptionSet('Gaming', 'Xbox')
+
+    await screen.findByRole('option', { name: 'Xbox' })
+
+    expect(await screen.findByText(/must reserve 1 additional rule slot for Xbox/i)).not.toBeNull()
+
+    await userEvent.click(screen.getAllByText('Cancel')[1])
+
     await userEvent.click(screen.getAllByText('Cancel')[0])
 
-    expect(await screen.findByText('Rules (0)')).toBeInTheDocument()
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {
