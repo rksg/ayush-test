@@ -283,6 +283,7 @@ export { ReactComponent as VenueMarkerGreen } from './icons/VenueMarkerGreen.svg
 export { ReactComponent as VenueMarkerGrey } from './icons/VenueMarkerGrey.svg'
 export { ReactComponent as VenueMarkerOrange } from './icons/VenueMarkerOrange.svg'
 export { ReactComponent as VenueMarkerRed } from './icons/VenueMarkerRed.svg'
+export { ReactComponent as VLANIcon } from './icons/VLANIcon.svg'
 export { ReactComponent as VoIpOutlined } from './icons/VoIpOutlined.svg'
 export { ReactComponent as WarningCircleOutlined } from './icons/WarningCircleOutlined.svg'
 export { ReactComponent as WarningCircleSolid } from './icons/WarningCircleSolid.svg'

@@ -33,6 +33,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -202,7 +203,7 @@ export const VenueFirmwareTable = (
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
       render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
+        return toUserDate(row.lastScheduleUpdateTime || noDataDisplay)
       }
     },
     {
