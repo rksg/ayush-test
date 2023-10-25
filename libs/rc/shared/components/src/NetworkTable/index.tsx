@@ -34,7 +34,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = intl.$t({ defaultMessage: 'WPA' })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2/WPA3 mixed mode' })
         break
       case WlanSecurityEnum.OWE:
         _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
@@ -116,7 +116,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         }else{
           return (
             row?.isOnBoarded
-              ? <span>{row.venues?.count || 0}</span>
+              ? <span>{row.venues?.count || noDataDisplay}</span>
               : <TenantLink
                 to={`/networks/wireless/${row.id}/network-details/venues`}
                 children={row.venues?.count ? row.venues?.count : 0}
@@ -138,7 +138,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         }else{
           return (
             row?.isOnBoarded
-              ? <span>{row.aps}</span>
+              ? <span>{row.aps || noDataDisplay}</span>
               : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
                 {row.aps}
               </TenantLink>
@@ -151,7 +151,12 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: false, // API does not seem to be working
-      align: 'center'
+      align: 'center',
+      render: (_, row) => {
+        return row?.isOnBoarded ?
+          row.clients || noDataDisplay
+          : row.clients
+      }
     },
     // { TODO: Wait for Services
     //   key: 'services',

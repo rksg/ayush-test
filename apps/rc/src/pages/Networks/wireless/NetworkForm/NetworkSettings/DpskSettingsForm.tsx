@@ -84,11 +84,17 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue({ ...data })
   },[data])
+
+  useEffect(() => {
+    if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
+      form.setFieldValue('isCloudpathEnabled', false)
+  }, [dpskWlanSecurity])
+
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
 
   // eslint-disable-next-line max-len
-  const securityDescription = <> { $t({ defaultMessage: 'WPA3/WPA2 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA3/WPA2 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
+  const securityDescription = <> { $t({ defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA2/WPA3 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -108,7 +114,7 @@ function SettingsForm () {
               { $t({ defaultMessage: 'WPA' }) }</Option>
             {
               isWpaDsae3Toggle && <Option value={WlanSecurityEnum.WPA23Mixed}>
-                { $t({ defaultMessage: 'WPA3/WPA2 mixed mode' }) }</Option>
+                { $t({ defaultMessage: 'WPA2/WPA3 mixed mode' }) }</Option>
             }
           </Select>
         </Form.Item>
