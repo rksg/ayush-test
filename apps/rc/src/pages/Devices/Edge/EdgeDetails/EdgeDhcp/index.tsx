@@ -48,11 +48,13 @@ export const EdgeDhcp = () => {
     fields: [
       'id',
       'dhcpId',
+      'poolId',
       'poolName',
       'subnetMask',
       'poolRange',
       'gateway',
-      'edgeIds'
+      'edgeId',
+      'utilization'
     ],
     filters: { edgeIds: [serialNumber] },
     sortField: 'name',

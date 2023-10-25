@@ -82,6 +82,33 @@ export const recommendationListResult = {
       ] as NetworkPath
     },
     {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'revertscheduled',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        error: {
+          details: [{
+            apName: 'AP',
+            apMac: 'MAC',
+            configKey: 'radio5g',
+            message: 'unknown error'
+          }]
+        }
+      },
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz611' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
       id: '2',
       code: 'c-txpower-same',
       status: 'revertfailed',
