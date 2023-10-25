@@ -23,7 +23,7 @@ import * as UI from '../../styledComponents'
 
 import { PreDownload } from './PreDownload'
 
-import type { DatePickerProps  } from 'antd'
+import type { DatePickerProps }  from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
 
 export interface ScheduleStepProps {
@@ -37,32 +37,14 @@ export interface ScheduleStepProps {
   upgradeSwitchList: SwitchFirmware[]
 }
 
-
-export enum SamePropertyValueEnum {
-  IS_DIFFERENT
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getSamePropertyValue (objectArray: any[], propertyKey: string) {
-  const allCheckedAreSame =
-    _.every(objectArray, obj => obj[propertyKey] === objectArray[0][propertyKey])
-
-  if (allCheckedAreSame) {
-    return objectArray[0][propertyKey]
-  } else {
-    return SamePropertyValueEnum.IS_DIFFERENT
-  }
-}
-
 export function ScheduleStep (props: ScheduleStepProps) {
-  const { $t } = useIntl()
   const intl = useIntl()
   const { form } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
     hasVenue, upgradeVenueList, upgradeSwitchList } = props
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
-  const [selectedDate, setSelectedDate] = useState('')
-  const [selectedTime, setSelectedTime] = useState<string>('')
+  const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
 
   const getCurrentChecked = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -78,9 +60,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
       return upgradeVenueList.length === 1 ?
         upgradeVenueList[0].nextSchedule : upgradeSwitchList[0].switchNextSchedule
     }
-
-    return {
-    } as switchSchedule
+    return {} as switchSchedule
   }
 
   const currentSchedule = getCurrentSchedule()
@@ -92,20 +72,18 @@ export function ScheduleStep (props: ScheduleStepProps) {
     if (currentSchedule?.timeSlot?.startDateTime) {
       getCurrentScheduleDateAndTime(currentSchedule?.timeSlot?.startDateTime)
     } else {
-      setSelectedDate('')
-      setSelectedTime('')
       form.setFieldValue('selectDateStep', '')
       form.setFieldValue('selectTimeStep', '')
+      setHasSelectedDate(false)
     }
 
     setSelectedVersion(currentScheduleVersion || '')
-    // eslint-disable-next-line max-len
     setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
     form.setFieldValue('switchVersion', currentScheduleVersion)
     form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
+    form.setFieldValue('preDonloadChecked', getCurrentChecked())
 
-  }, [currentSchedule, currentScheduleVersion,
-    currentScheduleVersionAboveTen])
+  }, [upgradeVenueList, upgradeSwitchList])
 
   const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
     aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
@@ -120,7 +98,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
         firmwareAvailableVersions?.push({
           id: currentScheduleVersion,
           name: currentScheduleVersion,
-          category: FirmwareCategory.REGULAR } as FirmwareVersion)
+          category: FirmwareCategory.REGULAR
+        } as FirmwareVersion)
       }
     }
     return firmwareAvailableVersions
@@ -130,7 +109,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
     const dateAndTime = startTime.split('T')
 
     if (dateAndTime?.length === 2) {
-      setSelectedDate(dateAndTime[0])
+      setHasSelectedDate(true)
       form.setFieldValue('selectDateStep', moment(dateAndTime[0]))
 
       const timeZoneKeyWords = ['-', '+', 'Z']
@@ -146,7 +125,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
             scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
           }
 
-          setSelectedTime(scheduleStartTime)
           form.setFieldValue('selectTimeStep', scheduleStartTime)
           break
         }
@@ -169,18 +147,17 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const startDate = dayjs().endOf('day')
   const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-  // Can not select days before today and today
+    // Can not select days before today and today
     return current && (current < startDate || current > endDate)
   }
 
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    setSelectedDate(dateString)
-    form.setFieldValue('selectDateStep', moment(dateString))
+  const onChange: DatePickerProps['onChange'] = (date) => {
+    setHasSelectedDate(true)
+    form.setFieldValue('selectDateStep', date)
     form.validateFields(['selectDateStep'])
   }
 
   const onChangeRegular = (e: RadioChangeEvent) => {
-    setSelectedTime(e.target.value)
     form.setFieldValue('selectTimeStep', e.target.value)
     form.validateFields(['selectTimeStep'])
   }
@@ -189,7 +166,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setChecked(checked)
     form.setFieldValue('preDonloadChecked', checked)
   }
-
 
   return (
     <div
@@ -208,9 +184,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
                   const switchVersion = form.getFieldValue('switchVersion')
                   if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
-                    return Promise.reject('Please select at least 1 version.')
+                    return Promise.reject(
+                      intl.$t({ defaultMessage: 'Please select at least 1 version.' }))
                   }
-
                   return Promise.resolve()
                 }
               }
@@ -220,9 +196,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
           />
           {(hasVenue || icx8200Count > 0) && <>
             <Subtitle level={4}>
-              {$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
               &nbsp;
-              ({icx8200Count} {$t({ defaultMessage: 'switches' })})
+              ({icx8200Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
@@ -234,7 +210,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       {getSwitchVersionLabel(intl, v)}</Radio>)}
                 <Radio value='' key='0'>
-                  {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                  {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
             </Radio.Group>
@@ -242,9 +218,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
           {(hasVenue || nonIcx8200Count > 0) &&
             <UI.Section>
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Firmware available for ICX 7150/7550/7650/7850 Series' })}
+                {intl.$t({
+                  defaultMessage:
+                    'Firmware available for ICX 7150/7550/7650/7850 Series'
+                })}
                 &nbsp;
-                ({nonIcx8200Count} {$t({ defaultMessage: 'switches' })})
+                ({nonIcx8200Count} {intl.$t({ defaultMessage: 'switches' })})
               </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
@@ -256,7 +235,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
                         {getSwitchVersionLabel(intl, v)}</Radio>)}
                   <Radio value='' key='0'>
-                    {$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                    {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
                 </Space>
               </Radio.Group>
@@ -266,37 +245,35 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
       </Form.Item>
       <Subtitle level={4}>
-        {$t({ defaultMessage: 'When do you want the update to run?' })}
+        {intl.$t({ defaultMessage: 'When do you want the update to run?' })}
       </Subtitle>
-      {
-        <UI.TitleActive>
-          {$t({
-            defaultMessage: 'Venue\'s local time-zone is applied to the selection below.'
-          })}
-        </UI.TitleActive>}
+      {<UI.TitleActive>
+        {intl.$t({
+          defaultMessage: 'Venue\'s local time-zone is applied to the selection below.'
+        })}
+      </UI.TitleActive>}
 
       <Form.Item
-        label={'Update date:'}
+        label={intl.$t({ defaultMessage: 'Update date:' })}
         name='selectDateStep'
+        validateFirst
         rules={[
           { required: true }
         ]}
-        validateFirst
         children={
           <DatePicker
             showToday={false}
+            allowClear={false}
             disabledDate={disabledDate}
             onChange={onChange}
           />
         }
       />
 
-
-      {selectedDate &&
+      {hasSelectedDate &&
         <Form.Item
           name='selectTimeStep'
-          initialValue={selectedTime}
-          label={$t({ defaultMessage: 'Update time:' })}
+          label={intl.$t({ defaultMessage: 'Update time:' })}
           rules={[
             { required: true }
           ]}

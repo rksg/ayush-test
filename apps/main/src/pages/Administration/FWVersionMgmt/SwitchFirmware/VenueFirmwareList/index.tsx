@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react'
 
-
 import { Tooltip, Typography } from 'antd'
 import * as _                  from 'lodash'
 import { useIntl }             from 'react-intl'
@@ -79,10 +78,8 @@ export const VenueFirmwareTable = (
   const [clickedSwitchScheduleData, setClickedSwitchScheduleData] =
       useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
 
-
   const [wizardType, setWizardType] =
     useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
-
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -193,7 +190,7 @@ export const VenueFirmwareTable = (
               setClickedUpdateStatusData(row)
               setUpdateStatusDrawerVisible(true)
             }}>
-            Check Status
+            {$t({ defaultMessage: 'Check Status' })}
           </Button></div>
       }
     },
@@ -255,7 +252,6 @@ export const VenueFirmwareTable = (
     selectedRows.forEach((row: FirmwareSwitchVenue) => {
       const version = row.switchFirmwareVersion?.id
       const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-      // eslint-disable-next-line max-len
       removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions)
     })
     return filterVersions?.length > 0
@@ -420,17 +416,3 @@ const removeCurrentVersionsAnd10010IfNeeded = (version: string,
     return v.id === version || v.id === rodanVersion
   })
 }
-
-function checkCurrentVersions (version: string,
-  rodanVersion: string,
-  filterVersions: FirmwareVersion[]): FirmwareVersion[] {
-  let inUseVersions = [] as FirmwareVersion[]
-  filterVersions.forEach((v: FirmwareVersion) => {
-    if (v.id === version || v.id === rodanVersion) {
-      v = { ...v, inUse: true }
-    }
-    inUseVersions.push(v)
-  })
-  return inUseVersions
-}
-

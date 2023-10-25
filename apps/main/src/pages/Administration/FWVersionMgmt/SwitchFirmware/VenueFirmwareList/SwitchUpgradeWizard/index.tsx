@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import { Form }    from 'antd'
 import _           from 'lodash'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
@@ -27,7 +28,6 @@ import { getReleaseFirmware } from '../../../FirmwareUtils'
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
 import { UpdateNowStep }    from './UpdateNowStep'
-import moment from 'moment'
 
 
 export enum SwitchFirmwareWizardType {
@@ -80,7 +80,6 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
   const [hasVenue, setHasVenue] = useState<boolean>(false)
   const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
   const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenue[]>([])
-
 
   const wizardTitle = {
     [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
@@ -161,7 +160,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             console.log(error) // eslint-disable-line no-console
           }
         },
-        onCancel () { }
+        onCancel () {}
       })
 
     }
@@ -227,7 +226,6 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             _.filter(props.data, obj =>
               selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
 
-
             setUpgradeSwitchList(currentUpgradeSwitchList)
             setUpgradeVenueList(currentUpgradeVenueList)
             setHasVenue(selectedVenueRowKeys.length > 0)
@@ -235,7 +233,6 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             setNonIcx8200Count(nonIcx8200Count)
             setIcx8200Count(icx8200Count)
             return true
-
           }}
         >
           <SelectSwitchStep data={props.data as FirmwareSwitchVenue[]} />
@@ -265,12 +262,9 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                   icx8200Count={icx8200Count}
                 />
             }
-
           </StepsForm.StepForm>
         }
-
       </StepsForm>
-
     }
   />
 }

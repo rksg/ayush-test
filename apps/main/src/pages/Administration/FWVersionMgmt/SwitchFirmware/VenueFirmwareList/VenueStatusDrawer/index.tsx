@@ -30,6 +30,7 @@ export interface VenueStatusDrawerProps {
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
   const params = useParams()
+  const switchAction = useSwitchActions()
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery()
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
@@ -47,12 +48,11 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   }
 
   useEffect(() => {
-    if(props.data.id){
+    if (props.data.id) {
       setSwitchList()
     }
-  }, [props.data.id])
+  }, [props.data])
 
-  const switchAction = useSwitchActions()
 
   const columns: TableProps<SwitchFirmwareStatus>['columns'] = [
     {

@@ -77,7 +77,12 @@ function useColumns () {
         return (!isSwitchNextScheduleTooltipDisabled(row)
           ? getNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+          : <Tooltip
+            title={
+              <UI.ScheduleTooltipText>
+                {getSwitchNextScheduleTplTooltip(row)}
+              </UI.ScheduleTooltipText>}
+            placement='bottom'>
             <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
           </Tooltip>
         )
@@ -131,7 +136,7 @@ export const SelectSwitchStep = (
       dataIndex: 'switchName',
       defaultSortOrder: 'ascend'
     }, {
-      title: 'Model',
+      title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
       dataIndex: 'model'
     }, {
@@ -162,11 +167,14 @@ export const SelectSwitchStep = (
       key: 'switchNextSchedule',
       dataIndex: 'model',
       render: function (_, row) {
-        // return getNextScheduleTpl(intl, row)
-        return (!enableSwitchScheduleTooltip(row) //disabledSwitchItemNextScheduleTooltip
+        return (!enableSwitchScheduleTooltip(row)
           ? getSwitchNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchScheduleTpl(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+          : <Tooltip
+            title={
+              <UI.ScheduleTooltipText>
+                {getSwitchScheduleTpl(row)}
+              </UI.ScheduleTooltipText>}
+            placement='bottom'>
             <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
           </Tooltip>
         )
@@ -183,7 +191,7 @@ export const SelectSwitchStep = (
       const switchList = record.id
         ? (await getSwitchList({
           params: { tenantId: tenantId }, payload: switchListPayload
-        }, true)).data?.data//.filter((v) => v.venueId === record.id)
+        }, true)).data?.data
         : []
 
       const hasSelectedVenue = selectedVenueRowKeys.includes(record.id)
@@ -222,7 +230,6 @@ export const SelectSwitchStep = (
     form.setFieldsValue({ selectedSwitchRowKeys, selectedVenueRowKeys, nestedData })
   }, [selectedSwitchRowKeys, selectedVenueRowKeys, nestedData])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
     return <Table<SwitchFirmware>
       columns={switchColumns}
@@ -331,7 +338,7 @@ export const SelectSwitchStep = (
               const selectedSwitches = form.getFieldValue('selectedSwitchRowKeys')
               const selectedVenues = form.getFieldValue('selectedVenueRowKeys')
               if(_.isEmpty(selectedVenues) && _.isEmpty(selectedSwitches)){
-                return Promise.reject('Please select at least 1 item')
+                return Promise.reject(intl.$t({ defaultMessage: 'Please select at least 1 item' }))
               }
 
               return Promise.resolve()
@@ -367,7 +374,7 @@ export const SelectSwitchStep = (
           rowKey='switchId'
           rowSelection={{
             type: 'checkbox',
-            selectedRowKeys: selectedSearchSwitchRowKeys,//selectedSwitchRowKeys[record.id],
+            selectedRowKeys: selectedSearchSwitchRowKeys,
             onChange: (selectedKeys, selectedRows) => {
               const addedSwitch = _.difference(selectedKeys, selectedSearchSwitchRowKeys)
               const deletedSwitch = _.difference(selectedSearchSwitchRowKeys, selectedKeys)
@@ -506,116 +513,115 @@ export const SelectSwitchStep = (
           }}
         /></div>}
 
-      {_.isEmpty(searchText) &&<SwitchUI.ExpanderTableWrapper>
-        <Table
-          columns={columns}
-          enableResizableColumn={false}
-          type={'tall'}
-          dataSource={data}
-          expandable={{
-            onExpand: handleExpand,
-            expandedRowRender: expandedRowRenderFunc,
-            rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
-          }}
-          // onChange={tableQuery.handleTableChange}
-          // onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-          rowKey='id'
-          rowSelection={{
-            type: 'checkbox',
-            selectedRowKeys: selectedVenueRowKeys,
-            getCheckboxProps: record => ({
-              indeterminate: isIndeterminate(record),
-              name: record.name
-            }),
-            onChange: (selectedKeys) => {
-              const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
-              const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
+      {
+        _.isEmpty(searchText) && <SwitchUI.ExpanderTableWrapper>
+          <Table
+            columns={columns}
+            enableResizableColumn={false}
+            type={'tall'}
+            dataSource={data}
+            expandable={{
+              onExpand: handleExpand,
+              expandedRowRender: expandedRowRenderFunc,
+              rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
+            }}
+            enableApiFilter={true}
+            rowKey='id'
+            rowSelection={{
+              type: 'checkbox',
+              selectedRowKeys: selectedVenueRowKeys,
+              getCheckboxProps: record => ({
+                indeterminate: isIndeterminate(record),
+                name: record.name
+              }),
+              onChange: (selectedKeys) => {
+                const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
+                const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
 
-              if (addedVenue.length == 1) {
-                const selectedAllSwitchList = nestedData[addedVenue[0]]?.initialData || []
-                const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
-
-                setNestedData({
-                  ...nestedData,
-                  [addedVenue[0]]: {
-                    initialData: selectedAllSwitchList,
-                    selectedData: selectedAllSwitchList
-                  }
-                })
-
-                setSelectedSwitchRowKeys({
-                  ...selectedSwitchRowKeys,
-                  [addedVenue[0]]: selectedAllSwitchIds
-                })
-
-
-              } else if (addedVenue.length > 1) {
-                let newNestedData = {} as {
-                [key: string]: {
-                  initialData: SwitchFirmware[],
-                  selectedData: SwitchFirmware[]
-                }
-              }
-                let newSelectedSwitchRowKeys = {} as {
-                [key: string]: Key[]
-              }
-                addedVenue.forEach((venue) => {
-                  const selectedAllSwitchList = nestedData[venue]?.initialData || []
+                if (addedVenue.length == 1) {
+                  const selectedAllSwitchList = nestedData[addedVenue[0]]?.initialData || []
                   const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
-                  newNestedData[venue] = {
-                    initialData: selectedAllSwitchList,
-                    selectedData: selectedAllSwitchList
-                  }
 
-                  newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
-                })
+                  setNestedData({
+                    ...nestedData,
+                    [addedVenue[0]]: {
+                      initialData: selectedAllSwitchList,
+                      selectedData: selectedAllSwitchList
+                    }
+                  })
 
-                setNestedData(newNestedData)
-                setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                  setSelectedSwitchRowKeys({
+                    ...selectedSwitchRowKeys,
+                    [addedVenue[0]]: selectedAllSwitchIds
+                  })
 
 
-              } else if (deletedVenue.length === 1) {
-                const selectedAllSwitchList = nestedData[deletedVenue[0]]?.initialData || []
-                setNestedData({
-                  ...nestedData,
-                  [deletedVenue[0]]: {
-                    initialData: selectedAllSwitchList,
-                    selectedData: []
-                  }
-                })
-
-                setSelectedSwitchRowKeys({
-                  ...selectedSwitchRowKeys,
-                  [deletedVenue[0]]: []
-                })
-
-              } else if (deletedVenue.length > 1) {
-                let newNestedData = {} as {
+                } else if (addedVenue.length > 1) {
+                  let newNestedData = {} as {
                 [key: string]: {
                   initialData: SwitchFirmware[],
                   selectedData: SwitchFirmware[]
                 }
               }
-                let newSelectedSwitchRowKeys = {} as {
+                  let newSelectedSwitchRowKeys = {} as {
                 [key: string]: Key[]
               }
-                deletedVenue.forEach((venue) => {
-                  newNestedData[venue] = {
-                    initialData: nestedData[venue]?.initialData || [],
-                    selectedData: []
-                  }
-                  newSelectedSwitchRowKeys[venue] = []
-                })
-                setNestedData(newNestedData)
-                setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
-              }
+                  addedVenue.forEach((venue) => {
+                    const selectedAllSwitchList = nestedData[venue]?.initialData || []
+                    const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
+                    newNestedData[venue] = {
+                      initialData: selectedAllSwitchList,
+                      selectedData: selectedAllSwitchList
+                    }
 
-              setSelectedVenueRowKeys(selectedKeys)
-              form.validateFields()
-            }
-          }}
-        /></SwitchUI.ExpanderTableWrapper>}
+                    newSelectedSwitchRowKeys[venue] = selectedAllSwitchIds
+                  })
+
+                  setNestedData(newNestedData)
+                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+
+
+                } else if (deletedVenue.length === 1) {
+                  const selectedAllSwitchList = nestedData[deletedVenue[0]]?.initialData || []
+                  setNestedData({
+                    ...nestedData,
+                    [deletedVenue[0]]: {
+                      initialData: selectedAllSwitchList,
+                      selectedData: []
+                    }
+                  })
+
+                  setSelectedSwitchRowKeys({
+                    ...selectedSwitchRowKeys,
+                    [deletedVenue[0]]: []
+                  })
+
+                } else if (deletedVenue.length > 1) {
+                  let newNestedData = {} as {
+                [key: string]: {
+                  initialData: SwitchFirmware[],
+                  selectedData: SwitchFirmware[]
+                }
+              }
+                  let newSelectedSwitchRowKeys = {} as {
+                [key: string]: Key[]
+              }
+                  deletedVenue.forEach((venue) => {
+                    newNestedData[venue] = {
+                      initialData: nestedData[venue]?.initialData || [],
+                      selectedData: []
+                    }
+                    newSelectedSwitchRowKeys[venue] = []
+                  })
+                  setNestedData(newNestedData)
+                  setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
+                }
+
+                setSelectedVenueRowKeys(selectedKeys)
+                form.validateFields()
+              }
+            }}
+          /></SwitchUI.ExpanderTableWrapper>}
     </>
   )
 }
