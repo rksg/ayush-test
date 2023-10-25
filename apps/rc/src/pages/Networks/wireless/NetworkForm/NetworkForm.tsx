@@ -11,7 +11,7 @@ import {
   useDeleteNetworkVenuesMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -99,7 +99,7 @@ export default function NetworkForm (props:{
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
@@ -389,17 +389,8 @@ export default function NetworkForm (props:{
     if (removed.length) {
       await deleteNetworkVenues({ payload: removed }).unwrap()
     }
-
-
     if (update.length) {
-      // ToDo: wait for backend support the updateNetworkVenues API
-      // await updateNetworkVenues({ payload: update }).unwrap()
-
-      update.forEach(networkVenue => {
-        updateNetworkVenue({ params: {
-          networkVenueId: networkVenue.id
-        }, payload: networkVenue }).unwrap()
-      })
+      await updateNetworkVenues({ payload: update }).unwrap()
     }
   }
 
