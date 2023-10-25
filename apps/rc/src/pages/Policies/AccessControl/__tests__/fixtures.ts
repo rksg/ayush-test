@@ -307,6 +307,207 @@ export const devicePolicyDetailResponse = {
   id: 'fdd2bc421cb445daac8937dbb2366f5e'
 }
 
+export const devicePolicyDetailWith32RulesResponse = {
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  name: '32 Rules w/o New Gaming Rules',
+  defaultAccess: 'ALLOW',
+  rules: [
+    {
+      name: 'Block Dell (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'DellPrinter'
+    },
+    {
+      name: 'Block Brother (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'BrotherPrinter'
+    },
+    {
+      name: 'Block Epson (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'EpsonPrinter'
+    },
+    {
+      name: 'Block Nest Camera',
+      action: 'BLOCK',
+      deviceType: 'IotDevice',
+      osVendor: 'NestCamera'
+    },
+    {
+      name: 'Block Nest Thermostat',
+      action: 'BLOCK',
+      deviceType: 'IotDevice',
+      osVendor: 'NestThermostat'
+    },
+    {
+      name: 'Block Wemo Smart Switch',
+      action: 'BLOCK',
+      deviceType: 'IotDevice',
+      osVendor: 'WemoSmartSwitch'
+    },
+    {
+      name: 'Block Wi-Fi Smart Plug',
+      action: 'BLOCK',
+      deviceType: 'IotDevice',
+      osVendor: 'WifiSmartPlug'
+    },
+    {
+      name: 'Block Windows',
+      action: 'BLOCK',
+      deviceType: 'Laptop',
+      osVendor: 'Windows'
+    },
+    {
+      name: 'Block macOS',
+      action: 'BLOCK',
+      deviceType: 'Laptop',
+      osVendor: 'MacOs'
+    },
+    {
+      name: 'Block ChromeOS',
+      action: 'BLOCK',
+      deviceType: 'Laptop',
+      osVendor: 'ChromeOs'
+    },
+    {
+      name: 'Block Linux',
+      action: 'BLOCK',
+      deviceType: 'Laptop',
+      osVendor: 'Linux'
+    },
+    {
+      name: 'Block Ubuntu',
+      action: 'BLOCK',
+      deviceType: 'Laptop',
+      osVendor: 'Ubuntu'
+    },
+    {
+      name: 'Block iOS',
+      action: 'BLOCK',
+      deviceType: 'Smartphone',
+      osVendor: 'Ios'
+    },
+    {
+      name: 'Block Android',
+      action: 'BLOCK',
+      deviceType: 'Smartphone',
+      osVendor: 'Android'
+    },
+    {
+      name: 'Block BlackBerry',
+      action: 'BLOCK',
+      deviceType: 'Smartphone',
+      osVendor: 'BlackBerry'
+    },
+    {
+      name: 'Block Windows (Smartphone)',
+      action: 'BLOCK',
+      deviceType: 'Smartphone',
+      osVendor: 'Windows'
+    },
+    {
+      name: 'Block iOS (Tablet)',
+      action: 'BLOCK',
+      deviceType: 'Tablet',
+      osVendor: 'Ios'
+    },
+    {
+      name: 'Block Amazon Kindle',
+      action: 'BLOCK',
+      deviceType: 'Tablet',
+      osVendor: 'AmazonKindle'
+    },
+    {
+      name: 'Block Android (Tablet)',
+      action: 'BLOCK',
+      deviceType: 'Tablet',
+      osVendor: 'Android'
+    },
+    {
+      name: 'Block Windows (Tablet)',
+      action: 'BLOCK',
+      deviceType: 'Tablet',
+      osVendor: 'Windows'
+    },
+    {
+      name: 'Block Cisco (VoIP)',
+      action: 'BLOCK',
+      deviceType: 'Voip',
+      osVendor: 'CiscoIpPhone'
+    },
+    {
+      name: 'Block Avaya (VoIP)',
+      action: 'BLOCK',
+      deviceType: 'Voip',
+      osVendor: 'AvayaIpPhone'
+    },
+    {
+      name: 'Block LinksysPapVoip',
+      action: 'BLOCK',
+      deviceType: 'Voip',
+      osVendor: 'LinksysPapVoip'
+    },
+    {
+      name: 'Block Nortel',
+      action: 'BLOCK',
+      deviceType: 'Voip',
+      osVendor: 'NortelIpPhone'
+    },
+    {
+      name: 'Block GameCube',
+      action: 'BLOCK',
+      deviceType: 'Gaming',
+      osVendor: 'GameCube'
+    },
+    {
+      name: 'Block Wii',
+      action: 'BLOCK',
+      deviceType: 'Gaming',
+      osVendor: 'Wii'
+    },
+    {
+      name: 'Block Nintendo',
+      action: 'BLOCK',
+      deviceType: 'Gaming',
+      osVendor: 'Nintendo'
+    },
+    {
+      name: 'Block HP (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'HpPrinter'
+    },
+    {
+      name: 'Block Canon (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'CanonPrinter'
+    },
+    {
+      name: 'Block Xerox (Printer)',
+      action: 'BLOCK',
+      deviceType: 'Printer',
+      osVendor: 'XeroxPrinter'
+    },
+    {
+      name: 'Block SonyPlayer',
+      action: 'BLOCK',
+      deviceType: 'HomeAvEquipment',
+      osVendor: 'SonyPlayer'
+    },
+    {
+      name: 'Block AppleTv',
+      action: 'BLOCK',
+      deviceType: 'HomeAvEquipment',
+      osVendor: 'AppleTv'
+    }
+  ],
+  id: '2788474403774ba4959c06c7a1db71ec'
+}
+
 export const avcCat = [
   {
     catName: 'Web',

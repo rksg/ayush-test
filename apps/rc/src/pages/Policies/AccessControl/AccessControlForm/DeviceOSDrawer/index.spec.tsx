@@ -6,12 +6,15 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { AccessControlUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { AccessControlUrls }                  from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { devicePolicyDetailResponse, devicePolicyListResponse } from '../../__tests__/fixtures'
+import {
+  devicePolicyDetailResponse,
+  devicePolicyDetailWith32RulesResponse,
+  devicePolicyListResponse } from '../../__tests__/fixtures'
 
 import DeviceOSDrawer from './index'
 
@@ -804,6 +807,63 @@ describe('DeviceOSDrawer Component', () => {
     ))
 
     expect(await screen.findByRole('option', { name: 'device1-another' })).toBeInTheDocument()
+  })
+
+  it('Render DeviceDrawer component successfully with max number of rules validation', async () => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyDetailWith32RulesResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'device2' })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'device3' })
+    )
+
+    await userEvent.click(screen.getByText(/edit details/i))
+
+    await screen.findByText(/rules \(32\)/i)
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
+    await userEvent.click(within(screen.getAllByRole('row')[1]).getByRole('radio'))
+
+    await screen.findByText(/1 selected/i)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    await screen.findByRole('button', { name: 'Delete Rule' })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Rule' }))
+
+    await screen.findByText(/rules \(31\)/i)
+
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(await screen.findByText('Rules (0)')).toBeInTheDocument()
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {
