@@ -120,7 +120,7 @@ export const mockDhcpPoolStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '1',
-      edgeIds: '1',
+      edgeId: '1',
       dhcpId: '1',
       poolName: 'TestPool1',
       subnetMask: '255.255.255.0',

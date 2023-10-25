@@ -34,7 +34,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
     if(props.edgeId) {
       localQuery.setPayload({
         ...localQuery.payload,
-        filters: { edgeIds: [props.edgeId] }
+        filters: { edgeId: [props.edgeId] }
       })
     }
   }, [props.edgeId])
