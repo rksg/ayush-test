@@ -62,7 +62,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !centralizeForwardingEnabled
+          disabled: !isEdgeEnabled || !isEdgeReady || !centralizeForwardingEnabled
         }
       ]
     },

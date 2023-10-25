@@ -38,6 +38,10 @@ jest.mock('@acx-ui/rc/components', () => ({
 jest.mock('@acx-ui/main/components', () => ({
   VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
 }))
+
+jest.mock('@acx-ui/main/components', () => ({
+  VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
+}))
 /* eslint-enable */
 
 jest.mock(

@@ -1,6 +1,7 @@
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   firmwareTypeTrans,
   FirmwareCategory,
@@ -153,7 +154,7 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
 
 export const toUserDate = (date: string): string => {
   if (date) {
-    return getDateByFormat(date, 'MM/DD/YYYY hh:mm A')
+    return formatter(DateFormatEnum.DateTimeFormatWith12HourSystem)(date)
   }
   return date
 }
