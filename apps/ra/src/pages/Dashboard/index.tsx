@@ -160,7 +160,7 @@ export default function Dashboard () {
     endDate,
     range,
     setDateFilterState
-    } = useDashBoardUpdatedFilters()
+  } = useDashBoardUpdatedFilters()
 
   return (
     <>
@@ -183,7 +183,7 @@ export default function Dashboard () {
           </>
         ]}
       />
-      <DashboardView  filters={filters} pathFilters={pathFilters} />
+      <DashboardView filters={filters} pathFilters={pathFilters} />
     </>
   )
 }
