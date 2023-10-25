@@ -63,9 +63,7 @@ export function AppInsights () {
 
   return <Loader>
     <Card title={title} subTitle={subtitle}>
-      <UI.Button
-        type='primary'
-      >
+      <UI.Button type='primary'>
         {$t({ defaultMessage: 'Get started now!' })}
       </UI.Button>
       <UI.List
@@ -74,7 +72,7 @@ export function AppInsights () {
           const insight = item as InsightType
           const { name, metric, id, icon, latency } = insight
           return <UI.List.Item key={id} actions={[latency]}>
-            <TenantLink to={''}>
+            <TenantLink to={''} style={{ pointerEvents: 'none' }}> {/* currently disable click events */}
               <UI.List.Item.Meta
                 avatar={icon}
                 title={name}
