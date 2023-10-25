@@ -7,6 +7,7 @@ import { useSwitchDetailHeaderQuery }                                   from '@a
 import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { UseQueryResult }                                               from '@acx-ui/types'
 import { hasAccess }                                                    from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                            from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
 import { SwitchConfigurationTab }   from './SwitchConfigurationTab'
@@ -39,14 +40,12 @@ export const SwitchDetailsContext = createContext({} as {
   setSwitchDetailsContextData: (data: SwitchDetails) => void
 })
 
-export const SWITCH_POLLING_INTERVAL = 180_000 // TODO: check
-
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
   const [ switchDetailsContextData, setSwitchDetailsContextData ] = useState({} as SwitchDetails)
   const switchDetailHeaderQuery = useSwitchDetailHeaderQuery({
     params: { tenantId, switchId, serialNumber } }, {
-    pollingInterval: SWITCH_POLLING_INTERVAL
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
   const { data: switchDetailHeader } = switchDetailHeaderQuery
 

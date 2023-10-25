@@ -26,10 +26,10 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { SwitchDetailsContext }    from '..'
-import { SWITCH_POLLING_INTERVAL } from '../../SwitchDetails'
-import { useSwitchFilter }         from '../switchFilter'
+import { SwitchDetailsContext } from '..'
+import { useSwitchFilter }      from '../switchFilter'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -56,7 +56,7 @@ export function SwitchOverviewTab () {
       fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
         'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
       filters: { activeUnitId: [params.serialNumber] } } },
-  { skip: !switchDetailHeader, pollingInterval: SWITCH_POLLING_INTERVAL })
+  { skip: !switchDetailHeader, pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL })
 
   const navigate = useNavigate()
   const basePath = useTenantLink(
@@ -76,8 +76,10 @@ export function SwitchOverviewTab () {
 
   useEffect(() => {
     if(switchDetail) {
-      const _currentSwitchDevice: NetworkDevice = { ...switchDetail,
-        networkDeviceType: NetworkDeviceType.switch } as NetworkDevice
+      const _currentSwitchDevice: NetworkDevice = {
+        ...switchDetail,
+        networkDeviceType: NetworkDeviceType.switch
+      } as NetworkDevice
       switchDetail.position = {
         floorplanId: switchDetail?.floorplanId,
         xPercent: switchDetail?.xPercent,
