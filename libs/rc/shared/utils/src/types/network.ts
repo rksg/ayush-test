@@ -157,3 +157,11 @@ export interface Regions{
     };
   }
 }
+
+export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
+  visible: boolean,
+  network?: NetworkSaveData | null,
+  //wlan?: NetworkSaveData['wlan'],
+  networkVenue?: NetworkVenue,
+  venueName?: string
+}

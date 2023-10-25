@@ -550,7 +550,8 @@ export default function NetworkForm (props:{
                     intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                   onFinish={handleOnboarding}
                 >
-                  {pickOneCaptivePortalForm(saveState)}
+                  {!!(saveState?.guestPortal?.guestNetworkType) &&
+                      pickOneCaptivePortalForm(saveState)}
                 </StepsFormLegacy.StepForm>
             }
             { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
@@ -623,7 +624,8 @@ export default function NetworkForm (props:{
                     intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                   onFinish={handleOnboarding}
                 >
-                  {pickOneCaptivePortalForm(saveState)}
+                  {!!(saveState?.guestPortal?.guestNetworkType) &&
+                      pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
             }
             {editMode &&
@@ -661,22 +663,21 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
   if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
     return false
   }
+  const portalWebTypes = [
+    GuestNetworkTypeEnum.ClickThrough,
+    GuestNetworkTypeEnum.SelfSignIn,
+    GuestNetworkTypeEnum.GuestPass,
+    GuestNetworkTypeEnum.HostApproval
+  ]
 
-  switch (saveState.guestPortal?.guestNetworkType) {
-    case GuestNetworkTypeEnum.ClickThrough:
-    case GuestNetworkTypeEnum.SelfSignIn:
-    case GuestNetworkTypeEnum.GuestPass:
-    case GuestNetworkTypeEnum.HostApproval:
-      return true
-    default:
-      // eslint-disable-next-line no-console
-      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
-      return false
-  }
+  // eslint-disable-next-line max-len
+  const guestNetworkType = saveState.guestPortal?.guestNetworkType
+  return !!(guestNetworkType && portalWebTypes.includes(guestNetworkType))
 }
 
 function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
-  switch (saveState?.guestPortal?.guestNetworkType) {
+  const guestNetworkType = saveState?.guestPortal?.guestNetworkType
+  switch (guestNetworkType) {
     case GuestNetworkTypeEnum.ClickThrough:
       return <OnboardingForm />
     case GuestNetworkTypeEnum.SelfSignIn:
