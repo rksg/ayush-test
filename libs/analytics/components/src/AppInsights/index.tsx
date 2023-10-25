@@ -7,10 +7,10 @@ import { TenantLink }                                 from '@acx-ui/react-router
 import * as UI from './styledComponents'
 
 type InsightType = {
-  name: string,
-  id: number,
-  metric: string,
-  icon: JSX.Element,
+  name: string
+  id: number
+  metric: string
+  icon: JSX.Element
   latency: string
 }
 
