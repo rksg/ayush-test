@@ -19,16 +19,24 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
+export interface AnchorLayoutProps {
+  items: AnchorPageItem[],
+  /**
+   * Pixels to offset from top when calculating position of scroll
+   */
+  offsetTop?: number,
+  /**
+   *  Wait for ready state before scrolling to anchor link
+   */
+  waitForReady?: boolean
+}
+
 export const AnchorContext = createContext({} as {
   readyToScroll: string[],
   setReadyToScroll: Dispatch<SetStateAction<string[]>>
 })
 
-export const AnchorLayout = ({ items, offsetTop = 0, waitForReady = false } : {
-  items: AnchorPageItem[],
-  offsetTop?: number,
-  waitForReady?: boolean
-}) => {
+export const AnchorLayout = ({ items, offsetTop = 0, waitForReady = false }: AnchorLayoutProps) => {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
   const location = useLocation()
