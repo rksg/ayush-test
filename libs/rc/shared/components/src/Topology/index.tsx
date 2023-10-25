@@ -456,7 +456,6 @@ export function TopologyGraph (props:{ venueId?: string,
   function onNodeClick () {
     const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
-    console.log(svg, allnodes)
 
     allnodes
       .on('click',function (d: any, node: any){
