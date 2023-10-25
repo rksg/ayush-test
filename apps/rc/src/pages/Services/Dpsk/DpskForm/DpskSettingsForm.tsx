@@ -4,7 +4,8 @@ import {
   Select,
   InputNumber,
   Radio,
-  Space
+  Space,
+  Button
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
@@ -23,7 +24,8 @@ import {
   DeviceNumberType,
   unlimitedNumberOfDeviceLabel
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                    from '@acx-ui/utils'
 
 import { NEW_MAX_DEVICES_PER_PASSPHRASE, OLD_MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
@@ -148,7 +150,9 @@ function CloudpathFormItems () {
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const navigate = useNavigate()
   const policySetId = Form.useWatch<string>('policySetId', form)
+  const adaptivePolicySetsPath = useTenantLink('/policies/adaptivePolicySet/list')
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
   const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
@@ -215,17 +219,32 @@ function CloudpathFormItems () {
         />
         {isPolicyManagementEnabled &&
           <>
-            <Form.Item
-              name='policySetId'
-              label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-              rules={[{ required: false }]}
-            >
-              <Select style={{ width: 200 }}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                allowClear
-                options={policySetOptions}
-              />
-            </Form.Item>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <Form.Item
+                name='policySetId'
+                label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                rules={[{ required: false }]}
+              >
+                <Select style={{ width: 200 }}
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  allowClear
+                  options={policySetOptions}
+                />
+              </Form.Item>
+              <Button
+                type='link'
+                style={{ marginLeft: '8px', top: '0.25rem' }}
+                onClick={async () => {
+                  navigate(adaptivePolicySetsPath)
+                }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            </div>
+
             {policySetId &&
               <Form.Item
                 name='policyDefaultAccess'
