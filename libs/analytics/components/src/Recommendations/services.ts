@@ -135,7 +135,7 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
   const { $t } = getIntl()
   let errorMessage = metadata.error?.message
   let tooltipKey = 'tooltip'
-  if (metadata.error?.details) {
+  if (state.includes('failed') && metadata.error?.details) {
     tooltipKey = 'tooltipPartial'
     errorMessage = metadata.error?.details
       .map(item => $t(defineMessage({

@@ -13,9 +13,9 @@ import {
   ServiceGuardTestGuard,
   ServiceGuardDetails
 } from '@acx-ui/analytics/components'
-import { setUserProfile, PERMISSION_VIEW_ANALYTICS, getUserProfile }     from '@acx-ui/analytics/utils'
-import { showToast }                                                     from '@acx-ui/components'
-import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { updateSelectedTenant, PERMISSION_VIEW_ANALYTICS, getUserProfile } from '@acx-ui/analytics/utils'
+import { showToast }                                                       from '@acx-ui/components'
+import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH }   from '@acx-ui/react-router-dom'
 
 import ClientDetails                         from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum }         from './pages/Clients'
@@ -36,10 +36,10 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
-  setUserProfile(getUserProfile())
+  const [ search ] = useSearchParams()
+  updateSelectedTenant()
   const { invitations, selectedTenant } = getUserProfile()
   const { id, permissions } = selectedTenant
-  const [ search ] = useSearchParams()
   const previousURL = search.get('return')!
   useEffect(() => {
     if (invitations.length > 0 /*|| tenants.length > 1*/) {

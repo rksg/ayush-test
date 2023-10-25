@@ -245,7 +245,9 @@ export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
     online: true,
     lastConnected: '06/15/2023 03:24 AM',
     lastConnectedNetwork: 'test',
-    devicePassphrase: 'a%sdfa@gw342r3f'
+    devicePassphrase: 'a%sdfa@gw342r3f',
+    deviceConnectivity: 'CONNECTED',
+    lastConnectedTime: '2023-10-17T08:39:42.73776Z'
   }
 ]
 

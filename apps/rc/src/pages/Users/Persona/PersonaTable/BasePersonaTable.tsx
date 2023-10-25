@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
   CsvSize,
@@ -49,6 +49,7 @@ function useColumns (
   dpskDeviceCount: Map<string, number>
 ) {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
 
   const personaGroupList = useGetPersonaGroupListQuery({
     payload: {
@@ -163,13 +164,13 @@ function useColumns (
       },
       ...props.ethernetPorts
     },
-    {
+    ...(networkSegmentationEnabled ? [{
       key: 'vni',
       dataIndex: 'vni',
       title: $t({ defaultMessage: 'Segment No.' }),
       sorter: true,
       ...props.vni
-    }
+    }] : [])
   ]
 
   return columns
@@ -191,6 +192,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { personaGroupId, colProps } = props
   const { tenantId } = useParams()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [dpskDeviceCount, setDpskDeviceCount] = useState(new Map<string, number>())
@@ -262,7 +264,11 @@ export function BasePersonaTable (props: PersonaTableProps) {
       })
         .then(result => {
           if (result.data) {
-            const count = result.data.filter(d => d.online).length
+            const count = result.data.filter(d =>
+              isNewConfigFlow
+                ? d.deviceConnectivity === 'CONNECTED'
+                : d.online
+            ).length
             setDpskDeviceCount(prev => new Map(prev.set(passphraseId, count)))
           }
         })

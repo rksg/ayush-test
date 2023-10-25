@@ -13,7 +13,8 @@ import {
   venueCaps,
   venueLed,
   venueApModels,
-  venueBssColoring
+  venueBssColoring,
+  venueApManagementVlan
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
@@ -52,6 +53,10 @@ describe('AdvancedTab', () => {
       rest.get(WifiUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
+      rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -174,5 +179,41 @@ describe('AdvancedTab', () => {
     const bssToggleBtn = await screen.findByTestId('bss-coloring-switch')
     fireEvent.click(bssToggleBtn)
     userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+  })
+
+  it('should render AP Management VLAN if feature flag is On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockUpdateApManagementVlan = jest.fn()
+    const advanceSettingContext = {
+      updateAccessPointLED: jest.fn(),
+      updateBssColoring: jest.fn(),
+      updateApManagementVlan: mockUpdateApManagementVlan
+    }
+
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData,
+        setEditContextData,
+        editAdvancedContextData: advanceSettingContext,
+        setEditAdvancedContextData: jest.fn()
+      }}>
+        <AdvancedTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => screen.findByText('Use AP’s settings'))
+    await waitFor(() => screen.findByText('VLAN ID'))
+    const useApSettings = await screen.findByTestId('venue-mgmt-vlan-use-ap-settings')
+    const changeMgmtVlan = await screen.findByTestId('venue-mgmt-vlan-ap-toggle')
+
+    expect(useApSettings).toBeInTheDocument()
+    expect(changeMgmtVlan).toBeInTheDocument()
+
+    userEvent.click(useApSettings)
+    userEvent.click(changeMgmtVlan)
+    const inputField = await screen.findByTestId('venue-ap-mgmt-vlan')
+    fireEvent.change(inputField, { target: { value: '17' } })
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    expect(mockUpdateApManagementVlan).toBeCalledTimes(1)
   })
 })

@@ -161,7 +161,7 @@ describe('Recommendation services', () => {
         ...aiOpsListResult.recommendations[0],
         priority: priorities.medium,
         category: 'Wi-Fi Client Experience',
-        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio'
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio'
       },
       {
         ...aiOpsListResult.recommendations[1],
@@ -203,18 +203,31 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[1],
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: priorities.high,
+        category: 'AI-Driven Cloud RRM',
+        summary: 'Optimal Ch/Width and Tx Power found for 5 GHz radio',
+        status: 'Revert Scheduled',
+        statusTooltip: 'A reversion to undo the configuration change has been scheduled for 06/17/2023 00:00. Note that the actual reversion of configuration will happen asynchronously within 1 hour of the scheduled time.',
+        statusEnum: 'revertscheduled',
+        crrmOptimizedState: crrmStates.nonOptimized
+      },
+      {
+        ...recommendationListResult.recommendations[2],
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
         priority: priorities.medium,
         category: 'Wi-Fi Client Experience',
-        summary: 'Tx Power setting for 2.4 GHz and 5 GHz radio',
+        summary: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio',
         status: 'Revert Failed',
         statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
         statusEnum: 'revertfailed'
       },
       {
-        ...recommendationListResult.recommendations[2],
+        ...recommendationListResult.recommendations[3],
         scope: `vsz34 (SZ Cluster)
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 
+import { Space }   from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -41,12 +42,15 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EntitlementNetworkDeviceType,
+  EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, isDelegationMode }                                          from '@acx-ui/utils'
+
+import * as UI from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
@@ -177,6 +181,13 @@ export function MspCustomers () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+
+  const allowManageAdmin =
+      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
+  const allowSelectTechPartner =
+      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+  const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
+
   if (tenantDetailsData.data?.tenantType === AccountType.VAR &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
     navigate(linkVarPath, { replace: true })
@@ -321,7 +332,7 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+        return allowManageAdmin ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -330,7 +341,7 @@ export function MspCustomers () {
       },
       render: function (_, row) {
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          allowManageAdmin
             ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
@@ -352,12 +363,12 @@ export function MspCustomers () {
         return mspUtils.transformAlarmCount(row, mspEcAlarmList)
       }
     }]),
-    ...(isIntegrator || userProfile?.support ? [] : [{
+    ...(hideTechPartner ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return allowSelectTechPartner ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -368,17 +379,17 @@ export function MspCustomers () {
       render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          allowSelectTechPartner
             ? <Link to=''>{val}</Link> : val
         )
       }
     }]),
-    ...(isIntegrator || userProfile?.support ? [] : [{
+    ...(hideTechPartner ? [] : [{
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return allowSelectTechPartner ? {
           onClick: () => {
             setDrawerIntegratorVisible(false)
             setTenantId(data.id)
@@ -390,7 +401,7 @@ export function MspCustomers () {
       render: function (_: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          allowSelectTechPartner
             ? <Link to=''>{val}</Link> : val
         )
       }
@@ -480,7 +491,16 @@ export function MspCustomers () {
       key: 'expirationDate',
       sorter: true,
       render: function (_, row) {
-        return transformExpirationDate(row)
+        const nextExpirationDate = transformExpirationDate(row)
+        if (nextExpirationDate === '--')
+          return nextExpirationDate
+        const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>
+          {(remainingDays < 0) && $t({ defaultMessage: 'Expired on' })}{nextExpirationDate}
+        </TimeLeftWrapper>
       }
     },
     {
