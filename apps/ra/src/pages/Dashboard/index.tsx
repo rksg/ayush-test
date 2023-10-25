@@ -86,7 +86,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
     ]
   if (!hasRecommendation) {
     return (
-      <UI.NetworkAdminGrid style={{ height }} >
+      <UI.NetworkAdminGrid style={{ height }}>
         <div style={{ gridArea: 'a1' }}>
           <ReportTile pathFilters={pathFilters} />
         </div>
