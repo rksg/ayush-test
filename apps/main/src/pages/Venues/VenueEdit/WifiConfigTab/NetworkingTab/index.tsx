@@ -1,14 +1,16 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Button, Space } from 'antd'
+import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
-import { VenueApModelCellular, redirectPreviousPage } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                 from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                      from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy, Tooltip }             from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { useGetVenueApCapabilitiesQuery, useLazyApListQuery } from '@acx-ui/rc/services'
+import { VenueApModelCellular, redirectPreviousPage }         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                              from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
@@ -33,9 +35,51 @@ export function NetworkingTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
+  const { tenantId, venueId } = useParams()
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
+
+  const [cellularApModels, setCellularApModels] = useState<string[]>([])
+  const [hasCellularAps, setHasCellularAps] = useState(false)
+
+  const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
+  const [ getApList ] = useLazyApListQuery()
+
+  useEffect(() => {
+    if (venueCaps) {
+      let apModels = venueCaps.apModels
+        .filter(apCapability => apCapability.canSupportCellular === true)
+        .map(apCapability => apCapability.model) as string[]
+
+      setCellularApModels(apModels)
+    }
+  }, [venueCaps])
+
+  useEffect(() => {
+    const cellurlarApModelNames = isEmpty(cellularApModels)? ['M510'] : cellularApModels
+    let filters = { model: cellurlarApModelNames, venueId: [venueId] }
+
+    const payload = {
+      fields: ['name', 'model', 'venueId', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      url: '/api/viewmodel/{tenantId}/aps',
+      filters
+    }
+
+    if (getApList) {
+      getApList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
+        const { data } = res || {}
+        if (data) {
+          //const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
+          const findAp = data
+          setHasCellularAps((findAp.length > 0))
+        }
+      })
+    }
+  }, [cellularApModels])
 
   const {
     previousPath,
@@ -82,15 +126,14 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <DirectedMulticast />
     </> }] : []),
-  {
+  ...(hasCellularAps? [{
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='cellular-options'>
         { $t({ defaultMessage: 'Cellular Options' }) }
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
-    </>
-  },
+    </> }] : []),
   ...(supportRadiusOptions? [{
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>
