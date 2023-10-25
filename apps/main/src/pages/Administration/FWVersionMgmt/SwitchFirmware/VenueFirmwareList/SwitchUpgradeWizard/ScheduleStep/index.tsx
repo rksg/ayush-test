@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
-import { useForm }                                          from 'antd/lib/form/Form'
 import dayjs                                                from 'dayjs'
 import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
@@ -12,7 +10,9 @@ import { Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareCategory,
+  FirmwareSwitchVenue,
   FirmwareVersion,
+  SwitchFirmware,
   switchSchedule
 } from '@acx-ui/rc/utils'
 
@@ -32,7 +32,25 @@ export interface ScheduleStepProps {
   nonIcx8200Count: number
   icx8200Count: number
   hasVenue: boolean,
-  currentSchedule?: switchSchedule
+  data: FirmwareSwitchVenue[],
+  upgradeVenueList: FirmwareSwitchVenue[],
+  upgradeSwitchList: SwitchFirmware[]
+}
+
+
+export enum SamePropertyValueEnum {
+  IS_DIFFERENT
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getSamePropertyValue (objectArray: any[], propertyKey: string) {
+  const allCheckedAreSame =
+    _.every(objectArray, obj => obj[propertyKey] === objectArray[0][propertyKey])
+
+  if (allCheckedAreSame) {
+    return objectArray[0][propertyKey]
+  } else {
+    return SamePropertyValueEnum.IS_DIFFERENT
+  }
 }
 
 export function ScheduleStep (props: ScheduleStepProps) {
@@ -40,34 +58,35 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const intl = useIntl()
   const { form } = useStepFormContext()
   const { availableVersions, nonIcx8200Count, icx8200Count,
-    currentSchedule, hasVenue } = props
-  const [selectedDateMoment, setSelectedDateMoment] = useState<moment.Moment>()
-  const [currentScheduleDateString, setCurrentScheduleDateString] = useState('')
-  const [currentScheduleTime, setCurrentScheduleTime] = useState('')
-  const [currentPreDownload, setCurrentPreDownload] = useState(false)
+    hasVenue, upgradeVenueList, upgradeSwitchList } = props
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState<string>('')
-  const [checked, setChecked] = useState(false)
-  const [disableSave, setDisableSave] = useState(true)
-  const [selectionChanged, setSelectionChanged] = useState(false)
-  const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
-  const [scheduleDateChanged, setScheduleDateChanged] = useState(false)
-  const [scheduleTimeChanged, setScheduleTimeChanged] = useState(false)
-  const [preDownloadChanged, setPreDownloadChanged] = useState(false)
 
-  const currentScheduleVersion = currentSchedule?.version ? currentSchedule.version.name : ''
-  // eslint-disable-next-line max-len
-  const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen ? currentSchedule.versionAboveTen.name : ''
+  const getCurrentChecked = function () {
+    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+      return upgradeVenueList.length === 1 ?
+        upgradeVenueList[0].preDownload : upgradeSwitchList[0].preDownload
+    } return false
+  }
 
-  useEffect(() => {
-    const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
-    // eslint-disable-next-line max-len
-    setDisableSave((!selectionChanged && !selectionAboveTenChanged && !scheduleDateChanged && !scheduleTimeChanged && !preDownloadChanged) ||
-      !hasSelectedDateAndTime)
-  }, [selectionChanged, selectionAboveTenChanged, selectedDate, selectedTime, scheduleDateChanged,
-    scheduleTimeChanged, preDownloadChanged ])
+  const [checked, setChecked] = useState(getCurrentChecked())
+
+  const getCurrentSchedule = function () {
+    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+      return upgradeVenueList.length === 1 ?
+        upgradeVenueList[0].nextSchedule : upgradeSwitchList[0].switchNextSchedule
+    }
+
+    return {
+    } as switchSchedule
+  }
+
+  const currentSchedule = getCurrentSchedule()
+
+  const currentScheduleVersion = currentSchedule?.version?.name ?? ''
+  const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
 
   useEffect(() => {
     if (currentSchedule?.timeSlot?.startDateTime) {
@@ -75,13 +94,15 @@ export function ScheduleStep (props: ScheduleStepProps) {
     } else {
       setSelectedDate('')
       setSelectedTime('')
-      form.setFieldValue('selectedDate', '')
-      form.setFieldValue('selectedTime', '')
+      form.setFieldValue('selectDateStep', '')
+      form.setFieldValue('selectTimeStep', '')
     }
 
-    setSelectedVersion(currentScheduleVersion ? currentScheduleVersion : '')
+    setSelectedVersion(currentScheduleVersion || '')
     // eslint-disable-next-line max-len
-    setSelectedAboveTenVersion(currentScheduleVersionAboveTen ? currentScheduleVersionAboveTen : '')
+    setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
+    form.setFieldValue('switchVersion', currentScheduleVersion)
+    form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
 
   }, [currentSchedule, currentScheduleVersion,
     currentScheduleVersionAboveTen])
@@ -109,10 +130,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
     const dateAndTime = startTime.split('T')
 
     if (dateAndTime?.length === 2) {
-      setCurrentScheduleDateString(dateAndTime[0])
       setSelectedDate(dateAndTime[0])
-      setSelectedDateMoment(moment(dateAndTime[0]))
-      form.setFieldValue('selectedDate', dateAndTime[0])
+      form.setFieldValue('selectDateStep', moment(dateAndTime[0]))
 
       const timeZoneKeyWords = ['-', '+', 'Z']
       for (let value of timeZoneKeyWords) {
@@ -127,9 +146,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
             scheduleStartTime = startTime[0] + ':00-' + endTime + ':00'
           }
 
-          setCurrentScheduleTime(scheduleStartTime)
           setSelectedTime(scheduleStartTime)
-          form.setFieldValue('selectedTime', scheduleStartTime)
+          form.setFieldValue('selectTimeStep', scheduleStartTime)
           break
         }
       }
@@ -137,14 +155,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
 
   const handleChange = (value: RadioChangeEvent) => {
-    setSelectionChanged(currentScheduleVersion !== value.target.value)
     setSelectedVersion(value.target.value)
     form.setFieldValue('switchVersion', value.target.value)
     form.validateFields(['selectVersionStep'])
   }
 
   const handleChangeForVersionAboveTen = (value: RadioChangeEvent) => {
-    setSelectionAboveTenChanged(currentScheduleVersionAboveTen !== value.target.value)
     setSelectedAboveTenVersion(value.target.value)
     form.setFieldValue('switchVersionAboveTen', value.target.value)
     form.validateFields(['selectVersionStep'])
@@ -158,22 +174,18 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    setScheduleDateChanged(currentScheduleDateString !== dateString)
-    setSelectedDateMoment(moment(dateString))
     setSelectedDate(dateString)
-    form.setFieldValue('selectedDate', dateString)
+    form.setFieldValue('selectDateStep', moment(dateString))
     form.validateFields(['selectDateStep'])
   }
 
   const onChangeRegular = (e: RadioChangeEvent) => {
-    setScheduleTimeChanged(currentScheduleTime !== e.target.value)
     setSelectedTime(e.target.value)
-    form.setFieldValue('selectedTime', e.target.value)
+    form.setFieldValue('selectTimeStep', e.target.value)
     form.validateFields(['selectTimeStep'])
   }
 
   const onPreDownloadChange = (checked: boolean) => {
-    setPreDownloadChanged(currentPreDownload !== checked)
     setChecked(checked)
     form.setFieldValue('preDonloadChecked', checked)
   }
@@ -267,15 +279,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
         label={'Update date:'}
         name='selectDateStep'
         rules={[
-          {
-            validator: () => {
-              const selectedDate = form.getFieldValue('selectedDate')
-              if (_.isEmpty(selectedDate)) {
-                return Promise.reject('This field is required.')
-              }
-              return Promise.resolve()
-            }
-          }
+          { required: true }
         ]}
         validateFirst
         children={
@@ -283,43 +287,33 @@ export function ScheduleStep (props: ScheduleStepProps) {
             showToday={false}
             disabledDate={disabledDate}
             onChange={onChange}
-            value={selectedDate ? moment(selectedDateMoment) : undefined}
           />
         }
       />
 
 
-      {selectedDate ?
+      {selectedDate &&
         <Form.Item
           name='selectTimeStep'
+          initialValue={selectedTime}
           label={$t({ defaultMessage: 'Update time:' })}
           rules={[
-            {
-              validator: () => {
-                const selectedTime = form.getFieldValue('selectedTime')
-                if (_.isEmpty(selectedTime)) {
-                  return Promise.reject('This field is required.')
-                }
-
-                return Promise.resolve()
-              }
-            }
+            { required: true }
           ]}
           validateFirst
           children={
             <Radio.Group
-              // style={{ margin: 12 }}
               onChange={onChangeRegular}
-              value={selectedTime}>
+            >
               <Space direction={'vertical'}>
                 {AVAILABLE_SLOTS.map(v =>
                   <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
               </Space>
-            </Radio.Group>}
+            </Radio.Group>
+          }
         />
-
-        : null
       }
+
       <PreDownload
         checked={checked}
         setChecked={onPreDownloadChange}

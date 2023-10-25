@@ -27,6 +27,7 @@ import { getReleaseFirmware } from '../../../FirmwareUtils'
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
 import { UpdateNowStep }    from './UpdateNowStep'
+import moment from 'moment'
 
 
 export enum SwitchFirmwareWizardType {
@@ -77,7 +78,9 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
   const [hasVenue, setHasVenue] = useState<boolean>(false)
-  const [upgradeSwitchList, setUpgradeSwitchList] = useState<string[]>([])
+  const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
+  const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenue[]>([])
+
 
   const wizardTitle = {
     [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
@@ -100,7 +103,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           params: { ...params },
           payload: {
             venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIds: upgradeSwitchList,
+            switchIds: _.map(upgradeSwitchList, 'switchId'),
             switchVersion: form.getFieldValue('switchVersion') || '',
             switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
           }
@@ -116,11 +119,11 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         await updateVenueSchedules({
           params: { ...params },
           payload: {
-            date: form.getFieldValue('selectedDate') || '',
-            time: form.getFieldValue('selectedTime') || '',
+            date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
+            time: form.getFieldValue('selectTimeStep') || '',
             preDownload: form.getFieldValue('preDonloadChecked') || false,
             venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIds: upgradeSwitchList,
+            switchIds: _.map(upgradeSwitchList, 'switchId'),
             switchVersion: form.getFieldValue('switchVersion') || '',
             switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
           }
@@ -149,7 +152,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
               params: { ...params },
               payload: {
                 venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-                switchIds: upgradeSwitchList
+                switchIds: _.map(upgradeSwitchList, 'switchId')
               }
             })
             form.resetFields()
@@ -189,7 +192,8 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             // eslint-disable-next-line max-len
             let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
             let nonIcx8200Count = 0, icx8200Count = 0
-            let currentUpgradeSwitchList = [] as string[]
+            let currentUpgradeSwitchList = [] as SwitchFirmware[]
+            let currentUpgradeVenueList = [] as FirmwareSwitchVenue[]
 
             const nestedData = form.getFieldValue('nestedData')
             const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
@@ -207,7 +211,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                 nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
                   const fw = row.currentFirmware
                   if (row.switchId) {
-                    currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row.switchId)
+                    currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
                   }
                   if (fw.includes('090')) { //Need use regular expression
                     filterVersions = checkCurrentVersions(fw, '', filterVersions)
@@ -219,8 +223,13 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                 })
               }
             })
+            currentUpgradeVenueList =
+            _.filter(props.data, obj =>
+              selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
+
 
             setUpgradeSwitchList(currentUpgradeSwitchList)
+            setUpgradeVenueList(currentUpgradeVenueList)
             setHasVenue(selectedVenueRowKeys.length > 0)
             setUpgradeVersions(filterVersions)
             setNonIcx8200Count(nonIcx8200Count)
@@ -248,6 +257,9 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                 /> : <ScheduleStep
                   visible={true}
                   hasVenue={hasVenue}
+                  data={props.data}
+                  upgradeVenueList={upgradeVenueList as FirmwareSwitchVenue[]}
+                  upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
                   availableVersions={filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}

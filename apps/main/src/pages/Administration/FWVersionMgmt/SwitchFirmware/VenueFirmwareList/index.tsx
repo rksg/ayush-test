@@ -413,10 +413,6 @@ export function VenueFirmwareList () {
   )
 }
 
-function hasSchedule (venue: FirmwareSwitchVenue): boolean {
-  return !!venue.nextSchedule
-}
-
 const removeCurrentVersionsAnd10010IfNeeded = (version: string,
   rodanVersion: string,
   filterVersions: FirmwareVersion[]) => {

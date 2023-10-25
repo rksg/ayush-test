@@ -78,6 +78,9 @@ export const ExpanderTableWrapper = styled.div`
 
   .ant-table-tbody {
     background-color: #EBEDEE;
+    .ant-table-cell-fix-right-first {
+      background-color: #EBEDEE;
+    }
   }
 
   /* Selected Row Styles */
@@ -85,9 +88,10 @@ export const ExpanderTableWrapper = styled.div`
     background: #EBEDEE;
   }
 
-  /* Right-Fixed Cell Styles */
-  .ant-table-cell-fix-right-first {
-    /* display: none; */
+  .ant-table-thead {
+    .ant-table-cell-fix-right-first{
+      background-color: white;
+    }
   }
 
   /* Expanded Row Styles */
@@ -105,11 +109,6 @@ export const ExpanderTableWrapper = styled.div`
   /* Last Child TD Styles */
   .ant-table-tbody > tr:last-child > td {
     border: none;
-  }
-
-  /* Right-Fixed Cell Styles */
-  .ant-table-cell-fix-right:not(.react-resizable) {
-    background-color: #EBEDEE;
   }
 
   /* Table Body Styles */

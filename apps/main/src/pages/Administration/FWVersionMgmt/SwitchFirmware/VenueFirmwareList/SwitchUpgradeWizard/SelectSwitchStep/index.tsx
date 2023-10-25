@@ -97,12 +97,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
   }
 }
 
-type VenueTableProps = {
+type SelectSwitchStepProps = {
   data: FirmwareSwitchVenue[]
 }
 
 export const SelectSwitchStep = (
-  { data }: VenueTableProps) => {
+  { data }: SelectSwitchStepProps) => {
 
   const { form } = useStepFormContext()
   const columns = useColumns()
@@ -226,6 +226,7 @@ export const SelectSwitchStep = (
   const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
     return <Table<SwitchFirmware>
       columns={switchColumns}
+      enableResizableColumn={false}
       className='switchTable'
       loading={false}
       locale={{
@@ -508,6 +509,7 @@ export const SelectSwitchStep = (
       {_.isEmpty(searchText) &&<SwitchUI.ExpanderTableWrapper>
         <Table
           columns={columns}
+          enableResizableColumn={false}
           type={'tall'}
           dataSource={data}
           expandable={{
