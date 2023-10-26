@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitFor }     from '@acx-ui/test-utils'
 import { mockNsgData, mockNsgSwitchInfoData, switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
 import { AccessSwitchDrawer }  from './AccessSwitchDrawer'
-import { NetworkSegAuthModel } from './NetworkSegAuthModel'
+import { NetworkSegAuthModal } from './NetworkSegAuthModal'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -39,7 +39,7 @@ describe('AccessSwitchDrawer', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
-  const path = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
+  const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -139,14 +139,15 @@ describe('AccessSwitchDrawer', () => {
 describe('NetworkSegAuthModel', () => {
   const setWebAuthTemplateId = jest.fn()
   it('Should render successfully', async () => {
-    render(<NetworkSegAuthModel setWebAuthTemplateId={setWebAuthTemplateId} />)
+    render(<NetworkSegAuthModal setWebAuthTemplateId={setWebAuthTemplateId} />)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    expect(await screen.findByTestId('NetworkSegAuthForm')).toBeVisible()
+    const form = await screen.findByTestId('NetworkSegAuthForm')
+    await waitFor(() => expect(form).toBeVisible())
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(await screen.findByTestId('NetworkSegAuthForm')).not.toBeVisible()
+    expect(form).not.toBeVisible()
   })
 })

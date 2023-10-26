@@ -2,8 +2,15 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { useSearchQuery, AP, Client,NetworkHierarchy,Switch } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath }               from '@acx-ui/analytics/utils'
+import {
+  useSearchQuery,
+  AP,
+  Client,
+  Network,
+  NetworkHierarchy,
+  Switch
+} from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, formattedPath } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -138,6 +145,12 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      dataIndex: 'manufacturer',
+      key: 'manufacturer',
+      sorter: { compare: sortProp('manufacturer', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
@@ -249,6 +262,74 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
     }
   ]
 
+  const wifiNetworksTableColumnHeaders: TableProps<Network>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      fixed: 'left',
+      sorter: { compare: sortProp('name', defaultSort) },
+      render: (_, row : Network) => {
+        const { name } = row
+        return <TenantLink
+          to={`/networks/wireless/${fixedEncodeURIComponent(name)}/network-details/reports`}
+        >
+          {(name)}
+        </TenantLink>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'AP Count' }),
+      dataIndex: 'apCount',
+      key: 'apCount',
+      width: 130,
+      sorter: { compare: sortProp('apCount', defaultSort) },
+      render: (_, row) => {
+        return row.apCount ? formatter('countFormat')(row.apCount) : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Client Count' }),
+      dataIndex: 'clientCount',
+      key: 'clientCount',
+      width: 80,
+      sorter: { compare: sortProp('clientCount', defaultSort) },
+      render: (_, row) => {
+        return row.clientCount ? formatter('countFormat')(row.clientCount) : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Traffic' }),
+      dataIndex: 'traffic',
+      key: 'traffic',
+      width: 100,
+      sorter: { compare: sortProp('traffic', defaultSort) },
+      render: (_, row) => {
+        return row.traffic ? formatter('bytesFormat')(row.traffic) : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Rx Traffic' }),
+      width: 90,
+      dataIndex: 'rxBytes',
+      key: 'rxBytes',
+      sorter: { compare: sortProp('rxBytes', defaultSort) },
+      render: (_, row) => {
+        return row.rxBytes ? formatter('bytesFormat')(row.rxBytes) : '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Tx Traffic' }),
+      width: 90,
+      dataIndex: 'txBytes',
+      key: 'txBytes',
+      sorter: { compare: sortProp('txBytes', defaultSort) },
+      render: (_, row) => {
+        return row.txBytes ? formatter('bytesFormat')(row.txBytes) : '--'
+      }
+    }
+  ]
+
   const extra = [<TimeRangeDropDown/>]
   return <Loader states={[results]}>
     {count
@@ -271,6 +352,22 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
                 dataSource={results.data?.aps as unknown as AP[]}
                 pagination={pagination}
                 settingsId='ap-search-table'
+              />
+            </Panel>
+          }
+          { results.data?.wifiNetworks.length &&
+            <Panel
+              key='wifiNetworks'
+              header={
+                `${$t({
+                  defaultMessage: 'Wi-Fi Networks'
+                })} (${results.data?.wifiNetworks.length})`
+              }>
+              <Table<Network>
+                columns={wifiNetworksTableColumnHeaders}
+                dataSource={results.data?.wifiNetworks as unknown as Network[]}
+                pagination={pagination}
+                settingsId='wifi-networks-search-table'
               />
             </Panel>
           }

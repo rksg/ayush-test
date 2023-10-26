@@ -13,31 +13,33 @@ import {
   ServiceGuardTestGuard,
   ServiceGuardDetails
 } from '@acx-ui/analytics/components'
-import { setUserProfile, PERMISSION_VIEW_ANALYTICS, getUserProfile }     from '@acx-ui/analytics/utils'
-import { showToast }                                                     from '@acx-ui/components'
-import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { updateSelectedTenant, PERMISSION_VIEW_ANALYTICS, getUserProfile } from '@acx-ui/analytics/utils'
+import { showToast }                                                       from '@acx-ui/components'
+import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH }   from '@acx-ui/react-router-dom'
 
-import ClientDetails                 from './pages/ClientDetails'
-import Clients, { AIClientsTabEnum } from './pages/Clients'
-import ConfigChange                  from './pages/ConfigChange'
-import IncidentDetails               from './pages/IncidentDetails'
-import Incidents                     from './pages/Incidents'
-import Layout                        from './pages/Layout'
-import Recommendations               from './pages/Recommendations'
-import SearchResults                 from './pages/SearchResults'
-import { WiFiPage, WifiTabsEnum }    from './pages/Wifi'
-import ApDetails                     from './pages/Wifi/ApDetails'
-import Wired, { AISwitchTabsEnum }   from './pages/Wired'
-import SwitchDetails                 from './pages/Wired/SwitchDetails'
+import ClientDetails                         from './pages/ClientDetails'
+import Clients, { AIClientsTabEnum }         from './pages/Clients'
+import ConfigChange                          from './pages/ConfigChange'
+import IncidentDetails                       from './pages/IncidentDetails'
+import Incidents                             from './pages/Incidents'
+import Layout                                from './pages/Layout'
+import Recommendations                       from './pages/Recommendations'
+import SearchResults                         from './pages/SearchResults'
+import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
+import ApDetails                             from './pages/Wifi/ApDetails'
+import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
+import NetworkDetails                        from './pages/WifiNetworks/NetworkDetails'
+import Wired, { AISwitchTabsEnum }           from './pages/Wired'
+import SwitchDetails                         from './pages/Wired/SwitchDetails'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function Init () {
-  setUserProfile(getUserProfile())
+  const [ search ] = useSearchParams()
+  updateSelectedTenant()
   const { invitations, selectedTenant } = getUserProfile()
   const { id, permissions } = selectedTenant
-  const [ search ] = useSearchParams()
   const previousURL = search.get('return')!
   useEffect(() => {
     if (invitations.length > 0 /*|| tenants.length > 1*/) {
@@ -79,6 +81,21 @@ function AllRoutes () {
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
+      </Route>
+      <Route path='networks/wireless'>
+        <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />
+        <Route
+          path='reports/wlans'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.WLANS_REPORT} />} />
+        <Route
+          path='reports/applications'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.APPLICATIONS_REPORT} />} />
+        <Route
+          path='reports/wireless'
+          element={<WiFiNetworksPage tab={NetworkTabsEnum.WIRELESS_REPORT} />} />
+        <Route path=':networkId/network-details'>
+          <Route path=':activeTab' element={<NetworkDetails />} />
+        </Route>
       </Route>
       <Route path='devices/wifi'>
         <Route index={true}

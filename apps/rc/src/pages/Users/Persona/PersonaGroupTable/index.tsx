@@ -3,9 +3,9 @@ import { useEffect, useState, useContext } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                     from '@acx-ui/icons'
+import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
   MacRegistrationPoolLink,
@@ -129,9 +129,9 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
-    {
+    ...(networkSegmentationEnabled ? [{
       key: 'nsgId',
-      title: $t({ defaultMessage: 'Network Segmentation' }),
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
       dataIndex: 'nsgId',
       sorter: true,
       filterMultiple: false,
@@ -141,7 +141,7 @@ function useColumns (
           nsgId={row.nsgId}
           name={nsgMap.get(row.nsgId ?? '')}
         />
-    },
+    } as TableColumn<PersonaGroup>] : []),
     {
       key: 'personaCount',
       title: $t({ defaultMessage: 'Identities' }),
@@ -263,7 +263,7 @@ export function PersonaGroupTable () {
       $t({ defaultMessage: 'Identity Group' }),
       selectedRow.name,
       [
-        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Network segmentation' }) },
+        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Personal Identity Network' }) },
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id } })

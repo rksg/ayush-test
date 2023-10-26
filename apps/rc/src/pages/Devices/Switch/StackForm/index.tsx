@@ -59,7 +59,9 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
-  isSameModelFamily
+  isSameModelFamily,
+  checkVersionAtLeast09010h,
+  checkVersionAtLeast10010b
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -67,6 +69,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { getIntl } from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
@@ -86,6 +89,33 @@ const defaultPayload = {
   search: '', updateAvailable: ''
 }
 
+const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+
+export const validatorSwitchModel = (serialNumber: string, tableData: { id: string }[]) => {
+  const { $t } = getIntl()
+  const re = new RegExp(SWITCH_SERIAL_PATTERN)
+  if (serialNumber && !re.test(serialNumber)) {
+    return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
+  }
+
+  const model = getSwitchModel(serialNumber) || ''
+
+  if (modelNotSupportStack.indexOf(model) > -1) {
+    return Promise.reject(
+      $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
+    )
+  }
+  const allSameModelFamily = tableData
+    .filter(item => item.id && item.id !== serialNumber)
+    .every(item => isSameModelFamily(item.id, serialNumber))
+  if (serialNumber && !allSameModelFamily) {
+    return Promise.reject(
+      $t({ defaultMessage: 'All switch models should belong to the same family.' })
+    )
+  }
+  return Promise.resolve()
+}
+
 export function StackForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, action, venueId, stackList } = useParams()
@@ -94,7 +124,6 @@ export function StackForm () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/devices/')
-  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
 
@@ -120,6 +149,7 @@ export function StackForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
   const [currentFW, setCurrentFw] = useState('')
+  const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
@@ -161,7 +191,10 @@ export function StackForm () {
       const switchFw = switchData.firmwareVersion
       const venueFw = venuesList.data.find(
         venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+      const venueAboveTenFw = venuesList.data.find(
+        venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
       setCurrentFw(switchFw || venueFw || '')
+      setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModule',
@@ -195,7 +228,7 @@ export function StackForm () {
         const stackMembersList = switchDetail?.activeSerial
           ? (await getStackMemberList({
             params: { tenantId, switchId }, payload: stackMembersPayload
-          }, true))
+          }, false))
           : []
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
@@ -215,7 +248,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 !!switchDetail.cliApplied ||
-                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
           })
 
@@ -232,7 +266,7 @@ export function StackForm () {
           filters: {
             venueId: [venueId],
             isStack: [false],
-            deviceStatus: [SwitchStatusEnum.OPERATIONAL],
+            deviceStatus: [SwitchStatusEnum.OPERATIONAL, SwitchStatusEnum.FIRMWARE_UPD_FAIL],
             syncedSwitchConfig: [true],
             configReady: [true]
           },
@@ -242,7 +276,7 @@ export function StackForm () {
         }
         const switchList = venueId
           ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
-          }, true))?.data?.data
+          }, false))?.data?.data
           : []
 
         const switchTableData = stackSwitches?.map((serialNumber, index) => ({
@@ -314,8 +348,13 @@ export function StackForm () {
   const [updateSwitch] = useUpdateSwitchMutation()
   const [convertToStack] = useConvertToStackMutation()
 
+  const hasBlockingTsb = function () {
+    return !checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch
+
+  }
+
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
-    if (isBlockingTsbSwitch) {
+    if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -347,7 +386,7 @@ export function StackForm () {
   }
 
   const handleEditSwitchStack = async (values: Switch) => {
-    if (isBlockingTsbSwitch) {
+    if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -422,30 +461,6 @@ export function StackForm () {
     setTableData(tableData.filter((item) => item.key !== row.key))
   }
 
-  const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
-    if (serialNumber && !re.test(serialNumber)) {
-      return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
-    }
-
-    const model = getSwitchModel(serialNumber) || ''
-
-    if (modelNotSupportStack.indexOf(model) > -1) {
-      return Promise.reject(
-        $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
-      )
-    }
-    const allSameModelFamily = tableData
-      .filter(item => item.id && item.id !== serialNumber)
-      .every(item => isSameModelFamily(item.id, serialNumber))
-    if (serialNumber && !allSameModelFamily) {
-      return Promise.reject(
-        $t({ defaultMessage: 'All switch models should belong to the same family.' })
-      )
-    }
-    return Promise.resolve()
-  }
-
   const validatorUniqueMember = (serialNumber: string) => {
     const memberExistCount = tableData.filter((item: SwitchTable) => {
       return item.id === serialNumber
@@ -507,7 +522,7 @@ export function StackForm () {
               required: activeRow === row.key ? true : false,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value) },
+            { validator: (_, value) => validatorSwitchModel(value, tableData) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
@@ -627,13 +642,21 @@ export function StackForm () {
 
     if(venuesList){
       const venueFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      // eslint-disable-next-line max-len
+      const venueAboveTenFw = venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+
       setCurrentFw(venueFw || '')
+      setCurrentAboveTenFw(venueAboveTenFw || '')
 
       const switchModel =
         getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-      const miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
-        (venueFw?.includes('09010h') ? 4 : 2) :
-        (venueFw?.includes('09010h') ? 8 : 4))
+      let miniMembers = ((_.isEmpty(switchModel) || switchModel?.includes('ICX7150')) ?
+        (checkVersionAtLeast09010h(venueFw || '') ? 4 : 2) :
+        (checkVersionAtLeast09010h(venueFw || '') ? 8 : 4))
+
+      if (switchModel?.includes('ICX8200')) {
+        miniMembers = checkVersionAtLeast10010b(venueAboveTenFw || '') ? 12 : 4
+      }
 
       setTableData(tableData.splice(0, miniMembers))
     }
@@ -686,19 +709,25 @@ export function StackForm () {
       return true
     }
 
+
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
-      return tableData.length < (currentFW.includes('09010h') ? 4 : 2)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 4 : 2)
+    } else if (switchModel?.includes('ICX8200')) {
+      return tableData.length < (checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4)
     } else {
-      return tableData.length < (currentFW.includes('09010h') ? 8 : 4)
+      return tableData.length < (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
     }
   }
 
   const getStackUnitsMinLimitaion = () => {
     const switchModel =
       getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (switchModel?.includes('ICX8200')) {
+      return checkVersionAtLeast10010b(currentAboveTenFW) ? 12 : 4
+    }
     return switchModel?.includes('ICX7150') ?
-      (currentFW.includes('09010h') ? 4 : 2) :
-      (currentFW.includes('09010h') ? 8 : 4)
+      (checkVersionAtLeast09010h(currentFW) ? 4 : 2) :
+      (checkVersionAtLeast09010h(currentFW) ? 8 : 4)
   }
 
   return (
@@ -909,3 +938,4 @@ export function StackForm () {
     </>
   )
 }
+

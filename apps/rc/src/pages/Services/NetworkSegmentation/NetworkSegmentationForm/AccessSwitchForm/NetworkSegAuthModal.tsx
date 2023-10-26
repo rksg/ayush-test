@@ -6,7 +6,7 @@ import { Button, Modal, ModalType } from '@acx-ui/components'
 
 import NetworkSegAuthForm from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
 
-export const NetworkSegAuthModel = (props: {
+export const NetworkSegAuthModal = (props: {
   setWebAuthTemplateId: (id: string) => void
 }) => {
   const { $t } = useIntl()
@@ -21,10 +21,11 @@ export const NetworkSegAuthModel = (props: {
       {$t({ defaultMessage: 'Add' })}
     </Button>
     <Modal
-      title={$t({ defaultMessage: 'Add Personal Identity Network Auth page for Switch' })}
+      title={$t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
       visible={visible}
+      destroyOnClose={true}
       type={ModalType.ModalStepsForm}
-      width={680}
+      width={700}
       children={
         <NetworkSegAuthForm editMode={false}
           modalMode={true}

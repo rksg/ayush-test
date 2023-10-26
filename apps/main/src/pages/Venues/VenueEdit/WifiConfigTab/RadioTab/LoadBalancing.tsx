@@ -2,12 +2,12 @@
 import { useContext, useEffect } from 'react'
 
 import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
-import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
+import { defineMessage, useIntl }                                    from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
+import { AnchorContext, Loader, Tooltip }                                     from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
+import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
 
@@ -36,6 +36,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { setIsLoadOrBandBalaningEnabled } = props
   const getLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId } })
@@ -46,12 +47,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
   const clientAdmissionControlFlag = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportStickyClient = betaStickyFlag && stickyClientFlag
-
-  const infoMessage = defineMessage({
-    defaultMessage: `Make sure <b>background scan</b> is selected for channel selection
-    method on radios you would like to run load balancing. Also,
-    enable <b>load balancing</b> on network configuration.`
-  })
 
   const loadBalancingMethods = [
     {
@@ -99,6 +94,8 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     if (loadBalancingData) {
       form.setFieldsValue(loadBalancingData)
       setIsLoadOrBandBalaningEnabled?.(loadBalancingData.enabled || loadBalancingData.bandBalancingEnabled)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Load-Balancing')))])
     }
 
   }, [getLoadBalancing?.data])
@@ -186,7 +183,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             {$t({ defaultMessage: 'Use Load Balancing' })}
             <Tooltip
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
-                allowed to enable client admission control.` })}
+                allowed to enable client admission control. Make sure that load balancing is enabled on network configuration.` })}
               placement='right'>
               {clientAdmissionControlFlag &&
                 <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
@@ -202,28 +199,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               onChange={onFormDataChanged} />}
           />
         </FieldLabel>
-      </Col>
-    </Row>
-
-    <Row>
-      <Col span={colSpan}
-        style={{
-          backgroundColor: cssStr('--acx-accents-orange-10'),
-          marginBottom: '10px',
-          fontSize: cssStr('--acx-body-4-font-size'),
-          padding: '10px 50px 10px 10px'
-        }}>
-        <Space align='start'>
-          <InformationSolid />
-          <div>
-            <FormattedMessage
-              {...infoMessage}
-              values={{
-                b: (text: string) => <strong>{text}</strong>
-              }}
-            />
-          </div>
-        </Space>
       </Col>
     </Row>
 
@@ -323,7 +298,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
         </Space>
         <Form.Item
           label={
-            $t({ defaultMessage: `Clients with SNR lower than {snrThreshold}dB will be steered to neighbor access 
+            $t({ defaultMessage: `Clients with SNR lower than {snrThreshold}dB will be steered to neighbor access
             points with SNR greater than {percentThreshold}% above the current client SNR.` },
             { snrThreshold: snrThreshold,
               percentThreshold: percentageThreshold })
@@ -340,7 +315,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
           <Space>
             {$t({ defaultMessage: 'Band Balancing' })}
             <Tooltip
-              title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
+              title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be
                 allowed to enable client admission control.` })}
               placement='right'>
               {clientAdmissionControlFlag &&

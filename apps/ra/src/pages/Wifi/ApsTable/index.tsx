@@ -1,3 +1,4 @@
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -7,18 +8,24 @@ import { Table, TableProps, Tooltip,useDateRange, Loader } from '@acx-ui/compone
 import { TenantLink, resolvePath }                         from '@acx-ui/react-router-dom'
 
 import {  Ul, Chevron, Li } from './styledComponents'
-export  function APList () {
+export  function APList ({ searchVal = '' }: { searchVal?: string }) {
   const { $t } = useIntl()
 
   const { timeRange } = useDateRange()
   const pagination = { pageSize: 10, defaultPageSize: 10 }
+  const [searchString, setSearchString] = useState(searchVal)
 
   const results = useApListQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    metric: 'traffic'
+    metric: 'traffic',
+    query: searchString
   })
+
+  const updateSearchString = (_: Filter, search: { searchString?: string }) => {
+    setSearchString(search.searchString!)
+  }
 
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
@@ -92,6 +99,7 @@ export  function APList () {
       dataSource={results.data?.aps as unknown as AP[]}
       pagination={pagination}
       settingsId='ap-search-table'
+      onFilterChange={updateSearchString}
     />
   </Loader>
 }

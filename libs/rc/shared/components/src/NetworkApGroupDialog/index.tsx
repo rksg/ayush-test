@@ -14,8 +14,9 @@ import {
   Spin,
   Select
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Modal,
@@ -23,7 +24,8 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useGetNetworkApGroupsQuery
+  useGetNetworkApGroupsQuery,
+  useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import {
   RadioEnum,
@@ -34,7 +36,7 @@ import {
   getVlanString,
   NetworkVenue,
   NetworkSaveData,
-  IsSecuritySupport6g
+  IsNetworkSupport6g
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -76,7 +78,7 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
   formName?: string
   networkVenue?: NetworkVenue
   venueName?: string
-  wlan?: NetworkSaveData['wlan']
+  network?: NetworkSaveData | null
   tenantId?: string
 }
 
@@ -84,7 +86,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
-  const { networkVenue, venueName, wlan, formName, tenantId } = props
+  const { networkVenue, venueName, network, formName, tenantId } = props
+  const { wlan } = network || {}
 
   const [form] = Form.useForm()
 
@@ -141,11 +144,19 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
+  const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        vlanPoolSelectOptions: data
+      }
+    }
+  })
+
 
   const RadioSelect = (props: SelectProps) => {
-    const isWPA3 = IsSecuritySupport6g(wlan?.wlanSecurity)
+    const isSupport6G = IsNetworkSupport6g(network)
     const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-    if (!triBandRadioFeatureFlag || !isWPA3) {
+    if (!triBandRadioFeatureFlag || !isSupport6G) {
       _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
     }
     return (
@@ -159,8 +170,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         { triBandRadioFeatureFlag && (
           <Select.Option
             value={RadioTypeEnum._6_GHz}
-            disabled={!isWPA3}
-            title={!isWPA3 ? disabledBandTooltip : ''}
+            disabled={!isSupport6G}
+            title={!isSupport6G ? disabledBandTooltip : ''}
           >{radioTypeEnumToString(RadioTypeEnum._6_GHz)}</Select.Option>
         )}
       </Select>
@@ -231,7 +242,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         <Col span={8}>
           <UI.FormItemRounded>
             { selected &&
-            (<VlanInput apgroup={apgroup} wlan={wlan} onChange={handleVlanInputChange}/>) }
+            (<VlanInput apgroup={apgroup} wlan={wlan} vlanPoolSelectOptions={vlanPoolSelectOptions} onChange={handleVlanInputChange}/>) }
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
