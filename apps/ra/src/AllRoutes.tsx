@@ -25,6 +25,7 @@ import Incidents                             from './pages/Incidents'
 import Layout                                from './pages/Layout'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
+import ZoneDetails                           from './pages/ZoneDetails'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
 import ApDetails                             from './pages/Wifi/ApDetails'
 import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
@@ -163,6 +164,14 @@ function AllRoutes () {
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
         </Route>
+      </Route>
+      <Route path='zones'>
+        <Route index element={<div>Zones List</div>} />
+        <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
+        <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />
+        <Route
+          path=':systemName/:zoneName/:activeTab/:activeSubTab/:categoryTab'
+          element={<ZoneDetails />} />
       </Route>
     </Route>
   </Route>)
