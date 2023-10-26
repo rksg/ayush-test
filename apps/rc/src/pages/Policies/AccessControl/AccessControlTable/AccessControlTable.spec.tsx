@@ -19,7 +19,7 @@ import {
 
 import {
   aclList, applicationDetail, avcApp, avcCat,
-  deviceDetailResponse, devicePolicyListResponse,
+  devicePolicyDetailResponse, devicePolicyListResponse,
   enhancedAccessControlList,
   enhancedApplicationPolicyListResponse,
   enhancedDevicePolicyListResponse,
@@ -90,7 +90,7 @@ describe('AccessControlTable', () => {
       rest.get(
         AccessControlUrls.getDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceDetailResponse)
+          ctx.json(devicePolicyDetailResponse)
         )
       ),
       rest.get(
