@@ -44,6 +44,7 @@ export const detailsApi = dataApi.injectEndpoints({
           ...payload
         }
       }),
+      providesTags: [{ type: 'Monitoring', id: 'AP_DETAILS' }],
       transformResponse: (response: { network: { ap: APDetails } }) => response.network.ap
     }),
     switchDetails: build.query<SwitchDetails, DetailsPayload>({
@@ -68,6 +69,7 @@ export const detailsApi = dataApi.injectEndpoints({
           ...payload
         }
       }),
+      providesTags: [{ type: 'Monitoring', id: 'SWITCH_DETAILS' }],
       transformResponse: (response:
         { network: { switch: SwitchDetails } }) => response.network.switch
     })

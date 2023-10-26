@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
