@@ -142,6 +142,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     },
     [SwitchFirmwareWizardType.skip]: async () => {
       form.validateFields()
+      saveSwitchStep()
       showActionModal({
         type: 'confirm',
         width: 460,
@@ -173,6 +174,54 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     }
   }
 
+  const saveSwitchStep = function () {
+    // eslint-disable-next-line max-len
+    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    let nonIcx8200Count = 0, icx8200Count = 0
+    let currentUpgradeSwitchList = [] as SwitchFirmware[]
+    let currentUpgradeVenueList = [] as FirmwareSwitchVenue[]
+
+    const nestedData = form.getFieldValue('nestedData')
+    const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
+
+
+    props.data.forEach((row: FirmwareSwitchVenue) => {
+      if (selectedVenueRowKeys.includes(row.id)) {
+        const version = row.switchFirmwareVersion?.id
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
+        nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
+        icx8200Count = icx8200Count +
+                  (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
+      } else if (nestedData[row.id]) {
+        nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
+          const fw = row.currentFirmware
+          if (row.switchId) {
+            currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
+          }
+          if (fw.includes('090')) { //Need use regular expression
+            filterVersions = checkCurrentVersions(fw, '', filterVersions)
+            nonIcx8200Count = nonIcx8200Count +1
+          } else if (fw.includes('100')) {
+            filterVersions = checkCurrentVersions('', fw, filterVersions)
+            icx8200Count = icx8200Count+1
+          }
+        })
+      }
+    })
+    currentUpgradeVenueList =
+            _.filter(props.data, obj =>
+              selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
+
+    setUpgradeSwitchList(currentUpgradeSwitchList)
+    setUpgradeVenueList(currentUpgradeVenueList)
+    setHasVenue(selectedVenueRowKeys.length > 0)
+    setUpgradeVersions(filterVersions)
+    setNonIcx8200Count(nonIcx8200Count)
+    setIcx8200Count(icx8200Count)
+    return true
+  }
+
   return <Modal
     title={wizardTitle[wizardType]}
     type={ModalType.ModalStepsForm}
@@ -197,51 +246,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
           title={$t({ defaultMessage: 'Select Switch(es)' })}
           layout='horizontal'
           onFinish={async () => {
-            // eslint-disable-next-line max-len
-            let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-            let nonIcx8200Count = 0, icx8200Count = 0
-            let currentUpgradeSwitchList = [] as SwitchFirmware[]
-            let currentUpgradeVenueList = [] as FirmwareSwitchVenue[]
-
-            const nestedData = form.getFieldValue('nestedData')
-            const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
-
-
-            props.data.forEach((row: FirmwareSwitchVenue) => {
-              if (selectedVenueRowKeys.includes(row.id)) {
-                const version = row.switchFirmwareVersion?.id
-                const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-                filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
-                nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-                icx8200Count = icx8200Count +
-                  (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-              } else if (nestedData[row.id]) {
-                nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
-                  const fw = row.currentFirmware
-                  if (row.switchId) {
-                    currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
-                  }
-                  if (fw.includes('090')) { //Need use regular expression
-                    filterVersions = checkCurrentVersions(fw, '', filterVersions)
-                    nonIcx8200Count = nonIcx8200Count +1
-                  } else if (fw.includes('100')) {
-                    filterVersions = checkCurrentVersions('', fw, filterVersions)
-                    icx8200Count = icx8200Count+1
-                  }
-                })
-              }
-            })
-            currentUpgradeVenueList =
-            _.filter(props.data, obj =>
-              selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
-
-            setUpgradeSwitchList(currentUpgradeSwitchList)
-            setUpgradeVenueList(currentUpgradeVenueList)
-            setHasVenue(selectedVenueRowKeys.length > 0)
-            setUpgradeVersions(filterVersions)
-            setNonIcx8200Count(nonIcx8200Count)
-            setIcx8200Count(icx8200Count)
-            return true
+            saveSwitchStep()
           }}
         >
           <SelectSwitchStep

@@ -250,7 +250,6 @@ export const SelectSwitchStep = (
         () => <></>
       }
       expandable={{ expandedRowRender: () => { return <></> } }}
-      // onChange={tableQuery.handleTableChange}
       rowKey='switchId'
       rowSelection={{
         type: 'checkbox',
@@ -259,7 +258,8 @@ export const SelectSwitchStep = (
           let disabled = false
           if (wizardtype === SwitchFirmwareWizardType.skip) {
             disabled = _.isEmpty(record.switchNextSchedule)
-          } else if (wizardtype === SwitchFirmwareWizardType.schedule) {
+          } else if (wizardtype === SwitchFirmwareWizardType.schedule ||
+            wizardtype === SwitchFirmwareWizardType.update) {
             disabled = _.isEmpty(record.currentFirmware)
           }
           return {
@@ -305,7 +305,7 @@ export const SelectSwitchStep = (
   const setSearchResultData = async function (searchText: string) {
     let selectedKey = [] as Key[]
     const switchListPayload = {
-      venueId: data.map(d => d.id),
+      venueIdList: data.map(d => d.id),
       search: searchText
     }
     const searchSwitchList = (await getSwitchList({
@@ -388,38 +388,23 @@ export const SelectSwitchStep = (
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedSearchSwitchRowKeys,
+            getCheckboxProps: (record) => {
+              let disabled = false
+              if (wizardtype === SwitchFirmwareWizardType.skip) {
+                disabled = _.isEmpty(record.switchNextSchedule)
+              } else if (wizardtype === SwitchFirmwareWizardType.schedule ||
+                wizardtype === SwitchFirmwareWizardType.update) {
+                disabled = _.isEmpty(record.currentFirmware)
+              }
+              return {
+                disabled
+              }
+            },
             onChange: (selectedKeys, selectedRows) => {
               const addedSwitch = _.difference(selectedKeys, selectedSearchSwitchRowKeys)
               const deletedSwitch = _.difference(selectedSearchSwitchRowKeys, selectedKeys)
 
-              if (addedSwitch.length === 1) {
-                const currentRow = selectedRows.filter(s => s.id === selectedRows[0].id)[0]
-
-                const selectedRow =
-                  selectedSwitchRowKeys[currentRow.venueId]?.concat(addedSwitch[0])
-                  ?? [addedSwitch[0]]
-
-                setSelectedSwitchRowKeys({
-                  ...selectedSwitchRowKeys,
-                  [currentRow.venueId]: selectedRow
-                })
-
-                const currentVenue = data.filter(d => d.id === selectedRows[0].venueId)[0]
-                if ((currentVenue.switchCount + currentVenue.aboveTenSwitchCount)
-                  === selectedRow.length) {
-                  setSelectedVenueRowKeys([...selectedVenueRowKeys, currentVenue.id])
-                }
-
-                setNestedData({
-                  ...nestedData,
-                  [currentRow.venueId]: {
-                    initialData: nestedData[currentRow.venueId]?.initialData || [],
-                    selectedData: nestedData[currentRow.venueId]?.selectedData.concat(currentRow)
-                    || currentRow
-                  }
-                })
-
-              } else if (addedSwitch.length > 1) {
+              if (addedSwitch.length > 0) {
                 let newSelectedSwitchRowKeys = selectedSwitchRowKeys
                 let newNestedData = nestedData
                 let newSelectedVenueRowKeys = selectedVenueRowKeys
