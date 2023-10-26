@@ -25,7 +25,7 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
+import { AnalyticsFilter, DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -72,9 +72,13 @@ export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
   return { ...pathFilters, ...getDateRangeFilter(DateRange.last7Days) }
 }
 
-const DashboardView = () => {
+type DashboardViewProps = {
+  filters: AnalyticsFilter & Omit<DateFilter, 'setDateFilterState'>
+  pathFilters: PathFilter & Omit<DateFilter, 'setDateFilterState'>
+}
+
+const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
-  const { filters, pathFilters } = useDashBoardUpdatedFilters()
   const userProfile = getUserProfile()
   const hasRecommendation =
     userProfile.selectedTenant.permissions[
@@ -149,8 +153,14 @@ const DashboardView = () => {
 
 export default function Dashboard () {
   const { $t } = useIntl()
-  const { filters, startDate, endDate, range, setDateFilterState } =
-    useDashBoardUpdatedFilters()
+  const {
+    filters,
+    pathFilters,
+    startDate,
+    endDate,
+    range,
+    setDateFilterState
+  } = useDashBoardUpdatedFilters()
 
   return (
     <>
@@ -173,7 +183,7 @@ export default function Dashboard () {
           </>
         ]}
       />
-      <DashboardView />
+      <DashboardView filters={filters} pathFilters={pathFilters} />
     </>
   )
 }

@@ -23,7 +23,8 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   NetworkVenue,
-  redirectPreviousPage
+  redirectPreviousPage,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -118,6 +119,15 @@ export default function NetworkForm (props:{
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
+    }
+
+    // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
+    if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
+        && !saveData.isCloudpathEnabled) {
+      delete saveState.authRadius
+      delete saveState.authRadiusId
+      delete saveData?.authRadius
+      delete saveData?.authRadiusId
     }
 
     const newSavedata = { ...saveState, ...saveData }

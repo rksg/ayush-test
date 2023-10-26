@@ -1,6 +1,7 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import userEvent         from '@testing-library/user-event'
+import { Form }          from 'antd'
+import { rest }          from 'msw'
+import { BrowserRouter } from 'react-router-dom'
 
 import { useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
 import { DpskUrls, RulesManagementUrlsInfo }                 from '@acx-ui/rc/utils'
@@ -10,6 +11,14 @@ import { fireEvent, mockServer, render, renderHook, screen } from '@acx-ui/test-
 import { mockedDpskList, mockedGetFormData, mockedPolicySet } from './__tests__/fixtures'
 import DpskSettingsForm                                       from './DpskSettingsForm'
 import { transferSaveDataToFormFields }                       from './parser'
+
+const mockedUsedNavigate = jest.fn()
+const mockedUseLocation = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => mockedUseLocation
+}))
 
 describe('DpskSettingsForm', () => {
   beforeEach(() => {
@@ -72,7 +81,9 @@ describe('DpskSettingsForm', () => {
 
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <BrowserRouter>
+          <Form><DpskSettingsForm /></Form>
+        </BrowserRouter>
       </Provider>
     )
 
@@ -83,5 +94,25 @@ describe('DpskSettingsForm', () => {
 
     await userEvent.click(policySetOption)
     expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
+  })
+
+  it('click add button and redirect to adaptive policy set', async () => {
+    mockServer.use(
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
+      )
+    )
+
+    render(
+      <Provider>
+        <BrowserRouter>
+          <Form><DpskSettingsForm /></Form>
+        </BrowserRouter>
+      </Provider>
+    )
+
+    await userEvent.click(await screen.findByText('Add'))
+    expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 })

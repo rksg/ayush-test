@@ -53,9 +53,10 @@ export const EdgeDhcp = () => {
       'subnetMask',
       'poolRange',
       'gateway',
-      'edgeId'
+      'edgeId',
+      'utilization'
     ],
-    filters: { edgeIds: [serialNumber] },
+    filters: { edgeId: [serialNumber] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
@@ -117,7 +118,7 @@ export const EdgeDhcp = () => {
         onOk: () => {
           if((poolTableQuery.data?.totalCount || 0) > 0) {
             const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = poolTableQuery.data?.data[0].edgeIds || []
+            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
             const payload = {
               edgeIds: [
                 ...edgeIds.filter(id => id !== serialNumber)
