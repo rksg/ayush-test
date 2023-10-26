@@ -277,9 +277,11 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
                   defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
                 }))
               }
-              return Promise.reject($t({
-                defaultMessage: 'Must reserve 2 additional rule slots for PlayStation'
-              }))
+              if (deviceOSRuleList.length >= 30) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation'
+                }))
+              }
             }
             if (value === OsVendorEnum.Xbox) {
               // eslint-disable-next-line max-len

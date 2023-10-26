@@ -930,6 +930,39 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Cancel')[1])
 
+    await deleteTheFirstRowOfRules()
+
+    await screen.findByText(/rules \(29\)/i)
+
+    // max = 32 in normal case without PlayStation and Xbox
+    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    await screen.findByRole('option', { name: 'PlayStation' })
+
+    // able to select PlayStation with 29 existing normal rules
+    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation/i)).toBeNull()
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/rules \(30\)/i)
+
+    // max = 30 for the case of PlayStation in the existing rules
+    expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
+
     await userEvent.click(screen.getAllByText('Cancel')[0])
 
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
