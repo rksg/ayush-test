@@ -23,6 +23,21 @@ const tenantDetail = {
   upgradeGroup: 'production'
 }
 
+const tenantNonVarDetail = {
+  createdDate: '2022-12-24T01:06:03.205+00:00',
+  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  id: '3061bd56e37445a8993ac834c01e2710',
+  isActivated: true,
+  maintenanceState: false,
+  name: 'Din Tai Fung',
+  ruckusUser: false,
+  status: 'active',
+  tenantType: 'MSP_NON_VAR',
+  updatedDate: '2022-12-24T01:06:05.021+00:00',
+  upgradeGroup: 'production'
+}
+
 const userProfile1 = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -285,4 +300,24 @@ describe('Layout', () => {
       search: ''
     })
   })
+  it('should render layout correctly for non-var', async () => {
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantNonVarDetail }
+    })
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(screen.queryByRole('menuitem', { name: 'Var Customers' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+  })
+
 })

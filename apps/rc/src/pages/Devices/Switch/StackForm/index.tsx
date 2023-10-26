@@ -228,7 +228,7 @@ export function StackForm () {
         const stackMembersList = switchDetail?.activeSerial
           ? (await getStackMemberList({
             params: { tenantId, switchId }, payload: stackMembersPayload
-          }, true))
+          }, false))
           : []
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
@@ -248,7 +248,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 !!switchDetail.cliApplied ||
-                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
           })
 
@@ -265,7 +266,7 @@ export function StackForm () {
           filters: {
             venueId: [venueId],
             isStack: [false],
-            deviceStatus: [SwitchStatusEnum.OPERATIONAL],
+            deviceStatus: [SwitchStatusEnum.OPERATIONAL, SwitchStatusEnum.FIRMWARE_UPD_FAIL],
             syncedSwitchConfig: [true],
             configReady: [true]
           },
@@ -275,7 +276,7 @@ export function StackForm () {
         }
         const switchList = venueId
           ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
-          }, true))?.data?.data
+          }, false))?.data?.data
           : []
 
         const switchTableData = stackSwitches?.map((serialNumber, index) => ({

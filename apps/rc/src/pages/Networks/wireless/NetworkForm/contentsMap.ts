@@ -71,8 +71,8 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
     description: 'WLAN security type - WEP'
   }),
   [WlanSecurityEnum.WPA23Mixed]: defineMessage({
-    defaultMessage: 'WPA3/WPA2 Mixed',
-    description: 'WLAN security type - WPA3/WPA2 Mixed'
+    defaultMessage: 'WPA2/WPA3 Mixed',
+    description: 'WLAN security type - WPA2/WPA3 Mixed'
   }),
   [WlanSecurityEnum.WPA3]: defineMessage({
     defaultMessage: 'WPA3',
