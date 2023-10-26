@@ -44,6 +44,38 @@ describe('ZoneDetails', () => {
     expect(await screen.findByText('zoneName')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
   })
+  it('should render clients tab correctly', async () => {
+    const params = {
+      systemName: 'systemName',
+      zoneName: 'zoneName',
+      activeTab: 'clients'
+    }
+    render(<ZoneDetails />, {
+      wrapper: Provider,
+      route: {
+        params,
+        path: '/ai/zones/:systemName/:zoneName/:activeTab'
+      }
+    })
+    expect(await screen.findByText('zoneName')).toBeVisible()
+    expect(await screen.findByText('clients tab')).toBeVisible()
+  })
+  it('should render devices tab correctly', async () => {
+    const params = {
+      systemName: 'systemName',
+      zoneName: 'zoneName',
+      activeTab: 'devices'
+    }
+    render(<ZoneDetails />, {
+      wrapper: Provider,
+      route: {
+        params,
+        path: '/ai/zones/:systemName/:zoneName/:activeTab'
+      }
+    })
+    expect(await screen.findByText('zoneName')).toBeVisible()
+    expect(await screen.findByText('devices tab')).toBeVisible()
+  })
   it('should render navigate tabs correctly', async () => {
     const params = {
       systemName: 'systemName',

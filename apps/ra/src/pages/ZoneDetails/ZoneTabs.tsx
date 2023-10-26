@@ -22,6 +22,14 @@ function VenueTabs () {
         key='analytics'
       />
       <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Clients' })}
+        key='clients'
+      />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Devices' })}
+        key='devices'
+      />
+      <Tabs.TabPane
         tab={$t({ defaultMessage: 'Networks' })}
         key='networks'
       />
