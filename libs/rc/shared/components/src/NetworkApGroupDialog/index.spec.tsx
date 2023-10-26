@@ -52,7 +52,7 @@ describe('NetworkApGroupDialog', () => {
       venueName: venueName,
       tenantId: params.tenantId,
       networkVenue: networkVenue_allAps,
-      wlan: network.wlan
+      network: network
     }
     const onOk = jest.fn()
 
