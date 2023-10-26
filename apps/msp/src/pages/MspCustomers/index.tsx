@@ -704,6 +704,9 @@ export function MspCustomers () {
   }
 
   const IntegratorTable = () => {
+    const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
+
     const tableQuery = useTableQuery({
       useQuery: useIntegratorCustomerListQuery,
       defaultPayload: integratorPayload,
@@ -711,6 +714,20 @@ export function MspCustomers () {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       }
     })
+
+    const rowActions: TableProps<MspEc>['rowActions'] = [
+      {
+        label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        visible: (selectedRows) => {
+          const len = selectedRows.length
+          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+        },
+        onClick: (selectedRows) => {
+          const selectedEcIds = selectedRows.map(item => item.id)
+          setSelEcTenantIds(selectedEcIds)
+          setDrawerScheduleFirmwareVisible(true)
+        }
+      }]
 
     return (
       <Loader states={[
@@ -724,7 +741,14 @@ export function MspCustomers () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
+        {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
+          visible={drawerScheduleFirmwareVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerScheduleFirmwareVisible}
+        />}
       </Loader>
     )
   }
