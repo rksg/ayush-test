@@ -10,7 +10,7 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
-export const apDetailsFixture = {
+const apDetailsFixture = {
   network: {
     switch: {
       name: 'AP-Name',
@@ -36,8 +36,8 @@ export const apDetailsFixture = {
 describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'ApDetails', {
-      data: { apDetailsFixture }
+    mockGraphqlQuery(dataApiURL, 'APDetails', {
+      data: apDetailsFixture
     })
   })
 
