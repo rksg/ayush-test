@@ -144,7 +144,7 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
       render: (_, { name, mac }) =>
-        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
+        <TenantLink to={`devices/wifi/${mac}/details/ai`}>{name}</TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
