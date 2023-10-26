@@ -5,8 +5,8 @@ import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'ant
 import { useIntl }                                                     from 'react-intl'
 import { useParams }                                                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Tooltip, showActionModal }      from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -40,6 +40,7 @@ export function MeshNetwork () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
   const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
@@ -101,6 +102,8 @@ export function MeshNetwork () {
 
       setMeshRadioType(radioType || '5-GHz')
       setMeshZeroTouchEnabled(zeroTouchEnabled)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Mesh-Network')))])
     }
   }, [data])
 

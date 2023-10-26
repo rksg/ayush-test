@@ -4,7 +4,7 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Loader, StepsForm }                                                  from '@acx-ui/components'
+import { AnchorContext, Loader, StepsForm }                                   from '@acx-ui/components'
 import { RadiusOptionsForm }                                                  from '@acx-ui/rc/components'
 import { useGetVenueRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
 import { VenueRadiusOptions }                                                 from '@acx-ui/rc/utils'
@@ -23,6 +23,7 @@ export function RadiusOptions () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
   const getVenueRadiusOptions = useGetVenueRadiusOptionsQuery({ params: { venueId } })
@@ -35,9 +36,11 @@ export function RadiusOptions () {
     const { data, isLoading } = getVenueRadiusOptions
     if (isLoading === false && data) {
       form.setFieldsValue(data)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('RADIUS-Options')))])
     }
 
-  }, [ getVenueRadiusOptions ])
+  }, [form, getVenueRadiusOptions, setReadyToScroll])
 
 
   const handleUpdateRadiusOptions = async () => {
