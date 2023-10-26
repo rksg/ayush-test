@@ -30,7 +30,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
       searchable: true,
       sorter: { compare: sortProp('switchName', defaultSort) },
       render: (_, row : Switch, __, highlightFn) => (
-        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.switchMac}/serial/details/incidents`}>
           {highlightFn(row.switchName)}</TenantLink>
       )
     },
