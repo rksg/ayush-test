@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch,Button } from 'antd'
 import { isEqual }                            from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { Loader, StepsFormLegacy, showToast, showActionModal } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
@@ -37,6 +37,7 @@ export function ApSnmp () {
     editServerContextData,
     setEditServerContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const [stateOfEnableApSnmp, setEnableApSnmp] = useState(false)
   const [stateOfVenueApSnmpSettings, setStateOfVenueApSnmpSettings] =
@@ -58,8 +59,10 @@ export function ApSnmp () {
       const { enableApSnmp, apSnmpAgentProfileId } = settings
       setEnableApSnmp(enableApSnmp)
       setStateOfVenueApSnmpSettings({ enableApSnmp, apSnmpAgentProfileId })
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('AP-SNMP')))])
     }
-  }, [RetrievedVenueApSnmpSettings])
+  }, [RetrievedVenueApSnmpSettings, setReadyToScroll])
 
   const handleApSnmpSwitchEnableChange = (newState: boolean) => {
     setEnableApSnmp(newState)

@@ -60,11 +60,6 @@ export function AccessPointLED () {
       isDirty: false,
       setData: setTableData
     })
-
-    setEditAdvancedContextData({
-      ...editAdvancedContextData,
-      updateAccessPointLED: handleUpdateSetting
-    })
   }, [navigate])
 
 
