@@ -20,6 +20,7 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 
+import { SwitchFirmwareWizardType } from '..'
 import {
   getNextScheduleTpl,
   getSwitchNextScheduleTplTooltip,
@@ -103,11 +104,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type SelectSwitchStepProps = {
-  data: FirmwareSwitchVenue[]
+  data: FirmwareSwitchVenue[],
+  wizardtype?: SwitchFirmwareWizardType
 }
 
 export const SelectSwitchStep = (
-  { data }: SelectSwitchStepProps) => {
+  { data, wizardtype }: SelectSwitchStepProps) => {
 
   const { form } = useStepFormContext()
   const columns = useColumns()
@@ -253,6 +255,17 @@ export const SelectSwitchStep = (
       rowSelection={{
         type: 'checkbox',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
+        getCheckboxProps: (record) => {
+          let disabled = false
+          if (wizardtype === SwitchFirmwareWizardType.skip) {
+            disabled = _.isEmpty(record.switchNextSchedule)
+          } else if (wizardtype === SwitchFirmwareWizardType.schedule) {
+            disabled = _.isEmpty(record.currentFirmware)
+          }
+          return {
+            disabled
+          }
+        },
         onChange: (selectedKeys, selectedRows) => {
           const currentSwitchList = nestedData[record.id]?.initialData
           const result = { ...nestedData,
@@ -520,6 +533,7 @@ export const SelectSwitchStep = (
             enableResizableColumn={false}
             type={'tall'}
             dataSource={data}
+
             expandable={{
               onExpand: handleExpand,
               expandedRowRender: expandedRowRenderFunc,
@@ -530,10 +544,19 @@ export const SelectSwitchStep = (
             rowSelection={{
               type: 'checkbox',
               selectedRowKeys: selectedVenueRowKeys,
-              getCheckboxProps: record => ({
-                indeterminate: isIndeterminate(record),
-                name: record.name
-              }),
+              getCheckboxProps: (record) => {
+                let disabled = false
+
+                if (wizardtype === SwitchFirmwareWizardType.skip) {
+                  disabled = _.isEmpty(record.nextSchedule)
+                }
+
+                return {
+                  disabled,
+                  indeterminate: isIndeterminate(record),
+                  name: record.name
+                }
+              },
               onChange: (selectedKeys) => {
                 const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
                 const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)

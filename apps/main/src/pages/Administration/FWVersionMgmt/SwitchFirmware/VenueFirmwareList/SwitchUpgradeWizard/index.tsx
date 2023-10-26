@@ -244,7 +244,9 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
             return true
           }}
         >
-          <SelectSwitchStep data={props.data as FirmwareSwitchVenue[]} />
+          <SelectSwitchStep
+            data={props.data as FirmwareSwitchVenue[]}
+            wizardtype={wizardType} />
         </StepsForm.StepForm>
 
         {(wizardType !== SwitchFirmwareWizardType.skip) &&
