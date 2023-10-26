@@ -132,6 +132,7 @@ export function MspCustomers () {
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
+  const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -240,7 +241,8 @@ export function MspCustomers () {
     searchString: '',
     filters: {
       mspTenantId: [parentTenantid],
-      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+      tenantType: isTechPartnerQueryEcsEnabled ? [AccountType.MSP_EC]
+        : [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
     },
     fields: [
       'check-all',
