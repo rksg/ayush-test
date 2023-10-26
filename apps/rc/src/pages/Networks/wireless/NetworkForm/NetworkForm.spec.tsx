@@ -23,7 +23,8 @@ import {
   successResponse,
   cloudpathResponse,
   networkDeepResponse,
-  portalList
+  portalList,
+  vlanList
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
 
@@ -114,8 +115,9 @@ describe('NetworkForm', () => {
         MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macRegistrationList))
       ),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+      rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
+        res(ctx.json(vlanList))
+      )
     )
   })
 
