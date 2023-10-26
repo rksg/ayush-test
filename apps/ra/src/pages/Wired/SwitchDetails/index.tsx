@@ -1,7 +1,6 @@
 import { useHeaderExtra } from '@acx-ui/analytics/components'
 import { PageHeader }     from '@acx-ui/components'
 import { useParams }      from '@acx-ui/react-router-dom'
-//import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
 
 import { SwitchContextProvider } from './SwitchContextProvider'
 import { SwitchIncidentsTab }    from './SwitchIncidentsTab'

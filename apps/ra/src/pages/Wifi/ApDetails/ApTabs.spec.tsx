@@ -5,7 +5,6 @@ import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
 import ApTabs from './ApTabs'
 
-
 const params= { apId: 'ap-id' }
 const mockedUsedNavigate = jest.fn()
 

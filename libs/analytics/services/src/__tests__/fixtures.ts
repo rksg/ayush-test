@@ -386,8 +386,6 @@ export const emptySearchFixture = {
   }
 }
 
-
-
 export const apDetailsFixture = {
   network: {
     ap: {

@@ -1,11 +1,7 @@
 import { ReactNode } from 'react'
 
-// import { pick }              from 'lodash'
-// import { useIntl }           from 'react-intl'
 import { useParams, Params } from 'react-router-dom'
 
-//import { Loader } from '@acx-ui/components'
-//import { useApListQuery } from '@acx-ui/rc/services'
 import { useSwitchDetailsQuery } from '@acx-ui/analytics/services'
 import { SwitchContext }         from '@acx-ui/rc/utils'
 import { useDateFilter }         from '@acx-ui/utils'
@@ -18,7 +14,7 @@ export function SwitchContextProvider (props: { children: ReactNode }) {
   const switchDetailsResult = useSwitchDetailsQuery({
     startDate,
     endDate,
-    mac: params.switchId as string, //'20:58:69:3B:D2:40'
+    mac: params.switchId as string,
     path: [
       {
         type: 'network',
