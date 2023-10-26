@@ -49,12 +49,16 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
 }
 
 export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
-  wlanSecurity?: WlanSecurityEnum,
-  aaaWlanSecurity? : WlanSecurityEnum,
-  dpskWlanSecurity? : WlanSecurityEnum,
-  wisprWlanSecurity?: WlanSecurityEnum) => {
+  security?: {
+    wlanSecurity?: WlanSecurityEnum,
+    aaaWlanSecurity? : WlanSecurityEnum,
+    dpskWlanSecurity? : WlanSecurityEnum,
+    wisprWlanSecurity?: WlanSecurityEnum
+ }
+) => {
 
   // add Network mode
+  const { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity } = security || {}
   if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) return true
   if (IsSecuritySupport6g(wlanSecurity) || IsSecuritySupport6g(aaaWlanSecurity) || IsSecuritySupport6g(wisprWlanSecurity)) return true
   if (getIsOwe(wlanData)) return true
@@ -154,12 +158,13 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const mloOptions = getInitMloOptions(dataMloOptions)
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
+
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity']) // for PSK network
   const aaaWlanSecurity = useWatch('wlanSecurity') // for AAA network
   const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
   const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity)
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
 
   useEffect(() => {
     const updateMloOptions = () => {
