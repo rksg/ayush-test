@@ -824,9 +824,6 @@ export function RadioSettings () {
   }
 
   const handleStateOfIsUseVenueSettingsChange = () => {
-    const currentSettings = formRef?.current?.getFieldsValue()
-    const currentCachedSettings = cachedDataRef.current
-    const venueSettings = venueRef.current
     // 1. set updatedState
     const updatedState = summarizedStateOfIsUseVenueSettings(
       toggleState(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag),
@@ -836,6 +833,8 @@ export function RadioSettings () {
       isEnablePerApRadioCustomizationFlag)
     setStateOfIsUseVenueSettings(updatedState)
     isUseVenueSettingsRef.current = updatedState
+
+    const currentSettings = formRef?.current?.getFieldsValue()
     // 2. save cached if isUseVenue is true
     // (that means toggle radio settings from useCustomize to useVenue, therefore we save current customized settings to cache for restoring later)
     const isUseVenue= isCurrentTabUseVenueSettings(updatedState, currentTab, isEnablePerApRadioCustomizationFlag)
@@ -843,7 +842,7 @@ export function RadioSettings () {
       cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab, isEnablePerApRadioCustomizationFlag)
     }
     // 3. update data
-    const useSettings = isUseVenue ? venueSettings : currentCachedSettings
+    const useSettings = isUseVenue ? venueRef.current : cachedDataRef.current
     const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab, isEnablePerApRadioCustomizationFlag) : undefined
     if (updatedSettings) {
       updateFormData(updatedSettings)
