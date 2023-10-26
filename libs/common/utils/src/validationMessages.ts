@@ -38,6 +38,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  sameEmailDomain: defineMessage({
+    defaultMessage: 'Please enter same email domain(s)',
+    description: 'Validation - same email domains checks'
+  }),
   ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
