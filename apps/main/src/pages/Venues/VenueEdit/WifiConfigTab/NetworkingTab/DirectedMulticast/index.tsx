@@ -4,7 +4,7 @@ import { Col, Form, Row, Switch } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader }                           from '@acx-ui/components'
+import { AnchorContext, Loader }            from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation
@@ -24,7 +24,7 @@ export function DirectedMulticast () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
-
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const directedMulticast = useGetVenueDirectedMulticastQuery({ params: { tenantId, venueId } })
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
@@ -60,8 +60,10 @@ export function DirectedMulticast () {
       setIsWiredEnabled(wiredEnabled)
       setIsWirelessEnabled(wirelessEnabled)
       setIsNetworkEnabled(networkEnabled)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Directed-Multicast')))])
     }
-  }, [ directedMulticast?.data ])
+  }, [directedMulticast?.data, setReadyToScroll])
 
   useEffect(() => {
     if (isUserSetting) {
