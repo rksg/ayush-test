@@ -175,7 +175,7 @@ describe('IncidentTable: services', () => {
     {
       ...sampleIncidentWithTableFields,
       relatedIncidents: [incidentValues],
-      children: [{ ...sampleIncidentWithTableFields, children: undefined }]
+      children: [sampleIncidentWithTableFields]
     }
   ]
 

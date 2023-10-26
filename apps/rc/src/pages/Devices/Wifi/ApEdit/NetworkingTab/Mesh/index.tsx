@@ -4,7 +4,7 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useParams }                                from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal }                                              from '@acx-ui/components'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal, AnchorContext }                               from '@acx-ui/components'
 import { useGetApMeshSettingsQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
 import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended }                                    from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
@@ -57,6 +57,7 @@ export function ApMesh () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const getApMesh = useGetApMeshSettingsQuery({ params: { serialNumber } })
   const [updateApMesh, { isLoading: isUpdateingApMesh } ] = useUpdateApMeshSettingsMutation()
@@ -119,6 +120,8 @@ export function ApMesh () {
         updateStates(meshData)
         setInitData(meshData)
         setFormInitializing(false)
+
+        setReadyToScroll?.(r => [...(new Set(r.concat('Mesh')))])
       }
 
       setData()
