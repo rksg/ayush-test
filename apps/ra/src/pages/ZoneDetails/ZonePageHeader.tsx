@@ -38,7 +38,7 @@ function ZonePageHeader () {
   const enableTimeFilter = () => !['networks'].includes(activeTab as string)
   return (
     <PageHeader
-      title={zoneName || ''}
+      title={zoneName}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Zones' }), link: '/zones' }
       ]}
