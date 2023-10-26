@@ -44,7 +44,7 @@ describe('Anchor', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it.skip('should scroll to anchor correctly', async () => {
+  it('should scroll to anchor correctly', async () => {
     jest.useFakeTimers()
     render(
       <MemoryRouter initialEntries={[{

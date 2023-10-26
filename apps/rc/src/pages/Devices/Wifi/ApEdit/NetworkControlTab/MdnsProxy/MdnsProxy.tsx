@@ -5,6 +5,7 @@ import { useIntl }      from 'react-intl'
 import styled           from 'styled-components/macro'
 
 import {
+  AnchorContext,
   GridCol,
   GridRow,
   Loader,
@@ -72,6 +73,7 @@ export function MdnsProxy () {
     editNetworkControlContextData,
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const {
     data: apDetail,
@@ -90,6 +92,12 @@ export function MdnsProxy () {
       setIsFormChangedHandled(true)
     }
   }, [isFormChangedHandled])
+
+  useEffect(() => {
+    if (apDetail && !isLoading) {
+      setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Proxy')))])
+    }
+  }, [apDetail, isLoading, setReadyToScroll])
 
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()
@@ -163,7 +171,7 @@ export function MdnsProxy () {
             layout='horizontal'
           >
             <GridRow>
-              <GridCol col={{ span: 7 }}>
+              <GridCol col={{ span: 7 }} style={{ minWidth: 400 }}>
                 <MdnsProxyFormField serviceId={apDetail.multicastDnsProxyServiceProfileId} />
               </GridCol>
             </GridRow>
