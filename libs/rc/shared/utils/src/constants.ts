@@ -121,7 +121,8 @@ export enum ServiceType {
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
-  RESIDENT_PORTAL = 'Resident Portal'
+  RESIDENT_PORTAL = 'Resident Portal',
+  EDGE_CENTRALIZED_FORWARDING = 'Centralized Forwarding'
 }
 
 export enum ServiceStatus {
@@ -236,6 +237,7 @@ export enum ConfigStatusEnum {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
   NO_CONFIG_CHANGE = 'NO_CONFIG_CHANGE',
+  NOTIFY_IN_PROGRESS = 'NOTIFY_IN_PROGRESS',
   NOTIFY_SUCCESS = 'NOTIFY_SUCCESS',
   FAILED_NO_RESPONSE = 'FAILED_NO_RESPONSE',
   PENDING ='PENDING',

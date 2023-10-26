@@ -3,12 +3,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { render, screen, mockServer }                    from '@acx-ui/test-utils'
+import { FirmwareUrlsInfo, SwitchStatusEnum, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { render, screen, mockServer }                                      from '@acx-ui/test-utils'
 
-import {
-  jwtToken } from './__tests__/fixtures'
+import { switchFirmwareVenue } from '../__tests__/fixtures'
+
+import { jwtToken }     from './__tests__/fixtures'
 import SwitchPageHeader from './SwitchPageHeader'
 
 import { SwitchDetailsContext } from '.'
@@ -95,7 +96,9 @@ describe('SwitchPageHeader', () => {
       rest.post( SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(switchOnlineData))),
       rest.post (SwitchUrlsInfo.reboot.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchFirmwareVenue)))
     )
   })
   it.skip('should render switch correctly', async () => {

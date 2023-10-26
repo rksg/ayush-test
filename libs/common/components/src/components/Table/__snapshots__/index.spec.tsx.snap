@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 jOHJbe"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 AvZcX"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -185,7 +185,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 blcMwD"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 eWMXXW"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -370,7 +370,7 @@ exports[`Table component renders stickyPagination table 1`] = `
     id="root"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jTnuTS"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 iYQNlx"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
@@ -668,7 +668,7 @@ exports[`Table component renders stickyPagination table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -965,7 +965,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1362,7 +1362,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1863,7 +1863,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div

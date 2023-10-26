@@ -5,7 +5,7 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, showActionModal, StepsFormLegacy } from '@acx-ui/components'
+import { AnchorContext, Loader, showActionModal, StepsFormLegacy } from '@acx-ui/components'
 import {
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation
@@ -37,6 +37,7 @@ export function MdnsFencing () {
     editServerContextData,
     setEditServerContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const getVenueMdnsFencing = useGetVenueMdnsFencingQuery({ params: { venueId } })
   const [updateVenueMdnsFencing,
@@ -74,8 +75,10 @@ export function MdnsFencing () {
     const { data: venueMdnsFencing, isLoading } = getVenueMdnsFencing || {}
     if (isLoading === false && venueMdnsFencing) {
       onInit(venueMdnsFencing, true)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Fencing')))])
     }
-  }, [getVenueMdnsFencing])
+  }, [getVenueMdnsFencing, setReadyToScroll])
 
   useEffect(() => {
     if (isUserSetting.current) {

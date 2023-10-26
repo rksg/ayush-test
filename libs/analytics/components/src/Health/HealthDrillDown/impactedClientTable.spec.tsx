@@ -75,7 +75,8 @@ describe('ImpactedClientsTable', () => {
                 manufacturer: 'Intel Corporate',
                 ssid: 'Divya_1_hour',
                 hostname: 'DESKTOP-K1PAM9U',
-                username: 'DPSK_User_8709'
+                username: 'DPSK_User_8709',
+                osType: 'osType'
               }
             })
           }
@@ -99,6 +100,7 @@ describe('ImpactedClientsTable', () => {
     )
     expect(await screen.findByText('Top 10 Impacted Clients')).toBeVisible()
     expect(await screen.findAllByText('Intel Corporate')).toHaveLength(10)
+    expect(await screen.findAllByText('osType')).toHaveLength(10)
   })
 })
 

@@ -76,6 +76,13 @@ export function ClientsList ({ searchVal='' }: { searchVal?: string }) {
       sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      dataIndex: 'manufacturer',
+      key: 'manufacturer',
+      searchable: true,
+      sorter: { compare: sortProp('manufacturer', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'OS Type' }),
       dataIndex: 'osType',
       key: 'osType',
