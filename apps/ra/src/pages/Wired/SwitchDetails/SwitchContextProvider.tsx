@@ -27,11 +27,6 @@ export function SwitchContextProvider (props: { children: ReactNode }) {
     ...switchDetailsResult?.data as unknown as Params<string>
   }
   return <SwitchContext.Provider value={values}>
-    {/* <Loader states={[results]}>{
-      data && data.length
-        ? props.children
-        : $t({ defaultMessage: 'Could not find AP {apId}' }, params)
-    }</Loader> */}
     {props.children}
   </SwitchContext.Provider>
 }

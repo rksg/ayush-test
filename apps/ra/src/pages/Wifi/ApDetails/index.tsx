@@ -7,7 +7,6 @@ import { ApReportsTab }      from './ApReportsTab'
 
 
 const tabs = {
-  //overview: ApReportsTab,
   ai: ApAnalyticsTab,
   reports: ApReportsTab
 }
