@@ -167,6 +167,7 @@ function AllRoutes () {
       </Route>
       <Route path='zones'>
         <Route index element={<div>Zones List</div>} />
+        <Route path=':systemName/:zoneName' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />
         <Route

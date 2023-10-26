@@ -16,7 +16,7 @@ function VenueTabs () {
     })
 
   return (
-    <Tabs onChange={onTabChange} activeKey={activeTab}>
+    <Tabs onChange={onTabChange} activeKey={activeTab} defaultActiveKey='analytics'>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'

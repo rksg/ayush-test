@@ -9,7 +9,7 @@ const tabs = {
 
 export default function ZoneDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || tabs['analytics']
   return <>
     <ZonePageHeader />
     { Tab && <Tab /> }

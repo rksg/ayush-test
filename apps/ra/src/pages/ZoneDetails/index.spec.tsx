@@ -28,6 +28,22 @@ describe('ZoneDetails', () => {
     expect(await screen.findByText('zoneName')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
   })
+  it('should render default tab correctly', async () => {
+    const params = {
+      systemName: 'systemName',
+      zoneName: 'zoneName',
+      activeTab: 'awrongtab'
+    }
+    render(<ZoneDetails />, {
+      wrapper: Provider,
+      route: {
+        params,
+        path: '/ai/zones/:systemName/:zoneName/:activeTab'
+      }
+    })
+    expect(await screen.findByText('zoneName')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+  })
   it('should render navigate tabs correctly', async () => {
     const params = {
       systemName: 'systemName',
