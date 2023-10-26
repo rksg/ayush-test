@@ -40,7 +40,8 @@ import {
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
-  IsSecuritySupport6g
+  IsNetworkSupport6g,
+  ApGroupModalState
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -49,12 +50,6 @@ import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-interface ApGroupModalState { // subset of ApGroupModalWidgetProps
-  visible: boolean,
-  wlan?: NetworkSaveData['wlan'],
-  networkVenue?: NetworkVenue,
-  venueName?: string
-}
 
 const defaultPayload = {
   searchString: '',
@@ -186,8 +181,8 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
-    if (triBandRadioFeatureFlag && isWPA3security) {
+
+    if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
@@ -236,8 +231,8 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
-      if (triBandRadioFeatureFlag && isWPA3security) {
+
+      if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
@@ -437,7 +432,7 @@ export function NetworkVenuesTab () {
     setApGroupModalState({
       visible: true,
       venueName: row.name,
-      wlan: networkQuery.data?.wlan,
+      network: networkQuery.data,
       networkVenue: getCurrentVenue(row)
     })
   }
