@@ -41,6 +41,7 @@ describe('DataStudio', () => {
     )
   })
   afterEach(() => {
+    jest.clearAllMocks()
     store.dispatch(reportsApi.util.resetApiState())
     get.mockReturnValue('')
   })
@@ -59,7 +60,6 @@ describe('DataStudio', () => {
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('data-studio')).toBeInTheDocument()
-
     await waitFor(()=>{
       expect(screen.getByTitle('data-studio')).toBeVisible()
     })
@@ -82,7 +82,6 @@ describe('DataStudio', () => {
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('data-studio')).toBeInTheDocument()
-
     await waitFor(()=>{
       expect(screen.getByTitle('data-studio')).toBeVisible()
     })

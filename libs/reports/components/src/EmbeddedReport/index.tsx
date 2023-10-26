@@ -39,7 +39,7 @@ function showExpiredSessionModal () {
   showActionModal({
     type: 'info',
     title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your REPORT session has expired. Please login again.' }),
+    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
     onOk: () => window.location.reload()
   })
 }
