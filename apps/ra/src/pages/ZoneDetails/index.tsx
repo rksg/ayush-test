@@ -7,7 +7,7 @@ const tabs = {
   analytics: ZoneAnalyticsTab,
   clients: () => <div>clients tab</div>,
   devices: () => <div>devices tab</div>,
-  networks: () => <div>network tab</div>,
+  networks: () => <div>network tab</div>
 }
 
 export default function ZoneDetails () {
