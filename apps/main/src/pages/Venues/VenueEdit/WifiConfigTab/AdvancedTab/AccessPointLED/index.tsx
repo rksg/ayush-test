@@ -107,12 +107,10 @@ export function AccessPointLED () {
       setData: setTableData
     })
 
-    if(editContextData.isDirty){
-      setEditAdvancedContextData({
-        ...editAdvancedContextData,
-        updateAccessPointLED: handleUpdateSetting
-      })
-    }
+    setEditAdvancedContextData({
+      ...editAdvancedContextData,
+      updateAccessPointLED: handleUpdateSetting
+    })
   }, [tableData])
 
   const columns: TableProps<VenueLed>['columns'] = [{
