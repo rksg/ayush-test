@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import {  useEffect, useState } from 'react'
+import {  useContext, useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
 
-import { Alert, Loader, Collapse }                                 from '@acx-ui/components'
+import { Alert, Loader, Collapse, AnchorContext }                  from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -26,6 +26,7 @@ export function AAAServers (props: {
 }) {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
     return $t(PanelHeader[type] , { count })
@@ -85,8 +86,10 @@ export function AAAServers (props: {
         tacasTotalCount: tacasTableQuery.data.totalCount,
         radiusTotalCount: radiusTableQuery.data.totalCount
       })
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Servers-&-Users')))])
     }
-  }, [localUserTableQuery.data, tacasTableQuery.data, radiusTableQuery.data])
+  }, [localUserTableQuery.data, tacasTableQuery.data, radiusTableQuery.data, setReadyToScroll])
 
   return (
     <Loader states={[
