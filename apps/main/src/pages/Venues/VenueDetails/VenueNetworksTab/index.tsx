@@ -36,22 +36,15 @@ import {
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
-  NetworkSaveData,
   NetworkVenue,
-  IsSecuritySupport6g
+  IsNetworkSupport6g,
+  ApGroupModalState
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-
-interface ApGroupModalState { // subset of ApGroupModalWidgetProps
-  visible: boolean,
-  wlan?: NetworkSaveData['wlan'],
-  networkVenue?: NetworkVenue,
-  venueName?: string
-}
 
 const defaultPayload = {
   searchString: '',
@@ -166,7 +159,7 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && IsSecuritySupport6g(row.deepNetwork.wlan?.wlanSecurity)) {
+          if (triBandRadioFeatureFlag && IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
@@ -334,7 +327,7 @@ export function VenueNetworksTab () {
     setApGroupModalState({
       visible: true,
       venueName: row.name,
-      wlan: row.deepNetwork?.wlan,
+      network: row.deepNetwork,
       networkVenue: getCurrentVenue(row)
     })
   }
