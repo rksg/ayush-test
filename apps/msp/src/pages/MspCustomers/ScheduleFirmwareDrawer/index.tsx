@@ -191,7 +191,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {$t({ defaultMessage: 'Schedule updates manually' })}
                   <UI.GreyTextSection>
                     <div>{$t({ defaultMessage:
-                  '- Applies only to selected MSP Customers and their tennants.' })}</div>
+                  '- Applies only to selected MSP Customers and their tenants.' })}</div>
                   </UI.GreyTextSection>
                   {scheduleMode === ScheduleMode.Manually &&
                 <div style={{ marginTop: 10 }}>
