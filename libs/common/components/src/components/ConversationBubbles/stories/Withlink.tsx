@@ -1,3 +1,4 @@
+import { BrowserRouter } from 'react-router-dom'
 import { Conversation, content } from '..'
 
 
@@ -65,7 +66,7 @@ export function Withlink () {
           [
             {
               // eslint-disable-next-line max-len
-              link: 'https://slack.com/oauth/v2/authorize?scope=app_mentions%3Aread%2Ccalls%3Aread%2Ccalls%3Awrite%2Cchannels%3Ahistory%2Cchannels%3Aread%2Cchat%3Awrite%2Cgroups%3Ahistory%2Cim%3Ahistory%2Cim%3Aread%2Cim%3Awrite%2Cincoming-webhook%2Cmpim%3Ahistory%2Cmpim%3Aread%2Cteam%3Aread%2Cusers%3Aread%2Cusers%3Aread.email&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiYXBwX21lbnRpb25zOnJlYWQiLCJjYWxsczpyZWFkIiwiY2FsbHM6d3JpdGUiLCJjaGFubmVsczpoaXN0b3J5IiwiY2hhbm5lbHM6cmVhZCIsImNoYXQ6d3JpdGUiLCJncm91cHM6aGlzdG9yeSIsImltOmhpc3RvcnkiLCJpbTpyZWFkIiwiaW06d3JpdGUiLCJpbmNvbWluZy13ZWJob29rIiwibXBpbTpoaXN0b3J5IiwibXBpbTpyZWFkIiwidGVhbTpyZWFkIiwidXNlcnM6cmVhZCIsInVzZXJzOnJlYWQuZW1haWwiXX0sIm5vdyI6IjIwMjMtMTAtMTlUMDY6NDU6NDMuMzg5WiIsImlhdCI6MTY5NzY5Nzk0M30.Gs2MsMlw2Jw3vLERcbkQZcjIBRp2d5bmW0r2qvP3pm0&client_id=2621849627333.2623441836566',
+              link: '<origin>https://slack.com/oauth/v2/authorize?scope=app_mentions%3Aread%2Ccalls%3Aread%2Ccalls%3Awrite%2Cchannels%3Ahistory%2Cchannels%3Aread%2Cchat%3Awrite%2Cgroups%3Ahistory%2Cim%3Ahistory%2Cim%3Aread%2Cim%3Awrite%2Cincoming-webhook%2Cmpim%3Ahistory%2Cmpim%3Aread%2Cteam%3Aread%2Cusers%3Aread%2Cusers%3Aread.email&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiYXBwX21lbnRpb25zOnJlYWQiLCJjYWxsczpyZWFkIiwiY2FsbHM6d3JpdGUiLCJjaGFubmVsczpoaXN0b3J5IiwiY2hhbm5lbHM6cmVhZCIsImNoYXQ6d3JpdGUiLCJncm91cHM6aGlzdG9yeSIsImltOmhpc3RvcnkiLCJpbTpyZWFkIiwiaW06d3JpdGUiLCJpbmNvbWluZy13ZWJob29rIiwibXBpbTpoaXN0b3J5IiwibXBpbTpyZWFkIiwidGVhbTpyZWFkIiwidXNlcnM6cmVhZCIsInVzZXJzOnJlYWQuZW1haWwiXX0sIm5vdyI6IjIwMjMtMTAtMTlUMDY6NDU6NDMuMzg5WiIsImlhdCI6MTY5NzY5Nzk0M30.Gs2MsMlw2Jw3vLERcbkQZcjIBRp2d5bmW0r2qvP3pm0&client_id=2621849627333.2623441836566',
               type: 'button',
               icon: {
                 color: '#42a5f5',
@@ -102,9 +103,11 @@ export function Withlink () {
     { type: 'bot', contentList: fulfillmentMessagesWithLink }
   ]
 
-  return <Conversation
-    content={content}
-    classList='conversation'
-    isReplying={false}
-    style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  return <BrowserRouter>
+    <Conversation
+      content={content}
+      classList='conversation'
+      isReplying={false}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}></Conversation>
+  </BrowserRouter>
 }
