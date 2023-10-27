@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { useHeaderExtra }                                                  from '@acx-ui/analytics/components'
 import { PageHeader, Tabs, TimeRangeDropDown, TimeRangeDropDownProvider  } from '@acx-ui/components'
 import { useNavigate, useTenantLink }                                      from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType }                                      from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType, usePageHeaderExtra }                  from '@acx-ui/reports/components'
 import { DateRange }                                                       from '@acx-ui/utils'
 
 import { ClientsList } from './ClientsList'
@@ -35,7 +34,7 @@ const useTabs = () : Tab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: false })
+    headerExtra: usePageHeaderExtra(ReportType.CLIENT)
   }
   return [clientsTab, reportsTab]
 }

@@ -31,7 +31,9 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   ]
   showFilter && component.unshift(
     get('IS_MLISA_SA')
-      ? <SANetworkFilter />
+      ? <SANetworkFilter
+        shouldQueryAp={showRadioBand}
+        shouldQuerySwitch={shouldQuerySwitch}/>
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={shouldQuerySwitch}
