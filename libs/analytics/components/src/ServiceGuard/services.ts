@@ -552,24 +552,28 @@ const {
   })
 })
 
-const transformPathToDB = (args: ServiceGuardFormDto, systemMap: SystemMap = {}) => ({
+export const transformPathToDB = (args: ServiceGuardFormDto, systemMap: SystemMap = {}) => ({
   ...args,
   configs: args.configs.map(config => ({
     ...config,
     networkPaths: {
-      networkNodes: (config.networkPaths?.networkNodes ?? []).reduce((agg, path) => {
-        const { system: [ systemNode ], rest } =
-            _.groupBy(path, node => node.type === 'system' ? 'system' : 'rest')
-        systemMap[(systemNode as PathNode).name].forEach(sys => {
-          agg.push([ { type: 'system', name: sys.deviceId }, ...rest ] as NetworkPath)
-        })
+      networkNodes: config.networkPaths!.networkNodes.reduce((agg, path) => {
+        const { system, rest } = _.groupBy(
+          path, n => n.type === 'system' ? 'system' : 'rest'
+        ) as { system: PathNode[], rest: PathNode[] }
+        const mapping = system && systemMap[system[0].name]
+        mapping
+          ? mapping.forEach(sys =>
+            agg.push([ { type: 'system', name: sys.deviceId }, ...rest ] as NetworkPath)
+          )
+          : agg.push(path)
         return agg
       }, [] as NetworkPaths)
     }
   }))
 })
 
-const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap = {}) => {
+export const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap = {}) => {
   const mapping = Object.entries(systemMap).reduce((agg, [deviceName, systems]) => {
     systems.forEach(sys => {
       agg[sys.deviceId] = deviceName
@@ -582,14 +586,14 @@ const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap = {}) 
     configs: spec.configs.map(config => ({
       ...config,
       networkPaths: {
-        networkNodes: (config.networkPaths?.networkNodes ?? []).reduce((agg, path) => {
-          const { system: [ systemNode ], rest } =
-              _.groupBy(path, node => node.type === 'system' ? 'system' : 'rest')
-          agg.push([
-            { type: 'system', name: mapping[(systemNode as PathNode).name] }, ...rest
-          ] as NetworkPath)
+        networkNodes: _.uniqBy(config.networkPaths!.networkNodes.reduce((agg, path) => {
+          const { system, rest } =_.groupBy(path, n => n.type === 'system' ? 'system' : 'rest')
+          const name = system && mapping[(system[0] as PathNode).name]
+          name
+            ? agg.push([{ type: 'system', name }, ...rest] as NetworkPath)
+            : agg.push(path as NetworkPath)
           return agg
-        }, [] as NetworkPaths)
+        }, [] as NetworkPaths), path => JSON.stringify(path))
       }
     }))
   }
@@ -603,14 +607,17 @@ export function useServiceGuardSpecMutation () {
   const update = useUpdateServiceGuardSpecMutation()
 
   const [submit, response] = editMode ? update : create
+
   return {
     editMode,
     spec: {
       ...spec,
-      ...(spec.data && { data: transformPathFromDB(spec.data, systems.data) })
+      ...(spec.data && systems.data && { data: transformPathFromDB(spec.data, systems.data) })
     },
     submit: (args: ServiceGuardFormDto) => submit(transformPathToDB(args, systems.data)),
-    response }
+    response,
+    systems
+  }
 }
 
 export function useRunServiceGuardTestMutation () {

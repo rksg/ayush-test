@@ -95,12 +95,12 @@ function useSANetworkHierarchy () {
   const systems = useSystems()
   const response = useNetworkHierarchyQuery(
     { ...filter, shouldQuerySwitch: false }, {
-      skip: !get('IS_MLISA_SA'),
+      skip: !get('IS_MLISA_SA') || !systems.data,
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
         data: { ...defaultNetworkPath[0], children: filterSANetworkHierarchy(
           data?.children ?? [],
-          systems.data ?? {},
+          systems.data!,
           deviceRequirements[
             form.getFieldValue(ClientType.fieldName) as keyof typeof deviceRequirements
           ] as DeviceRequirementsType)

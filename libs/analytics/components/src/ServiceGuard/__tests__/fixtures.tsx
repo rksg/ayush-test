@@ -52,6 +52,22 @@ export const fetchServiceGuardSpec = {
   }
 }
 
+export const fetchServiceGuardSpecRA = {
+  serviceGuardSpec: {
+    ...fetchServiceGuardSpec.serviceGuardSpec,
+    configs: fetchServiceGuardSpec.serviceGuardSpec.configs
+      .map(config => ({
+        ...config,
+        networkPaths: {
+          networkNodes: [[
+            { type: 'system', name: '00000000-0000-0000-0000-000000000001' },
+            { type: 'apMac', list: ['00:00:00:00:00:00'] }
+          ]] as NetworkPaths
+        }
+      }))
+  }
+}
+
 export const fetchServiceGuardTest = {
   serviceGuardTest: {
     id: 1,
@@ -550,16 +566,6 @@ export const mockApHierarchy = {
     { name: 'system 5', type: 'system', children: [{ name: 'zone 1', type: 'zone' }] }
     ] }
 }
-
-// export const mockSystems = {
-//   networkNodes: [
-//     { deviceId: '00000000-0000-0000-0000-000000000001', deviceName: 'system 1', onboarded: true, controllerVersion: '6.0' },
-//     { deviceId: '00000000-0000-0000-0000-000000000002', deviceName: 'system 2', onboarded: true, controllerVersion: '6.0' },
-//     { deviceId: '00000000-0000-0000-0000-000000000003', deviceName: 'system 3', onboarded: false, controllerVersion: '6.0' },
-//     { deviceId: '00000000-0000-0000-0000-000000000004', deviceName: 'system 4', onboarded: false, controllerVersion: '6.0' },
-//     { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
-//   ]
-// }
 
 export const mockSystems = {
   networkNodes: [
