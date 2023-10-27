@@ -32,6 +32,7 @@ import NetworkDetails                        from './pages/WifiNetworks/NetworkD
 import Wired, { AISwitchTabsEnum }           from './pages/Wired'
 import SwitchDetails                         from './pages/Wired/SwitchDetails'
 import ZoneDetails                           from './pages/ZoneDetails'
+import Zones                                 from './pages/Zones'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -166,7 +167,7 @@ function AllRoutes () {
         </Route>
       </Route>
       <Route path='zones'>
-        <Route index element={<div>Zones List</div>} />
+        <Route index element={<Zones />} />
         <Route path=':systemName/:zoneName' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />
