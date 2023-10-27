@@ -22,7 +22,6 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
-    accountingRadiusId: data.accountingRadiusId,
     authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   let authRadius = {}
@@ -52,7 +51,18 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...{
         enableAccountingProxy: data.enableAccountingProxy,
         enableSecondaryAcctServer: data.enableSecondaryAcctServer,
-        accountingRadius
+        accountingRadius,
+        accountingRadiusId: data.accountingRadiusId
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        enableAccountingProxy: false,
+        enableSecondaryAcctServer: false,
+        accountingRadius: null,
+        accountingRadiusId: null
       }
     }
   }
