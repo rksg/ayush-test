@@ -8,7 +8,7 @@ export const Ul = styled.div`
 export const Chevron = styled.div`
   padding: 0 10px;
   z-index: 2;
-  color: rgba(83, 98, 105, 0.63)
+  color: rgba(83, 98, 105, 0.63);
 `
 export const Li = styled.div`
   overflow: hidden;

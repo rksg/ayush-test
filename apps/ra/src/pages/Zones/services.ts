@@ -24,20 +24,17 @@ export const zonesListApi = dataApi.injectEndpoints({
     zonesList: build.query<ZonesList, RequestPayload>({
       query: (payload) => ({
         document: gql`
-        query ZonesList(
-          $start: DateTime,
-          $end: DateTime,
-        ) {
+          query ZonesList($start: DateTime, $end: DateTime) {
             network(start: $start, end: $end) {
-            zones {
+              zones {
                 systemName
                 domain
                 zoneName
                 apCount
                 clientCount
+              }
             }
-        }
-        }
+          }
         `,
         variables: payload
       }),
@@ -47,6 +44,4 @@ export const zonesListApi = dataApi.injectEndpoints({
   })
 })
 
-export const {
-  useZonesListQuery
-} = zonesListApi
+export const { useZonesListQuery } = zonesListApi

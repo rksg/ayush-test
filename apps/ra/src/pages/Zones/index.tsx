@@ -7,8 +7,8 @@ import { Loader, Table, TableProps, useDateRange, PageHeader, TimeRangeDropDown,
 import {
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink, resolvePath }                          from '@acx-ui/react-router-dom'
-import {  NetworkPath, fixedEncodeURIComponent, DateRange } from '@acx-ui/utils'
+import { TenantLink, resolvePath } from '@acx-ui/react-router-dom'
+import {  NetworkPath, DateRange } from '@acx-ui/utils'
 
 import { useZonesListQuery, Zone } from './services'
 import * as UI                     from './styledComponents'
@@ -34,12 +34,7 @@ function ZonesList () {
       fixed: 'left',
       searchable: true,
       render: (_, row: Zone) => (
-        <TenantLink
-          to={resolvePath(
-            `/incidents?analyticsNetworkFilter=${fixedEncodeURIComponent(
-              JSON.stringify({ raw: row.zoneName, path: row.zoneName })
-            )}`
-          )}>
+        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}`)}>
           {row.zoneName}
         </TenantLink>
       ),
@@ -72,14 +67,24 @@ function ZonesList () {
       dataIndex: 'apCount',
       key: 'apCount',
       width: 150,
-      sorter: { compare: sortProp('apCount', defaultSort) }
+      sorter: { compare: sortProp('apCount', defaultSort) },
+      render: (_, row: Zone) => (
+        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/devices`)}>
+          {row.apCount as unknown as string}
+        </TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'Client Count' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
       sorter: { compare: sortProp('clientCount', defaultSort) },
-      width: 150
+      width: 150,
+      render: (_, row: Zone) => (
+        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/clients`)}>
+          {row.clientCount as unknown as string}
+        </TenantLink>
+      )
     }
   ]
   const count = results.data?.zones?.length ?? 0
