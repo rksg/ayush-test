@@ -31,7 +31,8 @@ import {
   generateDefaultNetworkVenue,
   SchedulingModalState,
   RadioTypeEnum,
-  IsSecuritySupport6g
+  IsNetworkSupport6g,
+  ApGroupModalState
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -40,12 +41,6 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-interface ApGroupModalState { // subset of ApGroupModalWidgetProps
-  visible: boolean,
-  wlan?: NetworkSaveData['wlan'],
-  networkVenue?: NetworkVenue,
-  venueName?: string
-}
 
 const defaultPayload = {
   searchString: '',
@@ -94,7 +89,7 @@ export function Venues () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = IsSecuritySupport6g(data?.wlan?.wlanSecurity)
+  const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -213,7 +208,7 @@ export function Venues () {
 
   useEffect(() => {
     if (data?.wlan) {
-      const isSupport6G = IsSecuritySupport6g(data.wlan.wlanSecurity)
+      const isSupport6G = IsNetworkSupport6g(data)
       if (prevIsWPA3securityRef.current === true && !isSupport6G) {
         if (activatedNetworkVenues?.length > 0) {
           // remove radio 6g when wlanSecurity is changed from WPA3 to others
@@ -359,7 +354,7 @@ export function Venues () {
     setApGroupModalState({
       visible: true,
       venueName: row.name,
-      wlan: data?.wlan,
+      network: data,
       networkVenue: getCurrentVenue(row)
     })
   }

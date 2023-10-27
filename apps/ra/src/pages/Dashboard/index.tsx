@@ -26,8 +26,8 @@ import {
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { AnalyticsFilter, DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -74,9 +74,13 @@ export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
   return { ...pathFilters, ...getDateRangeFilter(DateRange.last24Hours) }
 }
 
-const DashboardView = () => {
+type DashboardViewProps = {
+  filters: AnalyticsFilter & Omit<DateFilter, 'setDateFilterState'>
+  pathFilters: PathFilter & Omit<DateFilter, 'setDateFilterState'>
+}
+
+const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
-  const { filters, pathFilters } = useDashBoardUpdatedFilters()
   const userProfile = getUserProfile()
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation =
@@ -188,8 +192,14 @@ const DashboardView = () => {
 
 export default function Dashboard () {
   const { $t } = useIntl()
-  const { filters, startDate, endDate, range, setDateFilterState } =
-    useDashBoardUpdatedFilters()
+  const {
+    filters,
+    pathFilters,
+    startDate,
+    endDate,
+    range,
+    setDateFilterState
+  } = useDashBoardUpdatedFilters()
 
   return (
     <>
@@ -212,7 +222,7 @@ export default function Dashboard () {
           </>
         ]}
       />
-      <DashboardView />
+      <DashboardView filters={filters} pathFilters={pathFilters} />
     </>
   )
 }
