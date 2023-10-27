@@ -254,7 +254,7 @@ export const SelectSwitchStep = (
       rowSelection={{
         type: 'checkbox',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
-        getCheckboxProps: (record) => {
+        getCheckboxProps: () => {
           let disabled = false
           if (wizardtype === SwitchFirmwareWizardType.skip) {
             // disabled = _.isEmpty(record.switchNextSchedule)
@@ -385,7 +385,7 @@ export const SelectSwitchStep = (
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedSearchSwitchRowKeys,
-            getCheckboxProps: (record) => {
+            getCheckboxProps: () => {
               let disabled = false
               if (wizardtype === SwitchFirmwareWizardType.skip) {
                 // disabled = _.isEmpty(record.switchNextSchedule)
