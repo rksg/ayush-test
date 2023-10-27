@@ -12,7 +12,7 @@ jest.mock('@acx-ui/reports/components', () => ({
 
 const apDetailsFixture = {
   network: {
-    switch: {
+    ap: {
       name: 'AP-Name',
       networkPath: [
         {
@@ -25,7 +25,7 @@ const apDetailsFixture = {
         },
         {
           name: '90:3A:72:24:D0:40',
-          type: 'switch'
+          type: 'AP'
         }
       ]
     }
@@ -49,8 +49,8 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/devices/wifi/:apId/details/ai' }
     })
-    expect(screen.getByRole('heading', { name: /ap\-id/i }).textContent)
-      .toEqual('ap-id')
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+    expect(await screen.findAllByRole('tab')).toHaveLength(2)
   })
 
   it('should navigate to analytic tab correctly', async () => {

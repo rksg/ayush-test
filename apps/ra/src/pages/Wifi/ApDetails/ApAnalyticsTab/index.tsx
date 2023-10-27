@@ -9,7 +9,7 @@ import { useApFilter } from '../apFilter'
 export function ApAnalyticsTab () {
   const { apId } = useParams()
   const apContext = useApContext()
-  const filter = useApFilter({ apMac: apId, path: apContext.networkPath as unknown as NetworkPath })
+  const filter = useApFilter({ path: apContext.networkPath as unknown as NetworkPath })
   return <AnalyticsTabs
     incidentFilter={filter}
     healthFilter={filter}

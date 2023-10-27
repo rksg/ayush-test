@@ -1,5 +1,5 @@
-import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen  }    from '@acx-ui/test-utils'
+import { Provider, dataApi, dataApiURL, store }                         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import SwitchDetails from '.'
 
@@ -38,13 +38,14 @@ describe('Switch Details', () => {
     })
   })
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     render(<SwitchDetails />, {
       wrapper: Provider,
       route: {
         params: { switchId: 'switch-id' }
       }
     })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('Wired')).toBeVisible()
     expect(screen.getByText('Switches')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Switch List' }))
