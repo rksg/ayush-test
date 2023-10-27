@@ -28,7 +28,7 @@ export type PendoParameters = {
     id: string
     name: string
     isTrial?: boolean
-    tenantId?: string
+    sfdcId?: string
   }
 }
 
