@@ -25,6 +25,11 @@ function getLink (text: string): string {
   return doc.body.firstElementChild!.getAttribute('href')!
 }
 
+function parseLink (link: string): string {
+  const MELISSA_URL_ORIGIN = window.location.origin
+  return link.replace('<origin>',MELISSA_URL_ORIGIN)
+}
+
 const Expandable = (props: { text: string, maxChar: number }) => {
   let [expanded, setExpanded] = useState(true)
   if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
@@ -55,7 +60,7 @@ function Conversation ({
                   <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
                     <img src={getLink(res.text)} alt={res.title}></img>
                   </Panel></UI.Collapse> :
-                  (res.link ? <UI.Bot><a href={res.link}
+                  (res.link ? <UI.Bot><a href={parseLink(res.link)}
                     target='_blank'
                     rel='noreferrer'>{res.text}</a></UI.Bot> :
                     res.event ?
