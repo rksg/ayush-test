@@ -29,7 +29,7 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         value: 'MSCS_REQUESTS_ONLY',
         key: 'MSCS_REQUESTS_ONLY',
         message: $t({ defaultMessage: `Mirroring for clients sending MSCS
-                    (Multimedia and Streaming Control Server) requests` })
+                    (Mirrored Stream Classification Service) requests` })
       },
       {
         type: QoSMirroringScope.ALL_CLIENTS,
