@@ -512,18 +512,18 @@ export const SelectSwitchStep = (
                 const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
                 if (addedVenue.length > 0) {
                   let newNestedData = {} as {
-                [key: string]: {
-                  initialData: SwitchFirmware[],
-                  selectedData: SwitchFirmware[]
-                }
-              }
+                    [key: string]: {
+                      initialData: SwitchFirmware[],
+                      selectedData: SwitchFirmware[]
+                    }
+                  }
                   let newSelectedSwitchRowKeys = {} as {
-                [key: string]: Key[]
-              }
+                    [key: string]: Key[]
+                  }
                   addedVenue.forEach(async (venue) => {
 
                     let initialData = nestedData[venue]?.initialData ?? []
-                    const row = data.filter(v=>v.id === venue)
+                    const row = data.filter(v => v.id === venue)
                     if (_.isEmpty(initialData) && row[0]?.switchCount > 0) {
                       const switchListPayload = {
                         venueIdList: [venue]
@@ -549,16 +549,16 @@ export const SelectSwitchStep = (
                   setNestedData(newNestedData)
                   setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
 
-                } else if (deletedVenue.length > 1) {
+                } else if (deletedVenue.length > 0) {
                   let newNestedData = {} as {
-                [key: string]: {
-                  initialData: SwitchFirmware[],
-                  selectedData: SwitchFirmware[]
-                }
-              }
+                    [key: string]: {
+                      initialData: SwitchFirmware[],
+                      selectedData: SwitchFirmware[]
+                    }
+                  }
                   let newSelectedSwitchRowKeys = {} as {
-                [key: string]: Key[]
-              }
+                    [key: string]: Key[]
+                  }
                   deletedVenue.forEach((venue) => {
                     newNestedData[venue] = {
                       initialData: nestedData[venue]?.initialData || [],
