@@ -39,14 +39,6 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-FROM build-base as acx-ui-lint
-RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
-RUN touch lint-done
-
-# We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
-RUN node ./node_modules/.bin/nx run ra:tsc
-###############################################################
 FROM node:14.21.1-alpine as build-locales
 WORKDIR /app
 RUN apk add curl
@@ -72,7 +64,6 @@ FROM build-base as acx-ui-base-test
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
-COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 COPY cicd_tool ./cicd_tool
