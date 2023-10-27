@@ -141,8 +141,11 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
       }
     },
     [SwitchFirmwareWizardType.skip]: async () => {
+      const upgradeList: {
+        currentUpgradeSwitchList: SwitchFirmware[],
+        currentUpgradeVenueList: FirmwareSwitchVenue[]
+      } = saveSwitchStep()
       form.validateFields()
-      saveSwitchStep()
       showActionModal({
         type: 'confirm',
         width: 460,
@@ -159,7 +162,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
               params: { ...params },
               payload: {
                 venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-                switchIds: _.map(upgradeSwitchList, 'switchId')
+                switchIds: _.map(upgradeList.currentUpgradeSwitchList, 'switchId')
               }
             })
             form.resetFields()
@@ -219,7 +222,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
     setUpgradeVersions(filterVersions)
     setNonIcx8200Count(nonIcx8200Count)
     setIcx8200Count(icx8200Count)
-    return true
+    return { currentUpgradeSwitchList, currentUpgradeVenueList }
   }
 
   return <Modal
