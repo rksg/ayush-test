@@ -60,7 +60,6 @@ export const Panel = styled(AntdCollapse.Panel)`
     right: 18px !important;
   }
 `
-
 export const Wrapper = styled.div`
   border-radius: 8px;
   background: var(--acx-primary-white);
