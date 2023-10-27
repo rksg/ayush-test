@@ -54,7 +54,8 @@ export function RWGForm () {
   const [updateGateway] = useUpdateGatewayMutation()
 
   const { tenantId, gatewayId, action } = useParams()
-  const { data } = useGetRwgQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+  const { data } =
+    useGetRwgQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}/gateway-details`)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
@@ -108,7 +109,7 @@ export function RWGForm () {
 
   return (
     <>
-      {<PageHeader
+      <PageHeader
         title={action !== 'edit'
           ? $t({ defaultMessage: 'Add Gateway' })
           : data?.name}
@@ -136,8 +137,8 @@ export function RWGForm () {
               })
             }>{ $t({ defaultMessage: 'Back to Gateway details' }) }</Button>
         ] : []}
-      />}
-      <StepsForm
+      />
+      { data && <StepsForm
         onFinish={action === 'edit' ? handleEditGateway : handleAddGateway}
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToGateways) // TODO: set previousPath while gateway details implementation
@@ -237,6 +238,7 @@ export function RWGForm () {
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>
+      }
     </>
   )
 }
