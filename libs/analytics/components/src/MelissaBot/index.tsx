@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 
 import { useEffect, useRef, useState } from 'react'
 
@@ -49,6 +50,7 @@ export function MelissaBot (){
   const [messages,setMessages] = useState<content[]>([])
 
   const showDrawer = () => {
+    console.log('showDrawer triggered.')
     setOpen(true)
   }
 
@@ -147,7 +149,6 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-
   return (
     <>{showFloatingButton && <img
       src={MelissaIcon}

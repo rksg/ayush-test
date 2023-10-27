@@ -1,13 +1,28 @@
+/* eslint-disable testing-library/no-unnecessary-act */
 /* eslint-disable max-len */
 
-import { act, render } from '@acx-ui/test-utils'
+import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { MelissaBot } from '.'
 
 describe('MelissaBot', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let container:HTMLDivElement|undefined=undefined
+  beforeEach(() => {
+  // setup a DOM element as a render target
+    container = document.createElement('div')
+    document.body.appendChild(container)
+  })
+
+  afterEach(() => {
+  // cleanup on exiting
+    container?.remove()
+    container = undefined
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const route = {
-    path: '/:tenantId/:tenantType/:page',
-    params: { tenantType: 't', tenantId: 't-id', page: 'dashboard' },
+    path: '/:page',
+    params: { page: 'incidents' },
     wrapRoutes: false
   }
   const responseBody = {
@@ -91,10 +106,25 @@ describe('MelissaBot', () => {
       json: () => Promise.resolve(responseBody)
     })
   )
-  it('should render',()=>{
-    const { asFragment } = render(<MelissaBot/>,{ route })
-    act(()=>{
-      expect(asFragment()).toMatchSnapshot()
+  it('should render floating button',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
     })
+    expect(container).toMatchSnapshot()
+  })
+  it('should not render floating button for dashboard page',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
+    })
+    expect(container).toMatchSnapshot()
+  })
+  it('should open the chat window by clicking floating button',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByRole('img'))
+    })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
   })
 })
