@@ -31,7 +31,7 @@ const Expandable = (props: { text: string, maxChar: number }) => {
     {expanded? 'ReadMore' : 'ReadLess'}</a></UI.Bot>
 }
 // eslint-disable-next-line max-len
-const link = '/ai/users/wifi/clients/0E:85:58:98:2E:97/details/troubleshooting?period=%7B%22range%22%3A%22Custom%22%2C%22endDate%22%3A%222023-10-19T11%3A20%3A09.337Z%22%2C%22startDate%22%3A%222023-10-18T11%3A20%3A09.337Z%22%7D'
+// const link = '/ai/users/wifi/clients/0E:85:58:98:2E:97/details/troubleshooting?period=%7B%22range%22%3A%22Custom%22%2C%22endDate%22%3A%222023-10-19T11%3A20%3A09.337Z%22%2C%22startDate%22%3A%222023-10-18T11%3A20%3A09.337Z%22%7D'
 function Conversation ({
   content,
   classList,
@@ -57,8 +57,8 @@ function Conversation ({
                     target='_blank'
                     rel='noreferrer'>{res.text}</a></UI.Bot> :
                     <UI.Bot>
-                      {/* <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link> */}
-                      <Link to={link || '#'}>{res.text}</Link>
+                      <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
+                      {/* <Link to={link || '#'}>{res.text}</Link> */}
                     </UI.Bot>
                   )
               ))

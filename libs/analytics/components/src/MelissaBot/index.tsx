@@ -62,11 +62,10 @@ export function MelissaBot (){
     }
   }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
-  // const title = $t({ defaultMessage: 'Melissa infused with ChatGPT' })
   const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>Melissa</span>
     <span style={{
       fontSize: '12px',
-      fontWeight: 700,
+      fontWeight: 400,
       paddingTop: '3px',
       marginLeft: '-5px' }}>infused with ChatGPT</span></>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,6 +171,7 @@ export function MelissaBot (){
         placeholder='Ask anything'
         value={inputValue}
         disabled={isInputDisabled}
+        style={{ height: '52px' }}
         onChange={(e) => {
           setInputValue(e.target.value)
         }}
