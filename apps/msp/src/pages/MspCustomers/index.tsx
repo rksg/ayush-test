@@ -575,7 +575,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
         visible: (selectedRows) => {
           const len = selectedRows.length
-          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+          const validRows = selectedRows.filter(en => en.status === 'Active')
+          return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -723,7 +725,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
         visible: (selectedRows) => {
           const len = selectedRows.length
-          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+          const validRows = selectedRows.filter(en => en.status === 'Active')
+          return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
