@@ -127,7 +127,7 @@ export const SelectSwitchStep = (
   const [nestedData, setNestedData] = useState({} as {
     [key: string]: {
       initialData: SwitchFirmware[],
-      selectedData: SwitchFirmware[] //Need to removed
+      selectedData: SwitchFirmware[]
     }
   })
 
@@ -220,7 +220,6 @@ export const SelectSwitchStep = (
       }
     }
   }
-
 
   if ((_.isEmpty(nestedData)) && (!_.isEmpty(form.getFieldValue('nestedData')))) {
     setNestedData(form.getFieldValue('nestedData'))
@@ -336,7 +335,6 @@ export const SelectSwitchStep = (
     return false
   }
 
-
   return (
     <>
       <SwitchUI.ValidateField
@@ -350,7 +348,6 @@ export const SelectSwitchStep = (
               if(_.isEmpty(selectedVenues) && _.isEmpty(selectedSwitches)){
                 return Promise.reject(intl.$t({ defaultMessage: 'Please select at least 1 item' }))
               }
-
               return Promise.resolve()
             }
           }
@@ -437,33 +434,7 @@ export const SelectSwitchStep = (
                 setSelectedVenueRowKeys(newSelectedVenueRowKeys)
                 setNestedData(newNestedData)
 
-              } else if (deletedSwitch.length === 1) {
-                const deleteRowId = deletedSwitch[0]
-                const deleteRow = searchSwitchList.filter(s => s.switchId === deleteRowId)[0]
-
-
-                setSelectedSwitchRowKeys({
-                  ...selectedSwitchRowKeys,
-                  [deleteRow.venueId]: selectedSwitchRowKeys[deleteRow.venueId].filter(
-                    s => s !== deleteRowId)
-                })
-
-                const currentVenue = data.filter(d => d.id === deleteRow.venueId)[0]
-                if (selectedVenueRowKeys.includes(currentVenue.id)) {
-                  setSelectedVenueRowKeys(selectedVenueRowKeys.filter(v => currentVenue.id !== v))
-                }
-
-                setNestedData({
-                  ...nestedData,
-                  [deleteRow.venueId]: {
-                    initialData: nestedData[deleteRow.venueId]?.initialData || [],
-                    selectedData: nestedData[deleteRow.venueId].selectedData.filter(
-                      s => s.switchId !== deleteRowId)
-                  }
-                })
-
-
-              } else if (deletedSwitch.length > 1) {
+              } else if (deletedSwitch.length > 0) {
                 let newSelectedSwitchRowKeys = selectedSwitchRowKeys
                 let newNestedData = nestedData
                 let newSelectedVenueRowKeys = selectedVenueRowKeys
@@ -539,26 +510,7 @@ export const SelectSwitchStep = (
               onChange: (selectedKeys) => {
                 const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
                 const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
-
-                if (addedVenue.length == 1) {
-                  const selectedAllSwitchList = nestedData[addedVenue[0]]?.initialData || []
-                  const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
-
-                  setNestedData({
-                    ...nestedData,
-                    [addedVenue[0]]: {
-                      initialData: selectedAllSwitchList,
-                      selectedData: selectedAllSwitchList
-                    }
-                  })
-
-                  setSelectedSwitchRowKeys({
-                    ...selectedSwitchRowKeys,
-                    [addedVenue[0]]: selectedAllSwitchIds
-                  })
-
-
-                } else if (addedVenue.length > 1) {
+                if (addedVenue.length > 0) {
                   let newNestedData = {} as {
                 [key: string]: {
                   initialData: SwitchFirmware[],
@@ -568,8 +520,23 @@ export const SelectSwitchStep = (
                   let newSelectedSwitchRowKeys = {} as {
                 [key: string]: Key[]
               }
-                  addedVenue.forEach((venue) => {
-                    const selectedAllSwitchList = nestedData[venue]?.initialData || []
+                  addedVenue.forEach(async (venue) => {
+
+                    let initialData = nestedData[venue]?.initialData ?? []
+                    const row = data.filter(v=>v.id === venue)
+                    if (_.isEmpty(initialData) && row[0]?.switchCount > 0) {
+                      const switchListPayload = {
+                        venueIdList: [venue]
+                      }
+                      const switchList = (await getSwitchList({
+                        params: { tenantId: tenantId }, payload: switchListPayload
+                      }, false)).data?.data
+                      if (switchList) {
+                        initialData = switchList
+                      }
+                    }
+
+                    const selectedAllSwitchList = initialData
                     const selectedAllSwitchIds = selectedAllSwitchList.map(s => s.switchId) as Key[]
                     newNestedData[venue] = {
                       initialData: selectedAllSwitchList,
@@ -581,22 +548,6 @@ export const SelectSwitchStep = (
 
                   setNestedData(newNestedData)
                   setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
-
-
-                } else if (deletedVenue.length === 1) {
-                  const selectedAllSwitchList = nestedData[deletedVenue[0]]?.initialData || []
-                  setNestedData({
-                    ...nestedData,
-                    [deletedVenue[0]]: {
-                      initialData: selectedAllSwitchList,
-                      selectedData: []
-                    }
-                  })
-
-                  setSelectedSwitchRowKeys({
-                    ...selectedSwitchRowKeys,
-                    [deletedVenue[0]]: []
-                  })
 
                 } else if (deletedVenue.length > 1) {
                   let newNestedData = {} as {

@@ -14,8 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-import { getSwitchVersionLabel } from '../../../../FirmwareUtils'
 import * as UI                   from '../../styledComponents'
+import { getSwitchVersionLabel } from '../switch.upgrade.util'
 
 export interface UpdateNowStepProps {
   visible: boolean,

@@ -16,10 +16,8 @@ import {
   switchSchedule
 } from '@acx-ui/rc/utils'
 
-import {
-  getSwitchVersionLabel
-} from '../../../../FirmwareUtils'
-import * as UI from '../../styledComponents'
+import * as UI                   from '../../styledComponents'
+import { getSwitchVersionLabel } from '../switch.upgrade.util'
 
 import { PreDownload } from './PreDownload'
 
