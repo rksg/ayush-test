@@ -193,7 +193,7 @@ export const SelectSwitchStep = (
       const switchList = record.id
         ? (await getSwitchList({
           params: { tenantId: tenantId }, payload: switchListPayload
-        }, true)).data?.data
+        }, false)).data?.data
         : []
 
       const hasSelectedVenue = selectedVenueRowKeys.includes(record.id)
@@ -257,10 +257,7 @@ export const SelectSwitchStep = (
         getCheckboxProps: (record) => {
           let disabled = false
           if (wizardtype === SwitchFirmwareWizardType.skip) {
-            disabled = _.isEmpty(record.switchNextSchedule)
-          } else if (wizardtype === SwitchFirmwareWizardType.schedule ||
-            wizardtype === SwitchFirmwareWizardType.update) {
-            disabled = _.isEmpty(record.currentFirmware)
+            // disabled = _.isEmpty(record.switchNextSchedule)
           }
           return {
             disabled
@@ -391,10 +388,7 @@ export const SelectSwitchStep = (
             getCheckboxProps: (record) => {
               let disabled = false
               if (wizardtype === SwitchFirmwareWizardType.skip) {
-                disabled = _.isEmpty(record.switchNextSchedule)
-              } else if (wizardtype === SwitchFirmwareWizardType.schedule ||
-                wizardtype === SwitchFirmwareWizardType.update) {
-                disabled = _.isEmpty(record.currentFirmware)
+                // disabled = _.isEmpty(record.switchNextSchedule)
               }
               return {
                 disabled
@@ -533,7 +527,7 @@ export const SelectSwitchStep = (
                 let disabled = false
 
                 if (wizardtype === SwitchFirmwareWizardType.skip) {
-                  disabled = _.isEmpty(record.nextSchedule)
+                  // disabled = _.isEmpty(record.nextSchedule)
                 }
 
                 return {

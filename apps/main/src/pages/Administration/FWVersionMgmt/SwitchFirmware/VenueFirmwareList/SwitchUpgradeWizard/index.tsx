@@ -195,7 +195,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
                   (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
       } else if (nestedData[row.id]) {
         nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
-          const fw = row.currentFirmware
+          const fw = row.currentFirmware || ''
           if (row.switchId) {
             currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
           }
@@ -215,7 +215,7 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
 
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
-    setHasVenue(selectedVenueRowKeys.length > 0)
+    setHasVenue(selectedVenueRowKeys.length > 0 || (nonIcx8200Count + icx8200Count === 0))
     setUpgradeVersions(filterVersions)
     setNonIcx8200Count(nonIcx8200Count)
     setIcx8200Count(icx8200Count)
