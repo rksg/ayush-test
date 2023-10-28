@@ -1,22 +1,82 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { capitalize } from 'lodash'
+import {  useIntl }   from 'react-intl'
 
-import { defaultSort, sortProp, Tenant, UserProfile } from '@acx-ui/analytics/utils'
-import { LayoutUI as UI, Drawer, Table, TableProps }  from '@acx-ui/components'
-import { CaretDownSolid, HomeSolid }                  from '@acx-ui/icons'
-import { Link, useTenantLink }                        from '@acx-ui/react-router-dom'
+import { useUpdateInvitationMutation }                                           from '@acx-ui/analytics/services'
+import { defaultSort, sortProp, Tenant, Invitation, UserProfile }                from '@acx-ui/analytics/utils'
+import { LayoutUI as UI, Drawer, Table, TableProps, ColorPill, showActionModal } from '@acx-ui/components'
+import { CaretDownSolid, HomeSolid }                                             from '@acx-ui/icons'
+import { Link, useTenantLink }                                                   from '@acx-ui/react-router-dom'
 
-type Invitation = {
-  accountName: string
-  role: string
-  type: string
+import { Invitation as InviteUI } from './styledComponents'
+
+const showResponseModal = (title: string, content: string, isSucess: boolean) => {
+  showActionModal({
+    type: isSucess ? 'info' : 'error',
+    title,
+    content,
+    onOk: () => {
+      isSucess && window.location.reload()
+    }
+  })
 }
-// AccountCircleSolid
-export function AccountsDrawer ({ user }: { user: UserProfile }) {
-  const { accountId, selectedTenant, tenants, invitations } = user
-  console.log(invitations, tenants)
+
+const ActionLink = (
+  { type, invitation, userId } : { type: string, invitation: Invitation, userId: string }
+) => {
   const { $t } = useIntl()
+  const [updateInvitation] = useUpdateInvitationMutation()
+  const accpetedOrRejected = type === 'accept' ? 'accepted' : 'rejected'
+  return <InviteUI.ActionBtn
+    onClick={() => showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Invitation' }),
+      content: $t({ defaultMessage: 'Do you really want to {type} the invitation?' }, { type }),
+      onOk: async () => {
+        await updateInvitation({
+          resourceGroupId: invitation.resourceGroupId as string,
+          state: accpetedOrRejected,
+          userId: userId
+        })
+          .unwrap()
+          .then(() => {
+            showResponseModal(
+              $t({ defaultMessage: 'Success' }),
+              $t({ defaultMessage: `{accpetedOrRejected} invitation succesfully.
+        Page will reload to update the user profile` },
+              { accpetedOrRejected: capitalize(accpetedOrRejected) }),
+              true
+            )
+          })
+          .catch(error => {
+            showResponseModal(
+              $t({ defaultMessage: 'Error' }),
+              error.data,
+              false
+            )
+          })
+      }
+    })
+    }
+  >{$t({ defaultMessage: '{type}' }, { type })}</InviteUI.ActionBtn>
+}
+
+export function AccountsDrawer ({ user }: { user: UserProfile }) {
+  const { accountId, selectedTenant, tenants, invitations, userId } = user
+  const { $t } = useIntl()
+  const brandLink = (invitations as Invitation[])
+    .some(invitation => invitation.type === 'super-tenant')
+    ? $t(
+      { defaultMessage: 'You have pending {invitation}' },
+      {
+        invitation: <a href='/analytics/profile/tenants' target='_blank'>
+          {$t({ defaultMessage: 'brand invitation(s)' })}
+        </a>
+      })
+    : ''
+  const varInvitations = (invitations as Invitation[])
+    .filter(invitation => invitation.type !== 'super-tenant')
   const roles = {
     'admin': $t({ defaultMessage: 'Admin' }),
     'network-admin': $t({ defaultMessage: 'Network Admin' }),
@@ -53,19 +113,51 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
   ]
   return <UI.CompanyNameDropdown>
     <UI.CompanyName onClick={()=>setVisible(!visible)}>{selectedTenant.name}</UI.CompanyName>
-    <UI.DropdownCaretIcon children={<CaretDownSolid />}/>
+    <UI.DropdownCaretIcon
+      data-testid='tenant-dropdown'
+      onClick={()=>setVisible(!visible)}
+      children={<CaretDownSolid />}
+    />
+    {invitations.length > 0 && <InviteUI.Count
+      data-testid='invitation-count'
+      onClick={()=>setVisible(!visible)}
+      title={$t({ defaultMessage: 'You have {count} invitations' }, { count: invitations.length })}
+    >
+      <ColorPill
+        color='var(--acx-accents-orange-50)'
+        value={invitations.length as unknown as string}
+      />
+    </InviteUI.Count>}
     <Drawer
       width={500}
       title={$t({ defaultMessage: 'Accounts' })}
       visible={visible}
       onClose={() => setVisible(false)}
     >
-      <div><b>Invitations</b>
-        {(invitations as unknown as Invitation[]).map(({ accountName, role, type } : Invitation) => (type === 'tenant'
-          ? <div>You have been invited to {accountName} as {role}. Please <a href='#'> accept</a> or <a href='#'> reject</a> the invitation</div>
-          : <div>You have <a href='#'>pending brand invitation(s)</a></div>
-        ))}
-      </div>
+      <InviteUI.Wrapper>
+        <InviteUI.Title>{$t({ defaultMessage: 'Invitations' })}</InviteUI.Title>
+        { brandLink && <InviteUI.BrandLink>{brandLink}</InviteUI.BrandLink> }
+        {varInvitations.map(
+          (invitation : Invitation) => <InviteUI.ListItem key={invitation.accountName}>
+            {$t({
+              defaultMessage: `You have been invited by {first} {last} to {accountName} as {role}.
+            Please {accept} or {reject} the invitation`
+            }, {
+              accountName: <InviteUI.Highlight>{invitation.accountName}</InviteUI.Highlight>,
+              first: invitation.firstName,
+              last: invitation.lastName,
+              role: <InviteUI.Highlight>
+                {roles[invitation.role as keyof typeof roles]}
+              </InviteUI.Highlight>,
+              accept: <ActionLink type='accept' invitation={invitation} userId={userId} />,
+              reject: <ActionLink type='reject' invitation={invitation} userId={userId} />
+            })}
+          </InviteUI.ListItem>
+        )}
+        {invitations.length === 0 && <InviteUI.ListItem>
+          {$t({ defaultMessage: 'No pending invitations' })}
+        </InviteUI.ListItem>}
+      </InviteUI.Wrapper>
       <Table<Tenant>
         settingsId='rai-tenant-table'
         columns={columns}

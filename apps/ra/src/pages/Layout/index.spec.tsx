@@ -35,7 +35,8 @@ describe('Layout', () => {
       ],
       firstName: 'firstName',
       lastName: 'lastName',
-      selectedTenant: { id: '0015000000GlI7SAAV', name: 'Company 2', permissions }
+      selectedTenant: { id: '0015000000GlI7SAAV', name: 'Company 2', permissions },
+      invitations: []
     }))
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Company 2')).toBeVisible()
@@ -51,7 +52,8 @@ describe('Layout', () => {
       ],
       firstName: 'firstName',
       lastName: 'lastName',
-      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions }
+      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions },
+      invitations: []
     }))
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Company 1')).toBeVisible()
