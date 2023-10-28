@@ -227,7 +227,7 @@ export function IncidentTable ({ filters }: {
       width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
-      sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sorter: { compare: sortProp('impactedClientCount', defaultSort) },
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },

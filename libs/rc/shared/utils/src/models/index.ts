@@ -72,4 +72,7 @@ export * from './Channel320MHzGroupEnum'
 export * from './ChannelBandwidth6GEnum'
 export * from './ClientAdmissionControl'
 export * from './MultiLinkOperationOptions'
+export * from './ApRadioParams24G'
+export * from './ApRadioParams50G'
+export * from './ApRadioParams6G'
 

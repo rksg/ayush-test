@@ -51,64 +51,28 @@ type AdditionalIncidentTableFields = {
   type: string,
   clientImpact: string | number,
   impactedClients: string | number,
+  impactedClientCount: number | null,
   severityLabel: string
 }
 
 export type IncidentTableRow = RecordWithChildren<Incident & AdditionalIncidentTableFields>
 
 export const transformData = (incident: Incident): IncidentTableRow => {
-  const { relatedIncidents } = incident
-  const intl = getIntl()
-
-  const children = relatedIncidents
-  && relatedIncidents.map((child) => {
-    const childDuration = durationValue(child.startTime, child.endTime)
-    const childIncident = transformIncidentQueryResult(child)
-    const impactValueObj = impactValues('client', childIncident)
-    const childClientImpact = impactValueObj['clientImpactRatioFormatted']
-    const childClientCount = impactValueObj['clientImpactCountFormatted']
-    const childDescription = shortDescription(childIncident)
-    const childScope = impactedArea(child.path, child.sliceValue)!
-    const childType = nodeTypes(child.sliceType)
-    const childSeverityLabel = calculateSeverity(child.severity)
-
-    return {
-      ...childIncident,
-      category: intl.$t(childIncident.category),
-      subCategory: intl.$t(childIncident.subCategory),
-      children: undefined,
-      duration: childDuration,
-      description: childDescription,
-      scope: childScope,
-      type: childType,
-      clientImpact: childClientImpact,
-      impactedClients: childClientCount,
-      severityLabel: childSeverityLabel
-    }
-  })
-
+  const { $t } = getIntl()
   const incidentInfo = transformIncidentQueryResult(incident)
-  const duration = durationValue(incident.startTime, incident.endTime)
   const impactValueObj = impactValues('client', incidentInfo)
-  const clientImpact = impactValueObj['clientImpactRatioFormatted']
-  const impactedClients = impactValueObj['clientImpactCountFormatted']
-  const description = shortDescription(incidentInfo)
-  const scope = impactedArea(incident.path, incident.sliceValue)!
-  const type = nodeTypes(incident.sliceType)
-  const severityLabel = calculateSeverity(incident.severity)
-
   return {
     ...incidentInfo,
-    category: intl.$t(incidentInfo.category),
-    subCategory: intl.$t(incidentInfo.subCategory),
-    children: (children && children?.length > 0) ? children : undefined,
-    duration,
-    description,
-    scope,
-    type,
-    clientImpact,
-    impactedClients,
-    severityLabel
+    impactedClientCount: incident.impactedClientCount,
+    category: $t(incidentInfo.category),
+    subCategory: $t(incidentInfo.subCategory),
+    duration: durationValue(incident.startTime, incident.endTime),
+    description: shortDescription(incidentInfo),
+    scope: impactedArea(incident.path, incident.sliceValue)!,
+    type: nodeTypes(incident.sliceType),
+    clientImpact: impactValueObj['clientImpactRatioFormatted'],
+    impactedClients: impactValueObj['clientImpactCountFormatted'],
+    severityLabel: calculateSeverity(incident.severity)
   }
 }
 
@@ -184,7 +148,14 @@ export const api = dataApi.injectEndpoints({
       transformResponse: (response: Response<IncidentNodeData>) => {
         const { incidents } = response.network.hierarchyNode
         if (typeof incidents === 'undefined') return []
-        return incidents.map((incident) => transformData(incident))
+        return incidents.map(incident => {
+          const { relatedIncidents } = incident
+          const row = transformData(incident)
+          if (relatedIncidents?.length) {
+            row.children = relatedIncidents.map(transformData)
+          }
+          return row
+        })
       },
       providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     }),
