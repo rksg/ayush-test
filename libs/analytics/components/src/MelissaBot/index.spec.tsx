@@ -1,5 +1,8 @@
+/* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-unnecessary-act */
 /* eslint-disable max-len */
+
+import userEvent from '@testing-library/user-event'
 
 import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -118,13 +121,77 @@ describe('MelissaBot', () => {
     })
     expect(container).toMatchSnapshot()
   })
-  it('should open the chat window by clicking floating button',async ()=>{
+  it('should not render floating button for dashboard page and open chatbot on trigger event',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
+    })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:event')
+    act(() => { window.dispatchEvent(new Event('showMelissaBot')) })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:event')
+  })
+  it('should open the chat window by clicking floating button and then close',async ()=>{
     await act(async ()=>{
       render(<MelissaBot/>,{ route, container })
     })
     await act(async ()=>{
       fireEvent.click(await screen.findByRole('img'))
     })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:open')
+    await act(async ()=>{
+      fireEvent.click(await screen.findByTestId('CloseSymbol'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeNull()
+    expect(document.querySelector('.ant-drawer-content-wrapper-hidden')).toBeDefined()
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:close')
+  })
+  it('should chat with chatbot',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByRole('img'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
+    })
+    await screen.findByText('What is cloud RRM?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(11)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
+  })
+  it('should handle error message from chatbot',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByRole('img'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:error')
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ error: 'Some Error' })
+      })
+    )
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
+    })
+    await screen.findByText('What is cloud RRM?')
+    await screen.findByText('Some Error')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error1')
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ errorMessage: 'Some different error' })
+      })
+    )
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is datastudio?{enter}')
+    })
+    await screen.findByText('What is datastudio?')
+    await screen.findByText('Something went wrong.')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(9)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
   })
 })

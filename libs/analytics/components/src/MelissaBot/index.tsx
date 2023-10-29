@@ -23,17 +23,15 @@ const scrollToBottom=()=>{
   }
 }
 
-const isLocal = true
+const MELISSA_URL_ORIGIN=window.location.origin
+const MELISSA_URL_BASE_PATH='/analytics'
+const MELISSA_ROUTE_PATH='/api/ask-mlisa'
 
-let MELISSA_URL_ORIGIN=window.location.origin
-let MELISSA_URL_BASE_PATH='/analytics'
-let MELISSA_ROUTE_PATH='/api/ask-mlisa'
+// To connect with local chatbot
+// const MELISSA_URL_ORIGIN='http://localhost:31337'
+// const MELISSA_URL_BASE_PATH=''
+// const MELISSA_ROUTE_PATH=''
 
-if(isLocal){
-  MELISSA_URL_ORIGIN='http://localhost:31337'
-  MELISSA_URL_BASE_PATH=''
-  MELISSA_ROUTE_PATH=''
-}
 
 export function MelissaBot (){
   const { $t } = useIntl()
@@ -50,7 +48,6 @@ export function MelissaBot (){
   const [messages,setMessages] = useState<content[]>([])
 
   const showDrawer = () => {
-    console.log('showDrawer triggered.')
     setOpen(true)
   }
 
@@ -133,6 +130,7 @@ export function MelissaBot (){
     }
   },[])
   useEffect(()=>{
+    /* istanbul ignore else */
     if(initCount.current === 0){
       initCount.current +=1
       setInputValue('')
