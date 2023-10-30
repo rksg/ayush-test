@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Input }       from 'antd'
+import axios           from 'axios'
 import { defer, get }  from 'lodash'
 import moment          from 'moment-timezone'
 import { useIntl }     from 'react-intl'
@@ -32,6 +33,7 @@ const MELISSA_ROUTE_PATH='/api/ask-mlisa'
 // const MELISSA_URL_BASE_PATH=''
 // const MELISSA_ROUTE_PATH=''
 
+const uploadUrl = (id:string) => `${MELISSA_URL_BASE_PATH}${MELISSA_ROUTE_PATH}/upload/${id}`
 
 export function MelissaBot (){
   const { $t } = useIntl()
@@ -59,6 +61,57 @@ export function MelissaBot (){
     if(inputRef.current){
       inputRef.current.focus()
     }
+  }
+
+  const addUploader = (incidentId: string, fileUploadButton:ChildNode ) => {
+    const uploader = document.createElement('input')
+    uploader.type = 'file'
+    uploader.multiple = true
+    uploader.addEventListener('change', async function (e) {
+      const files : FileList = (e.target as HTMLInputElement).files!
+      for (const file of files) {
+        setIsReplying(false)
+        setResponseCount(responseCount+1)
+        const uploadingMessage: content = {
+          type: 'bot',
+          contentList: [{ text: { text: [`uploading ${file.name}...`] } }]
+        }
+        messages.push(uploadingMessage)
+        setMessages(messages)
+        setIsInputDisabled(false)
+        defer(doAfterResponse)
+        const form = new FormData()
+        form.append('file', file)
+        await axios.post(uploadUrl(incidentId), form, { headers: {
+          'Content-Type': 'multipart/form-data',
+          'X-Mlisa-Timezone': moment.tz.guess(),
+          'X-Set-New-Ui': 'true'
+        } }).catch((error)=>{
+          setIsReplying(false)
+          // eslint-disable-next-line no-console
+          console.error(error)
+          const errorMessage: content = {
+            type: 'bot',
+            contentList: [{ text: { text: [error.message] } }]
+          }
+          messages.push(errorMessage)
+          setMessages(messages)
+          setIsInputDisabled(false)
+          defer(doAfterResponse)
+        })
+      }
+      setIsReplying(false)
+      setResponseCount(responseCount+1)
+      const confirmMessage: content = {
+        type: 'bot',
+        contentList: [{ text: { text: ['done!'] } }]
+      }
+      messages.push(confirmMessage)
+      setMessages(messages)
+      setIsInputDisabled(false)
+      defer(doAfterResponse)
+    })
+    fileUploadButton.addEventListener('click', () => uploader.click())
   }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
   const melissaText = $t({ defaultMessage: 'Melissa' })
@@ -91,6 +144,14 @@ export function MelissaBot (){
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages){
+        defer(() => { // renders after the event
+          const { incidentId } = get(fulfillmentMessages, '[2].data', {})
+          if (incidentId) {
+            addUploader(incidentId,
+              document.querySelector('.ant-drawer-body .conversation')!.lastChild!)
+          }
+        })
+
         messages.push({ type: 'bot', contentList: fulfillmentMessages })
         setMessages(messages)
         setIsInputDisabled(false)

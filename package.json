@@ -31,6 +31,7 @@
     "@superset-ui/embedded-sdk": "0.1.0-alpha.8",
     "@types/react-highlight-words": "0.16.4",
     "antd": "4.22.7",
+    "axios": "1.6.0",
     "buffer": "6.0.3",
     "codemirror": "5.65.11",
     "core-js": "3.6.5",
