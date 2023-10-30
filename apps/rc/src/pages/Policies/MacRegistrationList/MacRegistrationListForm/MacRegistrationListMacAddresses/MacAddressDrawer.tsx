@@ -14,11 +14,12 @@ import {
   checkObjectNotExists,
   ExpirationDateEntity,
   ExpirationMode,
-  MacRegistration, MacRegistrationFilterRegExp
+  MacRegistration,
+  MacRegistrationFilterRegExp,
+  toExpireEndDate,
+  toLocalDateString
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { toExpireEndDate, toLocalDateString } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
