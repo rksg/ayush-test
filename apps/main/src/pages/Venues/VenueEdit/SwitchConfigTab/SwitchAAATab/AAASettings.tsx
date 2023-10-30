@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Form,
@@ -13,7 +13,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
-import { Loader, Fieldset, Transfer }                              from '@acx-ui/components'
+import { Loader, Fieldset, Transfer, AnchorContext }               from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -116,6 +116,7 @@ export const AAASettings = (props: {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const serverLevelItem = [{
     value: 'PORT_CONFIG',
@@ -218,8 +219,10 @@ export const AAASettings = (props: {
       aaaSetting.acctExecThirdServer && initData.selectedExecAcctOrder.push(ACCOUNTING_SERVERS_OBJ[aaaSetting.acctExecThirdServer].key)
 
       form.setFieldsValue(initData)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Settings')))])
     }
-  }, [form, aaaSetting])
+  }, [form, aaaSetting, setAAASettingId, setReadyToScroll])
 
   const authnEnabledSsh = Form.useWatch('authnEnabledSsh')
   const authnEnableTelnet = Form.useWatch('authnEnableTelnet')
