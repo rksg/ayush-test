@@ -13,7 +13,8 @@ import {
   PhyTypeConstraintEnum,
   NetworkVenue,
   ClientIsolationVenue,
-  ManagementFrameProtectionEnum
+  ManagementFrameProtectionEnum,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { hasVxLanTunnelProfile } from './utils'
@@ -308,8 +309,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.l3AclPolicyId = null
   }
 
-  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication') &&
-      !get(data, 'wlan.macAddressAuthentication')) {
+  if (data?.type && (data?.type !== NetworkTypeEnum.DPSK &&
+    data?.type !== NetworkTypeEnum.AAA &&
+    !(data?.type === NetworkTypeEnum.OPEN &&
+      get(data, 'wlan.macAddressAuthentication')) &&
+    !(data?.guestPortal && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      get(data, 'wlan.bypassCPUsingMacAddressAuthentication')))) {
     (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 
