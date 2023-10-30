@@ -7,11 +7,12 @@ export interface RequestPayload {
   end: string
 }
 export type Zone = {
-    systemName: String
-    domain: String
-    zoneName: String
-    apCount: Number
-    clientCount: Number
+    systemName: string
+    domain: string
+    zoneName: string
+    apCount: number
+    clientCount: number
+    network: string
 }
 
 
@@ -39,7 +40,12 @@ export const zonesListApi = dataApi.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'ZONES_LIST' }],
-      transformResponse: (response: { network: ZonesList }) => response.network
+      transformResponse: (response: { network: ZonesList }) => ({
+        zones: response.network.zones.map((zone) => ({
+          ...zone,
+          network: `${zone.systemName} > ${zone.domain.split('||')?.[1]}`
+        }))
+      })
     })
   })
 })

@@ -60,6 +60,7 @@ describe('Zones List', () => {
     expect(screen.getByText('zoneName 1')).toBeVisible()
     expect(screen.getByText('apCount 1')).toBeVisible()
     expect(screen.getByText('clientCount 1')).toBeVisible()
+    expect(screen.getByText('systemName 1')).toBeVisible()
   })
 
   it('should show no data on empty list', async () => {

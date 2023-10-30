@@ -26,36 +26,39 @@ function ZonesList () {
     end: timeRange[1].format()
   })
 
-  const networkHierarchyTablecolumnHeaders: TableProps<Zone>['columns'] = [
+  const columns: TableProps<Zone>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'zoneName',
       key: 'zoneName',
       fixed: 'left',
       searchable: true,
-      render: (_, row: Zone) => (
+      width: 200,
+      render: (_, row: Zone, __, highlightFn) => (
         <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}`)}>
-          {row.zoneName}
+          {highlightFn(row.zoneName)}
         </TenantLink>
       ),
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Network' }),
-      dataIndex: 'systemName',
-      key: 'systemName',
+      dataIndex: 'network',
+      key: 'network',
+      searchable: true,
       sorter: { compare: sortProp('systemName', defaultSort) },
-      render: (_, row) => {
+      width: 250,
+      render: (_, row, __, highlightFn) => {
         const networkPath = [
           { type: 'system', name: row.systemName },
-          { type: 'domain', name: row.domain }
+          { type: 'domain', name: row.domain.split('||')?.[1] }
         ] as NetworkPath
         return (
           <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
             <UI.Ul>
               {networkPath.map(({ name }, index) => [
                 index !== 0 && <UI.Chevron key={`network-chevron-${index}`}>{'>'}</UI.Chevron>,
-                <UI.Li key={`network-li-${index}`}>{name}</UI.Li>
+                <UI.Li key={`network-li-${index}`}>{highlightFn(name)}</UI.Li>
               ])}
             </UI.Ul>
           </Tooltip>
@@ -66,7 +69,6 @@ function ZonesList () {
       title: $t({ defaultMessage: 'Ap Count' }),
       dataIndex: 'apCount',
       key: 'apCount',
-      width: 150,
       sorter: { compare: sortProp('apCount', defaultSort) },
       render: (_, row: Zone) => (
         <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/devices`)}>
@@ -79,7 +81,6 @@ function ZonesList () {
       dataIndex: 'clientCount',
       key: 'clientCount',
       sorter: { compare: sortProp('clientCount', defaultSort) },
-      width: 150,
       render: (_, row: Zone) => (
         <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/clients`)}>
           {row.clientCount as unknown as string}
@@ -95,20 +96,23 @@ function ZonesList () {
         extra={[<TimeRangeDropDown/>]}
       />
       <Table<Zone>
-        columns={networkHierarchyTablecolumnHeaders}
+        columns={columns}
         dataSource={results.data?.zones as Zone[]}
         pagination={pagination}
-        settingsId='network-hierarchy-search-table'
+        settingsId='zonesList-table'
       />
     </Loader>
   )
 }
 export default function Zones () {
-  return <TimeRangeDropDownProvider availableRanges={[
-    DateRange.last24Hours,
-    DateRange.last7Days,
-    DateRange.last30Days
-  ]}>
-    <ZonesList />
-  </TimeRangeDropDownProvider>
+  return (
+    <TimeRangeDropDownProvider
+      availableRanges={[
+        DateRange.last24Hours,
+        DateRange.last7Days,
+        DateRange.last30Days
+      ]}>
+      <ZonesList />
+    </TimeRangeDropDownProvider>
+  )
 }
