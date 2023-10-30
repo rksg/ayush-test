@@ -12,7 +12,7 @@ import {
   Subtitle,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetDelegationsQuery,
   useRevokeInvitationMutation
@@ -46,8 +46,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const [revokeInvitation] = useRevokeInvitationMutation()
   const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
-  const isMultipleVarEnabled = useIsTierAllowed(Features.ALPHA_MULTIVAR)
-  // const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
+  const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
 
   const MAX_VAR_INVITATIONS = 10
 
