@@ -56,6 +56,11 @@ export interface CommonErrorsResult<T> {
   status: number;
 }
 
+export interface KeyValue<K, V> {
+  key: K;
+  value: V;
+}
+
 export interface Network {
   id: string
   name: string
@@ -66,7 +71,7 @@ export interface Network {
   aps: number
   clients: number
   venues: { count: number, names: string[], ids: string[] }
-  captiveType: GuestNetworkTypeEnum
+  captiveType?: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
   activated: {
