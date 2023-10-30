@@ -6,6 +6,7 @@ export interface RequestPayload {
   start: string
   end: string
 }
+
 export type Zone = {
     systemName: string
     domain: string
@@ -14,7 +15,6 @@ export type Zone = {
     clientCount: number
     network: string
 }
-
 
 export interface ZonesList {
   zones: Zone[]

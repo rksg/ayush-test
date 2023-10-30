@@ -13,10 +13,7 @@ import {  NetworkPath, DateRange } from '@acx-ui/utils'
 import { useZonesListQuery, Zone } from './services'
 import * as UI                     from './styledComponents'
 
-
 const pagination = { pageSize: 10, defaultPageSize: 10 }
-
-
 
 function ZonesList () {
   const { $t } = useIntl()
