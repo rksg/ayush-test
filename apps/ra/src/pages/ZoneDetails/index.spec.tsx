@@ -89,12 +89,10 @@ describe('ZoneDetails', () => {
         path: '/ai/zones/:systemName/:zoneName/:activeTab'
       }
     })
-    expect(await screen.findByPlaceholderText('Start date')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
     const tab = await screen.findByText('Networks')
     fireEvent.click(tab)
-    await waitFor(() => {
-      expect(screen.queryByPlaceholderText('Start date')).toBeNull()
-    })
+    expect(await screen.findByText("network tab")).toBeVisible()
   })
 })
 

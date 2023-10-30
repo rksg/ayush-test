@@ -25,7 +25,7 @@ function DatePicker () {
 
 function ZonePageHeader () {
   const { $t } = useIntl()
-  const { systemName, zoneName, activeTab } = useParams()
+  const { systemName, zoneName } = useParams()
   const path = [
     { name: 'Network', type: 'network' },
     { name: systemName, type: 'system' },
@@ -35,7 +35,6 @@ function ZonePageHeader () {
   useEffect(() => {
     setNetworkPath(path, path)
   }, [])
-  const enableTimeFilter = () => !['networks'].includes(activeTab as string)
   return (
     <PageHeader
       title={zoneName}
@@ -43,7 +42,7 @@ function ZonePageHeader () {
         { text: $t({ defaultMessage: 'Zones' }), link: '/zones' }
       ]}
       extra={[
-        enableTimeFilter() ? <DatePicker key='venues-date-picker' /> : <></>
+        <DatePicker key='venues-date-picker' />
       ]}
       footer={<ZoneTabs />}
     />
