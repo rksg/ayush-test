@@ -79,7 +79,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable RUCKUS DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
-    const insertInput = await screen.findByLabelText(/Host Domains/)
+    const insertInput = await screen.findByPlaceholderText(/Enter domain\(s\) separated by comma/)
     fireEvent.change(insertInput, { target: { value: 'www.123.com,222.com' } })
     fireEvent.blur(insertInput)
     await userEvent.click(await screen.findByRole('checkbox',
