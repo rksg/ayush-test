@@ -416,14 +416,14 @@ export const VenueFirmwareTable = (
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
-      <PreferencesDialog
+      {modelVisible && <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />
+      />}
     </Loader>
   )
 }
