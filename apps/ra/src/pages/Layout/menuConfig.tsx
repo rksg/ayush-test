@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+
 import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS,
@@ -11,6 +12,9 @@ import {
   PERMISSION_MANAGE_LABEL
 } from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
+import { Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -20,6 +24,8 @@ import {
   AdminSolid,
   BulbOutlined,
   BulbSolid,
+  LocationOutlined,
+  LocationSolid,
   RocketOutlined,
   RocketSolid,
   SpeedIndicatorOutlined,
@@ -31,6 +37,8 @@ import {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const userProfile = getUserProfile()
+  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
+
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -121,6 +129,16 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
+    ...(hasViewAnalyticsPermissions && isZonesPageEnabled
+      ? [
+        {
+          uri: '/zones',
+          label: $t({ defaultMessage: 'Zones' }),
+          inactiveIcon: LocationOutlined,
+          activeIcon: LocationSolid
+        }
+      ]
+      : []),
     ...(hasViewAnalyticsPermissions
       ? [{
         label: $t({ defaultMessage: 'Clients' }),
