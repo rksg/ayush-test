@@ -125,6 +125,7 @@ describe('useNetworkHierarchyQuery', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.networkHierarchy.initiate({
         ...props,
+        shouldQueryAp: true,
         shouldQuerySwitch: false
       })
     )
