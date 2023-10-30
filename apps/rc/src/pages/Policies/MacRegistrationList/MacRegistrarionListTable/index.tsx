@@ -4,10 +4,10 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
+  Loader,
   PageHeader,
   Table,
   TableProps,
-  Loader,
   showToast
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -21,19 +21,19 @@ import {
 } from '@acx-ui/rc/services'
 import {
   FILTER,
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
-  PolicyType, SEARCH,
+  PolicyType,
+  SEARCH,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  returnExpirationString,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
-
-import { returnExpirationString } from '../MacRegistrationListUtils'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
