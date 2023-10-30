@@ -780,6 +780,16 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -843,5 +853,6 @@ export const {
   useDeleteMspAggregationsMutation,
   useGetMspEcAlarmListQuery,
   useGetRecommandFirmwareUpgradeQuery,
-  useMspEcFirmwareUpgradeSchedulesMutation
+  useMspEcFirmwareUpgradeSchedulesMutation,
+  useAssignMspEcToMultiIntegratorsMutation
 } = mspApi
