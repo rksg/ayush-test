@@ -83,7 +83,7 @@ describe('AccountsDrawer', () => {
       mockedUseUpdateInvitationMutation.mockImplementation(() => [mockedUpdateInvitation])
     })
     afterEach(() => {
-      mockedUseUpdateInvitationMutation.mockClear()
+      jest.clearAllMocks()
     })
     it('shows invitations', async () => {
       profile.invitations = [
@@ -112,7 +112,41 @@ describe('AccountsDrawer', () => {
       expect(await screen.findByText(/brand invitation\(s\)/)).toBeVisible()
       expect(await screen.findByText(/You have been invited by f1 l1/)).toBeVisible()
     })
-    it('should accept and reject invitation', async () => {
+    it('should accept invitation', async () => {
+      mockedUpdateInvitation.mockImplementation(() => ({
+        unwrap: () => Promise.resolve('Created')
+      }))
+      profile.invitations = [
+        {
+          accountName: 'xyz',
+          role: 'network-admin',
+          type: 'tenant',
+          resourceGroupId: 'rg2',
+          firstName: 'f1',
+          lastName: 'l1'
+        }
+      ]
+      render(<AccountsDrawer user={profile} />, { wrapper: Provider, route })
+      expect(true).toEqual(true)
+      await userEvent.click(await screen.findByText('Company 1'))
+      expect(await screen.findByText('Invitations')).toBeVisible()
+      expect(true).toEqual(true)
+      await userEvent.click(screen.getByText('accept'))
+
+      await assertModalContent({
+        className: 'ant-modal-confirm-confirm',
+        content: 'Do you really want to accept the invitation?'
+      })
+      const btn = await screen.findByRole('button', { name: 'OK' })
+      btn.click()
+      const scope = await assertModalContent({
+        className: 'ant-modal-confirm-info',
+        content: 'Accepted invitation succesfully. Page will reload to update the user profile'
+      })
+      await userEvent.click(await scope.findByRole('button', { name: 'OK' }))
+      expect(window.location.reload).toHaveBeenCalled()
+    })
+    it('should reject invitation', async () => {
       mockedUpdateInvitation.mockImplementation(() => ({
         unwrap: () => Promise.resolve('Created')
       }))
@@ -129,35 +163,24 @@ describe('AccountsDrawer', () => {
       render(<AccountsDrawer user={profile} />, { wrapper: Provider, route })
       await userEvent.click(await screen.findByText('Company 1'))
       expect(await screen.findByText('Invitations')).toBeVisible()
-
-      const tests = [{
-        type: 'accept',
-        success: 'Accepted invitation succesfully. Page will reload to update the user profile'
-      }, {
-        type: 'reject',
-        success: 'Rejected invitation succesfully. Page will reload to update the user profile'
-      }]
-      tests.forEach(async ({ type, success }) => {
-        const actionBtn = await screen.findByText(`${type}`)
-        actionBtn.click()
-        await assertModalContent({
-          className: 'ant-modal-confirm-confirm',
-          content: `Do you really want to ${type} the invitation?`
-        })
-        const btn = await screen.findByRole('button', { name: 'OK' })
-        btn.click()
-        const scope = await assertModalContent({
-          className: 'ant-modal-confirm-info',
-          content: success
-        })
-        const btn1 = await scope.findByRole('button', { name: 'OK' })
-        btn1.click()
-        expect(window.location.reload).toHaveBeenCalled()
+      const actionBtn = await screen.findByText('reject')
+      actionBtn.click()
+      await assertModalContent({
+        className: 'ant-modal-confirm-confirm',
+        content: 'Do you really want to reject the invitation?'
       })
+      const btn = screen.getByRole('button', { name: 'OK' })
+      btn.click()
+      const scope = await assertModalContent({
+        className: 'ant-modal-confirm-info',
+        content: 'Rejected invitation succesfully. Page will reload to update the user profile'
+      })
+      await userEvent.click(await scope.findByRole('button', { name: 'OK' }))
+      expect(window.location.reload).toHaveBeenCalled()
     })
     it('should handle error', async () => {
       mockedUpdateInvitation.mockImplementation(() => ({
-        unwrap: () => Promise.reject('some error')
+        unwrap: () => Promise.reject({ data: 'some error' })
       }))
       profile.invitations = [
         {
@@ -173,31 +196,21 @@ describe('AccountsDrawer', () => {
       await userEvent.click(await screen.findByText('Company 1'))
       expect(await screen.findByText('Invitations')).toBeVisible()
 
-      const tests = [{
-        type: 'accept',
-        error: 'some error'
-      }, {
-        type: 'reject',
-        error: 'some error'
-      }]
-      tests.forEach(async ({ type, error }) => {
-        const actionBtn = await screen.findByText(`${type}`)
-        actionBtn.click()
-        // await userEvent.click(await screen.findByText(`${type}`))
-        await assertModalContent({
-          className: 'ant-modal-confirm-confirm',
-          content: `Do you really want to ${type} the invitation?`
-        })
-        const btn = await screen.findByRole('button', { name: 'OK' })
-        btn.click()
-        await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
-        const scope = await assertModalContent({
-          className: 'ant-modal-confirm-error',
-          content: error
-        })
-        await userEvent.click(await scope.findByRole('button', { name: 'OK' }))
-        expect(window.location.reload).not.toHaveBeenCalled()
+      const actionBtn = await screen.findByText('accept')
+      actionBtn.click()
+      await assertModalContent({
+        className: 'ant-modal-confirm-confirm',
+        content: 'Do you really want to accept the invitation?'
       })
+      const btn = await screen.findByRole('button', { name: 'OK' })
+      btn.click()
+      await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+      const scope = await assertModalContent({
+        className: 'ant-modal-confirm-error',
+        content: 'some error'
+      })
+      await userEvent.click(await scope.findByRole('button', { name: 'OK' }))
+      expect(window.location.reload).not.toHaveBeenCalled()
     })
   })
 })

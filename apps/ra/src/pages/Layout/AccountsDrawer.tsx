@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-import { capitalize } from 'lodash'
-import {  useIntl }   from 'react-intl'
+import {  useIntl } from 'react-intl'
 
 import { useUpdateInvitationMutation }                                           from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Tenant, Invitation, UserProfile }                from '@acx-ui/analytics/utils'
@@ -11,13 +10,13 @@ import { Link, useTenantLink }                                                  
 
 import { Invitation as InviteUI } from './styledComponents'
 
-const showResponseModal = (title: string, content: string, isSucess: boolean) => {
+const showResponseModal = (title: string, content: string, isSuccess: boolean) => {
   showActionModal({
-    type: isSucess ? 'info' : 'error',
+    type: isSuccess ? 'info' : 'error',
     title,
     content,
     onOk: () => {
-      isSucess && window.location.reload()
+      isSuccess && window.location.reload()
     }
   })
 }
@@ -27,25 +26,29 @@ const ActionLink = (
 ) => {
   const { $t } = useIntl()
   const [updateInvitation] = useUpdateInvitationMutation()
-  const accpetedOrRejected = type === 'accept' ? 'accepted' : 'rejected'
+
   return <InviteUI.ActionBtn
     onClick={() => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Invitation' }),
-      content: $t({ defaultMessage: 'Do you really want to {type} the invitation?' }, { type }),
+      content: type === 'accept'
+        ? $t({ defaultMessage: 'Do you really want to accept the invitation?' })
+        : $t({ defaultMessage: 'Do you really want to reject the invitation?' }),
       onOk: async () => {
         await updateInvitation({
           resourceGroupId: invitation.resourceGroupId as string,
-          state: accpetedOrRejected,
+          state: type === 'accept' ? 'accepted' : 'rejected',
           userId: userId
         })
           .unwrap()
           .then(() => {
             showResponseModal(
               $t({ defaultMessage: 'Success' }),
-              $t({ defaultMessage: `{accpetedOrRejected} invitation succesfully.
-        Page will reload to update the user profile` },
-              { accpetedOrRejected: capitalize(accpetedOrRejected) }),
+              type === 'accept'
+                ? $t({ defaultMessage: `Accepted invitation succesfully.
+               Page will reload to update the user profile` })
+                : $t({ defaultMessage: `Rejected invitation succesfully.
+               Page will reload to update the user profile` }),
               true
             )
           })
@@ -121,7 +124,11 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     {invitations.length > 0 && <InviteUI.Count
       data-testid='invitation-count'
       onClick={()=>setVisible(!visible)}
-      title={$t({ defaultMessage: 'You have {count} invitations' }, { count: invitations.length })}
+      title={$t(
+        // eslint-disable-next-line max-len
+        { defaultMessage: 'You have {count} {count, plural, one {invitation} other {invitations}}' },
+        { count: invitations.length }
+      )}
     >
       <ColorPill
         color='var(--acx-accents-orange-50)'
