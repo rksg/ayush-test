@@ -1,6 +1,5 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-unnecessary-act */
-/* eslint-disable max-len */
 
 import userEvent from '@testing-library/user-event'
 
@@ -41,6 +40,7 @@ describe('MelissaBot', () => {
         {
           text: {
             text: [
+              // eslint-disable-next-line max-len
               'Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:'
             ]
           }
@@ -48,6 +48,7 @@ describe('MelissaBot', () => {
         {
           text: {
             text: [
+              // eslint-disable-next-line max-len
               '  Client IP: 10.111.111.193\n       Hostname: 02:da:f2:f1:c5:aa\n       Username: aaron\n       MAC Address: 02:DA:F2:F1:C5:AA\n       Last AP Name: Aaron_Home_H550_GstBdr\n       Last AP Mac: 80:BC:37:01:1F:E0\n       Last Status: Connected\n       OS: Apple iPhone/iOS 17.0.3\n\n       Average Rate: 96.1Kbps\n       Total Traffic: 962 MB\n       Average Sessions Length: 1m 54s\n       Applications: null\n       APs Connected: 4\n       Sessions: 440\n\n       Average SNR: 39 dB\n       Max SNR: 43 dB\n       Min SNR: 36 dB\n\n       Average RSS: -57 dBm\n       Max RSS: -53 dBm\n       Min RSS: -60 dBm\n    '
             ]
           }
@@ -66,6 +67,7 @@ describe('MelissaBot', () => {
                   text: 'Go to Client Troubleshooting',
                   event: {
                     parameters: {
+                      // eslint-disable-next-line max-len
                       url: '/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ=='
                     },
                     name: 'url',
@@ -90,6 +92,7 @@ describe('MelissaBot', () => {
                   text: 'Go to Client Report',
                   event: {
                     parameters: {
+                      // eslint-disable-next-line max-len
                       url: '/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ=='
                     },
                     name: 'url',
@@ -121,7 +124,8 @@ describe('MelissaBot', () => {
     })
     expect(container).toMatchSnapshot()
   })
-  it('should not render floating button for dashboard page and open chatbot on trigger event',async ()=>{
+  it('should not render floating button for dashboard page and'+
+  ' open chatbot on trigger event',async ()=>{
     await act(async ()=>{
       render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })
     })

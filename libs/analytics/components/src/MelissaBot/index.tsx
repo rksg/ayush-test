@@ -61,12 +61,15 @@ export function MelissaBot (){
     }
   }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
-  const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>Melissa</span>
+  const melissaText = $t({ defaultMessage: 'Melissa' })
+  const subTitleText = $t({ defaultMessage: 'infused with ChatGPT' })
+  const askAnything = $t({ defaultMessage: 'Ask Anything' })
+  const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>{melissaText}</span>
     <span style={{
       fontSize: '12px',
       fontWeight: 400,
       paddingTop: '3px',
-      marginLeft: '-5px' }}>infused with ChatGPT</span></>
+      marginLeft: '-5px' }}>{subTitleText}</span></>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const askMelissa = (body:any) => {
     const { userId } = getUserProfileRA()
@@ -167,7 +170,7 @@ export function MelissaBot (){
       visible={open}
       width={464}
       footer={<Input ref={inputRef}
-        placeholder='Ask anything'
+        placeholder={askAnything}
         value={inputValue}
         disabled={isInputDisabled}
         style={{ height: '52px' }}
