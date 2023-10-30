@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch, Typography } from 'antd'
 import { isEqual }                                 from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Loader, StepsFormLegacy } from '@acx-ui/components'
+import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -44,6 +44,7 @@ export function Syslog () {
     editServerContextData,
     setEditServerContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const syslogPolicyList = useGetSyslogPolicyListQuery({ params: { tenantId } })
   const venueSettings = useGetVenueSyslogApQuery({ params: { venueId } })
@@ -65,8 +66,10 @@ export function Syslog () {
     }
     if (!venueSettings?.isLoading && syslogPolicyList.data) {
       setSyslogValue(syslogPolicyList.data.find(p => p.id === data?.serviceProfileId))
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Syslog-Server')))])
     }
-  }, [venueSettings, syslogPolicyList])
+  }, [venueSettings, syslogPolicyList, setReadyToScroll])
 
   const handleEnableChange = (checked: boolean) => {
     setEnableServerRadio(checked)

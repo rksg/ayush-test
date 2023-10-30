@@ -4,7 +4,7 @@ import { Col, Form, Image, Row, Select, Space } from 'antd'
 import { isEqual }                              from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, Tabs }                                                 from '@acx-ui/components'
+import { AnchorContext, Loader, Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
@@ -37,6 +37,7 @@ export function LanPorts () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const customGuiChagedRef = useRef(false)
 
@@ -69,8 +70,10 @@ export function LanPorts () {
     if (venueLanPorts?.data?.length) {
       setLanPortData(venueLanPorts?.data)
       setLanPortOrinData(venueLanPorts?.data)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
     }
-  }, [venueLanPorts?.data])
+  }, [setReadyToScroll, venueLanPorts?.data])
 
   useEffect(() => {
     if (!venueSettings?.isLoading) {

@@ -4,7 +4,6 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
 
 const SwitchDetails = () => {
-
   const { switchId } = useParams()
 
   return (
