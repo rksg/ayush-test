@@ -90,8 +90,9 @@ import EditDhcp                             from './pages/Services/DHCP/Edge/Edi
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                             from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddCentralizedForwarding             from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
-import EditCentralizedForwarding            from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
+import AddEdgeCentralizedForwarding         from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
+import EdgeCentralizedForwardingTable       from './pages/Services/EdgeCentralizedForwarding/CentralizedForwardingTable'
+import EditEdgeCentralizedForwarding        from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
 import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
@@ -262,18 +263,25 @@ const centralizeForwardingRoutes = () => {
     <Route path='*' element={<PageNotFound />} />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeCentralizedForwardingTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
         oper: ServiceOperation.CREATE })}
-      element={<AddCentralizedForwarding />}
+      element={<AddEdgeCentralizedForwarding />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
         oper: ServiceOperation.EDIT })}
-      element={<EditCentralizedForwarding />}
+      element={<EditEdgeCentralizedForwarding />}
     />
   </>
 }
 
 function ServiceRoutes () {
+  const isCentralizeForwardingEnabled = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -467,7 +475,7 @@ function ServiceRoutes () {
         element={<EditFirewall />}
       />
 
-      {centralizeForwardingRoutes()}
+      {isCentralizeForwardingEnabled && centralizeForwardingRoutes()}
     </Route>
   )
 }
