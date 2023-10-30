@@ -4,7 +4,7 @@ import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'
 
 const tabs = {
-  analytics: ZoneAnalyticsTab,
+  assurance: ZoneAnalyticsTab,
   clients: () => <div>clients tab</div>,
   devices: () => <div>devices tab</div>,
   networks: () => <div>network tab</div>
@@ -12,7 +12,7 @@ const tabs = {
 
 export default function ZoneDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs] || tabs['analytics']
+  const Tab = tabs[activeTab as keyof typeof tabs] || tabs['assurance']
   return <>
     <ZonePageHeader />
     { Tab && <Tab /> }
