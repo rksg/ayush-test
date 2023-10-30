@@ -126,10 +126,6 @@ jest.mock('./pages/Services/DHCP/DHCPTable/DHCPTable', () => () => {
   return <div data-testid='DHCPTable' />
 })
 
-jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
-  return <div data-testid='DpskForm' />
-})
-
 jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
   return <div data-testid='DpskTable' />
 })
@@ -223,10 +219,6 @@ jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
   return <div data-testid='AccessControlDetail' />
 })
 
-jest.mock('./pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm', () => () => {
-  return <div data-testid='MacRegistrationListForm' />
-})
-
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
 })
@@ -234,7 +226,10 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   RogueAPDetectionForm: () => <div data-testid='RogueAPDetectionForm' />,
-  RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />
+  RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
+  DpskForm: () => <div data-testid='DpskForm' />,
+  MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
@@ -259,10 +254,6 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyTable', 
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail', () => () => {
   return <div data-testid='AdaptivePolicyDetail' />
-})
-
-jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm', () => () => {
-  return <div data-testid='AdaptivePolicySetForm' />
 })
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetTable', () => () => {

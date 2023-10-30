@@ -43,6 +43,8 @@ import {
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
+  IdentityProviderUrls,
+  IdentityProviderViewModel,
   AAAPolicyNetwork,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
@@ -76,6 +78,12 @@ const clientIsolationMutationUseCases = [
   'AddClientIsolationAllowlist',
   'UpdateClientIsolationAllowlist',
   'DeleteClientIsolationAllowlists'
+]
+
+const IdentityProviderMutationUseCases = [
+  'AddHotspot20IdentityProvider',
+  'UpdateHotspot20IdentityProvider',
+  'DeleteHotspot20IdentityProviders'
 ]
 
 const L2AclUseCases = [
@@ -1097,6 +1105,59 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
+    addIdentityProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.addIdentityProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.updateIdentityProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(IdentityProviderUrls.getEnhancedIdentityProviderList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getVLANPoolPolicyViewModelList:
     build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
@@ -2029,6 +2090,10 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  useAddIdentityProviderMutation,
+  useUpdateIdentityProviderMutation,
+  useDeleteIdentityProviderListMutation,
+  useGetEnhancedIdentityProviderListQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

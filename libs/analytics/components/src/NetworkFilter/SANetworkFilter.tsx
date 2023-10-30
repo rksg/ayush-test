@@ -9,16 +9,18 @@ import { SlidingDoor } from '..'
 import { useNetworkHierarchyQuery } from './services'
 
 type SANetworkFilterProps = {
+  shouldQueryAp?: boolean
   shouldQuerySwitch? : boolean
   overrideFilters? : AnalyticsFilter | {}
- }
+}
 
 export const SANetworkFilter = ({
+  shouldQueryAp = true,
   shouldQuerySwitch = true,
   overrideFilters = {}
 }: SANetworkFilterProps) => {
   const { setNetworkPath, filters, pathFilters: { path } } = useAnalyticsFilter()
-  const networkFilter = { ...filters, shouldQuerySwitch: shouldQuerySwitch, ...overrideFilters }
+  const networkFilter = { ...filters, shouldQueryAp, shouldQuerySwitch, ...overrideFilters }
   const networkHierarchyQuery = useNetworkHierarchyQuery(
     omit(networkFilter, 'path', 'filter')
   )

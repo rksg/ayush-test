@@ -52,7 +52,7 @@ function useSANetworkHierarchy () {
     range: DateRange.last24Hours
   }), [])
   const response = useNetworkHierarchyQuery(
-    { ...filter, shouldQuerySwitch: false }, { skip: !get('IS_MLISA_SA') })
+    { ...filter, shouldQueryAp: true, shouldQuerySwitch: false }, { skip: !get('IS_MLISA_SA') })
   const systems = useSystems()
   // todo: need to filter aps based on device requirements
   return {
