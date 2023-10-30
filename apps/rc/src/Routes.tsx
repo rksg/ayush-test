@@ -1,6 +1,15 @@
-import { PageNotFound }                                                                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                                from '@acx-ui/feature-toggle'
-import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode, ResidentPortalForm } from '@acx-ui/rc/components'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  RogueAPDetectionDetailView,
+  RogueAPDetectionForm,
+  RogueAPDetectionTable,
+  ConnectionMeteringFormMode,
+  ResidentPortalForm,
+  DpskForm,
+  AdaptivePolicySetForm,
+  MacRegistrationListForm
+} from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -49,7 +58,6 @@ import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/Adapt
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
 import AdaptivePolicySetDetail                      from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail'
-import AdaptivePolicySetForm                        from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
 import RadiusAttributeGroupDetail
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
@@ -65,7 +73,6 @@ import ConnectionMeteringTable              from './pages/Policies/ConnectionMet
 import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MacRegistrationListForm              from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import MyPolicies                           from './pages/Policies/MyPolicies'
 import SelectPolicyForm                     from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                      from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
@@ -89,7 +96,6 @@ import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHC
 import EdgeDhcpTable                        from './pages/Services/DHCP/Edge/DHCPTable'
 import EditDhcp                             from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskForm                             from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
 import AddCentralizedForwarding             from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
 import EditCentralizedForwarding            from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
