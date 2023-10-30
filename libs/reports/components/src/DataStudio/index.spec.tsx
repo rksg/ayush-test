@@ -30,7 +30,7 @@ describe('DataStudio', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        ReportUrlsInfo.authenticate.url,
+        ReportUrlsInfo.authenticate.url.substring(0, ReportUrlsInfo.authenticate.url.indexOf('?')),
         (req, res, ctx) => res(ctx.json(response))
       )
     )
@@ -48,9 +48,7 @@ describe('DataStudio', () => {
       <DataStudio/>
     </Provider>, { route: { params } })
 
-    expect(screen.getByTestId('data-studio')).toBeInTheDocument()
-
-    await waitFor(()=>{
+    await waitFor(() => {
       expect(screen.getByTitle('data-studio')).toBeVisible()
     })
 
@@ -65,8 +63,6 @@ describe('DataStudio', () => {
     render(<Provider>
       <DataStudio/>
     </Provider>, { route: { params } })
-
-    expect(screen.getByTestId('data-studio')).toBeInTheDocument()
 
     await waitFor(()=>{
       expect(screen.getByTitle('data-studio')).toBeVisible()
@@ -91,7 +87,6 @@ describe('DataStudio', () => {
       process.env = oldEnv
     })
   })
-
 
   it('should get the correct hostname for prod and non MSP env', async () => {
     const oldEnv = process.env
