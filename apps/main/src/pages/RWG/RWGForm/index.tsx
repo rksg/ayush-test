@@ -113,7 +113,7 @@ export function RWGForm () {
   return (
     <>
       <PageHeader
-        title={action !== 'edit'
+        title={!isEditMode
           ? $t({ defaultMessage: 'Add Gateway' })
           : data?.name}
         titleExtra={
