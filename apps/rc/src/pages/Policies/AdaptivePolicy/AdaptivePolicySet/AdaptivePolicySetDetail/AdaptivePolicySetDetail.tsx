@@ -74,7 +74,6 @@ export default function AdaptivePolicySetDetail () {
   return (
     <>
       <PageHeader
-        // title={''}
         title={policySetData?.name || ''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
