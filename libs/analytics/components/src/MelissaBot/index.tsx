@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Input }       from 'antd'
-import axios           from 'axios'
 import { defer, get }  from 'lodash'
 import moment          from 'moment-timezone'
 import { useIntl }     from 'react-intl'
@@ -82,11 +81,14 @@ export function MelissaBot (){
         defer(doAfterResponse)
         const form = new FormData()
         form.append('file', file)
-        await axios.post(uploadUrl(incidentId), form, { headers: {
-          'Content-Type': 'multipart/form-data',
-          'X-Mlisa-Timezone': moment.tz.guess(),
-          'X-Set-New-Ui': 'true'
-        } }).catch((error)=>{
+        await fetch(uploadUrl(incidentId), {
+          method: 'POST',
+          headers: {
+            'X-Mlisa-Timezone': moment.tz.guess(),
+            'X-Set-New-Ui': 'true'
+          },
+          body: form
+        }).catch((error)=>{
           setIsReplying(false)
           // eslint-disable-next-line no-console
           console.error(error)

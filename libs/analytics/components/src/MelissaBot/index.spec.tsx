@@ -198,4 +198,58 @@ describe('MelissaBot', () => {
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(9)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
   })
+  it('should handle file upload from chatbot',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByRole('img'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    const uploadRes = [
+      {
+        text: {
+          text: [
+            'case 01103707 created!'
+          ]
+        }
+      },
+      false,
+      {
+        data: {
+          incidentId: '029e0f12-7718-11ee-92ac-d618d1b3d6d9'
+        }
+      },
+      {
+        payload: {
+          richContent: [
+            [
+              {
+                type: 'button',
+                text: 'If you have log files or screen shots to attach to your support case, click to upload',
+                link: '',
+                icon: {
+                  type: 'chevron_right',
+                  color: '#42A5F5'
+                }
+              }
+            ]
+          ]
+        }
+      }
+    ]
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve( { queryResult: { fulfillmentMessages: uploadRes } })
+      })
+    )
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'support{enter}')
+    })
+    await screen.findByText('support')
+    await act(async ()=>{
+      fireEvent.click(await screen.findByTestId('ArrowChevronRight'))
+    })
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
+  })
 })
