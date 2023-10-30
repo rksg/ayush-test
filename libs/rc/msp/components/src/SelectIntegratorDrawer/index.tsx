@@ -74,7 +74,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           delegation_type: tenantType,
           number_of_days: numOfDays,
           mspec_list: newEcList,
-          manageAllEcs: assignedEcAdmin
+          isManageAllEcs: assignedEcAdmin
         } : {
           delegation_type: tenantType,
           number_of_days: numOfDays,
@@ -97,7 +97,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
           delegation_type: tenantType,
           number_of_days: '',
           mspec_list: [] as string[],
-          manageAllEcs: assignedEcAdmin
+          isManageAllEcs: assignedEcAdmin
         } : {
           delegation_type: tenantType,
           number_of_days: '',

@@ -68,7 +68,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[],
-      manageAllEcs: assignedEcAdmin
+      isManageAllEcs: assignedEcAdmin
     } : {
       delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
