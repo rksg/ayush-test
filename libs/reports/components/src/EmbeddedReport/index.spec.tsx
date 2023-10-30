@@ -12,7 +12,19 @@ import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
-import { EmbeddedReport, convertDateTimeToSqlFormat, getSupersetRlsClause } from '.'
+import {
+  paths,
+  radioBands,
+  apNetworkPath,
+  switchNetworkPath,
+  systems } from './__tests__/fixtures'
+
+import {
+  EmbeddedReport,
+  convertDateTimeToSqlFormat,
+  getSupersetRlsClause,
+  getRLSClauseForSA } from '.'
+
 
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
@@ -87,10 +99,6 @@ describe('EmbeddedDashboard', () => {
       setLang: () => {}
     })
 
-    rest.post(
-      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
-    )
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL} />
@@ -193,71 +201,30 @@ describe('EmbeddedDashboard', () => {
   })
 })
 
-describe('getSupersetRlsClause',()=>{
-  const radioBands:RadioBand[]=['6','2.4']
-  const paths:NetworkPath[] = [
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue'
-    }, {
-      type: 'switch',
-      name: 'C0:C5:20:AA:33:2D'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue'
-    }, {
-      type: 'switch',
-      name: 'C0:C5:20:B2:11:59'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'switchGroup',
-      name: 'Switch-Venue1'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sindhuja-Venue'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sonali'
-    }, {
-      type: 'AP',
-      name: '00:0C:29:1E:9F:E4'
-    }],
-    [{
-      type: 'network',
-      name: 'Network'
-    }, {
-      type: 'zone',
-      name: 'Sonali'
-    }, {
-      type: 'AP',
-      name: '38:FF:36:13:DB:D0'
-    }]
-  ]
+describe('getSupersetRlsClause',() => {
   it('should return RLS clause based network filters and report type',()=>{
-    const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,paths,radioBands)
-    const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,paths,radioBands)
-    const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,paths,radioBands)
+    const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,
+      paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,
+      paths as NetworkPath[], radioBands as RadioBand[])
+    const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,
+      paths as NetworkPath[], radioBands as RadioBand[])
+
     expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
     expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
     expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
   })
 })
 
+describe('getRLSClauseForSA', () => {
+  it('should return RLS clause based on report type - AP', () => {
+    const rlsClause = getRLSClauseForSA(
+      apNetworkPath as NetworkPath, systems.networkNodes, ReportType.WIRELESS)
+    expect(rlsClause).toMatchSnapshot('rlsClauseAPForSA')
+  })
+  it('should return RLS clause based on report type - SWITCH', () => {
+    const rlsClause = getRLSClauseForSA(
+      switchNetworkPath as NetworkPath, systems.networkNodes, ReportType.WIRED)
+    expect(rlsClause).toMatchSnapshot('rlsClauseSwitchForSA')
+  })
+})
