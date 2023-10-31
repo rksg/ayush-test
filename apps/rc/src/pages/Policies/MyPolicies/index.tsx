@@ -9,6 +9,7 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetEnhancedIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
@@ -95,6 +96,7 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -125,6 +127,16 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetEnhancedIdentityProviderListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,

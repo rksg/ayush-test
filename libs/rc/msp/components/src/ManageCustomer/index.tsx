@@ -573,7 +573,7 @@ export function ManageCustomer () {
 
         if (isDeviceAgnosticEnabled ) {
           if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -712,6 +712,12 @@ export function ManageCustomer () {
   const getAssignmentId = (deviceType: string) => {
     const license =
     assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
+    return license.length > 0 ? license[0].id : 0
+  }
+
+  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType
+     && en.trialAssignment === trialAssignment && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 

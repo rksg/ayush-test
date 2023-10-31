@@ -10,6 +10,7 @@ export const basePolicyApi = createApi({
     'MacRegistrationPool',
     'MacRegistration',
     'ClientIsolation',
+    'IdentityProvider',
     'Syslog',
     'SnmpAgent',
     'VLANPool',

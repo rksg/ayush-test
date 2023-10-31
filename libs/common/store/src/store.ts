@@ -99,6 +99,7 @@ export const store = configureStore({
       dataApiSearch.middleware,
       apApi.middleware,
       rbacApi.middleware,
+      reportsApi.middleware,
       userApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,

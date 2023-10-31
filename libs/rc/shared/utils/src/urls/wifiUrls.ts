@@ -60,6 +60,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenues: {
+    method: 'put',
+    url: '/networkActivations/mappings',
+    newApi: true
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
