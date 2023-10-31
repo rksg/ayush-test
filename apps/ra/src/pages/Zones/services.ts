@@ -1,0 +1,53 @@
+import { gql } from 'graphql-request'
+
+import { dataApi } from '@acx-ui/store'
+
+export interface RequestPayload {
+  start: string
+  end: string
+}
+
+export type Zone = {
+    systemName: string
+    domain: string
+    zoneName: string
+    apCount: number
+    clientCount: number
+    network: string
+}
+
+export interface ZonesList {
+  zones: Zone[]
+}
+
+export const zonesListApi = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    zonesList: build.query<ZonesList, RequestPayload>({
+      query: (payload) => ({
+        document: gql`
+          query ZonesList($start: DateTime, $end: DateTime) {
+            network(start: $start, end: $end) {
+              zones {
+                systemName
+                domain
+                zoneName
+                apCount
+                clientCount
+              }
+            }
+          }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'ZONES_LIST' }],
+      transformResponse: (response: { network: ZonesList }) => ({
+        zones: response.network.zones.map((zone) => ({
+          ...zone,
+          network: `${zone.systemName} > ${zone.domain.split('||')?.[1]}`
+        }))
+      })
+    })
+  })
+})
+
+export const { useZonesListQuery } = zonesListApi

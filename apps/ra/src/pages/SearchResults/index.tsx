@@ -90,7 +90,7 @@ function SearchResult ({ searchVal }: { searchVal: string| undefined }) {
       dataIndex: 'networkPath',
       key: 'networkPath',
       render: (_, value ) => {
-        const networkPath = value.networkPath.slice(0, -1)
+        const networkPath = value.networkPath.slice(1, -1)
         return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
           <Ul>
             {networkPath.map(({ name }, index) => [
