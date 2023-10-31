@@ -392,7 +392,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const maxOSRuleNum = isNewOsVendorFeatureEnabled ?
     (32 -
       deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length -
-      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length * 2) : 32
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length) : 32
 
   const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),

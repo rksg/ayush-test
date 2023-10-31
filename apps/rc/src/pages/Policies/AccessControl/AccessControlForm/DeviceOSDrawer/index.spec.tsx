@@ -883,7 +883,7 @@ describe('DeviceOSDrawer Component', () => {
 
     // not able to select PlayStation with 31 existing normal rules
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation/i)).not.toBeNull()
+    expect(await screen.findByText(/must reserve 1 additional rule slots for PlayStation/i)).not.toBeNull()
 
     await selectOptionSet('Gaming', 'Xbox')
 
@@ -913,14 +913,6 @@ describe('DeviceOSDrawer Component', () => {
       name: /rule name/i
     }), 'rule1')
 
-    await selectOptionSet('Gaming', 'PlayStation')
-
-    await screen.findByRole('option', { name: 'PlayStation' })
-
-    // not able to select PlayStation with 30 existing normal rules
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation/i)).not.toBeNull()
-
     await selectOptionSet('Gaming', 'Xbox')
 
     await screen.findByRole('option', { name: 'Xbox' })
@@ -928,39 +920,18 @@ describe('DeviceOSDrawer Component', () => {
     // able to select Xbox with 30 existing normal rules
     expect(screen.queryByText(/must reserve 1 additional rule slot for Xbox/i)).toBeNull()
 
-    await userEvent.click(screen.getAllByText('Cancel')[1])
-
-    await deleteTheFirstRowOfRules()
-
-    await screen.findByText(/rules \(29\)/i)
-
-    // max = 32 in normal case without PlayStation and Xbox
-    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-
-    await screen.findByText(/add rule/i)
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await screen.findByText(/please enter rule name/i)
-
-    await userEvent.type(await screen.findByRole('textbox', {
-      name: /rule name/i
-    }), 'rule1')
-
     await selectOptionSet('Gaming', 'PlayStation')
 
     await screen.findByRole('option', { name: 'PlayStation' })
 
-    // able to select PlayStation with 29 existing normal rules
-    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation/i)).toBeNull()
+    // able to select PlayStation with 30 existing normal rules
+    expect(screen.queryByText(/must reserve 1 additional rule slots for PlayStation/i)).toBeNull()
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await screen.findByText(/rules \(30\)/i)
+    await screen.findByText(/rules \(31\)/i)
 
-    // max = 30 for the case of PlayStation in the existing rules
+    // max = 31 for the case of PlayStation in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
@@ -1047,7 +1018,7 @@ describe('DeviceOSDrawer Component', () => {
 
     // not able to select PlayStation with 30 existing rules including Xbox
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 3 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
+    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
 
     await userEvent.click(screen.getAllByText('Cancel')[1])
 
@@ -1074,48 +1045,19 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByRole('option', { name: 'PlayStation' })
 
-    // not able to select PlayStation with 29 existing rules including Xbox
+    // able to select PlayStation with 29 existing rules including Xbox
+
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 3 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
+    expect(screen.queryByText(/must reserve 1 additional rule slots for PlayStation/i)).toBeNull()
 
-    await userEvent.click(screen.getAllByText('Cancel')[1])
-
-    await deleteTheFirstRowOfRules()
-
-    await screen.findByText(/rules \(28\)/i)
-
-    // max = 31 for the case of Xbox in the existing rules
-    expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-
-    await screen.findByText(/add rule/i)
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await screen.findByText(/please enter rule name/i)
+    await screen.findByText(/rules \(30\)/i)
 
-    await userEvent.type(await screen.findByRole('textbox', {
-      name: /rule name/i
-    }), 'rule1')
-
-    await selectOptionSet('Gaming', 'PlayStation')
-
-    await screen.findByRole('option', { name: 'PlayStation' })
-
-    // able to select PlayStation with 28 existing rules including Xbox
-
-    // eslint-disable-next-line max-len
-    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation/i)).toBeNull()
-
-    // eslint-disable-next-line max-len
-    expect(screen.queryByText(/must reserve 3 additional rule slots for PlayStation and Xbox/i)).toBeNull()
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await screen.findByText(/rules \(29\)/i)
-
-    // max = 29 for the case of both PlayStation and Xbox in the existing rules
+    // max = 30 for the case of both PlayStation and Xbox in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
@@ -1127,10 +1069,10 @@ describe('DeviceOSDrawer Component', () => {
   it('Render DeviceDrawer component successfully with PlayStation in the existing rules', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-    const devicePolicyDetailWith30RulesWithPlayStationResponse = {
+    const devicePolicyDetailWith31RulesWithPlayStationResponse = {
       ...devicePolicyDetailWith32RulesResponse,
       rules: [
-        ...devicePolicyDetailWith32RulesResponse.rules.slice(0, -3),
+        ...devicePolicyDetailWith32RulesResponse.rules.slice(0, -2),
         {
           name: 'Block PlayStation',
           action: 'BLOCK',
@@ -1148,7 +1090,7 @@ describe('DeviceOSDrawer Component', () => {
     ), rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(devicePolicyDetailWith30RulesWithPlayStationResponse)
+        ctx.json(devicePolicyDetailWith31RulesWithPlayStationResponse)
       )
     ))
 
@@ -1173,16 +1115,16 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getByText(/edit details/i))
 
-    await screen.findByText(/rules \(30\)/i)
+    await screen.findByText(/rules \(31\)/i)
 
-    // max = 30 for the case of PlayStation in the existing rules
+    // max = 31 for the case of PlayStation in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
 
     await deleteTheFirstRowOfRules()
 
-    await screen.findByText(/rules \(29\)/i)
+    await screen.findByText(/rules \(30\)/i)
 
-    // max = 30 for the case of PlayStation in the existing rules
+    // max = 31 for the case of PlayStation in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
@@ -1201,17 +1143,17 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByRole('option', { name: 'Xbox' })
 
-    // not able to select Xbox with 29 existing rules including PlayStation
+    // not able to select Xbox with 30 existing rules including PlayStation
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 3 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
+    expect(await screen.findByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).not.toBeNull()
 
     await userEvent.click(screen.getAllByText('Cancel')[1])
 
     await deleteTheFirstRowOfRules()
 
-    await screen.findByText(/rules \(28\)/i)
+    await screen.findByText(/rules \(29\)/i)
 
-    // max = 30 for the case of PlayStation in the existing rules
+    // max = 31 for the case of PlayStation in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).not.toBeDisabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
@@ -1230,19 +1172,19 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByRole('option', { name: 'Xbox' })
 
-    // able to select Xbox with 28 existing rules including PlayStation
+    // able to select Xbox with 29 existing rules including PlayStation
 
     // eslint-disable-next-line max-len
     expect(screen.queryByText(/must reserve 1 additional rule slots for Xbox/i)).toBeNull()
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText(/must reserve 3 additional rule slots for PlayStation and Xbox/i)).toBeNull()
+    expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await screen.findByText(/rules \(29\)/i)
+    await screen.findByText(/rules \(30\)/i)
 
-    // max = 29 for the case of both PlayStation and Xbox in the existing rules
+    // max = 30 for the case of both PlayStation and Xbox in the existing rules
     expect(screen.getByRole('button', { name: 'Add' })).toBeDisabled()
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
