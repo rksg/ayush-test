@@ -76,6 +76,21 @@ const assignmentHistoryAgnostic =
     },
     {
       createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2024-02-12 07:59:59Z',
+      deviceType: 'MSP_APSW',
+      id: 130465,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 1,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: true
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
       dateAssignmentCreated: '2022-12-14 19:00:08.117Z',
       dateAssignmentRevoked: null,
       dateEffective: '2022-12-14 19:00:08Z',

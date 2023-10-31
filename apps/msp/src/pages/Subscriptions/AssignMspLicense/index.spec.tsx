@@ -40,6 +40,17 @@ const devicesAssignmentSummary =
     }
   ]
 
+const devicesTrialAssignmentSummary =
+  [
+    {
+      courtesyMspEntitlementsUsed: false,
+      deviceType: 'MSP_APSW',
+      quantity: 93,
+      remainingDevices: 12,
+      trial: true
+    }
+  ]
+
 const assignmentHistory =
   [
     {
@@ -143,6 +154,41 @@ const deviceAssignmentHistory =
       trialAssignment: false
     }
   ]
+const deviceAssignmentHistoryWithTrial =
+  [
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_APSW',
+      id: 130469,
+      mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-02-12 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_APSW',
+      id: 130469,
+      mspEcTenantId: '3061bd56e37445a8993ac834c01e2710',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 1,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: true
+    }
+  ]
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -195,6 +241,9 @@ describe('AssignMspLicense', () => {
   }))
   it('should render correctly for add mode', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: null }
+    })
     params.action = 'add'
     render(
       <Provider>
@@ -230,7 +279,7 @@ describe('AssignMspLicense', () => {
   it('should render correctly for device agnostic flag on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
-      return { data: wifiAndSwitchAssignmentHistory }
+      return { data: deviceAssignmentHistoryWithTrial }
     })
     render(
       <Provider>
@@ -250,6 +299,12 @@ describe('AssignMspLicense', () => {
   })
   it('should validate device input correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesAssignmentSummary }
+    })
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: deviceAssignmentHistory }
+    })
     render(
       <Provider>
         <AssignMspLicense />
@@ -260,7 +315,7 @@ describe('AssignMspLicense', () => {
     const input = screen.getAllByRole('spinbutton')[0]
     fireEvent.change(input, { target: { value: '-1' } })
     await waitFor(() => {
-      expect(screen.getByText('Number should be between 0 and 0')).toBeVisible()
+      expect(screen.getByText('Number should be between 0 and 14')).toBeVisible()
     })
   })
   it('should validate wifi input correctly', async () => {
@@ -642,6 +697,42 @@ describe('AssignMspLicense', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
+    })
+    params.action = 'add'
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const deviceInput = screen.getByRole('spinbutton')
+    fireEvent.change(deviceInput, { target: { value: '1' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 123 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useAddMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save correctly for assigned trial device', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesTrialAssignmentSummary }
     })
     params.action = 'add'
     render(

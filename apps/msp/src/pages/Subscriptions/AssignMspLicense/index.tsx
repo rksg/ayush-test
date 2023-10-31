@@ -59,7 +59,7 @@ interface MspAssignment {
 interface Assignment {
   quantity: number
   deviceType: EntitlementDeviceType
-  trial?: boolean
+  useTemporaryMspEntitlement?: boolean
 }
 
 export function AssignMspLicense () {
@@ -125,14 +125,18 @@ export function AssignMspLicense () {
           apswTrial.length > 0 ? apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
         checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
-        form.setFieldsValue({
-          serviceExpirationDate:
-            moment((isDeviceAgnosticEnabled ? apsw[0]?.dateExpires : wifi[0]?.dateExpires)
-            || moment().add(30,'days')),
-          wifiLicenses: wLic,
-          switchLicenses: sLic,
-          apswLicenses: apswLic
-        })
+
+        isDeviceAgnosticEnabled ?
+          form.setFieldsValue({
+            serviceExpirationDate: moment(apsw[0]?.dateExpires || moment().add(30,'days')),
+            apswLicenses: apswLic,
+            apswTrialLicenses: apswTrialLic
+          }) :
+          form.setFieldsValue({
+            serviceExpirationDate: moment(wifi[0]?.dateExpires || moment().add(30,'days')),
+            wifiLicenses: wLic,
+            switchLicenses: sLic
+          })
       } else {
         checkAvailableLicense(licenseSummary)
       }
@@ -162,43 +166,47 @@ export function AssignMspLicense () {
       const updateAssignment = []
       const deleteAssignment = []
       if (isDeviceAgnosticEnabled) {
-        // device assignment
-        const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
-        const quantityApsw = ecFormData.apswLicenses || 0
-        apswAssignId ?
-          quantityApsw > 0 ?
-            updateAssignment.push({
-              startDate: today,
-              endDate: expirationDate,
+        // paid device assignment
+        if (availableApswLicense) {
+          const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+          const quantityApsw = ecFormData.apswLicenses || 0
+          apswAssignId ?
+            quantityApsw > 0 ?
+              updateAssignment.push({
+                startDate: today,
+                endDate: expirationDate,
+                quantity: quantityApsw,
+                assignmentId: apswAssignId
+              }) :
+              deleteAssignment.push({
+                assignmentId: apswAssignId
+              })
+            : addAssignment.push({
               quantity: quantityApsw,
-              assignmentId: apswAssignId
-            }) :
-            deleteAssignment.push({
-              assignmentId: apswAssignId
+              deviceType: EntitlementDeviceType.MSP_APSW
             })
-          : addAssignment.push({
-            quantity: quantityApsw,
-            deviceType: EntitlementDeviceType.MSP_APSW
-          })
-        const apswTrialAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
-        const quantityApswTrial = ecFormData.apswTrialLicenses || 0
-        apswTrialAssignId ?
-          quantityApswTrial > 0 ?
-            updateAssignment.push({
-              startDate: today,
-              endDate: expirationDate,
+        }
+        // trial license assignment
+        if (availableApswTrialLicense) {
+          const apswTrialAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
+          const quantityApswTrial = ecFormData.apswTrialLicenses || 0
+          apswTrialAssignId ?
+            quantityApswTrial > 0 ?
+              updateAssignment.push({
+                startDate: today,
+                endDate: expirationDate,
+                quantity: quantityApswTrial,
+                assignmentId: apswTrialAssignId
+              }) :
+              deleteAssignment.push({
+                assignmentId: apswTrialAssignId
+              })
+            : addAssignment.push({
               quantity: quantityApswTrial,
-              assignmentId: apswTrialAssignId
-            }) :
-            deleteAssignment.push({
-              assignmentId: apswTrialAssignId
+              deviceType: EntitlementDeviceType.MSP_APSW,
+              useTemporaryMspEntitlement: true
             })
-          : addAssignment.push({
-            quantity: quantityApswTrial,
-            deviceType: EntitlementDeviceType.MSP_APSW,
-            trial: true
-          })
-
+        }
       }
       else {
         // wifi assignment
@@ -318,7 +326,8 @@ export function AssignMspLicense () {
       <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
 
-      {isDeviceAgnosticEnabled && <div><UI.FieldLabelSubs width='315px'>
+      {isDeviceAgnosticEnabled &&
+      <div>{(availableApswLicense > 0) && <UI.FieldLabelSubs width='315px'>
         <label>{intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })}</label>
         <Form.Item
           name='apswLicenses'
@@ -337,7 +346,7 @@ export function AssignMspLicense () {
           {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
             availableApswLicense: availableApswLicense })}
         </label>
-      </UI.FieldLabelSubs>
+      </UI.FieldLabelSubs>}
       {(availableApswTrialLicense > 0) && <UI.FieldLabelSubs width='315px'>
         <label>{intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })}</label>
         <Form.Item
