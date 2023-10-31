@@ -69,6 +69,13 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
     setModelVisible(false)
   }
 
+  const setPreDownload = (value: boolean) => {
+    setChecked(value)
+    if (disableSave) {
+      setDisableSave(false)
+    }
+  }
+
   const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
     setValueDays(data.valueDays)
     setValueTimes(data.valueTimes)
@@ -169,7 +176,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
         {isSwitch && scheduleMode === ScheduleMode.Automatically ?
           <PreDownload
             checked={checked}
-            setChecked={setChecked}
+            setChecked={setPreDownload}
           />
           : null}
       </Modal>
