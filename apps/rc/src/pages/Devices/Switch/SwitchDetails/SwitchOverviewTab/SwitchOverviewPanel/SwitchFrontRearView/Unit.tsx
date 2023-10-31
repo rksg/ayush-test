@@ -103,7 +103,7 @@ export function Unit (props:{
   } = useContext(SwitchPanelContext)
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
-  const { switchDetailHeader: switchDetail, switchDetailViewModelQuery } = switchDetailsContextData
+  const { switchDetailHeader: switchDetail, switchDetailViewModelQuery, switchQuery } = switchDetailsContextData
   const { serialNumber, switchMac } = switchDetail
 
   const { $t } = useIntl()
@@ -339,6 +339,7 @@ export function Unit (props:{
       },
       onOk: () => {
         deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } }).then(() => {
+          switchQuery?.refetch()
           switchDetailViewModelQuery?.refetch()
         })
       }

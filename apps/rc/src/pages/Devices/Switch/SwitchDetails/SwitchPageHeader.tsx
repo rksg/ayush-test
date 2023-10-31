@@ -51,7 +51,7 @@ function SwitchPageHeader () {
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
+  const { switchData, switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -178,13 +178,14 @@ function SwitchPageHeader () {
   useEffect(() => {
     if(switchDetailHeader?.stackMembers){
       const switchModel = switchDetailHeader?.model || ''
+      const syncedStackMemberCount = switchData?.stackMembers?.length || 0
       const currentFW = switchDetailHeader?.firmwareVersion || venueFW || ''
       const currentAboveTenFW = switchDetailHeader?.firmwareVersion || venueAboveTenFw || ''
       const maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
 
-      setMaxMembers(maxUnits - switchDetailHeader?.stackMembers.length)
+      setMaxMembers(maxUnits - syncedStackMemberCount)
     }
-  }, [switchDetailHeader, venueFW, venueAboveTenFw])
+  }, [switchDetailHeader, switchData, venueFW, venueAboveTenFw])
 
   useEffect(() => {
     if (switchDetailHeader?.switchMac) {

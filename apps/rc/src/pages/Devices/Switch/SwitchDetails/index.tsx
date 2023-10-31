@@ -3,11 +3,11 @@ import { createContext, useEffect, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { useSwitchDetailHeaderQuery }                                   from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
-import { UseQueryResult }                                               from '@acx-ui/types'
-import { hasAccess }                                                    from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                            from '@acx-ui/utils'
+import { useSwitchDetailHeaderQuery, useGetSwitchQuery }                        from '@acx-ui/rc/services'
+import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { UseQueryResult }                                                       from '@acx-ui/types'
+import { hasAccess }                                                            from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
 import { SwitchConfigurationTab }   from './SwitchConfigurationTab'
@@ -29,6 +29,8 @@ const tabs = {
 }
 
 export interface SwitchDetails {
+  switchData?: Switch
+  switchQuery: UseQueryResult<Switch>
   switchDetailHeader: SwitchViewModel
   switchDetailViewModelQuery: UseQueryResult<SwitchViewModel>
   currentSwitchOperational: boolean
@@ -47,10 +49,17 @@ export default function SwitchDetails () {
     params: { tenantId, switchId, serialNumber } }, {
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
+  const switchQuery = useGetSwitchQuery({ params: { tenantId, switchId } }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+  })
+
   const { data: switchDetailHeader } = switchDetailHeaderQuery
+  const { data: switchData } = switchQuery
 
   useEffect(() => {
     setSwitchDetailsContextData({
+      switchData: switchData as Switch,
+      switchQuery: switchQuery,
       switchDetailHeader: switchDetailHeader as SwitchViewModel,
       switchDetailViewModelQuery: switchDetailHeaderQuery,
       switchName: switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || '',
@@ -58,7 +67,7 @@ export default function SwitchDetails () {
         switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
         , !!switchDetailHeader?.syncedSwitchConfig) && !switchDetailHeader?.suspendingDeployTime
     })
-  }, [switchDetailHeader])
+  }, [switchDetailHeader, switchData])
 
   const Tab = tabs[activeTab as keyof typeof tabs]
 

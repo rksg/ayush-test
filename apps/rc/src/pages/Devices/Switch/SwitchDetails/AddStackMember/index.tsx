@@ -52,7 +52,7 @@ export default function AddStackMember (props: AddStackMemberProps) {
   const [form] = Form.useForm<Switch>()
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader, switchDetailViewModelQuery } = switchDetailsContextData
+  const { switchDetailHeader, switchQuery, switchDetailViewModelQuery } = switchDetailsContextData
 
   const onClose = () => {
     setVisible(false)
@@ -87,6 +87,7 @@ export default function AddStackMember (props: AddStackMemberProps) {
 
               setTimeout(() => {
                 switchDetailViewModelQuery?.refetch()
+                switchQuery?.refetch()
               }, 1500)
 
             } catch (error) {
@@ -140,7 +141,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchDetail?.stackMembers || [])]) },
+            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchData?.stackMembers || [])]) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
@@ -186,7 +187,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
 
   const validatorUniqueMember = (serialNumber: string) => {
-    const member = switchDetail?.stackMembers || []
+    const member = switchData?.stackMembers || []
     const memberExistCount = member.concat(tableData).filter((item) => {
       return item.id === serialNumber
     }).length
@@ -240,7 +241,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         enableStack: true,
         spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
-          ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
+          ...(switchData?.stackMembers?.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
         ]
       }

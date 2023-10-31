@@ -44,9 +44,10 @@ export function SwitchOverviewTab () {
   const switchFilter = useSwitchFilter(switchDetail)
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
+  const [syncedStackMember, setSyncedStackMember] = useState([] as StackMember[])
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader } = switchDetailsContextData
+  const { switchDetailHeader, switchData } = switchDetailsContextData
 
   const { data: venue } = useGetVenueQuery({
     params: { tenantId: params.tenantId, venueId: switchDetailHeader?.venueId } },
@@ -64,15 +65,20 @@ export function SwitchOverviewTab () {
   )
 
   useEffect(() => {
-    if(switchDetailHeader && venue && stackMember) {
+    if(switchDetailHeader && venue && stackMember && switchData) {
+      const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
+      const syncedStackMember
+        = stackMember?.data?.filter(stack => stackMemberIds?.includes(stack.id))
+
       setSwitchDetail({
         ...switchDetailHeader,
         venueDescription: venue.description,
-        unitDetails: stackMember?.data
+        unitDetails: syncedStackMember
       })
+      setSyncedStackMember(syncedStackMember)
       setSupportRoutedInterfaces(isRouter(switchDetailHeader?.switchType || SWITCH_TYPE.SWITCH))
     }
-  }, [switchDetailHeader, venue, stackMember])
+  }, [switchDetailHeader, switchData, venue, stackMember])
 
   useEffect(() => {
     if(switchDetail) {
@@ -118,7 +124,7 @@ export function SwitchOverviewTab () {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
         <SwitchOverviewPanel
           filters={switchFilter}
-          stackMember={stackMember?.data as StackMember[]}
+          stackMember={syncedStackMember as StackMember[]}
           switchDetail={switchDetail}
           currentSwitchDevice={currentSwitchDevice} />
       </Tabs.TabPane>
