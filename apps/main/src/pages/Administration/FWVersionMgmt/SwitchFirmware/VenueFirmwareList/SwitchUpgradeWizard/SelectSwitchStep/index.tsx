@@ -136,7 +136,11 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
+        const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
+        return `${row.switchName} ${stackLabel}`
+      }
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
