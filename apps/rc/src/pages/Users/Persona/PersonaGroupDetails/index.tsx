@@ -3,9 +3,16 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }                                           from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                                            from '@acx-ui/feature-toggle'
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  VenueLink,
+  useDpskNewConfigFlowParams,
+  PersonaGroupDrawer
+} from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -17,8 +24,7 @@ import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
-import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
+import { BasePersonaTable } from '../PersonaTable/BasePersonaTable'
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,

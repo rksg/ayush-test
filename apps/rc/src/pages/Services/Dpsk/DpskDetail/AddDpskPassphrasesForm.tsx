@@ -23,13 +23,14 @@ import {
   ExpirationDateEntity,
   ExpirationMode,
   MacRegistrationFilterRegExp,
+  MAX_PASSPHRASES_PER_ADDITION,
+  NEW_MAX_DEVICES_PER_PASSPHRASE,
   NewDpskPassphrase,
+  OLD_MAX_DEVICES_PER_PASSPHRASE,
   phoneRegExp,
   unlimitedNumberOfDeviceLabel,
   validateVlanId
 } from '@acx-ui/rc/utils'
-
-import { OLD_MAX_DEVICES_PER_PASSPHRASE, NEW_MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES_PER_ADDITION } from '../constants'
 
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'

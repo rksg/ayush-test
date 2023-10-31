@@ -1,16 +1,17 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { NetworkFilter }              from '@acx-ui/analytics/components'
-import { RangePicker }                from '@acx-ui/components'
-import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }              from '@acx-ui/utils'
+import { NetworkFilter, SANetworkFilter } from '@acx-ui/analytics/components'
+import { RangePicker }                    from '@acx-ui/components'
+import { get }                            from '@acx-ui/config'
+import { getShowWithoutRbacCheckKey }     from '@acx-ui/user'
+import { useDateFilter }                  from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping, bandDisabledReports } from '../mapping/reportsMapping'
 
 export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const { $t } = useIntl()
-  const mode = reportModeMapping[type] || 'both'
+  const mode = reportModeMapping[type]
   const isRadioBandDisabled = bandDisabledReports.includes(type) || false
   let radioBandDisabledReason = isRadioBandDisabled ?
     $t({ defaultMessage: 'Radio Band is not available for this report.' }) : ''
@@ -29,16 +30,20 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
     />
   ]
   showFilter && component.unshift(
-    <NetworkFilter
-      key={getShowWithoutRbacCheckKey('reports-network-filter')}
-      shouldQuerySwitch={shouldQuerySwitch}
-      showRadioBand={showRadioBand}
-      multiple={true}
-      filterMode={mode}
-      filterFor={'reports'}
-      isRadioBandDisabled={isRadioBandDisabled}
-      radioBandDisabledReason={radioBandDisabledReason}
-    />
+    get('IS_MLISA_SA')
+      ? <SANetworkFilter
+        shouldQueryAp={showRadioBand}
+        shouldQuerySwitch={shouldQuerySwitch}/>
+      : <NetworkFilter
+        key={getShowWithoutRbacCheckKey('reports-network-filter')}
+        shouldQuerySwitch={shouldQuerySwitch}
+        showRadioBand={showRadioBand}
+        multiple={true}
+        filterMode={mode}
+        filterFor={'reports'}
+        isRadioBandDisabled={isRadioBandDisabled}
+        radioBandDisabledReason={radioBandDisabledReason}
+      />
   )
 
   return component
