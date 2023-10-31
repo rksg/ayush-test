@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Form, Input, Row, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                                      from 'antd/lib/select'
-import _                                                          from 'lodash'
+import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                            from 'antd/lib/select'
+import _                                                from 'lodash'
 
 import {
   Alert,
@@ -762,20 +762,16 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
-        <Row style={{ height: '80px' }}>
-          <Col flex='auto'>
-            <Form layout='vertical'>
-              <Form.Item
-                label={$t({ defaultMessage: 'Selected Port' })}
-                children={<Space style={{ fontSize: '16px' }}>
-                  {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
-                </Space>
-                }
-              />
-            </Form>
-          </Col>
-          { !isMultipleEdit && <Col flex='250px'>
-            <UI.FormItem>
+        <UI.HorizontalFormItemLayout>
+          <Form.Item
+            label={$t({ defaultMessage: 'Selected Port' })}
+            labelCol={{ span: 24 }}
+            children={<Space style={{ fontSize: '16px' }}>
+              {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
+            </Space>
+            }
+          />
+          { !isMultipleEdit &&
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
                 rules={[
@@ -784,9 +780,8 @@ export function EditPortDrawer ({
                 initialValue=''
                 children={<Input />}
               />
-            </UI.FormItem>
-          </Col>}
-        </Row>
+          }
+        </UI.HorizontalFormItemLayout>
 
         <UI.ContentDivider />
 
@@ -1223,7 +1218,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ position: 'relative', top: '-20px' }}>
+        <div style={{ position: 'relative', top: '-20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
@@ -1232,7 +1227,7 @@ export function EditPortDrawer ({
             setLldpQosList={setLldpQosList}
             vlansOptions={vlansOptions}
           />
-        </Space>
+        </div>
 
         <ACLSettingDrawer
           visible={drawerAclVisible}
