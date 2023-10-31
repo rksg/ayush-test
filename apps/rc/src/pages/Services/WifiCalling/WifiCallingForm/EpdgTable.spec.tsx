@@ -9,7 +9,7 @@ import { rest }                  from 'msw'
 
 import { EPDG, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, screen }             from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }    from '@acx-ui/test-utils'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 
@@ -132,6 +132,10 @@ describe('EpdgTable', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     expect(saveButton).toBeInTheDocument()
     fireEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.queryByText('Save')).not.toBeInTheDocument()
+    })
   })
 
   it('should render drawer successfully after clicking the Edit button', async () => {
@@ -183,6 +187,11 @@ describe('EpdgTable', () => {
 
     await screen.findByText(/delete rule/i)
 
-    fireEvent.click(screen.getByText(/delete rule/i))
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
+    }))
+    await waitFor(() => {
+      expect(screen.queryByText('Delete rule')).not.toBeInTheDocument()
+    })
   })
 })

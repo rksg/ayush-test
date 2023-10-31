@@ -39,7 +39,7 @@ export interface ImpactedSwitch {
 
 export type ImpactedSwitchPortRow = ImpactedSwitchPort
   & Pick<ImpactedSwitch, 'name' | 'mac'>
-  & { key: string, index: number }
+  & { key?: string, index?: number }
 
 interface Response <T> {
   incident: T
@@ -74,15 +74,8 @@ export const impactedApi = dataApi.injectEndpoints({
     impactedSwitchVLANs: build.query<ImpactedSwitchPortRow[], { id: Incident['id'] }>({
       query: (variables) => ({ document, variables }),
       transformResponse: (response: Response<{ impactedSwitchVLANs: ImpactedSwitch[] }>) => {
-        const results = response.incident.impactedSwitchVLANs
+        return response.incident.impactedSwitchVLANs
           .flatMap(({ name, mac, ports }) => ports.map(port => ({ name, mac, ...port })))
-          .reduce((agg, row) => {
-            const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
-            if (!agg[key]) agg[key] = { ...row, key, index: 0 } // correct index set before return
-            return agg
-          }, {} as Record<string, ImpactedSwitchPortRow>)
-
-        return Object.values(results).map((item, index) => ({ ...item, index }))
       }
     })
   })

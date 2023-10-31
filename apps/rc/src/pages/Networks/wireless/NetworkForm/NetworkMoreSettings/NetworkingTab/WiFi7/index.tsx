@@ -7,10 +7,10 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip }                                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                                  from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsSecuritySupport6g } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                               from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                                                      from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -48,11 +48,23 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
-  const valueOfWlanSecurity = getWlanSecurity(wlanData, wlanSecurity)
-  const enableOwe = getIsOwe(wlanData, valueOfWlanSecurity)
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
+  security?: {
+    wlanSecurity?: WlanSecurityEnum,
+    aaaWlanSecurity? : WlanSecurityEnum,
+    dpskWlanSecurity? : WlanSecurityEnum,
+    wisprWlanSecurity?: WlanSecurityEnum
+ }
+) => {
 
-  return IsSecuritySupport6g(valueOfWlanSecurity as WlanSecurityEnum) || enableOwe || false
+  // add Network mode
+  const { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity } = security || {}
+  if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) return true
+  if (IsSecuritySupport6g(wlanSecurity) || IsSecuritySupport6g(aaaWlanSecurity) || IsSecuritySupport6g(wisprWlanSecurity)) return true
+  if (getIsOwe(wlanData)) return true
+
+  // edit network mode
+  return IsNetworkSupport6g(wlanData)
 }
 
 export const inverseTargetValue =
@@ -125,12 +137,9 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
-export const getWlanSecurity = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
-  return wlanSecurity || get(wlanData, ['wlan', 'wlanSecurity']) || get(wlanData, ['wlanSecurity'])
-}
-
-export const getIsOwe = (wlanData : NetworkSaveData | null, wlanSecurity ?: WlanSecurityEnum) => {
-  return get(wlanData, ['enableOwe']) || (wlanSecurity === WlanSecurityEnum.OWE)
+export const getIsOwe = (wlanData : NetworkSaveData | null) => {
+  return get(wlanData, ['enableOwe']) ||
+         get(wlanData, ['networkSecurity']) === WlanSecurityEnum.OWE // WISPr network
 }
 
 const { useWatch } = Form
@@ -150,8 +159,12 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const wlanSecurity = useWatch('wlanSecurity')
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, wlanSecurity)
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity']) // for PSK network
+  const aaaWlanSecurity = useWatch('wlanSecurity') // for AAA network
+  const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
+  const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
+
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
 
   useEffect(() => {
     const updateMloOptions = () => {
@@ -267,6 +280,7 @@ export const getInitMloEnabled = (wlanData: NetworkSaveData | null, initWifi7Ena
 function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
 
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
@@ -339,7 +353,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
           </div>
         )}
       </div>
-      { wifi7MloFlag &&
+      { wifi7MloFlag && enableAP70 &&
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
