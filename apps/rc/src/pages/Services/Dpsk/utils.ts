@@ -1,7 +1,6 @@
-import { PolicyDefaultAccess } from '@acx-ui/rc/utils'
-import { getIntl }             from '@acx-ui/utils'
+import { PolicyDefaultAccess, defaultAccessLabelMapping } from '@acx-ui/rc/utils'
+import { getIntl }                                        from '@acx-ui/utils'
 
-import { defaultAccessLabelMapping } from './contentsMap'
 
 export function displayDefaultAccess (defaultAccess: boolean | undefined) {
   const { $t } = getIntl()
