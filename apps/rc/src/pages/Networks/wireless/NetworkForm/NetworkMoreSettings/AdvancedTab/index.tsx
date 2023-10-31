@@ -3,9 +3,9 @@ import { useContext } from 'react'
 import { Form, Slider } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Tooltip }                    from '@acx-ui/components'
-import {Features, TierFeatures, useIsSplitOn, useIsTierAllowed} from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Tooltip }                                                from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 
 import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'

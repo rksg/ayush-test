@@ -1,8 +1,8 @@
 
 import { useIntl } from 'react-intl'
 
-import {Features, TierFeatures, useIsSplitOn, useIsTierAllowed} from '@acx-ui/feature-toggle'
-import { NetworkSaveData }        from '@acx-ui/rc/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { NetworkSaveData }                                        from '@acx-ui/rc/utils'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
