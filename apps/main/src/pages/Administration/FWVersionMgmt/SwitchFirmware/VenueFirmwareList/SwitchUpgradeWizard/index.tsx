@@ -45,7 +45,7 @@ export interface UpdateNowWizardProps {
   data: FirmwareSwitchVenue[],
 }
 
-export function UpdateNowWizard (props: UpdateNowWizardProps) {
+export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const [form] = Form.useForm()
   const { $t } = useIntl()
   const params = useParams()

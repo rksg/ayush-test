@@ -42,10 +42,10 @@ import {
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 
-import * as UI                                       from './styledComponents'
-import { SwitchScheduleDrawer }                      from './SwitchScheduleDrawer'
-import { SwitchFirmwareWizardType, UpdateNowWizard } from './SwitchUpgradeWizard'
-import { VenueStatusDrawer }                         from './VenueStatusDrawer'
+import * as UI                                           from './styledComponents'
+import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
+import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
+import { VenueStatusDrawer }                             from './VenueStatusDrawer'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -327,7 +327,7 @@ export const VenueFirmwareTable = (
         }]}
       />
 
-      <UpdateNowWizard
+      <SwitchUpgradeWizard
         wizardType={wizardType}
         visible={updateNowWizardVisible}
         data={selectedVenueList as FirmwareSwitchVenue[]}

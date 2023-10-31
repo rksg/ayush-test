@@ -34,7 +34,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     const switchList = (await getSwitchFirmwareStatusList({
       payload: { venueIdList: [props.data.id] }
     }, true)).data?.data
-    if(switchList){
+    if (switchList) {
       const venueDate = getNextScheduleTpl(intl, props.data)
       const filterSwitchList = switchList.filter(row => {
         const switchSchedule = getSwitchNextScheduleTpl(intl, row)
@@ -42,7 +42,6 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       })
       setSwitchFirmwareStatusList(filterSwitchList as unknown as SwitchFirmware[])
     }
-
   }
 
   useEffect(() => {
