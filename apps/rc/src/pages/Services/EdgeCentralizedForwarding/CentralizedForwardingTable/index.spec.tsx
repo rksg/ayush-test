@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within }           from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                      from '@acx-ui/test-utils'
 
 import { mockEdgeList } from '../__tests__/fixtures'
 
