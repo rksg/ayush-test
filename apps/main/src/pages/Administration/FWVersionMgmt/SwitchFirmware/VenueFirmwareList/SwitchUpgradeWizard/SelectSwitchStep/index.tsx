@@ -515,15 +515,9 @@ export const SelectSwitchStep = (
                 const addedVenue = _.difference(selectedKeys, selectedVenueRowKeys)
                 const deletedVenue = _.difference(selectedVenueRowKeys, selectedKeys)
                 if (addedVenue.length > 0) {
-                  let newNestedData = {} as {
-                    [key: string]: {
-                      initialData: SwitchFirmware[],
-                      selectedData: SwitchFirmware[]
-                    }
-                  }
-                  let newSelectedSwitchRowKeys = {} as {
-                    [key: string]: Key[]
-                  }
+                  let newNestedData = nestedData
+                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+
                   addedVenue.forEach(async (venue) => {
 
                     let initialData = nestedData[venue]?.initialData ?? []
@@ -554,15 +548,9 @@ export const SelectSwitchStep = (
                   setSelectedSwitchRowKeys(newSelectedSwitchRowKeys)
 
                 } else if (deletedVenue.length > 0) {
-                  let newNestedData = {} as {
-                    [key: string]: {
-                      initialData: SwitchFirmware[],
-                      selectedData: SwitchFirmware[]
-                    }
-                  }
-                  let newSelectedSwitchRowKeys = {} as {
-                    [key: string]: Key[]
-                  }
+                  let newNestedData = nestedData
+                  let newSelectedSwitchRowKeys = selectedSwitchRowKeys
+
                   deletedVenue.forEach((venue) => {
                     newNestedData[venue] = {
                       initialData: nestedData[venue]?.initialData || [],
