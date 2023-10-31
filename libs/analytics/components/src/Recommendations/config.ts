@@ -10,6 +10,12 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export type ConfigurationValue =
+  string |
+  Array<{ channelMode: string, channelWidth: string, radio: string }> |
+  boolean |
+  null
+
 export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
   nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
@@ -47,7 +53,9 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string |
+    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
+      MessageDescriptor);
 }
 
 const categories = {
@@ -328,7 +336,11 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (
+      status: StateType,
+      currentValue: ConfigurationValue,
+      recommendedValue: string
+    ) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -336,7 +348,9 @@ export const codes = {
         'revertscheduled',
         'revertscheduleinprogress',
         'revertfailed'
-      ].includes(status) && currentValue && compareVersion(currentValue, recommendedValue) > -1)
+      ].includes(status) &&
+        currentValue &&
+        compareVersion(currentValue as string, recommendedValue) > -1)
         ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this recommendation is still valid.' })
         : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this recommendation is applied.' }),
     actionText: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
@@ -355,12 +369,12 @@ export const codes = {
   },
   'c-txpower-same': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio' }),
     priority: priorities.medium,
     valueFormatter: formatter('txFormat'),
     valueText: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on both 2.4 GHz and 5 Ghz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz.' }),
-    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz and reduces co-channel interference.' }),
+    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on 2.4 GHz and 5 GHz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.' }),
+    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz/6 GHz and reduces co-channel interference.' }),
     tradeoffText: defineMessage({ defaultMessage: '2.4 GHz clients at the edge of Wi-Fi coverage may receive poor signal or lose connectivity.' }),
     kpis: [
       {

@@ -11,7 +11,7 @@ import {
   useDeleteNetworkVenuesMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -23,7 +23,8 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   NetworkVenue,
-  redirectPreviousPage
+  redirectPreviousPage,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -99,7 +100,7 @@ export default function NetworkForm (props:{
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
@@ -118,6 +119,15 @@ export default function NetworkForm (props:{
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
+    }
+
+    // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
+    if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
+        && !saveData.isCloudpathEnabled) {
+      delete saveState.authRadius
+      delete saveState.authRadiusId
+      delete saveData?.authRadius
+      delete saveData?.authRadiusId
     }
 
     const newSavedata = { ...saveState, ...saveData }
@@ -389,17 +399,8 @@ export default function NetworkForm (props:{
     if (removed.length) {
       await deleteNetworkVenues({ payload: removed }).unwrap()
     }
-
-
     if (update.length) {
-      // ToDo: wait for backend support the updateNetworkVenues API
-      // await updateNetworkVenues({ payload: update }).unwrap()
-
-      update.forEach(networkVenue => {
-        updateNetworkVenue({ params: {
-          networkVenueId: networkVenue.id
-        }, payload: networkVenue }).unwrap()
-      })
+      await updateNetworkVenues({ payload: update }).unwrap()
     }
   }
 
@@ -559,7 +560,8 @@ export default function NetworkForm (props:{
                     intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                   onFinish={handleOnboarding}
                 >
-                  {pickOneCaptivePortalForm(saveState)}
+                  {!!(saveState?.guestPortal?.guestNetworkType) &&
+                      pickOneCaptivePortalForm(saveState)}
                 </StepsFormLegacy.StepForm>
             }
             { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
@@ -632,7 +634,8 @@ export default function NetworkForm (props:{
                     intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                   onFinish={handleOnboarding}
                 >
-                  {pickOneCaptivePortalForm(saveState)}
+                  {!!(saveState?.guestPortal?.guestNetworkType) &&
+                      pickOneCaptivePortalForm(saveState)}
                 </StepsForm.StepForm>
             }
             {editMode &&
@@ -670,22 +673,21 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
   if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
     return false
   }
+  const portalWebTypes = [
+    GuestNetworkTypeEnum.ClickThrough,
+    GuestNetworkTypeEnum.SelfSignIn,
+    GuestNetworkTypeEnum.GuestPass,
+    GuestNetworkTypeEnum.HostApproval
+  ]
 
-  switch (saveState.guestPortal?.guestNetworkType) {
-    case GuestNetworkTypeEnum.ClickThrough:
-    case GuestNetworkTypeEnum.SelfSignIn:
-    case GuestNetworkTypeEnum.GuestPass:
-    case GuestNetworkTypeEnum.HostApproval:
-      return true
-    default:
-      // eslint-disable-next-line no-console
-      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
-      return false
-  }
+  // eslint-disable-next-line max-len
+  const guestNetworkType = saveState.guestPortal?.guestNetworkType
+  return !!(guestNetworkType && portalWebTypes.includes(guestNetworkType))
 }
 
 function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
-  switch (saveState?.guestPortal?.guestNetworkType) {
+  const guestNetworkType = saveState?.guestPortal?.guestNetworkType
+  switch (guestNetworkType) {
     case GuestNetworkTypeEnum.ClickThrough:
       return <OnboardingForm />
     case GuestNetworkTypeEnum.SelfSignIn:

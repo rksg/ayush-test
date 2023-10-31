@@ -1,6 +1,15 @@
-import { PageNotFound }                                                                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                                from '@acx-ui/feature-toggle'
-import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode, ResidentPortalForm } from '@acx-ui/rc/components'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  RogueAPDetectionDetailView,
+  RogueAPDetectionForm,
+  RogueAPDetectionTable,
+  ConnectionMeteringFormMode,
+  ResidentPortalForm,
+  DpskForm,
+  AdaptivePolicySetForm,
+  MacRegistrationListForm
+} from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -49,7 +58,6 @@ import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/Adapt
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
 import AdaptivePolicySetDetail                      from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail'
-import AdaptivePolicySetForm                        from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
 import RadiusAttributeGroupDetail
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
@@ -62,9 +70,9 @@ import ClientIsolationTable                 from './pages/Policies/ClientIsolati
 import ConnectionMeteringDetail             from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MacRegistrationListForm              from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import MyPolicies                           from './pages/Policies/MyPolicies'
 import SelectPolicyForm                     from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                      from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
@@ -88,8 +96,10 @@ import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHC
 import EdgeDhcpTable                        from './pages/Services/DHCP/Edge/DHCPTable'
 import EditDhcp                             from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskForm                             from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddEdgeCentralizedForwarding         from './pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding'
+import EdgeCentralizedForwardingTable       from './pages/Services/EdgeCentralizedForwarding/CentralizedForwardingTable'
+import EditEdgeCentralizedForwarding        from './pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding'
 import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
 import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
@@ -255,7 +265,30 @@ function NetworkRoutes () {
   )
 }
 
+const centralizeForwardingRoutes = () => {
+  return <>
+    <Route path='*' element={<PageNotFound />} />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.LIST })}
+      element={<EdgeCentralizedForwardingTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.CREATE })}
+      element={<AddEdgeCentralizedForwarding />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING,
+        oper: ServiceOperation.EDIT })}
+      element={<EditEdgeCentralizedForwarding />}
+    />
+  </>
+}
+
 function ServiceRoutes () {
+  const isCentralizeForwardingEnabled = useIsSplitOn(Features.EDGES_CENTRALIZED_FORWARDING_TOGGLE)
+
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -448,6 +481,8 @@ function ServiceRoutes () {
           type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
         element={<EditFirewall />}
       />
+
+      {isCentralizeForwardingEnabled && centralizeForwardingRoutes()}
     </Route>
   )
 }
@@ -591,6 +626,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
         element={<ClientIsolationDetail />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })}
+        element={<IdentityProviderTable />}
       />
       <Route
         // eslint-disable-next-line max-len

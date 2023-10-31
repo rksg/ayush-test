@@ -9,6 +9,7 @@ import styled        from 'styled-components/macro'
 import {
   Loader,
   showActionModal,
+  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -39,7 +40,8 @@ import {
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useGetVenueQuery
+  useGetVenueQuery,
+  useNotifyPropertyUnitsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -47,6 +49,7 @@ import {
   FILTER,
   Persona,
   PropertyUnit,
+  PropertyUnitMessages,
   PropertyUnitStatus,
   SEARCH,
   SwitchViewModel,
@@ -58,7 +61,8 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { exportMessageMapping } from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
@@ -144,6 +148,7 @@ export function VenuePropertyTab () {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
+  const [notifyUnits] = useNotifyPropertyUnitsMutation()
 
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
@@ -397,6 +402,21 @@ export function VenuePropertyTab () {
       }
     },
     {
+      label: $t({ defaultMessage: 'Resend' }),
+      onClick: (selectedItems, clearSelection) => {
+        notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+          .unwrap()
+          .then(() => {
+            showToast({
+              type: 'success',
+              content: $t(PropertyUnitMessages.RESEND_NOTIFICATION)
+            })
+          })
+          .catch(() => {})
+          .finally(clearSelection)
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         setDrawerState({ isEdit: false, visible: false })
@@ -535,15 +555,16 @@ export function VenuePropertyTab () {
     >
       <Table
         rowKey='name'
+        settingsId='property-units-table'
         columns={columns}
         enableApiFilter
         onFilterChange={handleFilterChange}
         dataSource={queryUnitList.data?.data}
         pagination={queryUnitList.pagination}
         onChange={queryUnitList.handleTableChange}
-        actions={hasAssociation ? actions : []}
-        rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }}
+        actions={filterByAccess(hasAssociation ? actions : [])}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader }                   from '@acx-ui/components'
+import { AnchorContext, Loader }    from '@acx-ui/components'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -45,6 +45,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { isLoadOrBandBalaningEnabled } = props
   const getClientAdmissionControl = useGetVenueClientAdmissionControlQuery({ params: { venueId } })
@@ -70,6 +71,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
         clientAdmissionControlData.minClientThroughput24G)
       form.setFieldValue(minClientThroughput50GFieldName,
         clientAdmissionControlData.minClientThroughput50G)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTurnedOffAndGrayedOut, form, getClientAdmissionControl?.data])

@@ -14,10 +14,12 @@ import { filterByAccess, hasAccess }                              from '@acx-ui/
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
 
-const StaticRoutes = () => {
-
+const StaticRoutes = (
+  { serialNumber, modalMode = false, modalCallBack = ()=>{} }:
+  { serialNumber?: string, modalMode?: boolean, modalCallBack?: ()=>void }
+) => {
   const { $t } = useIntl()
-  const params = useParams()
+  const params = { ...{ serialNumber }, ...useParams() }
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -103,6 +105,8 @@ const StaticRoutes = () => {
         routes: routesData
       }
       await updateStaticRoutes({ params: params, payload: payload }).unwrap()
+
+      if (modalMode) modalCallBack()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -111,12 +115,12 @@ const StaticRoutes = () => {
   return (
     <StepsFormLegacy<void>
       onFinish={handleFinish}
-      onCancel={() => navigate(linkToEdgeList)}
+      onCancel={() => modalMode ? modalCallBack() : navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply Static Routes' }) }}
     >
       <StepsFormLegacy.StepForm>
         <Row>
-          <Col span={7}>
+          <Col span={8} style={{ minWidth: 480 }}>
             <Loader states={[
               {
                 isLoading: false,

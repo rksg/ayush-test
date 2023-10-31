@@ -8,7 +8,7 @@ import {
   sortProp,
   defaultSort,
   dateSort,
-  useUserProfileContext as useSAUserProfileContext
+  getUserProfile
 }                              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
 import { get }                                                          from '@acx-ui/config'
@@ -50,7 +50,7 @@ export function ServiceGuardTable () {
   const { setCount } = useContext(CountContext)
   const serviceGuardPath = useTenantLink('/analytics/serviceValidation/')
   const { data: r1UserProfile } = useUserProfileContext()
-  const { data: saUserProfile } = useSAUserProfileContext()
+  const { userId } = getUserProfile()
   const { deleteTest, response: deleteResponse } = useDeleteServiceGuardTestMutation()
   const { runTest, response: runResponse } = useRunServiceGuardTestMutation()
   const { cloneTest, response: cloneResponse } = useCloneServiceGuardTestMutation()
@@ -103,13 +103,13 @@ export function ServiceGuardTable () {
         navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
       },
       disabled: ([selectedRow]) => {
-        const id = get('IS_MLISA_SA') ? saUserProfile.userId : r1UserProfile?.externalId
+        const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
         return selectedRow?.userId === id
           ? false
           : true
       },
       tooltip: ([selectedRow]) => {
-        const id = get('IS_MLISA_SA') ? saUserProfile.userId : r1UserProfile?.externalId
+        const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
         return selectedRow?.userId === id
           ? undefined
           : $t(contents.messageMapping.EDIT_NOT_ALLOWED)

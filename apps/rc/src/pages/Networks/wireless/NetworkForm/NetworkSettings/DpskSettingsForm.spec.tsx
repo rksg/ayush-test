@@ -35,6 +35,8 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
+      rest.get('/v2/dpskServices',
+        (_, res, ctx) => res(ctx.json(dpskListResponse))),
       rest.get(AaaUrls.getAAAPolicyList.url,
         (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }])))
     )

@@ -116,11 +116,13 @@ export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
 export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
+export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
+export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
 
-
-export { TunnelProfileForm } from './TunnelProfileForm'
-export { useTunnelProfileActions } from './TunnelProfileForm/useTunnelProfileActions'
-export type { TunnelProfileFormType } from './TunnelProfileForm'
+export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
+export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
+export type { TunnelProfileFormType } from './TunnelProfile/TunnelProfileForm'
+export { TunnelProfileAddModal } from './TunnelProfile/TunnelProfileAddModal'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 export type { ConnectionMeteringFormProps } from './ConnectionMeteringForm'
@@ -142,6 +144,17 @@ export type {
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
 export { useEdgeActions } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
+export { PropertyManagementForm } from './PropertyManagementForm'
+export { MacRegistrationListForm } from './MacRegistrationListForm'
+export { PersonaGroupDrawer } from './PersonaGroupDrawer'
+export { DpskForm } from './DpskForm/DpskForm'
+export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
+export { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
+export { RadiusAttributeForm } from './RadiusAttributeForm'
+export { AccessConditionDrawer } from './AdaptivePolicySettingForm/AccessConditionDrawer'
+export {
+  RadiusAttributeGroupSelectDrawer
+} from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
@@ -154,3 +167,4 @@ export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './ResidentPortal'
 export * from './CommonLinkHelper'
+export * from './ZoomWidget'

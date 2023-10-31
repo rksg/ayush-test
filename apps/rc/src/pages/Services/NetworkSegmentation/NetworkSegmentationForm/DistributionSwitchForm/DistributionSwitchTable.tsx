@@ -15,17 +15,21 @@ export function DistributionSwitchTable (props: Omit<TableProps<DistributionSwit
       title: $t({ defaultMessage: 'Dist. Switch' }),
       dataIndex: 'name',
       sorter: true,
+      width: 240,
+      fixed: 'left',
       defaultSortOrder: 'ascend'
     }, {
       key: 'vlans',
       title: $t({ defaultMessage: 'VLAN Range' }),
       dataIndex: 'vlans',
-      sorter: true
+      sorter: true,
+      width: 160
     }, {
       key: 'accessSwitches',
       title: $t({ defaultMessage: 'Access Switch' }),
       dataIndex: 'accessSwitches',
       sorter: false,
+      width: 240,
       render: (_, row) => {
         return row.accessSwitches?.map(as => `${as.name}`).join(', ')
       }
@@ -36,26 +40,31 @@ export function DistributionSwitchTable (props: Omit<TableProps<DistributionSwit
       children: [{
         key: 'loopbackInterfaceId',
         title: <Table.SubTitle>{$t({ defaultMessage: 'ID' })}</Table.SubTitle>,
-        dataIndex: 'loopbackInterfaceId'
+        dataIndex: 'loopbackInterfaceId',
+        width: 80
       }, {
         key: 'loopbackInterfaceIp',
         title: <Table.SubTitle>{$t({ defaultMessage: 'IP Address' })}</Table.SubTitle>,
-        dataIndex: 'loopbackInterfaceIp'
+        dataIndex: 'loopbackInterfaceIp',
+        width: 120
       }, {
         key: 'loopbackInterfaceSubnetMask',
         title: <Table.SubTitle>{$t({ defaultMessage: 'Subnet Mask' })}</Table.SubTitle>,
-        dataIndex: 'loopbackInterfaceSubnetMask'
+        dataIndex: 'loopbackInterfaceSubnetMask',
+        width: 120
       }]
     }, {
       key: 'siteKeepAlive',
       title: $t({ defaultMessage: 'Keep Alive' }),
       dataIndex: 'siteKeepAlive',
-      sorter: true
+      sorter: true,
+      width: 160
     }, {
       key: 'siteRetry',
       title: $t({ defaultMessage: 'Retry Times' }),
       dataIndex: 'siteRetry',
-      sorter: true
+      sorter: true,
+      width: 160
     }]
   }, [$t])
   return (

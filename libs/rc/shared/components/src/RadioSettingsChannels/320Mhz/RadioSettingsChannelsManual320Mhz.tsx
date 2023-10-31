@@ -90,8 +90,15 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     }
 
     const group = form.getFieldValue(props.channelBandwidth320MhzGroupFieldName)
-    if(group && group !== 'AUTO') {
-      setCheckGroup(group)
+    if(group) {
+      // Got value from database
+      if (group !== 'AUTO'){
+        setCheckGroup(group)
+      }
+      // Init value.
+      if (group === 'AUTO'){
+        form.setFieldValue(props.channelBandwidth320MhzGroupFieldName, checkedGroup)
+      }
     }
     /* eslint-disable max-len */
     // Available channel initialization

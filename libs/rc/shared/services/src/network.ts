@@ -119,6 +119,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    updateNetworkVenues: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenues, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
+    }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
@@ -463,6 +473,7 @@ export const {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenuesMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,

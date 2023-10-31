@@ -13,8 +13,8 @@ import {
   showToast
 } from '@acx-ui/components'
 import {
-  Features,
-  useIsSplitOn
+  Features, TierFeatures,
+  useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
 import {
   CheckMark,
@@ -64,7 +64,7 @@ export const defaultApPayload = {
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
     'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled'
+    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan'
   ]
 }
 
@@ -140,6 +140,10 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   })
   const tableQuery = props.tableQuery || apListTableQuery
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -186,21 +190,23 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (status: any, row : APExtended) => {
         /* eslint-disable max-len */
-        if ((ApDeviceStatusEnum.OPERATIONAL === status.props.children && isAPLowPower(row.apStatusData?.afcInfo)
-        )) {
+        if ((AFC_Featureflag &&
+            ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
+            isAPLowPower(row.apStatusData?.afcInfo))
+        ){
 
           const afcInfo = row.apStatusData?.afcInfo
 
           let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
 
           if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'until its geo-location has been established' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Geo Location not set)' })
           }
           if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'Wait for AFC server response.' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
           }
           if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: 'FCC DB replies that there is no channel available.' })
+            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Wait for AFC server response)' })
           }
 
           return (
@@ -378,7 +384,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         )
       }
     },
-    ...(secureBootFlag ? [
+    ...(secureBootFlag && enableAP70 ? [
       {
         key: 'secureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
@@ -389,6 +395,19 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           const secureBootEnabled = row.apStatusData?.APSystem?.secureBootEnabled || false
 
           return (secureBootEnabled ? <CheckMark /> : null)
+        }
+      }] : []),
+    ...(apMgmtVlanFlag ? [
+      {
+        key: 'managementVlan',
+        title: $t({ defaultMessage: 'Management VLAN' }),
+        dataIndex: 'managementVlan',
+        show: false,
+        sorter: false,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const mgmtVlanId = row.apStatusData?.APSystem?.managementVlan
+
+          return (mgmtVlanId ? mgmtVlanId : null)
         }
       }] : [])
     ]

@@ -7,7 +7,8 @@ export const searchFixture = {
         mac: '18:B4:30:03:E6:03',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.42',
-        lastActiveTime: '2023-08-23T05:08:20.000Z'
+        lastActiveTime: '2023-08-23T05:08:20.000Z',
+        manufacturer: 'manufacturer-1'
       },
       {
         hostname: '02AA01AB50120E2Q',
@@ -15,7 +16,8 @@ export const searchFixture = {
         mac: '18:B4:30:04:D8:10',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.44',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer-2'
       },
       {
         hostname: '02AA01AB50120G7G',
@@ -23,7 +25,8 @@ export const searchFixture = {
         mac: '18:B4:30:05:1C:BE',
         osType: 'Nest Learning Thermostat',
         ipAddress: '10.0.1.69',
-        lastActiveTime: '2023-08-23T05:07:23.000Z'
+        lastActiveTime: '2023-08-23T05:07:23.000Z',
+        manufacturer: 'manufacturer-3'
       }
     ],
     networkHierarchy: [
@@ -198,23 +201,36 @@ export const searchFixture = {
         switchModel: 'ICX7650-48ZP',
         switchVersion: 'TNS08095h'
       }
+    ],
+    wifiNetworks: [
+      {
+        name: 'Hospt-Guest',
+        apCount: 0,
+        clientCount: 0,
+        zoneCount: 0,
+        traffic: 0,
+        rxBytes: 0,
+        txBytes: 0
+      },
+      {
+        name: 'DENSITY-WPA2PSK',
+        apCount: 25,
+        clientCount: 38,
+        zoneCount: 1,
+        traffic: 129272657263,
+        rxBytes: 882986906,
+        txBytes: 128389670357
+      }
     ]
   }
 }
 
 export const emptySearchFixture = {
   search: {
-    clients: [
-
-    ],
-    networkHierarchy: [
-
-    ],
-    aps: [
-
-    ],
-    switches: [
-
-    ]
+    clients: [],
+    networkHierarchy: [],
+    aps: [],
+    switches: [],
+    wifiNetworks: []
   }
 }

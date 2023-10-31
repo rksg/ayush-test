@@ -60,6 +60,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenues: {
+    method: 'put',
+    url: '/networkActivations/mappings',
+    newApi: true
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
@@ -573,6 +578,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   runCcd: {
     method: 'post',
     url: '/venues/:venueId/clientConnectionDiagnosis',
+    newApi: true
+  },
+  getVenueApManagementVlan: {
+    method: 'get',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    newApi: true
+  },
+  updateVenueApManagementVlan: {
+    method: 'put',
+    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
     newApi: true
   }
 }

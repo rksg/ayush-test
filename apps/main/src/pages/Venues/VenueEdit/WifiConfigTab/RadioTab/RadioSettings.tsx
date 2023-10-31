@@ -14,17 +14,21 @@ import { includes, isEmpty, dropRight } from 'lodash'
 import { useIntl }                      from 'react-intl'
 import styled                           from 'styled-components/macro'
 
-import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
-import { ApRadioTypeEnum,
-  channelBandwidth24GOptions,
+import {
+  AnchorContext, Loader, showActionModal, StepsFormLegacy,
+  StepsFormLegacyInstance, Tabs, Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import {
+  ApRadioTypeEnum, channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   SelectItemOption,
   SingleRadioSettings,
   findIsolatedGroupByChannel,
-  split5GChannels }                               from '@acx-ui/rc/components'
+  split5GChannels
+} from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -88,6 +92,9 @@ export function RadioSettings () {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   const {
     editContextData,
@@ -95,6 +102,7 @@ export function RadioSettings () {
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { tenantId, venueId } = useParams()
 
@@ -173,7 +181,7 @@ export function RadioSettings () {
   /* eslint-disable max-len */
   const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
     const lowerPowerModeAP = response.filter((ap) => {
-      return ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
+      return AFC_Featureflag && ap.apRadioDeploy === '2-5-6' && isAPLowPower(ap.apStatusData?.afcInfo)
     })
 
     setLowPowerAPQuantity({
@@ -183,7 +191,7 @@ export function RadioSettings () {
   }
   /* eslint-enable max-len */
 
-  const supportedApModelTooltip = wifi7_320Mhz_FeatureFlag ?
+  const supportedApModelTooltip = (wifi7_320Mhz_FeatureFlag && enableAP70) ?
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
     // eslint-disable-next-line max-len
@@ -206,7 +214,7 @@ export function RadioSettings () {
       setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
       // eslint-disable-next-line max-len
-      const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+      const wifi7_320Bandwidth = (wifi7_320Mhz_FeatureFlag && enableAP70) ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
@@ -277,6 +285,8 @@ export function RadioSettings () {
 
     if (venueSavedChannelsData){
       setRadioFormData(venueSavedChannelsData)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
   }, [venueSavedChannelsData])
 

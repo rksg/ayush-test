@@ -145,8 +145,8 @@ describe('Gateway Form', () => {
     fireEvent.change(gatewayInput, { target: { value: 'ruckusdemos1' } })
     fireEvent.blur(gatewayInput)
 
-    const hostnameInput = await screen.findByLabelText('Hostname')
-    await fireEvent.change(hostnameInput, { target: { value: 'https://test.com' } })
+    const URLInput = await screen.findByLabelText('URL')
+    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
 
     const usernameInput = await screen.findByLabelText('Username')
     await fireEvent.change(usernameInput, { target: { value: 'newUser' } })
@@ -184,8 +184,6 @@ describe('Gateway Form', () => {
       </Provider>, {
         route: { params }
       })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(() => expect(mockFn).toBeCalled())
 
@@ -274,8 +272,6 @@ describe('Gateway Form', () => {
         // eslint-disable-next-line max-len
         route: { params }
       })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(() => expect(mockFn).toBeCalled())
 
