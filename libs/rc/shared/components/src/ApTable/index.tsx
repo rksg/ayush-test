@@ -24,7 +24,7 @@ import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
 } from '@acx-ui/rc/services'
 import {
-  AFCStatus,
+  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -185,40 +185,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (status: any, row : APExtended) => {
-        /* eslint-disable max-len */
-        if ((AFC_Featureflag &&
-            ApDeviceStatusEnum.OPERATIONAL === status.props.children &&
-            isAPLowPower(row.apStatusData?.afcInfo))
-        ){
-
-          const afcInfo = row.apStatusData?.afcInfo
-
-          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
-
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Geo Location not set)' })
-          }
-          if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
-          }
-          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-            warningMessages = warningMessages + '\n' + $t({ defaultMessage: '(Wait for AFC server response)' })
-          }
-
-          return (
-            <span>
-              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
-                text={warningMessages}
-              />
-            </span>
-          )
-        } else {
-          return <APStatus status={status.props.children} />
-        }
-        /* eslint-enable max-len */
-      }
+      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -407,7 +374,45 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
           return (mgmtVlanId ? mgmtVlanId : null)
         }
-      }] : [])
+      }] : []),
+    ...((AFC_Featureflag || true) ? [{
+      key: 'afcPowerMode',
+      title: $t({ defaultMessage: 'AFC Power State' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        let displayText = '--'
+        const powerState = row.apStatusData?.afcInfo?.powerMode
+
+        if (powerState === AFCPowerMode.STANDARD_POWER){
+          displayText = 'Standard power'
+        }
+
+        if (powerState === AFCPowerMode.LOW_POWER){
+          displayText = 'Low power'
+        }
+
+        return displayText
+      }
+    },
+    { key: 'afcMaxPower',
+      title: $t({ defaultMessage: 'AFC Max Power' }),
+      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        let displayText = '--'
+        const maxPowerDbm = row.apStatusData?.afcInfo?.maxPowerDbm
+
+        if (maxPowerDbm){
+          displayText = `${maxPowerDbm} dBm`
+        }
+
+        return displayText
+      }
+    }
+    ]: [])
     ]
 
     return columns

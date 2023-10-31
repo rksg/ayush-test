@@ -3,11 +3,20 @@ import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput }                                            from '@acx-ui/components'
-import { useGetVenueQuery, useGetVenueSettingsQuery }                                     from '@acx-ui/rc/services'
-import { ApDetails, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                     from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                          from '@acx-ui/user'
+import { Drawer, Descriptions, PasswordInput }        from '@acx-ui/components'
+import { useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
+import {
+  AFCStatus,
+  ApDetails,
+  ApVenueStatusEnum,
+  ApViewModel,
+  DeviceGps,
+  gpsToFixed,
+  useApContext,
+  AFCPowerMode,
+  AFCInfo } from '@acx-ui/rc/utils'
+import { TenantLink }            from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 
 import { ApCellularProperties } from './ApCellularProperties'
@@ -44,6 +53,50 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const onClose = () => {
     setVisible(false)
   }
+
+  const AFCPowerStateRender = (afcInfo: AFCInfo | undefined) => {
+
+    const powerMode = afcInfo?.powerMode
+
+    let displayText = '--'
+
+    if(!powerMode) {
+      return
+    }
+
+    if (powerMode === AFCPowerMode.STANDARD_POWER){
+      displayText = $t({ defaultMessage: 'Standard power' })
+    }
+
+    if (powerMode === AFCPowerMode.LOW_POWER){
+      displayText = $t({ defaultMessage: 'Low power' })
+
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        displayText = displayText + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+        displayText = displayText + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        displayText = displayText + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+      }
+
+    }
+
+    return displayText
+  }
+
+  const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined) => {
+    let displayText = '--'
+    const maxPowerDbm = afcInfo?.maxPowerDbm
+
+    if (maxPowerDbm){
+      displayText = `${maxPowerDbm} dBm`
+    }
+
+    return displayText
+  }
+
 
   const PropertiesTab = () => {
     return (<>
@@ -165,6 +218,18 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           label={$t({ defaultMessage: 'Version' })}
           children={
             currentAP?.fwVersion || '--'
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'AFC Power State' })}
+          children={
+            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo)
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'AFC Max Power' })}
+          children={
+            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo)
           }
         />
       </Descriptions>
