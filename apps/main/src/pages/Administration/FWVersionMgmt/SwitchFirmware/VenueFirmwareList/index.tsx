@@ -144,7 +144,7 @@ export const VenueFirmwareTable = (
       dataIndex: 'availableVersions',
       render: function (_, row) {
         const availableVersions = row.availableVersions
-        if (availableVersions.length === 0) {
+        if (!Array.isArray(availableVersions) || availableVersions.length === 0) {
           return '--'
         } else {
           return availableVersions.map(version => parseSwitchVersion(version.id)).join(',')
@@ -305,6 +305,13 @@ export const VenueFirmwareTable = (
     }
   },
   {
+    // visible: () => { //TODO
+    //   let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    //   if (!filterVersions || filterVersions.length === 0) {
+    //     return false
+    //   }
+    //   return true
+    // },
     disabled: (selectedRows) => {
       let disabledUpdate = false
       selectedRows.forEach((row) => {
