@@ -180,7 +180,6 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      show: false,
       render: (data, row) =>
         getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
         noDataDisplay
