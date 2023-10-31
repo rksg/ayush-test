@@ -79,6 +79,7 @@ export enum Features {
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
   WIFI_FR_6029_FG6_2_TOGGLE = 'wifi-fr-6029-fg6-2-toggle',
+  WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
@@ -117,7 +118,6 @@ export enum Features {
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
-  BETA_MESH = 'BETA-MESH',
   BETA_CLB = 'BETA-CLB',
   BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
   AP_CCD = 'AP-CCD'
