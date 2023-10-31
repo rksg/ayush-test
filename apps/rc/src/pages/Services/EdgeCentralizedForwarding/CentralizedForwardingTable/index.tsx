@@ -24,7 +24,8 @@ import {
   EdgeCentralizedForwardingViewData,
   PolicyType,
   PolicyOperation,
-  getPolicyDetailsLink
+  getPolicyDetailsLink,
+  EdgeAlarmSummary
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -71,13 +72,7 @@ const mockedEdgeCFDataList = [{
   networkIds: [],
   networkInfos: [],
   corePortMac: 'a2:51:0f:bc:89:c5',
-  edgeAlarmSummary: {
-    edgeId: 'mocked-edge-1',
-    severitySummary: {
-      critical: 1
-    },
-    totalCount: 1
-  },
+  edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersions: '1.0.0.100'
 }]
 
@@ -162,7 +157,7 @@ const EdgeCentralizedForwardingTable = () => {
         return <TenantLink
           to={`/venues/${row.venueId}/venue-details/overview`}
         >
-          {row.venueName || '' }
+          {row.venueName}
         </TenantLink>
       }
     },
@@ -176,7 +171,7 @@ const EdgeCentralizedForwardingTable = () => {
         return <TenantLink
           to={`/devices/edge/${row.edgeId}/details/overview`}
         >
-          { row.edgeName || '' }
+          {row.edgeName}
         </TenantLink>
       }
     },
@@ -193,7 +188,7 @@ const EdgeCentralizedForwardingTable = () => {
             policyId: row.tunnelProfileId!
           })}
         >
-          { row.tunnelProfileName || '' }
+          {row.tunnelProfileName}
         </TenantLink> }
     },
     {
@@ -224,13 +219,11 @@ const EdgeCentralizedForwardingTable = () => {
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
       render: (__, row) =>
-        row?.edgeId
-          ? <Row justify='center'>
-            <EdgeServiceStatusLight
-              data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : undefined}
-            />
-          </Row>
-          : '--'
+        <Row justify='center'>
+          <EdgeServiceStatusLight
+            data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : undefined}
+          />
+        </Row>
     }
     // {
     //   title: $t({ defaultMessage: 'Service Version' }),
@@ -251,16 +244,8 @@ const EdgeCentralizedForwardingTable = () => {
     // }
   ]
 
-  const isDeleteBtnDisable = (selectedRows: EdgeCentralizedForwardingViewData[]) => {
-    let isActivatedOnEdge = selectedRows
-      .filter(data => (data.networkIds?.length ?? 0) > 0)
-      .length > 0
-    return isActivatedOnEdge
-  }
-
   const rowActions: TableProps<EdgeCentralizedForwardingViewData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -277,18 +262,13 @@ const EdgeCentralizedForwardingTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: isDeleteBtnDisable,
-      tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
-        ? $t({ defaultMessage: 'Please deactivate the networks under Scope menu first' })
-        : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Edge Centralized Forwarding' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
+            entityValue: rows[0].name
           },
           onOk: () => {
             // TODO: waiting for API ready

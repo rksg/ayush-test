@@ -51,7 +51,7 @@ describe('Edge Centralized Forwarding Table', () => {
     // eslint-disable-next-line max-len
     await screen.findByRole('row', { name: 'Amy_CF_1 Sting-Venue-1 sting-vSE-b490 amyTunnel 1 Poor' })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Amy_CF_2 Sting-Venue-3 sting-vSE-b466 amyTunnel 0 Poor' })
+    await screen.findByRole('row', { name: 'Amy_CF_2 Sting-Venue-3 sting-vSE-b466 amyTunnel 0 Good' })
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-cf-1')
     await hover(networkNumStr)
@@ -98,25 +98,5 @@ describe('Edge Centralized Forwarding Table', () => {
     await click(screen.getByRole('button', { name: 'Delete Edge Centralized Forwarding' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
-  })
-
-  it('should disable delete button and show tooltip', async () => {
-    render(
-      <Provider>
-        <EdgeCentralizedForwardingTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/centralizedForwarding/list' }
-      }
-    )
-
-    const row1 = await screen.findByRole('row', { name: /Amy_CF_1/i })
-    await click(within(row1).getByRole('radio'))
-
-    const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
-    expect(deleteBtn).toBeDisabled()
-
-    fireEvent.mouseOver(deleteBtn)
-    expect(await screen.findByRole('tooltip'))
-      .toHaveTextContent('Please deactivate the networks under Scope menu first')
   })
 })
