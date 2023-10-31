@@ -40,7 +40,15 @@ export const Collapse = styled(AntdCollapse)`
       display: flex;
       align-items: center;
       .ant-collapse-arrow {
-        font-size: 18px;
+        font-size: 16px;
+        transform: rotate(90deg) !important;
+      }
+    }
+  }
+  .ant-collapse-item.ant-collapse-item-active .ant-collapse-header {
+    .ant-collapse-expand-icon {
+      .ant-collapse-arrow {
+        transform: rotate(180deg) !important;
       }
     }
   }
@@ -57,7 +65,7 @@ export const Panel = styled(AntdCollapse.Panel)`
     padding: 13px 10px !important;
   }
   .ant-collapse-header > .ant-collapse-expand-icon > .ant-collapse-arrow {
-    right: 18px !important;
+    right: 14px !important;
   }
 `
 export const Wrapper = styled.div`
