@@ -26,6 +26,14 @@ const Links = (props) => {
 
   return (
     <g className='d3-tree-links'>
+      <marker id='m1'
+        viewBox='0 0 10 10'
+        refX='5'
+        refY='5'
+        markerWidth='3'
+        markerHeight='3'>
+        <circle cx='5' cy='5' r='5' />
+      </marker>
       {links.map((link, i) => (
         <g key={i}
           transform={`translate(0, -${40 + (65 * link.source.depth) })`}>

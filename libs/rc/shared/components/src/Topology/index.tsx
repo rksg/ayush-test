@@ -10,12 +10,38 @@ import { renderToString }                                           from 'react-
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
-import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort, SearchOutlined } from '@acx-ui/icons'
-import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
+import { Loader } from '@acx-ui/components'
+import {
+  CloudSolid,
+  MagnifyingGlassMinusOutlined,
+  MagnifyingGlassPlusOutlined,
+  AccessPointWifiMesh,
+  AccessPointWifiMeshRoot,
+  SearchFitOutlined,
+  StackDevice,
+  AccessPointWifi,
+  Switch, Unknown,
+  AccessPointWifiPort,
+  SearchOutlined,
+  TopologySwitch,
+  TopologyAP,
+  TopologyCloud
+} from '@acx-ui/icons'
+import { useGetTopologyQuery } from '@acx-ui/rc/services'
+import {
+  ConnectionStates,
+  ConnectionStatus,
+  DeviceStates,
+  DeviceStatus,
+  DeviceTypes,
+  GraphData,
+  Link,
+  Node,
+  ShowTopologyFloorplanOn,
+  UINode
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { hasAccess }  from '@acx-ui/user'
 
 import LinkTooltip       from './LinkTooltip'
 import data              from './mocks/data.json'
@@ -628,10 +654,10 @@ export function TopologyGraph (props:{ venueId?: string,
                   <Fragment>
                     {node.parent ? (
                       node.data.type === 'Switch' ?
-                        <Switch width={24} height={24} x={-12} y={-12} /> :
-                        <AccessPointWifi width={24} height={24} x={-12} y={-12} />
+                        <TopologySwitch width={24} height={24} x={-12} y={-12} /> :
+                        <TopologyAP width={24} height={24} x={-12} y={-12} />
                     ) : (
-                      <CloudSolid width={24} height={24} x={-12} y={-12} />
+                      <TopologyCloud width={24} height={24} x={-12} y={-12} />
                     )}
                   </Fragment>
                 )

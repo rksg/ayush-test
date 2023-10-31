@@ -60,7 +60,7 @@ const Nodes = (props) => {
                   stroke: 'black',
                   strokeWidth: 0.25
                 }}
-                dy='20'
+                dy='18'
                 dx={-node.data.DisplayName.length - (node.data.DisplayName.length/2)}
               >
                 {node.data.DisplayName}

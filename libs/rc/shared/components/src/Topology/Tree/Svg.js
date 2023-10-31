@@ -112,14 +112,6 @@ const Svg = (props) => {
 
   return (
     <svg ref={refSvg} style={{ width: width, height: height }}>
-      <marker id='m1'
-        viewBox='0 0 10 10'
-        refX='5'
-        refY='5'
-        markerWidth='3'
-        markerHeight='3'>
-        <circle cx='5' cy='5' r='5' />
-      </marker>
       <g className='d3-tree-main' ref={refMain}>
         <g transform={`translate(${translate}) scale(${scale})`}>
           {nodes && <Links
