@@ -27,6 +27,6 @@ export interface EdgeCentralizedForwardingViewData {
     networkId: string,
     networkName: string,
     }[]
-  serviceVersions?: Record<string, string>;
-  edgeAlarmSummary?: EdgeAlarmSummary[]
+  serviceVersion?: string;
+  edgeAlarmSummary?: EdgeAlarmSummary
 }

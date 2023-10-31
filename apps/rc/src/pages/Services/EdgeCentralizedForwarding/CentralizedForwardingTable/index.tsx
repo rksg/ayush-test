@@ -50,20 +50,14 @@ const mockedEdgeCFDataList = [{
     networkName: 'amyNetwork'
   }],
   corePortMac: 'c2:58:00:ae:63:f2',
-  edgeAlarmSummary: [
-    {
-      edgeId: 'mocked-edge-1',
-      severitySummary: {
-        critical: 1
-      },
-      totalCount: 1
-    }
-  ],
-  serviceVersions: {
-    '0000000001': '1.0.0.100',
-    '0000000002': '1.0.0.100',
-    '0000000003': '1.0.0.210'
-  }
+  edgeAlarmSummary: {
+    edgeId: 'mocked-edge-1',
+    severitySummary: {
+      critical: 1
+    },
+    totalCount: 1
+  },
+  serviceVersion: '1.0.0.100'
 }, {
   id: 'mocked-cf-2',
   name: 'Amy_CF_2',
@@ -77,20 +71,14 @@ const mockedEdgeCFDataList = [{
   networkIds: [],
   networkInfos: [],
   corePortMac: 'a2:51:0f:bc:89:c5',
-  edgeAlarmSummary: [
-    {
-      edgeId: 'mocked-edge-1',
-      severitySummary: {
-        critical: 1
-      },
-      totalCount: 1
-    }
-  ],
-  serviceVersions: {
-    '0000000001': '1.0.0.100',
-    '0000000002': '1.0.0.100',
-    '0000000003': '1.0.0.210'
-  }
+  edgeAlarmSummary: {
+    edgeId: 'mocked-edge-1',
+    severitySummary: {
+      critical: 1
+    },
+    totalCount: 1
+  },
+  serviceVersions: '1.0.0.100'
 }]
 
 const venueOptionsDefaultPayload = {
@@ -238,20 +226,18 @@ const EdgeCentralizedForwardingTable = () => {
       render: (__, row) =>
         row?.edgeId
           ? <Row justify='center'>
-            <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+            <EdgeServiceStatusLight
+              data={row.edgeAlarmSummary ? [row.edgeAlarmSummary] : undefined}
+            />
           </Row>
           : '--'
     }
     // {
     //   title: $t({ defaultMessage: 'Service Version' }),
-    //   key: 'serviceVersions',
-    //   dataIndex: 'serviceVersions',
+    //   key: 'serviceVersion',
+    //   dataIndex: 'serviceVersion',
     //   render: (__, row) => {
-    //     return (
-    //       (row.serviceVersions && Object.keys(row.serviceVersions).length)
-    //         ? _.uniq(Object.values(row.serviceVersions)).join(', ')
-    //         : '--'
-    //     )
+    //     return row.serviceVersion ?? '--'
     //   }
     // },
     // {
