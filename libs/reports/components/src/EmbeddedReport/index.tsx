@@ -164,9 +164,6 @@ export const getRLSClauseForSA = (
     networkClause: ''
   }
 
-  const switchReportKeys = ['system', 'domain', 'switchGroup', 'switchSubGroup', 'switch']
-  const apReportKeys = ['system', 'domain', 'zone', 'apGroup', 'AP']
-
   // Initialize an empty object to group conditions by type
   const sqlConditionsByType: Record<string, string[]> = {}
 
@@ -196,10 +193,7 @@ export const getRLSClauseForSA = (
           sqlConditionsByType[type].push(`"${type}" = '${systemId}'`)
         }
       } else {
-        if ((isApReport && apReportKeys.includes(type)) ||
-          (isSwitchReport && switchReportKeys.includes(type))) {
-          sqlConditionsByType[type].push(`"${type}" = '${name}'`)
-        }
+        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
       }
     }
   })
