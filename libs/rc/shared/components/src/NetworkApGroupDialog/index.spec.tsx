@@ -52,7 +52,7 @@ describe('NetworkApGroupDialog', () => {
       venueName: venueName,
       tenantId: params.tenantId,
       networkVenue: networkVenue_allAps,
-      wlan: network.wlan
+      network: network
     }
     const onOk = jest.fn()
 
@@ -93,7 +93,7 @@ describe('NetworkApGroupDialog', () => {
       venueName={venueName}
       tenantId={params.tenantId}
       networkVenue={networkVenue_apgroup}
-      wlan={network.wlan}
+      network={network}
     /></Provider>, { route: { params } })
 
     const dialog = await screen.findByRole('dialog')
@@ -108,6 +108,10 @@ describe('NetworkApGroupDialog', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     let wlanWPA3 = { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 }
+    const wpa3Network = {
+      ...network,
+      wlan: wlanWPA3
+    }
 
     render(<Provider><NetworkApGroupDialog
       visible={true}
@@ -116,7 +120,7 @@ describe('NetworkApGroupDialog', () => {
       tenantId={params.tenantId}
       networkVenue={{ ...networkVenue_allAps,
         allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz] }}
-      wlan={wlanWPA3}
+      network={wpa3Network}
     /></Provider>, { route: { params } })
 
     const dialog = await screen.findByRole('dialog')

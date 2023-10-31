@@ -14,17 +14,21 @@ import { includes, isEmpty, dropRight } from 'lodash'
 import { useIntl }                      from 'react-intl'
 import styled                           from 'styled-components/macro'
 
-import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
-import { ApRadioTypeEnum,
-  channelBandwidth24GOptions,
+import {
+  AnchorContext, Loader, showActionModal, StepsFormLegacy,
+  StepsFormLegacyInstance, Tabs, Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {
+  ApRadioTypeEnum, channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   SelectItemOption,
   SingleRadioSettings,
   findIsolatedGroupByChannel,
-  split5GChannels }                               from '@acx-ui/rc/components'
+  split5GChannels
+} from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -96,6 +100,7 @@ export function RadioSettings () {
     editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { tenantId, venueId } = useParams()
 
@@ -278,6 +283,8 @@ export function RadioSettings () {
 
     if (venueSavedChannelsData){
       setRadioFormData(venueSavedChannelsData)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
   }, [venueSavedChannelsData])
 
