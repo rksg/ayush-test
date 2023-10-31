@@ -10,12 +10,11 @@ import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { DateRange }                  from '@acx-ui/utils'
 
-import { ConfigChange }               from '../ConfigChange'
-import { useHeaderExtra }             from '../Header'
-import { useHeaderExtraWithDropDown } from '../Header/Header'
-import { HealthPage }                 from '../Health'
-import { useServiceGuard }            from '../ServiceGuard'
-import { useVideoCallQoe }            from '../VideoCallQoe'
+import { ConfigChange }    from '../ConfigChange'
+import { useHeaderExtra }  from '../Header'
+import { HealthPage }      from '../Health'
+import { useServiceGuard } from '../ServiceGuard'
+import { useVideoCallQoe } from '../VideoCallQoe'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
@@ -51,9 +50,10 @@ const useTabs = () : Tab[] => {
     key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
     component: <ConfigChange/>,
-    headerExtra: useHeaderExtraWithDropDown({
+    headerExtra: useHeaderExtra({
       shouldQuerySwitch: false,
-      withIncidents: false
+      withIncidents: false,
+      datepicker: 'dropdown'
     })
   }
   const videoCallQoeTab = {

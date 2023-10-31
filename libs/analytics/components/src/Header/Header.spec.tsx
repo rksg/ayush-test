@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Header, useHeaderExtra, useHeaderExtraWithDropDown } from '.'
+import { Header, useHeaderExtra } from '.'
 
 jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div data-testid='NetworkFilter'>network filter</div>
@@ -40,9 +40,10 @@ describe('Analytics header', () => {
   })
   it('should render header extra with TimeRangeDropDown correctly', async () => {
     const Component = () => {
-      const component = useHeaderExtraWithDropDown({
+      const component = useHeaderExtra({
         shouldQuerySwitch: true,
-        withIncidents: true
+        withIncidents: true,
+        datepicker: 'dropdown'
       })
       return <span>{component}</span>
     }

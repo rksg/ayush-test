@@ -23,6 +23,8 @@ type UseHeaderExtraProps = {
   shouldQuerySwitch?: boolean,
   withIncidents?: boolean,
   excludeNetworkFilter?: boolean,
+  /** @default 'datepicker' */
+  datepicker?: 'dropdown' | 'datepicker'
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
@@ -40,33 +42,25 @@ const Filter = (
       />
 }
 
-export const useHeaderExtra = (props: UseHeaderExtraProps) => {
+export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return [
     <Filter
       key={getShowWithoutRbacCheckKey('network-filter')}
       {...props}
     />,
-    <RangePicker
-      key={getShowWithoutRbacCheckKey('range-picker')}
-      selectedRange={{
-        startDate: moment(startDate),
-        endDate: moment(endDate)
-      }}
-      onDateApply={setDateFilter as CallableFunction}
-      showTimePicker
-      selectionType={range}
-    />
-  ]
-}
-
-export const useHeaderExtraWithDropDown = (props: UseHeaderExtraProps) => {
-  return [
-    <Filter
-      key={getShowWithoutRbacCheckKey('network-filter')}
-      {...props}
-    />,
-    <TimeRangeDropDown/>
+    datepicker === 'dropdown'
+      ? <TimeRangeDropDown/>
+      : <RangePicker
+        key={getShowWithoutRbacCheckKey('range-picker')}
+        selectedRange={{
+          startDate: moment(startDate),
+          endDate: moment(endDate)
+        }}
+        onDateApply={setDateFilter as CallableFunction}
+        showTimePicker
+        selectionType={range}
+      />
   ]
 }
 

@@ -20,10 +20,7 @@ jest.mock('@acx-ui/config', () => ({
 
 jest.mock('../Header', () => ({
   ...jest.requireActual('../Header'),
-  useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ],
-  useHeaderExtraWithDropDown: () => [
-    <div data-testid='HeaderExtraWithTimeRangeDropDown' />
-  ]
+  useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ]
 }))
 
 jest.mock('../Incidents', () => ({
@@ -62,7 +59,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(await screen.findByTestId('Recommendations')).toBeVisible()
-    expect(await screen.findByTestId('HeaderExtraWithTimeRangeDropDown')).toBeVisible()
+    expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
   it('should render config recommendation tab for R1 when feature flag is ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

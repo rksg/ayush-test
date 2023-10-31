@@ -6,9 +6,9 @@ import { useIsSplitOn, Features }                      from '@acx-ui/feature-tog
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { DateRange }                                   from '@acx-ui/utils'
 
-import { useHeaderExtra, useHeaderExtraWithDropDown } from '../Header'
-import { IncidentTabContent }                         from '../Incidents'
-import { RecommendationTabContent }                   from '../Recommendations'
+import { useHeaderExtra }           from '../Header'
+import { IncidentTabContent }       from '../Incidents'
+import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
@@ -37,13 +37,13 @@ const useTabs = () : Tab[] => {
       key: AIAnalyticsTabEnum.CRRM,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
       component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtraWithDropDown({ shouldQuerySwitch: true })
+      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
     },
     {
       key: AIAnalyticsTabEnum.AIOPS,
       title: $t({ defaultMessage: 'AI Operations' }),
       component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtraWithDropDown({ shouldQuerySwitch: true })
+      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
     }
   ]
   return [
