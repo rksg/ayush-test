@@ -19,6 +19,7 @@ export interface ConversationProps {
   classList: string
   style: CSSProperties
   isReplying: boolean
+  maxChar?: number
 }
 const { Panel } = UI.Collapse
 
@@ -40,14 +41,12 @@ const Expandable = (props: { text: string, maxChar: number }) => {
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
       {expanded? 'read more' : 'read less'}</Button></UI.Bot>
 }
-// eslint-disable-next-line max-len
-// const link = '/ai/users/wifi/clients/0E:85:58:98:2E:97/details/troubleshooting?period=%7B%22range%22%3A%22Custom%22%2C%22endDate%22%3A%222023-10-19T11%3A20%3A09.337Z%22%2C%22startDate%22%3A%222023-10-18T11%3A20%3A09.337Z%22%7D'
 function Conversation ({
   content,
   classList,
   isReplying,
-  style
-  // ...props
+  style,
+  maxChar=300
 }: ConversationProps) {
   return (
     <UI.Wrapper style={style} className={classList}>
@@ -55,7 +54,7 @@ function Conversation ({
         list.contentList.map((content) => (
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>(
-              <Expandable text={msg} maxChar={300} />
+              <Expandable text={msg} maxChar={maxChar} />
             ))
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => (
@@ -69,7 +68,6 @@ function Conversation ({
                     res.event ?
                       <UI.Bot>
                         <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
-                        {/* <Link to={link || '#'}>{res.text}</Link> */}
                       </UI.Bot> :
                       <UI.Button size='small' type='primary' icon={<ArrowChevronRight />}>
                         {res.text}</UI.Button>

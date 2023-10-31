@@ -1,4 +1,7 @@
 import { render, screen } from '@testing-library/react'
+import { BrowserRouter }  from 'react-router-dom'
+
+import { fulfillmentMessagesWithAccordion } from './stories/Accordion'
 
 import { Conversation, content } from '.'
 
@@ -25,6 +28,19 @@ const fulfillmentMessagesWithLink = [
     }
   },
   {
+    text: {
+      text: [
+        `Switch Name: Access-AP-New
+        \n  MAC Address: C0:C5:20:82:3D:86
+        \n  Switch IP: 10.157.7.55
+        \n  Switch Serial: FNG4348S01Z
+        \n  Switch Status: ONLINE
+        \n  Up Time: 0\n  Connected wired devices: 0
+        \n  CPU utilization: 0%\n  Memory utilization: 0%\n  PoE utilization: 0%`
+      ]
+    }
+  },
+  {
     payload: {
       richContent: [
         [
@@ -45,6 +61,24 @@ const fulfillmentMessagesWithLink = [
               name: 'url',
               languageCode: 'en'
             }
+          }
+        ]
+      ]
+    }
+  },
+  {
+    payload: {
+      richContent: [
+        [
+          {
+            // eslint-disable-next-line max-len
+            link: '<origin>https://slack.com/oauth/v2/authorize?scope=app_mentions%3Aread%2Ccalls%3Aread%2Ccalls%3Awrite%2Cchannels%3Ahistory%2Cchannels%3Aread%2Cchat%3Awrite%2Cgroups%3Ahistory%2Cim%3Ahistory%2Cim%3Aread%2Cim%3Awrite%2Cincoming-webhook%2Cmpim%3Ahistory%2Cmpim%3Aread%2Cteam%3Aread%2Cusers%3Aread%2Cusers%3Aread.email&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiYXBwX21lbnRpb25zOnJlYWQiLCJjYWxsczpyZWFkIiwiY2FsbHM6d3JpdGUiLCJjaGFubmVsczpoaXN0b3J5IiwiY2hhbm5lbHM6cmVhZCIsImNoYXQ6d3JpdGUiLCJncm91cHM6aGlzdG9yeSIsImltOmhpc3RvcnkiLCJpbTpyZWFkIiwiaW06d3JpdGUiLCJpbmNvbWluZy13ZWJob29rIiwibXBpbTpoaXN0b3J5IiwibXBpbTpyZWFkIiwidGVhbTpyZWFkIiwidXNlcnM6cmVhZCIsInVzZXJzOnJlYWQuZW1haWwiXX0sIm5vdyI6IjIwMjMtMTAtMTlUMDY6NDU6NDMuMzg5WiIsImlhdCI6MTY5NzY5Nzk0M30.Gs2MsMlw2Jw3vLERcbkQZcjIBRp2d5bmW0r2qvP3pm0&client_id=2621849627333.2623441836566',
+            type: 'button',
+            icon: {
+              color: '#42a5f5',
+              type: 'launch'
+            },
+            text: 'Add to Slack'
           }
         ]
       ]
@@ -96,6 +130,10 @@ const contentButton:content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithButton }
   ]
+const contentAccordion:content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessagesWithAccordion }
+  ]
 describe('Conversation component', () => {
   it('should render Conversation component with text', () => {
     render(<Conversation content={contentData}
@@ -107,10 +145,10 @@ describe('Conversation component', () => {
     ).toBeVisible()
   })
   it('should render Conversation component with link', () => {
-    render(<Conversation content={contentLink}
+    render(<BrowserRouter><Conversation content={contentLink}
       classList='conversation'
       isReplying={false}
-      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/></BrowserRouter>)
     expect(screen.getByText('Go to Switch Report')).toBeVisible()
   })
   it('should render Conversation component with button', () => {
@@ -119,5 +157,20 @@ describe('Conversation component', () => {
       isReplying={false}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('If you have log files, click to upload')).toBeVisible()
+  })
+  it('should render Conversation component with Accordion', () => {
+    render(<Conversation content={contentAccordion}
+      classList='conversation'
+      isReplying={false}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+    expect(screen.getByText('Chart For Top Applications by Traffic')).toBeVisible()
+  })
+  it('should render Conversation component with typing', () => {
+    render(<Conversation content={contentData}
+      classList='conversation'
+      isReplying={true}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+    expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band'))
+      .toBeVisible()
   })
 })
