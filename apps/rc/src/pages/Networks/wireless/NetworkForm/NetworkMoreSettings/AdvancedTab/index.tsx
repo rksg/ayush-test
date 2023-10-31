@@ -4,7 +4,7 @@ import { Form, Slider } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import {Features, TierFeatures, useIsSplitOn, useIsTierAllowed} from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import NetworkFormContext from '../../NetworkFormContext'
@@ -24,6 +24,7 @@ export function AdvancedTab () {
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
   const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
   return (
     <>
@@ -55,7 +56,7 @@ export function AdvancedTab () {
       </UI.FieldLabel>
       }
 
-      {(qosMapSetFlag || qosMirroringFlag) && <QoS wlanData={data} />}
+      {(qosMapSetFlag || qosMirroringFlag && enableAP70) && <QoS wlanData={data} />}
     </>
   )
 }

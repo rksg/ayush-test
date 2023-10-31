@@ -7,7 +7,7 @@ import { get }                    from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                     from '@acx-ui/components'
-import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
+import {useIsSplitOn, Features, useIsTierAllowed, TierFeatures} from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -101,6 +101,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
   const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
   const [currentTab, setCurrentTab] = useState('vlan')
 
@@ -128,7 +129,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       display: defineMessage({ defaultMessage: 'Networking' }),
       style: { width: '38px' }
     },
-    ...((qosMapSetFlag || qosMirroringFlag || dtimFlag)? [ {
+    ...(((qosMapSetFlag && enableAP70) || (qosMirroringFlag && enableAP70) || dtimFlag)? [ {
       key: 'advanced',
       display: defineMessage({ defaultMessage: 'Advanced' }),
       style: { width: '37px' }
