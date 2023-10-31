@@ -47,6 +47,8 @@ export function MelissaBot (){
   const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [messages,setMessages] = useState<content[]>([])
+  const [incidentId, setIncidentId] = useState('')
+  const [fileName, setFileName] = useState('')
 
   const showDrawer = () => {
     setOpen(true)
@@ -69,16 +71,7 @@ export function MelissaBot (){
     uploader.addEventListener('change', async function (e) {
       const files : FileList = (e.target as HTMLInputElement).files!
       for (const file of files) {
-        setIsReplying(false)
-        setResponseCount(responseCount+1)
-        const uploadingMessage: content = {
-          type: 'bot',
-          contentList: [{ text: { text: [`uploading ${file.name}...`] } }]
-        }
-        messages.push(uploadingMessage)
-        setMessages(messages)
-        setIsInputDisabled(false)
-        defer(doAfterResponse)
+        setFileName(file.name)
         const form = new FormData()
         form.append('file', file)
         await fetch(uploadUrl(incidentId), {
@@ -112,6 +105,7 @@ export function MelissaBot (){
       setMessages(messages)
       setIsInputDisabled(false)
       defer(doAfterResponse)
+      setFileName('')
     })
     fileUploadButton.addEventListener('click', () => uploader.click())
   }
@@ -142,14 +136,11 @@ export function MelissaBot (){
       setResponseCount(responseCount+1)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
-      if(fulfillmentMessages){
-        defer(() => { // renders after the event
-          const { incidentId } = get(fulfillmentMessages, '[2].data', {})
-          if (incidentId) {
-            addUploader(incidentId,
-              document.querySelector('.ant-drawer-body .conversation')!.lastChild!)
-          }
-        })
+      if(fulfillmentMessages) {
+        const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
+        if(createdIncidentId) {
+          setIncidentId(createdIncidentId)
+        }
 
         messages.push({ type: 'bot', contentList: fulfillmentMessages })
         setMessages(messages)
@@ -176,6 +167,26 @@ export function MelissaBot (){
       defer(doAfterResponse)
     })
   }
+  useEffect(()=> {
+    if (fileName) {
+      setIsReplying(false)
+      setResponseCount(responseCount+1)
+      const uploadingMessage: content = {
+        type: 'bot',
+        contentList: [{ text: { text: [`uploading ${fileName}...`] } }]
+      }
+      messages.push(uploadingMessage)
+      setMessages(messages)
+      setIsInputDisabled(false)
+      defer(doAfterResponse)
+    }
+  }, [fileName])
+  useEffect(()=>{
+    if (incidentId) {
+      addUploader(incidentId,
+        document.querySelector('.ant-drawer-body .conversation')!.lastChild!)
+    }
+  },[incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){
       setShowFloatingButton(false)
