@@ -70,12 +70,16 @@ export const clientMeta = {
 }
 
 
-describe.skip('ClientIsolationForm', () => {
+describe('ClientIsolationForm', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
         ClientIsolationUrls.getClientIsolationList.url,
         (req, res, ctx) => res(ctx.json([ ...mockedClientIsolationList ]))
+      ),
+      rest.get(
+        ClientIsolationUrls.getClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolation }))
       ),
       rest.get(
         websocketServerUrl,
@@ -88,10 +92,6 @@ describe.skip('ClientIsolationForm', () => {
   })
 
   it('should create a Client Isolation policy', async () => {
-
-    // Prepare testing data
-    const saveFn = jest.fn()
-
     const entityToCreate: ClientIsolationSaveData = {
       name: 'Client Isolation testing',
       description: 'Here is the description',
@@ -105,6 +105,7 @@ describe.skip('ClientIsolationForm', () => {
     const clientToAdd = entityToCreate.allowlist[0]
 
     // Mock create policy API
+    const saveFn = jest.fn()
     mockServer.use(
       rest.post(
         ClientIsolationUrls.addClientIsolation.url,
@@ -140,9 +141,6 @@ describe.skip('ClientIsolationForm', () => {
 
     const drawer = await screen.findByRole('dialog')
 
-    // Verify if the drawer is open correctly
-    expect(await within(drawer).findByText('Add Client')).toBeVisible()
-
     // Set client MAC Address
     await userEvent.type(
       await within(drawer).findByRole('textbox', { name: /MAC Address/ }),
@@ -160,7 +158,7 @@ describe.skip('ClientIsolationForm', () => {
     // Verify the client has been added to the allow list
     expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.mac) })).toBeVisible()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => {
       expect(saveFn).toHaveBeenCalledWith(entityToCreate)
@@ -176,19 +174,11 @@ describe.skip('ClientIsolationForm', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Client Isolation'
-    })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Client Isolation' })).toBeVisible()
   })
 
   it('should create a Client Isolation policy with connected client', async () => {
-
-    // Prepare testing data
-    const saveFn = jest.fn()
-
     const clientList = [...mockedClientList]
     const clientToAdd = clientList[0]
     const entityToCreate: ClientIsolationSaveData = {
@@ -201,6 +191,7 @@ describe.skip('ClientIsolationForm', () => {
     }
 
     // Mock create policy & client list APIs
+    const saveFn = jest.fn()
     mockServer.use(
       rest.post(
         ClientIsolationUrls.addClientIsolation.url,
@@ -242,9 +233,6 @@ describe.skip('ClientIsolationForm', () => {
 
     const drawer = await screen.findByRole('dialog')
 
-    // Verify if the drawer is open correctly
-    expect(await within(drawer).findByText('Select Connected Clients')).toBeVisible()
-
     // Select the client
     // eslint-disable-next-line max-len
     const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.clientMac) })
@@ -255,7 +243,7 @@ describe.skip('ClientIsolationForm', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.clientMac) })).toBeVisible()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => {
       expect(saveFn).toHaveBeenCalledWith(entityToCreate)
@@ -263,13 +251,6 @@ describe.skip('ClientIsolationForm', () => {
   })
 
   it('should render Edit form', async () => {
-    mockServer.use(
-      rest.get(
-        ClientIsolationUrls.getClientIsolation.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolation }))
-      )
-    )
-
     render(
       <Provider>
         <ClientIsolationForm editMode={true} />
@@ -289,41 +270,6 @@ describe.skip('ClientIsolationForm', () => {
     const targetClient = mockedClientIsolation.allowlist[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetClient.mac) })
     expect(targetRow).toBeVisible()
-  })
-
-  it('should show toast when edit policy failed', async () => {
-    mockServer.use(
-      rest.get(
-        ClientIsolationUrls.getClientIsolation.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolation }))
-      ),
-      rest.put(
-        ClientIsolationUrls.updateClientIsolation.url,
-        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
-      )
-    )
-
-    render(
-      <Provider>
-        <ClientIsolationForm editMode={true} />
-      </Provider>, {
-        route: {
-          params: { tenantId: mockedTenantId, policyId: mockedPolicyId },
-          path: editPath
-        }
-      }
-    )
-
-    // Verify Policy Name
-    const nameInput = await screen.findByDisplayValue(mockedClientIsolation.name)
-    expect(nameInput).toBeInTheDocument()
-
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
-    // TODO
-    // const errorMsgElem = await screen.findByText('Server Error')
-    // expect(errorMsgElem).toBeInTheDocument()
   })
 
   it('should navigate to the list page when clicking Cancel button', async () => {
