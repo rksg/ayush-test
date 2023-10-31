@@ -13,8 +13,8 @@ import {
   showToast
 } from '@acx-ui/components'
 import {
-  Features,
-  useIsSplitOn
+  Features, TierFeatures,
+  useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
 import {
   CheckMark,
@@ -142,6 +142,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -382,7 +384,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         )
       }
     },
-    ...(secureBootFlag ? [
+    ...(secureBootFlag && enableAP70 ? [
       {
         key: 'secureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
