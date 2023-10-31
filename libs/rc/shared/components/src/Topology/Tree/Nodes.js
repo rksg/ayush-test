@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
+import { TopologyCollapse, TopologyExpand } from '@acx-ui/icons'
+
 const Nodes = (props) => {
   const [color, setColor] = useState({})
   const { nodes, nodeRender, expColEvent, onClick, nodesCoordinate } = props
@@ -40,32 +42,56 @@ const Nodes = (props) => {
               fill: color[ancestorName],
               cursor: node.data.DisplayName !=='Cloud' ? 'pointer' : 'default'
             }}
-            onContextMenu={(e) => {
-              e.preventDefault()
-              expColEvent(node.data.DisplayName)
-            }}
-            onClick={(e) => {
-              onClick(node, e)
-            }}
             id={node.data.DisplayName}
             className={'tree-node'}
           >
-            <g>{nodeRender(node, i)}</g>
-            <g>
-              <text
-                className='text-call-name'
-                style={{
-                  fontSize: '6px',
-                  fill: 'black',
-                  stroke: 'black',
-                  strokeWidth: 0.25
-                }}
-                dy='18'
-                dx={-node.data.DisplayName.length - (node.data.DisplayName.length/2)}
-              >
-                {node.data.DisplayName}
-              </text>
+            <g onClick={(e) => {
+              onClick(node, e)
+            }}>
+              <g>{nodeRender(node, i)}</g>
+              <g>
+                <text
+                  className='text-call-name'
+                  style={{
+                    fontSize: '6px',
+                    fill: 'black',
+                    stroke: 'black',
+                    strokeWidth: 0.25
+                  }}
+                  dx={-node.data.DisplayName.length - (node.data.DisplayName.length/2)}
+                  dy='18'
+                >
+                  {node.data.DisplayName}
+                </text>
+              </g>
             </g>
+            {node.data.DisplayName !=='Cloud' && node.data.children?.length > 0 &&
+              <g onClick={(e) => {
+                e.preventDefault()
+                expColEvent(node.data.DisplayName)
+              }}>
+                <TopologyExpand
+                  width={10}
+                  height={10}
+                  x={-node.data.DisplayName.length/2 + 1}
+                  y='22'
+                />
+              </g>
+            }
+            {node.data._children?.length > 0 &&
+              <g onClick={(e) => {
+                e.preventDefault()
+                expColEvent(node.data.DisplayName)
+              }}>
+                <TopologyCollapse
+                  width={10}
+                  height={10}
+                  x={-node.data.DisplayName.length/2 + 1}
+                  y='22'
+                  id={node.data.DisplayName}
+                />
+              </g>
+            }
           </g>
         )
       })}

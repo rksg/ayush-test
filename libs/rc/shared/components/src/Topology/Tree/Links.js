@@ -26,7 +26,8 @@ const Links = (props) => {
 
   return (
     <g className='d3-tree-links'>
-      <marker id='m1'
+      <marker
+        id='m1'
         viewBox='0 0 10 10'
         refX='5'
         refY='5'
@@ -40,7 +41,7 @@ const Links = (props) => {
           <path
           //eslint-disable-next-line max-len
             d={linkCustom(link, 5)}
-            markerStart='url(#m1)'
+            markerStart={link.source.depth === 0 && 'url(#m1)'}
             markerEnd='url(#m1)'
           />
         </g>
