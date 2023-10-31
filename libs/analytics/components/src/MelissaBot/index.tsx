@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { useEffect, useRef, useState } from 'react'
 
 import { Input }       from 'antd'
@@ -107,7 +105,14 @@ export function MelissaBot (){
       defer(doAfterResponse)
       setFileName('')
     })
-    fileUploadButton.addEventListener('click', () => uploader.click())
+    fileUploadButton.addEventListener('click', () => {
+      uploader.click()
+      /* istanbul ignore else */
+      if(process.env['NODE_ENV']==='test'){
+        uploader.setAttribute('data-testid','uploader')
+        document.body.appendChild(uploader)
+      }
+    })
   }
   const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
   const melissaText = $t({ defaultMessage: 'Melissa' })
@@ -183,12 +188,14 @@ export function MelissaBot (){
       setIsInputDisabled(false)
       defer(doAfterResponse)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileName])
   useEffect(()=>{
     if (incidentId) {
       addUploader(incidentId,
         document.querySelector('.ant-drawer-body .conversation')!.lastChild!)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[incidentId])
   useEffect(()=>{
     if(pathname.includes('/dashboard')){

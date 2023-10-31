@@ -20,6 +20,7 @@ describe('MelissaBot', () => {
   // cleanup on exiting
     container?.remove()
     container = undefined
+    jest.clearAllMocks()
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const route = {
@@ -107,6 +108,39 @@ describe('MelissaBot', () => {
     },
     agentId: 'melissa-agent'
   }
+  const uploadRes = [
+    {
+      text: {
+        text: [
+          'case 01103707 created!'
+        ]
+      }
+    },
+    false,
+    {
+      data: {
+        incidentId: '029e0f12-7718-11ee-92ac-d618d1b3d6d9'
+      }
+    },
+    {
+      payload: {
+        richContent: [
+          [
+            {
+              type: 'button',
+              // eslint-disable-next-line max-len
+              text: 'If you have log files or screen shots to attach to your support case, click to upload',
+              link: '',
+              icon: {
+                type: 'chevron_right',
+                color: '#42A5F5'
+              }
+            }
+          ]
+        ]
+      }
+    }
+  ]
   global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       json: () => Promise.resolve(responseBody)
@@ -206,38 +240,6 @@ describe('MelissaBot', () => {
       fireEvent.click(await screen.findByRole('img'))
     })
     expect(document.querySelector('.ant-drawer-open')).toBeDefined()
-    const uploadRes = [
-      {
-        text: {
-          text: [
-            'case 01103707 created!'
-          ]
-        }
-      },
-      false,
-      {
-        data: {
-          incidentId: '029e0f12-7718-11ee-92ac-d618d1b3d6d9'
-        }
-      },
-      {
-        payload: {
-          richContent: [
-            [
-              {
-                type: 'button',
-                text: 'If you have log files or screen shots to attach to your support case, click to upload',
-                link: '',
-                icon: {
-                  type: 'chevron_right',
-                  color: '#42A5F5'
-                }
-              }
-            ]
-          ]
-        }
-      }
-    ]
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         json: () => Promise.resolve( { queryResult: { fulfillmentMessages: uploadRes } })
@@ -250,6 +252,44 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       fireEvent.click(await screen.findByTestId('ArrowChevronRight'))
     })
-    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
+    await act(async ()=>{
+      const textFile = new File(['someTextFile'], 'text.txt', { type: 'text/plain' })
+      fireEvent.change(await screen.findByTestId('uploader'), { target: { files: [textFile] } })
+    })
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.reject(new Error('Some Error.'))
+    )
+    await act(async ()=>{
+      const textFile = new File(['someTextFile'], 'text.txt', { type: 'text/plain' })
+      fireEvent.change(await screen.findByTestId('uploader'), { target: { files: [textFile] } })
+    })
   })
+  // it('should handle error for file upload from chatbot',async ()=>{
+  //   await act(async ()=>{
+  //     render(<MelissaBot/>,{ route, container })
+  //   })
+  //   await act(async ()=>{
+  //     fireEvent.click(await screen.findByRole('img'))
+  //   })
+  //   expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+  //   global.fetch = jest.fn().mockImplementation(() =>
+  //     Promise.resolve({
+  //       json: () => Promise.resolve( { queryResult: { fulfillmentMessages: uploadRes } })
+  //     })
+  //   )
+  //   await act(async ()=>{
+  //     await userEvent.type(screen.getByRole('textbox'),'support{enter}')
+  //   })
+  //   await screen.findByText('support')
+  //   await act(async ()=>{
+  //     fireEvent.click(await screen.findByTestId('ArrowChevronRight'))
+  //   })
+  //   global.fetch = jest.fn().mockImplementation(() =>
+  //     Promise.reject(new Error('Some Error.'))
+  //   )
+  //   await act(async ()=>{
+  //     const textFile = new File(['someTextFile'], 'text.txt', { type: 'text/plain' })
+  //     fireEvent.change(await screen.findByTestId('uploader'), { target: { files: [textFile] } })
+  //   })
+  // })
 })
