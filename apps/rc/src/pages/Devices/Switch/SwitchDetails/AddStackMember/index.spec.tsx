@@ -4,9 +4,9 @@ import { Modal }      from 'antd'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { switchApi }                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo, SwitchStatusEnum, SWITCH_TYPE } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,8 +14,9 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import { SwitchDetailsContext } from '../'
-import { editStackDetail }      from '../../__tests__/fixtures'
+import { SwitchDetailsContext }     from '../'
+import { editStackDetail }          from '../../__tests__/fixtures'
+import { switchDetailsContextData } from '../__tests__/fixtures'
 
 import AddStackMember from '.'
 
@@ -34,28 +35,6 @@ const editStackData = {
   dhcpClientEnabled: true,
   dhcpServerEnabled: false,
   rearModule: 'none'
-}
-
-const switchDetailsContextData = {
-  switchName: '',
-  currentSwitchOperational: true,
-  switchDetailHeader: {
-    configReady: true,
-    name: 'test',
-    isStack: false,
-    switchMac: '58:fb:96:0e:bc:f8',
-    switchName: 'ICX7150-C12 Router',
-    serialNumber: 'FEK3230S0C5',
-    deviceStatus: SwitchStatusEnum.OPERATIONAL,
-    id: 'id',
-    venueId: 'venue-id',
-    stackMembers: [],
-    syncedSwitchConfig: true,
-    switchType: SWITCH_TYPE.ROUTER
-  },
-  switchData: {
-    stackMembers: []
-  }
 }
 
 describe('Add Stack Member Form', () => {

@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import * as CommonComponent                                                 from '@acx-ui/components'
-import { switchApi }                                                        from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, SwitchUrlsInfo }                                  from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import * as CommonComponent                                                          from '@acx-ui/components'
+import { switchApi }                                                                 from '@acx-ui/rc/services'
+import { IP_ADDRESS_TYPE, SwitchUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { SwitchDetailsContext }                       from '../'
 import { switchDetailData, switchDetailsContextData } from '../__tests__/fixtures'
@@ -28,6 +28,7 @@ jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
 )
 
 describe('SwitchDhcpTab', () => {
+  const mockedGetSwitch = jest.fn()
   const params = {
     tenantId: ':tenantId',
     switchId: ':switchId',
@@ -40,11 +41,14 @@ describe('SwitchDhcpTab', () => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.get( SwitchUrlsInfo.getSwitch.url,
-        (_, res, ctx) => res(ctx.json({
-          dhcpClientEnabled: true,
-          dhcpServerEnabled: false,
-          ipAddressType: IP_ADDRESS_TYPE.DYNAMIC
-        }))),
+        (_, res, ctx) => {
+          mockedGetSwitch()
+          return res(ctx.json({
+            dhcpClientEnabled: true,
+            dhcpServerEnabled: false,
+            ipAddressType: IP_ADDRESS_TYPE.DYNAMIC
+          }))
+        }),
       rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailData))),
       rest.post( SwitchUrlsInfo.getDhcpPools.url,
@@ -75,6 +79,8 @@ describe('SwitchDhcpTab', () => {
 
     const poolTab = await screen.findByRole('tab', { name: 'Pools' })
     expect(poolTab.getAttribute('aria-selected')).toBeTruthy()
+    expect(mockedGetSwitch).toBeCalledTimes(1)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
 
     const leaseTab = await screen.findByRole('tab', { name: 'Leases' })
     fireEvent.click(leaseTab)
@@ -85,9 +91,11 @@ describe('SwitchDhcpTab', () => {
       search: ''
     })
 
-    // TODO
-    // const statusBtn = await screen.findByRole('switch')
-    // await waitFor(() => expect(statusBtn).toBeEnabled())
+    const statusBtn = await screen.findByRole('switch')
+    await waitFor(() => expect(statusBtn).toBeEnabled())
+
+    fireEvent.click(statusBtn)
+    expect(mockedShowActionModal).toBeCalledTimes(1)
 
     // await screen.findByRole('dialog')
     // expect(await screen.findByRole('dialog')).toHaveTextContent('Configure static IP address')
