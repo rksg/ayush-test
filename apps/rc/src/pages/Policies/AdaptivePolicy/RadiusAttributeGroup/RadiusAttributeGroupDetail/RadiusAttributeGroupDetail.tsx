@@ -17,7 +17,8 @@ import {
   PolicyOperation,
   PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
@@ -112,9 +113,8 @@ export default function RadiusAttributeGroupDetail () {
             text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
             link: tablePath }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='edit'
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
               oper: PolicyOperation.EDIT,
@@ -123,7 +123,7 @@ export default function RadiusAttributeGroupDetail () {
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>
