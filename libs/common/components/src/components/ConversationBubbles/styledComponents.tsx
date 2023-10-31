@@ -13,7 +13,7 @@ export const Button = styled(AcxButton)`
 
 export const Collapse = styled(AntdCollapse)`
   width: 416px;
-  border: 1px solid #E3E4E5;
+  border: 1px solid var(--acx-neutrals-25);
   margin-top: 16px;
   border-radius: 5px;
   .ant-collapse-content-box {
@@ -28,7 +28,7 @@ export const Collapse = styled(AntdCollapse)`
     border-bottom: none !important;
   }
   .ant-collapse-item .ant-collapse-header {
-    background: linear-gradient(0deg, #F7F7F7, #F7F7F7);
+    background: linear-gradient(0deg, var(--acx-neutrals-15), var(--acx-neutrals-15));
     border-bottom: none !important;
     padding: 10px !important;
     font-size: 14px !important;
@@ -63,16 +63,15 @@ export const Panel = styled(AntdCollapse.Panel)`
 export const Wrapper = styled.div`
   border-radius: 8px;
   background: var(--acx-primary-white);
-  background: #FFFFFF;
   display: flex;
   flex-direction: column;
 `
 export const User = styled.div`
   width: 327px;
   height: auto;
-  border: 1px solid #E3E4E5;
+  border: 1px solid var(--acx-neutrals-25);
   border-radius: 5px;
-  color: #333333;
+  color: var(--acx-primary-black);
   text-align: left;
   font-weight: 400;
   font-family: Open Sans;
@@ -86,11 +85,11 @@ export const User = styled.div`
 export const Bot = styled.div`
   width: 377px;
   height: auto;
-  border: 1px solid #E3E4E5;
+  border: 1px solid var(--acx-neutrals-25);
   border-radius: 5px;
-  background: linear-gradient(0deg, #F7F7F7, #F7F7F7);
-  color: #333333;
-  ont-weight: 400;
+  background: linear-gradient(0deg, var(--acx-neutrals-15), var(--acx-neutrals-15));
+  color: var(--acx-primary-black);
+  font-weight: 400;
   font-family: Open Sans;
   font-style: normal;
   font-size: 12px;
@@ -108,7 +107,7 @@ const ChatTypingWrapper = styled.div`
 }
 .typing .dot {
   animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
-  background-color: #E47B01;
+  background-color: var(--acx-semantics-yellow-70);
   border-radius: 50%;
   height: 7px;
   margin-right: 4px;
@@ -132,15 +131,15 @@ const ChatTypingWrapper = styled.div`
 @keyframes mercuryTypingAnimation {
   0% {
     transform: translateY(0px);
-    background-color: #E47B01;
+    background-color: var(--acx-semantics-yellow-70);
   }
   28% {
     transform: translateY(-5px);
-    background-color: #F7B41E;
+    background-color: var(--acx-semantics-yellow-50);
   }
   44% {
     transform: translateY(0px);
-    background-color: #FAD278;
+    background-color: var(--acx-semantics-yellow-30);
   }
 }
 `
