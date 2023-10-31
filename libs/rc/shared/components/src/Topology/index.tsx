@@ -70,7 +70,7 @@ export function TopologyGraph (props:{ venueId?: string,
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
 
   useEffect(() => {
-    if(topologyData && data) {
+    if(topologyData) {
       const nodes: Node[] = topologyData?.nodes
 
       const _data: GraphData = {

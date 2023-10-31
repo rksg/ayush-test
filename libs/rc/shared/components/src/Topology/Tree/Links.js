@@ -1,27 +1,34 @@
 import React from 'react'
 
-const linkCustom = ({ source, target }, radius) => {
-  const elbowX = source.y + (target.y - source.y) // Calculate the x-coordinate for the elbow
-  if (source.y === target.y) {
-    // eslint-disable-next-line max-len
-    return `M${source.y} ${source.x - 35} L${elbowX} ${source.x - 25} L${elbowX} ${target.x - 180} L${target.y} ${target.x - 150}`
-  } else{
-    const isClockwise = source.y < target.y
-    const path = `M${source.y} ${source.x - 35}
-    a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${isClockwise ? radius : -radius},${radius}
-    L${isClockwise ? elbowX - radius : elbowX + radius} ${source.x - (radius * 4)} 
-    a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${isClockwise ? radius : -radius},${radius}
-    L${elbowX} ${target.x - 150}`
-    return path
-  }
-}
-
 const Links = (props) => {
-  const { links } = props
+  const { links, linksCoordinate } = props
+
+  const linkCustom = ({ source, target }, radius) => {
+    const linkCoor = linksCoordinate[`${source.data.id}_${target.data.id}`]
+    const sourceX = linkCoor.source.x
+    const sourceY = linkCoor.source.y
+    const targetX = linkCoor.target.x
+    const targetY = linkCoor.target.y
+    const breakX = sourceX + 25
+    if (sourceY === targetY) {
+      return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
+    } else {
+      const isClockwise = targetY < sourceY
+      const path = `M${sourceY} ${sourceX} 
+    L${sourceY} ${breakX - radius}
+    a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${isClockwise ? -radius : radius},${radius}
+    L${isClockwise ? targetY + radius : targetY - radius} ${breakX} 
+    a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${isClockwise ? -radius : radius},${radius}
+    L${targetY} ${targetX - 100} `
+      return path
+    }
+  }
+
   return (
     <g className='d3-tree-links'>
       {links.map((link, i) => (
-        <g key={i} transform={`translate(0, ${link.source.depth * -65})`}>
+        <g key={i}
+          transform={`translate(0, -${40 + (65 * link.source.depth) })`}>
           <path
           //eslint-disable-next-line max-len
             d={linkCustom(link, 5)}

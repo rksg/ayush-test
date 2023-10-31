@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 const Nodes = (props) => {
   const [color, setColor] = useState({})
-  const { nodes, nodeRender, expColEvent, onClick } = props
+  const { nodes, nodeRender, expColEvent, onClick, nodesCoordinate } = props
 
   useEffect(() => {
     nodes
@@ -18,6 +18,11 @@ const Nodes = (props) => {
       })
   }, [nodes])
 
+  function coordinateTransform (node){
+    return `translate(${nodesCoordinate[node.data.id].y},
+      ${nodesCoordinate[node.data.id].x - (65 * node.ancestors().length )})`
+  }
+
   return (
     <g className='d3-tree-nodes'>
       {nodes.map((node, i) => {
@@ -29,8 +34,8 @@ const Nodes = (props) => {
           : ''
         return (
           <g
-            key={i}
-            transform={`translate(${node.y},${node.x - (65 * node.ancestors().length)})`}
+            key={node.data.DisplayName}
+            transform={coordinateTransform(node)}
             style={{
               fill: color[ancestorName],
               cursor: node.data.DisplayName !=='Cloud' ? 'pointer' : 'default'
@@ -42,10 +47,11 @@ const Nodes = (props) => {
             onClick={(e) => {
               onClick(node, e)
             }}
-            id={node.DisplayName}
+            id={node.data.DisplayName}
+            className={'tree-node'}
           >
-            <g id={node.DisplayName}>{nodeRender(node, i)}</g>
-            <g id={node.DisplayName}>
+            <g>{nodeRender(node, i)}</g>
+            <g>
               <text
                 className='text-call-name'
                 style={{
