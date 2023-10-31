@@ -244,13 +244,11 @@ export function UpdateNowWizard (props: UpdateNowWizardProps) {
         onFinish={wizardFinish[wizardType]}
       >
         <StepsForm.StepForm
+          title={$t({ defaultMessage: 'Select Switch(es)' })}
           key='selectSwitches'
           name='selectSwitches'
-          title={$t({ defaultMessage: 'Select Switch(es)' })}
           layout='horizontal'
-          onFinish={async () => {
-            saveSwitchStep()
-          }}
+          onFinish={async () => { saveSwitchStep() }}
         >
           <SelectSwitchStep
             data={props.data as FirmwareSwitchVenue[]}

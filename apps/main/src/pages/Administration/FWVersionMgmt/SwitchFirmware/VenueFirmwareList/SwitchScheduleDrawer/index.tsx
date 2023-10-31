@@ -16,7 +16,7 @@ import {
 
 import { getNextScheduleTpl }                                                          from '../../../FirmwareUtils'
 import * as UI                                                                         from '../../../styledComponents'
-import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../SwitchUpgradeWizard/switch.upgrade.util'
+import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../switch.upgrade.util'
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,

@@ -3,7 +3,7 @@ import { IntlShape } from 'react-intl'
 
 import { FirmwareVersion, SwitchFirmware, firmwareTypeTrans } from '@acx-ui/rc/utils'
 
-import { SCHEDULE_END_TIME_FORMAT, SCHEDULE_START_TIME_FORMAT, parseSwitchVersion } from '../../../FirmwareUtils'
+import { SCHEDULE_END_TIME_FORMAT, SCHEDULE_START_TIME_FORMAT, parseSwitchVersion } from '../../FirmwareUtils'
 
 export const enableSwitchScheduleTooltip = (s: SwitchFirmware) => {
   return s.switchNextSchedule

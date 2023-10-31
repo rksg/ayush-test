@@ -7,7 +7,6 @@ import {
   Table,
   TableProps,
   Drawer,
-  Button,
   showToast
 } from '@acx-ui/components'
 import { useSwitchActions }                        from '@acx-ui/rc/components'
@@ -20,6 +19,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { parseSwitchVersion } from '../../../FirmwareUtils'
+import * as UI                from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,
@@ -94,15 +94,9 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                 style={{ lineHeight: '24px' }}>
                 {fwMappings[row.status]}.
               </Typography.Text>
-              <Button
+              <UI.TextButton
                 size='small'
                 ghost={true}
-                style={{
-                  color: '#5496EA',
-                  padding: '0',
-                  marginLeft: '5px',
-                  marginBottom: '2px'
-                }}
                 onClick={() => {
                   const switchId = row.switchId
                   const callback = () => {
@@ -114,7 +108,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                   switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
                 }}>
                 {$t({ defaultMessage: 'Retry' })}
-              </Button></div>
+              </UI.TextButton></div>
           }
           return fwMappings[row.status]
         }

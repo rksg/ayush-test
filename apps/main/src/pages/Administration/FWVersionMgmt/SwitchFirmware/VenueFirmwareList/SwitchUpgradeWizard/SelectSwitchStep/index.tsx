@@ -24,12 +24,10 @@ import { SwitchFirmwareWizardType } from '..'
 import {
   getNextScheduleTpl,
   getSwitchNextScheduleTplTooltip,
-  isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion
 } from '../../../../FirmwareUtils'
-import * as UI                                                                         from '../../../../styledComponents'
-import * as SwitchUI                                                                   from '../../styledComponents'
-import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../switch.upgrade.util'
+import * as UI                                            from '../../styledComponents'
+import { getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../../switch.upgrade.util'
 
 function useColumns () {
   const intl = useIntl()
@@ -75,18 +73,12 @@ function useColumns () {
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       render: function (_, row) {
-        return (!isSwitchNextScheduleTooltipDisabled(row)
-          ? getNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip
-            title={
-              <UI.ScheduleTooltipText>
-                {getSwitchNextScheduleTplTooltip(row)}
-              </UI.ScheduleTooltipText>}
-            placement='bottom'>
-            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-          </Tooltip>
-        )
+        return <Tooltip
+          title={getSwitchNextScheduleTplTooltip(row) ||
+            intl.$t({ defaultMessage: 'Not scheduled' })}
+          placement='bottom'>
+          <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
+        </Tooltip>
       }
     }
   ]
@@ -173,17 +165,12 @@ export const SelectSwitchStep = (
       key: 'switchNextSchedule',
       dataIndex: 'model',
       render: function (_, row) {
-        return (!enableSwitchScheduleTooltip(row)
-          ? getSwitchNextScheduleTpl(intl, row)
-          : <Tooltip
-            title={
-              <UI.ScheduleTooltipText>
-                {getSwitchScheduleTpl(row)}
-              </UI.ScheduleTooltipText>}
-            placement='bottom'>
-            <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
-          </Tooltip>
-        )
+        return <Tooltip
+          title={getSwitchScheduleTpl(row) ||
+            intl.$t({ defaultMessage: 'Not scheduled' })}
+          placement='bottom'>
+          <UI.WithTooltip>{getSwitchNextScheduleTpl(intl, row)}</UI.WithTooltip>
+        </Tooltip>
       }
     }
   ]
@@ -242,7 +229,7 @@ export const SelectSwitchStep = (
       className='switchTable'
       loading={false}
       locale={{
-        emptyText: 'No data'
+        emptyText: ' '
       }}
       style={{ paddingLeft: '0px !important' }}
       dataSource={nestedData[record.id]?.initialData ?? [] as SwitchFirmware[]}
@@ -341,7 +328,7 @@ export const SelectSwitchStep = (
 
   return (
     <>
-      <SwitchUI.ValidateField
+      <UI.ValidateField
         style={{ marginBottom: '5px' }}
         name='selectSwitchStep'
         rules={[
@@ -386,15 +373,6 @@ export const SelectSwitchStep = (
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedSearchSwitchRowKeys,
-            getCheckboxProps: () => {
-              let disabled = false
-              if (wizardtype === SwitchFirmwareWizardType.skip) {
-                // disabled = _.isEmpty(record.switchNextSchedule)
-              }
-              return {
-                disabled
-              }
-            },
             onChange: (selectedKeys, selectedRows) => {
               const addedSwitch = _.difference(selectedKeys, selectedSearchSwitchRowKeys)
               const deletedSwitch = _.difference(selectedSearchSwitchRowKeys, selectedKeys)
@@ -481,13 +459,12 @@ export const SelectSwitchStep = (
         /></div>}
 
       {
-        _.isEmpty(searchText) && <SwitchUI.ExpanderTableWrapper>
+        _.isEmpty(searchText) && <UI.ExpanderTableWrapper>
           <Table
             columns={columns}
             enableResizableColumn={false}
             type={'tall'}
             dataSource={data}
-
             expandable={{
               onExpand: handleExpand,
               expandedRowRender: expandedRowRenderFunc,
@@ -499,14 +476,7 @@ export const SelectSwitchStep = (
               type: 'checkbox',
               selectedRowKeys: selectedVenueRowKeys,
               getCheckboxProps: (record) => {
-                let disabled = false
-
-                if (wizardtype === SwitchFirmwareWizardType.skip) {
-                  // disabled = _.isEmpty(record.nextSchedule)
-                }
-
                 return {
-                  disabled,
                   indeterminate: isIndeterminate(record),
                   name: record.name
                 }
@@ -566,7 +536,7 @@ export const SelectSwitchStep = (
                 form.validateFields()
               }
             }}
-          /></SwitchUI.ExpanderTableWrapper>}
+          /></UI.ExpanderTableWrapper>}
     </>
   )
 }

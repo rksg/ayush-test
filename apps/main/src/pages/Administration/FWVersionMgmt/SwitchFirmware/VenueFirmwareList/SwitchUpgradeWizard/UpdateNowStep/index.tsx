@@ -15,7 +15,7 @@ import {
 
 
 import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../switch.upgrade.util'
+import { getSwitchVersionLabel } from '../../switch.upgrade.util'
 
 export interface UpdateNowStepProps {
   visible: boolean,

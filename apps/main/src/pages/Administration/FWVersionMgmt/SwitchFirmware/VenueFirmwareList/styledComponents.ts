@@ -74,6 +74,17 @@ export const ValidateField = styled(Form.Item)`
   }
 `
 
+export const WithTooltip = styled.span`
+  cursor: default;
+`
+
+export const TextButton = styled(Button)`
+  color: var(--acx-accents-blue-50) !important;
+  padding: 0px !important;
+  margin-left: 5px;
+  margin-bottom: 2px;
+`
+
 export const SwitchFirmwareStepsForm = styled(StepsForm)<{ wizardtype: SwitchFirmwareWizardType }>`
     ${(props) => (props.wizardtype === SwitchFirmwareWizardType.skip ? `
     [class*="styledComponents__ActionsContainer"]{
@@ -88,20 +99,20 @@ export const ExpanderTableWrapper = styled.div`
   margin-bottom: 30px;
 
   .ant-table-tbody {
-    background-color: #EBEDEE;
+    background-color: var(--acx-neutrals-20);
     .ant-table-cell-fix-right-first {
-      background-color: #EBEDEE;
+      background-color: var(--acx-neutrals-20);
     }
   }
 
   /* Selected Row Styles */
   .ant-table-tbody > tr.ant-table-row-selected > td {
-    background: #EBEDEE;
+    background: var(--acx-neutrals-20);
   }
 
   .ant-table-thead {
     .ant-table-cell-fix-right-first{
-      background-color: white;
+      background-color: var(--acx-primary-white);
     }
   }
 
@@ -124,25 +135,25 @@ export const ExpanderTableWrapper = styled.div`
 
   /* Table Body Styles */
   .ant-table-body {
-    background-color: #EBEDEE;
+    background-color: var(--acx-neutrals-20);
   }
 
   /* Switch Table Styles */
   .switchTable {
     .ant-table-tbody {
-      background-color: white;
+      background-color: var(--acx-primary-white);
     }
 
     .ant-table-tbody > tr.ant-table-row-selected > td {
-      background: white;
+      background: var(--acx-primary-white);
     }
 
     .ant-table-body {
-      background-color: white;
+      background-color: var(--acx-primary-white);
     }
 
     .ant-table-cell-fix-right {
-      background-color: white;
+      background-color: var(--acx-primary-white);
     }
   }
 `

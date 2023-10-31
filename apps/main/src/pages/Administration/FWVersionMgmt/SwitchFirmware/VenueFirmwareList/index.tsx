@@ -37,13 +37,12 @@ import { noDataDisplay }  from '@acx-ui/utils'
 import {
   getNextScheduleTpl,
   getSwitchNextScheduleTplTooltip,
-  isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
-import * as UI               from '../../styledComponents'
 
+import * as UI                                       from './styledComponents'
 import { SwitchScheduleDrawer }                      from './SwitchScheduleDrawer'
 import { SwitchFirmwareWizardType, UpdateNowWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                         from './VenueStatusDrawer'
@@ -177,21 +176,15 @@ export const VenueFirmwareTable = (
             style={{ lineHeight: '24px' }}>
             {switchFirmwareStatusTextMapping[row.status]}
           </Typography.Text>
-          <Button
+          <UI.TextButton
             size='small'
             ghost={true}
-            style={{
-              color: '#5496EA',
-              padding: '0',
-              marginLeft: '5px',
-              marginBottom: '2px'
-            }}
             onClick={() => {
               setClickedUpdateStatusData(row)
               setUpdateStatusDrawerVisible(true)
             }}>
             {$t({ defaultMessage: 'Check Status' })}
-          </Button></div>
+          </UI.TextButton></div>
       }
     },
     {
@@ -217,32 +210,22 @@ export const VenueFirmwareTable = (
               style={{ lineHeight: '24px' }}>
               {intl.$t({ defaultMessage: 'Multiple.' })}
             </Typography.Text>
-            <Button
+            <UI.TextButton
               size='small'
               ghost={true}
-              style={{
-                color: '#5496EA',
-                padding: '0',
-                marginLeft: '5px',
-                marginBottom: '2px'
-              }}
               onClick={() => {
                 setSwitchScheduleDrawerVisible(true)
                 setClickedSwitchScheduleData(row)
               }}>
               {intl.$t({ defaultMessage: 'View schedule' })}
-            </Button></div>
+            </UI.TextButton></div>
         }
-        return (!isSwitchNextScheduleTooltipDisabled(row)
-          ? getNextScheduleTpl(intl, row)
-          : <Tooltip
-            title={<UI.ScheduleTooltipText>
-              {getSwitchNextScheduleTplTooltip(row)}
-            </UI.ScheduleTooltipText>}
-            placement='bottom'>
-            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
-          </Tooltip>
-        )
+        return <Tooltip
+          title={getSwitchNextScheduleTplTooltip(row) ||
+            intl.$t({ defaultMessage: 'Not scheduled' })}
+          placement='bottom' >
+          <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
+        </Tooltip >
       }
     }
   ]
@@ -258,6 +241,7 @@ export const VenueFirmwareTable = (
   }
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Update Now' }),
     visible: (selectedRows) => {
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       if (!filterVersions || filterVersions.length === 0) {
@@ -272,7 +256,6 @@ export const VenueFirmwareTable = (
         return filterVersions.length > 0
       })
     },
-    label: $t({ defaultMessage: 'Update Now' }),
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
@@ -283,6 +266,7 @@ export const VenueFirmwareTable = (
     }
   },
   {
+    label: $t({ defaultMessage: 'Change Update Schedule' }),
     visible: (selectedRows) => {
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       if (!filterVersions || filterVersions.length === 0) {
@@ -297,7 +281,6 @@ export const VenueFirmwareTable = (
         return filterVersions.length > 0
       })
     },
-    label: $t({ defaultMessage: 'Change Update Schedule' }),
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       setWizardType(SwitchFirmwareWizardType.schedule)
@@ -305,13 +288,7 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    // visible: () => { //TODO
-    //   let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
-    //   if (!filterVersions || filterVersions.length === 0) {
-    //     return false
-    //   }
-    //   return true
-    // },
+    label: $t({ defaultMessage: 'Skip Update' }),
     disabled: (selectedRows) => {
       let disabledUpdate = false
       selectedRows.forEach((row) => {
@@ -322,7 +299,6 @@ export const VenueFirmwareTable = (
       })
       return disabledUpdate
     },
-    label: $t({ defaultMessage: 'Skip Update' }),
     onClick: (selectedRows) => {
       setSelectedVenueList(selectedRows)
       setUpdateNowWizardVisible(true)

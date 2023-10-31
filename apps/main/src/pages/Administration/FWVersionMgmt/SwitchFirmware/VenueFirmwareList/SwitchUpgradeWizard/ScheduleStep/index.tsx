@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../switch.upgrade.util'
+import { getSwitchVersionLabel } from '../../switch.upgrade.util'
 
 import { PreDownload } from './PreDownload'
 
@@ -62,7 +62,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
 
   const currentSchedule = getCurrentSchedule()
-
   const currentScheduleVersion = currentSchedule?.version?.name ?? ''
   const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
 
