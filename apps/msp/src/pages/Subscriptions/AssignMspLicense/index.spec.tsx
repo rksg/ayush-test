@@ -241,7 +241,7 @@ describe('AssignMspLicense', () => {
 
     expect(screen.getByText('Assign Subscription')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
-    expect(screen.getByText('Assigned Device Subscriptions')).toBeVisible()
+    expect(screen.getByText('Assigned Paid Device Subscriptions')).toBeVisible()
     expect(screen.queryByText('Assigned Wi-Fi Subscription')).toBeNull()
     expect(screen.queryByText('Assigned Switch Subscription')).toBeNull()
     expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled()

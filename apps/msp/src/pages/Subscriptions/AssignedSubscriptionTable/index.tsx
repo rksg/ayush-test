@@ -113,7 +113,10 @@ export function AssignedSubscriptionTable () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
+        name: isDeviceAgnosticEnabled ? (response?.trialAssignment
+          ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' }) + ' '
+          + EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)) :
+          EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
       }
     }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)
 
