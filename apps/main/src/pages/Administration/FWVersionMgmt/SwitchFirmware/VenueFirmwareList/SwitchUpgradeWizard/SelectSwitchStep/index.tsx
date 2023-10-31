@@ -277,7 +277,7 @@ export const SelectSwitchStep = (
             }
           })
 
-          if (currentSwitchList.length === selectedRows.length) {
+          if (currentSwitchList.length === selectedKeys.length) {
             setSelectedVenueRowKeys([...selectedVenueRowKeys, record.id])
           } else {
             setSelectedVenueRowKeys(selectedVenueRowKeys.filter(
@@ -413,7 +413,7 @@ export const SelectSwitchStep = (
                   newSelectedSwitchRowKeys = ({
                     ...newSelectedSwitchRowKeys,
                     [currentRow.venueId]:
-                      newSelectedSwitchRowKeys[currentRow.venueId]?.concat(selectedRow)
+                      newSelectedSwitchRowKeys[currentRow.venueId]?.concat(a)
                       || selectedRow
                   })
 
