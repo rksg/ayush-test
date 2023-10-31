@@ -4,7 +4,16 @@ import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { GridCol, GridRow, Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import {
+  GridCol,
+  GridRow,
+  Loader,
+  PageHeader,
+  showToast,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import { RadiusAttributeGroupSettingForm } from '@acx-ui/rc/components'
 import {
   useAddRadiusAttributeGroupMutation,
   useGetRadiusAttributeGroupQuery,
@@ -18,8 +27,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadiusAttributeDrawer }           from './RadiusAttributeDrawer'
-import { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
+import { RadiusAttributeDrawer } from './RadiusAttributeDrawer'
 
 interface RadiusAttributeGroupFormProps {
   editMode?: boolean
