@@ -306,10 +306,11 @@ export const VenueFirmwareTable = (
   },
   {
     disabled: (selectedRows) => {
-      let disabledUpdate = true
+      let disabledUpdate = false
       selectedRows.forEach((row) => {
-        if (row.nextSchedule || row.scheduleCount > 0) {
-          disabledUpdate = false
+        const hasSchedule = row.nextSchedule || row.scheduleCount > 0
+        if (!hasSchedule) {
+          disabledUpdate = true
         }
       })
       return disabledUpdate
