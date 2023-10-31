@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  deviceDetailResponse,
+  devicePolicyDetailResponse,
   devicePolicyListResponse,
   enhancedDevicePolicyListResponse, networkListResponse
 } from '../__tests__/fixtures'
@@ -48,7 +48,7 @@ describe('AccessControlTable - Device', () => {
       ), rest.get(
         AccessControlUrls.getDevicePolicy.url,
         (_, res, ctx) => res(
-          ctx.json(deviceDetailResponse)
+          ctx.json(devicePolicyDetailResponse)
         )
       )
     )

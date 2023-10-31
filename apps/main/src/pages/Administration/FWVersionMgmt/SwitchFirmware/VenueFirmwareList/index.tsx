@@ -366,7 +366,9 @@ export const VenueFirmwareTable = (
         onOk () {
           skipSwitchUpgradeSchedules({
             params: { ...params },
-            payload: selectedRows.map((row) => row.id)
+            payload: {
+              switchIds: [],
+              venueIds: selectedRows.map((row) => row.id) }
           }).then(clearSelection)
         },
         onCancel () {}
@@ -414,14 +416,14 @@ export const VenueFirmwareTable = (
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
-      <PreferencesDialog
+      {modelVisible && <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />
+      />}
     </Loader>
   )
 }

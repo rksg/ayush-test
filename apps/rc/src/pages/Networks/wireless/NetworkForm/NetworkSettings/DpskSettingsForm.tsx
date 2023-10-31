@@ -12,7 +12,7 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams }                from '@acx-ui/rc/components'
+import { DpskForm, useDpskNewConfigFlowParams }      from '@acx-ui/rc/components'
 import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -22,7 +22,6 @@ import {
   transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
-import DpskForm           from '../../../../Services/Dpsk/DpskForm/DpskForm'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
