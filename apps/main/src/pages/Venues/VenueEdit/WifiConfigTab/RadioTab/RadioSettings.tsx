@@ -141,8 +141,7 @@ export function RadioSettings () {
   // default radio data
   const { data: defaultRadioSettingsData } =
     useGetDefaultRadioCustomizationQuery({
-      params: { tenantId, venueId },
-      payload: { defaultonly: true }
+      params: { tenantId, venueId }
     })
 
   // Custom radio data
