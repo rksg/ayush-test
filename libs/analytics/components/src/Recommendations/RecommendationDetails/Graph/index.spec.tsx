@@ -12,7 +12,7 @@ import { CloudRRMGraph } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  Graph: ({ data, chartRef, ...props }: GraphProps) => {
+  Graph: ({ data, chartRef, zoomScale, ...props }: GraphProps) => {
     // to get connectChart covered
     const getEchartsInstance = jest.fn(() => ({ group: '' }))
     chartRef({ getEchartsInstance } as unknown as EChartsReact)
