@@ -60,6 +60,17 @@ export function AccessPointLED () {
       isDirty: false,
       setData: setTableData
     })
+
+    // eslint-disable-next-line max-len
+    const shouldApplyUpdateSetting = editContextData?.oldData ? isEqual(editContextData?.oldData, tableData) : false
+
+    if(shouldApplyUpdateSetting){
+      setEditAdvancedContextData({
+        ...editAdvancedContextData,
+        updateAccessPointLED: handleUpdateSetting
+      })
+    }
+
   }, [navigate])
 
 
