@@ -11,12 +11,19 @@ import {
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
+import {
+  FILTER,
+  MacRegistration,
+  MacRegistrationPool,
+  returnExpirationString,
+  SEARCH,
+  toDateTimeString,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
+import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()

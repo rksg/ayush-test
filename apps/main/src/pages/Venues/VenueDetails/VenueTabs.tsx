@@ -25,11 +25,14 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   }, { skip: !enableProperty })
   const { data: propertyConfig } = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
 
-  const onTabChange = (tab: string) =>
+  const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
+      pathname: (tab === 'clients' || tab === 'devices')
+        ? `${basePath.pathname}/${tab}/wifi`
+        : `${basePath.pathname}/${tab}`
     })
+  }
 
   const data = props.venueDetail
   const [clientsCount, devicesCount, networksCount, unitCount] = [
