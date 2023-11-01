@@ -202,7 +202,7 @@ export const VenueFirmwareTable = (
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
       render: function (__, row) {
-        const hasMultipleSchedule = (_.isEmpty(row.nextSchedule) && row.scheduleCount === 1) ||
+        const hasMultipleSchedule = (_.isEmpty(row.nextSchedule) && row.scheduleCount > 0) ||
           (!_.isEmpty(row.nextSchedule) && row.scheduleCount > 1)
         if (hasMultipleSchedule) {
           return <div>

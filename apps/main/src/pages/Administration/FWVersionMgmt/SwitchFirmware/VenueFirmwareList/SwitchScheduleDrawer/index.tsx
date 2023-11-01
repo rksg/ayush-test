@@ -14,9 +14,13 @@ import {
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 
-import { getNextScheduleTpl }                                                          from '../../../FirmwareUtils'
-import * as UI                                                                         from '../../../styledComponents'
-import { enableSwitchScheduleTooltip, getSwitchNextScheduleTpl, getSwitchScheduleTpl } from '../switch.upgrade.util'
+import { getNextScheduleTpl } from '../../../FirmwareUtils'
+import * as UI                from '../../../styledComponents'
+import {
+  enableSwitchScheduleTooltip,
+  getSwitchNextScheduleTpl,
+  getSwitchScheduleTpl
+} from '../switch.upgrade.util'
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
@@ -40,7 +44,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
         const switchSchedule = getSwitchNextScheduleTpl(intl, row)
         return switchSchedule !== venueDate
       })
-      setSwitchFirmwareStatusList(filterSwitchList as unknown as SwitchFirmware[])
+      setSwitchFirmwareStatusList(filterSwitchList as SwitchFirmware[])
     }
   }
 

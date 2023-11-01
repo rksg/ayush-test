@@ -1,8 +1,4 @@
 /* eslint-disable max-len */
-import {
-  FirmwareCategory
-} from '@acx-ui/rc/utils'
-
 export const successResponse = {
   requestId: 'request-id'
 }
@@ -212,10 +208,71 @@ export const switchVenue = {
           category: 'RECOMMENDED'
         }
       ],
+      nextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-01T00:00:00-07:00',
+          endDateTime: '2023-11-01T02:00:00-07:00'
+        },
+        version: {
+          id: '09010h_cd2_b4',
+          name: '09010h_cd2_b4',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      },
       lastScheduleUpdateTime: '2023-10-19T10:04:14.370+00:00',
       preDownload: false,
       switchCount: 2,
       aboveTenSwitchCount: 0,
+      status: 'NONE',
+      scheduleCount: 2,
+      upgradeVenueViewList: null
+    }
+  ]
+}
+
+export const switchVenueWithEmptyFirmware = {
+  upgradeVenueViewList: [
+    {
+      id: '0c421425798748ddb01cf7ca744500d4',
+      name: 'My-Venue',
+      switchFirmwareVersion: {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010_rc3',
+        name: '10010_rc3',
+        category: 'RECOMMENDED'
+      },
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 0,
+      status: 'NONE',
+      scheduleCount: 0,
+      upgradeVenueViewList: null
+    },
+    {
+      id: '7d4f45940c30448e97f36add4f332bb8',
+      name: 'test',
+      switchFirmwareVersion: {
+        id: '09010h_cd2_b4',
+        name: '09010h_cd2_b4',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010a_cd3_b11',
+        name: '10010a_cd3_b11',
+        category: 'RECOMMENDED'
+      },
+      preDownload: false,
+      switchCount: 0,
+      aboveTenSwitchCount: 2,
       status: 'NONE',
       scheduleCount: 0,
       upgradeVenueViewList: null
@@ -281,3 +338,125 @@ export const switchCurrentVersions = {
   ]
 }
 
+export const switchUpgradeStatusDetails_KittoVenue1 = {
+  upgradeStatusDetailsViewList: [
+    {
+      id: 'c0:c5:20:98:b0:43',
+      switchId: 'c0:c5:20:98:b0:43',
+      switchName: 'ICX7150-C12 Router',
+      upgradeStatusDetailsViewList: null
+    },
+    {
+      id: 'd4:c1:9e:15:f7:2d',
+      switchId: 'd4:c1:9e:15:f7:2d',
+      switchName: 'DEV-EZD3317P008',
+      targetFirmware: '09010f_b19',
+      upgradeStatusDetailsViewList: null
+    },
+    {
+      id: 'c0:c5:20:aa:32:55',
+      switchId: 'c0:c5:20:aa:32:55',
+      switchName: 'FEK3224R0AA',
+      status: 'FW_UPD_COMPLETE',
+      targetFirmware: '09010h_cd2_b4',
+      upgradeStatusDetailsViewList: null
+    }
+  ]
+}
+
+
+export const upgradeSwitchViewList_KittoVenue1 ={
+  upgradeSwitchViewList: [
+    {
+      venueId: '1444c6702e904fa289f21d49093ba239',
+      venueName: 'KittoVenue1',
+      switchId: 'FEK1224R0AG',
+      switchName: 'mock switch',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      availableVersion: {},
+      switchNextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-02T00:00:00-07:00',
+          endDateTime: '2023-11-02T02:00:00-07:00'
+        },
+        version: {
+          id: '09010f_b19',
+          name: '09010f_b19',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      },
+      venueNextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-02T00:00:00-07:00',
+          endDateTime: '2023-11-02T02:00:00-07:00'
+        },
+        version: {
+          id: '09010f_b19',
+          name: '09010f_b19',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      },
+      preDownload: false,
+      upgradeSwitchViewList: null
+    },
+    {
+      venueId: '1444c6702e904fa289f21d49093ba239',
+      venueName: 'KittoVenue1',
+      switchId: 'c0:c5:20:aa:32:79',
+      switchName: 'FEK3224R0AG',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      currentFirmware: '09010f',
+      availableVersion: {
+        id: '09010h_cd2_b4',
+        name: '09010h_cd2_b4',
+        category: 'RECOMMENDED'
+      },
+      switchNextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-02T06:00:00-07:00',
+          endDateTime: '2023-11-02T08:00:00-07:00'
+        },
+        version: {
+          id: '09010h_cd2_b4',
+          name: '09010h_cd2_b4',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      },
+      venueNextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-02T00:00:00-07:00',
+          endDateTime: '2023-11-02T02:00:00-07:00'
+        },
+        version: {
+          id: '09010f_b19',
+          name: '09010f_b19',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: 'RECOMMENDED'
+        }
+      },
+      preDownload: false,
+      upgradeSwitchViewList: null
+    }
+  ]
+}

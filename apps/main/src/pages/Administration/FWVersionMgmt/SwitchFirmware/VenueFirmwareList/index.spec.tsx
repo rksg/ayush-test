@@ -20,7 +20,8 @@ import {
   preference,
   switchRelease,
   switchCurrentVersions,
-  switchLatest
+  switchLatest,
+  switchVenueWithEmptyFirmware
 } from '../__test__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -38,8 +39,6 @@ jest.mock('./VenueStatusDrawer', () => ({
     return <div data-testid='test-VenueStatusDrawer' />
   }
 }))
-
-
 
 describe('SwitchFirmware - VenueFirmwareList', () => {
   let params: { tenantId: string }
@@ -82,6 +81,25 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
   })
 
   it('should render table', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
+  })
+
+  it('should render table with empty firmware', async () => {
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenueWithEmptyFirmware))
+      )
+    )
+
     render(
       <Provider>
         <VenueFirmwareList />

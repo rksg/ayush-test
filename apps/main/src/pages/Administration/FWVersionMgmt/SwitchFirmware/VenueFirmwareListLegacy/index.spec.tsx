@@ -25,7 +25,7 @@ import {
   switchLatest
 } from '../../__tests__/fixtures'
 
-import { VenueFirmwareList } from '.'
+import { VenueFirmwareListLegacy } from '.'
 
 
 describe('Firmware Venues Table', () => {
@@ -71,7 +71,7 @@ describe('Firmware Venues Table', () => {
   it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -84,7 +84,7 @@ describe('Firmware Venues Table', () => {
   it.skip('should update selected rows', async () => {
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -107,7 +107,7 @@ describe('Firmware Venues Table', () => {
   it('should no default option in dialog when feature flag is off', async () => {
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
@@ -134,7 +134,7 @@ describe('Firmware Venues Table', () => {
 
     render(
       <Provider>
-        <VenueFirmwareList />
+        <VenueFirmwareListLegacy />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })

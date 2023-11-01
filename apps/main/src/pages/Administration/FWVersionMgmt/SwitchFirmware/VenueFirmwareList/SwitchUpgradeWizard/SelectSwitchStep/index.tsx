@@ -101,7 +101,7 @@ type SelectSwitchStepProps = {
 }
 
 export const SelectSwitchStep = (
-  { data, wizardtype }: SelectSwitchStepProps) => {
+  { data }: SelectSwitchStepProps) => {
 
   const { form } = useStepFormContext()
   const columns = useColumns()
