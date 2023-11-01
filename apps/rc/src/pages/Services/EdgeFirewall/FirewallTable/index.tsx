@@ -182,7 +182,7 @@ const FirewallTable = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
-      render: (data, row) =>
+      render: (__, row) =>
         (row?.edgeIds?.length)
           ? <Row justify='center'>
             <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
