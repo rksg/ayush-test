@@ -22,7 +22,7 @@ import {
   switchCurrentVersions,
   switchLatest,
   switchVenueWithEmptyFirmware
-} from '../__test__/fixtures'
+} from './__test__/fixtures'
 
 import { VenueFirmwareList } from '.'
 

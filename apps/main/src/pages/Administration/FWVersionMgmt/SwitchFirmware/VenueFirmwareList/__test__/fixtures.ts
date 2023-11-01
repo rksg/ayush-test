@@ -1,3 +1,5 @@
+import { FirmwareCategory } from '@acx-ui/rc/utils'
+
 /* eslint-disable max-len */
 export const successResponse = {
   requestId: 'request-id'
@@ -17,37 +19,36 @@ export const preference = {
   betaProgram: false
 }
 
-export const switchVenue = {
-  upgradeVenueViewList: [
+export const upgradeSwitchViewList = {
+  upgradeSwitchViewList: [
     {
-      id: 'e070393078b54a8d8345d18a064c02c1',
-      name: 'KittoVenue2',
-      switchFirmwareVersion: {
-        id: '09010h_rc1',
-        name: '09010h_rc1',
+      venueId: '1444c6702e904fa289f21d49093ba239',
+      venueName: 'Karen-Venue1',
+      switchId: 'FEK1224R0AG',
+      switchName: 'mock switch',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      availableVersion: {},
+      preDownload: false,
+      upgradeSwitchViewList: null
+    },
+    {
+      venueId: '1444c6702e904fa289f21d49093ba239',
+      venueName: 'Karen-Venue1',
+      switchId: 'c0:c5:20:aa:32:79',
+      switchName: 'FEK3224R0AG',
+      isStack: false,
+      model: 'ICX7150-C12P',
+      currentFirmware: '09010f',
+      availableVersion: {
+        id: '09010h_cd2_b4',
+        name: '09010h_cd2_b4',
         category: 'RECOMMENDED'
       },
-      switchFirmwareVersionAboveTen: {
-        id: '10010_rc3',
-        name: '10010_rc3',
-        category: 'RECOMMENDED'
-      },
-      availableVersions: [
-        {
-          id: '09010h_cd2_b4',
-          name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
-        },
-        {
-          id: '10010a_cd3_b11',
-          name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
-        }
-      ],
-      nextSchedule: {
+      switchNextSchedule: {
         timeSlot: {
-          startDateTime: '2023-11-01T00:00:00-07:00',
-          endDateTime: '2023-11-01T02:00:00-07:00'
+          startDateTime: '2023-11-02T06:00:00-07:00',
+          endDateTime: '2023-11-02T08:00:00-07:00'
         },
         version: {
           id: '09010h_cd2_b4',
@@ -58,6 +59,55 @@ export const switchVenue = {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
           category: 'RECOMMENDED'
+        }
+      },
+      preDownload: false,
+      upgradeSwitchViewList: null
+    }
+  ]
+}
+
+export const switchVenue = {
+  upgradeVenueViewList: [
+    {
+      id: 'e070393078b54a8d8345d18a064c02c1',
+      name: 'KittoVenue2',
+      switchFirmwareVersion: {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: FirmwareCategory.RECOMMENDED
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010_rc3',
+        name: '10010_rc3',
+        category: FirmwareCategory.RECOMMENDED
+      },
+      availableVersions: [
+        {
+          id: '09010h_cd2_b4',
+          name: '09010h_cd2_b4',
+          category: FirmwareCategory.RECOMMENDED
+        },
+        {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: FirmwareCategory.RECOMMENDED
+        }
+      ],
+      nextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-11-01T00:00:00-07:00',
+          endDateTime: '2023-11-01T02:00:00-07:00'
+        },
+        version: {
+          id: '09010h_cd2_b4',
+          name: '09010h_cd2_b4',
+          category: FirmwareCategory.RECOMMENDED
+        },
+        versionAboveTen: {
+          id: '10010a_cd3_b11',
+          name: '10010a_cd3_b11',
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       lastScheduleUpdateTime: '2023-10-31T08:43:01.740+00:00',
@@ -74,23 +124,23 @@ export const switchVenue = {
       switchFirmwareVersion: {
         id: '09010h_cd2_b4',
         name: '09010h_cd2_b4',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010_rc3',
         name: '10010_rc3',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       availableVersions: [
         {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       ],
       lastScheduleUpdateTime: '2023-10-31T03:14:16.085+00:00',
@@ -107,23 +157,23 @@ export const switchVenue = {
       switchFirmwareVersion: {
         id: '09010h_cd2_b4',
         name: '09010h_cd2_b4',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010_rc3',
         name: '10010_rc3',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       availableVersions: [
         {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       ],
       nextSchedule: {
@@ -134,12 +184,12 @@ export const switchVenue = {
         version: {
           id: '09010h_rc1',
           name: '09010h_rc1',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       lastScheduleUpdateTime: '2023-10-28T07:00:00.435+00:00',
@@ -156,23 +206,23 @@ export const switchVenue = {
       switchFirmwareVersion: {
         id: '09010f_b19',
         name: '09010f_b19',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010_rc3',
         name: '10010_rc3',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       availableVersions: [
         {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       ],
       lastScheduleUpdateTime: '2023-10-27T07:58:00.266+00:00',
@@ -189,23 +239,23 @@ export const switchVenue = {
       switchFirmwareVersion: {
         id: '09010e_b392',
         name: '09010e_b392',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010_rc3',
         name: '10010_rc3',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       availableVersions: [
         {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       ],
       nextSchedule: {
@@ -216,12 +266,12 @@ export const switchVenue = {
         version: {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       lastScheduleUpdateTime: '2023-10-19T10:04:14.370+00:00',
@@ -243,12 +293,12 @@ export const switchVenueWithEmptyFirmware = {
       switchFirmwareVersion: {
         id: '09010f_b19',
         name: '09010f_b19',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010_rc3',
         name: '10010_rc3',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       preDownload: false,
       switchCount: 0,
@@ -263,12 +313,12 @@ export const switchVenueWithEmptyFirmware = {
       switchFirmwareVersion: {
         id: '09010h_cd2_b4',
         name: '09010h_cd2_b4',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchFirmwareVersionAboveTen: {
         id: '10010a_cd3_b11',
         name: '10010a_cd3_b11',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       preDownload: false,
       switchCount: 0,
@@ -284,7 +334,7 @@ export const switchLatest = [
   {
     id: '09010f_b401',
     name: '09010f_b401',
-    category: 'RECOMMENDED',
+    category: FirmwareCategory.RECOMMENDED,
     createdDate: '2023-02-14T20:24:24.604+00:00'
   }
 ]
@@ -293,37 +343,37 @@ export const switchRelease = [
   {
     id: '09010e_b392',
     name: '09010e_b392',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '09010f_b19',
     name: '09010f_b19',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '09010f_b401',
     name: '09010f_b401',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '09010f_b403',
     name: '09010f_b403',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '10010_b176',
     name: '10010_b176',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '10010_rc2',
     name: '10010_rc2',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   },
   {
     id: '10010_rc3',
     name: '10010_rc3',
-    category: 'RECOMMENDED'
+    category: FirmwareCategory.RECOMMENDED
   }
 ]
 
@@ -350,6 +400,7 @@ export const switchUpgradeStatusDetails_KittoVenue1 = {
       id: 'd4:c1:9e:15:f7:2d',
       switchId: 'd4:c1:9e:15:f7:2d',
       switchName: 'DEV-EZD3317P008',
+      status: 'FW_UPD_FAIL',
       targetFirmware: '09010f_b19',
       upgradeStatusDetailsViewList: null
     },
@@ -383,12 +434,12 @@ export const upgradeSwitchViewList_KittoVenue1 ={
         version: {
           id: '09010f_b19',
           name: '09010f_b19',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       venueNextSchedule: {
@@ -399,12 +450,12 @@ export const upgradeSwitchViewList_KittoVenue1 ={
         version: {
           id: '09010f_b19',
           name: '09010f_b19',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       preDownload: false,
@@ -421,7 +472,7 @@ export const upgradeSwitchViewList_KittoVenue1 ={
       availableVersion: {
         id: '09010h_cd2_b4',
         name: '09010h_cd2_b4',
-        category: 'RECOMMENDED'
+        category: FirmwareCategory.RECOMMENDED
       },
       switchNextSchedule: {
         timeSlot: {
@@ -431,12 +482,12 @@ export const upgradeSwitchViewList_KittoVenue1 ={
         version: {
           id: '09010h_cd2_b4',
           name: '09010h_cd2_b4',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       venueNextSchedule: {
@@ -447,12 +498,12 @@ export const upgradeSwitchViewList_KittoVenue1 ={
         version: {
           id: '09010f_b19',
           name: '09010f_b19',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         },
         versionAboveTen: {
           id: '10010a_cd3_b11',
           name: '10010a_cd3_b11',
-          category: 'RECOMMENDED'
+          category: FirmwareCategory.RECOMMENDED
         }
       },
       preDownload: false,

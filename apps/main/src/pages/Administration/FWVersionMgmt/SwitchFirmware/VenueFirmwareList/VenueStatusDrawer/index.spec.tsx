@@ -22,7 +22,7 @@ import {
   switchUpgradeStatusDetails_KittoVenue1,
   switchCurrentVersions,
   switchLatest
-} from '../../__test__/fixtures'
+} from '../__test__/fixtures'
 
 
 jest.mock('./SwitchUpgradeWizard', () => ({

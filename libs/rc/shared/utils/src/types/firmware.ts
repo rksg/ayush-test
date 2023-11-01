@@ -199,7 +199,6 @@ export interface FirmwareSwitchVenue {
   aboveTenSwitchCount: number;
   status: SwitchFirmwareStatusType;
   scheduleCount: number;
-  venueId: string;
 }
 
 export enum SwitchFirmwareStatusType {

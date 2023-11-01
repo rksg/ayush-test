@@ -231,6 +231,7 @@ export const SelectSwitchStep = (
       columns={switchColumns}
       enableResizableColumn={false}
       className='switchTable'
+      data-testid='switch-table'
       loading={false}
       locale={{
         emptyText: ' '
@@ -535,13 +536,5 @@ export const SelectSwitchStep = (
             }}
           /></UI.ExpanderTableWrapper>}
     </>
-  )
-}
-
-export function VenueFirmwareList (data: FirmwareSwitchVenue[]) {
-  return (
-    <SelectSwitchStep
-      data={data}
-    />
   )
 }

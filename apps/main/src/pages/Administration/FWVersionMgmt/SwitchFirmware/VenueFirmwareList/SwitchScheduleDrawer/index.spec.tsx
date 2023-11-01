@@ -23,7 +23,7 @@ import {
   switchCurrentVersions,
   switchLatest,
   upgradeSwitchViewList_KittoVenue1
-} from '../../__test__/fixtures'
+} from '../__test__/fixtures'
 
 
 
