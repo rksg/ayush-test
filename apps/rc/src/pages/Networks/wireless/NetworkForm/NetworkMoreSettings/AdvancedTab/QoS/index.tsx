@@ -1,8 +1,8 @@
 
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { NetworkSaveData }        from '@acx-ui/rc/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { NetworkSaveData }                                        from '@acx-ui/rc/utils'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
@@ -19,14 +19,15 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
   return (
     <>
       <UI.Subtitle>
         {$t({ defaultMessage: 'QoS' })}
       </UI.Subtitle>
-      { qosMirroringFlag && <QoSMirroring wlanData={wlanData} /> }
-      { qosMapSetFlag && <QosMapSetForm /> }
+      { qosMirroringFlag && enableAP70 && <QoSMirroring wlanData={wlanData} /> }
+      { qosMapSetFlag && enableAP70 && <QosMapSetForm /> }
     </>
   )
 }
