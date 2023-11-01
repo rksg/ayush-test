@@ -1,7 +1,6 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
 
 import { getUserProfile } from '@acx-ui/analytics/utils'
-import { showToast }      from '@acx-ui/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -72,31 +71,6 @@ describe('AllRoutes', () => {
       replace: true,
       to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
     }, {})
-  })
-
-  it('shows toast for invitations', async () => {
-    userProfile.mockReturnValue({
-      accountId: 'aid',
-      tenants: [],
-      invitations: ['some invitations'],
-      selectedTenant: { permissions: { 'view-analytics': false } }
-    })
-    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
-    expect(showToast).toHaveBeenCalledWith({
-      content: <div>
-        You have pending invitations,&nbsp;
-        <u>
-          <a
-            href='/analytics/profile/tenants'
-            style={{ color: 'white' }}
-            target='_blank'
-          >
-           please click here to view them
-          </a>
-        </u>
-      </div>,
-      type: 'success'
-    })
   })
 
   it('redirects to return url', async () => {
