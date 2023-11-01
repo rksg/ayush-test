@@ -36,7 +36,7 @@ function Layout () {
           {hasAnalytics && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        { userProfile.tenants.length > 1
+        { userProfile.tenants.length > 1 || userProfile.invitations.length > 0
           ? <AccountsDrawer user={userProfile} />
           : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
         }

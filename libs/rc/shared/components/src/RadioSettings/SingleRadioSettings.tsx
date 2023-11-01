@@ -6,9 +6,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
+import { Button, cssStr }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { LowPowerAPQuantity }                                     from '@acx-ui/rc/utils'
+
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -25,7 +26,8 @@ import {
   RadioChannel,
   SelectItemOption,
   split5GChannels,
-  VenueRadioTypeDataKeyMap
+  VenueRadioTypeDataKeyMap,
+  LPIButtonText
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -64,7 +66,9 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   supportDfsChannels?: any,
-  lowPowerAPs?: LowPowerAPQuantity
+  lowPowerAPs?: LowPowerAPQuantity,
+  isAFCEnabled? : boolean,
+  LPIButtonText?: LPIButtonText
 }) {
 
   const { $t } = useIntl()
@@ -75,7 +79,8 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId,
-    lowPowerAPs
+    lowPowerAPs,
+    isAFCEnabled
   } = props
 
   const {
@@ -123,6 +128,8 @@ export function SingleRadioSettings (props:{
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -329,7 +336,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && (wifi7_320Mhz_FeatureFlag && enableAP70)) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>
@@ -388,7 +395,7 @@ export function SingleRadioSettings (props:{
               parent={'venue'}
               lowPowerAPs={lowPowerAPs} />
         }
-        <Row gutter={20} data-testid={testId}>
+        <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
               radioType={radioType}
@@ -398,6 +405,8 @@ export function SingleRadioSettings (props:{
               context={context}
               isUseVenueSettings={isUseVenueSettings}
               onGUIChanged={handleSettingGUIChanged}
+              isAFCEnabled={isAFCEnabled}
+              LPIButtonText={props.LPIButtonText}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&

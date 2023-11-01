@@ -13,12 +13,12 @@ import {
   getServiceRoutePath,
   getServiceListRoutePath,
   NewDpskPassphrase,
-  isActivePassphrase
+  isActivePassphrase,
+  MAX_PASSPHRASES_PER_TENANT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
 
-import { MAX_PASSPHRASES_PER_TENANT } from '../constants'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'

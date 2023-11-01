@@ -28,6 +28,7 @@ import {
 import {
   EXPIRATION_TIME_FORMAT,
   ExpirationType,
+  MAX_PASSPHRASES_PER_TENANT,
   NetworkTypeEnum,
   NewDpskPassphrase,
   getPassphraseStatus,
@@ -40,8 +41,7 @@ import { RolesEnum }                           from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl, validationMessages }         from '@acx-ui/utils'
 
-import NetworkForm                    from '../../../Networks/wireless/NetworkForm/NetworkForm'
-import { MAX_PASSPHRASES_PER_TENANT } from '../constants'
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'

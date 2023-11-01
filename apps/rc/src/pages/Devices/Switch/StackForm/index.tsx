@@ -228,7 +228,7 @@ export function StackForm () {
         const stackMembersList = switchDetail?.activeSerial
           ? (await getStackMemberList({
             params: { tenantId, switchId }, payload: stackMembersPayload
-          }, true))
+          }, false))
           : []
 
         const stackMembers = _.get(stackMembersList, 'data.data').map(
@@ -236,7 +236,6 @@ export function StackForm () {
             const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
-              formRef?.current?.setFieldValue('active', key)
               setActiveRow(key)
             }
             setVisibleNotification(true)
@@ -248,7 +247,8 @@ export function StackForm () {
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
                 !!switchDetail.cliApplied ||
-                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+                switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
           })
 
@@ -265,7 +265,7 @@ export function StackForm () {
           filters: {
             venueId: [venueId],
             isStack: [false],
-            deviceStatus: [SwitchStatusEnum.OPERATIONAL],
+            deviceStatus: [SwitchStatusEnum.OPERATIONAL, SwitchStatusEnum.FIRMWARE_UPD_FAIL],
             syncedSwitchConfig: [true],
             configReady: [true]
           },
@@ -275,7 +275,7 @@ export function StackForm () {
         }
         const switchList = venueId
           ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
-          }, true))?.data?.data
+          }, false))?.data?.data
           : []
 
         const switchTableData = stackSwitches?.map((serialNumber, index) => ({
@@ -457,7 +457,12 @@ export function StackForm () {
   }
 
   const handleDelete = (row: SwitchTable) => {
-    setTableData(tableData.filter((item) => item.key !== row.key))
+    const tmpTableData = tableData.filter((item) => item.key !== row.key)
+    setTableData(tmpTableData)
+
+    if(row.key === activeRow){
+      setActiveRow(tmpTableData[0].key)
+    }
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
@@ -581,16 +586,14 @@ export function StackForm () {
       show: !editMode,
       render: function (_, row) {
         return (
-          <Form.Item name={`active${row.key}`} initialValue={activeRow}>
-            <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
-              <Radio
-                data-testid={`active${row.key}`}
-                key={row.key}
-                value={row.key}
-                checked={activeRow === row.key}
-              />
-            </Radio.Group>
-          </Form.Item>
+          <Radio.Group onChange={radioOnChange} disabled={row.disabled} value={activeRow}>
+            <Radio
+              data-testid={`active${row.key}`}
+              key={row.key}
+              value={row.key}
+              checked={activeRow === row.key}
+            />
+          </Radio.Group>
         )
       }
     },
