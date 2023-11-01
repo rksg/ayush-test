@@ -175,9 +175,13 @@ export const SelectSwitchStep = (
     }
   ]
 
-  const handleExpand = async (_expanded: unknown, record: { id: string, switchCount: number }) => {
+  const handleExpand = async (_expanded: unknown, record: {
+    id: string, switchCount: number,
+    aboveTenSwitchCount: number
+  }) => {
     if (_.isEmpty(nestedData[record.id]?.initialData) ||
-      record.switchCount !== nestedData[record.id]?.initialData.length) {
+      (record.switchCount + record.aboveTenSwitchCount)
+      !== nestedData[record.id]?.initialData.length) {
       const switchListPayload = {
         venueIdList: [record.id]
       }
@@ -244,15 +248,6 @@ export const SelectSwitchStep = (
       rowSelection={{
         type: 'checkbox',
         selectedRowKeys: selectedSwitchRowKeys[record.id],
-        getCheckboxProps: () => {
-          let disabled = false
-          if (wizardtype === SwitchFirmwareWizardType.skip) {
-            // disabled = _.isEmpty(record.switchNextSchedule)
-          }
-          return {
-            disabled
-          }
-        },
         onChange: (selectedKeys, selectedRows) => {
           const currentSwitchList = nestedData[record.id]?.initialData
           const result = { ...nestedData,
@@ -468,7 +463,8 @@ export const SelectSwitchStep = (
             expandable={{
               onExpand: handleExpand,
               expandedRowRender: expandedRowRenderFunc,
-              rowExpandable: record => record.switchCount ? record.switchCount > 0 : false
+              rowExpandable: record =>
+                (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
             }}
             enableApiFilter={true}
             rowKey='id'
@@ -492,7 +488,8 @@ export const SelectSwitchStep = (
 
                     let initialData = nestedData[venue]?.initialData ?? []
                     const row = data.filter(v => v.id === venue)
-                    if (_.isEmpty(initialData) && row[0]?.switchCount > 0) {
+                    if (_.isEmpty(initialData) &&
+                      (row[0]?.switchCount > 0 || row[0]?.aboveTenSwitchCount > 0)) {
                       const switchListPayload = {
                         venueIdList: [venue]
                       }
