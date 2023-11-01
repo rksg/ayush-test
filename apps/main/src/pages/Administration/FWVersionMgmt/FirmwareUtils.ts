@@ -133,7 +133,9 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   const versionName = version?.name
   const versionType = transform(version?.category)
   const displayDate = version.releaseDate ?? version.onboardDate
-  const versionDate = displayDate ? toUserDate(displayDate) : ''
+  const versionDate = displayDate
+    ? formatter(DateFormatEnum.DateFormat)(displayDate)
+    : ''
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
