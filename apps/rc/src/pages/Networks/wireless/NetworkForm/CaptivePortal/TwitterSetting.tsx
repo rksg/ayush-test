@@ -59,7 +59,7 @@ export default function TwitterSetting (props:{
       setVisible(false)
     }}
   >
-    <Form.Item label={$t({ defaultMessage: 'Select Twitter app to be used for sign in' })}
+    <Form.Item label={$t({ defaultMessage: 'Select X app to be used for sign in' })}
       extra={<div style={{ textAlign: 'right', marginTop: -60 }}>
         <PreviewApp type='twitter' appPhoto={appPhoto}/></div>}
     />
@@ -90,7 +90,7 @@ export default function TwitterSetting (props:{
         <a href='https://developer.twitter.com/apps'
           target='_blank'
           rel='noreferrer'>
-          {$t({ defaultMessage: 'Twitter Application Management' })}</a>&nbsp;&nbsp;
+          {$t({ defaultMessage: 'X Application Management' })}</a>&nbsp;&nbsp;
         {$t({ defaultMessage: 'and paste the following URI in the app settings under:' })}
       </label><br/>
       <label>{$t({ defaultMessage: 'Settings > Callback URL' })}</label><br/>
@@ -99,12 +99,12 @@ export default function TwitterSetting (props:{
   </Form>
   return (
     <>
-      <Tooltip title={$t({ defaultMessage: 'Edit Twitter app' })}
+      <Tooltip title={$t({ defaultMessage: 'Edit X app' })}
         placement='bottom'><Button onClick={() => {setVisible(true)}}
-          title='settingicon'
+          data-testid='settingicon'
           type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
-        title={$t({ defaultMessage: 'Edit Twitter App' })}
+        title={$t({ defaultMessage: 'Edit X App' })}
         visible={visible}
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
