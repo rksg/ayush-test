@@ -1,4 +1,7 @@
 /* eslint-disable max-len */
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
 import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { apApi, venueApi } from '@acx-ui/rc/services'
 import {
@@ -14,8 +17,6 @@ import { Provider, store }                     from '@acx-ui/store'
 import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
 
 import { ApDataContext, ApEditContext } from '../..'
