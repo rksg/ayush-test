@@ -21,7 +21,7 @@ describe('CaptiveNetworkForm-SelfSignInGoogle', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<GoogleSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     const googleId = await screen.findByLabelText(/Client ID/)
     fireEvent.change(googleId, { target: { value: 'google' } })
     fireEvent.blur(googleId)
@@ -37,7 +37,7 @@ describe('CaptiveNetworkForm-SelfSignInGoogle', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<GoogleSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
 })

@@ -102,6 +102,9 @@ describe('ClientIsolationAllowListTable', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Client/i }))
 
+    // Verify the confirmation dialog is removed.
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+
     // Verify if the client has been deleted
     expect(screen.queryByRole('row', { name: new RegExp(targetClient.mac) })).toBeNull()
   })
