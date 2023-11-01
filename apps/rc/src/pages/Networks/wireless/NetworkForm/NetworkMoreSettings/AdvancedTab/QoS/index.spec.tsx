@@ -1,6 +1,6 @@
 import { Form } from 'antd'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
 import { NetworkSaveData, OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { render, screen }                                 from '@acx-ui/test-utils'
@@ -11,6 +11,7 @@ import QoS from '.'
 describe('QoS', () => {
   it('should render correctly', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = {
       name: 'test',

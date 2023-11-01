@@ -362,6 +362,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
         okText={$t({ defaultMessage: 'Apply' })}
         maskClosable={true}
+        destroyOnClose={true}
         keyboard={false}
         closable={true}
         width={1280}
@@ -474,13 +475,14 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         </Form>
       </Modal>
 
-      <Modal
+      {isModalOpen && <Modal
         title='Network Scheduler Tips'
         width={800}
         cancelButtonProps={{ style: { display: 'none' } }}
         visible={isModalOpen}
         onOk={handleOk}
         maskClosable={false}
+        destroyOnClose={true}
         keyboard={false}
         closable={false}
       >
@@ -525,7 +527,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         />
         </p>
         <p>- {$t({ defaultMessage: 'All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started' })}</p>
-      </Modal>
+      </Modal>}
     </>
   )
 }
