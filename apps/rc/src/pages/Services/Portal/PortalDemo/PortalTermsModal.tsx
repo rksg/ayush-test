@@ -30,7 +30,7 @@ export default function PortalTermsModal (props:{
       <UI.SettingOutlined onClick={() => {
         setNewTerms(terms)
         setVisible(true)}}
-      title='settingicon'
+      data-testid='settingicon'
       />
       <Modal
         title={$t({ defaultMessage: 'Terms & Conditions' })}
