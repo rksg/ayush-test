@@ -53,9 +53,10 @@ export const ConfigurationSolid = styled(UIConfigurationSolid)`
   color: var(--acx-primary-black);
 `
 const socialIconStyle=css`
-  width:16px;
-  margin-bottom:-11px;
-  margin-right:3px;
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
   path{
     fill:var(--acx-neutrals-60);
   }
@@ -64,9 +65,10 @@ export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
 export const Google = styled(UIGoogle)`
-width:16px;
-margin-bottom:-11px;
-margin-right:3px;
+width: 16px;
+height: 16px;
+margin-bottom: -4px;
+margin-right: 3px;
 path{
   stroke:var(--acx-neutrals-60);
 }
