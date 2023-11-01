@@ -59,6 +59,7 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
+  StackMember,
   isSameModelFamily,
   checkVersionAtLeast09010h,
   checkVersionAtLeast10010b
@@ -253,8 +254,12 @@ export function StackForm () {
             }
           })
 
-        setTableData(stackMembers)
-        setRowKey(stackMembers.length)
+        const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
+        const syncedStackMembers
+        = stackMembers?.filter((stack: StackMember) => stackMemberIds?.includes(stack.id))
+
+        setTableData(syncedStackMembers)
+        setRowKey(syncedStackMembers?.length)
       }
 
       getStackMembersList()
