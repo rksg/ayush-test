@@ -1,10 +1,18 @@
-import { Select }     from 'antd'
+import React from 'react'
+
+import { Checkbox, Select }    from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
+import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
+
+import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
+
+import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
@@ -18,6 +26,35 @@ function hasChildrenColumn <RecordType> (
   column: RecordType | RecordWithChildren<RecordType>
 ): column is RecordWithChildren<RecordType> {
   return !!(column as RecordWithChildren<RecordType>).children
+}
+
+interface RangePickerProps {
+  filterValues: Filter,
+  setFilterValues: Function
+}
+
+function RangePickerComp (props: RangePickerProps) {
+  const { filterValues, setFilterValues } = props
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  return <UI.FilterRangePicker>
+    <RangePicker
+      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+      onDateApply={(date: DateFilter) => {
+        const period = getDateRangeFilter(date.range, date.startDate, date.endDate)
+        const filters = {
+          ...filterValues,
+          ...(date.range === DateRange.allTime ?
+            { fromTime: undefined, toTime: undefined } :
+            { fromTime: moment(period.startDate).toISOString(),
+              toTime: moment(period.endDate).toISOString() })
+        }
+        setFilterValues(filters)
+        setDateFilter(date)
+      }}
+      selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
+      showAllTime
+    />
+  </UI.FilterRangePicker>
 }
 
 export function getFilteredData <RecordType> (
@@ -66,16 +103,19 @@ export function renderSearch <RecordType> (
   setSearchValue: Function,
   width: number
 ): React.ReactNode {
+  const placeHolderText = intl.$t({ defaultMessage: 'Search {searchables}' }, {
+    searchables: searchables.map(column => column.title).join(', ')
+  })
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
-    placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
-      searchables: searchables.map(column => column.title).join(', ')
-    })}
+    placeholder={placeHolderText}
+    title={placeHolderText}
     style={{ width }}
     value={searchValue}
     allowClear
   />
 }
+
 export function renderFilter <RecordType> (
   column: TableColumn<RecordType, 'text'>,
   index: number,
@@ -85,6 +125,29 @@ export function renderFilter <RecordType> (
   enableApiFilter: boolean,
   width: number
 ) {
+  const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
+    return <Checkbox
+      key={index}
+      checked={(filterValues[column?.filterKey as keyof Filter] === undefined &&
+        column?.defaultFilteredValue?.[0] as boolean) ||
+        !!filterValues[column?.filterKey as keyof Filter]?.[0]}
+      onChange={(e: CheckboxChangeEvent) => {
+        const isChecked = e.target.checked
+        if (column.filterValueNullable === false) {
+          setFilterValues({ ...filterValues, [key]: undefined })
+        } else {
+          setFilterValues({ ...filterValues, [key]: [isChecked] })
+        }
+      }}>{column?.filterComponent?.label}</Checkbox>
+  }
+
+  const filterTypeComp = {
+    checkbox: renderCheckbox(column),
+    rangepicker: <RangePickerComp filterValues={filterValues} setFilterValues={setFilterValues} />
+  }
+  type Type = keyof typeof filterTypeComp
+
+
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (typeof value !== 'undefined' && !data.includes(value)) {
@@ -106,21 +169,30 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
-  return <UI.FilterSelect
+  return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
     mode={column.filterMultiple === false ? undefined : 'multiple'}
+    showSearch={column?.filterSearchable ?? undefined}
     value={filterValues[key as keyof Filter]}
     onChange={(value: unknown) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
       const filterValue = Array.isArray(value) ? value : [value]
+      let filters = {} as Filter
+
       if (column.filterValueNullable === false &&
         filterValue.filter(v => v != null).length === 0) {
-        setFilterValues({ ...filterValues, [key]: undefined })
+        filters = { ...filterValues, [key]: undefined } as Filter
       } else {
-        setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
+        filters = { ...filterValues, [key]: isValidValue ? filterValue : undefined } as Filter
       }
+
+      column?.coordinatedKeys?.forEach(key => {
+        delete filters[key]
+      })
+
+      setFilterValues(filters)
     }}
     filterOption={filterOption}
     placeholder={column.title as string}

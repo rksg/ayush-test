@@ -44,7 +44,7 @@ describe('DonutChart - small', () => {
       title='Donut Chart'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
-      .toEqual("font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;")
+      .toEqual("font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;")
     expect(screen.getByText('5095').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
     const numbers = await screen.findAllByText(/\d+/)
@@ -61,6 +61,12 @@ describe('DonutChart - small', () => {
   it('should render the empty chart when name is empty', async () => {
     const { asFragment } = render(
       <DonutChart style={{ width: 238, height: 176 }} data={emptyChartData}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render the empty chart with custom status', async () => {
+    const { asFragment } = render(
+      <DonutChart style={{ width: 238, height: 176 }} title='test' value='custom status' data={[]}/>
+    )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should not render the legend when false', async () => {
@@ -104,6 +110,7 @@ describe('DonutChart - small', () => {
       data={data}
       title='Donut Chart'
       legend={'name-value'}
+      showLegend
       subTitle='Donut Chart subTitle'
     />)
     data.forEach(async item => {

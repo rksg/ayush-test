@@ -19,8 +19,8 @@ export const venueFirmwareList = [
     updatedDate: '2023-02-23T09:16:05.388+0000',
     versions: [
       {
-        name: '1.0.0.1710',
-        id: '1.0.0.1710',
+        name: '1.0.0.1709',
+        id: '1.0.0.1709',
         category: FirmwareCategory.RECOMMENDED,
         onboardDate: '2023-02-23T09:16:05.388+0000'
       }

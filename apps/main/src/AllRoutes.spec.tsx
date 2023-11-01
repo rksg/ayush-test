@@ -18,7 +18,8 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} })
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -37,7 +38,7 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
-jest.mock('./pages/Dashboardv2', () => () => {
+jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('./routes/AnalyticsRoutes', () => () => {
@@ -71,6 +72,11 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
+jest.mock('./pages/RWG/RWGTable', () => ({
+  RWGTable: () => {
+    return <div data-testid='ruckus-wan-gateway' />
+  }
+}), { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -254,5 +260,15 @@ describe('AllRoutes', () => {
     await screen.findAllByRole('menuitem')
 
     expect(menuItem).not.toBeInTheDocument()
+  })
+
+  test('should navigate to ruckus-wan-gateway/*', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/ruckus-wan-gateway'
+      }
+    })
+    expect(await screen.findByTestId('ruckus-wan-gateway')).toBeInTheDocument()
   })
 })

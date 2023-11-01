@@ -61,7 +61,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteNetworkSegmentationGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -153,7 +154,8 @@ export const nsgApi = baseNsgApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'WebAuthNSG', id: 'LIST' }]
+      providesTags: [{ type: 'WebAuthNSG', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

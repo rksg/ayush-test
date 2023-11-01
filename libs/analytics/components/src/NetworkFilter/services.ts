@@ -6,7 +6,8 @@ import { NetworkPath, PathNode } from '@acx-ui/utils'
 import type { AnalyticsFilter }  from '@acx-ui/utils'
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
-type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
+type NetworkHierarchyFilter = Omit<AnalyticsFilter, 'filter'> &
+  { shouldQueryAp? : Boolean, shouldQuerySwitch? : Boolean }
 
 export type ApOrSwitch = {
   path?: NetworkPath
@@ -24,7 +25,7 @@ interface Response {
   }
 }
 type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
-interface NetworkNode extends NetworkHierarchy<Child>{}
+export interface NetworkNode extends NetworkHierarchy<PathNode & { mac: string }>{}
 interface HierarchyResponse {
   network: {
     apHierarchy: NetworkNode[]
@@ -48,7 +49,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
       Child[],
-      Omit<NetworkHierarchyFilter, 'filter'>
+      NetworkHierarchyFilter
     >({
       query: payload => ({
         document: gql`
@@ -97,7 +98,7 @@ export const api = dataApi.injectEndpoints({
     }),
     recentNetworkFilter: build.query<
       Child[],
-      Omit<NetworkHierarchyFilter, 'filter'>
+      NetworkHierarchyFilter
     >({
       query: payload => ({
         document: gql`
@@ -129,12 +130,12 @@ export const api = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
       transformResponse: (response: Response) => response.network.hierarchyNode.children
     }),
-    networkHierarchy: build.query<NetworkNode, Omit<NetworkHierarchyFilter, 'filter'>>({
+    networkHierarchy: build.query<NetworkNode, NetworkHierarchyFilter>({
       query: payload => ({
         document: gql`
           query Network($start: DateTime, $end: DateTime) {
               network(start: $start, end: $end) {
-                apHierarchy
+                ${payload.shouldQueryAp ? 'apHierarchy' : ''}
                 ${payload.shouldQuerySwitch ? 'switchHierarchy' : ''}
             }
           }
@@ -148,7 +149,7 @@ export const api = dataApi.injectEndpoints({
       transformResponse: ({ network: { apHierarchy, switchHierarchy } }: HierarchyResponse) => ({
         name: 'Network',
         type: 'network',
-        children: mergeNodes(apHierarchy.concat((switchHierarchy || [])))
+        children: mergeNodes((apHierarchy || []).concat((switchHierarchy || [])))
           .map((system: NetworkNode): NetworkNode => ({
             ...system,
             children: mergeNodes(system.children!.reduce(

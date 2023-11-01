@@ -90,7 +90,7 @@ export const NetworkSegmentationServiceInfo = styled((
   const tunnelTooltipMsg = $t(
     {
       defaultMessage: `{tunnelNumber} tunnels using {tunnelName} tunnel
-    profile under this Network Segmentation.`
+    profile under this Personal Identity Network.`
     },
     {
       tunnelNumber: nsgViewData?.tunnelNumber || 0,
@@ -137,7 +137,7 @@ export const NetworkSegmentationServiceInfo = styled((
         const edgeInfo = nsgViewData?.edgeInfos?.[0]
         return (
           <TenantLink
-            to={`/devices/edge/${edgeInfo?.edgeId}/edge-details/overview`}
+            to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}
           >
             {edgeInfo?.edgeName}
           </TenantLink>

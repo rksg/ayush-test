@@ -1,20 +1,48 @@
 import { useMemo } from 'react'
 
-import { get }          from '@acx-ui/config'
-import { useLocation }  from '@acx-ui/react-router-dom'
+import { get }         from '@acx-ui/config'
+import { useLocation } from '@acx-ui/react-router-dom'
 import {
   AnalyticsFilter,
+  PathFilter,
   NodeType,
   NodeFilter,
   NodesFilter,
   SSIDFilter,
   NetworkPath,
   useDateFilter,
-  useEncodedParameter
+  useEncodedParameter,
+  FilterNameNode,
+  FilterListNode
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 type NetworkFilter = { path: NetworkPath, raw: object }
+
+const noSwitchSupportURLs = [
+  '/analytics/health',
+  '/ai/health',
+  '/analytics/configChange',
+  '/ai/configChange',
+  '/ai/reports/aps',
+  '/ai/reports/airtime',
+  '/ai/reports/applications',
+  '/ai/reports/wireless',
+  '/ai/reports/clients',
+  '/ai/reports/wlans',
+  '/ai/users/wifi/reports',
+  '/ai/devices/wifi/reports/aps',
+  '/ai/devices/wifi/reports/airtime',
+  '/ai/networks/wireless/reports/wlans',
+  '/ai/networks/wireless/reports/applications',
+  '/ai/networks/wireless/reports/wireless'
+]
+
+const noApSupportURLs = [
+  '/ai/reports/switches',
+  '/ai/reports/wired',
+  '/ai/devices/switch/reports/wired'
+]
 
 export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
@@ -30,16 +58,19 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
-    const { path, raw: rawPath } = read() || { path: defaultNetworkPath, raw: [] }
-    const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
-    const isHealthPage = pathname.includes('/analytics/health')
-    const { filter, raw } = (isHealthPage && isSwitchPath)
-      ? { filter: {}, raw: [] }
-      : { filter: pathToFilter(path), raw: rawPath }
+    const isURLPresent = (list: string[]) => Boolean(list.find(url => pathname.includes(url)))
+
+    const defaultPath = { raw: [], path: defaultNetworkPath }
+    const { raw: rawPath, path: readPath } = read() || defaultPath
+    const revertToDefault = (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
+      (isURLPresent(noApSupportURLs) && isApPath(readPath))
+    const { raw, path, filter } = revertToDefault
+      ? { ...defaultPath, filter: {} }
+      : { raw: rawPath, path: readPath, filter: pathToFilter(readPath) }
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
-      path,
+      pathFilters: { ...dateFilter, path } as PathFilter,
       setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
   }, [dateFilter, pathname, read, write])
@@ -49,7 +80,7 @@ export const getFilterPayload = (
   { filter }: { filter: NodesFilter & SSIDFilter }
 ): { path: NetworkPath, filter: NodesFilter & SSIDFilter } => {
   return {
-    path: defaultNetworkPath, // to avoid error from legacy api
+    path: defaultNetworkPath, // needed mainly for hierarchyNode even when filter used
     filter
   }
 }
@@ -97,13 +128,21 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
   const { networkNodes, switchNodes } = filter
   return (networkNodes?.[0] || switchNodes?.[0] || []).reduce((path, node) => {
     const { type } = node
-    if (type === 'zone' || type === 'switchGroup') {
-      path.push({ type, name: node.name })
-    } else if (type === 'apMac') {
-      path.push({ type: 'AP', name: node.list[0] })
+    if (type === 'apMac') {
+      path.push({ type: 'AP', name: (node as FilterListNode).list[0] })
     } else if (type === 'switch') {
-      path.push({ type, name: node.list[0] })
+      path.push({ type, name: (node as FilterListNode).list[0] })
+    } else {
+      path.push({ type, name: (node as FilterNameNode).name })
     }
     return path
   }, defaultNetworkPath.slice())
+}
+
+export const isSwitchPath = (path: NetworkPath) => {
+  return Boolean(path.find(({ type }) => type === 'switchGroup'))
+}
+
+export const isApPath = (path: NetworkPath) => {
+  return Boolean(path.find(({ type }) => type === 'apGroup'))
 }

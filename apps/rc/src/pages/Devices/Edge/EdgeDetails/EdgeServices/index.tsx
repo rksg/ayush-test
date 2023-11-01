@@ -16,6 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'
@@ -128,7 +129,7 @@ export const EdgeServices = () => {
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'DHCP cannot be removed when the Network Segmentation is applied on the Edge' }
+        ? $t({ defaultMessage: 'DHCP cannot be removed when the Personal Identity Network is applied on the Edge' }
         ) : undefined,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
@@ -191,9 +192,12 @@ export const EdgeServices = () => {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
         iconButton={
-          (exportDevice && false) ?
-            { icon: <DownloadOutlined />, disabled, onClick: exportCsv } :
-            undefined
+          (exportDevice && false) ? {
+            icon: <DownloadOutlined />,
+            disabled,
+            onClick: exportCsv,
+            tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
+          } : undefined
         }
       />
       <ServiceDetailDrawer

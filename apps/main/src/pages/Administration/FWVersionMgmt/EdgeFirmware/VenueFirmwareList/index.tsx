@@ -33,6 +33,7 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -126,8 +127,7 @@ export function VenueFirmwareList () {
       dataIndex: 'updatedDate',
       sorter: { compare: sortProp('updatedDate', dateSort) },
       render: function (_, row) {
-        if (!row.updatedDate) return '--'
-        return toUserDate(row.updatedDate)
+        return toUserDate(row.updatedDate || noDataDisplay)
       }
     },
     ...(
@@ -161,7 +161,7 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
       visible: (selectedRows) => {
-        const hasOutdatedFw = selectedRows?.some(
+        const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
           ((item.versions?.[0].id
             && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)

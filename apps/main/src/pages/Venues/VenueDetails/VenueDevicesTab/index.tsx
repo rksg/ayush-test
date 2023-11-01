@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Tabs }                                     from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features } from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { Tabs }                                  from '@acx-ui/components'
+import {  useIsTierAllowed, Features }           from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueSwitch } from './VenueSwitch'
@@ -27,30 +26,21 @@ export function VenueDevicesTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='second'>
+      type='card'
+    >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi'>
-        <div style={{ height: '100%', flex: 1, minHeight: '50vh' }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <div style={{ width, height }}>
-                <VenueWifi />
-              </div>
-            )}
-          </AutoSizer>
-        </div>
+        <VenueWifi />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Switch' })}
-        key='switch'
-        disabled={!useIsSplitOn(Features.DEVICES)}>
+        key='switch'>
         <VenueSwitch />
       </Tabs.TabPane>
 
       { useIsTierAllowed(Features.EDGES) && (
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'SmartEdge' })}
-          key='edge'
-        >
+          key='edge'>
           <VenueEdge />
         </Tabs.TabPane>
       )}

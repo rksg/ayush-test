@@ -38,7 +38,8 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: metaListQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Alarms', id: 'LIST' }]
+      providesTags: [{ type: 'Alarms', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     clearAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {

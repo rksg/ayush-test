@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react'
-
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
@@ -8,9 +6,7 @@ import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/com
 import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
-  useAdaptivePolicySetListQuery,
   useGetRadiusAttributeGroupQuery,
-  useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,14 +17,14 @@ import {
   PolicyOperation,
   PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
-  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
@@ -39,11 +35,6 @@ export default function RadiusAttributeGroupDetail () {
       filters: { onMatchResponse: policyId }
     }
   })
-
-  // eslint-disable-next-line max-len
-  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
-  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
   // eslint-disable-next-line max-len
   const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
@@ -57,19 +48,6 @@ export default function RadiusAttributeGroupDetail () {
       }
     }
   })
-
-  useEffect(() => {
-    if(!adaptivePolicySetList) return
-    adaptivePolicySetList.data.forEach(policySet => {
-      getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-        .then(result => {
-          if (result.data) {
-            const policies : string []= result.data.data.map(p => p.policyId)
-            setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-          }
-        })
-    })
-  }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
     return attributes?.map((attribute, idx) => {
@@ -92,6 +70,7 @@ export default function RadiusAttributeGroupDetail () {
         title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
+        defaultSortOrder: 'ascend',
         render: function (_, row) {
           return (
             <TenantLink
@@ -105,16 +84,12 @@ export default function RadiusAttributeGroupDetail () {
       },
       {
         title: $t({ defaultMessage: 'Adaptive Policy Set Membership' }),
-        key: 'policySetMemberShip',
-        dataIndex: 'policySetMemberShip',
+        key: 'policySetCount',
+        dataIndex: 'policySetCount',
         align: 'center',
+        sorter: true,
         render: (_, row) => {
-          const policySets = [] as string []
-          policySetPoliciesMap.forEach((value, key) => {
-            if(value.find((item: string) => item === row.id)){
-              policySets.push(key)
-            }
-          })
+          const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
             <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }
@@ -138,9 +113,8 @@ export default function RadiusAttributeGroupDetail () {
             text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
             link: tablePath }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='edit'
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
               oper: PolicyOperation.EDIT,
@@ -149,7 +123,7 @@ export default function RadiusAttributeGroupDetail () {
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>

@@ -1,19 +1,16 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
-
 import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions, PasswordInput }                                                 from '@acx-ui/components'
-import { useApLanPortsQuery, useGetApCapabilitiesQuery, useGetApRadioCustomizationQuery, useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
-import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext }                         from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                 from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                                      from '@acx-ui/user'
+import { Drawer, Descriptions, PasswordInput }                                            from '@acx-ui/components'
+import { useGetVenueQuery, useGetVenueSettingsQuery }                                     from '@acx-ui/rc/services'
+import { ApDetails, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                     from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                          from '@acx-ui/user'
 
 
 import { ApCellularProperties } from './ApCellularProperties'
-import { ApDetailsSettings }    from './ApDetailsSettings'
 import * as UI                  from './styledComponents'
 
 interface ApDetailsDrawerProps {
@@ -26,7 +23,7 @@ interface ApDetailsDrawerProps {
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const { tenantId, serialNumber } = useApContext()
+  const { tenantId } = useApContext()
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
@@ -43,69 +40,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   {
     skip: !currentAP?.venueId
   })
-
-  const { data: lanPortsSetting } = useApLanPortsQuery({
-    params: { tenantId, serialNumber }
-  },
-  {
-    skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
-  })
-
-  const { data: radioSetting } = useGetApRadioCustomizationQuery({
-    params: { tenantId, serialNumber }
-  },
-  {
-    skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
-  })
-
-  const { data: capabilities } = useGetApCapabilitiesQuery({
-    params: { tenantId, serialNumber }
-  },
-  {
-    skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
-  })
-
-  const [ apRadioSettings, setApRadioSettings] = useState<ApRadio>({
-    enable24G: true,
-    enable50G: true,
-    useVenueSettings: true
-  })
-
-  useEffect(() => {
-    const apModel = currentAP?.model
-    if (radioSetting && capabilities && apModel) {
-      const apCapabilities = capabilities.apModels.find(cap => cap.model === apModel)
-      const { supportTriRadio = false, supportDual5gMode = false } = apCapabilities || {}
-      const { enable24G = true, enable50G = true, enable6G = false, useVenueSettings = true, apRadioParamsDual5G } = radioSetting
-      const { enabled: dual5gEnable = false,
-        lower5gEnabled: enableLower5G = false,
-        upper5gEnabled: enableUpper5G = false
-      } = apRadioParamsDual5G || {}
-
-      if (!supportTriRadio) { // non 3R AP
-        setApRadioSettings({
-          enable24G,
-          enable50G,
-          useVenueSettings
-        })
-      } else if (!supportDual5gMode || !dual5gEnable) { // 6G only AP or R760's 6G only mode
-        setApRadioSettings({
-          enable24G,
-          enable50G,
-          enable6G,
-          useVenueSettings
-        })
-      } else { // R760
-        setApRadioSettings({
-          enable24G,
-          enableLower5G,
-          enableUpper5G,
-          useVenueSettings
-        })
-      }
-    }
-
-  }, [radioSetting, capabilities, currentAP?.model])
 
   const onClose = () => {
     setVisible(false)
@@ -318,31 +252,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   }
 
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
-      label: $t({ defaultMessage: 'Properties' }),
-      value: 'properties',
-      children: <PropertiesTab />
-    },
-    {
-      label: $t({ defaultMessage: 'Settings' }),
-      value: 'settings',
-      children: <ApDetailsSettings
-        lanPortsSetting={lanPortsSetting as ApLanPort}
-        radioSetting={apRadioSettings}
-      />
-    }
-  ]
-  const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
-    <ContentSwitcher tabDetails={tabDetails} size='small' /> :
-    <PropertiesTab />
-
   return (
     <Drawer
-      title={$t({ defaultMessage: 'AP Details' })}
+      title={$t({ defaultMessage: 'AP Properties' })}
       visible={visible}
       onClose={onClose}
-      children={content}
+      children={<PropertiesTab />}
       width={'400px'}
     />
   )

@@ -4,7 +4,8 @@ import {
   isEqual,
   includes,
   remove,
-  split
+  split,
+  isEmpty
 }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -14,6 +15,7 @@ import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
+const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -91,9 +93,8 @@ export function URLRegExp (value: string) {
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\\p{N}\\p{L}]+)?(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
+  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
+  if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -497,6 +498,20 @@ export function colonSeparatedMacAddressRegExp (value: string){
   return Promise.resolve()
 }
 
+export function MacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  const regex = (includes(value, ':') || includes(value, '-'))
+    ? /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+    : (includes(value, '.'))
+      ? /^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/
+      : /^([0-9A-F]{12})$/
+
+  if (value && !regex.test(value.toUpperCase())) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function MacRegistrationFilterRegExp (value: string){
   const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
@@ -531,15 +546,64 @@ export function emailRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function emailsRegExp (value: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(value)) {return Promise.reject($t(validationMessages.emailAddress))}
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  const isValid = value.every((email) => {
+    return re.test(email.replace(/\n/, '').trim())
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailsSameDomainValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  let isValid = true
+
+  const firstEmail = emailArray[0]
+  const firstDomain = firstEmail.split('@')[1]
+
+  emailArray.forEach((currentEmail) => {
+    const currentDomain = currentEmail.split('@')[1]
+    // Compare the domain with the first domain
+    if (currentDomain !== firstDomain) {
+      isValid = false
+    }
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.sameEmailDomain))
+}
+
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
-  if (value && !re.test(value)) {
+  if (value && !basicPhoneNumberRegExp.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
 
-  if (value && !ValidatePhoneNumber(value)){
+  if (value && !validateMobileNumber(value)){
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+  return Promise.resolve()
+}
+
+export function generalPhoneRegExp (value: string) {
+  const { $t } = getIntl()
+
+  if (value && !basicPhoneNumberRegExp.test(value)) {
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+
+  const parsedInfo = parsePhoneNumber(value)
+  if (value && !parsedInfo?.number){
     return Promise.reject($t(validationMessages.phoneNumber))
   }
   return Promise.resolve()
@@ -646,7 +710,10 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function ValidatePhoneNumber (phoneNumber: string) {
+export function parsePhoneNumber (phoneNumber: string): {
+  number: libphonenumber.PhoneNumber,
+  type: PhoneNumberType
+} | undefined {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
   let phoneNumberType
@@ -654,13 +721,25 @@ export function ValidatePhoneNumber (phoneNumber: string) {
     number = phoneNumberUtil.parse(phoneNumber, '')
     phoneNumberType = phoneNumberUtil.getNumberType(number)
   } catch (e) {
-    return false
+    return
   }
   if (!number) {
+    return
+  }
+
+  return { number, type: phoneNumberType }
+}
+
+export function validateMobileNumber (phoneNumber: string) {
+  const parsedPhone = parsePhoneNumber(phoneNumber)
+  const phoneNumberUtil = PhoneNumberUtil.getInstance()
+
+  if (parsedPhone === undefined) {
     return false
   } else {
-    if (!phoneNumberUtil.isValidNumber(number) ||
-      (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
+    const { number, type } = parsedPhone
+    if (!phoneNumberUtil.isValidNumber(number)
+      || (type !== PhoneNumberType.MOBILE && type !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
       return false
     }
   }

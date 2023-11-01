@@ -1,14 +1,16 @@
+/* eslint-disable max-len */
+
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Space, Switch } from 'antd'
-import { CheckboxChangeEvent }           from 'antd/lib/checkbox/Checkbox'
-import { get, isUndefined }              from 'lodash'
-import { useIntl }                       from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
+import { get, isUndefined }    from 'lodash'
+import { useIntl }             from 'react-intl'
 
-import { Tooltip }                                                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                                  from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsSecuritySupport6g } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                               from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                                                      from '@acx-ui/icons'
+import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
@@ -46,11 +48,23 @@ export const covertToMultiLinkOperationOptions = (options: Option[]): MultiLinkO
   }
 }
 
-export const isEnableOptionOf6GHz = (wlanSecurity: string | undefined) => {
-  if (!wlanSecurity)
-    return false
+export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
+  security?: {
+    wlanSecurity?: WlanSecurityEnum,
+    aaaWlanSecurity? : WlanSecurityEnum,
+    dpskWlanSecurity? : WlanSecurityEnum,
+    wisprWlanSecurity?: WlanSecurityEnum
+ }
+) => {
 
-  return IsSecuritySupport6g(wlanSecurity as WlanSecurityEnum)
+  // add Network mode
+  const { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity } = security || {}
+  if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) return true
+  if (IsSecuritySupport6g(wlanSecurity) || IsSecuritySupport6g(aaaWlanSecurity) || IsSecuritySupport6g(wisprWlanSecurity)) return true
+  if (getIsOwe(wlanData)) return true
+
+  // edit network mode
+  return IsNetworkSupport6g(wlanData)
 }
 
 export const inverseTargetValue =
@@ -123,6 +137,11 @@ export const getInitialOptions = (mloOptions: MultiLinkOperationOptions, labels:
   return handleDisabledOfOptions(initOptions)
 }
 
+export const getIsOwe = (wlanData : NetworkSaveData | null) => {
+  return get(wlanData, ['enableOwe']) ||
+         get(wlanData, ['networkSecurity']) === WlanSecurityEnum.OWE // WISPr network
+}
+
 const { useWatch } = Form
 
 const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => {
@@ -140,7 +159,12 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   const initOptions = getInitialOptions(mloOptions, labels)
   const [options, setOptions] = useState<Option[]>(initOptions)
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData?.wlan?.wlanSecurity)
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity']) // for PSK network
+  const aaaWlanSecurity = useWatch('wlanSecurity') // for AAA network
+  const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
+  const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
+
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
 
   useEffect(() => {
     const updateMloOptions = () => {
@@ -197,7 +221,7 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
         }
       ]}
       children={
-        <>
+        <div style={{ display: 'flex' }}>
           { sortOptions(options).map((option, key) => {
             if (option.name === 'enable6G' && !isEnabled6GHz) {
               return (
@@ -207,38 +231,40 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
                     // eslint-disable-next-line max-len
                     defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption'
                   })}
-                  placement='rightBottom'
+                  placement='right'
                   style={{
                     height: 10,
                     display: 'flex'
                   }}
                   children={
-                    <Checkbox
-                      key={key}
-                      name={option.name}
-                      checked={option.value}
-                      disabled={true}
-                      onChange={handleChange}
-                      children={option.label}
-                    />
+                    <div>
+                      <UI.StyledCheckbox
+                        name={option.name}
+                        checked={option.value}
+                        disabled={true}
+                        onChange={handleChange}
+                        children={option.label}
+                      />
+                    </div>
                   }
                 />
               )
             }
             else {
               return (
-                <Checkbox
-                  key={key}
-                  name={option.name}
-                  checked={option.value}
-                  disabled={option.disabled}
-                  onChange={handleChange}
-                  children={option.label}
-                />
+                <div key={key}>
+                  <UI.StyledCheckbox
+                    name={option.name}
+                    checked={option.value}
+                    disabled={option.disabled}
+                    onChange={handleChange}
+                    children={option.label}
+                  />
+                </div>
               )
             }
           }) }
-        </>
+        </div>
       }
     />
   )
@@ -254,6 +280,7 @@ export const getInitMloEnabled = (wlanData: NetworkSaveData | null, initWifi7Ena
 function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
 
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
@@ -283,7 +310,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
       <UI.Subtitle>
         {$t({ defaultMessage: 'Wi-Fi 7' })}
         <Tooltip.Question
-          title={$t({ defaultMessage: 'Only work with Wi-Fi Aps, e.g., R770' })}
+          title={$t({ defaultMessage: 'Only work with Wi-Fi 7 Aps, e.g., R770' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />
@@ -326,7 +353,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
           </div>
         )}
       </div>
-      { wifi7MloFlag &&
+      { wifi7MloFlag && enableAP70 &&
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}

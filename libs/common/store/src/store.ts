@@ -31,11 +31,14 @@ import {
   recommendationApi,
   serviceGuardApi,
   reportsApi,
+  rbacApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
   videoCallQoeApi,
   baseEdgeFirewallApi as edgeFirewallApi,
-  baseSigPackApi as sigPackApi
+  baseSigPackApi as sigPackApi,
+  baseRWGApi as rwgApi,
+  notificationApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -50,6 +53,7 @@ export const store = configureStore({
     [dataApi.reducerPath]: dataApi.reducer,
     [dataApiSearch.reducerPath]: dataApiSearch.reducer,
     [reportsApi.reducerPath]: reportsApi.reducer,
+    [rbacApi.reducerPath]: rbacApi.reducer,
     [recommendationApi.reducerPath]: recommendationApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
@@ -74,7 +78,9 @@ export const store = configureStore({
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
     [sigPackApi.reducerPath]: sigPackApi.reducer,
-    [residentPortalApi.reducerPath]: residentPortalApi.reducer
+    [residentPortalApi.reducerPath]: residentPortalApi.reducer,
+    [rwgApi.reducerPath]: rwgApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -92,6 +98,8 @@ export const store = configureStore({
       recommendationApi.middleware,
       dataApiSearch.middleware,
       apApi.middleware,
+      rbacApi.middleware,
+      reportsApi.middleware,
       userApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
@@ -114,7 +122,9 @@ export const store = configureStore({
       videoCallQoeApi.middleware,
       edgeFirewallApi.middleware,
       sigPackApi.middleware,
-      residentPortalApi.middleware
+      residentPortalApi.middleware,
+      rwgApi.middleware,
+      notificationApi.middleware
     ])
   },
 

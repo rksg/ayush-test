@@ -46,7 +46,12 @@ import {
   DpskPassphraseClient,
   DPSKDeviceInfo,
   AccessControlUrls,
-  DpskMutationResult
+  DpskMutationResult,
+  DpskDownloadNewFlowPassphrasesPayload,
+  convertDpskNewFlowUrl,
+  DpskDownloadPassphrasesPayload,
+  DpskPassphrasesClientPayload,
+  DpskNewFlowPassphraseClient
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -189,8 +194,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel,
-          params)
+        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel, params)
 
         return {
           ...req,
@@ -212,7 +216,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
       query: ({ params }) => {
@@ -314,7 +319,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -391,7 +397,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           totalCount: response.length
         }
       },
-      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getPortal: build.query<Portal | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -503,7 +510,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -601,7 +609,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -671,7 +680,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             ]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getDpskPassphrase: build.query<NewDpskPassphrase, RequestPayload>({
       query: ({ params }) => {
@@ -765,21 +775,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    // eslint-disable-next-line max-len
-    downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
+    downloadPassphrases: build.mutation<Blob, RequestPayload<DpskDownloadPassphrasesPayload>>({
       query: ({ params, payload }) => {
-        const CUSTOM_HEADER = {
-          'x-rks-tenantid': params?.tenantId
-        }
         const req = createDpskHttpRequest(
           DpskUrls.exportPassphrases,
           {
             ...params,
             timezone: payload?.timezone ?? 'UTC',
             dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
-          },
-          CUSTOM_HEADER,
-          true
+          }
         )
 
         return {
@@ -793,20 +797,76 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           },
           headers: {
             ...req.headers,
-            'Content-Type': 'text/csv',
+            Accept: 'text/csv'
+          }
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    downloadNewFlowPassphrases: build.query<Blob, RequestPayload<DpskDownloadNewFlowPassphrasesPayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          DpskUrls.exportNewFlowPassphrases,
+          {
+            ...params,
+            timezone: payload?.timezone ?? 'UTC',
+            dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+          }
+        )
+
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'DPSK_Passphrase.csv'
+            downloadFile(response, fileName)
+          },
+          headers: {
+            ...req.headers,
+            'Content-Type': 'application/json',
             'Accept': 'text/csv'
           }
         }
       }
     }),
-    getPassphraseClient: build.query<DpskPassphraseClient, RequestPayload>({
+    // eslint-disable-next-line max-len
+    getPassphraseClient: build.query<DpskPassphraseClient | undefined, RequestPayload<DpskPassphrasesClientPayload>>({
       query: ({ params, payload }) => {
-        const getPassphraseClientReq = createDpskHttpRequest(DpskUrls.getPassphraseClient, params)
+        const isNewFlow = isDpskNewFlow(params)
+
+        const apiInfo = DpskUrls[isNewFlow ? 'getNewFlowPassphraseClient' : 'getPassphraseClient']
+        const apiParams = isNewFlow ? {
+          ...params,
+          networkId: payload!.networkId,
+          mac: payload!.mac
+        } : params
+
+        const req = createHttpRequest(apiInfo, apiParams)
 
         return {
-          ...getPassphraseClientReq,
-          body: payload
+          ...req,
+          ...(isNewFlow ? {} : { body: payload })
         }
+      },
+      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, meta, arg) {
+        if (!isDpskNewFlow(arg.params)) return result as DpskPassphraseClient
+
+        if (_.isEmpty(result)) return undefined
+
+        const res = result as DpskNewFlowPassphraseClient
+
+        return {
+          passphraseId: res.id,
+          username: res.username,
+          passphrase: res.passphrase,
+          numberOfDevices: res.numberOfDevices,
+          clientMac: res.devices.map(device => device.mac),
+          createdDate: res.createdDate,
+          expirationDate: res.expirationDate
+        } as DpskPassphraseClient
       }
     }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
@@ -873,7 +933,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getPortalLang: build.mutation<{ [key: string]: string }, RequestPayload>({
       query: ({ params }) => {
@@ -944,6 +1005,7 @@ export const {
   useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
+  useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
   useSavePortalMutation,
@@ -958,17 +1020,16 @@ export const {
   useGetEnhancedPortalProfileListQuery
 } = serviceApi
 
-
-export type DpskNewConfigFlowParamsValue = 'y' | 'n'
-
 function isDpskNewFlow (params?: Params<string>): boolean {
   return params?.isNewConfigFlow === 'y'
 }
 
+export type DpskNewConfigFlowParamsValue = 'y' | 'n'
+
 export function transferDpskNewConfigApiInfo (apiInfo: ApiInfo, params?: Params<string>): ApiInfo {
   if (!isDpskNewFlow(params)) return apiInfo
 
-  return { ...apiInfo, url: '/v2' + apiInfo.url }
+  return { ...apiInfo, url: convertDpskNewFlowUrl(apiInfo.url) }
 }
 
 export function createDpskHttpRequest (

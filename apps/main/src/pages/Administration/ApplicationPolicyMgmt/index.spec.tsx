@@ -10,7 +10,8 @@ import {
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -20,44 +21,42 @@ import {
 
 import ApplicationPolicyMgmt from '.'
 
+const mockedExportFn = jest.fn()
+const mockedExportAllFn = jest.fn()
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useExportSigPackMutation: () => ([ mockedExportFn ]),
+  useExportAllSigPackMutation: () => ([ mockedExportAllFn ])
+}))
+
 describe('Application library Version Management', () => {
-  let params: { tenantId: string }
+  const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
   beforeEach(async () => {
-    global.URL.createObjectURL = jest.fn()
     mockServer.use(
       rest.get(
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json(sigPackData))
-      ),
-      rest.get(
-        SigPackUrlsInfo.exportAllSigPack.url,
-        (req, res, ctx) => {
-          return res(ctx.set({
-            'content-disposition': 'attachment; filename=SIGPACK_export_20230118100829.csv',
-            'content-type': 'text/csv;charset=ISO-8859-1'
-          }), ctx.text('passphrase'))
-        }
-      ),
-      rest.get(
-        SigPackUrlsInfo.exportSigPack.url.replace('?type=:type', ''),
-        (req, res, ctx) => {
-          return res(ctx.set({
-            'content-disposition': 'attachment; filename=SIGPACK_export_20230118100829.csv',
-            'content-type': 'text/csv;charset=ISO-8859-1'
-          }), ctx.text('passphrase'))
-        }
-      ),
-      rest.patch(
-        SigPackUrlsInfo.updateSigPack.url,
-        (req, res, ctx) => {res(ctx.json(successResponse))}
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
   })
 
   it('should render correctly', async () => {
+    mockedExportFn.mockReturnValue({ unwrap: () => Promise.resolve() })
+    mockedExportAllFn.mockReturnValue({ unwrap: () => Promise.resolve() })
+    const updateFn = jest.fn()
+
+    mockServer.use(
+      rest.patch(
+        SigPackUrlsInfo.updateSigPack.url,
+        (req, res, ctx) => {
+          updateFn()
+          return res(ctx.json(successResponse))
+        }
+      )
+    )
+
     render(
       <Provider>
         <ApplicationPolicyMgmt />
@@ -74,9 +73,21 @@ describe('Application library Version Management', () => {
     expect(await screen.findByText('REMOVED_APP')).toBeVisible()
     await userEvent.click(await screen.findByText(/Application Name Changed/))
     expect(await screen.findByText('RENAMED_APP')).toBeVisible()
-    // await userEvent.click((await screen.findAllByText('Export All'))[1])
-    // await userEvent.click((await screen.findAllByText('Export Current List'))[1])
-    // await userEvent.click(await screen.findByRole('button', { name: /Update/ }))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Export All' }))
+    expect(mockedExportAllFn).toHaveBeenCalledTimes(1)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Export Current List' }))
+    expect(mockedExportFn).toHaveBeenCalledTimes(1)
+
+    await userEvent.click(screen.getByRole('button', { name: /Update/ }))
+
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    await userEvent.type(screen.getByRole('textbox'), 'Update')
+    await userEvent.click(screen.queryAllByRole('button', { name: /Update/ })[1])
+
+    await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
 })

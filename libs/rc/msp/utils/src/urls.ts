@@ -204,14 +204,16 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   assignMspEcToIntegrator: {
-    method: 'post',
-    // method: 'PATCH',
-    // url: '/mspCustomers/:mspEcTenantId/delegations'
-    url: '/api/mspservice/tenant/assign/:mspIntegratorId'
+    method: 'PATCH',
+    url: '/mspIntegrators/:mspIntegratorId',
+    oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId',
+    newApi: true
   },
   getAssignedMspEcToIntegrator: {
     method: 'get',
-    url: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType'
+    url: '/mspIntegrators/:mspIntegratorId?delegationType=:mspIntegratorType',
+    oldUrl: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType',
+    newApi: true
   },
   updateAssignedMspEcDelegatedAdmins: {
     method: 'put',
@@ -279,6 +281,40 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   assignMultiMspEcDelegatedAdmins: {
     method: 'PATCH',
     url: '/mspCustomers/mspAdmins/associations',
+    newApi: true
+  },
+  getMspAggregations: {
+    method: 'get',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  addMspAggregations: {
+    method: 'post',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  updateMspAggregations: {
+    method: 'put',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  deleteMspAggregations: {
+    method: 'delete',
+    url: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  getMspEcAlarmList: {
+    method: 'post',
+    url: '/api/eventalarmapi/msp/:tenantId/alarm/alarmlist'
+  },
+  getRecommandFirmwareUpgrade: {
+    method: 'get',
+    url: '/apFirmwares?status=default',
+    newApi: true
+  },
+  mspEcFirmwareUpgradeSchedules: {
+    method: 'post',
+    url: '/mspCustomers/firmwareUpgradeSchedules',
     newApi: true
   }
 }

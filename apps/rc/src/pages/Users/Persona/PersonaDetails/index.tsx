@@ -160,6 +160,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
+          showNoData={true}
           name={dpskPoolData?.name}
           dpskPoolId={dpskPoolData?.id}
         />
@@ -186,6 +187,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
       <MacRegistrationPoolLink
+        showNoData={true}
         name={macPoolData?.name}
         macRegistrationPoolId={personaGroupData?.macRegistrationPoolId}
       />
@@ -194,6 +196,7 @@ function PersonaDetails () {
       ? [{ label: $t({ defaultMessage: 'Unit' }),
         value:
         <PropertyUnitLink
+          showNoData={true}
           {...unitData}
         />
       }] : []
@@ -215,10 +218,11 @@ function PersonaDetails () {
             </Button>
           </Space> : undefined)
     },
-    { label: $t({ defaultMessage: 'Network Segmentation' }),
+    { label: $t({ defaultMessage: 'Personal Identity Network' }),
       value:
       personaGroupData?.nsgId
         && <NetworkSegmentationLink
+          showNoData={true}
           name={nsgData?.name}
           nsgId={personaGroupData?.nsgId}
         />
@@ -263,7 +267,7 @@ function PersonaDetails () {
           <Col span={12}>
             {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Network Segmentation' })}
+                {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
             }
           </Col>

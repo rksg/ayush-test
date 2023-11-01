@@ -113,12 +113,13 @@ describe('Subscriptions', () => {
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
-    await waitFor(() => {
-      expect(mockedShowToast).toBeCalledWith({
-        type: 'success',
-        content: 'Successfully refreshed.'
-      })
-    })
+    // only for old API
+    // await waitFor(() => {
+    //   expect(mockedShowToast).toBeCalledWith({
+    //     type: 'success',
+    //     content: 'Successfully refreshed.'
+    //   })
+    // })
   })
 
   it('should display toast message when refresh failed', async () => {

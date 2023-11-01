@@ -187,6 +187,7 @@ export function ManageCustomer () {
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [assignedApswLicense, setApswLicense] = useState(0)
+  const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
@@ -265,8 +266,15 @@ export function ManageCustomer () {
           en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         const apsw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW && en.status === 'VALID')
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+        const apswTrial = assigned.filter(en =>
+          en.deviceType === EntitlementDeviceType.MSP_APSW
+          && en.status === 'VALID' && en.trialAssignment === true)
+        const apswTrialLic = apswTrial.length > 0 ?
+          apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+
         isTrialEditMode ? checkAvailableLicense(licenseSummary)
           : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
 
@@ -287,6 +295,7 @@ export function ManageCustomer () {
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
           setApswLicense(apswLic)
+          setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
@@ -564,7 +573,7 @@ export function ManageCustomer () {
 
         if (isDeviceAgnosticEnabled ) {
           if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -706,6 +715,12 @@ export function ManageCustomer () {
     return license.length > 0 ? license[0].id : 0
   }
 
+  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType
+     && en.trialAssignment === trialAssignment && en.status === 'VALID')
+    return license.length > 0 ? license[0].id : 0
+  }
+
   const MspAdminsForm = () => {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
@@ -768,14 +783,20 @@ export function ManageCustomer () {
         <Form.Item
           name='admin_firstname'
           label={intl.$t({ defaultMessage: 'First Name' })}
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
           children={<Input />}
           style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
         />
         <Form.Item
           name='admin_lastname'
           label={intl.$t({ defaultMessage: 'Last Name' })}
-          rules={[ { required: true } ]}
+          rules={[
+            { required: true },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
           children={<Input />}
           style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
         />
@@ -868,6 +889,11 @@ export function ManageCustomer () {
         <label>
           {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
             availableApswLicense: availableApswLicense })}
+          {assignedApswTrialLicense > 0 &&
+          <span style={{ marginLeft: 10 }}>
+            {intl.$t({ defaultMessage: '(active trial license : {apswTrial})' },
+              { apswTrial: assignedApswTrialLicense })}
+          </span>}
         </label>
       </UI.FieldLabelSubs>
     </div>
@@ -985,21 +1011,16 @@ export function ManageCustomer () {
               </Select>
             }
           />
-          <Form.Item
-            name='service_expiration_date'
-            label=''
-            children={
-              <DatePicker
-                format={formatter(DateFormatEnum.DateFormat)}
-                disabled={!customDate}
-                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-                onChange={expirationDateOnChange}
-                disabledDate={(current) => {
-                  return current && current < moment().endOf('day')
-                }}
-                style={{ marginLeft: '4px' }}
-              />
-            }
+          <DatePicker
+            format={formatter(DateFormatEnum.DateFormat)}
+            allowClear={false}
+            disabled={!customDate}
+            defaultValue={moment(subscriptionEndDate)}
+            onChange={expirationDateOnChange}
+            disabledDate={(current) => {
+              return current && current < moment().endOf('day')
+            }}
+            style={{ marginLeft: '4px' }}
           />
         </UI.FieldLabeServiceDate>
       </div>}
@@ -1098,21 +1119,16 @@ export function ManageCustomer () {
               </Select>
             }
           />
-          <Form.Item
-            name='service_expiration_date'
-            label=''
-            children={
-              <DatePicker
-                format={formatter(DateFormatEnum.DateFormat)}
-                disabled={!customDate}
-                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-                onChange={expirationDateOnChange}
-                disabledDate={(current) => {
-                  return current && current < moment().endOf('day')
-                }}
-                style={{ marginLeft: '4px' }}
-              />
-            }
+          <DatePicker
+            format={formatter(DateFormatEnum.DateFormat)}
+            allowClear={false}
+            disabled={!customDate}
+            defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
+            onChange={expirationDateOnChange}
+            disabledDate={(current) => {
+              return current && current < moment().endOf('day')
+            }}
+            style={{ marginLeft: '4px' }}
           />
         </UI.FieldLabeServiceDate></div>}
     </>

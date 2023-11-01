@@ -21,7 +21,9 @@ import {
   SpeedIndicatorSolid,
   SwitchOutlined,
   SwitchSolid,
-  WiFi
+  WiFi,
+  DevicesOutlined,
+  DevicesSolid
 } from '@acx-ui/icons'
 import {
   getServiceCatalogRoutePath,
@@ -42,7 +44,6 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -50,6 +51,7 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -71,7 +73,7 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(isAnltAdvTier && recommendationsEnabled ? [{
+            ...(recommendationsEnabled ? [{
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
             }, {
@@ -208,6 +210,12 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(showRwgUI ? [{
+      uri: '/ruckus-wan-gateway',
+      label: $t({ defaultMessage: 'RWG' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: SwitchOutlined,
@@ -329,10 +337,10 @@ export function useMenuConfig () {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            ...(isCloudMoteEnabled ? [{
+            {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
-            }] : []),
+            },
             ...(isRadiusClientEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import {
   Form,
@@ -17,13 +17,21 @@ import {
   useSwitchDetailHeaderQuery,
   useGetSwitchQuery
 } from '@acx-ui/rc/services'
-import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SWITCH_SERIAL_PATTERN_SUPPORT_RODAN } from '@acx-ui/rc/utils'
+import {
+  Switch,
+  SwitchTable,
+  getSwitchModel,
+  checkVersionAtLeast09010h
+} from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-
-import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from '../../SwitchForm/blockListRelatedTsb.util'
+import { validatorSwitchModel }     from '../../StackForm'
+import {
+  getTsbBlockedSwitch,
+  showTsbBlockedSwitchErrorDialog
+} from '../../SwitchForm/blockListRelatedTsb.util'
 
 import {
   TableContainer,
@@ -33,11 +41,13 @@ import {
 export interface AddStackMemberProps {
   visible: boolean
   setVisible: (v: boolean) => void
+  maxMembers: number
+  venueFirmwareVersion: string
 }
 
 export default function AddStackMember (props: AddStackMemberProps) {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, maxMembers, venueFirmwareVersion } = props
   const [form] = Form.useForm<Switch>()
 
   const onClose = () => {
@@ -54,6 +64,8 @@ export default function AddStackMember (props: AddStackMemberProps) {
       children={
         <AddMemberForm
           form={form}
+          maxMembers={maxMembers}
+          venueFirmwareVersion={venueFirmwareVersion}
         />
       }
       footer={
@@ -79,17 +91,17 @@ export default function AddStackMember (props: AddStackMemberProps) {
 
 interface DefaultVlanFormProps {
   form: FormInstance<Switch>
+  maxMembers: number
+  venueFirmwareVersion: string
 }
 
 function AddMemberForm (props: DefaultVlanFormProps) {
   const { $t } = useIntl()
   const { tenantId, switchId, stackList } = useParams()
-  const { form } = props
-  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+  const { form, maxMembers, venueFirmwareVersion } = props
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
-  const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
   const { data: switchData } =
@@ -102,7 +114,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const columns: TableProps<SwitchTable>['columns'] = [
@@ -120,7 +131,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value) },
+            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchDetail?.stackMembers || [])]) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
@@ -165,31 +176,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     }
   ]
 
-  useEffect(() => {
-    if(switchDetail?.stackMembers){
-      setMaxMembers(12 - switchDetail?.stackMembers.length)
-    }
-  }, [form, switchDetail])
-
-  const validatorSwitchModel = (serialNumber: string) => {
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
-    if (serialNumber && !re.test(serialNumber)) {
-      return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
-    }
-
-    const model = getSwitchModel(serialNumber) || ''
-
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
-      )
-      : Promise.resolve()
-  }
-
   const validatorUniqueMember = (serialNumber: string) => {
     const member = switchDetail?.stackMembers || []
     const memberExistCount = member.concat(tableData).filter((item) => {
@@ -233,7 +219,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(venueFirmwareVersion) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return

@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Drawer }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
 import {
   useCreateDpskPassphrasesMutation,
@@ -36,6 +37,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
   const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
+  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -69,6 +71,14 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     }
   }
 
+  const onIsNewFlowSave = async () => {
+    try {
+      await onManualSettingFormSave()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
   return (
     <Drawer
       title={editMode.isEdit
@@ -86,7 +96,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
             save: editMode.isEdit ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
-          onSave={onSave}
+          onSave={isNewConfigFlow ? onIsNewFlowSave : onSave}
         />
       }
       width={'500px'}

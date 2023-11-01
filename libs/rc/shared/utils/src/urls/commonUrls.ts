@@ -113,12 +113,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wifi-calling-profile',
     newApi: true
   },
-  getVlanPoolList: {
-    method: 'get',
-    url: '/vlanPools',
-    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool',
-    newApi: true
-  },
   getServicesList: {
     method: 'post',
     url: '/serviceProfiles',
@@ -136,12 +130,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venues',
     newApi: true
-  },
-  newAddVenue: { // Only for IT test
-    method: 'post',
-    newApi: true,
-    url: '/venues'
-    // url: '/api/tenant/:tenantId/venue'
   },
   addVenue: {
     method: 'post',
@@ -518,6 +506,81 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptions: {
     method: 'put',
     url: '/venues/:venueId/radiusOptions',
+    newApi: true
+  },
+  getRwgList: {
+    method: 'get',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateways: {
+    method: 'delete',
+    url: '/rwgs',
+    newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/rwgs/:rwgId',
+    newApi: true
+  },
+  getGateway: {
+    method: 'get',
+    url: '/rwgs/:gatewayId',
+    newApi: true
+  },
+  updateGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
+  },
+  addGateway: {
+    method: 'post',
+    url: '/rwgs',
+    newApi: true
+  },
+  getGatewayAlarms: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/alarms',
+    newApi: true
+  },
+  getGatewayDashboard: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dashboards',
+    newApi: true
+  },
+  getGatewayTopProcess: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/topprocess',
+    newApi: true
+  },
+  getGatewayFileSystems: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/filesystems',
+    newApi: true
+  },
+  getGatewayDetails: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/details',
+    newApi: true
+  },
+  getDNSRecords: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dnsrecords',
+    newApi: true
+  },
+  getDNSRecord: {
+    method: 'get',
+    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
+    newApi: true
+  },
+  deleteDnsRecords: {
+    method: 'delete',
+    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
+    newApi: true
+  },
+  addUpdateDnsRecord: {
+    method: 'post',
+    url: '/rwgs/:gatewayId/dnsrecords',
     newApi: true
   }
 }

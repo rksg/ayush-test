@@ -28,8 +28,8 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         label: $t({ defaultMessage: 'MSCS requests only' }),
         value: 'MSCS_REQUESTS_ONLY',
         key: 'MSCS_REQUESTS_ONLY',
-        message: $t({ defaultMessage: `Mirroring for clients sending MSCS 
-                    (Multimedia and Streaming Control Server) requests` })
+        message: $t({ defaultMessage: `Mirroring for clients sending MSCS
+                    (Mirrored Stream Classification Service) requests` })
       },
       {
         type: QoSMirroringScope.ALL_CLIENTS,
@@ -61,8 +61,9 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
           {$t({ defaultMessage: 'QoS Mirroring' })}
           <Tooltip.Question
             /* eslint-disable-next-line max-len */
-            title={$t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure quality of service for 
-          specific multimedia clients or all clients on your Wi-Fi network` })}
+            title={$t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure
+            quality of service for specific multimedia clients or all clients on your Wi-Fi network.
+            Ensure that APs meet the minimum required version 7.0` })}
             placement='right'
             iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
           />

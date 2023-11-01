@@ -38,6 +38,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  sameEmailDomain: defineMessage({
+    defaultMessage: 'Please enter same email domain(s)',
+    description: 'Validation - same email domains checks'
+  }),
   ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
@@ -435,6 +439,10 @@ export const validationMessages = {
   exceptionDscpValueExists: defineMessage({
     defaultMessage: 'The exception DSCP already exists.',
     description: 'Validation - exception dscp value exists'
+  }),
+  switchDhcpOptionIpMaxSize: defineMessage({
+    defaultMessage: 'Max number of DHCP Option IPs is 3',
+    description: 'Validation - DHCP option IPs max size checks'
   })
 }
 

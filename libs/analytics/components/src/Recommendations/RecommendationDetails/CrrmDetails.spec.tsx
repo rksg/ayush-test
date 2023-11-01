@@ -34,7 +34,7 @@ describe('CrrmDetails', () => {
     })
     render(<CrrmDetails />, {
       route: {
-        path: '/analytics/next/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+        path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6'
       },
       wrapper: Provider
     })

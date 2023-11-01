@@ -85,7 +85,7 @@ const createNsgPath = '/:tenantId/t/' + getServiceRoutePath({
   type: ServiceType.NETWORK_SEGMENTATION,
   oper: ServiceOperation.EDIT
 })
-const editNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
+const editNsgPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 describe('SmartEdgeForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -99,10 +99,6 @@ describe('SmartEdgeForm', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeData))
-      ),
-      rest.post(
-        EdgeDhcpUrls.addDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
@@ -119,7 +115,7 @@ describe('SmartEdgeForm', () => {
     )
   })
 
-  it('Add DHCP service', async () => {
+  it('Add DHCP service button will show up when edge is not associated with any dhcp', async () => {
     const user = userEvent.setup()
 
     render(
@@ -136,28 +132,7 @@ describe('SmartEdgeForm', () => {
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
 
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
-    const addDhcpModal = await screen.findByRole('dialog')
-    await screen.findByText('Add DHCP for SmartEdge Service')
-    const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
-    await user.type(dhcpServiceNameInput, 'myTest')
-    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
-    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-    await user.type(poolNameInput, 'Pool1')
-    await user.type(subnetMaskInput, '255.255.255.0')
-    const textBoxs = within(addDhcpPoolDrawer).getAllByRole('textbox')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolStartIp')[0], '1.1.1.0')
-    await user.type(
-      textBoxs.filter((elem) => elem.id === 'poolEndIp')[0], '1.1.1.5')
-    await user.type(gatewayInput, '1.2.3.4')
-    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(addDhcpPoolDrawer).not.toBeVisible())
-    await user.click(within(addDhcpModal).getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(addDhcpModal).not.toBeVisible())
+    expect(await screen.findByRole('button', { name: 'Add' })).toBeVisible()
   })
 
   it('Add DHCP pool', async () => {

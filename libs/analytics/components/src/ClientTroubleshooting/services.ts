@@ -17,7 +17,8 @@ export type ConnectionEvent = {
   path: NetworkPath,
   ssid?: string | null,
   messageIds?: Array<string>,
-  key?: string
+  key?: string,
+  pcapFilename?: string
 }
 
 export type ConnectionQuality = {
@@ -35,11 +36,38 @@ export type ClientInfoData = {
   connectionQualities: ConnectionQuality[]
   incidents: Incident[]
 }
-interface Response <ClientInfoData> {
-    client: ClientInfoData
+interface Response <T> {
+    client: T
 }
 
 type ClientFilter = DateFilter & { clientMac: string }
+
+type PcapPayload = {
+  filename: string
+}
+
+type PcapFile = {
+  pcapFile: Blob
+}
+
+export const b64ToBlob = (b64Data: string) => {
+  const sliceSize = 512
+  const byteCharacters = window.atob(b64Data)
+  const byteArrays = []
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize)
+    const byteNumbers = new Array(slice.length)
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i)
+    }
+    const byteArray = new Uint8Array(byteNumbers)
+    byteArrays.push(byteArray)
+  }
+
+  return new Blob(byteArrays)
+}
+
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -89,6 +117,7 @@ export const api = dataApi.injectEndpoints({
               messageIds
               radio
               ssid
+              pcapFilename
             }
             connectionDetailsByAp {
               start
@@ -122,8 +151,27 @@ export const api = dataApi.injectEndpoints({
       transformResponse: (response: Response<ClientInfoData>) => {
         return response.client
       }
+    }),
+    clientPcap: build.mutation<
+      PcapFile,
+      PcapPayload
+    >({
+      query: (payload) => ({
+        document: gql`
+          query ClientPcapFile($filename: String) {
+            client {
+              pcapFile(filename: $filename)
+            }
+          }
+        `,
+        variables: {
+          filename: payload.filename
+        }
+      }),
+      transformResponse: (response: Response<{ pcapFile: string }>) =>
+        ({ pcapFile: b64ToBlob(response.client.pcapFile) })
     })
   })
 })
 
-export const { useClientInfoQuery } = api
+export const { useClientInfoQuery, useClientPcapMutation } = api

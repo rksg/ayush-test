@@ -2,22 +2,23 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  PolicyTechnology,
-  PolicyType,
-  Layer3ProtocolType,
+  ApplicationAclType,
+  ApplicationRuleType,
+  DeviceTypeEnum,
   FacilityEnum,
   FlowLevelEnum,
-  ProtocolEnum,
+  Layer3ProtocolType,
   OsVendorEnum,
-  DeviceTypeEnum,
-  ApplicationAclType,
-  ApplicationRuleType, OperatorType
+  PolicyTechnology,
+  PolicyType,
+  ProtocolEnum
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'RADIUS Server' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
+  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Identity Provider' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog Server' }),
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pools' }),
@@ -39,6 +40,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
+  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
@@ -48,11 +50,6 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy (TBD)' }),
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy (TBD)' }),
   [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'Provides external notification to network administrators' }),
-  [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy (TBD)' }),
-  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
-  // eslint-disable-next-line max-len
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' }),
-  // eslint-disable-next-line max-len
   [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Provides data rate and data consumption control' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' }),
@@ -81,19 +78,19 @@ export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescr
 export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.All]: defineMessage({ defaultMessage: 'All' }),
   [OsVendorEnum.Windows]: defineMessage({ defaultMessage: 'Windows' }),
-  [OsVendorEnum.MacOs]: defineMessage({ defaultMessage: 'MacOs' }),
+  [OsVendorEnum.MacOs]: defineMessage({ defaultMessage: 'macOS' }),
   [OsVendorEnum.ChromeOs]: defineMessage({ defaultMessage: 'ChromeOs' }),
   [OsVendorEnum.Linux]: defineMessage({ defaultMessage: 'Linux' }),
   [OsVendorEnum.Ubuntu]: defineMessage({ defaultMessage: 'Ubuntu' }),
-  [OsVendorEnum.Ios]: defineMessage({ defaultMessage: 'Ios' }),
+  [OsVendorEnum.Ios]: defineMessage({ defaultMessage: 'iOS' }),
   [OsVendorEnum.Android]: defineMessage({ defaultMessage: 'Android' }),
   [OsVendorEnum.BlackBerry]: defineMessage({ defaultMessage: 'BlackBerry' }),
-  [OsVendorEnum.AmazonKindle]: defineMessage({ defaultMessage: 'AmazonKindle' }),
-  [OsVendorEnum.CiscoIpPhone]: defineMessage({ defaultMessage: 'CiscoIpPhone' }),
-  [OsVendorEnum.AvayaIpPhone]: defineMessage({ defaultMessage: 'AvayaIpPhone' }),
+  [OsVendorEnum.AmazonKindle]: defineMessage({ defaultMessage: 'Amazon Kindle' }),
+  [OsVendorEnum.CiscoIpPhone]: defineMessage({ defaultMessage: 'Cisco' }),
+  [OsVendorEnum.AvayaIpPhone]: defineMessage({ defaultMessage: 'Avaya' }),
   [OsVendorEnum.LinksysPapVoip]: defineMessage({ defaultMessage: 'LinksysPapVoip' }),
-  [OsVendorEnum.NortelIpPhone]: defineMessage({ defaultMessage: 'NortelIpPhone' }),
-  [OsVendorEnum.Xbox360]: defineMessage({ defaultMessage: 'Xbox360' }),
+  [OsVendorEnum.NortelIpPhone]: defineMessage({ defaultMessage: 'Nortel' }),
+  [OsVendorEnum.Xbox360]: defineMessage({ defaultMessage: 'Xbox 360' }),
   [OsVendorEnum.PlayStation2]: defineMessage({ defaultMessage: 'PlayStation2' }),
   [OsVendorEnum.GameCube]: defineMessage({ defaultMessage: 'GameCube' }),
   [OsVendorEnum.Wii]: defineMessage({ defaultMessage: 'Wii' }),
@@ -101,16 +98,16 @@ export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.PlayStation]: defineMessage({ defaultMessage: 'PlayStation' }),
   [OsVendorEnum.Xbox]: defineMessage({ defaultMessage: 'Xbox' }),
   [OsVendorEnum.Nintendo]: defineMessage({ defaultMessage: 'Nintendo' }),
-  [OsVendorEnum.HpPrinter]: defineMessage({ defaultMessage: 'HpPrinter' }),
-  [OsVendorEnum.CanonPrinter]: defineMessage({ defaultMessage: 'CanonPrinter' }),
-  [OsVendorEnum.XeroxPrinter]: defineMessage({ defaultMessage: 'XeroxPrinter' }),
-  [OsVendorEnum.DellPrinter]: defineMessage({ defaultMessage: 'DellPrinter' }),
-  [OsVendorEnum.BrotherPrinter]: defineMessage({ defaultMessage: 'BrotherPrinter' }),
-  [OsVendorEnum.EpsonPrinter]: defineMessage({ defaultMessage: 'EpsonPrinter' }),
-  [OsVendorEnum.NestCamera]: defineMessage({ defaultMessage: 'NestCamera' }),
-  [OsVendorEnum.NestThermostat]: defineMessage({ defaultMessage: 'NestThermostat' }),
-  [OsVendorEnum.WemoSmartSwitch]: defineMessage({ defaultMessage: 'WemoSmartSwitch' }),
-  [OsVendorEnum.WifiSmartPlug]: defineMessage({ defaultMessage: 'WifiSmartPlug' }),
+  [OsVendorEnum.HpPrinter]: defineMessage({ defaultMessage: 'HP' }),
+  [OsVendorEnum.CanonPrinter]: defineMessage({ defaultMessage: 'Canon' }),
+  [OsVendorEnum.XeroxPrinter]: defineMessage({ defaultMessage: 'Xerox' }),
+  [OsVendorEnum.DellPrinter]: defineMessage({ defaultMessage: 'Dell' }),
+  [OsVendorEnum.BrotherPrinter]: defineMessage({ defaultMessage: 'Brother' }),
+  [OsVendorEnum.EpsonPrinter]: defineMessage({ defaultMessage: 'Epson' }),
+  [OsVendorEnum.NestCamera]: defineMessage({ defaultMessage: 'Nest Camera' }),
+  [OsVendorEnum.NestThermostat]: defineMessage({ defaultMessage: 'Nest Thermostat' }),
+  [OsVendorEnum.WemoSmartSwitch]: defineMessage({ defaultMessage: 'Wemo Smart Switch' }),
+  [OsVendorEnum.WifiSmartPlug]: defineMessage({ defaultMessage: 'Wi-Fi Smart Plug' }),
   [OsVendorEnum.SonyPlayer]: defineMessage({ defaultMessage: 'SonyPlayer' }),
   [OsVendorEnum.PanasonicG20Tv]: defineMessage({ defaultMessage: 'PanasonicG20Tv' }),
   [OsVendorEnum.SamsungSmartTv]: defineMessage({ defaultMessage: 'SamsungSmartTv' }),
@@ -126,10 +123,10 @@ export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> =
   [DeviceTypeEnum.Laptop]: defineMessage({ defaultMessage: 'Laptop' }),
   [DeviceTypeEnum.Smartphone]: defineMessage({ defaultMessage: 'Smartphone' }),
   [DeviceTypeEnum.Tablet]: defineMessage({ defaultMessage: 'Tablet' }),
-  [DeviceTypeEnum.Voip]: defineMessage({ defaultMessage: 'Voip' }),
+  [DeviceTypeEnum.Voip]: defineMessage({ defaultMessage: 'VoIP' }),
   [DeviceTypeEnum.Gaming]: defineMessage({ defaultMessage: 'Gaming' }),
   [DeviceTypeEnum.Printer]: defineMessage({ defaultMessage: 'Printer' }),
-  [DeviceTypeEnum.IotDevice]: defineMessage({ defaultMessage: 'IotDevice' }),
+  [DeviceTypeEnum.IotDevice]: defineMessage({ defaultMessage: 'Iot Device' }),
   [DeviceTypeEnum.HomeAvEquipment]: defineMessage({ defaultMessage: 'HomeAvEquipment' }),
   [DeviceTypeEnum.WdsDevice]: defineMessage({ defaultMessage: 'WdsDevice' })
 }
@@ -167,9 +164,4 @@ export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
   [FlowLevelEnum.GENERAL_LOGS]: defineMessage({ defaultMessage: 'General Logs' }),
   [FlowLevelEnum.CLIENT_FLOW]: defineMessage({ defaultMessage: 'Client Flow' }),
   [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
-}
-export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescriptor> = {
-  [OperatorType.ADD]: defineMessage({ defaultMessage: 'Add (Multiple)' }),
-  [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
-  [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add if it Doesn\'t Exist' })
 }

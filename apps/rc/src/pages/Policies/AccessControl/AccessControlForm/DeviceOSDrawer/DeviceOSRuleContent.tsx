@@ -238,7 +238,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         { required: true },
         { validator: (_, value) => {
           if (value === 'Select...') {
-            return Promise.reject('Please select the deviceType option')
+            return Promise.reject($t({ defaultMessage: 'Please select the Device Type option' }))
           }
           return Promise.resolve()
         }
@@ -259,13 +259,43 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     />
     <DrawerFormItem
       name='osVendor'
-      label={$t({ defaultMessage: 'OS Vender' })}
+      label={$t({ defaultMessage: 'OS or Manufacturer' })}
       initialValue={$t({ defaultMessage: 'Please select...' })}
       rules={[
         { required: true },
         { validator: (_, value) => {
           if (value === 'Please select...') {
-            return Promise.reject('Please select the osVendor option')
+            return Promise.reject($t({
+              defaultMessage: 'Please select the OS or Manufacturer option'
+            }))
+          }
+          if (isNewOsVendorFeatureEnabled && deviceOSRuleList.length >= 29) {
+            if (value === OsVendorEnum.PlayStation) {
+              if (deviceOSRuleList.length <= 30 &&
+                deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              if (deviceOSRuleList.length >= 30) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 2 additional rule slots for PlayStation'
+                }))
+              }
+            }
+            if (value === OsVendorEnum.Xbox) {
+              // eslint-disable-next-line max-len
+              if (deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length > 0) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 3 additional rule slots for PlayStation and Xbox'
+                }))
+              }
+              if (deviceOSRuleList.length === 31) {
+                return Promise.reject($t({
+                  defaultMessage: 'Must reserve 1 additional rule slot for Xbox'
+                }))
+              }
+            }
           }
           return Promise.resolve()
         }

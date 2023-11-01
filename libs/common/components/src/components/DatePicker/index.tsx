@@ -34,7 +34,7 @@ export type DateRangeType = {
 }
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType = [Moment, Moment]
-type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
+export type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RangeRef = Component<RangePickerProps<Moment>, unknown, any> & CommonPickerMethods | null
 interface DatePickerProps {
@@ -44,6 +44,7 @@ interface DatePickerProps {
   onDateApply: Function;
   selectionType: DateRange;
   showAllTime?: boolean;
+  showLast8hours?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -53,7 +54,8 @@ export const RangePicker = ({
   selectedRange,
   onDateApply,
   showAllTime,
-  selectionType
+  selectionType,
+  showLast8hours
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -107,7 +109,8 @@ export const RangePicker = ({
     }
   }, [range, onDateApply, translatedOptions])
 
-  const allTimeKey = $t(dateRangeMap[DateRange.allTime])
+  const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
+  const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
@@ -116,11 +119,12 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      showTimePicker={showTimePicker}
+      timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       <AntRangePicker
         ref={rangeRef}
-        ranges={showAllTime ? translatedRanges :
-          _.omit(translatedRanges, allTimeKey)}
+        ranges={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
@@ -128,8 +132,7 @@ export const RangePicker = ({
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
-        }
+          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter

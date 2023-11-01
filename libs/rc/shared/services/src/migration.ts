@@ -132,7 +132,8 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
             api.dispatch(migrationApi.util.invalidateTags([{ type: 'Migration', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getZdConfiguration: build.query<ZdConfigurationType, RequestPayload>({
       query: ({ params }) => {

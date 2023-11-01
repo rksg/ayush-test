@@ -48,7 +48,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -369,7 +369,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
-      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+      const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      const isOperational = row.deviceStatus === SwitchStatusEnum.OPERATIONAL
+      return !(isOperational || isUpgradeFail)
     },
     onClick: async (rows) => {
       const row = rows[0]
@@ -396,7 +398,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+          row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
         return !row?.syncedAdminPassword && isConfigSynced && isOperational
       }).length === 0
     },
@@ -520,8 +523,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         }
       }
       ] : [])}
-      // eslint-disable-next-line max-len
-      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+      iconButton={exportDevice ? {
+        icon: <DownloadOutlined />,
+        disabled,
+        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+        onClick: exportCsv
+      } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}

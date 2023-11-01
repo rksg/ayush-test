@@ -23,7 +23,8 @@ import {
   venueListResponse,
   policyListResponse,
   apGroupsResponse,
-  externalProviders
+  externalProviders,
+  vlanList
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
 
@@ -141,19 +142,6 @@ const networkResponse = {
   id: '5d45082c812c45fbb9aab24420f39bf0'
 }
 
-const vlanList = [{
-  tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-  name: 'test pool',
-  vlanMembers: ['2'],
-  id: '7b5b3b03492d4a0b84ff9d1d11c4770d'
-},
-{
-  tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-  name: 'test pool2',
-  vlanMembers: ['2'],
-  id: '0753a360ad9945b88249039ef6734498'
-}]
-
 describe('NetworkForm', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -201,7 +189,7 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.get(CommonUrlsInfo.getVlanPoolList.url, (_, res, ctx) =>
+      rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
         res(ctx.json(vlanList))
       ),
       rest.get(AccessControlUrls.getAccessControlProfileList.url, (_, res, ctx) =>

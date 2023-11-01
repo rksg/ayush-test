@@ -1,11 +1,21 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
-import { Provider, dataApiURL, store, dataApi } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen }     from '@acx-ui/test-utils'
+import { defaultNetworkPath }                        from '@acx-ui/analytics/utils'
+import { Provider, dataApiURL, store, dataApi }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
+import { PathFilter, DateRange, NetworkPath }        from '@acx-ui/utils'
 
 import { networkSummaryInfo } from './__tests__/fixtures'
 
 import { ReportTile } from '.'
+
+const pathFilters: PathFilter = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  range: DateRange.last24Hours,
+  path: defaultNetworkPath
+}
 
 describe('ReportTile', () => {
   beforeEach(()=> {
@@ -13,9 +23,7 @@ describe('ReportTile', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkInfo', { data: { network: { node: networkSummaryInfo } } })
   })
   it('should render correctly', async () => {
-    render(<ReportTile
-      path={[{ type: 'network', name: 'Network' }]}
-    />, {
+    render(<ReportTile pathFilters={pathFilters} />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
     })
@@ -33,14 +41,49 @@ describe('ReportTile', () => {
   })
   it('should handle Tile onClick', async () => {
     const spy = jest.spyOn(global, 'setInterval')
-    render(<ReportTile
-      path={[{ type: 'network', name: 'Network' }]}
-    />, {
+    render(<ReportTile pathFilters={pathFilters} />, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
     })
     const tiles = await screen.findAllByTestId('Tile')
     await userEvent.click(tiles[0])
     expect(spy.mock.calls.some(args => args[1] === 5000)).toBe(true)
+  })
+  it('reset to first tile when path changed', async () => {
+    const { rerender } = render(<ReportTile pathFilters={pathFilters} />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 'tenant-id' } }
+    })
+
+    const tiles = await screen.findAllByTestId('Tile')
+
+    await userEvent.click(tiles[4])
+    expect(tiles[4]).toBeChecked()
+
+    const node = {
+      ..._.pick(networkSummaryInfo, ['apCount', 'clientCount']),
+      type: 'apMac',
+      name: '00:00:00:00:00:01'
+    }
+    mockGraphqlQuery(dataApiURL, 'NetworkInfo', { data: { network: { node } } })
+
+    const changedPathFilter = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 'S1' },
+        { type: 'zone', name: 'Z1' },
+        { type: 'apGroup', name: 'NetworAG1' },
+        { type: 'AP', name: '00:00:00:00:00:01' }
+      ] as NetworkPath
+    }
+    rerender(<ReportTile pathFilters={changedPathFilter} />)
+
+    const newTiles = await waitFor(async () => {
+      const newTiles = await screen.findAllByTestId('Tile')
+      expect(newTiles).toHaveLength(2)
+      return newTiles
+    })
+    expect(newTiles[0]).toBeChecked()
   })
 })

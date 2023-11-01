@@ -108,6 +108,7 @@ export const mockedRecommendationPowerMonitoring = {
   metadata: {},
   sliceType: 'zone',
   sliceValue: '12-US-CA-D12-Guru-Home',
+  updatedAt: '06/26/2023 06:04',
   path: [
     {
       type: 'system',
@@ -161,7 +162,7 @@ export const mockRecommendationNoKPI = {
   originalValue: null,
   currentValue: null,
   recommendedValue: true,
-  metadata: {},
+  metadata: { channelSelectionMode: 'BACKGROUND_SCANNING' },
   sliceType: 'system',
   sliceValue: 'ruckus-62',
   statusTrail: [
@@ -175,6 +176,7 @@ export const mockedRecommendationCRRM = {
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  updatedAt: '06/26/2023 06:04',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',
@@ -439,6 +441,62 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   }
 } as unknown as RecommendationDetails
 
+export const mockedRecommendationCRRMApplied = { // this fixture is used to test applied crrm recommendation
+  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
+  code: 'c-crrm-channel5g-auto',
+  status: 'applied',
+  appliedTime: '2023-06-25T00:00:25.772Z',
+  originalValue: [
+    {
+      channelMode: 'CHANNEL_FLY',
+      channelWidth: '_80MHZ',
+      radio: '5'
+    }
+  ],
+  currentValue: 'crrm',
+  recommendedValue: 'crrm',
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: '21_US_Beta_Samsung',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '21_US_Beta_Samsung'
+    },
+    {
+      type: 'zone',
+      name: '21_US_Beta_Samsung'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'applied',
+      createdAt: '2023-06-23T00:00:22.849Z'
+    },
+    {
+      status: 'applyscheduleinprogress',
+      createdAt: '2023-05-23T00:00:02.528Z'
+    },
+    {
+      status: 'applyscheduled',
+      createdAt: '2023-05-22T23:30:30.753Z'
+    },
+    {
+      status: 'new',
+      createdAt: '2023-05-17T07:04:11.663Z'
+    }
+  ],
+  kpi_number_of_interfering_links: {
+    current: 0,
+    previous: 2,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
 export const mockedCRRMGraphs = {
   graph: {
     current: {
@@ -485,6 +543,52 @@ export const mockedCRRMGraphs = {
   }
 }
 
+export const mockedCRRMGraphsApplied = {
+  graph: {
+    current: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 149 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 36 ],
+          channelWidth: [ 80 ],
+          txPower: [ null ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: null
+    },
+    previous: {
+      nodes: [
+        {
+          apMac: '5C:DF:89:0B:FB:40',
+          apName: 'W07-R760-West-FACP',
+          channel: [ 128 ],
+          channelWidth: [ 80 ],
+          txPower: [ '_FULL' ]
+        },
+        {
+          apMac: '5C:DF:89:0B:FE:E0',
+          apName: 'W10-R760-Doberman',
+          channel: [ 120 ],
+          channelWidth: [ 80],
+          txPower: [ '_FULL' ]
+        }
+      ],
+      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+      interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+    },
+    projected: null
+  }
+}
+
 export const mockedRecommendationFirmware = {
   id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
   code: 'i-zonefirmware-upgrade',
@@ -496,6 +600,7 @@ export const mockedRecommendationFirmware = {
   metadata: {},
   sliceType: 'zone',
   sliceValue: '39-IND-BDC-D39-Mayank-Ofc-Z2',
+  updatedAt: '2023-06-12T07:05:14.106Z',
   path: [
     {
       type: 'system',

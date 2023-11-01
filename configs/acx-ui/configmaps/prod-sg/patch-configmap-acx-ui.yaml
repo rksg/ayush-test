@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-  google.maps.key: "AIzaSyAWQnu3C-y2DsQIQmixgQNFp6UjQdvDFFo"
+  google.maps.key: "AIzaSyBSIqtIaVqxpvP0mE3KSTohqpTV9CLuZaM"
   split.io.key: "7be0ne01vnli2nea8eekg4h0c5tmmmn63sa5"
   captive.portal.domain.name: "sg.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"

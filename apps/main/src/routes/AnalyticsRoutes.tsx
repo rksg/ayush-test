@@ -51,7 +51,7 @@ export default function AnalyticsRoutes () {
           ? <HealthPage/>
           : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
         } />
-      {canUseAnltAdv && recommendationsEnabled &&
+      {recommendationsEnabled &&
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />

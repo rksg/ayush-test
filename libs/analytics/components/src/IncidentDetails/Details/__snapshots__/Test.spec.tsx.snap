@@ -3,7 +3,7 @@
 exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -561,7 +561,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1119,7 +1119,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1717,7 +1717,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2275,7 +2275,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2876,7 +2876,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -3433,7 +3433,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -3982,7 +3982,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
 exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -4555,7 +4555,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5116,7 +5116,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5677,7 +5677,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
 exports[`Test Details should render FailureTemplate correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -6238,7 +6238,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
 exports[`Test Details should render FailureTemplate correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -6799,7 +6799,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
 exports[`Test Details should render FailureTemplate correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -7357,10 +7357,1402 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
 </DocumentFragment>
 `;
 
+exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 gceAYH"
+              type="P2"
+            >
+              P2
+            </span>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                type="button"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          Switch: ICX8200-24 Router (38:45:3B:3C:EC:70) is experiencing unusually high CPU usage
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 1280px;"
+          >
+            <div
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+            >
+              <div
+                class="ant-descriptions-view"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Performance
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Sub-Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Load
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Type
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Switch
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Scope
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              ICX8200-24 Router (38:45:3B:3C:EC:70)
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Duration
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              1 h
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event Start Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              09/28/2022 04:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              09/28/2022 05:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render NetSzNetLatency correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+              type="P1"
+            >
+              P1
+            </span>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                type="button"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          The network latency between the SZ nodes is unusually high
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 1280px;"
+          >
+            <div
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+            >
+              <div
+                class="ant-descriptions-view"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Infrastructure
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Sub-Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Network
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Type
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              SZ Cluster
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Scope
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              AP-MEM-vSZ-61
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Duration
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              1 d
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event Start Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              07/09/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              07/10/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render NetTime correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+              type="P1"
+            >
+              P1
+            </span>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                type="button"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          The controller cluster is sending data with an incorrect past timestamp
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 1280px;"
+          >
+            <div
+              class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+            >
+              <div
+                class="ant-descriptions-view"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Infrastructure
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Incident Sub-Category
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              Network
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Type
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              SZ Cluster
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Scope
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              AP-MEM-vSZ-61
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Duration
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              1 d
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event Start Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              07/09/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <th
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-label"
+                          >
+                            Event End Time
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                    <tr
+                      class="ant-descriptions-row"
+                    >
+                      <td
+                        class="ant-descriptions-item"
+                        colspan="1"
+                      >
+                        <div
+                          class="ant-descriptions-item-container"
+                        >
+                          <span
+                            class="ant-descriptions-item-content"
+                          >
+                            <span
+                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                            >
+                              07/10/2023 00:00
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -7824,7 +9216,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 exports[`Test Details should render SwitchPoePd correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -8301,7 +9693,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
 exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -8758,6 +10150,65 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         />
       </div>
     </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 129px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+        >
+          <div
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
+          >
+            <span
+              aria-label="loader"
+              class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+              role="img"
+            >
+              <div
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
+              >
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 326px;"
+      >
+        <div
+          data-testid="ImpactedSwitchVLANsTable"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -8765,7 +10216,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 exports[`Test Details should render Ttc correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hTPOMS"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"

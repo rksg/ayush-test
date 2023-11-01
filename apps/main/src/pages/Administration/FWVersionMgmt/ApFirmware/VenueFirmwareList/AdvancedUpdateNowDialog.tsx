@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Select, Radio, RadioChangeEvent, Space, Typography, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                          from 'antd/lib/checkbox'
-import { DefaultOptionType }                                            from 'antd/lib/select'
-import { useIntl }                                                      from 'react-intl'
+import { Radio, RadioChangeEvent, Space } from 'antd'
+import { DefaultOptionType }              from 'antd/lib/select'
+import { useIntl }                        from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
 import {
@@ -16,14 +15,13 @@ import {
 
 import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
-import * as UI                                              from './styledComponents'
-import { firmwareNote1, firmwareNote2, VersionsSelectMode } from './UpdateNowDialog'
-import { useApEolFirmware }                                 from './useApEolFirmware'
+import * as UI                          from './styledComponents'
+import { firmwareNote1, firmwareNote2 } from './UpdateNowDialog'
+import { useApEolFirmware }             from './useApEolFirmware'
 
 type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
 
 export interface AdvancedUpdateNowDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -34,7 +32,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   // eslint-disable-next-line max-len
   const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
   const intl = useIntl()
-  const { visible, onSubmit, onCancel, data: venuesData = [], availableVersions } = props
+  const { onSubmit, onCancel, data: venuesData = [], availableVersions } = props
   const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
@@ -91,22 +89,19 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   return (
     <Modal
       title={intl.$t({ defaultMessage: 'Update Now' })}
-      visible={visible}
+      visible={true}
       width={560}
-      okText={intl.$t({ defaultMessage: 'Run Update' })}
+      okText={intl.$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      <Typography style={{ fontWeight: 700 }}>
-        {intl.$t({ defaultMessage: 'Choose which version to update the venue to:' })}
-      </Typography>
       { defaultActiveVersion &&
         <UI.Section>
           <ABFSelector
             categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Active Device' })}
+            abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
@@ -122,7 +117,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             <UI.Section key={eol.name}>
               <ABFSelector
                 categoryId={eol.name}
-                abfLabel={intl.$t({ defaultMessage: 'Legacy Device' })}
+                abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
                 apModels={eol.apModels?.join(', ')}
@@ -188,76 +183,56 @@ function ABFSelector (props: ABFSelectorProps) {
   const { categoryId, abfLabel, defaultChecked = false, defaultVersionId, defaultVersionLabel,
     otherVersions = [], update, apModels = '' } = props
   const { $t } = useIntl()
-  const [ isChecked, setIsChecked ] = useState(defaultChecked)
-  const [ selectMode, setSelectMode ] = useState(VersionsSelectMode.Radio)
-  const [ selectedOtherVersion, setSelectedOtherVersion ] = useState('')
+  const [ selectedVersion, setSelectedVersion ] = useState(defaultChecked ? defaultVersionId : '')
 
-  const getSelectedActiveVersion = (): string => {
-    return selectMode === VersionsSelectMode.Radio ? defaultVersionId : selectedOtherVersion
-  }
+  const getFirmwareResult = (): UpdateNowRequestWithoutVenues | null => {
+    if (!selectedVersion) return null
 
-  const getFirmwareResult = (): UpdateNowRequestWithoutVenues => {
     return {
       firmwareCategoryId: categoryId,
-      firmwareVersion: getSelectedActiveVersion()
+      firmwareVersion: selectedVersion
     } as UpdateNowRequestWithoutVenues
   }
 
-  const doUpdate = (checked: boolean) => {
-    update(categoryId, checked ? getFirmwareResult() : null)
+  const doUpdate = () => {
+    update(categoryId, getFirmwareResult())
   }
 
-  const onEnabledABFChange = (e: CheckboxChangeEvent) => {
-    setIsChecked(e.target.checked)
-  }
-
-  const onSelectModeChange = (e: RadioChangeEvent) => {
-    setSelectMode(e.target.value)
-  }
-
-  const onOtherVersionChange = (value: string) => {
-    setSelectedOtherVersion(value)
+  const onSelectedVersionChange = (e: RadioChangeEvent) => {
+    setSelectedVersion(e.target.value)
   }
 
   useEffect(() => {
-    doUpdate(isChecked)
-  }, [isChecked, selectMode, selectedOtherVersion])
+    doUpdate()
+  }, [selectedVersion])
 
   return (<>
-    <Checkbox value={isChecked} checked={isChecked} onChange={onEnabledABFChange}>
-      <UI.TitleActive>{abfLabel}</UI.TitleActive>
-    </Checkbox>
-    <UI.ValueContainer className={isChecked ? '' : 'disabled'}>
+    <UI.TitleActive>
+      {abfLabel}&nbsp;
+      ({ apModels
+        ? apModels
+        // eslint-disable-next-line max-len
+        : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+      })
+    </UI.TitleActive>
+    <UI.ValueContainer>
       <Radio.Group
-        onChange={onSelectModeChange}
-        value={selectMode}
-        disabled={!isChecked}
+        onChange={onSelectedVersionChange}
+        value={selectedVersion}
       >
-        <Space direction={'vertical'}>
-          <Radio value={VersionsSelectMode.Radio}>{defaultVersionLabel}</Radio>
-          { otherVersions.length > 0 ?
-            <UI.SelectDiv>
-              <Radio value={VersionsSelectMode.Dropdown} />
-              <Select
-                style={{ width: '420px', fontSize: '12px' }}
-                placeholder={$t({ defaultMessage: 'Select other version...' })}
-                value={selectedOtherVersion}
-                onChange={onOtherVersionChange}
-                options={otherVersions}
-                disabled={!isChecked}
-              />
-            </UI.SelectDiv>
-            : null
+        <Space direction={'vertical'} size={12}>
+          <Radio key={defaultVersionId} value={defaultVersionId}>
+            {defaultVersionLabel}
+          </Radio>
+          { otherVersions.map(versionOption => {
+            return <Radio key={versionOption.value} value={versionOption.value}>
+              {versionOption.label}
+            </Radio>
+          })
           }
-          <UI.ApModelsContainer>
-            <span>{ $t({ defaultMessage: 'AP Models:' }) }&nbsp;</span>
-            <span className={apModels ? '' : 'empty'}>
-              { apModels
-                ? apModels
-                : $t({ defaultMessage: 'No Access Point in selected venue(s)' })
-              }
-            </span>
-          </UI.ApModelsContainer>
+          <Radio key={'NONE'} value={''}>
+            {$t({ defaultMessage: 'Do not update firmware on selected venue(s)' })}
+          </Radio>
         </Space>
       </Radio.Group>
     </UI.ValueContainer>

@@ -3,9 +3,14 @@ import { NetworkPath } from '@acx-ui/utils'
 import { StateType } from '../config'
 
 export const crrmListResult = {
+  crrmCount: 3,
+  zoneCount: 3,
+  optimizedZoneCount: 1,
+  crrmScenarios: 13888,
   recommendations: [
     {
       id: '1',
+      code: 'c-crrm-channel5g-auto',
       status: 'applied' as StateType,
       sliceValue: 'zone-1',
       kpi_number_of_interfering_links: {
@@ -16,6 +21,7 @@ export const crrmListResult = {
     },
     {
       id: '2',
+      code: 'c-crrm-channel24g-auto',
       status: 'reverted' as StateType,
       sliceValue: 'zone-2',
       kpi_number_of_interfering_links: {
@@ -26,6 +32,7 @@ export const crrmListResult = {
     },
     {
       id: '3',
+      code: 'c-crrm-channel6g-auto',
       status: 'new' as StateType,
       sliceValue: 'Deeps Place',
       kpi_number_of_interfering_links: {
@@ -33,6 +40,24 @@ export const crrmListResult = {
         previous: null,
         projected: 0
       }
+    }
+  ]
+}
+
+export const aiOpsListResult = {
+  aiOpsCount: 2,
+  recommendations: [
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceValue: 'zone-2'
+    },
+    {
+      id: '3',
+      code: 'c-bandbalancing-enable',
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      sliceValue: 'Deeps Place'
     }
   ]
 }
@@ -48,6 +73,33 @@ export const recommendationListResult = {
       sliceType: 'zone',
       sliceValue: 'zone-1',
       metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz611' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'revertscheduled',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        error: {
+          details: [{
+            apName: 'AP',
+            apMac: 'MAC',
+            configKey: 'radio5g',
+            message: 'unknown error'
+          }]
+        }
+      },
       isMuted: false,
       mutedAt: null,
       mutedBy: '',

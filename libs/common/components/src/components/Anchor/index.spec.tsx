@@ -5,7 +5,7 @@ import { MemoryRouter }        from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { AnchorLayout } from './index'
+import { Anchor, AnchorLayout } from './index'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -25,7 +25,7 @@ const items = [{
 }]
 
 describe('Anchor', () => {
-  it('should render correctly', async () => {
+  it('should render AnchorLayout correctly', async () => {
     const { asFragment } = render(
       <BrowserRouter><AnchorLayout items={items} /></BrowserRouter>
     )
@@ -35,6 +35,13 @@ describe('Anchor', () => {
       pathname: '/',
       hash: 'Anchor-2'
     })
+  })
+
+  it('should render Anchor correctly', async () => {
+    const { asFragment } = render(
+      <Anchor><Anchor.Link href='#API' title='API' /></Anchor>
+    )
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should scroll to anchor correctly', async () => {

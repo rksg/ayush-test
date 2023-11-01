@@ -23,7 +23,7 @@ export function SwitchConfigurationTab () {
   return (
     <Tabs onChange={onTabChange}
       activeKey={params.activeSubTab}
-      type='second'
+      type='card'
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Restore & Backup' })} key='backup'>
         <SwitchConfigBackupTable />

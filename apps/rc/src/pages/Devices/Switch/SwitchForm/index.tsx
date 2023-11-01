@@ -16,17 +16,17 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useGetSwitchQuery,
-  useVenuesListQuery,
   useAddSwitchMutation,
   useUpdateSwitchMutation,
   useAddStackMemberMutation,
   useLazyGetSwitchListQuery,
   useSwitchDetailHeaderQuery,
-  useLazyGetVlansByVenueQuery
+  useLazyGetVlansByVenueQuery,
+  useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
@@ -40,8 +40,8 @@ import {
   isOperationalSwitch,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
-  VenueMessages
+  VenueMessages,
+  checkVersionAtLeast09010h
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -58,13 +58,6 @@ import {  getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from './blockLi
 import * as UI                                                   from './styledComponents'
 
 const { Option } = Select
-
-const defaultPayload = {
-  fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
 
 export enum MEMEBER_TYPE {
   STANDALONE = 'standalone',
@@ -85,7 +78,13 @@ export function SwitchForm () {
   const location = useLocation()
   const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
-  const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+  const venuesList = useGetSwitchVenueVersionListQuery({
+    params: { tenantId: tenantId }, payload: {
+      firmwareType: '',
+      firmwareVersion: '',
+      search: '', updateAvailable: ''
+    }
+  })
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
@@ -111,8 +110,8 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+  const [currentFW, setCurrentFw] = useState('')
 
-  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const switchListPayload = {
@@ -183,6 +182,12 @@ export function SwitchForm () {
 
   const handleVenueChange = async (value: string) => {
     setVenueId(value)
+    if (venuesList && venuesList.data) {
+      // eslint-disable-next-line max-len
+      const venueFw = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      setCurrentFw(venueFw || '')
+    }
+
     const vlansByVenue = value ?
       (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
         ?.map((item: Vlan) => ({
@@ -209,7 +214,7 @@ export function SwitchForm () {
   }
 
   const handleAddSwitch = async (values: Switch) => {
-    if (isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(values.id)?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -334,8 +339,7 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
-      : new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

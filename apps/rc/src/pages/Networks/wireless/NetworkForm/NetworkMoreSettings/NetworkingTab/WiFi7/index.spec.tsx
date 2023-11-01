@@ -1,18 +1,17 @@
+/* eslint-disable max-len */
+
 import { userEvent } from '@storybook/testing-library'
 import { within }    from '@testing-library/react'
 import { Form }      from 'antd'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  NetworkSaveData,
-  WlanSecurityEnum
-} from '@acx-ui/rc/utils'
-import { Provider }                  from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
+import { fireEvent, render, screen }         from '@acx-ui/test-utils'
 
 import WiFi7, {
   disabledUnCheckOption,
-  enableAllRadioCheckboxes,
+  enableAllRadioCheckboxes, getIsOwe,
   getInitMloEnabled,
   getInitMloOptions,
   inverseTargetValue,
@@ -88,6 +87,7 @@ describe('test getInitMloEnabled', () => {
 describe('WiFi7', () => {
   it('should render correctly when useIsSplitOn return true', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -116,6 +116,7 @@ describe('WiFi7', () => {
 
   it('should not render MLO field item render when useIsSplitOn return false', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
     render(
@@ -142,6 +143,7 @@ describe('WiFi7', () => {
 
   it('should switch enable wifi toggle correctly', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -167,6 +169,7 @@ describe('WiFi7', () => {
 
   it('should switch enable mlo toggle correctly', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -197,20 +200,93 @@ describe('WiFi7', () => {
 
 describe('test isEnableOptionOf6GHz func', () => {
   it('should return true when wlanSecurity is WPA3', function () {
-    const wlanSecurity = 'WPA3'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
   })
 
-  it('should return true when wlanSecurity is OWE', function () {
-    const wlanSecurity = 'OWE'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+  it('should return true when wlanSecurity is OWE and enableOwe is undefined', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.OWE
+      },
+      enableOwe: undefined
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return true when enableOwe is true and wlanSecurity is undefined', function () {
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: undefined
+      },
+      enableOwe: true
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(true)
   })
 
   it('should return false when wlanSecurity is not WPA3 or OWE', function () {
-    const wlanSecurity = 'Open'
-    const actual = isEnableOptionOf6GHz(wlanSecurity)
+    const mockWlanData = {
+      name: 'test',
+      wlan: {
+        wlanSecurity: 'Open'
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when enableOwe is true', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      enableOwe: true
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return true when enableOwe is false', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'open',
+      enableOwe: false
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when the wlanSecurity is WPA23Mixed of dpsk network', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'dpsk',
+      wlan: {
+        wlanSecurity: 'WPA23Mixed'
+      }
+    } as NetworkSaveData
+
+    const actual = isEnableOptionOf6GHz(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when the wlanSecurity is WPA23Mixed of non-dpsk network', function () {
+    const mockWlanData = {
+      name: 'test',
+      type: 'psk',
+      wlan: {
+        wlanSecurity: 'WPA23Mixed'
+      }
+    } as NetworkSaveData
+    const actual = isEnableOptionOf6GHz(mockWlanData)
     expect(actual).toBe(false)
   })
 })
@@ -330,6 +406,7 @@ describe('test enableAll func', () => {
 describe('CheckboxGroup', () => {
   it('should enable option when selected less than two', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = {
       name: 'test',
@@ -368,6 +445,7 @@ describe('CheckboxGroup', () => {
   })
   it('should show error msg when selected less than two', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = {
       name: 'test',
@@ -500,5 +578,38 @@ describe('test getUpdatedStateOfOptionsOnChange func', () => {
     ]
     const actual = inverseTargetValue(target, options)
     expect(actual).toEqual(expected)
+  })
+})
+
+describe('test getIsOwe func', () => {
+  it('should return true when enableOwe is true', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: true
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(true)
+  })
+
+  it('should return false when enableOwe is false', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: false
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(false)
+  })
+
+  it('should return true when enableOwe is undefined and wlanSecurity is OWE', function () {
+    const mockWlanData = {
+      name: 'test',
+      enableOwe: undefined,
+      networkSecurity: WlanSecurityEnum.OWE
+    } as NetworkSaveData
+
+    const actual = getIsOwe(mockWlanData)
+    expect(actual).toBe(true)
   })
 })

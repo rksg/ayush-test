@@ -5,9 +5,9 @@ import { includes }                             from 'lodash'
 import { useIntl }                              from 'react-intl'
 import { v4 as uuidv4 }                         from 'uuid'
 
-import { Plus } from '@acx-ui/icons'
+import { Plus }                                           from '@acx-ui/icons'
+import { ConvertToStandardMacAddress, IsValidMacAddress } from '@acx-ui/rc/utils'
 
-import { ConvertToStandardMacAddress, IsValidMacAddress } from '../../utils'
 
 export interface TagData {
   id: string,

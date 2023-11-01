@@ -27,7 +27,8 @@ import {
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
-  useNetworkVenueListQuery
+  useNetworkVenueListQuery,
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -39,7 +40,8 @@ import {
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
-  IsSecuritySupport6g
+  IsNetworkSupport6g,
+  ApGroupModalState
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -48,12 +50,6 @@ import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-interface ApGroupModalState { // subset of ApGroupModalWidgetProps
-  visible: boolean,
-  wlan?: NetworkSaveData['wlan'],
-  networkVenue?: NetworkVenue,
-  venueName?: string
-}
 
 const defaultPayload = {
   searchString: '',
@@ -78,7 +74,8 @@ const defaultPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 const defaultArray: Venue[] = []
@@ -95,8 +92,21 @@ export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
+    })
+  })
+
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -153,7 +163,7 @@ export function NetworkVenuesTab () {
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
         if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && 'owePairNetworkId' in networkQuery.data)
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
         }
       })
       setTableData(data)
@@ -171,8 +181,8 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
-    if (triBandRadioFeatureFlag && isWPA3security) {
+
+    if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
@@ -221,8 +231,8 @@ export function NetworkVenuesTab () {
 
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
-      const isWPA3security = IsSecuritySupport6g(network?.wlan?.wlanSecurity)
-      if (triBandRadioFeatureFlag && isWPA3security) {
+
+      if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
@@ -305,12 +315,15 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       fixed: 'left'
     },
     {
       key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
+      filterKey: 'city',
+      filterable: cityFilterOptions || false,
       sorter: true
     },
     {
@@ -419,7 +432,7 @@ export function NetworkVenuesTab () {
     setApGroupModalState({
       visible: true,
       venueName: row.name,
-      wlan: networkQuery.data?.wlan,
+      network: networkQuery.data,
       networkVenue: getCurrentVenue(row)
     })
   }
@@ -507,7 +520,10 @@ export function NetworkVenuesTab () {
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
+        enableApiFilter={true}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
       />
       <Form.Provider
         onFormFinish={handleFormFinish}

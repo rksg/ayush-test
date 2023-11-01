@@ -61,8 +61,6 @@ describe('ApProperties', () => {
       /></Provider>, { route: { params } })
     expect(screen.getByText('AP Properties')).toBeVisible()
     fireEvent.click(screen.getByText('More'))
-    expect(await screen.findByText('Properties')).toBeVisible()
-    fireEvent.click(screen.getByText('Settings'))
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
   })

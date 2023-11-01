@@ -49,7 +49,7 @@ describe('NetworkAssurance', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('AI-Driven RRM'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/analytics/next/recommendations/crrm', hash: '', search: ''
+      pathname: '/ai/recommendations/crrm', hash: '', search: ''
     }))
   })
   it('should render config recommendation tab for RA SA', async () => {

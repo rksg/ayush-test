@@ -23,11 +23,14 @@ import {
   EdgeStatusEnum,
   TABLE_QUERY,
   TableQuery,
+  allowRebootForStatus,
+  allowResetForStatus,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                         from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
+import { exportMessageMapping }                   from '@acx-ui/utils'
 
 import { seriesMappingAP } from '../DevicesWidget'
 import { useEdgeActions }  from '../useEdgeActions'
@@ -107,7 +110,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     })
 
-  const { deleteEdges, reboot, sendOtp } = useEdgeActions()
+  const { deleteEdges, factoryReset, reboot, sendOtp } = useEdgeActions()
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -234,7 +237,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       visible: (selectedRows) => (selectedRows.length === 1 &&
-        EdgeStatusEnum.OPERATIONAL === selectedRows[0]?.deviceStatus),
+        allowRebootForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
         reboot(rows[0], clearSelection)
@@ -246,6 +249,15 @@ export const EdgesTable = (props: EdgesTableProps) => {
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (rows, clearSelection) => {
         sendOtp(rows[0], clearSelection)
+      }
+    },{
+      visible: (selectedRows) => (
+        selectedRows.length === 1 &&
+        allowResetForStatus(selectedRows[0]?.deviceStatus)
+      ),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (rows, clearSelection) => {
+        factoryReset(rows[0], clearSelection)
       }
     }
   ]
@@ -261,8 +273,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
-        // eslint-disable-next-line max-len
-        iconButton={(exportDevice && false) ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        iconButton={(exportDevice && false) ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv
+        } : undefined}
         {...otherProps}
       />
     </Loader>

@@ -57,7 +57,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
-      providesTags: [{ type: 'Client', id: 'LIST' }]
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -104,7 +105,8 @@ export const clientApi = baseClientApi.injectEndpoints({
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     deleteGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -234,7 +236,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           }
         }
       },
-      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
       query: ({ params, payload }) => ({

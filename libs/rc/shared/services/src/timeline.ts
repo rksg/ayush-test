@@ -63,7 +63,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, () => {
           api.dispatch(timelineApi.util.invalidateTags([{ type: 'Activity', id: 'LIST' }]))
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     events: build.query<TableResult<Event>, RequestPayload>({
       providesTags: [{ type: 'Event', id: 'LIST' }],
@@ -131,7 +132,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             })) as AdminLog[]
           }
         }
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
       query: (payload) => {

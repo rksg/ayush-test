@@ -10,12 +10,18 @@ export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export type ConfigurationValue =
+  string |
+  Array<{ channelMode: string, channelWidth: string, radio: string }> |
+  boolean |
+  null
+
 export const crrmStates: Record<'optimized' | 'nonOptimized', IconValue> = {
   optimized: { order: 0, label: defineMessage({ defaultMessage: 'Optimized' }) },
   nonOptimized: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) }
 }
 
-const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
+export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
   medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
@@ -47,7 +53,9 @@ type RecommendationConfig = {
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
-    string | ((status: StateType, currentValue: string, recommendedValue: string) => MessageDescriptor);
+    string |
+    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
+      MessageDescriptor);
 }
 
 const categories = {
@@ -208,13 +216,13 @@ export const codes = {
       deltaSign: '-'
     }]
   },
-  'c-bgscan-3rd-radio-timer': {
+  'c-bgscan6g-timer': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Background scan timer on 6(5) GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Background scan timer on 6 GHz radio' }),
     priority: priorities.low,
     valueFormatter: formatter('durationFormat'),
-    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6(5) GHz radio)' }),
-    actionText: defineMessage({ defaultMessage: '6(5) GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+    valueText: defineMessage({ defaultMessage: 'Background Scan Timer (6 GHz radio)' }),
+    actionText: defineMessage({ defaultMessage: '6 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}.  Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
     reasonText: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{
@@ -328,7 +336,11 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-    recommendedValueTooltipContent: (status: StateType, currentValue: string | null, recommendedValue: string) =>
+    recommendedValueTooltipContent: (
+      status: StateType,
+      currentValue: ConfigurationValue,
+      recommendedValue: string
+    ) =>
       (![
         'applied',
         'afterapplyinterrupted',
@@ -336,7 +348,9 @@ export const codes = {
         'revertscheduled',
         'revertscheduleinprogress',
         'revertfailed'
-      ].includes(status) && currentValue && compareVersion(currentValue, recommendedValue) > -1)
+      ].includes(status) &&
+        currentValue &&
+        compareVersion(currentValue as string, recommendedValue) > -1)
         ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this recommendation is still valid.' })
         : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this recommendation is applied.' }),
     actionText: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
@@ -355,12 +369,12 @@ export const codes = {
   },
   'c-txpower-same': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Tx power setting for 2.4 GHz and 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Tx Power setting for 2.4 GHz and 5 GHz/6 GHz radio' }),
     priority: priorities.medium,
     valueFormatter: formatter('txFormat'),
     valueText: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on both 2.4 GHz and 5 Ghz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz.' }),
-    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz and reduces co-channel interference.' }),
+    actionText: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on 2.4 GHz and 5 GHz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.' }),
+    reasonText: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz/6 GHz and reduces co-channel interference.' }),
     tradeoffText: defineMessage({ defaultMessage: '2.4 GHz clients at the edge of Wi-Fi coverage may receive poor signal or lose connectivity.' }),
     kpis: [
       {
@@ -379,7 +393,7 @@ export const codes = {
   },
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 2.4 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -396,7 +410,7 @@ export const codes = {
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 5 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
@@ -413,7 +427,7 @@ export const codes = {
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx power found for 6 GHz radio' }),
+    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),

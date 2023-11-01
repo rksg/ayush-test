@@ -30,7 +30,7 @@ describe('RecommendationDetails', () => {
     })
     render(<RecommendationDetails />, {
       route: {
-        path: '/analytics/next/recommendations/5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
+        path: '/ai/recommendations/5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
       },
       wrapper: Provider
     })

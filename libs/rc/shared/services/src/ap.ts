@@ -47,7 +47,12 @@ import {
   MeshUplinkAp,
   ApRfNeighborsResponse,
   ApLldpNeighborsResponse,
-  ApClientAdmissionControl
+  SupportCcdVenue,
+  SupportCcdApGroup,
+  ApClientAdmissionControl,
+  AFCInfo,
+  AFCPowerMode,
+  AFCStatus
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -99,7 +104,8 @@ export const apApi = baseApApi.injectEndpoints({
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
@@ -781,20 +787,46 @@ export const apApi = baseApApi.injectEndpoints({
     getApRfNeighbors: build.query<ApRfNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     getApLldpNeighbors: build.query<ApLldpNeighborsResponse, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params)
+          ...createHttpRequest(WifiUrlsInfo.getApLldpNeighbors, params, { ...ignoreErrorModal })
         }
       }
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.detectApNeighbors, params)
+        return {
+          ...createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, { ...ignoreErrorModal }),
+          body: payload
+        }
+      }
+    }),
+    getCcdSupportVenues: build.query<SupportCcdVenue[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getCcdSupportApGroups: build.query<SupportCcdApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getCcdSupportApGroups, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    runCcd: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.runCcd, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -904,6 +936,10 @@ export const {
   useLazyGetApRfNeighborsQuery,
   useLazyGetApLldpNeighborsQuery,
   useDetectApNeighborsMutation,
+  useGetCcdSupportVenuesQuery,
+  useGetCcdSupportApGroupsQuery,
+  useLazyGetCcdSupportApGroupsQuery,
+  useRunCcdMutation,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation
@@ -1054,4 +1090,12 @@ const transformApViewModel = (result: ApViewModel) => {
     } as RadioProperties
   }
   return ap
+}
+
+
+export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
+  if (!afcInfo) return false
+  return (
+    afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
+    afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
 }

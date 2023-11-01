@@ -126,10 +126,6 @@ jest.mock('./pages/Services/DHCP/DHCPTable/DHCPTable', () => () => {
   return <div data-testid='DHCPTable' />
 })
 
-jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
-  return <div data-testid='DpskForm' />
-})
-
 jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
   return <div data-testid='DpskTable' />
 })
@@ -223,10 +219,6 @@ jest.mock('./pages/Policies/AccessControl/AccessControlDetail', () => () => {
   return <div data-testid='AccessControlDetail' />
 })
 
-jest.mock('./pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm', () => () => {
-  return <div data-testid='MacRegistrationListForm' />
-})
-
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
 })
@@ -234,7 +226,10 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   RogueAPDetectionForm: () => <div data-testid='RogueAPDetectionForm' />,
-  RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />
+  RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
+  DpskForm: () => <div data-testid='DpskForm' />,
+  MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />
 }))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
@@ -259,10 +254,6 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyTable', 
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail', () => () => {
   return <div data-testid='AdaptivePolicyDetail' />
-})
-
-jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm', () => () => {
-  return <div data-testid='AdaptivePolicySetForm' />
 })
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetTable', () => () => {
@@ -291,6 +282,14 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringDetail', () => 
 
 jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () => () => {
   return <div data-testid='ConnectionMeteringPageForm' />
+})
+
+jest.mock('./pages/Services/EdgeCentralizedForwarding/AddCentralizedForwarding', () => () => {
+  return <div data-testid='AddEdgeCentralizedForwarding' />
+})
+
+jest.mock('./pages/Services/EdgeCentralizedForwarding/EditCentralizedForwarding', () => () => {
+  return <div data-testid='EditEdgeCentralizedForwarding' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -619,6 +618,27 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+  })
+
+  test('should navigate to create Edge Centralized Forwarding page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdgeCentralizedForwarding')).toBeVisible()
+  })
+
+  test('should navigate to edit Edge Centralized Forwarding page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_CENTRALIZED_FORWARDING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdgeCentralizedForwarding')).toBeVisible()
   })
 })
 

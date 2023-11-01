@@ -34,7 +34,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = intl.$t({ defaultMessage: 'WPA' })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2/WPA3 mixed mode' })
         break
       case WlanSecurityEnum.OWE:
         _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
@@ -51,6 +51,12 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         break
       case WlanSecurityEnum.WEP:
         _securityProtocol = intl.$t({ defaultMessage: 'WEP' })
+        break
+      case WlanSecurityEnum.Open:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open' })
+        break
+      case WlanSecurityEnum.OpenCaptivePortal:
+        _securityProtocol = intl.$t({ defaultMessage: 'Open Captive Portal' })
         break
     }
     return _securityProtocol
@@ -110,7 +116,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         }else{
           return (
             row?.isOnBoarded
-              ? <span>{row.venues?.count || 0}</span>
+              ? <span>{row.venues?.count || noDataDisplay}</span>
               : <TenantLink
                 to={`/networks/wireless/${row.id}/network-details/venues`}
                 children={row.venues?.count ? row.venues?.count : 0}
@@ -132,7 +138,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         }else{
           return (
             row?.isOnBoarded
-              ? <span>{row.aps}</span>
+              ? <span>{row.aps || noDataDisplay}</span>
               : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
                 {row.aps}
               </TenantLink>
@@ -145,7 +151,12 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: false, // API does not seem to be working
-      align: 'center'
+      align: 'center',
+      render: (_, row) => {
+        return row?.isOnBoarded ?
+          row.clients || noDataDisplay
+          : row.clients
+      }
     },
     // { TODO: Wait for Services
     //   key: 'services',
@@ -169,7 +180,6 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      show: false,
       render: (data, row) =>
         getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
         noDataDisplay
@@ -230,7 +240,8 @@ const rowSelection = (supportOweTransition: boolean) => {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition && record?.isOweMaster === false)
+        || (supportOweTransition &&
+          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {

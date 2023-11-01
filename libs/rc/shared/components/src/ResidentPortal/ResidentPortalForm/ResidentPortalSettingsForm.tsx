@@ -5,10 +5,10 @@ import {
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 
-import { GridCol, GridRow, StepsFormLegacy, Subtitle } from '@acx-ui/components'
-import { useLazyGetQueriableResidentPortalsQuery }     from '@acx-ui/rc/services'
-import { checkObjectNotExists }                        from '@acx-ui/rc/utils'
-import { getIntl }                                     from '@acx-ui/utils'
+import { GridCol, GridRow, StepsFormLegacy, Subtitle }    from '@acx-ui/components'
+import { useLazyGetQueriableResidentPortalsQuery }        from '@acx-ui/rc/services'
+import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { getIntl }                                        from '@acx-ui/utils'
 
 import { ColorPickerInput }                         from './ColorPickerInput'
 import ResidentPortalImageUpload, { ExistingImage } from './ResidentPortalImageUpload'
@@ -52,6 +52,7 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
           { required: true },
           { min: 2 },
           { max: 52 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) },
           { validator: (_, value) => nameValidator(value) }
         ]}
         validateFirst

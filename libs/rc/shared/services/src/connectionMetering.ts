@@ -88,7 +88,8 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
       transformResponse (result: NewTableResult<ConnectionMetering>) {
         return transferToTableResult<ConnectionMetering>(result)
       },
-      providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
+      providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getQosStats: build.query<{ data: QosStats[] }, RequestPayload>({
       query: ({ params, payload }) => {

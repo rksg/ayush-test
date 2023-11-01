@@ -242,6 +242,30 @@ export const mockedFirewallDataList = {
       ],
       edgeIds: [],
       serviceVersions: {}
+    },
+    {
+      id: '3',
+      firewallName: 'TestFirewall3',
+      ddosEnabled: false,
+      ddosRateLimitingRules: {
+        [DdosAttackType.ALL]: 220,
+        [DdosAttackType.ICMP]: 200
+      },
+      statefulAclEnabled: false,
+      statefulAcls: [
+        {
+          aclName: 'ACL1',
+          aclDirection: ACLDirection.INBOUND,
+          aclRuleNum: 2
+        },
+        {
+          aclName: 'ACL2',
+          aclDirection: ACLDirection.OUTBOUND,
+          aclRuleNum: 2
+        }
+      ],
+      edgeIds: [],
+      serviceVersions: {}
     }
   ]
 }

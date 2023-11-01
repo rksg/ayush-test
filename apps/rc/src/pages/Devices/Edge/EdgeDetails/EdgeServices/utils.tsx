@@ -9,7 +9,9 @@ export const getEdgeServiceTypeString = ($t: IntlShape['$t'], type: EdgeServiceT
     case EdgeServiceTypeEnum.FIREWALL:
       return $t({ defaultMessage: 'Firewall' })
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
-      return $t({ defaultMessage: 'Network Segmentation' })
+      return $t({ defaultMessage: 'Personal Identity Network' })
+    case EdgeServiceTypeEnum.CENTRALIZED_FORWARDING:
+      return $t({ defaultMessage: 'Centralized Forwarding' })
     default:
       return ''
   }

@@ -8,7 +8,12 @@ import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
 
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
-  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: string }>
+  | Array<{
+    radio: string,
+    channelMode: string | null,
+    channelWidth: string | null,
+    autoCellSizing: string | null
+  }>
 
 const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
 const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
@@ -58,11 +63,11 @@ export const crrmText = (value: CrrmTextType) => {
     return $t({ defaultMessage: 'AI-Driven RRM for channel and bandwidth plan with {txPowerAPCountText}' }, {
       txPowerAPCountText: txPowerAPCount
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: `static and reduced AP Tx power in {txPowerAPCount} {txPowerAPCount, plural,
+        ? $t({ defaultMessage: `static and reduced AP Tx Power in {txPowerAPCount} {txPowerAPCount, plural,
             one {AP}
             other {APs}
           }` }, { txPowerAPCount })
-        : $t({ defaultMessage: 'no change in AP Tx power' })
+        : $t({ defaultMessage: 'no change in AP Tx Power' })
     })
   }
 }

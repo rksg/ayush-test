@@ -9,8 +9,9 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
-import { AccessPointLED } from './AccessPointLED'
-import { BssColoring }    from './BssColoring'
+import { AccessPointLED }   from './AccessPointLED'
+import { ApManagementVlan } from './ApManagementVlan'
+import { BssColoring }      from './BssColoring'
 
 
 export interface ModelOption {
@@ -20,7 +21,8 @@ export interface ModelOption {
 
 export interface AdvanceSettingContext {
   updateAccessPointLED?: (() => void),
-  updateBssColoring?: (() => void)
+  updateBssColoring?: (() => void),
+  updateApManagementVlan?: (() => void)
 }
 
 export function AdvancedTab () {
@@ -37,6 +39,7 @@ export function AdvancedTab () {
 
 
   const supportBssColoring = useIsSplitOn(Features.WIFI_FR_6029_FG1_TOGGLE)
+  const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
 
 
   const anchorItems = [{
@@ -61,7 +64,18 @@ export function AdvancedTab () {
       <BssColoring />
     </>
   }] : []
-  )]
+  ),
+  ...(supportApMgmgtVlan? [{
+    title: $t({ defaultMessage: 'Access Point Management VLAN' }),
+    key: 'apMgmtVlan',
+    content: <>
+      <StepsFormLegacy.SectionTitle id='ap-mgmt-vlan'>
+        { $t({ defaultMessage: 'Access Point Management VLAN' })}
+      </StepsFormLegacy.SectionTitle>
+      <ApManagementVlan />
+    </>
+  }] : [])
+  ]
 
 
 
@@ -69,6 +83,7 @@ export function AdvancedTab () {
     try {
       await editAdvancedContextData?.updateAccessPointLED?.()
       await editAdvancedContextData?.updateBssColoring?.()
+      await editAdvancedContextData?.updateApManagementVlan?.()
 
       setEditContextData({
         ...editContextData,
@@ -80,6 +95,7 @@ export function AdvancedTab () {
         const newData = { ...editAdvancedContextData }
         delete newData.updateAccessPointLED
         delete newData.updateBssColoring
+        delete newData.updateApManagementVlan
         setEditAdvancedContextData(newData)
       }
 
@@ -98,7 +114,7 @@ export function AdvancedTab () {
     >
       <StepsFormLegacy.StepForm>
         {/*
-        <AnchorLayout items={anchorItems} offsetTop={56} />
+        <AnchorLayout items={anchorItems} offsetTop={60} />
         */}
         {
           anchorItems.map(item => (

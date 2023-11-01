@@ -10,7 +10,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   aclDetail,
-  aclList, aclResponse, avcApp, avcCat, deviceDetailResponse, devicePolicyListResponse,
+  aclList, aclResponse, avcApp, avcCat, devicePolicyDetailResponse, devicePolicyListResponse,
   layer2PolicyListResponse,
   layer2Response,
   layer3PolicyListResponse,
@@ -71,7 +71,7 @@ describe('AccessControlForm Component', () => {
       rest.get(AccessControlUrls.getL2AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer2Response))),
       rest.get(AccessControlUrls.getDevicePolicy.url,
-        (_, res, ctx) => res(ctx.json(deviceDetailResponse))),
+        (_, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(ctx.json(devicePolicyListResponse))),
       rest.get(AccessControlUrls.getAppPolicyList.url,

@@ -39,7 +39,8 @@ import {
   VenueLanPorts,
   BillingCycleType,
   ConnectionMetering,
-  PropertyDpskSetting
+  PropertyDpskSetting,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
@@ -394,7 +395,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
-    { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
+    { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringEnabled }
   )
 
 
@@ -548,12 +549,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     const dpsks: PropertyDpskSetting[] = [
       {
         type: PropertyDpskType.UNIT,
-        passphrase: diffUnitPersona?.dpskPassphrase,
+        passphrase: diffUnitPersona?.dpskPassphrase === ''
+          ? undefined : diffUnitPersona?.dpskPassphrase,
         vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
       },
       {
         type: PropertyDpskType.GUEST,
-        passphrase: diffGuestPersona?.dpskPassphrase,
+        passphrase: diffGuestPersona?.dpskPassphrase === ''
+          ? undefined : diffGuestPersona?.dpskPassphrase,
         vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan ?? unitPersona?.vlan
       }
     ]
@@ -629,12 +632,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       dpsks: [
         {
           type: PropertyDpskType.UNIT,
-          passphrase: unitPersona?.dpskPassphrase,
+          passphrase: unitPersona?.dpskPassphrase === ''
+            ? undefined : unitPersona?.dpskPassphrase,
           vlan: unitPersona?.vlan
         },
         {
           type: PropertyDpskType.GUEST,
-          passphrase: guestPersona?.dpskPassphrase,
+          passphrase: guestPersona?.dpskPassphrase === ''
+            ? undefined : guestPersona?.dpskPassphrase,
           vlan: guestPersona?.vlan
         }
       ],
@@ -738,6 +743,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 // UnitName(235) -> PersonaName(255)
                 // ex. Rule = GUEST_{UnitName}-{timestamp} or UNIT_{UnitName}-{timestamp}
                 { max: 235 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) },
                 { validator: (_, value) => nameValidator(value) }
               ]}
             />
@@ -757,7 +763,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               }
               rules={[
                 { min: 8 },
-                { max: 63 }
+                { max: 63 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />
@@ -778,7 +785,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 }
                 rules={[
                   { min: 8 },
-                  { max: 63 }
+                  { max: 63 },
+                  { validator: (_, value) => trailingNorLeadingSpaces(value) }
                 ]}
                 children={<Input />}
               />
@@ -805,7 +813,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   style={{ marginBottom: '10px' }}
                   name={'enableGuestVlan'}
                   valuePropName={'checked'}
-                  initialValue={true}
+                  initialValue={isEdit}
                   children={<Switch />}
                 />
               </StepsForm.FieldLabel>
@@ -832,7 +840,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Resident Name' })}
               rules={[
                 { required: true },
-                { max: 255 }
+                { max: 255 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />

@@ -6,11 +6,11 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cvqgNU"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 lKtIj"
+        class="styledComponents__Header-sc-1abm7iv-10 chCEgN"
       >
         <div>
           <div
@@ -34,6 +34,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                 <input
                   class="ant-input"
                   placeholder="Search Test Call Name"
+                  title="Search Test Call Name"
                   type="text"
                   value=""
                 />
@@ -761,7 +762,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cvqgNU"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 hcIwoE"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
@@ -819,7 +820,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 kyfJsf"
+                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 kxlBHG"
                                   data-id="table-clear-btn"
                                   title="Clear selection"
                                   type="button"

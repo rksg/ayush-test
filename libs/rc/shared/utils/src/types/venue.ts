@@ -382,7 +382,8 @@ export interface SwitchModel {
 	model: string,
 	slots: SwitchModelSlot[],
   taggedPorts?: string,
-  untaggedPorts?: string
+	untaggedPorts?: string,
+	voicePorts?: string
 }
 
 export interface Vlan {
@@ -720,6 +721,11 @@ export interface VenueLoadBalancing {
 
 export interface VenueBssColoring {
 	bssColoringEnabled: boolean
+}
+
+export type ApManagementVlan = {
+	vlanOverrideEnabled: boolean,
+	vlanId: number
 }
 
 export interface Node {

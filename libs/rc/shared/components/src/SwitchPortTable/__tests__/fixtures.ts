@@ -219,6 +219,32 @@ export const switchVlanUnion = {
   ]
 }
 
+export const singleVlansByVenue = [
+  {
+    id: '7d313d9b1a9140e49b6b61bb820c83f5',
+    vlanId: 21,
+    ipv4DhcpSnooping: false,
+    arpInspection: false,
+    igmpSnooping: 'none',
+    spanningTreeProtocol: 'none',
+    spanningTreePriority: 32768,
+    switchFamilyModels: [
+      {
+        id: '04c9f1ef13d649b8b54da80c40b6a1a6',
+        model: 'ICX7150-C12P',
+        taggedPorts: '1/1/2',
+        untaggedPorts: '1/1/5',
+        slots: [
+          {
+            slotNumber: 1,
+            enable: true
+          }
+        ]
+      }
+    ]
+  }
+]
+
 export const vlansByVenue = [{
   arpInspection: true,
   id: '16dd285eac0d4663aa449b6498f4c075',

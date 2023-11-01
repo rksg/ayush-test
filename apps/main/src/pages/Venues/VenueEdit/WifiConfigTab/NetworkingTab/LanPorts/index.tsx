@@ -4,7 +4,8 @@ import { Col, Form, Image, Row, Select, Space } from 'antd'
 import { isEqual }                              from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, Tabs }                                                 from '@acx-ui/components'
+import { AnchorContext, Loader, Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -36,6 +37,7 @@ export function LanPorts () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const customGuiChagedRef = useRef(false)
 
@@ -54,6 +56,8 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as ApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
 
+  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
+
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
     useWatch('model'),
@@ -66,8 +70,10 @@ export function LanPorts () {
     if (venueLanPorts?.data?.length) {
       setLanPortData(venueLanPorts?.data)
       setLanPortOrinData(venueLanPorts?.data)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
     }
-  }, [venueLanPorts?.data])
+  }, [setReadyToScroll, venueLanPorts?.data])
 
   useEffect(() => {
     if (!venueSettings?.isLoading) {
@@ -225,6 +231,7 @@ export function LanPorts () {
                     setSelectedPortCaps={setSelectedPortCaps}
                     selectedModelCaps={selectedModelCaps}
                     isDhcpEnabled={isDhcpEnabled}
+                    isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                     onGUIChanged={handleGUIChanged}
                     index={index}
                   />

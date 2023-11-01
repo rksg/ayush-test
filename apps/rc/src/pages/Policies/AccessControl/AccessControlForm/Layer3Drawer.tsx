@@ -40,6 +40,7 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping }      from '../../contentsMap'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
+import { useScrollLock }                   from '../ScrollLock'
 
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
@@ -185,6 +186,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const AnyText = $t({ defaultMessage: 'Any' })
   const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
@@ -238,13 +241,22 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     return !_.isNil(layer3PolicyInfo)
   }
 
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
+  }
+
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
   }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
@@ -286,7 +298,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -334,6 +346,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       dataIndex: 'sort',
       key: 'sort',
+      fixed: 'right',
       width: 60,
       render: (_, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
@@ -401,7 +414,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   const handleLayer3DrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -1013,7 +1026,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -1046,7 +1059,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           disabled={!l3AclPolicyId}
           onClick={() => {
             if (l3AclPolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(l3AclPolicyId)
               setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
             }
@@ -1059,7 +1072,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Button type='link'
           disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
           }}>
           {$t({ defaultMessage: 'Add New' })}

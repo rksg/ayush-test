@@ -383,3 +383,27 @@ export interface MspLogoFile {
 export interface ParentLogoUrl {
   logo_url: string
 }
+
+export interface MspAggregations {
+  aggregation: boolean,
+  ecExclusionEnabled: boolean
+}
+
+export interface MspEcAlarmList {
+  mspEcAlarmCountList: {
+    tenantId?: string;
+    alarmCount?: number;
+  }[]
+}
+
+export interface RecommendFirmwareUpgrade {
+  defaultABF: string,
+  defaultApBranchFamilyApFirmwares: UpgradeFirmwareVer[]
+}
+
+export interface UpgradeFirmwareVer {
+  seq: number,
+  name: string,
+  defaultApFirmware: string,
+  branches: string[]
+}

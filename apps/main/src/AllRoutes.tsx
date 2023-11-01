@@ -9,13 +9,15 @@ import MigrationForm    from './pages/Administration/OnpremMigration/MigrationFo
 import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
 import AnalyticsBase    from './pages/Analytics'
 import Dashboard        from './pages/Dashboard'
-import Dashboardv2      from './pages/Dashboardv2'
 import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import { MFACheck }     from './pages/Layout/MFACheck'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import ReportsBase      from './pages/Reports'
+import { RWGDetails }   from './pages/RWG/RWGDetails'
+import { RWGForm }      from './pages/RWG/RWGForm'
+import { RWGTable }     from './pages/RWG/RWGTable'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
 import TimelineBase     from './pages/Timeline'
@@ -40,8 +42,7 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
-          <Route path='dashboard' element={<Dashboardv2 />} />
-          <Route path='dashboard-v1' element={<Dashboard />} />
+          <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
@@ -73,6 +74,7 @@ function AllRoutes () {
           </Route>
           <Route path='venues/*' element={<VenuesRoutes />} />
           <Route path='administration/*' element={<AdministrationRoutes />} />
+          <Route path='ruckus-wan-gateway/*' element={<RWGRoutes />} />
         </Route>
       </Route>
       <Route path=':tenantId/v/*' element={<MFACheck />}>
@@ -124,6 +126,18 @@ function AdministrationRoutes () {
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
+    </Route>
+  )
+}
+
+function RWGRoutes () {
+  return rootRoutes(
+    <Route path='/:tenantId/t/ruckus-wan-gateway'>
+      <Route index element={<RWGTable />} />
+      <Route path='*' element={<PageNotFound />} />
+      <Route path='add' element={<RWGForm />} />
+      <Route path=':gatewayId/:action' element={<RWGForm />} />
+      <Route path=':gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
     </Route>
   )
 }

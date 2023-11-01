@@ -3,10 +3,10 @@
 import { BasePersonaTable } from 'apps/rc/src/pages/Users/Persona/PersonaTable/BasePersonaTable'
 import { useIntl }          from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { LineChartOutline, ListSolid }              from '@acx-ui/icons'
-import { ClientDualTable, SwitchClientsTable }      from '@acx-ui/rc/components'
+import { Tabs, Tooltip }                       from '@acx-ui/components'
+import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import { LineChartOutline, ListSolid }         from '@acx-ui/icons'
+import { ClientDualTable, SwitchClientsTable } from '@acx-ui/rc/components'
 import {
   useGetPersonaGroupByIdQuery,
   useGetQueriablePropertyConfigsQuery
@@ -29,7 +29,7 @@ const venueOptionsDefaultPayload = {
 export function VenueClientsTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { activeSubTab, venueId } = useParams()
+  const { venueId, activeSubTab, categoryTab } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { propertyConfig } = useGetQueriablePropertyConfigsQuery(
@@ -54,15 +54,27 @@ export function VenueClientsTab () {
     })
   }
 
+  const onCategoryTabChange = (tab: string) => {
+    activeSubTab && navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${activeSubTab}/${tab}`
+    })
+  }
+
   return (
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
       onChange={onTabChange}
-      type='second'>
+      type='card'
+    >
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wireless' })}
         key='wifi'>
-        <IconThirdTab>
+        <IconThirdTab
+          activeKey={categoryTab}
+          defaultActiveKey='list'
+          onChange={onCategoryTabChange}
+        >
           <Tabs.TabPane key='list'
             tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
               <ListSolid />
@@ -82,8 +94,7 @@ export function VenueClientsTab () {
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wired' })}
-        key='switch'
-        disabled={!useIsSplitOn(Features.DEVICES)}>
+        key='switch'>
         <SwitchClientsTable filterBySwitch={true}/>
       </Tabs.TabPane>
       {(isCloudpathBetaEnabled && personaGroupData?.nsgId && personaGroupData?.id) &&

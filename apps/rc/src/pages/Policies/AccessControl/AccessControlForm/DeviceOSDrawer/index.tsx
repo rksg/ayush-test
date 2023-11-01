@@ -14,17 +14,25 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
   useDevicePolicyListQuery,
   useGetDevicePolicyQuery,
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                     from '@acx-ui/user'
+import {
+  AccessStatus,
+  CommonResult,
+  DeviceRule,
+  OsVendorEnum,
+  defaultSort,
+  sortProp } from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
+import { useScrollLock }                   from '../../ScrollLock'
 import { AddModeProps, editModeProps }     from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -123,6 +131,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const { lockScroll, unlockScroll } = useScrollLock()
+
   const [
     accessStatus,
     policyName,
@@ -134,6 +144,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useWatch<string>('description', contentForm),
     useWatch<string>([...inputName, 'devicePolicyId'])
   ]
+
+  const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
 
   const [ createDevicePolicy ] = useAddDevicePolicyMutation()
 
@@ -160,6 +172,15 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     { skip: skipFetch }
   )
 
+  const setDrawerVisible = (status: boolean) => {
+    if (status) {
+      lockScroll()
+    } else {
+      unlockScroll()
+    }
+    setVisible(status)
+  }
+
   const isViewMode = () => {
     if (queryPolicyId === '') {
       return false
@@ -178,7 +199,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
-      setVisible(true)
+      setDrawerVisible(true)
       setQueryPolicyId(editMode.id)
     }
   }, [editMode])
@@ -204,7 +225,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
-      setVisible(onlyAddMode.visible)
+      setDrawerVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
 
@@ -238,7 +259,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       sorter: { compare: sortProp('deviceType', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'OS Vendor' }),
+      title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osVendor',
       key: 'osVendor',
       sorter: { compare: sortProp('osVendor', defaultSort) }
@@ -302,7 +323,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   const handleDeviceOSDrawerClose = () => {
-    setVisible(false)
+    setDrawerVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
     if (editMode.isEdit) {
@@ -368,8 +389,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }
 
+  const maxOSRuleNum = isNewOsVendorFeatureEnabled ?
+    (32 -
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.Xbox).length -
+      deviceOSRuleList.filter((rule) => rule.osVendor === OsVendorEnum.PlayStation).length * 2) : 32
+
   const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
+    disabled: deviceOSRuleList.length >= maxOSRuleNum,
     onClick: handleAddAction
   }] : []
 
@@ -537,7 +564,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         type='link'
         size={'small'}
         onClick={() => {
-          setVisible(true)
+          setDrawerVisible(true)
           setQueryPolicyId(onlyViewMode.id)
         }
         }>
@@ -570,7 +597,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           disabled={!devicePolicyId}
           onClick={() => {
             if (devicePolicyId) {
-              setVisible(true)
+              setDrawerVisible(true)
               setQueryPolicyId(devicePolicyId)
               setLocalEdiMode({ id: devicePolicyId, isEdit: true })
             }
@@ -583,7 +610,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         <Button type='link'
           disabled={deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
           onClick={() => {
-            setVisible(true)
+            setDrawerVisible(true)
             setQueryPolicyId('')
             clearFieldsValue()
           }}>

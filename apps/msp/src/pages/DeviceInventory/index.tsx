@@ -27,8 +27,8 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { AccountType }           from '@acx-ui/utils'
+import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { AccountType, exportMessageMapping } from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -227,7 +227,7 @@ export function DeviceInventory () {
 
   const actions = [
     {
-      label: $t({ defaultMessage: 'Export To CSV' }),
+      label: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: () => ExportInventory(),
       disabled: (list && list.totalCount === 0)
     }

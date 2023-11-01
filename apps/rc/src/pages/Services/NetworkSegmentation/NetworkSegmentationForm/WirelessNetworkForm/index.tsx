@@ -9,12 +9,12 @@ import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
 import { Loader, StepsForm, useStepFormContext }                                                                                     from '@acx-ui/components'
+import { TunnelProfileAddModal }                                                                                                     from '@acx-ui/rc/components'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery, useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 
-import * as UI                from './styledComponents'
-import { TunnelProfileModal } from './TunnelProfileModal'
+import * as UI from './styledComponents'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id'],
@@ -131,7 +131,7 @@ export const WirelessNetworkForm = () => {
             }
           />
         </Col>
-        <TunnelProfileModal />
+        <TunnelProfileAddModal />
       </Row>
       <Row gutter={20}>
         <Col>
@@ -139,7 +139,7 @@ export const WirelessNetworkForm = () => {
             {
               $t({
                 defaultMessage: `Apply the tunnel profile to the following
-                networks that you want to enable network segmentation:`
+                networks that you want to enable personal identity network:`
               })
             }
             <Space size={1}>

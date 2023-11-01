@@ -13,10 +13,12 @@ import {
   getServiceRoutePath,
   getServiceListRoutePath,
   NewDpskPassphrase,
-  isActivePassphrase
+  isActivePassphrase,
+  MAX_PASSPHRASES_PER_TENANT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
+
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'
@@ -32,7 +34,7 @@ export default function DpskDetails () {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
     params: { tenantId, serviceId, ...dpskNewConfigFlowParams },
-    payload: { filters: {}, page: 1, pageSize: 75000 }
+    payload: { filters: {}, page: 1, pageSize: MAX_PASSPHRASES_PER_TENANT }
   }, {
     selectFromResult: ({ data }) => {
       return {

@@ -169,6 +169,7 @@ describe('AssignMspLicense', () => {
     })
     jest.spyOn(services, 'useAddMspAssignmentMutation')
     jest.spyOn(services, 'useUpdateMspAssignmentMutation')
+    jest.spyOn(services, 'useDeleteMspAssignmentMutation')
     mockServer.use(
       rest.post(
         MspUrlsInfo.addMspAssignment.url,
@@ -177,6 +178,10 @@ describe('AssignMspLicense', () => {
       rest.patch(
         MspUrlsInfo.updateMspAssignment.url,
         (req, res, ctx) => res(ctx.json({ requestId: 456 }))
+      ),
+      rest.delete(
+        MspUrlsInfo.deleteMspAssignment.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 789 }))
       )
     )
     params = {
@@ -705,6 +710,44 @@ describe('AssignMspLicense', () => {
     })
     await waitFor(() => {
       expect(services.useUpdateMspAssignmentMutation).toHaveLastReturnedWith(value)
+    })
+  })
+  it('should save correctly for delete assigned device', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
+      return { data: devicesAssignmentSummary }
+    })
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: deviceAssignmentHistory }
+    })
+    render(
+      <Provider>
+        <AssignMspLicense />
+      </Provider>, {
+        route: { params }
+      })
+
+    const deviceInput = screen.getByRole('spinbutton')
+    fireEvent.change(deviceInput, { target: { value: '0' } })
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 789 },
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      }, { replace: true })
+    })
+    await waitFor(() => {
+      expect(services.useDeleteMspAssignmentMutation).toHaveLastReturnedWith(value)
     })
   })
 })

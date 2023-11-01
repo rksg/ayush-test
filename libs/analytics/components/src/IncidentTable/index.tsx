@@ -23,8 +23,8 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }         from '@acx-ui/react-router-dom'
-import { noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -227,7 +227,7 @@ export function IncidentTable ({ filters }: {
       width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
-      sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sorter: { compare: sortProp('impactedClientCount', defaultSort) },
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
@@ -266,6 +266,7 @@ export function IncidentTable ({ filters }: {
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
