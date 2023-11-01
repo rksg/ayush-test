@@ -187,7 +187,7 @@ export const getErrorContent = (action: ErrorAction) => {
     }
     else if ('errors' in errors) { // CatchErrorDetails
       const errorsMessageList = errors.errors.map(err=>err.message)
-      content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+      content = <>{errorsMessageList.map(msg=><p key={msg}>{msg}</p>)}</>
     }
   }
 
