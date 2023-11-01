@@ -276,19 +276,13 @@ export function pairGraphs (graphs: Type.ProcessedCloudRRMGraph[]) : Type.Proces
     secondaryGraph: Type.ProcessedCloudRRMNode[] = []
 
   allNodeIds.forEach(id => {
-    let primaryNode = graphs[0].nodes.find(node => node.id === id)
-    let secondaryNode = graphs[1].nodes.find(node => node.id === id)
+    const primaryNode = graphs[0].nodes.find(node => node.id === id)
+    const secondaryNode = graphs[1].nodes.find(node => node.id === id)
 
-    if (primaryNode && secondaryNode &&
-      !(primaryNode.category === Type.CategoryState.Normal &&
-        secondaryNode.category === Type.CategoryState.Normal)) {
-      primaryNode = { ...primaryNode, showTooltip: true }
-      secondaryNode = { ...secondaryNode, showTooltip: true }
-    }
-
-    primaryNode && primaryGraph.push(primaryNode)
+    primaryNode && primaryGraph.push({ ...primaryNode, showTooltip: true })
     secondaryNode && secondaryGraph.push({
       ...secondaryNode,
+      showTooltip: true,
       value: primaryNode?.value || secondaryNode?.value
     })
   })
