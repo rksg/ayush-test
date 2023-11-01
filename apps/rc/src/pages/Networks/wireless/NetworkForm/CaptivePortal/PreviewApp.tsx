@@ -10,7 +10,7 @@ const appDescriptions: Record<string, MessageDescriptor> = {
   'affect the popup that users see on their first sign in to the network' }),
   linkedin: defineMessage({ defaultMessage: '-The selected LinkedIn app will affect the popup '+
   'that users see on their first sign in to the network' }),
-  twitter: defineMessage({ defaultMessage: '-The selected Twitter app will affect the popup '+
+  twitter: defineMessage({ defaultMessage: '-The selected X app will affect the popup '+
   'that users see on their first sign in to the network' })
 }
 export default function PreviewApp (props:{
