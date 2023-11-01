@@ -103,7 +103,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDefaultRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/radioSettings?defaultOnly=true',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default',
     newApi: true
   },
