@@ -13,7 +13,8 @@ import {
   PhyTypeConstraintEnum,
   NetworkVenue,
   ClientIsolationVenue,
-  ManagementFrameProtectionEnum
+  ManagementFrameProtectionEnum,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { hasVxLanTunnelProfile } from './utils'
@@ -22,7 +23,6 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
-    accountingRadiusId: data.accountingRadiusId,
     authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
   }
   let authRadius = {}
@@ -52,7 +52,18 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...{
         enableAccountingProxy: data.enableAccountingProxy,
         enableSecondaryAcctServer: data.enableSecondaryAcctServer,
-        accountingRadius
+        accountingRadius,
+        accountingRadiusId: data.accountingRadiusId
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        enableAccountingProxy: false,
+        enableSecondaryAcctServer: false,
+        accountingRadius: null,
+        accountingRadiusId: null
       }
     }
   }
@@ -298,8 +309,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.l3AclPolicyId = null
   }
 
-  if (!get(data, 'wlan.bypassCPUsingMacAddressAuthentication') &&
-      !get(data, 'wlan.macAddressAuthentication')) {
+  if (data?.type && (data?.type !== NetworkTypeEnum.DPSK &&
+    data?.type !== NetworkTypeEnum.AAA &&
+    !(data?.type === NetworkTypeEnum.OPEN &&
+      get(data, 'wlan.macAddressAuthentication')) &&
+    !(data?.guestPortal && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      get(data, 'wlan.bypassCPUsingMacAddressAuthentication')))) {
     (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 
