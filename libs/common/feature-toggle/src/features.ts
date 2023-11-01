@@ -120,5 +120,6 @@ export enum Features {
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_CLB = 'BETA-CLB',
   BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
-  AP_CCD = 'AP-CCD'
+  AP_CCD = 'AP-CCD',
+  AP_70 = 'AP-70'
 }

@@ -8,7 +8,7 @@ import { get, isUndefined }    from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 import { InformationSolid }                                                                                      from '@acx-ui/icons'
 import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
 
@@ -280,6 +280,7 @@ export const getInitMloEnabled = (wlanData: NetworkSaveData | null, initWifi7Ena
 function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
 
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
@@ -352,7 +353,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
           </div>
         )}
       </div>
-      { wifi7MloFlag &&
+      { wifi7MloFlag && enableAP70 &&
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
