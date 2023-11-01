@@ -85,3 +85,19 @@ export const ButtonContainer = styled.div`
   align-items: center;
   margin-left: 10px;
 `
+
+export const AsteriskFormTitle = styled.span`
+  color: '#808284';
+  fontSize: '12px';
+  &::after {
+      content: "*";
+      margin-right: 0;
+      margin-left: 3px;
+      color: var(--acx-accents-orange-50);
+      font-family: var(--acx-neutral-brand-font);
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      display: inline-block;
+      box-sizing: border-box;
+  }
+`

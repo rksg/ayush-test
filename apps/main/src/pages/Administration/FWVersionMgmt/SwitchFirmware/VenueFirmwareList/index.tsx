@@ -37,6 +37,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -95,7 +96,7 @@ function useColumns (
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
       render: function (_, row) {
-        return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
+        return toUserDate(row.lastScheduleUpdateTime || noDataDisplay)
       }
     },
     {
@@ -365,7 +366,9 @@ export const VenueFirmwareTable = (
         onOk () {
           skipSwitchUpgradeSchedules({
             params: { ...params },
-            payload: selectedRows.map((row) => row.id)
+            payload: {
+              switchIds: [],
+              venueIds: selectedRows.map((row) => row.id) }
           }).then(clearSelection)
         },
         onCancel () {}
@@ -413,14 +416,14 @@ export const VenueFirmwareTable = (
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
-      <PreferencesDialog
+      {modelVisible && <PreferencesDialog
         visible={modelVisible}
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
         isSwitch={true}
         preDownload={preDownload?.preDownload}
-      />
+      />}
     </Loader>
   )
 }

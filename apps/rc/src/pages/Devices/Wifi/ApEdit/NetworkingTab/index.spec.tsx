@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '..'
 import { ApCap_T750SE, ApData_T750SE }  from '../../../__tests__/fixtures'
@@ -37,7 +37,6 @@ jest.mock('./DirectedMulticast', () => ({
 describe('AP Networking Tab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
   })
 
   it('should render correctly',async () => {

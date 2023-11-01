@@ -125,13 +125,15 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isAssignMultipleEcEnabled =
-    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
+    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
-  const isUpgradeMultipleEcEnabled = useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE)
+  const isUpgradeMultipleEcEnabled =
+    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
+  const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -240,7 +242,8 @@ export function MspCustomers () {
     searchString: '',
     filters: {
       mspTenantId: [parentTenantid],
-      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+      tenantType: isTechPartnerQueryEcsEnabled ? [AccountType.MSP_EC]
+        : [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
     },
     fields: [
       'check-all',
@@ -572,7 +575,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
         visible: (selectedRows) => {
           const len = selectedRows.length
-          return (isUpgradeMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+          const validRows = selectedRows.filter(en => en.status === 'Active')
+          return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -704,6 +709,9 @@ export function MspCustomers () {
   }
 
   const IntegratorTable = () => {
+    const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
+    const [drawerScheduleFirmwareVisible, setDrawerScheduleFirmwareVisible] = useState(false)
+
     const tableQuery = useTableQuery({
       useQuery: useIntegratorCustomerListQuery,
       defaultPayload: integratorPayload,
@@ -711,6 +719,22 @@ export function MspCustomers () {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       }
     })
+
+    const rowActions: TableProps<MspEc>['rowActions'] = [
+      {
+        label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        visible: (selectedRows) => {
+          const len = selectedRows.length
+          const validRows = selectedRows.filter(en => en.status === 'Active')
+          return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+        },
+        onClick: (selectedRows) => {
+          const selectedEcIds = selectedRows.map(item => item.id)
+          setSelEcTenantIds(selectedEcIds)
+          setDrawerScheduleFirmwareVisible(true)
+        }
+      }]
 
     return (
       <Loader states={[
@@ -724,7 +748,14 @@ export function MspCustomers () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
+        {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
+          visible={drawerScheduleFirmwareVisible}
+          tenantIds={selEcTenantIds}
+          setVisible={setDrawerScheduleFirmwareVisible}
+        />}
       </Loader>
     )
   }

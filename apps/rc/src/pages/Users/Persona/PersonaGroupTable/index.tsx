@@ -12,7 +12,8 @@ import {
   NetworkSegmentationLink,
   IdentityGroupLink,
   useDpskNewConfigFlowParams,
-  VenueLink
+  VenueLink,
+  PersonaGroupDrawer
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -33,7 +34,6 @@ import { filterByAccess, hasAccess }                   from '@acx-ui/user'
 import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
-import { PersonaGroupDrawer }   from '../PersonaGroupDrawer'
 
 const propertyConfigDefaultPayload = {
   sortField: 'venueName',
