@@ -103,7 +103,7 @@ export default function LinkedInSetting (props:{
     <>
       <Tooltip title={$t({ defaultMessage: 'Edit LinkedIn app' })}
         placement='bottom'><Button onClick={() => {setVisible(true)}}
-          title='settingicon'
+          data-testid='settingicon'
           type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit LinkedIn App' })}
