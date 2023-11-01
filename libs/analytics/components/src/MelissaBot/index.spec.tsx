@@ -8,7 +8,6 @@ import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 import { MelissaBot } from '.'
 
 describe('MelissaBot', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let container:HTMLDivElement|undefined=undefined
   beforeEach(() => {
   // setup a DOM element as a render target
@@ -22,7 +21,6 @@ describe('MelissaBot', () => {
     container = undefined
     jest.clearAllMocks()
   })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const route = {
     path: '/:page',
     params: { page: 'incidents' },
@@ -264,32 +262,4 @@ describe('MelissaBot', () => {
       fireEvent.change(await screen.findByTestId('uploader'), { target: { files: [textFile] } })
     })
   })
-  // it('should handle error for file upload from chatbot',async ()=>{
-  //   await act(async ()=>{
-  //     render(<MelissaBot/>,{ route, container })
-  //   })
-  //   await act(async ()=>{
-  //     fireEvent.click(await screen.findByRole('img'))
-  //   })
-  //   expect(document.querySelector('.ant-drawer-open')).toBeDefined()
-  //   global.fetch = jest.fn().mockImplementation(() =>
-  //     Promise.resolve({
-  //       json: () => Promise.resolve( { queryResult: { fulfillmentMessages: uploadRes } })
-  //     })
-  //   )
-  //   await act(async ()=>{
-  //     await userEvent.type(screen.getByRole('textbox'),'support{enter}')
-  //   })
-  //   await screen.findByText('support')
-  //   await act(async ()=>{
-  //     fireEvent.click(await screen.findByTestId('ArrowChevronRight'))
-  //   })
-  //   global.fetch = jest.fn().mockImplementation(() =>
-  //     Promise.reject(new Error('Some Error.'))
-  //   )
-  //   await act(async ()=>{
-  //     const textFile = new File(['someTextFile'], 'text.txt', { type: 'text/plain' })
-  //     fireEvent.change(await screen.findByTestId('uploader'), { target: { files: [textFile] } })
-  //   })
-  // })
 })

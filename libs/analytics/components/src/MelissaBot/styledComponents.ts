@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer, cssStr } from '@acx-ui/components'
 
 export const MelissaDrawer = styled(Drawer)`
     .ant-drawer-header {
@@ -18,4 +18,15 @@ export const MelissaDrawer = styled(Drawer)`
     .ant-drawer-close > svg > path{
         stroke: #FFF;
     }
+`
+
+export const Title = styled.span`
+    font-weight: ${cssStr('--acx-headline-3-font-weight')};
+    font-size: ${cssStr('--acx-headline-3-font-size')}
+`
+export const SubTitle = styled.span`
+    font-weight: ${cssStr('--acx-subtitle-6-font-weight')};
+    font-size: ${cssStr('--acx-subtitle-5-font-size')};
+    padding-top: 3px;
+    margin-left: -5px;
 `

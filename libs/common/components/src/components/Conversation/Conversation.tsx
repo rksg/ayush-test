@@ -8,14 +8,30 @@ import { ArrowChevronRight } from '@acx-ui/icons'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
+export interface FulfillmentMessage {
+  data?: { incidentId: string },
+  text?: { text: string[] },
+  payload?: {
+    richContent: {
+      link?: string,
+      type: string,
+      icon?: { color: string, type: string },
+      text: string,
+      title?: string,
+      subtitle?: string,
+      event?: {
+        parameters: { url: string },
+        name: string,
+        languageCode: string
+      }
+    }[][]
+  } }
 
-export type content = { type: 'bot' | 'user',
-contentList:{ data?: { incidentId: string },
-text?: { text: string[] }, payload?: { richContent: { link?: string, type: string,
-  icon?: { color: string, type: string }, text: string, title?: string, subtitle?: string,
- event?: { parameters: { url: string }, name: string, languageCode: string } }[][] } }[] }
+export type Content = { type: 'bot' | 'user',
+contentList:FulfillmentMessage[] }
+
 export interface ConversationProps {
-  content: content[]
+  content: Content[]
   classList: string
   style: CSSProperties
   isReplying: boolean

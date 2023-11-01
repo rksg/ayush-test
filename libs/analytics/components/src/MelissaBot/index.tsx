@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Input }       from 'antd'
-import { defer, get }  from 'lodash'
-import moment          from 'moment-timezone'
-import { useIntl }     from 'react-intl'
-import { useLocation } from 'react-router-dom'
+import { Input, InputRef } from 'antd'
+import { defer, get }      from 'lodash'
+import moment              from 'moment-timezone'
+import { useIntl }         from 'react-intl'
+import { useLocation }     from 'react-router-dom'
 
-import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { Conversation, content }              from '@acx-ui/components'
+import { getUserProfile as getUserProfileRA }        from '@acx-ui/analytics/utils'
+import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
 
 
-import MelissaHeaderIcon from './melissaHeaderIcon.svg'
-import MelissaIcon       from './melissaIcon.svg'
-import { MelissaDrawer } from './styledComponents'
+import MelissaHeaderIcon                  from './melissaHeaderIcon.svg'
+import MelissaIcon                        from './melissaIcon.svg'
+import { MelissaDrawer, SubTitle, Title } from './styledComponents'
 
 const scrollToBottom=()=>{
   const msgBody=document.querySelector('.ant-drawer-body')
@@ -32,11 +32,23 @@ const MELISSA_ROUTE_PATH='/api/ask-mlisa'
 
 const uploadUrl = (id:string) => `${MELISSA_URL_BASE_PATH}${MELISSA_ROUTE_PATH}/upload/${id}`
 
+interface AskMelissaBody {
+  queryInput: {
+    event?: {
+      languageCode: string
+      name: string
+    }
+    text?: {
+      languageCode: string,
+      text: string
+    }
+  }
+}
+
 export function MelissaBot (){
   const { $t } = useIntl()
   const { pathname } = useLocation()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const inputRef = useRef<any>(null)
+  const inputRef = useRef<InputRef>(null)
   const initCount = useRef(0)
   const [open, setOpen] = useState(false)
   const [isReplying, setIsReplying] = useState(false)
@@ -44,7 +56,7 @@ export function MelissaBot (){
   const [showFloatingButton, setShowFloatingButton] = useState(false)
   const [isInputDisabled, setIsInputDisabled] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [messages,setMessages] = useState<content[]>([])
+  const [messages,setMessages] = useState<Content[]>([])
   const [incidentId, setIncidentId] = useState('')
   const [fileName, setFileName] = useState('')
 
@@ -83,7 +95,7 @@ export function MelissaBot (){
           setIsReplying(false)
           // eslint-disable-next-line no-console
           console.error(error)
-          const errorMessage: content = {
+          const errorMessage: Content = {
             type: 'bot',
             contentList: [{ text: { text: [error.message] } }]
           }
@@ -95,7 +107,7 @@ export function MelissaBot (){
       }
       setIsReplying(false)
       setResponseCount(responseCount+1)
-      const confirmMessage: content = {
+      const confirmMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: ['done!'] } }]
       }
@@ -118,17 +130,11 @@ export function MelissaBot (){
   const melissaText = $t({ defaultMessage: 'Melissa' })
   const subTitleText = $t({ defaultMessage: 'infused with ChatGPT' })
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
-  const title = <><span style={{ fontWeight: 700, fontSize: '16px' }}>{melissaText}</span>
-    <span style={{
-      fontSize: '12px',
-      fontWeight: 400,
-      paddingTop: '3px',
-      marginLeft: '-5px' }}>{subTitleText}</span></>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const askMelissa = (body:any) => {
+  const title = <><Title>{melissaText}</Title><SubTitle>{subTitleText}</SubTitle></>
+  const askMelissa = (body:AskMelissaBody) => {
     const { userId } = getUserProfileRA()
-    // eslint-disable-next-line max-len
-    const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger/webhook/melissa-agent/sessions/dfMessenger-${userId}`
+    const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger` +
+      `/webhook/melissa-agent/sessions/dfMessenger-${userId}`
     const MELISSA_API_URL=`${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}${MELISSA_API_ENDPOINT}`
     fetch(MELISSA_API_URL,
       { method: 'POST',
@@ -142,8 +148,7 @@ export function MelissaBot (){
       const json=await res.json()
       setIsReplying(false)
       setResponseCount(responseCount+1)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const fulfillmentMessages:any[]=get(json,'queryResult.fulfillmentMessages')
+      const fulfillmentMessages:FulfillmentMessage[]=get(json,'queryResult.fulfillmentMessages')
       if(fulfillmentMessages) {
         const { incidentId: createdIncidentId } = get(fulfillmentMessages, '[2].data', {})
         if(createdIncidentId) {
@@ -165,7 +170,7 @@ export function MelissaBot (){
       setIsReplying(false)
       // eslint-disable-next-line no-console
       console.error(error)
-      const errorMessage: content = {
+      const errorMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: [error.message] } }]
       }
@@ -179,7 +184,7 @@ export function MelissaBot (){
     if (fileName) {
       setIsReplying(false)
       setResponseCount(responseCount+1)
-      const uploadingMessage: content = {
+      const uploadingMessage: Content = {
         type: 'bot',
         contentList: [{ text: { text: [`uploading ${fileName}...`] } }]
       }
@@ -260,7 +265,7 @@ export function MelissaBot (){
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            const userMessage: content = {
+            const userMessage: Content = {
               type: 'user',
               contentList: [{ text: { text: [inputValue] } }]
             }
