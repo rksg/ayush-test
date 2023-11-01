@@ -6,7 +6,7 @@ import moment                                from 'moment'
 import { System, useSystems }                 from '@acx-ui/analytics/services'
 import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
 import { useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { RadioBand, Loader }                  from '@acx-ui/components'
+import { RadioBand, Loader, showActionModal } from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useParams }                          from '@acx-ui/react-router-dom'
@@ -14,11 +14,10 @@ import {
   useGuestTokenMutation,
   useEmbeddedIdMutation
 } from '@acx-ui/reports/services'
-import { useReportsFilter }                        from '@acx-ui/reports/utils'
-import { REPORT_BASE_RELATIVE_URL }                from '@acx-ui/store'
-import { getUserProfile as getUserProfileR1 }      from '@acx-ui/user'
-import { useDateFilter, getJwtToken, NetworkPath } from '@acx-ui/utils'
-import {  useLocaleContext }                       from '@acx-ui/utils'
+import { useReportsFilter }                                                   from '@acx-ui/reports/utils'
+import { REPORT_BASE_RELATIVE_URL }                                           from '@acx-ui/store'
+import { getUserProfile as getUserProfileR1 }                                 from '@acx-ui/user'
+import { useDateFilter, getJwtToken, NetworkPath, getIntl, useLocaleContext } from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
@@ -48,6 +47,16 @@ const getReportType = (reportName: ReportType) => {
     isSwitchReport,
     isRadioBandDisabled
   }
+}
+
+function showExpiredSessionModal () {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'info',
+    title: $t({ defaultMessage: 'Session Expired' }),
+    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
+    onOk: () => window.location.reload()
+  })
 }
 
 export const getSupersetRlsClause = (
@@ -245,6 +254,19 @@ export function EmbeddedReport (props: ReportProps) {
         : 'https://dev.ruckus.cloud'
         // : 'https://alto.local.mlisa.io'
       : window.location.origin // Production
+
+  /**
+   * Show expired session modal if session is expired, triggered from sueprset
+   */
+  useEffect(() => {
+    const eventHandler = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'unauthorized') {
+        showExpiredSessionModal()
+      }
+    }
+    window.addEventListener('message', eventHandler)
+    return () => window.removeEventListener('message', eventHandler)
+  }, [])
 
   useEffect(() => {
     const embeddedData = {

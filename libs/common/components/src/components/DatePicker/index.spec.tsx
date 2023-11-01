@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { useRef } from 'react'
 
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent                   from '@testing-library/user-event'
-import moment, { Moment }          from 'moment-timezone'
-import { IntlProvider }            from 'react-intl'
+import { render, screen } from '@testing-library/react'
+import userEvent          from '@testing-library/user-event'
+import moment, { Moment } from 'moment-timezone'
+import { IntlProvider }   from 'react-intl'
 
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
@@ -564,16 +564,15 @@ describe('DateTimePicker', () => {
     }
     render(<TestComp date={mockedInitialDate} />)
     const user = userEvent.setup()
-    await waitFor(async () => {
-      await user.click(await screen.findByTestId('ClockOutlined'))
-      await user.click(await screen.findByRole('time-picker-minutes'))
-      await user.click(await screen.findByText('45'))
-      await user.click(await screen.findByRole('time-picker-hours'))
-      const text23 = await screen.findAllByText('23')
-      await user.click(text23[text23.length - 1])
-      await user.click(await screen.findByRole('button', { name: 'Apply' }))
-      expect(mockApply).toHaveBeenCalledTimes(1)
-    })
+    const calendarIcon = await screen.findByTestId('ClockOutlined')
+    expect(calendarIcon).toBeVisible()
+    await user.click(await screen.findByTestId('ClockOutlined'))
+    await user.click(await screen.findByRole('time-picker-minutes'))
+    await user.click(await screen.findByText('45'))
+    await user.click(await screen.findByRole('time-picker-hours'))
+    const text23 = await screen.findAllByText('23')
+    await user.click(text23[text23.length - 1])
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(mockApply).toHaveBeenNthCalledWith(
       1,
       mockedInitialDate.clone().add(15, 'minutes').add(9, 'hours'))

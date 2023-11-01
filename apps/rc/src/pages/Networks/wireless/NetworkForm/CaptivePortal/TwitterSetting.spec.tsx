@@ -20,7 +20,7 @@ describe('CaptiveNetworkForm-SelfSignInTwitter', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<TwitterSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     const twitterId = await screen.findByLabelText(/Consumer Key/)
     fireEvent.change(twitterId, { target: { value: 'twitter' } })
     fireEvent.blur(twitterId)
@@ -36,7 +36,7 @@ describe('CaptiveNetworkForm-SelfSignInTwitter', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<TwitterSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
 })

@@ -115,11 +115,13 @@ export enum Features {
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
+  SSO = 'ADMN-SSO',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   BETA_CLB = 'BETA-CLB',
   BETA_AP_NEIGHBORS = 'AP-NEIGHBORS',
-  AP_CCD = 'AP-CCD'
+  AP_CCD = 'AP-CCD',
+  AP_70 = 'AP-70'
 }
