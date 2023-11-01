@@ -547,7 +547,7 @@ export function MspCustomers () {
       if (alarmList?.data) {
         setEcAlarmData(alarmList?.data)
       }
-    }, [tableQuery?.data?.data])
+    }, [tableQuery?.data?.data, alarmList?.data])
 
     const columns = useColumns(mspEcAlarmList)
 
