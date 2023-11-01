@@ -28,7 +28,7 @@ import { Wrapper, GraphWrapper, DrawerGraphWrapper, ClickableWrapper, Monitoring
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  monitoring: EnhancedRecommendation['monitoring'],
+  recommendation: EnhancedRecommendation,
   legend: string[],
   zoomScale: ScalePower<number, number, never>
 ) {
@@ -48,6 +48,9 @@ function useGraph (
         style={{ width, height }}
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Before' })}
+        subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
+        })}
         data={graphs[0]}
         zoomScale={zoomScale}
       />}</AutoSizer></div>,
@@ -98,7 +101,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
-          useGraph(queryResult.data, details.monitoring!, [], detailsZoomScale)
+          useGraph(queryResult.data, details, [], detailsZoomScale)
         }</GraphWrapper>} />
       <Drawer
         key={key}
@@ -111,7 +114,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
           <DrawerGraphWrapper>
             {useGraph(
               queryResult.data,
-              details.monitoring,
+              details,
               bandwidthMapping[band],
               drawerZoomScale
             )}
