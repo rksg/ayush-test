@@ -279,7 +279,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
               }
               if (deviceOSRuleList.length === 31) {
                 return Promise.reject($t({
-                  defaultMessage: 'Must reserve 1 additional rule slots for PlayStation'
+                  defaultMessage: 'Must reserve 1 additional rule slot for PlayStation'
                 }))
               }
             }

@@ -883,7 +883,7 @@ describe('DeviceOSDrawer Component', () => {
 
     // not able to select PlayStation with 31 existing normal rules
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/must reserve 1 additional rule slots for PlayStation/i)).not.toBeNull()
+    expect(await screen.findByText(/must reserve 1 additional rule slot for PlayStation/i)).not.toBeNull()
 
     await selectOptionSet('Gaming', 'Xbox')
 
@@ -925,7 +925,7 @@ describe('DeviceOSDrawer Component', () => {
     await screen.findByRole('option', { name: 'PlayStation' })
 
     // able to select PlayStation with 30 existing normal rules
-    expect(screen.queryByText(/must reserve 1 additional rule slots for PlayStation/i)).toBeNull()
+    expect(screen.queryByText(/must reserve 1 additional rule slot for PlayStation/i)).toBeNull()
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
@@ -1048,7 +1048,7 @@ describe('DeviceOSDrawer Component', () => {
     // able to select PlayStation with 29 existing rules including Xbox
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText(/must reserve 1 additional rule slots for PlayStation/i)).toBeNull()
+    expect(screen.queryByText(/must reserve 1 additional rule slot for PlayStation/i)).toBeNull()
 
     // eslint-disable-next-line max-len
     expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
@@ -1175,7 +1175,7 @@ describe('DeviceOSDrawer Component', () => {
     // able to select Xbox with 29 existing rules including PlayStation
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText(/must reserve 1 additional rule slots for Xbox/i)).toBeNull()
+    expect(screen.queryByText(/must reserve 1 additional rule slot for Xbox/i)).toBeNull()
 
     // eslint-disable-next-line max-len
     expect(screen.queryByText(/must reserve 2 additional rule slots for PlayStation and Xbox/i)).toBeNull()
