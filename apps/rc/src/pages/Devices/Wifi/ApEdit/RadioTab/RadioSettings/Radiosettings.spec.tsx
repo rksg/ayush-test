@@ -1,7 +1,4 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-
 import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { apApi, venueApi } from '@acx-ui/rc/services'
 import {
@@ -17,6 +14,8 @@ import { Provider, store }                     from '@acx-ui/store'
 import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 
 import { ApDataContext, ApEditContext } from '../..'
@@ -34,8 +33,10 @@ import {
 
 import {
   applySettings,
-  applyState, createCacheSettings,
+  applyState,
+  createCacheSettings,
   extractStateOfIsUseVenueSettings,
+  getRadioTypeDisplayName,
   isCurrentTabUseVenueSettings,
   isUseVenueSettings,
   RadioSettings,
@@ -657,6 +658,22 @@ describe('RadioSettingsTab', ()=> {
 
       await screen.findByText('Upper 5 GHz Radio is disabled')
     })
+  })
+})
+
+describe('test getRadioTypeDisplayName func', () => {
+  it('should return correctly', function () {
+    const actualA = getRadioTypeDisplayName(RadioType.Normal24GHz)
+    const actualB = getRadioTypeDisplayName(RadioType.Normal5GHz)
+    const actualC = getRadioTypeDisplayName(RadioType.Normal6GHz)
+    const actualD = getRadioTypeDisplayName(RadioType.Lower5GHz)
+    const actualE = getRadioTypeDisplayName(RadioType.Upper5GHz)
+
+    expect(actualA).toBe('2.4 GHz')
+    expect(actualB).toBe('5 GHz')
+    expect(actualC).toBe('6 GHz')
+    expect(actualD).toBe('Lower 5 GHz')
+    expect(actualE).toBe('Upper 5 GHz')
   })
 })
 
