@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -54,7 +54,8 @@ describe('administrators delegation list', () => {
   })
 
   it('should be able to invite 3rd Party Administrator', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    // jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NON_VAR_INVITATION_TOGGLE)
     services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
@@ -196,7 +197,7 @@ describe('administrators delegation list', () => {
       return { data: delegationList }
     })
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MULTIPLE_VAR_INVITATION_TOGGLE)
     render(
       <Provider>
         <AdministrationDelegationsTable isSupport={false}/>
