@@ -44,7 +44,7 @@ describe('Layout', () => {
     expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
     expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
   })
-  it('should render layout correctly with single account', async () => {
+  it('should render layout correctly with single account with no invitation', async () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0012h00000NrljgAAB',
       tenants: [
@@ -58,6 +58,30 @@ describe('Layout', () => {
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Company 1')).toBeVisible()
     expect(screen.queryByTestId('CaretDownSolid')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
+    expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
+  })
+  it('should render layout correctly with single account with invitation', async () => {
+    mockedProfile.mockImplementation(() => ({
+      accountId: '0012h00000NrljgAAB',
+      tenants: [
+        { id: '0012h00000NrljgAAB', name: 'Company 1' }
+      ],
+      firstName: 'firstName',
+      lastName: 'lastName',
+      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions },
+      invitations: [{
+        accountId: '0015000000GlI7SAAV',
+        resourceGroupId: 'rg1',
+        role: 'admin',
+        type: 'tenant',
+        firstName: 'firstName',
+        lastName: 'lastName'
+      }]
+    }))
+    render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('Company 1')).toBeVisible()
+    expect(screen.queryByTestId('CaretDownSolid')).toBeVisible()
     expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
     expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
   })

@@ -135,7 +135,7 @@ describe('AccountsDrawer', () => {
 
       await assertModalContent({
         className: 'ant-modal-confirm-confirm',
-        content: 'Do you really want to accept the invitation?'
+        content: 'Do you really want to accept the invitation from f1 l1, xyz?'
       })
       const btn = await screen.findByRole('button', { name: 'OK' })
       btn.click()
@@ -167,7 +167,7 @@ describe('AccountsDrawer', () => {
       actionBtn.click()
       await assertModalContent({
         className: 'ant-modal-confirm-confirm',
-        content: 'Do you really want to reject the invitation?'
+        content: 'Do you really want to reject the invitation from f1 l1, xyz?'
       })
       const btn = screen.getByRole('button', { name: 'OK' })
       btn.click()
@@ -200,7 +200,7 @@ describe('AccountsDrawer', () => {
       actionBtn.click()
       await assertModalContent({
         className: 'ant-modal-confirm-confirm',
-        content: 'Do you really want to accept the invitation?'
+        content: 'Do you really want to accept the invitation from f1 l1, xyz?'
       })
       const btn = await screen.findByRole('button', { name: 'OK' })
       btn.click()

@@ -32,8 +32,15 @@ const ActionLink = (
       type: 'confirm',
       title: $t({ defaultMessage: 'Invitation' }),
       content: type === 'accept'
-        ? $t({ defaultMessage: 'Do you really want to accept the invitation?' })
-        : $t({ defaultMessage: 'Do you really want to reject the invitation?' }),
+        ? $t(/* eslint-disable max-len */
+          { defaultMessage: 'Do you really want to accept the invitation from {first} {last}, {account}?' },
+          { first: invitation.firstName, last: invitation.lastName, account: invitation.accountName }
+        )
+        : $t(
+          { defaultMessage: 'Do you really want to reject the invitation from {first} {last}, {account}?' },
+          { first: invitation.firstName, last: invitation.lastName, account: invitation.accountName }
+        ),
+      /* eslint-disable max-len */
       onOk: async () => {
         await updateInvitation({
           resourceGroupId: invitation.resourceGroupId as string,
