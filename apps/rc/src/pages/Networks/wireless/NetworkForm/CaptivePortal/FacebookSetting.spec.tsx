@@ -24,7 +24,7 @@ describe('CaptiveNetworkForm-SelfSignInFacebook', () => {
         <StepsFormLegacy.StepForm children={<FacebookSetting redirectURL={''} />} />
       </StepsFormLegacy>
     </NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     const facebookId = await screen.findByLabelText(/App ID/)
     fireEvent.change(facebookId, { target: { value: 'facebook' } })
     fireEvent.blur(facebookId)
@@ -46,7 +46,7 @@ describe('CaptiveNetworkForm-SelfSignInFacebook', () => {
         <StepsFormLegacy.StepForm children={<FacebookSetting redirectURL={''} />} />
       </StepsFormLegacy>
     </NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
 })
