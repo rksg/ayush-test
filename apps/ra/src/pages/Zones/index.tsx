@@ -55,9 +55,11 @@ function ZonesList () {
           <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
             <UI.Ul>
               {networkPath.map(({ name }, index) => [
-                index !== 0 && name && (
-                  <UI.Chevron key={`network-chevron-${index}`}>{'>'}</UI.Chevron>
-                ),
+                index !== 0 &&
+                  <UI.Chevron key={`network-chevron-${index}`}>
+                    {'>'}
+                  </UI.Chevron>
+                ,
                 <UI.Li key={`network-li-${index}`}>{highlightFn(name)}</UI.Li>
               ])}
             </UI.Ul>
