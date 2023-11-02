@@ -14,6 +14,7 @@ exports[`SearchBar should match snapshot 1`] = `
     </span>
     <input
       class="ant-input"
+      maxlength="64"
       placeholder="Search for..."
       type="text"
       value=""
