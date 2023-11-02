@@ -56,9 +56,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                 }
               }
             }
-            .ant-menu-submenu-arrow {
-              display: none;
-            }
           }
           &:before, &::after {
             content: '';
@@ -107,6 +104,19 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             margin: 0;
             cursor: default;
             &:active { background: unset; }
+            .ant-menu-title-content + svg {
+              position: absolute;
+              top: 50%;
+              bottom: 50%;
+              margin: auto;
+              right: 16px;
+              width: 16px;
+              transition: transform 0.3s;
+              path {
+                stroke: var(--acx-neutrals-60);
+                stroke-width: 2;
+              }
+            }
           }
           &-open {
             background-color: var(--acx-neutrals-70);
@@ -116,6 +126,14 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             .ant-menu-submenu-title {
               font-weight: var(--acx-headline-4-font-weight-bold);
+            }
+          }
+          &-open,
+          &.menu-active {
+            .ant-menu-submenu-title .ant-menu-title-content + svg {
+              path {
+                stroke: var(--acx-primary-white);
+              }
             }
           }
           &.menu-admin-item { margin-top: auto; }
