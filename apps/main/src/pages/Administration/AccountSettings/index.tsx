@@ -2,7 +2,7 @@ import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
 import { Loader }                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
@@ -45,8 +45,9 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
-  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
-  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+  const isSsoAllowed = useIsTierAllowed(Features.SSO)
+  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
+  const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE) && isSsoAllowed
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading

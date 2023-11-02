@@ -27,9 +27,9 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const labelWidth = '250px'
 
   const agileMultibandTooltipContent = $t({ defaultMessage:
-    `Enabling Agile Multi Band configures the WLAN to send an IE Multi Band Operation announcement 
+    `Enabling Agile Multi Band configures the WLAN to send an IE Multi Band Operation announcement
     including beacon report, channel non-preference, cellular capability, and association disallow.
-    Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w 
+    Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
   const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
@@ -445,7 +445,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>}
 
-      { wifi6AndWifi7Flag && <WiFi7 wlanData={wlanData} /> }
+      { wifi6AndWifi7Flag && enableAP70 && <WiFi7 wlanData={wlanData} /> }
 
       {showRadiusOptions &&
       <>

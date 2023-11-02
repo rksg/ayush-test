@@ -13,6 +13,7 @@ jest.mock('@acx-ui/analytics/components', () => {
   return Object.fromEntries(sets)
 })
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
+jest.mock('./pages/ZoneDetails', () => () => <div data-testid='ZoneDetails' />)
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
@@ -162,5 +163,28 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, { route: { path: '/ai/dataStudio' }
       , wrapper: Provider })
     await screen.findByTestId('reports')
+  })
+  it('should render zone list correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/zones' }
+      , wrapper: Provider })
+    await screen.findByText('Zones List')
+  })
+  it('should render zone details correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
+  })
+  it('should render zone details tab correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics/incidents' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
+  })
+  it('should render zone details subtab correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics/incidents/overview' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
   })
 })
