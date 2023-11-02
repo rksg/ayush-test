@@ -7,8 +7,8 @@ import _                                                              from 'loda
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 
-import { SettingsOutlined }        from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
@@ -44,7 +44,7 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
-import type { RowSelectMethod } from 'antd/lib/table/interface'
+import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -94,6 +94,18 @@ export interface TableHighlightFnArgs {
     formatFn?: (keyword: string) => React.ReactNode
   ): string | React.ReactNode
 }
+
+export const NestedTableExpandableDefaultConfig = {
+  type: 'default',
+  columnWidth: '12px',
+  fixed: 'left',
+  expandIcon: ({ expanded, onExpand, record }) => {
+    const ExpandedIcon = expanded ? MinusSquareOutlined : PlusSquareOutlined
+    return <ExpandedIcon onClick={(e) =>
+      onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+    } />
+  }
+} as ExpandableConfig<Record<string, unknown>>
 
 const defaultPagination = {
   mini: true,
@@ -597,7 +609,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={props.expandable || expandable}
+      expandable={props?.expandable || expandable}
       onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
