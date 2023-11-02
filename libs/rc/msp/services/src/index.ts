@@ -103,7 +103,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             'Reactivate MspEc',
             'Update MSP Admin list',
             'assign MspEc List To delegate',
-            'MspAdminAssociation'
+            'MspAdminAssociation',
+            'AP_FIRMWARE_UPGRADE'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
@@ -130,7 +131,9 @@ export const mspApi = baseMspApi.injectEndpoints({
             'Deactivate MspEc',
             'Reactivate MspEc',
             'Update MSP Admin list',
-            'assign MspEc List To delegate'
+            'assign MspEc List To delegate',
+            'MspAdminAssociation',
+            'AP_FIRMWARE_UPGRADE'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))

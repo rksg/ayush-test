@@ -30,6 +30,7 @@ import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
 import NetworkDetails                        from './pages/WifiNetworks/NetworkDetails'
 import Wired, { AISwitchTabsEnum }           from './pages/Wired'
 import SwitchDetails                         from './pages/Wired/SwitchDetails'
+import ZoneDetails                           from './pages/ZoneDetails'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
@@ -93,7 +94,13 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/overview'
+          path=':apId/details/:activeTab'
+          element={<ApDetails />} />
+        <Route
+          path=':apId/details/:activeTab/:activeSubTab'
+          element={<ApDetails />} />
+        <Route
+          path=':apId/details/:activeTab/:activeSubTab/:categoryTab'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
@@ -138,7 +145,7 @@ function AllRoutes () {
         <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
         <Route path='reports/wired'
           element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-        <Route path=':switchId/serial/details/overview' element={<SwitchDetails/>} />
+        <Route path=':switchId/serial/details/:activeTab' element={<SwitchDetails/>} />
       </Route>
       <Route path='users'>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
@@ -149,6 +156,14 @@ function AllRoutes () {
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />
           </Route>
         </Route>
+      </Route>
+      <Route path='zones'>
+        <Route index element={<div>Zones List</div>} />
+        <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
+        <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />
+        <Route
+          path=':systemName/:zoneName/:activeTab/:activeSubTab/:categoryTab'
+          element={<ZoneDetails />} />
       </Route>
     </Route>
   </Route>)
