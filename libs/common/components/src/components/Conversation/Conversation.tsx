@@ -71,24 +71,31 @@ function Conversation ({
               <Expandable text={msg} maxChar={maxChar} />
             ))
             }{content.payload?.richContent.map((data) =>(
-              data.map((res) => (
-                res.type === 'accordion' ? <UI.Collapse>
-                  <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
-                    <img src={getLink(res.text)} alt={res.title}></img>
-                  </Panel></UI.Collapse> :
-                  (res.link ? <UI.Bot><a href={parseLink(res.link)}
-                    target='_blank'
-                    rel='noreferrer'>{res.text}</a></UI.Bot> :
-                    res.event ?
-                      <UI.Bot>
+              data.map((res) => {
+                switch(res.type){
+                  case 'accordion':
+                    return <UI.Collapse>
+                      <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
+                        <img src={getLink(res.text)} alt={res.title}></img>
+                      </Panel></UI.Collapse>
+                  case 'button':
+                    if(res.link){
+                      return <UI.Bot><a href={parseLink(res.link)}
+                        target='_blank'
+                        rel='noreferrer'>{res.text}</a></UI.Bot>
+                    }else if(res.event){
+                      return <UI.Bot>
                         <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
-                      </UI.Bot> :
-                      <UI.Bot><Button type='link'
+                      </UI.Bot>
+                    }else{
+                      return <UI.Bot><Button type='link'
                         data-testid='button-link'
                         style={{ fontSize: '12px' }}>
                         {res.text}</Button></UI.Bot>
-                  )
-              ))
+                    }
+                }
+                return <UI.Bot/>
+              })
             ))}
             </>
           ) : (
