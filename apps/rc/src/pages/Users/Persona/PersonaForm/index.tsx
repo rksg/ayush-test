@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, FormInstance, Space } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { Form, FormInstance } from 'antd'
+import { useIntl }            from 'react-intl'
 
 import { Subtitle }                        from '@acx-ui/components'
 import { useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
@@ -40,7 +40,7 @@ export function PersonaForm (props: {
   }
 
   return (
-    <Space direction={'vertical'} size={20} style={{ display: 'flex' }}>
+    <>
       <PersonaContextForm
         form={form}
         defaultValue={defaultValue}
@@ -65,6 +65,6 @@ export function PersonaForm (props: {
             </Form>
           </>
       }
-    </Space>
+    </>
   )
 }
