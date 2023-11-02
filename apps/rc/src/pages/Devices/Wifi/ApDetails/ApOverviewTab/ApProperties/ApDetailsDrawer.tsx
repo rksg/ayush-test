@@ -119,14 +119,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             AFCPowerStateRender(currentAP?.apStatusData?.afcInfo)
           }
         />
-        { (currentAP?.apStatusData?.afcInfo?.powerMode === AFCPowerMode.STANDARD_POWER) &&
         <Descriptions.Item
           label={$t({ defaultMessage: 'AFC Max Power' })}
           children={
             AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo)
           }
         />
-        }
       </>)
     }
 
