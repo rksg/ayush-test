@@ -7,7 +7,7 @@ import { cloneDeep, dropRight, includes, isEmpty, isUndefined, set } from 'lodas
 import { FormattedMessage, useIntl }                                 from 'react-intl'
 
 import { AnchorContext, Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                                                  from '@acx-ui/feature-toggle'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -292,6 +292,7 @@ export function RadioSettings () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isEnablePerApRadioCustomizationFlag = useIsSplitOn(Features.WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
@@ -435,7 +436,7 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
-        const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+        const wifi7_320Bandwidth = (wifi7_320Mhz_FeatureFlag && enableAP70) ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
 
         const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz, is6GHas320Mhz)
         setSupport6GChannels(supportCh6g)
@@ -711,7 +712,7 @@ export function RadioSettings () {
     return true
   }
 
-  const handleUpdateRadioSettings = async (apRadioCustomization: ApRadioCustomization) => {
+  const handleUpdateRadioSettings = async (form: StepsFormLegacyInstance) => {
     const updateRadioParams = (radioParams: any, supportCh: any) => {
       if (!radioParams) {
         return
@@ -738,7 +739,7 @@ export function RadioSettings () {
       })
       await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
 
-      const payload = { ...apRadioCustomization }
+      const payload = { ...applyState(stateOfIsUseVenueSettings, form.getFieldsValue()) }
       const {
         enable24G,
         enable50G,
@@ -757,14 +758,14 @@ export function RadioSettings () {
         return
       }
 
-      if (!enable24G && !apRadioParams24G?.useVenueSettings) {
-        payload.apRadioParams24G = initData.apRadioParams24G
+      if (!enable24G && !apRadioParams24G.useVenueSettings) {
+        set(payload, ['apRadioParams24G'], initData.apRadioParams24G)
       }
       updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
       if (hasRadio5G) {
         if (!enable50G && !apRadioParams50G?.useVenueSettings) {
-          payload.apRadioParams50G = initData.apRadioParams50G
+          set(payload, ['apRadioParams50G'], initData.apRadioParams50G)
         }
         updateRadioParams(payload.apRadioParams50G, support5GChannels)
       } else {
@@ -773,7 +774,7 @@ export function RadioSettings () {
 
       if (hasRadio6G) {
         if (!enable6G && !apRadioParams6G?.useVenueSettings) {
-          payload.apRadioParams6G = initData.apRadioParams6G
+          set(payload, ['apRadioParams6G'], initData.apRadioParams6G)
         }
         updateRadioParams(payload.apRadioParams6G, support6GChannels)
       } else {
@@ -784,10 +785,10 @@ export function RadioSettings () {
         const radioDual5G = apRadioParamsDual5G || new ApRadioParamsDual5G()
 
         if (!radioDual5G.lower5gEnabled && !apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings) {
-          radioDual5G.radioParamsLower5G = initData?.apRadioParamsDual5G?.radioParamsLower5G
+          set(payload, ['apRadioParamsDual5G', 'radioParamsLower5G'], initData?.apRadioParamsDual5G?.radioParamsLower5G)
         }
         if (!radioDual5G.upper5gEnabled && !apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings) {
-          radioDual5G.radioParamsUpper5G = initData?.apRadioParamsDual5G?.radioParamsUpper5G
+          set(payload, ['apRadioParamsDual5G', 'radioParamsUpper5G'], initData?.apRadioParamsDual5G?.radioParamsUpper5G)
         }
         updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
         updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
@@ -860,10 +861,9 @@ export function RadioSettings () {
       tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: isDirty
     })
-    const apRadioCustomization = applyState(isUseVenueSettingsRef.current, form.getFieldsValue())
     setEditRadioContextData && setEditRadioContextData({
       ...editRadioContextData,
-      updateWifiRadio: () => handleUpdateRadioSettings(apRadioCustomization),
+      updateWifiRadio: () => handleUpdateRadioSettings(form),
       discardWifiRadioChanges: () => handleDiscard()
     })
   }
@@ -895,6 +895,27 @@ export function RadioSettings () {
         onFormChange={handleChange}
       >
         <StepsFormLegacy.StepForm data-testid='radio-settings' initialValues={initData}>
+          <Tabs onChange={onTabChange}
+            activeKey={currentTab}
+            type='third'>
+            <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key={RadioType.Normal24GHz} />
+            {(!isSupportTriBandRadioAp || !isDual5gMode) &&
+              <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key={RadioType.Normal5GHz} />
+            }
+            { isSupportDual5GAp && isDual5gMode &&
+              <>
+                <Tabs.TabPane
+                  tab={$t({ defaultMessage: 'Lower 5 GHz' })}
+                  key='Lower5GHz' />
+                <Tabs.TabPane
+                  tab={$t({ defaultMessage: 'Upper 5 GHz' })}
+                  key='Upper5GHz' />
+              </>
+            }
+            { isSupportTriBandRadioAp && !isDual5gMode &&
+              <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key={RadioType.Normal6GHz} />
+            }
+          </Tabs>
           <Row gutter={20}>
             <Col span={12}>
               <Space style={{
@@ -955,27 +976,6 @@ export function RadioSettings () {
             </Form.Item>
           </div>
           }
-          <Tabs onChange={onTabChange}
-            activeKey={currentTab}
-            type='third'>
-            <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key={RadioType.Normal24GHz} />
-            {(!isSupportTriBandRadioAp || !isDual5gMode) &&
-              <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key={RadioType.Normal5GHz} />
-            }
-            { isSupportDual5GAp && isDual5gMode &&
-                  <>
-                    <Tabs.TabPane
-                      tab={$t({ defaultMessage: 'Lower 5 GHz' })}
-                      key='Lower5GHz' />
-                    <Tabs.TabPane
-                      tab={$t({ defaultMessage: 'Upper 5 GHz' })}
-                      key='Upper5GHz' />
-                  </>
-            }
-            { isSupportTriBandRadioAp && !isDual5gMode &&
-                <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key={RadioType.Normal6GHz} />
-            }
-          </Tabs>
           <div style={{ display: currentTab === RadioType.Normal24GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable24g}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import {
   RecommendationDetails,
@@ -14,7 +14,6 @@ import {
   ServiceGuardDetails
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, PERMISSION_VIEW_ANALYTICS, getUserProfile } from '@acx-ui/analytics/utils'
-import { showToast }                                                       from '@acx-ui/components'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH }   from '@acx-ui/react-router-dom'
 
 import ClientDetails                         from './pages/ClientDetails'
@@ -38,22 +37,9 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 function Init () {
   const [ search ] = useSearchParams()
   updateSelectedTenant()
-  const { invitations, selectedTenant } = getUserProfile()
+  const { selectedTenant } = getUserProfile()
   const { id, permissions } = selectedTenant
   const previousURL = search.get('return')!
-  useEffect(() => {
-    if (invitations.length > 0 /*|| tenants.length > 1*/) {
-      showToast({ // TODO open account drawer instead
-        type: 'success',
-        content: <div>
-          You have pending invitations,&nbsp;
-          <u><a href='/analytics/profile/tenants' target='_blank' style={{ color: 'white' }}>
-            please click here to view them
-          </a></u>
-        </div>
-      })
-    }
-  })
   const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
   return <Navigate
     replace

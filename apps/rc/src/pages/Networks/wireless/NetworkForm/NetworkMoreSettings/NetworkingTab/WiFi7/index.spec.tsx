@@ -4,7 +4,7 @@ import { userEvent } from '@storybook/testing-library'
 import { within }    from '@testing-library/react'
 import { Form }      from 'antd'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import { fireEvent, render, screen }         from '@acx-ui/test-utils'
@@ -87,6 +87,7 @@ describe('test getInitMloEnabled', () => {
 describe('WiFi7', () => {
   it('should render correctly when useIsSplitOn return true', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -115,6 +116,7 @@ describe('WiFi7', () => {
 
   it('should not render MLO field item render when useIsSplitOn return false', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
     render(
@@ -141,6 +143,7 @@ describe('WiFi7', () => {
 
   it('should switch enable wifi toggle correctly', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -166,6 +169,7 @@ describe('WiFi7', () => {
 
   it('should switch enable mlo toggle correctly', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = null
 
@@ -402,6 +406,7 @@ describe('test enableAll func', () => {
 describe('CheckboxGroup', () => {
   it('should enable option when selected less than two', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = {
       name: 'test',
@@ -440,6 +445,7 @@ describe('CheckboxGroup', () => {
   })
   it('should show error msg when selected less than two', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockWlanData = {
       name: 'test',
