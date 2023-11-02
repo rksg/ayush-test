@@ -63,14 +63,10 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { data } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } })
 
-  const connectedDevices = devicesData?.filter(d => d.deviceConnectivity === 'CONNECTED') || []
-  const connectedDeviceMacs = connectedDevices.map(device => device.mac)
-
   const clientTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: {
-      ...defaultClientPayload,
-      filters: { clientMac: connectedDeviceMacs }
+      ...defaultClientPayload
     },
     pagination: {
       pageSize: 10000
@@ -79,6 +75,17 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       searchTargetFields: defaultClientPayload.searchTargetFields
     }
   })
+
+  useEffect(() => {
+    if (devicesData) {
+      const connectedDevices = devicesData.filter(d => d.deviceConnectivity === 'CONNECTED') || []
+      const connectedDeviceMacs = connectedDevices.map(device => device.mac)
+      clientTableQuery.setPayload({
+        ...defaultClientPayload,
+        filters: { clientMac: connectedDeviceMacs }
+      })
+    }
+  }, [devicesData])
 
   useEffect(() => {
     if (clientTableQuery.data) {

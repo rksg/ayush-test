@@ -225,7 +225,7 @@ export function SelfSignInForm () {
                   ['guestPortal', 'socialIdentities', 'twitter'])}
                 checked={twitter}>
                   <UI.Twitter />
-                  {$t({ defaultMessage: 'Twitter' })}
+                  {$t({ defaultMessage: 'X' })}
                 </UI.Checkbox>
                 {twitter && <TwitterSetting redirectURL={redirectURL}/>}
               </>

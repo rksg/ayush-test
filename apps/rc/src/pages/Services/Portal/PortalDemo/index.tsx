@@ -184,9 +184,9 @@ export default function PortalDemo ({
           backgroundColor={demoValue.bgColor}
           updateBackgroundImg={({ url, file }) =>{
             setPortalData?.({ ...portalData as Portal, bgFile: file })
-            onChange?.({ ...demoValue, bgImage: url })}}
+            onChange?.({ ...demoValue, bgImage: url, bgColor: '#FFFFFF' })}}
           updateBackgroundColor={(data: string) =>
-            onChange?.({ ...demoValue, bgColor: data })}/>}
+            onChange?.({ ...demoValue, bgColor: data, bgImage: '' })}/>}
         <UI.LayoutView $type={screen}
           style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.bgImage+'")',
             backgroundColor: (isPreview?value:demoValue)?.bgColor }}>

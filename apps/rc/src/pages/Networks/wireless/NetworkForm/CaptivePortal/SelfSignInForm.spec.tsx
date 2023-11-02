@@ -66,7 +66,7 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
       { name: /Google/ }))
     await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Twitter/ }))
+      { name: /X/ }))
     await userEvent.click(await screen.findByText('Add'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
@@ -86,7 +86,7 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Google/ }))
     await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Twitter/ }))
+      { name: /X/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
     await userEvent.click(await screen.findByText('Add'))
