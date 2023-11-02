@@ -2,7 +2,6 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
 
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
@@ -10,8 +9,7 @@ import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  fireEvent
+  screen
 } from '@acx-ui/test-utils'
 
 import { editStackDetail } from '../../__tests__/fixtures'
@@ -77,10 +75,9 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R20X' } })
-    })
+    await userEvent.type(serialNumber1, 'FEK4124R20X')
+
+    expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
   })
   it('should render add and delete member field correctly', async () => {
     render(
@@ -101,20 +98,14 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R20X' } })
-    })
+    await userEvent.type(serialNumber1, 'FEK4124R20X')
     await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-      serialNumber2.focus()
-      serialNumber2.blur()
-    })
+    await userEvent.type(serialNumber2, 'FEK4124R21X')
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
   })
   it('should render not support stacking correctly', async () => {
     render(
@@ -135,18 +126,12 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber1, { target: { value: 'FMG4124R20X' } })
-      serialNumber1.focus()
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      serialNumber1.blur()
-    })
+    await userEvent.type(serialNumber1, 'FMG4124R20X')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(
       await screen.findByText('Serial number is invalid since it\'s not support stacking')
     ).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
   it('should render invalid serial number correctly', async () => {
     render(
@@ -167,12 +152,7 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber1, { target: { value: 'aaa' } })
-      serialNumber1.focus()
-      serialNumber1.blur()
-    })
+    await userEvent.type(serialNumber1, 'aaa')
 
     expect(await screen.findByText('Serial number is invalid')).toBeVisible()
   })
@@ -195,27 +175,16 @@ describe('Add Stack Member Form', () => {
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
-      serialNumber1.focus()
-      serialNumber1.blur()
-    })
+    await userEvent.type(serialNumber1, 'FEK4124R21X')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-      serialNumber2.focus()
-      serialNumber2.blur()
-    })
+    await userEvent.type(serialNumber2, 'FEK4124R21X')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    const msg = await screen
-      .findAllByText('Serial number is invalid since it\'s not unique in stack')
-    expect(msg[0]).toBeVisible()
+    expect(
+      await screen.findByText('Serial number is invalid since it\'s not unique in stack')
+    ).toBeVisible()
   })
 })
