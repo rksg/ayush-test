@@ -33,7 +33,7 @@ function ZonesList () {
       searchable: true,
       width: 200,
       render: (_, row: Zone, __, highlightFn) => (
-        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}`)}>
+        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/assurance`)}>
           {highlightFn(row.zoneName)}
         </TenantLink>
       ),

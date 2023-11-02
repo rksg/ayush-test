@@ -3,25 +3,40 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AP, useApListQuery }                                       from '@acx-ui/analytics/services'
-import { defaultSort, sortProp ,formattedPath }                     from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip, useDateRange, Loader, Filter } from '@acx-ui/components'
 import { TenantLink }                                               from '@acx-ui/react-router-dom'
+import {
+  NetworkPath, PathNode
+} from '@acx-ui/utils'
 
-import {  Ul, Chevron, Li } from './styledComponents'
-export  function APList ({ searchVal = '' }: { searchVal?: string }) {
+import { useZoneWiseApListQuery } from './services'
+import {  Ul, Chevron, Li }       from './styledComponents'
+export  function APList (
+  {
+    searchVal = '',
+    shouldQueryZoneWiseApList = { searchString: '', path: [{} as PathNode] }
+  }
+  :
+  {
+    searchVal?: string,
+    shouldQueryZoneWiseApList?:
+    { searchString : string, path: NetworkPath } }) {
   const { $t } = useIntl()
 
-  const { timeRange } = useDateRange()
+  // const { timeRange } = useDateRange()
+  const { filters } = useAnalyticsFilter()
   const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState(searchVal)
-
-  const results = useApListQuery({
-    start: timeRange[0].format(),
-    end: timeRange[1].format(),
-    limit: 100,
-    metric: 'traffic',
-    query: searchString
+  const apListQuery = useZoneWiseApListQuery
+  const results = apListQuery({
+    start: filters.startDate,
+    end: filters.endDate,
+    limit: 10000,
+    query: '',
+    filter: { networkNodes: [shouldQueryZoneWiseApList.path] }
   })
+  console.log(results)
 
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
     setSearchString(search.searchString!)
@@ -35,9 +50,10 @@ export  function APList ({ searchVal = '' }: { searchVal?: string }) {
       width: 130,
       searchable: true,
       sorter: { compare: sortProp('apName', defaultSort) },
-      render: (_, row : AP, __, highlightFn) => (
+      render: (_, row: AP, __, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.macAddress}/details/overview`}>
-          {highlightFn(row.apName)}</TenantLink>
+          {highlightFn(row.apName)}
+        </TenantLink>
       )
     },
     {
@@ -78,16 +94,18 @@ export  function APList ({ searchVal = '' }: { searchVal?: string }) {
       width: 450,
       dataIndex: 'networkPath',
       key: 'networkPath',
-      render: (_, value ) => {
+      render: (_, value) => {
         const networkPath = value.networkPath.slice(1, -1)
-        return <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
-          <Ul>
-            {networkPath.map(({ name }, index) => [
-              index !== 0 && <Chevron key={`ap-chevron-${index}`}>{'>'}</Chevron>,
-              <Li key={`ap-li-${index}`}>{name}</Li>
-            ])}
-          </Ul>
-        </Tooltip>
+        return (
+          <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
+            <Ul>
+              {networkPath.map(({ name }, index) => [
+                index !== 0 && <Chevron key={`ap-chevron-${index}`}>{'>'}</Chevron>,
+                <Li key={`ap-li-${index}`}>{name}</Li>
+              ])}
+            </Ul>
+          </Tooltip>
+        )
       },
       sorter: { compare: sortProp('networkPath', defaultSort) }
     }
@@ -96,7 +114,7 @@ export  function APList ({ searchVal = '' }: { searchVal?: string }) {
   return <Loader states={[results]}>
     <Table<AP>
       columns={apTablecolumnHeaders}
-      dataSource={results.data?.aps as unknown as AP[]}
+      dataSource={results.data?.network.search.aps as unknown as AP[]}
       pagination={pagination}
       settingsId='ap-search-table'
       onFilterChange={updateSearchString}

@@ -3,15 +3,18 @@ import { omit } from 'lodash'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { AnalyticsFilter, PathNode, useDateFilter } from '@acx-ui/utils'
 
+import { APList } from '../Wifi/ApsTable'
+
 import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'
 
-const tabs = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tabs = (args?: { shouldQueryZoneWiseApList: any } | undefined) => ({
   assurance: ZoneAnalyticsTab,
   clients: () => <div>clients tab</div>,
-  devices: () => <div>devices tab</div>,
+  devices: () => <APList shouldQueryZoneWiseApList={args?.shouldQueryZoneWiseApList} />,
   networks: () => <div>network tab</div>
-}
+})
 
 export default function ZoneDetails () {
   const dateFilter = useDateFilter()
@@ -33,10 +36,14 @@ export default function ZoneDetails () {
     },
     ...omit(dateFilter, 'setDateFilter')
   } as unknown as AnalyticsFilter
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs({
+    shouldQueryZoneWiseApList: {
+      searchString: zoneName,
+      path: [{ type: 'system', name: systemName }, { type: 'zone', name: zoneName }]
+    }
+  })[activeTab as keyof ReturnType<typeof tabs>] || ZoneAnalyticsTab
   return <>
     <ZonePageHeader {...dateFilter}/>
     { Tab && <Tab filters={filters} healthFilters={healthFilters} /> }
   </>
 }
-
