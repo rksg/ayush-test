@@ -259,7 +259,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         ]}
         children={<Input />}
       />
-      {isMacAddressEnabled() && !isNewConfigFlow &&
+      {isMacAddressEnabled() && (!editMode.isEdit || !isNewConfigFlow) &&
         <Form.Item
           label={
             <>

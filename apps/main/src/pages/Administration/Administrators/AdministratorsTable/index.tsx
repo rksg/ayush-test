@@ -13,9 +13,9 @@ import {
   TableProps,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useGetMspProfileQuery }  from '@acx-ui/msp/services'
-import { MSPUtils }               from '@acx-ui/msp/utils'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
+import { MSPUtils }                                 from '@acx-ui/msp/utils'
 import {
   useGetAdminListQuery,
   useDeleteAdminMutation,
@@ -53,7 +53,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const currentUserMail = userProfileData?.email
   const currentUserDetailLevel = userProfileData?.detailLevel
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
-  const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING)
+  const isSsoAllowed = useIsTierAllowed(Features.SSO)
+  const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
