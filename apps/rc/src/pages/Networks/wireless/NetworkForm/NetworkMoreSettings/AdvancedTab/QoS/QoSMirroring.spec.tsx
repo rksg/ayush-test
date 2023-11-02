@@ -150,7 +150,7 @@ describe('QoS', () => {
     expect(screen.getByRole('combobox')).toBeInTheDocument()
 
     // eslint-disable-next-line max-len
-    expect(screen.queryByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).not.toBeInTheDocument()
+    expect(screen.queryByText('Mirroring for clients sending MSCS (Mirrored Stream Classification Service) requests')).not.toBeInTheDocument()
     // eslint-disable-next-line max-len
     expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
   })
@@ -185,7 +185,7 @@ describe('QoS', () => {
     const selectElement = screen.getByRole('combobox')
     expect(selectElement).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.queryByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).not.toBeInTheDocument()
+    expect(screen.queryByText('Mirroring for clients sending MSCS (Mirrored Stream Classification Service) requests')).not.toBeInTheDocument()
     // eslint-disable-next-line max-len
     expect(screen.getByText('Mirroring for all clients connected to this Wi-Fi network.')).toBeInTheDocument()
 
@@ -198,7 +198,7 @@ describe('QoS', () => {
 
     await waitFor(async () => {
       // eslint-disable-next-line max-len
-      expect(screen.getByText('Mirroring for clients sending MSCS (Multimedia and Streaming Control Server) requests')).toBeInTheDocument()
+      expect(screen.getByText('Mirroring for clients sending MSCS (Mirrored Stream Classification Service) requests')).toBeInTheDocument()
     })
     await waitFor(async () => {
       // eslint-disable-next-line max-len

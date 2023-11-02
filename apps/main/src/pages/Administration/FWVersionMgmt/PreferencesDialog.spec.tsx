@@ -21,6 +21,7 @@ import {
   availableVersions
 } from './__tests__/fixtures'
 import { VenueFirmwareList } from './ApFirmware/VenueFirmwareList/index'
+import { PreferencesDialog } from './PreferencesDialog'
 
 
 describe('Firmware Venues Table', () => {
@@ -38,6 +39,10 @@ describe('Firmware Venues Table', () => {
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json(preference))
+      ),
+      rest.put(
+        FirmwareUrlsInfo.updateSwitchFirmwarePredownload.url,
+        (req, res, ctx) => res(ctx.status(200))
       )
     )
     params = {
@@ -72,6 +77,31 @@ describe('Firmware Venues Table', () => {
     fireEvent.click(updateButton)
 
     await screen.findByText('Choose update schedule method:')
+    const updateVenueButton = await screen.findByText('Save Preferences')
+    fireEvent.click(updateVenueButton)
+  })
+
+  it('should render preferences Pre-Download', async () => {
+    render(
+      <Provider>
+        <PreferencesDialog
+          visible={true}
+          data={preference}
+          onCancel={()=>{}}
+          onSubmit={()=>{}}
+          isSwitch={true}
+          preDownload={true}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    await screen.findByText('Choose update schedule method:')
+
+    expect(screen.getByTestId('PreDownload')).toBeChecked()
+    fireEvent.click(screen.getByTestId('PreDownload'))
+    expect(screen.getByTestId('PreDownload')).not.toBeChecked()
+
     const updateVenueButton = await screen.findByText('Save Preferences')
     fireEvent.click(updateVenueButton)
   })
