@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { Conversation, content } from '..'
+import { Conversation, Content } from '..'
 
 
 export function Withbutton () {
@@ -39,7 +39,7 @@ export function Withbutton () {
     }
   ]
 
-  const content:content[] =
+  const content:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithButton }
   ]

@@ -248,7 +248,7 @@ describe('MelissaBot', () => {
     })
     await screen.findByText('support')
     await act(async ()=>{
-      fireEvent.click(await screen.findByTestId('ArrowChevronRight'))
+      fireEvent.click(await screen.findByTestId('button-link'))
     })
     await act(async ()=>{
       const textFile = new File(['someTextFile'], 'text.txt', { type: 'text/plain' })

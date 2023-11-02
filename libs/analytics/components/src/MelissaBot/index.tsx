@@ -21,16 +21,17 @@ const scrollToBottom=()=>{
   }
 }
 
-const MELISSA_URL_ORIGIN=window.location.origin
-const MELISSA_URL_BASE_PATH='/analytics'
-const MELISSA_ROUTE_PATH='/api/ask-mlisa'
+// const MELISSA_URL_ORIGIN=window.location.origin
+// const MELISSA_URL_BASE_PATH='/analytics'
+// const MELISSA_ROUTE_PATH='/api/ask-mlisa'
 
 // To connect with local chatbot
-// const MELISSA_URL_ORIGIN='http://localhost:31337'
-// const MELISSA_URL_BASE_PATH=''
-// const MELISSA_ROUTE_PATH=''
+const MELISSA_URL_ORIGIN='http://localhost:31337'
+const MELISSA_URL_BASE_PATH=''
+const MELISSA_ROUTE_PATH=''
 
-const uploadUrl = (id:string) => `${MELISSA_URL_BASE_PATH}${MELISSA_ROUTE_PATH}/upload/${id}`
+const uploadUrl = (id:string) => `${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}`+
+  `${MELISSA_ROUTE_PATH}/upload/${id}`
 
 interface AskMelissaBody {
   queryInput: {

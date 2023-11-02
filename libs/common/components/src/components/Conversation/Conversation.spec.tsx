@@ -3,7 +3,7 @@ import { BrowserRouter }  from 'react-router-dom'
 
 import { fulfillmentMessagesWithAccordion } from './stories/Accordion'
 
-import { Conversation, content } from '.'
+import { Conversation, Content } from '.'
 
 const contentUser = 'List zones with higher co-channel interference in 2.4 GHz band'
 const fulfillmentMessages = [
@@ -118,19 +118,19 @@ const fulfillmentMessagesWithButton = [
   }
 ]
 
-const contentData:content[] =
+const contentData:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
   ]
-const contentLink:content[] =
+const contentLink:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithLink }
   ]
-const contentButton:content[] =
+const contentButton:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithButton }
   ]
-const contentAccordion:content[] =
+const contentAccordion:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithAccordion }
   ]

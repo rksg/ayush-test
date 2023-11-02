@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { Link }          from 'react-router-dom'
 import { CSSProperties } from 'styled-components'
 
-import { ArrowChevronRight } from '@acx-ui/icons'
-
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
@@ -85,9 +83,10 @@ function Conversation ({
                       <UI.Bot>
                         <Link to={res.event?.parameters?.url || '#'}>{res.text}</Link>
                       </UI.Bot> :
-                      <UI.Button size='small' type='primary' icon={<ArrowChevronRight />}>
-                        {res.text}</UI.Button>
-
+                      <UI.Bot><Button type='link'
+                        data-testid='button-link'
+                        style={{ fontSize: '12px' }}>
+                        {res.text}</Button></UI.Bot>
                   )
               ))
             ))}

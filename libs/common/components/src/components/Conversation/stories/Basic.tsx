@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { Conversation, content } from '..'
+import { Conversation, Content } from '..'
 
 
 export function Basic () {
@@ -18,7 +18,7 @@ export function Basic () {
     }
   ]
 
-  const content:content[] =
+  const content:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
   ]

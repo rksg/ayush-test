@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { Conversation, content } from '..'
+import { Conversation, Content } from '..'
 
 export const fulfillmentMessagesWithAccordion = [
   {
@@ -50,7 +50,7 @@ export function Withaccordion () {
   const contentUser = 'List zones with higher co-channel interference in 2.4 GHz band'
 
 
-  const content:content[] =
+  const content:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithAccordion }
   ]
