@@ -7,7 +7,7 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                              from '@acx-ui/react-router-dom'
+import { TenantType }                                      from '@acx-ui/react-router-dom'
 import { fireEvent, act, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
