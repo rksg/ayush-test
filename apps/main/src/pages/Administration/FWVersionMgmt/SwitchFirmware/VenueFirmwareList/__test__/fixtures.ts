@@ -19,6 +19,7 @@ export const preference = {
   betaProgram: false
 }
 
+
 export const upgradeSwitchViewList = {
   upgradeSwitchViewList: [
     {
@@ -30,7 +31,7 @@ export const upgradeSwitchViewList = {
       model: 'ICX7150-C12P',
       availableVersion: {},
       preDownload: false,
-      upgradeSwitchViewList: null
+      upgradeSwitchViewList: {}
     },
     {
       venueId: '1444c6702e904fa289f21d49093ba239',
@@ -62,7 +63,7 @@ export const upgradeSwitchViewList = {
         }
       },
       preDownload: false,
-      upgradeSwitchViewList: null
+      upgradeSwitchViewList: {}
     }
   ]
 }
@@ -511,3 +512,80 @@ export const upgradeSwitchViewList_KittoVenue1 ={
     }
   ]
 }
+
+export const availableVersions = [
+  {
+    id: '09010e_b392',
+    name: '09010e_b392',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '09010h_rc1',
+    name: '09010h_rc1',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '09010h_cd2_b4',
+    name: '09010h_cd2_b4',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '09010f_b19',
+    name: '09010f_b19',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010_rc2',
+    name: '10010_rc2',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010a_cd3_b11',
+    name: '10010a_cd3_b11',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010_rc3',
+    name: '10010_rc3',
+    category: FirmwareCategory.RECOMMENDED
+  }
+]
+
+export const availableVersions_hasInUse = [
+  {
+    id: '09010e_b392',
+    name: '09010e_b392',
+    category: FirmwareCategory.RECOMMENDED,
+    inUse: true
+  },
+  {
+    id: '09010h_rc1',
+    name: '09010h_rc1',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '09010h_cd2_b4',
+    name: '09010h_cd2_b4',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '09010f_b19',
+    name: '09010f_b19',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010_rc2',
+    name: '10010_rc2',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010a_cd3_b11',
+    name: '10010a_cd3_b11',
+    category: FirmwareCategory.RECOMMENDED
+  },
+  {
+    id: '10010_rc3',
+    name: '10010_rc3',
+    category: FirmwareCategory.RECOMMENDED
+  }
+]
