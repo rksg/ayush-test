@@ -1,20 +1,16 @@
-import { AnalyticsTabs }      from '@acx-ui/analytics/components'
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { AnalyticsTabs }   from '@acx-ui/analytics/components'
+import { useParams }       from '@acx-ui/react-router-dom'
+import { AnalyticsFilter } from '@acx-ui/utils'
 
-export function ZoneAnalyticsTab () {
+export function ZoneAnalyticsTab ({ filters, healthFilters }: {
+  filters: AnalyticsFilter,
+  healthFilters: AnalyticsFilter
+}) {
   const { systemName, zoneName } = useParams()
-  const { filters } = useAnalyticsFilter()
-  const healthFilter = {
-    ...filters,
-    filters: {
-      networkNodes: filters.filter.networkNodes
-    }
-  }
   return <AnalyticsTabs
     incidentFilter={filters}
-    healthFilter={healthFilter}
-    healthPath={`zones/${systemName}/${zoneName}/analytics/health`}
+    healthFilter={healthFilters}
+    healthPath={`zones/${systemName}/${zoneName}/assurance/health`}
   />
 }
 

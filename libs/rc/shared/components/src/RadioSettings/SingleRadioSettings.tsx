@@ -6,9 +6,9 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { LowPowerAPQuantity }     from '@acx-ui/rc/utils'
+import { Button, cssStr }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { LowPowerAPQuantity }                                     from '@acx-ui/rc/utils'
 
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
@@ -128,6 +128,8 @@ export function SingleRadioSettings (props:{
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -334,7 +336,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && (wifi7_320Mhz_FeatureFlag && enableAP70)) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>

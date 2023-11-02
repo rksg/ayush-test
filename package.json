@@ -157,6 +157,7 @@
     "jest": "27.5.1",
     "jest-canvas-mock": "2.4.0",
     "jest-websocket-mock": "2.3.0",
+    "json-server": "0.17.4",
     "msw": "0.39.2",
     "nx": "14.1.2",
     "patch-package": "6.5.1",

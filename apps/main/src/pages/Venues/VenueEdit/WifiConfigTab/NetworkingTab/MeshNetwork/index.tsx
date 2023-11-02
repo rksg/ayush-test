@@ -6,7 +6,7 @@ import { useIntl }                                                     from 'rea
 import { useParams }                                                   from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -42,9 +42,8 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
   const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
+  const supportMeshEnhancement = isFeatureOnMeshEnhancement
 
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
