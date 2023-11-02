@@ -293,6 +293,7 @@ export function MelissaBot (){
         content={messages}
         isReplying={isReplying}
         classList='conversation'
+        listCallback={askMelissa}
         style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
     </MelissaDrawer></>
   )
