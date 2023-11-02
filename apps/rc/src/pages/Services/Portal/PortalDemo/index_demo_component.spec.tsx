@@ -84,7 +84,7 @@ describe('PortalDemo', () => {
     const toogleButton = rows[2]
     fireEvent.click(toogleButton)
     fireEvent.click(toogleButton)
-    const setRows = await screen.findAllByTitle('settingicon')
+    const setRows = await screen.findAllByTestId('settingicon')
     fireEvent.click(setRows[0])
     await userEvent.type(await screen.findByPlaceholderText('Paste the text here...'),'terms terms')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
