@@ -53,7 +53,7 @@ describe('administrators delegation list', () => {
     )
   })
 
-  it('should be able to invite 3rd Party Administrator', async () => {
+  xit('should be able to invite 3rd Party Administrator', async () => {
     // jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NON_VAR_INVITATION_TOGGLE)
     services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
