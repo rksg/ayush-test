@@ -2,6 +2,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { compareVersion } from '@acx-ui/analytics/utils'
+import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
 import { crrmText } from './utils'
@@ -146,7 +147,9 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (2.4 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' })
+      : defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Venue. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []
@@ -157,7 +160,9 @@ export const codes = {
     priority: priorities.medium,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (5 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' })
+      : defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Venue. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []
@@ -266,7 +271,9 @@ export const codes = {
     priority: priorities.low,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'DFS Channels' }),
-    actionText: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this zone.' }),
+    actionText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this Zone.' })
+      : defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this Venue.' }),
     reasonText: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Disabling DFS Channels will reduce number of available channels for the AP. In a deployment, if there are less available channels and more APs, AP may pick overlapping channels and may cause channel interference and hence inferior user experience.' }),
     kpis: [{
@@ -315,7 +322,7 @@ export const codes = {
     priority: priorities.low,
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Client Load Balancing' }),
-    actionText: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5ghz only.' }),
+    actionText: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5 GHz only.' }),
     reasonText: defineMessage({ defaultMessage: 'Client Load Balancing allows equal distribution of clients by allowing heavily loaded APs to move clients to less loaded neighboring APs, This shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Client may not have implemented BTM properly, leading to connectivity issues.' }),
     kpis: [{
@@ -400,7 +407,9 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -417,7 +426,9 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
@@ -434,7 +445,9 @@ export const codes = {
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
+    tradeoffText: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
     kpis: [{
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
