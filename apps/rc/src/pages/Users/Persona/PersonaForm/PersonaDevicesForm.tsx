@@ -85,13 +85,15 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { defaultSelectedRowKeys: [] }}
       />
-      <PersonaDevicesImportDialog
-        visible={modelVisible}
-        personaGroupId={props.groupId}
-        selectedMacAddress={value?.map(v => v.macAddress.replaceAll('-', ':')) ?? []}
-        onCancel={handleModalCancel}
-        onSubmit={handleModalSubmit}
-      />
+      {modelVisible &&
+        <PersonaDevicesImportDialog
+          visible={true}
+          personaGroupId={props.groupId}
+          selectedMacAddress={value?.map(v => v.macAddress.replaceAll('-', ':')) ?? []}
+          onCancel={handleModalCancel}
+          onSubmit={handleModalSubmit}
+        />
+      }
     </>
   )
 }
