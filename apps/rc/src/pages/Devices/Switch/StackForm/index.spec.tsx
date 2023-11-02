@@ -65,13 +65,6 @@ async function fillInForm () {
 }
 
 async function changeVenue () {
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  // await act(async () => {
-  //   fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
-  // })
-  // const venue = await screen.findAllByText('My-Venue')
-  // await userEvent.click(venue[0])
-
   await userEvent.selectOptions(
     await screen.findByLabelText(/Venue/),
     await screen.findByRole('option', { name: /My-Venue/ })
