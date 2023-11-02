@@ -3,8 +3,9 @@ import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput }        from '@acx-ui/components'
-import { useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
+import { Drawer, Descriptions, PasswordInput }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
 import {
   AFCStatus,
   ApDetails,
@@ -14,7 +15,8 @@ import {
   gpsToFixed,
   useApContext,
   AFCPowerMode,
-  AFCInfo } from '@acx-ui/rc/utils'
+  AFCInfo,
+  Capabilities } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
 
@@ -32,10 +34,12 @@ interface ApDetailsDrawerProps {
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const { tenantId } = useApContext()
+  const { tenantId, capabilities } = useApContext()
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
   const { data: venueData } = useGetVenueQuery({
     params: { tenantId, venueId: currentAP?.venueId }
   },
@@ -72,15 +76,17 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       displayText = $t({ defaultMessage: 'Low power' })
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
+        displayText = displayText + ' ' + $t({ defaultMessage: '[Geo Location not set]' })
       }
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '(FCC DB replies that there is no channel available)' })
+        displayText = displayText + ' ' + $t({ defaultMessage: '[No channels available]' })
       }
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '(Wait for AFC server response)' })
+        displayText = displayText + ' ' + $t({ defaultMessage: '[Pending response from the AFC server]' })
       }
-
+      if (afcInfo?.afcStatus === AFCStatus.AFC_NOT_REQUIRED) {
+        displayText = displayText + ' ' + $t({ defaultMessage: '[User set]' })
+      }
     }
 
     return displayText
@@ -95,6 +101,36 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
 
     return displayText
+  }
+
+  const displayAFCInfo = () => {
+
+    let displayContent = (<></>)
+
+    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
+    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === currentAP.model)
+    const enableAFC = apValidChannels?.afcEnabled
+
+    if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC].every(Boolean)) {
+      displayContent = (<>
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'AFC Power State' })}
+          children={
+            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo)
+          }
+        />
+        { (currentAP?.apStatusData?.afcInfo?.powerMode === AFCPowerMode.STANDARD_POWER) &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'AFC Max Power' })}
+          children={
+            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo)
+          }
+        />
+        }
+      </>)
+    }
+
+    return displayContent
   }
 
 
@@ -220,18 +256,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             currentAP?.fwVersion || '--'
           }
         />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Power State' })}
-          children={
-            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo)
-          }
-        />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Max Power' })}
-          children={
-            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo)
-          }
-        />
+        {displayAFCInfo()}
       </Descriptions>
       {
         currentAP?.isMeshEnable && (
