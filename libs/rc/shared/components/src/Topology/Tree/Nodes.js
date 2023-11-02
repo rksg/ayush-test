@@ -15,7 +15,7 @@ const Nodes = (props) => {
         const b = Math.floor(Math.random() * 255)
         setColor((prevState) => ({
           ...prevState,
-          [node.data.DisplayName]: `rgb(${r}, ${g}, ${b})`
+          [node.data.id]: `rgb(${r}, ${g}, ${b})`
         }))
       })
   }, [nodes])
@@ -32,17 +32,17 @@ const Nodes = (props) => {
           ? node
             .ancestors()
             .filter((ancestor) => ancestor.ancestors().length === 2)[0].data
-            .DisplayName
+            .id
           : ''
         return (
           <g
-            key={node.data.DisplayName}
+            key={node.data.id}
             transform={coordinateTransform(node)}
             style={{
               fill: color[ancestorName],
-              cursor: node.data.DisplayName !=='Cloud' ? 'pointer' : 'default'
+              cursor: node.data.id !=='Cloud' ? 'pointer' : 'default'
             }}
-            id={node.data.DisplayName}
+            id={node.data.id}
             className={'tree-node'}
           >
             <g onClick={(e) => {
@@ -58,37 +58,37 @@ const Nodes = (props) => {
                     stroke: 'black',
                     strokeWidth: 0.25
                   }}
-                  dx={-node.data.DisplayName.length - (node.data.DisplayName.length/2)}
+                  dx={-node.data.name.length - (node.data.name.length/2)}
                   dy='18'
                 >
-                  {node.data.DisplayName}
+                  {node.data.name}
                 </text>
               </g>
             </g>
-            {node.data.DisplayName !=='Cloud' && node.data.children?.length > 0 &&
+            {node.data.id !=='Cloud' && node.data.children?.length > 0 &&
               <g onClick={(e) => {
                 e.preventDefault()
-                expColEvent(node.data.DisplayName)
+                expColEvent(node.data.id)
               }}>
                 <TopologyExpand
                   width={10}
                   height={10}
-                  x={-node.data.DisplayName.length/2 + 1}
-                  y='22'
+                  x={-5}
+                  y={22}
                 />
               </g>
             }
             {node.data._children?.length > 0 &&
               <g onClick={(e) => {
                 e.preventDefault()
-                expColEvent(node.data.DisplayName)
+                expColEvent(node.data.id)
               }}>
                 <TopologyCollapse
                   width={10}
                   height={10}
-                  x={-node.data.DisplayName.length/2 + 1}
-                  y='22'
-                  id={node.data.DisplayName}
+                  x={-5}
+                  y={22}
+                  id={node.data.id}
                 />
               </g>
             }

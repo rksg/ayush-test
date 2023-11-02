@@ -24,7 +24,7 @@ import {
   AccessPointWifiPort,
   SearchOutlined,
   TopologySwitch,
-  TopologyAP,
+  TopologyAPOperational,
   TopologyCloud
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
@@ -43,13 +43,11 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
 
-import LinkTooltip       from './LinkTooltip'
-import data              from './mocks/data.json'
-import NodeTooltip       from './NodeTooltip'
-import * as UI           from './styledComponents'
-import Tree              from './Tree'
-import { getPathColor }  from './utils'
-import { transformData } from './utils/data-transformer'
+import LinkTooltip      from './LinkTooltip'
+import NodeTooltip      from './NodeTooltip'
+import * as UI          from './styledComponents'
+import Tree             from './Tree'
+import { getPathColor } from './utils'
 
 
 type OptionType = {
@@ -84,7 +82,7 @@ export function TopologyGraph (props:{ venueId?: string,
     isLoading: isTopologyLoading } = useGetTopologyQuery({ params: { ...params,
     venueId: _venueId } })
 
-  const [transformedData, setTransformedData] = useState<any>()
+  const [treeData, setTreeData] = useState<any>()
   const [topologyGraphData, setTopologyGraphData] = useState<GraphData>()
   const [showLinkTooltip, setShowLinkTooltip] = useState<boolean>(false)
   const [showDeviceTooltip, setShowDeviceTooltip] = useState<boolean>(false)
@@ -94,9 +92,9 @@ export function TopologyGraph (props:{ venueId?: string,
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
-
   useEffect(() => {
     if(topologyData) {
+      const schema1Equivalent = parseTopologyData(topologyData)
       const nodes: Node[] = topologyData?.nodes
 
       const _data: GraphData = {
@@ -107,14 +105,13 @@ export function TopologyGraph (props:{ venueId?: string,
       }
 
       setTopologyGraphData(_data)
+      setTreeData(
+        { data: [{ id: 'Cloud', name: 'Cloud',
+          children: schema1Equivalent }] })
     }
-    if(data){
-      setTransformedData(transformData(data))
-    }
-  }, [topologyData, data])
+  }, [topologyData])
 
   useEffect(() => {
-
     if (topologyGraphData && topologyGraphData?.nodes.length) {
 
       const { edges, nodes } = topologyGraphData as GraphData
@@ -330,6 +327,73 @@ export function TopologyGraph (props:{ venueId?: string,
 
   },[graphRef, topologyGraphData])
 
+  interface NodeData {
+    id: string;
+    name: string;
+    type: string;
+    children: NodeData[];
+  }
+
+  // function removeItemsWithChildren (data: Record<string, NodeData> | NodeData[], idToFind: string) {
+  //   for (const key in data) {
+  //     data[key].children = data[key].children.filter(child => child.id !== idToFind)
+
+  //     if (data[key].children.length > 0) {
+  //       removeItemsWithChildren(data[key].children, idToFind)
+  //     }
+  //   }
+  // }
+
+  function parseTopologyData (schema2: any): any {
+    const nodes = schema2.nodes
+    const edges = schema2.edges
+
+    // Create a mapping of node IDs to their corresponding node objects
+    const nodeMap: Record<string, NodeData> = {}
+
+    nodes.forEach((node: NodeData) => {
+      nodeMap[node.id] = {
+        ...node,
+        children: []
+      }
+    })
+
+    // Build the tree structure based on the edges
+    edges.forEach((edge: Link) => {
+      const fromNode = nodeMap[edge.from]
+      const toNode = nodeMap[edge.to]
+
+      if (fromNode && toNode) {
+        fromNode.children.push(toNode)
+      }
+    })
+
+    const idsToRemove: string[] = []
+    function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
+
+      for(let i=0; i < nodeMapData.length; i++){
+        const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
+
+        if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
+          idsToRemove.push(node.id)
+        }
+        removeDuplicateItems(node, nodeMapData[i].children)
+      }
+    }
+
+    const nodeMapData = Object.values(nodeMap)
+
+    nodeMapData.forEach(
+      node => removeDuplicateItems(
+        node, nodeMapData.filter(item => item.id !== node.id )))
+
+    const result: NodeData[] = Object.values(nodeMap).filter(item => {
+      return !idsToRemove.includes(item.id)
+    })
+
+    return result
+  }
+
   function truncateLabel (label: string, maxWidth: number) {
     const ellipsis = '...'
     if (label.length <= maxWidth) {
@@ -338,7 +402,6 @@ export function TopologyGraph (props:{ venueId?: string,
       return label.slice(0, maxWidth - ellipsis.length) + ellipsis
     }
   }
-
 
   // fit graph to screen
   function fitToScreen (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
@@ -646,8 +709,9 @@ export function TopologyGraph (props:{ venueId?: string,
           }
           <UI.Topology>
             <Tree
+              key={Math.random()}
               ref={graphRef}
-              data={transformedData}
+              data={treeData}
               nodeRender={(node: { parent: any, data: any }) => {
                 return (
                   // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -655,7 +719,7 @@ export function TopologyGraph (props:{ venueId?: string,
                     {node.parent ? (
                       node.data.type === 'Switch' ?
                         <TopologySwitch width={24} height={24} x={-12} y={-12} /> :
-                        <TopologyAP width={24} height={24} x={-12} y={-12} />
+                        <TopologyAPOperational width={24} height={24} x={-12} y={-12} />
                     ) : (
                       <TopologyCloud width={24} height={24} x={-12} y={-12} />
                     )}

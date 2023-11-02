@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react'
 
 import { select, tree, zoom } from 'd3'
 
-import data              from '../mocks/data.json'
 import { transformData } from '../utils/data-transformer'
 
 import Links from './Links'
@@ -12,10 +11,10 @@ const NODE_SIZE = [45, 150]
 const SCALE_RANGE = [0.1, 10]
 
 const Svg = (props) => {
-  const { width, height, data: propsData, nodeRender, onNodeClick } = props
+  const { width, height, data, nodeRender, onNodeClick } = props
   const refSvg = useRef()
   const refMain = useRef()
-  const [treeData, setTreeData] = useState(propsData)
+  const [treeData, setTreeData] = useState(transformData(data))
   const [nodesCoordinate, setNodesCoordinate] = useState({})
   const [linksCoordinate, setLinksCoordinate] = useState({})
 
@@ -62,7 +61,7 @@ const Svg = (props) => {
         const x = node.x
         node.x = node.y
         node.y = x
-        nodePositionData[node.data.DisplayName] = { x: node.x, y: node.y }
+        nodePositionData[node.data.id] = { x: node.x, y: node.y }
       })
       if(!Object.keys(nodesCoordinate).length){
         setNodesCoordinate(nodePositionData)
@@ -83,14 +82,14 @@ const Svg = (props) => {
   }, [treeData, width, height])
 
   // expand/collapse children event
-  const expColEvent = (d) => {
-    function removeChildren (data, targetName) {
+  const expColEvent = (nodeId) => {
+    function removeChildren (data, targetNode) {
       if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
-          if(targetName === 'Cloud'){
+          if(targetNode === 'Cloud'){
             return data
           }
-          if (data[i].DisplayName === targetName) {
+          if (data[i].id === targetNode) {
             if(data[i].children){
               data[i]._children = data[i].children
               delete data[i].children
@@ -99,14 +98,14 @@ const Svg = (props) => {
               delete data[i]._children
             }
           } else {
-            removeChildren(data[i].children, targetName)
+            removeChildren(data[i].children, targetNode)
           }
         }
       }
       return data
     }
 
-    const transformedData = removeChildren(data.data, d)
+    const transformedData = removeChildren(data.data, nodeId)
     setTreeData(transformData({ data: transformedData }))
   }
 
