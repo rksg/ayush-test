@@ -310,23 +310,19 @@ export function StackForm () {
   }, [])
 
   const handleChange = (row: SwitchTable, index: number) => {
-    formRef.current?.validateFields([`serialNumber${row.key}`]).then(() => {
-      const dataRows = [...tableData]
-      const serialNumber = formRef.current?.getFieldValue(
-        `serialNumber${row.key}`
-      )?.toUpperCase()
-      dataRows[index].id = serialNumber
-      dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
-      setTableData(dataRows)
+    const dataRows = [...tableData]
+    const serialNumber = formRef.current?.getFieldValue(
+      `serialNumber${row.key}`
+    )?.toUpperCase()
+    dataRows[index].id = serialNumber
+    dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
+    setTableData(dataRows)
 
-      const modelList = dataRows
-        .filter(
-          row => row.model &&
-            modelNotSupportStack.indexOf(row.model) === -1)
-        .map(row => row.model)
-      setValidateModel(modelList)
-      setVisibleNotification(modelList.length > 0)
-    }, () => {})
+    const modelList = dataRows.filter(row =>
+      row.model && modelNotSupportStack.indexOf(row.model) < 0 && row.model !== 'Unknown'
+    ).map(row => row.model)
+    setValidateModel(modelList)
+    setVisibleNotification(modelList.length > 0)
   }
 
   const handleAddRow = () => {
@@ -548,7 +544,7 @@ export function StackForm () {
             />
             : <Input
               data-testid={`serialNumber${row.key}`}
-              onBlur={() => handleChange(row, index)}
+              onKeyUp={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />

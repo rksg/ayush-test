@@ -137,7 +137,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           validateFirst
         ><Input
             data-testid={`serialNumber${row.key}`}
-            onBlur={() => handleChange(row, index)}
+            onKeyUp={() => handleChange(row, index)}
             style={{ textTransform: 'uppercase' }}
             disabled={row.disabled}
           />
