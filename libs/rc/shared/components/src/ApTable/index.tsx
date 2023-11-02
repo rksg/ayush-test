@@ -21,7 +21,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,isAPLowPower
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   AFCPowerMode,
