@@ -1,4 +1,7 @@
-import { useParams } from '@acx-ui/react-router-dom'
+import { omit } from 'lodash'
+
+import { useParams }                                from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, PathNode, useDateFilter } from '@acx-ui/utils'
 
 import { ZoneAnalyticsTab } from './ZoneAnalyticsTab'
 import ZonePageHeader       from './ZonePageHeader'
@@ -11,11 +14,29 @@ const tabs = {
 }
 
 export default function ZoneDetails () {
-  const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs] || tabs['assurance']
+  const dateFilter = useDateFilter()
+  const { systemName, zoneName, activeTab } = useParams()
+  const path = [
+    { name: systemName, type: 'system' },
+    { name: zoneName, type: 'zone' }
+  ] as PathNode[]
+  const filters = {
+    filter: {
+      networkNodes: [path],
+      switchNodes: [path]
+    },
+    ...omit(dateFilter, 'setDateFilter')
+  } as unknown as AnalyticsFilter
+  const healthFilters = {
+    filter: {
+      networkNodes: [path]
+    },
+    ...omit(dateFilter, 'setDateFilter')
+  } as unknown as AnalyticsFilter
+  const Tab = tabs[activeTab as keyof typeof tabs]
   return <>
-    <ZonePageHeader />
-    { Tab && <Tab /> }
+    <ZonePageHeader {...dateFilter}/>
+    { Tab && <Tab filters={filters} healthFilters={healthFilters} /> }
   </>
 }
 

@@ -1,4 +1,5 @@
-import { gql } from 'graphql-request'
+import { gql }  from 'graphql-request'
+import { omit } from 'lodash'
 
 import { dataApi } from '@acx-ui/store'
 
@@ -9,7 +10,7 @@ export interface RequestPayload {
 
 export type Zone = {
     systemName: string
-    domain: string
+    domain?: string
     zoneName: string
     apCount: number
     clientCount: number
@@ -42,8 +43,11 @@ export const zonesListApi = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'ZONES_LIST' }],
       transformResponse: (response: { network: ZonesList }) => ({
         zones: response.network.zones.map((zone) => ({
-          ...zone,
-          network: `${zone.systemName} > ${zone.domain.split('||')?.[1]}`
+          ...omit(zone, zone.domain === '1||Administration Domain' ? 'domain' : ''),
+          network:
+            zone.domain === '1||Administration Domain'
+              ? `${zone.systemName}`
+              : `${zone.systemName} > ${zone.domain?.split('||')?.[1]}`
         }))
       })
     })

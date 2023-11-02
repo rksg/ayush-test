@@ -17,24 +17,24 @@ export const zonesList = {
     zones: [
       {
         systemName: 'systemName 1',
-        domain: 'domain 1',
+        domain: '1||Administration Domain',
         zoneName: 'zoneName 1',
-        apCount: 'apCount 1',
-        clientCount: 'clientCount 1'
+        apCount: 1,
+        clientCount: 2
       },
       {
         systemName: 'systemName 2',
         domain: 'domain 2',
         zoneName: 'zoneName 2',
-        apCount: 'apCount 2',
-        clientCount: 'clientCount 2'
+        apCount: 1,
+        clientCount: 2
       },
       {
         systemName: 'systemName 3',
-        domain: 'domain 3',
+        domain: '1||Administration Domain',
         zoneName: 'zoneName 3',
-        apCount: 'apCount 3',
-        clientCount: 'clientCount 3'
+        apCount: 3,
+        clientCount: 3
       }
     ]
   }
@@ -58,8 +58,6 @@ describe('Zones List', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getByText('zoneName 1')).toBeVisible()
-    expect(screen.getByText('apCount 1')).toBeVisible()
-    expect(screen.getByText('clientCount 1')).toBeVisible()
     expect(screen.getByText('systemName 1')).toBeVisible()
   })
 

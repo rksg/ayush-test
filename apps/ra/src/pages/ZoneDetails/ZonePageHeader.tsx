@@ -5,22 +5,13 @@ import { PageHeader, RangePicker } from '@acx-ui/components'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
+import { DateRangeFilter } from '@acx-ui/utils'
 
 import ZoneTabs from './ZoneTabs'
 
-function DatePicker () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+type ZonePageHeaderProps = DateRangeFilter & { setDateFilter: CallableFunction }
 
-  return <RangePicker
-    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-    onDateApply={setDateFilter as CallableFunction}
-    showTimePicker
-    selectionType={range}
-  />
-}
-
-function ZonePageHeader () {
+function ZonePageHeader ({ startDate, endDate, range, setDateFilter }: ZonePageHeaderProps) {
   const { $t } = useIntl()
   const { zoneName } = useParams()
   return (
@@ -30,7 +21,12 @@ function ZonePageHeader () {
         { text: $t({ defaultMessage: 'Zones' }), link: '/zones' }
       ]}
       extra={[
-        <DatePicker key='zone-details-date-picker' />
+        <RangePicker
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />
       ]}
       footer={<ZoneTabs />}
     />

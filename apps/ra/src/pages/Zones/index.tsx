@@ -7,6 +7,7 @@ import { Loader, Table, TableProps, useDateRange, PageHeader, TimeRangeDropDown,
 import {
   Tooltip
 } from '@acx-ui/components'
+import { intlFormats }             from '@acx-ui/formatter'
 import { TenantLink, resolvePath } from '@acx-ui/react-router-dom'
 import {  NetworkPath, DateRange } from '@acx-ui/utils'
 
@@ -48,13 +49,17 @@ function ZonesList () {
       render: (_, row, __, highlightFn) => {
         const networkPath = [
           { type: 'system', name: row.systemName },
-          { type: 'domain', name: row.domain.split('||')?.[1] }
+          ...(row.domain ? [{ type: 'domain', name: row.domain?.split('||')?.[1] }] : [])
         ] as NetworkPath
         return (
           <Tooltip placement='left' title={formattedPath(networkPath, 'Name')}>
             <UI.Ul>
               {networkPath.map(({ name }, index) => [
-                index !== 0 && <UI.Chevron key={`network-chevron-${index}`}>{'>'}</UI.Chevron>,
+                index !== 0 &&
+                  <UI.Chevron key={`network-chevron-${index}`}>
+                    {'>'}
+                  </UI.Chevron>
+                ,
                 <UI.Li key={`network-li-${index}`}>{highlightFn(name)}</UI.Li>
               ])}
             </UI.Ul>
@@ -68,8 +73,10 @@ function ZonesList () {
       key: 'apCount',
       sorter: { compare: sortProp('apCount', defaultSort) },
       render: (_, row: Zone) => (
-        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/devices`)}>
-          {row.apCount as unknown as string}
+        <TenantLink
+          to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/devices`)}
+          title={row.apCount as unknown as string}>
+          {$t(intlFormats.countFormat, { value: row.apCount })}
         </TenantLink>
       )
     },
@@ -79,8 +86,10 @@ function ZonesList () {
       key: 'clientCount',
       sorter: { compare: sortProp('clientCount', defaultSort) },
       render: (_, row: Zone) => (
-        <TenantLink to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/clients`)}>
-          {row.clientCount as unknown as string}
+        <TenantLink
+          to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/clients`)}
+          title={row.clientCount as unknown as string}>
+          {$t(intlFormats.countFormat, { value: row.clientCount })}
         </TenantLink>
       )
     }
