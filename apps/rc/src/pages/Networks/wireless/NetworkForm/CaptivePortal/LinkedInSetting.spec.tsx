@@ -20,7 +20,7 @@ describe('CaptiveNetworkForm-SelfSignInLinkedin', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<LinkedInSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     const linkedinId = await screen.findByLabelText(/Client ID/)
     fireEvent.change(linkedinId, { target: { value: 'linedin' } })
     fireEvent.blur(linkedinId)
@@ -36,7 +36,7 @@ describe('CaptiveNetworkForm-SelfSignInLinkedin', () => {
       }}
     ><StepsFormLegacy><StepsFormLegacy.StepForm children={<LinkedInSetting redirectURL={''} />} />
       </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
-    fireEvent.click(await screen.findByTitle('settingicon'))
+    fireEvent.click(await screen.findByTestId('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
 })
