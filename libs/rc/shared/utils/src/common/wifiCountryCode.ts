@@ -114,6 +114,7 @@ export const WIFI_COUNTRY_CODE = [
   { code: 'TT',name: 'Trinidad And Tobago' },
   { code: 'TN',name: 'Tunisia' },
   { code: 'TR',name: 'Turkey' },
+  { code: 'UG',name: 'Uganda' },
   { code: 'UA',name: 'Ukraine' },
   { code: 'AE',name: 'United Arab Emirates' },
   { code: 'GB',name: 'United Kingdom' },
