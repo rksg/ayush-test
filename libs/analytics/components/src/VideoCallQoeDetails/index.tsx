@@ -11,6 +11,7 @@ import { Loader, PageHeader, Table, TableProps, Tooltip,
   cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -71,7 +72,7 @@ export function VideoCallQoeDetails (){
       apID = row.apDetails?.apMac?.toUpperCase()
     }
     return <TenantLink
-      to={`/devices/wifi/${apID}/details/overview`}>
+      to={`/devices/wifi/${apID}/details/${get('IS_MLISA_SA')?'ai':'overview'}`}>
       {value as string}</TenantLink>
   }
 
