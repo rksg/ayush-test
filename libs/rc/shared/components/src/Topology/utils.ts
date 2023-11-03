@@ -1,3 +1,5 @@
+import { hierarchy } from 'd3'
+import { get }       from 'lodash'
 
 import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, DeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                                          from '@acx-ui/utils'
@@ -77,4 +79,23 @@ export function getMeshRole (meshRole: APMeshRole) {
     case APMeshRole.DISABLED: return $t({ defaultMessage: 'disabled' })
   }
 
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const transformData = (data: { data: any }) => {
+  const root = get(data, 'data[0]', null)
+  if (root !== null) {
+    return hierarchy(root, (d) => d.children)
+  } else {
+    return null
+  }
+}
+
+export const truncateLabel = (label: string, maxWidth: number) => {
+  const ellipsis = '...'
+  if (label.length <= maxWidth) {
+    return label
+  } else {
+    return label.slice(0, maxWidth - ellipsis.length) + ellipsis
+  }
 }

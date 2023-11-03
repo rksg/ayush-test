@@ -23,7 +23,7 @@ import {
   Switch, Unknown,
   AccessPointWifiPort,
   SearchOutlined,
-  TopologySwitch,
+  TopologySwitchOperational,
   TopologyAPOperational,
   TopologyCloud
 } from '@acx-ui/icons'
@@ -43,11 +43,11 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
 
-import LinkTooltip      from './LinkTooltip'
-import NodeTooltip      from './NodeTooltip'
-import * as UI          from './styledComponents'
-import Tree             from './Tree'
-import { getPathColor } from './utils'
+import LinkTooltip                     from './LinkTooltip'
+import NodeTooltip                     from './NodeTooltip'
+import * as UI                         from './styledComponents'
+import Tree                            from './Tree'
+import { getPathColor, truncateLabel } from './utils'
 
 
 type OptionType = {
@@ -334,19 +334,9 @@ export function TopologyGraph (props:{ venueId?: string,
     children: NodeData[];
   }
 
-  // function removeItemsWithChildren (data: Record<string, NodeData> | NodeData[], idToFind: string) {
-  //   for (const key in data) {
-  //     data[key].children = data[key].children.filter(child => child.id !== idToFind)
-
-  //     if (data[key].children.length > 0) {
-  //       removeItemsWithChildren(data[key].children, idToFind)
-  //     }
-  //   }
-  // }
-
-  function parseTopologyData (schema2: any): any {
-    const nodes = schema2.nodes
-    const edges = schema2.edges
+  function parseTopologyData (topologyData: any): any {
+    const nodes = topologyData.nodes
+    const edges = topologyData.edges
 
     // Create a mapping of node IDs to their corresponding node objects
     const nodeMap: Record<string, NodeData> = {}
@@ -392,15 +382,6 @@ export function TopologyGraph (props:{ venueId?: string,
     })
 
     return result
-  }
-
-  function truncateLabel (label: string, maxWidth: number) {
-    const ellipsis = '...'
-    if (label.length <= maxWidth) {
-      return label
-    } else {
-      return label.slice(0, maxWidth - ellipsis.length) + ellipsis
-    }
   }
 
   // fit graph to screen
@@ -718,7 +699,7 @@ export function TopologyGraph (props:{ venueId?: string,
                   <Fragment>
                     {node.parent ? (
                       node.data.type === 'Switch' ?
-                        <TopologySwitch width={24} height={24} x={-12} y={-12} /> :
+                        <TopologySwitchOperational width={24} height={24} x={-12} y={-12} /> :
                         <TopologyAPOperational width={24} height={24} x={-12} y={-12} />
                     ) : (
                       <TopologyCloud width={24} height={24} x={-12} y={-12} />

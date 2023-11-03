@@ -1,7 +1,37 @@
 import React from 'react'
 
+interface LinkCoordinate {
+  source: {
+    x: number;
+    y: number;
+  };
+  target: {
+    x: number;
+    y: number;
+  };
+}
 
-const linkCustom = ({ source, target }, linksCoordinate, radius) => {
+export interface Link {
+  source: {
+    data: {
+      id: string;
+    };
+    depth: number;
+  };
+  target: {
+    data: {
+      id: string;
+    };
+  };
+}
+
+interface LinksProps {
+  links: Link[];
+  linksCoordinate: { [key: string]: LinkCoordinate };
+}
+
+// eslint-disable-next-line max-len
+const linkCustom = ({ source, target }: Link, linksCoordinate: { [key: string]: LinkCoordinate }, radius: number) => {
   const linkCoor = linksCoordinate[`${source.data.id}_${target.data.id}`]
   const sourceX = linkCoor.source.x
   const sourceY = linkCoor.source.y
@@ -12,17 +42,17 @@ const linkCustom = ({ source, target }, linksCoordinate, radius) => {
     return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
   } else {
     const isClockwise = targetY < sourceY
-    const path = `M${sourceY} ${sourceX} 
-  L${sourceY} ${breakX - radius}
-  a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${isClockwise ? -radius : radius},${radius}
-  L${isClockwise ? targetY + radius : targetY - radius} ${breakX} 
-  a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${isClockwise ? -radius : radius},${radius}
-  L${targetY} ${targetX - 100} `
+    const path = `M${sourceY} ${sourceX}
+      L${sourceY} ${breakX - radius}
+      a${radius},${radius} 0 0 ${isClockwise ? 1 : 0} ${isClockwise ? -radius : radius},${radius}
+      L${isClockwise ? targetY + radius : targetY - radius} ${breakX}
+      a${radius},${radius} 0 0 ${isClockwise ? 0 : 1} ${isClockwise ? -radius : radius},${radius}
+      L${targetY} ${targetX - 100} `
     return path
   }
 }
 
-const Links = (props) => {
+export const Links: React.FC<LinksProps> = (props) => {
   const { links, linksCoordinate } = props
 
   return (
@@ -38,7 +68,7 @@ const Links = (props) => {
       </marker>
       {links.map((link, i) => (
         <g key={i}
-          transform={`translate(0, -${40 + (65 * link.source.depth) })`}>
+          transform={`translate(0, -${40 + 65 * link.source.depth})`}>
           <path
           //eslint-disable-next-line max-len
             d={linkCustom(link, linksCoordinate, 5)}
@@ -50,4 +80,3 @@ const Links = (props) => {
     </g>
   )
 }
-export default Links

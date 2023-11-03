@@ -1,22 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 
 import { select, tree, zoom } from 'd3'
+import _                      from 'lodash'
 
-import { transformData } from '../utils/data-transformer'
+import { transformData } from '../utils'
 
-import Links from './Links'
-import Nodes from './Nodes'
+import { Links } from './Links'
+import Nodes     from './Nodes'
 
-const NODE_SIZE = [45, 150]
-const SCALE_RANGE = [0.1, 10]
+const NODE_SIZE: [number, number] = [45, 150]
+const SCALE_RANGE: [number, number] = [0.1, 5]
 
-const Svg = (props) => {
+const Svg: any = (props: any) => {
   const { width, height, data, nodeRender, onNodeClick } = props
-  const refSvg = useRef()
-  const refMain = useRef()
-  const [treeData, setTreeData] = useState(transformData(data))
-  const [nodesCoordinate, setNodesCoordinate] = useState({})
-  const [linksCoordinate, setLinksCoordinate] = useState({})
+  const refSvg = useRef<any>(null)
+  const refMain = useRef<any>(null)
+  const [treeData, setTreeData] = useState<any>(transformData(data)) // Replace 'any' with the actual data type
+  const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
+  const [linksCoordinate, setLinksCoordinate] = useState<any>({})
 
   useEffect(() => {
     const svg = select(refSvg.current)
@@ -38,7 +40,6 @@ const Svg = (props) => {
 
   const { nodes, links, translate, scale } = useMemo(() => {
     if (width && height && treeData) {
-
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
         .nodeSize(NODE_SIZE)(treeData)
@@ -47,23 +48,23 @@ const Svg = (props) => {
       const links = treeLayout.links()
 
       // Update linkPositions state
-      let linkPositionData = {}
+      let linkPositionData: any = {}
       links.forEach((link) => {
-        linkPositionData[`${link.source.data.id}_${link.target.data.id}`] = link
+        linkPositionData[`${_.get(link, 'source.data.id')}_${_.get(link, 'target.data.id')}`] = link
       })
-      if(!Object.keys(linksCoordinate).length){
+      if (!Object.keys(linksCoordinate).length) {
         setLinksCoordinate(linkPositionData)
       }
 
-      const nodePositionData = {}
+      const nodePositionData: any = {}
       // Swap x and y coordinates for vertical layout
       nodes.forEach((node) => {
         const x = node.x
         node.x = node.y
         node.y = x
-        nodePositionData[node.data.id] = { x: node.x, y: node.y }
+        nodePositionData[_.get(node, 'data.id')] = { x: node.x, y: node.y }
       })
-      if(!Object.keys(nodesCoordinate).length){
+      if (!Object.keys(nodesCoordinate).length) {
         setNodesCoordinate(nodePositionData)
       }
 
@@ -82,18 +83,18 @@ const Svg = (props) => {
   }, [treeData, width, height])
 
   // expand/collapse children event
-  const expColEvent = (nodeId) => {
-    function removeChildren (data, targetNode) {
+  const expColEvent = (nodeId: string) => {
+    function removeChildren (data: any, targetNode: string): any {
       if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
-          if(targetNode === 'Cloud'){
+          if (targetNode === 'Cloud') {
             return data
           }
           if (data[i].id === targetNode) {
-            if(data[i].children){
+            if (data[i].children) {
               data[i]._children = data[i].children
               delete data[i].children
-            }else{
+            } else {
               data[i].children = data[i]._children
               delete data[i]._children
             }
@@ -110,23 +111,23 @@ const Svg = (props) => {
   }
 
   return (
-    <svg ref={refSvg} style={{ width: width, height: height }}>
+    <svg ref={refSvg} style={{ width, height }}>
       <g className='d3-tree-main' ref={refMain}>
         <g transform={`translate(${translate}) scale(${scale})`}>
-          {nodes && <Links
-            links={links}
-            linksCoordinate={linksCoordinate}
-          />}
-          {links && <Nodes
-            nodes={nodes}
-            nodeRender={nodeRender}
-            expColEvent={expColEvent}
-            onClick={onNodeClick}
-            nodesCoordinate={nodesCoordinate}
-          />}
+          {nodes && <Links links={links as any} linksCoordinate={linksCoordinate} />}
+          {links && (
+            <Nodes
+              nodes={nodes}
+              nodeRender={nodeRender}
+              expColEvent={expColEvent}
+              onClick={onNodeClick}
+              nodesCoordinate={nodesCoordinate}
+            />
+          )}
         </g>
       </g>
     </svg>
   )
 }
+
 export default Svg

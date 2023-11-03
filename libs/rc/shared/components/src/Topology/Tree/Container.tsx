@@ -3,7 +3,8 @@ import React from 'react'
 import { useClientRect } from './hooks/useClientRect'
 import Svg               from './Svg'
 
-const Container = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Container: any = (props: any) => {
   const [rect, ref] = useClientRect()
 
   return (
@@ -12,4 +13,5 @@ const Container = (props) => {
     </div>
   )
 }
+
 export default Container
