@@ -23,8 +23,6 @@ import {
   Switch, Unknown,
   AccessPointWifiPort,
   SearchOutlined,
-  TopologySwitchOperational,
-  TopologyAPOperational,
   TopologyCloud
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
@@ -43,11 +41,11 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
 
-import LinkTooltip                     from './LinkTooltip'
-import NodeTooltip                     from './NodeTooltip'
-import * as UI                         from './styledComponents'
-import Tree                            from './Tree'
-import { getPathColor, truncateLabel } from './utils'
+import LinkTooltip                                    from './LinkTooltip'
+import NodeTooltip                                    from './NodeTooltip'
+import * as UI                                        from './styledComponents'
+import Tree                                           from './Tree'
+import { getDeviceIcon, getPathColor, truncateLabel } from './utils'
 
 
 type OptionType = {
@@ -504,21 +502,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
     setShowDeviceTooltip(true)
-    const tempNode = {
-      type: 'Ap',
-      name: '302002015736-DEV',
-      mac: '34:20:E3:19:79:F0',
-      serial: '302002015736',
-      id: '302002015736',
-      status: 'Operational',
-      childCount: 0,
-      meshRole: 'DOWN',
-      uplink: [],
-      downlink: [],
-      downlinkChannel: '36(5G)',
-      isMeshEnable: true
-    }
-    setTooltipNode(tempNode as typeof node)
+    setTooltipNode(node.data as typeof node)
     setTooltipPosition({ x: d?.nativeEvent.layerX + 30
       , y: d?.nativeEvent.layerY })
   }, 100)
@@ -698,9 +682,7 @@ export function TopologyGraph (props:{ venueId?: string,
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <Fragment>
                     {node.parent ? (
-                      node.data.type === 'Switch' ?
-                        <TopologySwitchOperational width={24} height={24} x={-12} y={-12} /> :
-                        <TopologyAPOperational width={24} height={24} x={-12} y={-12} />
+                      getDeviceIcon(node.data.type, node.data.status)
                     ) : (
                       <TopologyCloud width={24} height={24} x={-12} y={-12} />
                     )}

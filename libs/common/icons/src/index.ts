@@ -328,6 +328,7 @@ export { ReactComponent as TopologyAPInitiate } from './icons/TopologyAPInitiate
 export { ReactComponent as TopologyAPMeshDegraded } from './icons/TopologyAPMeshDegraded.svg'
 export { ReactComponent as TopologyAPMeshDisconnected } from './icons/TopologyAPMeshDisconnected.svg'
 export { ReactComponent as TopologyAPMeshOperational } from './icons/TopologyAPMeshOperational.svg'
+export { ReactComponent as TopologyAPMeshInitiate } from './icons/TopologyAPMeshInitiate.svg'
 export { ReactComponent as TopologyAPMeshRootDegraded } from './icons/TopologyAPMeshRootDegraded.svg'
 export { ReactComponent as TopologyAPMeshRootDisconnected } from './icons/TopologyAPMeshRootDisconnected.svg'
 export { ReactComponent as TopologyAPMeshRootInitiate } from './icons/TopologyAPMeshRootInitiate.svg'
