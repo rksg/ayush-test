@@ -36,7 +36,8 @@ import {
   getVlanString,
   NetworkVenue,
   NetworkSaveData,
-  IsNetworkSupport6g
+  IsNetworkSupport6g,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -278,7 +279,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   }
 
   function validateRadioBandForDsaeNetwork (radios: string[]) {
-    if (radios.length && radios.length === 1 && radios.includes(RadioTypeEnum._6_GHz)) {
+    if (wlan?.wlanSecurity
+         && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
+         && radios.length
+         && radios.length === 1
+         && radios.includes(RadioTypeEnum._6_GHz)) {
       return Promise.reject($t({ defaultMessage:
         'DPSK3 Network wont support "Only 6GHz" selection. Please select other Radios along with 6GHz.' }))
     }
