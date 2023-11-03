@@ -157,6 +157,9 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
       <Route
+        path='devices/wifi/apgroups'
+        element={<AccessPointList tab={WifiTabsEnum.AP_GROUP}/>} />
+      <Route
         path='devices/wifi/reports/aps'
         element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
       <Route

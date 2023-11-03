@@ -7,7 +7,7 @@ import { DhcpApInfo }                                   from '../models/DhcpApIn
 import { ExternalAntenna }                              from '../models/ExternalAntenna'
 import { VenueLanPort }                                 from '../models/VenueLanPort'
 
-import { ApVenueStatusEnum } from '.'
+import { ApVenueStatusEnum, CountAndNames } from '.'
 
 export interface IpSettings {
   ipType?: string,
@@ -175,11 +175,18 @@ export interface ApDetails {
 }
 
 export interface ApGroup {
-  aps?: ApDeep[],
   id: string,
-  isDefault: boolean,
   name: string,
-  venueId: string
+  isDefault: boolean,
+  venueId: string,
+  aps?: ApDeep[],
+}
+
+export interface ApGroupViewModel extends ApGroup {
+  venueName?: string,
+  members?: CountAndNames,
+  networks?: CountAndNames,
+  clients?: number
 }
 
 export interface AddApGroup {
@@ -224,7 +231,7 @@ export interface APMesh {
   apStatusData?: {
     APRadio?: Array<RadioProperties>
   },
-  clients?: { count: number, names: string[] },
+  clients?: CountAndNames,
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,

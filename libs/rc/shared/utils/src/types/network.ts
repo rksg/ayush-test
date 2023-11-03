@@ -1,3 +1,4 @@
+import { CountAndNames } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -41,7 +42,7 @@ export interface Network { // TODO: Move all Network type from libs/rc/shared/se
   vlan: number
   aps: number
   clients: number
-  venues: { count: number, names: string[] }
+  venues: CountAndNames
   captiveType?: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }

@@ -12,6 +12,7 @@ import {
   StepsFormLegacyInstance,
   Transfer
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useLazyVenueDefaultApGroupQuery,
@@ -40,13 +41,17 @@ const defaultPayload = {
 }
 
 export function ApGroupForm () {
+  const isApGroupTableFlag = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
   const navigate = useNavigate()
   const params = useParams()
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const basePath = useTenantLink('/devices/')
+  const navigatePathName = (isApGroupTableFlag)?
+    `${basePath.pathname}/wifi/apgroups` : `${basePath.pathname}/wifi`
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+
   const isEditMode = action === 'edit'
 
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
@@ -134,7 +139,7 @@ export function ApGroupForm () {
         await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
-      navigate(`${basePath.pathname}/wifi`, { replace: true })
+      navigate(navigatePathName, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -167,7 +172,7 @@ export function ApGroupForm () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
+        { text: $t({ defaultMessage: 'AP Group List' }) }
       ]}
     />
     <StepsFormLegacy
@@ -175,7 +180,7 @@ export function ApGroupForm () {
       onFinish={handleAddApGroup}
       onCancel={() => navigate({
         ...basePath,
-        pathname: `${basePath.pathname}/wifi`
+        pathname: navigatePathName
       })}
       buttonLabel={{
         submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })

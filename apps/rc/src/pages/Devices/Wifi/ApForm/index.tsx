@@ -23,7 +23,7 @@ import {
   useApListQuery,
   useAddApMutation,
   useGetApOperationalQuery,
-  useLazyApGroupListQuery,
+  useLazyApGroupListByVenueQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
@@ -101,7 +101,7 @@ export function ApForm () {
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
-  const [apGroupList] = useLazyApGroupListQuery()
+  const [apGroupList] = useLazyApGroupListByVenueQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)

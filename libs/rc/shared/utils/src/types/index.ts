@@ -21,6 +21,7 @@ import { EdgeStatusSeverityStatistic } from './edge'
 import { EPDG }                        from './services'
 import { SwitchStatusEnum }            from './switch'
 
+export * from './common'
 export * from './ap'
 export * from './venue'
 export * from './network'

@@ -5,8 +5,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
-import { LineChartOutline, ListSolid, MeshSolid }                          from '@acx-ui/icons'
-import { ApTable }                                                         from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }         from '@acx-ui/icons'
+import { ApGroupTable, ApTable }                                           from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -193,6 +194,8 @@ export function VenueWifi () {
   const { $t } = useIntl()
   const params = useParams()
 
+  const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+
   const [ enabledMesh, setEnabledMesh ] = useState(false)
 
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
@@ -246,6 +249,17 @@ export function VenueWifi () {
           rlsClause={`"zoneName" in ('${params?.venueId}')`}
         />
       </Tabs.TabPane>
+      { isShowApGroupTable && (
+        <Tabs.TabPane key='apgroup'
+          tab={<Tooltip title={$t({ defaultMessage: 'AP Group List' })}>
+            <DevicesOutlined />
+          </Tooltip>}>
+          <ApGroupTable rowSelection={{ type: 'checkbox' }}
+            searchable={true}
+            enableActions={true}
+          />
+        </Tabs.TabPane>
+      )}
     </IconThirdTab>
   )
 }
