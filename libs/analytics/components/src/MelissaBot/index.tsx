@@ -63,6 +63,11 @@ export function MelissaBot (){
 
   const showDrawer = () => {
     setOpen(true)
+    defer(()=>{
+      if(inputRef.current){
+        inputRef.current.focus()
+      }
+    })
   }
 
   const onClose = () => {
@@ -211,7 +216,7 @@ export function MelissaBot (){
     }
   },[pathname,responseCount])
   const eventHandler:EventListener = ()=>{
-    setOpen(true)
+    showDrawer()
   }
   useEffect(()=>{
     window.addEventListener('showMelissaBot',eventHandler)
