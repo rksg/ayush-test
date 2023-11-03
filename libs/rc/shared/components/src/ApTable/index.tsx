@@ -24,7 +24,6 @@ import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
-  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -36,7 +35,9 @@ import {
   transformDisplayText,
   TableQuery,
   usePollingTableQuery,
-  APExtendedGrouped
+  APExtendedGrouped,
+  AFCMaxPowerRender,
+  AFCPowerStateRender
 } from '@acx-ui/rc/utils'
 import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -64,7 +65,8 @@ export const defaultApPayload = {
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
     'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan'
+    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan',
+    'apStatusData.afcInfo.maxPowerDbm'
   ]
 }
 
@@ -384,18 +386,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        let displayText = '--'
-        const powerState = row.apStatusData?.afcInfo?.powerMode
-
-        if (powerState === AFCPowerMode.STANDARD_POWER){
-          displayText = 'Standard power'
-        }
-
-        if (powerState === AFCPowerMode.LOW_POWER){
-          displayText = 'Low power'
-        }
-
-        return displayText
+        return AFCPowerStateRender(row.apStatusData?.afcInfo, false)
       }
     },
     { key: 'afcMaxPower',
@@ -404,14 +395,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (data: React.ReactNode, row: APExtended) => {
-        let displayText = '--'
-        const maxPowerDbm = row.apStatusData?.afcInfo?.maxPowerDbm
-
-        if (maxPowerDbm){
-          displayText = `${maxPowerDbm} dBm`
-        }
-
-        return displayText
+        return AFCMaxPowerRender(row.apStatusData?.afcInfo )
       }
     }
     ]: [])

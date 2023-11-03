@@ -7,16 +7,15 @@ import { Drawer, Descriptions, PasswordInput }                                  
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
 import {
-  AFCStatus,
   ApDetails,
   ApVenueStatusEnum,
   ApViewModel,
   DeviceGps,
   gpsToFixed,
   useApContext,
-  AFCPowerMode,
-  AFCInfo,
-  Capabilities } from '@acx-ui/rc/utils'
+  Capabilities,
+  AFCMaxPowerRender,
+  AFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
 
@@ -58,51 +57,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     setVisible(false)
   }
 
-  const AFCPowerStateRender = (afcInfo: AFCInfo | undefined) => {
-
-    const powerMode = afcInfo?.powerMode
-
-    let displayText = '--'
-
-    if(!powerMode) {
-      return
-    }
-
-    if (powerMode === AFCPowerMode.STANDARD_POWER){
-      displayText = $t({ defaultMessage: 'Standard power' })
-    }
-
-    if (powerMode === AFCPowerMode.LOW_POWER){
-      displayText = $t({ defaultMessage: 'Low power' })
-
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[Geo Location not set]' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[No channels available]' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[Pending response from the AFC server]' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.AFC_NOT_REQUIRED) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[User set]' })
-      }
-    }
-
-    return displayText
-  }
-
-  const AFCMaxPowerRender = (afcInfo: AFCInfo | undefined) => {
-    let displayText = '--'
-    const maxPowerDbm = afcInfo?.maxPowerDbm
-
-    if (maxPowerDbm){
-      displayText = `${maxPowerDbm} dBm`
-    }
-
-    return displayText
-  }
-
   const displayAFCInfo = () => {
 
     let displayContent = (<></>)
@@ -116,7 +70,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Descriptions.Item
           label={$t({ defaultMessage: 'AFC Power State' })}
           children={
-            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo)
+            AFCPowerStateRender(currentAP?.apStatusData?.afcInfo, true)
           }
         />
         <Descriptions.Item
