@@ -1,7 +1,6 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
-import { rest }       from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
@@ -43,7 +42,6 @@ describe('Add Stack Member Form', () => {
 
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
@@ -187,5 +185,31 @@ describe('Add Stack Member Form', () => {
     expect(
       await screen.findAllByText('Serial number is invalid since it\'s not unique in stack')
     ).not.toBeNull()
+  })
+
+  it('should render belong to the same family message correctly', async () => {
+    render(
+      <Provider>
+        <AddStackMember
+          visible={true}
+          setVisible={jest.fn()}
+          maxMembers={3}
+          venueFirmwareVersion='09010h_rc1'
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview'
+        }
+      })
+
+    expect(await screen.findByText('Add Member to Stack')).toBeVisible()
+
+    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
+    await userEvent.type(serialNumber1, 'FNC3224R0AG')
+
+    expect(
+      await screen.findByText('All switch models should belong to the same family.')
+    ).toBeVisible()
   })
 })

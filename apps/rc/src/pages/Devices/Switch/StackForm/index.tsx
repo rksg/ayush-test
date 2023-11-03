@@ -91,7 +91,7 @@ const defaultPayload = {
 
 const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
 
-export const validatorSwitchModel = (serialNumber: string, tableData: { id: string }[]) => {
+export const validatorSwitchModel = (serialNumber: string, activeSerialNumber?: string) => {
   const { $t } = getIntl()
   const re = new RegExp(SWITCH_SERIAL_PATTERN)
   if (serialNumber && !re.test(serialNumber)) {
@@ -105,10 +105,7 @@ export const validatorSwitchModel = (serialNumber: string, tableData: { id: stri
       $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
     )
   }
-  const allSameModelFamily = tableData
-    .filter(item => item.id && item.id !== serialNumber)
-    .every(item => isSameModelFamily(item.id, serialNumber))
-  if (serialNumber && !allSameModelFamily) {
+  if (serialNumber && activeSerialNumber && !isSameModelFamily(activeSerialNumber, serialNumber)) {
     return Promise.reject(
       $t({ defaultMessage: 'All switch models should belong to the same family.' })
     )
@@ -523,9 +520,7 @@ export function StackForm () {
               message: $t({ defaultMessage: 'This field is required' })
             },
             { validator: (_, value) => validatorSwitchModel(value,
-              // replace id here since tableData is not updated yet
-              tableData.map(d => ({ id: (d.key === row.key) ? value : d.id }))
-            ) },
+              formRef.current?.getFieldValue(`serialNumber${activeRow}`)) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
