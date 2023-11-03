@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react'
-import { BrowserRouter }  from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
+
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { fulfillmentMessagesWithAccordion } from './stories/Accordion'
 
@@ -118,6 +119,51 @@ const fulfillmentMessagesWithButton = [
   }
 ]
 
+const fulfillmentMessagesWithList = [
+  {
+    text: {
+      text: [
+        'I found 1 clients in the network for the period of Nov 02 2023 09:41 to Nov 03 2023 09:41'
+      ]
+    }
+  },
+  {
+    payload: {
+      richContent: [
+        [
+          {
+            event: {
+              parameters: {},
+              languageCode: 'en',
+              name: 'OS'
+            },
+            title: 'Click here to view clients by OS type',
+            type: 'list'
+          },
+          {
+            event: {
+              parameters: {},
+              languageCode: 'en',
+              name: 'Band'
+            },
+            title: 'Click here to view clients by band',
+            type: 'list'
+          },
+          {
+            event: {
+              parameters: {},
+              languageCode: 'en',
+              name: 'Auth'
+            },
+            title: 'Click here to view clients by Auth method',
+            type: 'list'
+          }
+        ]
+      ]
+    }
+  }
+]
+
 const contentData:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
@@ -134,11 +180,16 @@ const contentAccordion:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithAccordion }
   ]
+const contentList:Content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', contentList: fulfillmentMessagesWithList }
+  ]
 describe('Conversation component', () => {
   it('should render Conversation component with text', () => {
     render(<Conversation content={contentData}
       classList='conversation'
       isReplying={false}
+      listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
     />)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band')
@@ -148,6 +199,7 @@ describe('Conversation component', () => {
     render(<BrowserRouter><Conversation content={contentLink}
       classList='conversation'
       isReplying={false}
+      listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/></BrowserRouter>)
     expect(screen.getByText('Go to Switch Report')).toBeVisible()
   })
@@ -155,6 +207,7 @@ describe('Conversation component', () => {
     render(<Conversation content={contentButton}
       classList='conversation'
       isReplying={false}
+      listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('If you have log files, click to upload')).toBeVisible()
   })
@@ -162,6 +215,7 @@ describe('Conversation component', () => {
     render(<Conversation content={contentAccordion}
       classList='conversation'
       isReplying={false}
+      listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('Chart For Top Applications by Traffic')).toBeVisible()
   })
@@ -169,8 +223,20 @@ describe('Conversation component', () => {
     render(<Conversation content={contentData}
       classList='conversation'
       isReplying={true}
+      listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band'))
+      .toBeVisible()
+  })
+  it('should render Conversation component with List', async () => {
+    render(<Conversation content={contentList}
+      classList='conversation'
+      isReplying={true}
+      listCallback={jest.fn()}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+    await screen.findByText('Click here to view clients by OS type')
+    fireEvent.click(screen.getByText('Click here to view clients by OS type'))
+    expect(screen.getByText('Click here to view clients by OS type'))
       .toBeVisible()
   })
 })

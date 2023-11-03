@@ -14,11 +14,11 @@ export interface FulfillmentMessage {
       link?: string,
       type: string,
       icon?: { color: string, type: string },
-      text: string,
+      text?: string,
       title?: string,
       subtitle?: string,
       event?: {
-        parameters: { url: string },
+        parameters: { url?: string },
         name: string,
         languageCode: string
       }
@@ -78,7 +78,7 @@ function Conversation ({
                   case 'accordion':
                     return <UI.Collapse>
                       <Panel header={[res.title, <p>{res.subtitle}</p>]} key='1'>
-                        <img src={getLink(res.text)} alt={res.title}></img>
+                        <img src={getLink(res.text!)} alt={res.title}></img>
                       </Panel></UI.Collapse>
                   case 'button':
                     if(res.link){
