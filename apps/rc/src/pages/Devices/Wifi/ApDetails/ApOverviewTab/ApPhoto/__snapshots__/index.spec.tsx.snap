@@ -140,7 +140,7 @@ exports[`ApPhoto should upload photo correctly 1`] = `
               >
                 <img
                   class="ant-image-img"
-                  src="/ap/sample.png"
+                  src="placeholder.svg"
                 />
                 <div
                   class="ant-image-mask"
