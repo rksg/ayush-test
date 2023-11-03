@@ -94,7 +94,13 @@ function AllRoutes () {
           path='reports/airtime'
           element={<WiFiPage tab={WifiTabsEnum.AIRTIME_REPORT} />} />
         <Route
-          path=':apId/details/overview'
+          path=':apId/details/:activeTab'
+          element={<ApDetails />} />
+        <Route
+          path=':apId/details/:activeTab/:activeSubTab'
+          element={<ApDetails />} />
+        <Route
+          path=':apId/details/:activeTab/:activeSubTab/:categoryTab'
           element={<ApDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
@@ -139,7 +145,7 @@ function AllRoutes () {
         <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
         <Route path='reports/wired'
           element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-        <Route path=':switchId/serial/details/overview' element={<SwitchDetails/>} />
+        <Route path=':switchId/serial/details/:activeTab' element={<SwitchDetails/>} />
       </Route>
       <Route path='users'>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
