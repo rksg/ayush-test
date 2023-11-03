@@ -131,13 +131,16 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, [...tableData, ...(switchDetail?.stackMembers || [])]) },
+            { validator: (_, value) => validatorSwitchModel(value, [
+              ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
+              ...(switchDetail?.stackMembers || [])
+            ]) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
         ><Input
             data-testid={`serialNumber${row.key}`}
-            onKeyUp={() => handleChange(row, index)}
+            onBlur={() => handleChange(row, index)}
             style={{ textTransform: 'uppercase' }}
             disabled={row.disabled}
           />

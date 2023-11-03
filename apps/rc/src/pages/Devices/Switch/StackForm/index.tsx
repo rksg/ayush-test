@@ -522,7 +522,10 @@ export function StackForm () {
               required: activeRow === row.key ? true : false,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, tableData) },
+            { validator: (_, value) => validatorSwitchModel(value,
+              // replace id here since tableData is not updated yet
+              tableData.map(d => ({ id: (d.key === row.key) ? value : d.id }))
+            ) },
             { validator: (_, value) => validatorUniqueMember(value) }
           ]}
           validateFirst
@@ -544,7 +547,7 @@ export function StackForm () {
             />
             : <Input
               data-testid={`serialNumber${row.key}`}
-              onKeyUp={() => handleChange(row, index)}
+              onBlur={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />

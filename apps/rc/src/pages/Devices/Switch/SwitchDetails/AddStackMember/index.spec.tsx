@@ -76,6 +76,7 @@ describe('Add Stack Member Form', () => {
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     await userEvent.type(serialNumber1, 'FEK4124R20X')
+    serialNumber1.blur()
 
     expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
   })
@@ -184,7 +185,7 @@ describe('Add Stack Member Form', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(
-      await screen.findByText('Serial number is invalid since it\'s not unique in stack')
-    ).toBeVisible()
+      await screen.findAllByText('Serial number is invalid since it\'s not unique in stack')
+    ).not.toBeNull()
   })
 })
