@@ -33,6 +33,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                 </span>
                 <input
                   class="ant-input"
+                  maxlength="64"
                   placeholder="Search Test Call Name"
                   title="Search Test Call Name"
                   type="text"
