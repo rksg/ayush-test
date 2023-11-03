@@ -699,8 +699,8 @@ export function ManageCustomer () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
