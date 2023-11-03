@@ -277,6 +277,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       })
   }
 
+  function validateRadioBandForDsaeNetwork (radios: string[]) {
+    if (radios.length && radios.length === 1 && radios.includes(RadioTypeEnum._6_GHz)) {
+      return Promise.reject($t({ defaultMessage:
+        'DPSK3 Network wont support "Only 6GHz" selection. Please select other Radios along with 6GHz.' }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <Modal
       {...props}
@@ -325,7 +333,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
                       label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true }]}
+                      rules={[{ required: true },
+                        {
+                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
+                        }]}
                       labelCol={{ span: 5 }}>
                       <RadioSelect />
                     </Form.Item>
