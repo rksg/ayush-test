@@ -285,7 +285,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
          && radios.length === 1
          && radios.includes(RadioTypeEnum._6_GHz)) {
       return Promise.reject($t({ defaultMessage:
-        'DPSK3 Network wont support "Only 6GHz" selection. Please select other Radios along with 6GHz.' }))
+        'WPA2/WPA3 Mixed Mode DPSK Network wont support "Only 6GHz" selection. Please select other Radios along with 6GHz.' }))
     }
     return Promise.resolve()
   }
