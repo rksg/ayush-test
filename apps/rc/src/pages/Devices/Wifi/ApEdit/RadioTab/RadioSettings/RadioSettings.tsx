@@ -57,6 +57,23 @@ export interface StateOfIsUseVenueSettings {
 
 const defaultIsUseVenueSettings = true
 
+export const getRadioTypeDisplayName = (radioType: RadioType) => {
+  switch (radioType) {
+    case RadioType.Normal24GHz:
+      return '2.4 GHz'
+    case RadioType.Normal5GHz:
+      return '5 GHz'
+    case RadioType.Normal6GHz:
+      return '6 GHz'
+    case RadioType.Lower5GHz:
+      return 'Lower 5 GHz'
+    case RadioType.Upper5GHz:
+      return 'Upper 5 GHz'
+    default:
+      return ''
+  }
+}
+
 export const isCurrentTabUseVenueSettings = (state: StateOfIsUseVenueSettings, radioType: RadioType, isEnablePerApRadioCustomizationFlag: boolean): boolean => {
   if(!isEnablePerApRadioCustomizationFlag) {
     return !isUndefined(state.isUseVenueSettings) ? state.isUseVenueSettings : defaultIsUseVenueSettings
@@ -925,18 +942,19 @@ export function RadioSettings () {
                 paddingBottom: '20px' }}
               >
                 { isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
-                  <FormattedMessage
-                    defaultMessage={`
-                    Currently using radio settings of the venue (<venuelink></venuelink>)
-                   `}
-                    values={{
-                      venuelink: () => venue?
-                        <TenantLink
-                          to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                        </TenantLink> : ''
-                    }}
-                  />
-                  :$t({ defaultMessage: 'Custom radio settings' })
+                  <span>
+                    { `Currently ${ getRadioTypeDisplayName(currentTab) } ` }
+                    <FormattedMessage
+                      defaultMessage={' settings as the venue (<venuelink></venuelink>)'}
+                      values={{
+                        venuelink: () => venue?
+                          <TenantLink
+                            to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+                          </TenantLink> : ''
+                      }}
+                    />
+                  </span>
+                  :$t({ defaultMessage: 'Custom' }) + ` ${ getRadioTypeDisplayName(currentTab) } ` + $t({ defaultMessage: 'settings' })
                 }
               </Space>
             </Col>
@@ -979,7 +997,7 @@ export function RadioSettings () {
           <div style={{ display: currentTab === RadioType.Normal24GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable24g}
-              radioTypeName='2.4 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal24GHz)}
               enabledFieldName={['enable24G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable24G')}
               radioType={ApRadioTypeEnum.Radio24G}
@@ -992,7 +1010,7 @@ export function RadioSettings () {
           <div style={{ display: currentTab === RadioType.Normal5GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable5g}
-              radioTypeName='5 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal5GHz)}
               enabledFieldName={['enable50G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable5G')}
               radioType={ApRadioTypeEnum.Radio5G}
@@ -1006,7 +1024,7 @@ export function RadioSettings () {
           <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
             <ApSingleRadioSettings
               isEnabled={isEnable6g}
-              radioTypeName='6 GHz'
+              radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
               enabledFieldName={['enable6G']}
               onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
               radioType={ApRadioTypeEnum.Radio6G}
@@ -1021,7 +1039,7 @@ export function RadioSettings () {
               <div style={{ display: currentTab === RadioType.Lower5GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnableLower5g}
-                  radioTypeName='Lower 5 GHz'
+                  radioTypeName={getRadioTypeDisplayName(RadioType.Lower5GHz)}
                   enabledFieldName={['apRadioParamsDual5G', 'lower5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableLower5G')}
                   radioType={ApRadioTypeEnum.RadioLower5G}
@@ -1035,7 +1053,7 @@ export function RadioSettings () {
               <div style={{ display: currentTab === RadioType.Upper5GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnableUpper5g}
-                  radioTypeName='Upper 5 GHz'
+                  radioTypeName={getRadioTypeDisplayName(RadioType.Upper5GHz)}
                   enabledFieldName={['apRadioParamsDual5G', 'upper5gEnabled']}
                   onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableUpper5G')}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
