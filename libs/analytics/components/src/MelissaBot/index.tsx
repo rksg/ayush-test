@@ -89,7 +89,7 @@ export function MelissaBot (){
           method: 'POST',
           headers: {
             'X-Mlisa-Timezone': moment.tz.guess(),
-            'X-Set-New-Ui': 'true'
+            'X-Set-Ruckus-Ai': 'true'
           },
           body: form
         }).catch((error)=>{
@@ -142,7 +142,7 @@ export function MelissaBot (){
         headers: {
           'Content-Type': 'application/json',
           'X-Mlisa-Timezone': moment.tz.guess(),
-          'X-Set-New-Ui': 'true'
+          'X-Set-Ruckus-Ai': 'true'
         },
         body: JSON.stringify(body)
       }).then(async (res)=>{
