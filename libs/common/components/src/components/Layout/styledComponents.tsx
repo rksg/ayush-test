@@ -290,7 +290,12 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
         .ant-menu-submenu-title {
           color: transparent;
         }
-        .ant-menu-title-content { padding-left: 8px; }
+        .ant-menu-title-content {
+          padding-left: 8px;
+          & + svg {
+            display: none;
+          }
+        }
         .ant-menu-item {
           .ant-menu-title-content {
             color: transparent;
