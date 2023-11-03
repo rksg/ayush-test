@@ -128,36 +128,34 @@ export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage:
 
   const powerMode = afcInfo?.powerMode
 
-  let displayText = '--'
+  const displayList = []
 
   if(!powerMode) {
-    return displayText
+    return '--'
   }
 
   if (powerMode === AFCPowerMode.STANDARD_POWER){
-    displayText = $t({ defaultMessage: 'Standard power' })
+    displayList.push($t({ defaultMessage: 'Standard power' }))
   }
 
-  if (powerMode === AFCPowerMode.LOW_POWER){
-    displayText = $t({ defaultMessage: 'Low power' })
-
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    displayList.push($t({ defaultMessage: 'Low power' }))
     if(reasonMessage === true) {
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[Geo Location not set]' })
+        displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[No channels available]' })
+        displayList.push($t({ defaultMessage: '[No channels available]' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      /* eslint-disable max-len */
-        displayText = displayText + ' ' + $t({ defaultMessage: '[Pending response from the AFC server]' })
+        displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.AFC_NOT_REQUIRED) {
-        displayText = displayText + ' ' + $t({ defaultMessage: '[User set]' })
+        displayList.push($t({ defaultMessage: '[User set]' }))
       }
 
     }
   }
-  return displayText
+  return (displayList.length === 0) ? '--' : displayList.join(' ')
 }
