@@ -13,6 +13,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -44,6 +45,7 @@ jest.mock('./../VenueStatusDrawer', () => ({
 }))
 
 const mockedCancel = jest.fn()
+const switchFwRequestSpy = jest.fn()
 
 describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
@@ -82,7 +84,10 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(upgradeSwitchViewList))
+        (req, res, ctx) => {
+          switchFwRequestSpy()
+          return res(ctx.json(upgradeSwitchViewList))
+        }
       )
     )
     params = {
@@ -199,8 +204,55 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       name: /expand row/i }))
 
     expect(await screen.findByRole('button', {
-      name: /collapse row/i })).toBeInTheDocument()
-    expect(await screen.findByRole(await screen.findByText(/mock switch/i))).toBeInTheDocument()
+      name: /collapse row/i
+    })).toBeInTheDocument()
+  })
+
+  it('render SwitchUpgradeWizard - search switch', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.skip}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = screen.getByText(/skip updates/i)
+    expect(stepsFormSteps).toBeInTheDocument()
+
+    const searchBox = screen.getByRole('textbox')
+    expect(searchBox).toBeInTheDocument()
+    await userEvent.type(searchBox, 'mock')
+    expect(screen.getByDisplayValue(/mock/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('switch-search-table')).toBeInTheDocument()
+
+    const mockSwitchRow = await screen.findByRole('row', { name: /mock switch/i })
+    const mockSwitchCheckbox = within(mockSwitchRow).getByRole('checkbox')
+    await userEvent.click(mockSwitchCheckbox)
+    expect(mockSwitchCheckbox).toBeChecked()
+
+    const FEK3224R0AG = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    const FEK3224R0AGCheckbox = within(FEK3224R0AG).getByRole('checkbox')
+    await userEvent.click(FEK3224R0AGCheckbox)
+    expect(FEK3224R0AGCheckbox).toBeChecked()
+
+    const selectAllRow = screen.getByRole('row', {
+      name: /switch model current firmware available firmware scheduling/i
+    })
+    const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
+    await userEvent.click(selectAllCheckbox)
+    expect(FEK3224R0AGCheckbox).not.toBeChecked()
+
+    await userEvent.click(selectAllCheckbox)
+    expect(selectAllCheckbox).toBeChecked()
+    expect(FEK3224R0AGCheckbox).toBeChecked()
+
+    await userEvent.click(FEK3224R0AGCheckbox)
+    expect(FEK3224R0AGCheckbox).not.toBeChecked()
   })
 
 })

@@ -361,6 +361,7 @@ export const SelectSwitchStep = (
         }}><Table<SwitchFirmware>
           columns={switchColumns}
           className='switchTable'
+          data-testid='switch-search-table'
           loading={false}
           style={{ paddingLeft: '0px !important' }}
           dataSource={searchSwitchList}

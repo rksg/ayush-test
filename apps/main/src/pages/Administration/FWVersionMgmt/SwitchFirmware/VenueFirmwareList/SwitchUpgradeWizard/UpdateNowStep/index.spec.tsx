@@ -2,10 +2,6 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
 import {
-  FirmwareSwitchVenue,
-  SwitchFirmware
-} from '@acx-ui/rc/utils'
-import {
   Provider
 } from '@acx-ui/store'
 import {
@@ -15,13 +11,12 @@ import {
 
 
 import {
-  switchVenue,
-  upgradeSwitchViewList,
   availableVersions,
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
 
-import { ScheduleStep } from '.'
+import { UpdateNowStep } from '.'
+
 
 
 jest.mock('@acx-ui/components', () => ({
@@ -35,26 +30,22 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
-describe('ScheduleStep', () => {
+describe('UpdateNowStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
   })
 
-  it('render ScheduleStep - 1 Venue', async () => {
+  it('render UpdateNowStep - 1 Venue', async () => {
     render(
       <Provider>
         <Form>
-          <ScheduleStep
+          <UpdateNowStep
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
             icx8200Count={0}
-            hasVenue={true}
-            // eslint-disable-next-line max-len
-            upgradeVenueList={switchVenue.upgradeVenueViewList.filter(v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
-            upgradeSwitchList={[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+            hasVenue={true}/>
         </Form>
       </Provider>
       , {
@@ -66,22 +57,19 @@ describe('ScheduleStep', () => {
     expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
   })
 
-  it('render ScheduleStep - 1 Venue - Changed', async () => {
+  it('render UpdateNowStep - 1 Venue - Changed', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date('2023-11-01T00:00:00Z').getTime())
     render(
       <Provider>
         <Form>
-          <ScheduleStep
+          <UpdateNowStep
             visible={true}
             availableVersions={availableVersions_hasInUse}
             nonIcx8200Count={2}
             icx8200Count={0}
             hasVenue={true}
-            // eslint-disable-next-line max-len
-            upgradeVenueList={switchVenue.upgradeVenueViewList.filter(v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
-            upgradeSwitchList={[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          />
         </Form>
       </Provider>
       , {
@@ -104,45 +92,20 @@ describe('ScheduleStep', () => {
     userEvent.click(release09010f)
     expect(release09010f).toBeEnabled()
 
-    const calendar = screen.getByRole('textbox', {
-      name: /update date:/i
-    })
-    userEvent.click(calendar)
-    const calendarDate = await screen.findByRole('cell', {
-      name: /2023-11-16/i
-    })
-    expect(calendarDate).toBeInTheDocument()
-
-    userEvent.click(calendarDate)
-    expect(await screen.findByDisplayValue(/2023-11-16/i)).toBeInTheDocument()
-
-    const selectedTime = screen.getByRole('radio', {
-      name: /12 am - 02 am/i
-    })
-    userEvent.click(selectedTime)
-    expect(selectedTime).toBeEnabled()
-
-    const preDownloadSwitch = screen.getByRole('switch')
-    userEvent.click(preDownloadSwitch)
-    expect(preDownloadSwitch).toBeEnabled()
-
     jest.useRealTimers()
   })
 
-  it('render ScheduleStep - 1 non8200 Switch', async () => {
+  it('render UpdateNowStep - 1 non8200 Switch', async () => {
     render(
       <Provider>
         <Form>
-          <ScheduleStep
+          <UpdateNowStep
             visible={true}
             availableVersions={availableVersions}
             nonIcx8200Count={1}
             icx8200Count={0}
             hasVenue={false}
-            upgradeVenueList={[]}
-            // eslint-disable-next-line max-len
-            upgradeSwitchList={upgradeSwitchViewList.upgradeSwitchViewList.filter(v => v.switchName === 'FEK3224R0AG') as unknown as SwitchFirmware[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          />
         </Form>
       </Provider>
       , {
