@@ -78,10 +78,6 @@ ENV NODE_OPTIONS=--max-old-space-size=10240
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
-COPY cicd_tool ./cicd_tool
-COPY test_cases.table ./test_cases.table
-RUN chmod a+x ./cicd_tool/run_test_cases_tool.sh
-
 FROM acx-ui-base-test as acx-ui-test
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
