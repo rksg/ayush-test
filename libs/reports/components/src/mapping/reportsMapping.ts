@@ -68,3 +68,8 @@ export const bandDisabledReports:ReportType[] = [
   ReportType.ACCESS_POINT,
   ReportType.AIRTIME_UTILIZATION
 ]
+
+export const networkFilterDisabledReports:ReportType[] = [
+  ReportType.OVERVIEW,
+  ReportType.WLAN
+]
