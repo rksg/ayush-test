@@ -21,6 +21,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-sidebar-right-space: 28px;
   --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
@@ -100,7 +101,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
             padding-left: var(--acx-sidebar-left-space) !important;
-            padding-right: 0;
+            padding-right: var(--acx-sidebar-right-space);
             margin: 0;
             cursor: default;
             &:active { background: unset; }
@@ -109,7 +110,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
               top: 50%;
               bottom: 50%;
               margin: auto;
-              right: 16px;
+              right: 12px;
               width: 16px;
               transition: transform 0.3s;
               path {
