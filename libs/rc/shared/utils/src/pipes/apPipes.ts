@@ -142,19 +142,20 @@ export const AFCPowerStateRender = (afcInfo: AFCInfo | undefined, reasonMessage:
     displayList.push($t({ defaultMessage: 'Low power' }))
     if(reasonMessage === true) {
 
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
+          displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
+          break
+        case AFCStatus.REJECTED:
+          displayList.push($t({ defaultMessage: '[No channels available]' }))
+          break
+        case AFCStatus.WAIT_FOR_RESPONSE:
+          displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
+          break
+        case AFCStatus.AFC_NOT_REQUIRED:
+          displayList.push($t({ defaultMessage: '[User set]' }))
+          break
       }
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        displayList.push($t({ defaultMessage: '[No channels available]' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.AFC_NOT_REQUIRED) {
-        displayList.push($t({ defaultMessage: '[User set]' }))
-      }
-
     }
   }
   return (displayList.length === 0) ? '--' : displayList.join(' ')

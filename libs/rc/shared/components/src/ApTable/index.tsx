@@ -379,7 +379,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           return (mgmtVlanId ? mgmtVlanId : null)
         }
       }] : []),
-    ...((AFC_Featureflag || true) ? [{
+    ...(AFC_Featureflag ? [{
       key: 'afcPowerMode',
       title: $t({ defaultMessage: 'AFC Power State' }),
       dataIndex: ['apStatusData','afcInfo','powerMode'],
