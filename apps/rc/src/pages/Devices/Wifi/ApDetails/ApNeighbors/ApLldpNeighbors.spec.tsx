@@ -114,7 +114,11 @@ describe('ApLldpNeighbors', () => {
             requestId: 'REQUEST_ID'
           }))
         }
-      )
+      ),
+      rest.get(WifiUrlsInfo.getApCapabilities.url.replace(':serialNumber',''),
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
 
     render(<ApLldpNeighbors />, {
