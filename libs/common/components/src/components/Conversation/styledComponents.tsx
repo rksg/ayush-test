@@ -1,6 +1,7 @@
 import { Collapse as AntdCollapse } from 'antd'
 import styled                       from 'styled-components/macro'
 
+import { cssStr }              from '../../theme/helper'
 import { Button as AcxButton } from '../Button'
 
 export const Button = styled(AcxButton)`
@@ -13,7 +14,7 @@ export const Button = styled(AcxButton)`
 
 export const Collapse = styled(AntdCollapse)`
   width: 416px;
-  border: 1px solid var(--acx-neutrals-25);
+  border: 1px solid ${cssStr('--acx-neutrals-25')};
   margin-top: 16px;
   border-radius: 5px;
   .ant-collapse-content-box {
@@ -28,10 +29,11 @@ export const Collapse = styled(AntdCollapse)`
     border-bottom: none !important;
   }
   .ant-collapse-item .ant-collapse-header {
-    background: linear-gradient(0deg, var(--acx-neutrals-15), var(--acx-neutrals-15));
+    background: linear-gradient(0deg,
+       ${cssStr('--acx-neutrals-15')}, ${cssStr('--acx-neutrals-15')});
     border-bottom: none !important;
     padding: 10px !important;
-    font-size: 14px !important;
+    font-size: ${cssStr('--acx-headline-4-font-size')} !important;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
@@ -40,7 +42,7 @@ export const Collapse = styled(AntdCollapse)`
       display: flex;
       align-items: center;
       .ant-collapse-arrow {
-        font-size: 16px;
+        font-size: ${cssStr('--acx-headline-3-font-size')};
         transform: rotate(90deg) !important;
       }
     }
@@ -54,7 +56,7 @@ export const Collapse = styled(AntdCollapse)`
   }
   .ant-collapse-header-text p {
     margin-bottom: 0;
-    font-size: 13px;
+    font-size: ${cssStr('--acx-headline-4-font-size')};
     font-weight: normal;
     padding-top: 5px;
   }
@@ -70,22 +72,22 @@ export const Panel = styled(AntdCollapse.Panel)`
 `
 export const Wrapper = styled.div`
   border-radius: 8px;
-  background: var(--acx-primary-white);
+  background: ${cssStr('--acx-primary-white')};
   display: flex;
   flex-direction: column;
 `
 export const User = styled.div`
   width: 327px;
   height: auto;
-  border: 1px solid var(--acx-neutrals-25);
+  border: 1px solid ${cssStr('--acx-neutrals-25')};
   border-radius: 5px;
-  color: var(--acx-primary-black);
+  color: ${cssStr('--acx-primary-black')};
   text-align: left;
-  font-weight: 400;
-  font-family: Open Sans;
+  font-weight: ${cssStr('--acx-body-font-weight')};
+  font-family: ${cssStr('--acx-neutral-brand-font')};
   font-style: normal;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: ${cssStr('--acx-body-4-font-size')};
+  line-height: ${cssStr('--acx-body-4-line-height')};
   margin-left: auto;
   margin-top: 16px;
   padding: 10px;
@@ -93,15 +95,15 @@ export const User = styled.div`
 export const Bot = styled.div`
   width: 377px;
   height: auto;
-  border: 1px solid var(--acx-neutrals-25);
+  border: 1px solid ${cssStr('--acx-neutrals-25')};
   border-radius: 5px;
-  background: linear-gradient(0deg, var(--acx-neutrals-15), var(--acx-neutrals-15));
-  color: var(--acx-primary-black);
-  font-weight: 400;
-  font-family: Open Sans;
+  background: linear-gradient(0deg, ${cssStr('--acx-neutrals-15')}, ${cssStr('--acx-neutrals-15')});
+  color: ${cssStr('--acx-primary-black')};
+  font-weight: ${cssStr('--acx-body-font-weight')};
+  font-family: ${cssStr('--acx-neutral-brand-font')};
   font-style: normal;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: ${cssStr('--acx-body-4-font-size')};
+  line-height: ${cssStr('--acx-body-4-line-height')};
   margin-top: 16px;
   text-align: left;
   padding: 10px;
@@ -115,7 +117,7 @@ const ChatTypingWrapper = styled.div`
 }
 .typing .dot {
   animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
-  background-color: var(--acx-semantics-yellow-70);
+  background-color: ${cssStr('--acx-semantics-yellow-70')};
   border-radius: 50%;
   height: 7px;
   margin-right: 4px;
@@ -139,15 +141,15 @@ const ChatTypingWrapper = styled.div`
 @keyframes mercuryTypingAnimation {
   0% {
     transform: translateY(0px);
-    background-color: var(--acx-semantics-yellow-70);
+    background-color: ${cssStr('--acx-semantics-yellow-70')};
   }
   28% {
     transform: translateY(-5px);
-    background-color: var(--acx-semantics-yellow-50);
+    background-color: ${cssStr('--acx-semantics-yellow-50')};
   }
   44% {
     transform: translateY(0px);
-    background-color: var(--acx-semantics-yellow-30);
+    background-color: ${cssStr('--acx-semantics-yellow-30')};
   }
 }
 `

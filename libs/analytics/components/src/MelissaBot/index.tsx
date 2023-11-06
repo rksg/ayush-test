@@ -9,10 +9,11 @@ import { useLocation }     from 'react-router-dom'
 import { getUserProfile as getUserProfileRA }        from '@acx-ui/analytics/utils'
 import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
 import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
+import { MelissaHeaderIcon, MelissaIcon }            from '@acx-ui/icons'
 
-import MelissaHeaderIcon                  from './melissaHeaderIcon.svg'
-import MelissaIcon                        from './melissaIcon.svg'
 import { MelissaDrawer, SubTitle, Title } from './styledComponents'
+
+export const BOT_NAME = 'Melissa'
 
 const scrollToBottom=()=>{
   const msgBody=document.querySelector('.ant-drawer-body')
@@ -133,11 +134,9 @@ export function MelissaBot (){
       }
     })
   }
-  const imageAlt = $t({ defaultMessage: 'Chat with Melissa' })
-  const melissaText = $t({ defaultMessage: 'Melissa' })
   const subTitleText = $t({ defaultMessage: 'infused with ChatGPT' })
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
-  const title = <><Title>{melissaText}</Title><SubTitle>{subTitleText}</SubTitle></>
+  const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
     const { userId } = getUserProfileRA()
     const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger` +
@@ -243,9 +242,7 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  return (isMelissaBotEnabled ? <>{showFloatingButton && <img
-    src={MelissaIcon}
-    alt={imageAlt}
+  return (isMelissaBotEnabled ? <>{showFloatingButton && <MelissaIcon
     onClick={showDrawer}
     style={{
       width: '56px',
@@ -257,7 +254,7 @@ export function MelissaBot (){
     }} />}
   <MelissaDrawer
     title={title}
-    icon={<img src={MelissaHeaderIcon} alt={imageAlt}/>}
+    icon={<MelissaHeaderIcon/>}
     onClose={onClose}
     visible={open}
     width={464}

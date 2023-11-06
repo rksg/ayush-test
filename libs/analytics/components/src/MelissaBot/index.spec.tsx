@@ -179,7 +179,7 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route, container })
     })
     await act(async ()=>{
-      fireEvent.click(await screen.findByRole('img'))
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
     })
     expect(document.querySelector('.ant-drawer-open')).toBeDefined()
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:open')
@@ -195,7 +195,7 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route, container })
     })
     await act(async ()=>{
-      fireEvent.click(await screen.findByRole('img'))
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
     })
     expect(document.querySelector('.ant-drawer-open')).toBeDefined()
     await act(async ()=>{
@@ -210,7 +210,7 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route, container })
     })
     await act(async ()=>{
-      fireEvent.click(await screen.findByRole('img'))
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
     })
     expect(document.querySelector('.ant-drawer-open')).toBeDefined()
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('before:error')
@@ -244,7 +244,7 @@ describe('MelissaBot', () => {
       render(<MelissaBot/>,{ route, container })
     })
     await act(async ()=>{
-      fireEvent.click(await screen.findByRole('img'))
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
     })
     expect(document.querySelector('.ant-drawer-open')).toBeDefined()
     global.fetch = jest.fn().mockImplementation(() =>

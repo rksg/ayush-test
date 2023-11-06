@@ -9,14 +9,14 @@ export const MelissaDrawer = styled(Drawer)`
         padding: 8px 10px 8px 10px !important;
     }
     .ant-drawer-title {
-        color: white;
-        font-family: 'Montserrat';
+        color: ${cssStr('--acx-primary-white')};
+        font-family: ${cssStr('--acx-accent-brand-font')};
     }
     .ant-drawer-close {
         padding-top: 8px;
     }
     .ant-drawer-close > svg > path{
-        stroke: #FFF;
+        stroke: ${cssStr('--acx-primary-white')};
     }
 `
 
