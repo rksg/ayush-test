@@ -7,8 +7,11 @@ import { TenantLink, useNavigateToPath }                          from '@acx-ui/
 import type { PathFilter }                                        from '@acx-ui/utils'
 
 import * as UI                                         from '../AIDrivenRRM/styledComponents'
+import { states }                                      from '../Recommendations/config'
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
 import { PriorityIcon }                                from '../Recommendations/styledComponents'
+
+import { GreenTickIcon, OrangeRevertIcon, RedCancelIcon } from './styledComponents'
 
 export { AIOperationsWidget as AIOperations }
 
@@ -44,6 +47,14 @@ function AIOperationsWidget ({
   const subtitle = $t({
     defaultMessage: 'Say goodbye to manual guesswork and hello to intelligent recommendations.' })
 
+  const checkNew = queryResults.data?.recommendations.filter(i => i.status === 'new').length
+
+  const iconList = {
+    applied: <GreenTickIcon />,
+    reverted: <OrangeRevertIcon />,
+    failed: <RedCancelIcon />
+  }
+
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
       noData
@@ -53,30 +64,49 @@ function AIOperationsWidget ({
             and we dont have any AI Operations to recommend recently.`
           })}
         />
-        : <UI.List
-          dataSource={data?.recommendations}
-          renderItem={item => {
-            const recommendation = item as AiOpsListItem
-            const { category, priority, updatedAt, id, summary, sliceValue } = recommendation
-            return <UI.List.Item key={id}>
-              <TenantLink to={`/recommendations/aiOps/${id}`}>
-                <Tooltip
-                  placement='top'
-                  title={$t(
-                    { defaultMessage: '{summary} on {sliceValue}' },
-                    { sliceValue, summary }
-                  )}
-                >
-                  <UI.List.Item.Meta
-                    avatar={<PriorityIcon value={priority!.order} />}
-                    title={category}
-                    description={formatter(DateFormatEnum.DateFormat)(updatedAt)}
-                  />
-                </Tooltip>
-              </TenantLink>
-            </UI.List.Item>
-          }}
-        />
+        : <>
+          {!checkNew ? <NoRecommendationData
+            text={$t({ defaultMessage:
+              `Your network is already running in an optimal configuration
+              and we dont have any AI Operations to recommend recently.`
+            })}
+          /> : []}
+          <UI.List
+            style={{ marginTop: !checkNew ? 120 : 0 }}
+            dataSource={!checkNew ? data?.recommendations.slice(0, 3) : data?.recommendations}
+            renderItem={item => {
+              const recommendation = item as AiOpsListItem
+              const {
+                category, priority, updatedAt, id, summary, sliceValue, status
+              } = recommendation
+              const date = formatter(DateFormatEnum.DateFormat)(updatedAt)
+              const statusText = states[status as keyof typeof states].text
+              return <UI.List.Item key={id}>
+                <TenantLink to={`/recommendations/aiOps/${id}`}>
+                  <Tooltip
+                    placement='top'
+                    title={$t(
+                      { defaultMessage: '{summary} on {sliceValue}' },
+                      { sliceValue, summary }
+                    )}
+                  >
+                    <UI.List.Item.Meta
+                      avatar={!checkNew
+                        ? iconList[status as keyof typeof iconList]
+                        : <PriorityIcon value={priority!.order} />
+                      }
+                      title={category}
+                      description={!checkNew
+                        ? `${$t(statusText)} ${$t({ defaultMessage: 'on {date}' }, { date })}`
+                        : date
+                      }
+                    />
+                  </Tooltip>
+                </TenantLink>
+              </UI.List.Item>
+            }}
+          />
+        </>
     }</Card>
   </Loader>
 }

@@ -45,7 +45,7 @@ export function NoRecommendationData ({ text }: NoDataWrapperProps) {
   text = text ? text : $t({ defaultMessage: 'No Recommendations.' })
   return (
     <UI.NoRecommendationDataWrapper>
-      <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
+      <UI.TextWrapper><UI.LargeGreenTickIcon /></UI.TextWrapper>
       <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </UI.NoRecommendationDataWrapper>
   )

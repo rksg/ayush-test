@@ -51,6 +51,7 @@ export type AiOpsListItem = {
   priority?: IconValue
   category?: string
   summary?: string
+  status: string
 }
 
 export type AiOpsList = {
@@ -280,7 +281,7 @@ export const api = recommendationApi.injectEndpoints({
             start: $startDate, end: $endDate, path: $path, crrm: false
           )
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
-            id code updatedAt sliceValue
+            id code updatedAt sliceValue status
           }
         }
         `,

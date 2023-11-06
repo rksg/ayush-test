@@ -32,3 +32,7 @@ export const GreenTickIcon = styled(CheckMarkCircleSolid)`
   height: 32px;
   width: 32px;
 `
+export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
+  height: 48px;
+  width: 48px;
+`
