@@ -23,7 +23,8 @@ import {
   bandDisabledReports,
   ReportType,
   reportTypeDataStudioMapping,
-  reportModeMapping
+  reportModeMapping,
+  networkFilterDisabledReports
 } from '../mapping/reportsMapping'
 
 interface ReportProps {
@@ -41,11 +42,13 @@ const getReportType = (reportName: ReportType) => {
   const isApReport = ['ap', 'both'].includes(mode)
   const isSwitchReport = ['switch', 'both'].includes(mode)
   const isRadioBandDisabled = bandDisabledReports.includes(reportName)
+  const isNetworkFilterDisabled = networkFilterDisabledReports.includes(reportName)
 
   return {
     isApReport,
     isSwitchReport,
-    isRadioBandDisabled
+    isRadioBandDisabled,
+    isNetworkFilterDisabled
   }
 }
 
@@ -64,11 +67,18 @@ export const getSupersetRlsClause = (
   paths?: NetworkPath[],
   radioBands?: RadioBand[]
 ) => {
-  const { isApReport, isSwitchReport, isRadioBandDisabled } = getReportType(reportName)
+  const { isApReport,
+    isSwitchReport,
+    isRadioBandDisabled,
+    isNetworkFilterDisabled } = getReportType(reportName)
   const clause = {
     radioBandClause: '',
     networkClause: ''
   }
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return clause
 
   if (radioBands?.length && isApReport && !isRadioBandDisabled) {
     const radioBandClause = ` "band" in (${radioBands
@@ -145,9 +155,14 @@ export const getRLSClauseForSA = (
   reportName: ReportType
 ) => {
 
-  const { isApReport, isSwitchReport } = getReportType(reportName)
-  const switchReportKeys = ['system', 'domain', 'switchGroup', 'switchSubGroup', 'switch']
-  const apReportKeys = ['system', 'domain', 'zone', 'apGroup', 'AP']
+  const { isApReport, isSwitchReport, isNetworkFilterDisabled } = getReportType(reportName)
+
+  // If networkFilter is not shown, do not read it from URL
+  // Reports like Overview and WLAN does not support network filter
+  if (isNetworkFilterDisabled) return {
+    radioBandClause: '',
+    networkClause: ''
+  }
 
   // Initialize an empty object to group conditions by type
   const sqlConditionsByType: Record<string, string[]> = {}
@@ -178,10 +193,7 @@ export const getRLSClauseForSA = (
           sqlConditionsByType[type].push(`"${type}" = '${systemId}'`)
         }
       } else {
-        if ((isApReport && apReportKeys.includes(type)) ||
-          (isSwitchReport && switchReportKeys.includes(type))) {
-          sqlConditionsByType[type].push(`"${type}" = '${name}'`)
-        }
+        sqlConditionsByType[type].push(`"${type}" = '${name}'`)
       }
     }
   })

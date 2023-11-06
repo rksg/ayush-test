@@ -190,8 +190,8 @@ describe('Dashboard', () => {
       })
       expect(result).toEqual({
         path: defaultNetworkPath,
-        range: 'Last 24 Hours',
-        startDate: '2021-12-31T00:01:00+00:00',
+        range: 'Last 7 Days',
+        startDate: '2021-12-25T00:01:00+00:00',
         endDate: '2022-01-01T00:01:00+00:00'
       })
     })
@@ -199,12 +199,12 @@ describe('Dashboard', () => {
       const result = getFiltersForRecommendationWidgets({
         startDate: 'startDate',
         endDate: 'endDate',
-        range: DateRange.last24Hours,
+        range: DateRange.last30Days,
         path: defaultNetworkPath
       })
       expect(result).toEqual({
         path: defaultNetworkPath,
-        range: 'Last 24 Hours',
+        range: 'Last 30 Days',
         startDate: 'startDate',
         endDate: 'endDate'
       })
