@@ -29,8 +29,6 @@ export interface AP {
   networkPath: NetworkPath
 }
 
-
-
 export const zoneWiseSearchApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     zoneWiseApList: build.query<Search, RequestPayload>({
