@@ -9,6 +9,13 @@ export const NoDataWrapper = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
 `
+export const NoRecommendationDataWrapper = styled.div`
+  width: 85%;
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+`
 export const TextWrapper = styled(Space)`
   text-align: center;
   justify-content: center;

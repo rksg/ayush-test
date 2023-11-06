@@ -6,6 +6,7 @@ import * as UI from './styledComponents'
 interface NoDataWrapperProps {
   text?: string
   style?: CSSProperties
+  recommendation?: []
 }
 export function NoData ({ text, style }: NoDataWrapperProps) {
   const { $t } = useIntl()
@@ -36,5 +37,16 @@ export function NoActiveContent ({ text }: NoDataWrapperProps) {
       <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
       <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </>
+  )
+}
+
+export function NoRecommendationData ({ text }: NoDataWrapperProps) {
+  const { $t } = useIntl()
+  text = text ? text : $t({ defaultMessage: 'No Recommendations.' })
+  return (
+    <UI.NoRecommendationDataWrapper>
+      <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
+      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
+    </UI.NoRecommendationDataWrapper>
   )
 }

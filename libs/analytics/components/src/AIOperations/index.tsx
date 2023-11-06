@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath }                             from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
-import { DateFormatEnum, formatter, intlFormats }   from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
-import type { PathFilter }                          from '@acx-ui/utils'
+import { isSwitchPath }                                           from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, NoRecommendationData, ColorPill } from '@acx-ui/components'
+import { DateFormatEnum, formatter, intlFormats }                 from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }                          from '@acx-ui/react-router-dom'
+import type { PathFilter }                                        from '@acx-ui/utils'
 
 import * as UI                                         from '../AIDrivenRRM/styledComponents'
 import { AiOpsList, useAiOpsListQuery, AiOpsListItem } from '../Recommendations/services'
@@ -47,7 +47,12 @@ function AIOperationsWidget ({
   return <Loader states={[queryResults]}>
     <Card title={title} onArrowClick={onArrowClick} subTitle={subtitle}>{
       noData
-        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
+        ? <NoRecommendationData
+          text={$t({ defaultMessage:
+            `Your network is already running in an optimal configuration
+            and we dont have any AI Operations to recommend recently.`
+          })}
+        />
         : <UI.List
           dataSource={data?.recommendations}
           renderItem={item => {
