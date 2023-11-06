@@ -748,7 +748,13 @@ export function RadioSettings () {
         }
       }
     }
-    const getPayload = () => {
+
+    try {
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
+
       const payload = { ...form.getFieldsValue() }
 
       const {
@@ -819,21 +825,11 @@ export function RadioSettings () {
         delete payload.apRadioParamsDual5G
       }
 
-      return payload
-    }
-
-    try {
-      setEditContextData({
-        ...editContextData,
-        isDirty: false
-      })
-
-      const payload = getPayload()
-      if (isEnablePerApRadioCustomizationFlag ? true : payload.useVenueSettings) {
+      if (!isEnablePerApRadioCustomizationFlag && payload.useVenueSettings) {
         await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
       }
 
-      if (isEnablePerApRadioCustomizationFlag ? true : !payload.useVenueSettings) {
+      if (isEnablePerApRadioCustomizationFlag || !payload.useVenueSettings) {
         await updateApRadio({
           params: { tenantId, serialNumber },
           payload: payload
