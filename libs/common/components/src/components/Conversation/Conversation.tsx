@@ -52,7 +52,7 @@ const Expandable = (props: { text: string, maxChar: number }) => {
   let [expanded, setExpanded] = useState(true)
   if(props.text.length <= props.maxChar) return <UI.Bot>{props.text}</UI.Bot>
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{formattedText }
+  return <UI.Bot>{formattedText}{expanded ? '... ' : ' '}
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
       {expanded? 'read more' : 'read less'}</Button></UI.Bot>
 }
