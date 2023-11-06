@@ -14,9 +14,23 @@ Object {
 }
 `;
 
+exports[`getRLSClauseForSA should return empty RLS clause for Overview: rlsClauseOverviewForSA 1`] = `
+Object {
+  "networkClause": "",
+  "radioBandClause": "",
+}
+`;
+
 exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseApplicationReport 1`] = `
 Object {
   "networkClause": " (\\"zoneName\\" in ('Sindhuja-Venue') OR \\"apMac\\" in ('00:0C:29:1E:9F:E4', '38:FF:36:13:DB:D0'))",
+  "radioBandClause": "",
+}
+`;
+
+exports[`getSupersetRlsClause should return RLS clause based network filters and report type: rlsClauseOverviewReport 1`] = `
+Object {
+  "networkClause": "",
   "radioBandClause": "",
 }
 `;
