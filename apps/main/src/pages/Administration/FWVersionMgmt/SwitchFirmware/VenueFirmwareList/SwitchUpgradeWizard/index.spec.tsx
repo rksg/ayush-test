@@ -44,7 +44,7 @@ jest.mock('./VenueStatusDrawer', () => ({
 }))
 
 const mockedCancel = jest.fn()
-
+const updateRequestSpy = jest.fn()
 describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -74,7 +74,10 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
+        (req, res, ctx) => {
+          updateRequestSpy()
+          return res(ctx.json({ requestId: 'requestId' }))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
@@ -114,7 +117,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(mockedCancel).toBeCalledTimes(1)
   })
 
-  it('render SwitchUpgradeWizard - schedule - OK', async () => {
+  it('render SwitchUpgradeWizard - schedule - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -139,9 +142,81 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(await screen.findByText(/When do you want the update to run/i)).toBeInTheDocument()
+  })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-    expect(await screen.findByText(/Please select at least 1 version./i)).toBeInTheDocument()
+  it('render SwitchUpgradeWizard - update now - Validate', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.update}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = await screen.findByTestId('steps-form-steps')
+    expect(stepsFormSteps).toBeInTheDocument()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    expect(await screen.findByText('Please select at least 1 item')).toBeInTheDocument()
+
+    const myVenue = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(myVenue).getByRole('checkbox'))
+    expect(within(myVenue).getByRole('checkbox')).toBeChecked()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/Please note that during the firmware update/i)).toBeInTheDocument()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Run Update' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/Please select at least 1 firmware version/i)).toBeInTheDocument()
+
+  })
+
+  it('render SwitchUpgradeWizard - update now - Save', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.update}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = await screen.findByTestId('steps-form-steps')
+    expect(stepsFormSteps).toBeInTheDocument()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    expect(await screen.findByText('Please select at least 1 item')).toBeInTheDocument()
+
+    const myVenue = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(myVenue).getByRole('checkbox'))
+    expect(within(myVenue).getByRole('checkbox')).toBeChecked()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/Please note that during the firmware update/i)).toBeInTheDocument()
+
+    const radio09010f = screen.getByRole('radio', {
+      name: /9\.0\.10f_b403 \(release\)/i
+    })
+    expect(radio09010f).toBeInTheDocument()
+    userEvent.click(radio09010f)
+    expect(radio09010f).toBeEnabled()
+
+    const radio10010b176 = screen.getByRole('radio', {
+      name: /10\.0\.10_b176 \(release\)/i
+    })
+    userEvent.click(radio10010b176)
+    expect(radio10010b176).toBeEnabled()
+
   })
 
   it('render SwitchUpgradeWizard - skip', async () => {

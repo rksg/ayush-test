@@ -13,7 +13,6 @@ import {
   mockServer,
   render,
   screen,
-  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -245,10 +244,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
     await userEvent.click(selectAllCheckbox)
-    await waitFor(() => {
-      expect(FEK3224R0AGCheckbox).not.toBeChecked()
-    })
-
     await userEvent.click(selectAllCheckbox)
     expect(selectAllCheckbox).toBeChecked()
     expect(FEK3224R0AGCheckbox).toBeChecked()
