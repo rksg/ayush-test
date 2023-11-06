@@ -8,7 +8,7 @@ import { useLocation }     from 'react-router-dom'
 
 import { getUserProfile as getUserProfileRA }        from '@acx-ui/analytics/utils'
 import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
-
+import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 
 import MelissaHeaderIcon                  from './melissaHeaderIcon.svg'
 import MelissaIcon                        from './melissaIcon.svg'
@@ -48,6 +48,7 @@ interface AskMelissaBody {
 
 export function MelissaBot (){
   const { $t } = useIntl()
+  const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const { pathname } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const initCount = useRef(0)
@@ -142,7 +143,7 @@ export function MelissaBot (){
     const MELISSA_API_ENDPOINT=`${MELISSA_ROUTE_PATH}/v1/integrations/messenger` +
       `/webhook/melissa-agent/sessions/dfMessenger-${userId}`
     const MELISSA_API_URL=`${MELISSA_URL_ORIGIN}${MELISSA_URL_BASE_PATH}${MELISSA_API_ENDPOINT}`
-    fetch(MELISSA_API_URL,
+    isMelissaBotEnabled && fetch(MELISSA_API_URL,
       { method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -242,65 +243,64 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  return (
-    <>{showFloatingButton && <img
-      src={MelissaIcon}
-      alt={imageAlt}
-      onClick={showDrawer}
-      style={{
-        width: '56px',
-        position: 'fixed',
-        right: '15px',
-        bottom: '15px',
-        zIndex: 999999,
-        cursor: 'pointer'
-      }} />}
-    <MelissaDrawer
-      title={title}
-      icon={<img src={MelissaHeaderIcon} alt={imageAlt}/>}
-      onClose={onClose}
-      visible={open}
-      width={464}
-      footer={<Input ref={inputRef}
-        placeholder={askAnything}
-        value={inputValue}
-        disabled={isInputDisabled}
-        style={{ height: '52px' }}
-        onChange={(e) => {
-          setInputValue(e.target.value)
-        }}
-        onKeyDown={(e) => {
-          const trimedInputValue = inputValue.trim()
-          if (e.key === 'Enter' && trimedInputValue !== '') {
-            const userMessage: Content = {
-              type: 'user',
-              contentList: [{ text: { text: [trimedInputValue] } }]
-            }
-            messages.push(userMessage)
-            setIsReplying(true)
-            setIsInputDisabled(true)
-            setInputValue('')
-            setMessages(messages)
-            defer(() => {
-              scrollToBottom()
-            })
-            askMelissa({
-              queryInput: {
-                text: {
-                  languageCode: 'en',
-                  text: inputValue
-                }
-              }
-            })
+  return (isMelissaBotEnabled ? <>{showFloatingButton && <img
+    src={MelissaIcon}
+    alt={imageAlt}
+    onClick={showDrawer}
+    style={{
+      width: '56px',
+      position: 'fixed',
+      right: '15px',
+      bottom: '15px',
+      zIndex: 999999,
+      cursor: 'pointer'
+    }} />}
+  <MelissaDrawer
+    title={title}
+    icon={<img src={MelissaHeaderIcon} alt={imageAlt}/>}
+    onClose={onClose}
+    visible={open}
+    width={464}
+    footer={<Input ref={inputRef}
+      placeholder={askAnything}
+      value={inputValue}
+      disabled={isInputDisabled}
+      style={{ height: '52px' }}
+      onChange={(e) => {
+        setInputValue(e.target.value)
+      }}
+      onKeyDown={(e) => {
+        const trimedInputValue = inputValue.trim()
+        if (e.key === 'Enter' && trimedInputValue !== '') {
+          const userMessage: Content = {
+            type: 'user',
+            contentList: [{ text: { text: [trimedInputValue] } }]
           }
-        }} />}
-    >
-      <Conversation
-        content={messages}
-        isReplying={isReplying}
-        classList='conversation'
-        listCallback={askMelissa}
-        style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
-    </MelissaDrawer></>
-  )
+          messages.push(userMessage)
+          setIsReplying(true)
+          setIsInputDisabled(true)
+          setInputValue('')
+          setMessages(messages)
+          defer(() => {
+            scrollToBottom()
+          })
+          askMelissa({
+            queryInput: {
+              text: {
+                languageCode: 'en',
+                text: inputValue
+              }
+            }
+          })
+        }
+      }} />}
+  >
+    <Conversation
+      content={messages}
+      isReplying={isReplying}
+      classList='conversation'
+      listCallback={askMelissa}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }} />
+  </MelissaDrawer></>
+    : <div/>)
 }

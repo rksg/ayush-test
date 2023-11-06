@@ -3,6 +3,7 @@
 
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { MelissaBot } from '.'
@@ -10,7 +11,8 @@ import { MelissaBot } from '.'
 describe('MelissaBot', () => {
   let container:HTMLDivElement|undefined=undefined
   beforeEach(() => {
-  // setup a DOM element as a render target
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // setup a DOM element as a render target
     container = document.createElement('div')
     document.body.appendChild(container)
   })
@@ -145,6 +147,13 @@ describe('MelissaBot', () => {
     })
   )
   it('should render floating button',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    expect(container).toMatchSnapshot()
+  })
+  it('should not render anything if chatbot FF disabled',async ()=>{
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     await act(async ()=>{
       render(<MelissaBot/>,{ route, container })
     })
