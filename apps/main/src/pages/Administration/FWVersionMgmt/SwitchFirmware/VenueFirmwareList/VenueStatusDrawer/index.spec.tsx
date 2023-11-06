@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -31,6 +31,8 @@ jest.mock('./SwitchUpgradeWizard', () => ({
     return <div data-testid='test-SwitchUpgradeWizard' />
   }
 }))
+
+const retryRequestSpy = jest.fn()
 
 describe('SwitchFirmware - VenueStatusDrawer', () => {
   let params: { tenantId: string }
@@ -62,6 +64,12 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
       ),
+      rest.post(
+        SwitchUrlsInfo.retryFirmwareUpdate.url,
+        (req, res, ctx) => {
+          retryRequestSpy()
+          return res(ctx.json({ requestId: 'requestId' }))}
+      ),
       rest.get(
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
@@ -88,5 +96,22 @@ describe('SwitchFirmware - VenueStatusDrawer', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
     expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
     expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
+  })
+
+
+  it('status fail - do retry', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    expect(await screen.findByText('My-Venue')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: /Check Status/i }))
+    expect(await screen.findByText('Firmware update status')).toBeInTheDocument()
+    expect(await screen.findByText('DEV-EZD3317P008')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: /Retry/i }))
+    expect(retryRequestSpy).toBeCalledTimes(1)
   })
 })

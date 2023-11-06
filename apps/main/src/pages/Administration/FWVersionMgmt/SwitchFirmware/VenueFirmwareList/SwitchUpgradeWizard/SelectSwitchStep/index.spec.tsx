@@ -13,9 +13,9 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
-
 
 import {
   switchVenue,
@@ -34,7 +34,6 @@ jest.mock('../../../../PreferencesDialog', () => ({
     return <div data-testid='test-VenueStatusDrawer' />
   }
 }))
-
 
 jest.mock('./../VenueStatusDrawer', () => ({
   ...jest.requireActual('./../VenueStatusDrawer'),
@@ -220,6 +219,13 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
+    const checkboxes = screen.getAllByRole('checkbox')
+    checkboxes.forEach((checkbox) => {
+      if ((checkbox as HTMLInputElement).checked) {
+        userEvent.click(checkbox)
+      }
+    })
+
     const stepsFormSteps = screen.getByText(/skip updates/i)
     expect(stepsFormSteps).toBeInTheDocument()
 
@@ -243,7 +249,14 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       name: /switch model current firmware available firmware scheduling/i
     })
     const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
+    expect(selectAllCheckbox).toBeInTheDocument()
     await userEvent.click(selectAllCheckbox)
+
+    //Flaky test
+    await waitFor(() => {
+      expect(selectAllCheckbox).not.toBeChecked()
+    })
+
     await userEvent.click(selectAllCheckbox)
     expect(selectAllCheckbox).toBeChecked()
     expect(FEK3224R0AGCheckbox).toBeChecked()

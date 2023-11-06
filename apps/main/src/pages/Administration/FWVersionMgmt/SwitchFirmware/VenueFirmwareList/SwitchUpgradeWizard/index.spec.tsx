@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import {
   FirmwareSwitchVenue,
@@ -11,9 +12,11 @@ import {
   Provider
 } from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -45,6 +48,8 @@ jest.mock('./VenueStatusDrawer', () => ({
 
 const mockedCancel = jest.fn()
 const updateRequestSpy = jest.fn()
+const getSwitchRequestSpy = jest.fn()
+
 describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -85,7 +90,10 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(upgradeSwitchViewList))
+        (req, res, ctx) => {
+          getSwitchRequestSpy()
+          return res(ctx.json(upgradeSwitchViewList))
+        }
       )
     )
     params = {
@@ -215,6 +223,15 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     userEvent.click(radio10010b176)
     expect(radio10010b176).toBeEnabled()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(()=>{ // workaround - avoid act error
+      fireEvent.click(screen.getByRole('button', { name: 'Run Update' }))
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Run Update' }))
+    await waitFor(()=>{
+      expect(updateRequestSpy).toBeCalledTimes(1)
+    })
+
   })
 
   it('render SwitchUpgradeWizard - skip', async () => {
@@ -241,5 +258,48 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(skipButton)
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
+  })
+
+  it('render SwitchUpgradeWizard - skip - select switch', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.skip}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = screen.getByText(/skip updates/i)
+    expect(stepsFormSteps).toBeInTheDocument()
+
+    // Clicks Expand button
+    const venue = await screen.findByRole('row', { name: /Karen-Venue1/i })
+    await userEvent.click(within(venue).getByRole('button', {
+      name: /expand row/i }))
+
+    expect(await screen.findByRole('button', {
+      name: /collapse row/i
+    })).toBeInTheDocument()
+
+
+    const searchBox = screen.getByRole('textbox')
+    expect(searchBox).toBeInTheDocument()
+    await userEvent.type(searchBox, 'mock')
+    expect(screen.getByDisplayValue(/mock/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('switch-search-table')).toBeInTheDocument()
+
+    const FEK3224R0AG = await screen.findByRole('row', { name: /FEK3224R0AG/i })
+    const FEK3224R0AGCheckbox = within(FEK3224R0AG).getByRole('checkbox')
+    await userEvent.click(FEK3224R0AGCheckbox)
+    expect(FEK3224R0AGCheckbox).toBeChecked()
+
+    const skipButton = await screen.findByRole('button', { name: 'Skip' })
+    await userEvent.click(skipButton)
+    expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
+
   })
 })
