@@ -7,41 +7,53 @@ import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter } from '@acx-u
 import { Table, TableProps, Tooltip, useDateRange, Loader, Filter } from '@acx-ui/components'
 import { TenantLink }                                               from '@acx-ui/react-router-dom'
 import {
-  NetworkPath, PathNode
+  NodeFilter
 } from '@acx-ui/utils'
 
 import { useZoneWiseApListQuery } from './services'
 import {  Ul, Chevron, Li }       from './styledComponents'
-export  function APList (
-  {
-    searchVal = '',
-    shouldQueryZoneWiseApList = { searchString: '', path: [{} as PathNode] }
-  }
-  :
-  {
-    searchVal?: string,
-    shouldQueryZoneWiseApList?:
-    { searchString : string, path: NetworkPath } }) {
-  const { $t } = useIntl()
 
-  // const { timeRange } = useDateRange()
+export type QueryParamsForZone = {
+  searchString?: string
+  path: NodeFilter[]
+}
+
+export function APList ({
+  searchVal = '',
+  queryParamsForZone
+}: {
+  searchVal?: string;
+  queryParamsForZone?: QueryParamsForZone;
+}) {
+  const { $t } = useIntl()
+  const { timeRange } = useDateRange()
   const { filters } = useAnalyticsFilter()
   const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState(searchVal)
-  const apListQuery = useZoneWiseApListQuery
-  const results = apListQuery({
-    start: filters.startDate,
-    end: filters.endDate,
-    limit: 10000,
-    query: '',
-    filter: { networkNodes: [shouldQueryZoneWiseApList.path] }
-  })
-  console.log(results)
+  const zoneWiseAPResults = useZoneWiseApListQuery(
+    {
+      start: filters.startDate,
+      end: filters.endDate,
+      query: '',
+      filter: { networkNodes: queryParamsForZone?.path }
+    },
+    { skip: !Boolean(queryParamsForZone) }
+  )
 
+  const apListResults = useApListQuery(
+    {
+      start: timeRange[0].format(),
+      end: timeRange[1].format(),
+      limit: 100,
+      metric: 'traffic',
+      query: searchString
+    },
+    { skip: Boolean(queryParamsForZone) }
+  )
+  const results = Boolean(queryParamsForZone) ? zoneWiseAPResults : apListResults
   const updateSearchString = (_: Filter, search: { searchString?: string }) => {
     setSearchString(search.searchString!)
   }
-
   const apTablecolumnHeaders: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
@@ -114,7 +126,7 @@ export  function APList (
   return <Loader states={[results]}>
     <Table<AP>
       columns={apTablecolumnHeaders}
-      dataSource={results.data?.network.search.aps as unknown as AP[]}
+      dataSource={(results.data)?.aps as AP[]}
       pagination={pagination}
       settingsId='ap-search-table'
       onFilterChange={updateSearchString}
