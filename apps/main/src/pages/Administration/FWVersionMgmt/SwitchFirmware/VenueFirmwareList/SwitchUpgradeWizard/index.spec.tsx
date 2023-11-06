@@ -91,7 +91,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   })
 
 
-  it('render SwitchUpgradeWizard - schedule', async () => {
+  it('render SwitchUpgradeWizard - schedule - cancel', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -112,6 +112,36 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedCancel).toBeCalledTimes(1)
+  })
+
+  it('render SwitchUpgradeWizard - schedule - OK', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.schedule}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = await screen.findByTestId('steps-form-steps')
+    expect(stepsFormSteps).toBeInTheDocument()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    expect(await screen.findByText('Please select at least 1 item')).toBeInTheDocument()
+
+    const myVenue = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(myVenue).getByRole('checkbox'))
+    expect(within(myVenue).getByRole('checkbox')).toBeChecked()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    expect(await screen.findByText(/When do you want the update to run/i)).toBeInTheDocument()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    expect(await screen.findByText(/Please select at least 1 version./i)).toBeInTheDocument()
   })
 
   it('render SwitchUpgradeWizard - skip', async () => {

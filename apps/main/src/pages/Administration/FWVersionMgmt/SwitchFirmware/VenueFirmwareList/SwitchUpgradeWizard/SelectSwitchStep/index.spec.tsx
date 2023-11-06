@@ -245,7 +245,9 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
     await userEvent.click(selectAllCheckbox)
-    expect(FEK3224R0AGCheckbox).not.toBeChecked()
+    await waitFor(() => {
+      expect(FEK3224R0AGCheckbox).not.toBeChecked()
+    })
 
     await userEvent.click(selectAllCheckbox)
     expect(selectAllCheckbox).toBeChecked()

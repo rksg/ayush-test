@@ -74,11 +74,17 @@ export function ScheduleStep (props: ScheduleStepProps) {
       setHasSelectedDate(false)
     }
 
-    setSelectedVersion(currentScheduleVersion || '')
-    setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
-    form.setFieldValue('switchVersion', currentScheduleVersion)
-    form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
-    form.setFieldValue('preDonloadChecked', getCurrentChecked())
+    if ((hasVenue || nonIcx8200Count > 0)) {
+      setSelectedVersion(currentScheduleVersion || '')
+      form.setFieldValue('switchVersion', currentScheduleVersion)
+    }
+
+    if ((hasVenue || icx8200Count > 0)) {
+      setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
+      form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
+    }
+
+    form.setFieldValue('preDownloadChecked', getCurrentChecked())
 
   }, [upgradeVenueList, upgradeSwitchList])
 
@@ -161,7 +167,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const onPreDownloadChange = (checked: boolean) => {
     setChecked(checked)
-    form.setFieldValue('preDonloadChecked', checked)
+    form.setFieldValue('preDownloadChecked', checked)
   }
 
   return (
