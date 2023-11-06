@@ -6,7 +6,8 @@ import * as UI from './styledComponents'
 interface NoDataWrapperProps {
   text?: string
   style?: CSSProperties
-  recommendation?: []
+  recommendation?: [],
+  noData?: boolean
 }
 export function NoData ({ text, style }: NoDataWrapperProps) {
   const { $t } = useIntl()
@@ -40,13 +41,23 @@ export function NoActiveContent ({ text }: NoDataWrapperProps) {
   )
 }
 
-export function NoRecommendationData ({ text }: NoDataWrapperProps) {
-  const { $t } = useIntl()
-  text = text ? text : $t({ defaultMessage: 'No Recommendations.' })
+export function NoRecommendationData ({ text, noData = false }: NoDataWrapperProps) {
   return (
-    <UI.NoRecommendationDataWrapper>
+    <UI.NoRecommendationDataWrapper style={{ marginTop: noData ? '50px': 0 }}>
       <UI.TextWrapper><UI.LargeGreenTickIcon /></UI.TextWrapper>
       <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </UI.NoRecommendationDataWrapper>
+  )
+}
+
+export function NoAiOpsLicense ({ text }: NoDataWrapperProps) {
+  const { $t } = useIntl()
+  return (
+    <UI.NoAILicenseWrapper>
+      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
+      <UI.LicenseButton type='default'>
+        {$t({ defaultMessage: 'Update my licenses' })}
+      </UI.LicenseButton>
+    </UI.NoAILicenseWrapper>
   )
 }

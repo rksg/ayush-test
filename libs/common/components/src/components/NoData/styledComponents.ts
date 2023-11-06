@@ -3,6 +3,8 @@ import styled    from 'styled-components/macro'
 
 import { CheckMarkCircleSolid } from '@acx-ui/icons'
 
+import { Button } from '../Button'
+
 export const NoDataWrapper = styled.div`
   position: absolute;
   left: 50%;
@@ -10,7 +12,22 @@ export const NoDataWrapper = styled.div`
   transform: translate(-50%, -50%);
 `
 export const NoRecommendationDataWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   width: 85%;
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+`
+export const NoAILicenseWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 100%;
+  align-items: end;
+  width: 100%;
   position: absolute;
   left: 50%;
   top: 35%;
@@ -35,4 +52,7 @@ export const GreenTickIcon = styled(CheckMarkCircleSolid)`
 export const LargeGreenTickIcon = styled(CheckMarkCircleSolid)`
   height: 48px;
   width: 48px;
+`
+export const LicenseButton = styled(Button)`
+  width: 90%;
 `
