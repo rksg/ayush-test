@@ -69,9 +69,10 @@ function Conversation ({
       {content.map((list) => (
         list.contentList.map((content) => (
           list.type === 'bot' ? (
-            <>{content.text?.text.map((msg) =>(
-              <Expandable text={msg} maxChar={maxChar} />
-            ))
+            <>{content.text?.text.map((msg) =>{
+              const text = msg.startsWith('\n') ? msg.substring(1).trim() : msg.trim()
+              return <Expandable text={text} maxChar={maxChar} />
+            })
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => {
                 switch(res.type){

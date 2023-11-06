@@ -16,6 +16,14 @@ const fulfillmentMessages = [
       ]
     },
     message: 'text'
+  },
+  {
+    text: {
+      text: [
+        '\nResponse from Gen AI'
+      ]
+    },
+    message: 'text'
   }
 ]
 
