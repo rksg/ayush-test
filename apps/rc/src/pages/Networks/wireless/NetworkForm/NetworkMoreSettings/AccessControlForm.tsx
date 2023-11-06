@@ -109,12 +109,54 @@ export function AccessControlForm () {
 function SaveAsAcProfileButton () {
   const { $t } = useIntl()
   const params = useParams()
-  const form = Form.useFormInstance()
+  const { useWatch } = Form
   const [visible, setVisible] = useState(false)
+  const [embeddedObject, setEmbeddedObject] = useState({})
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
+
+  const [
+    l2AclPolicyId,
+    l2AclEnable,
+    l3AclPolicyId,
+    l3AclEnable,
+    devicePolicyId,
+    enableDeviceOs,
+    applicationPolicyId,
+    applicationPolicyEnable,
+    uplinkLimit,
+    downlinkLimit
+  ] = [
+    useWatch(['wlan', 'advancedCustomization', 'l2AclPolicyId']),
+    useWatch(['wlan', 'advancedCustomization', 'l2AclEnable']),
+    useWatch(['wlan', 'advancedCustomization', 'l3AclPolicyId']),
+    useWatch(['wlan', 'advancedCustomization', 'l3AclEnable']),
+    useWatch(['wlan', 'advancedCustomization', 'devicePolicyId']),
+    useWatch(['enableDeviceOs']),
+    useWatch(['wlan', 'advancedCustomization', 'applicationPolicyId']),
+    useWatch(['wlan', 'advancedCustomization', 'applicationPolicyEnable']),
+    useWatch(['wlan', 'advancedCustomization', 'userUplinkRateLimiting']),
+    useWatch(['wlan', 'advancedCustomization', 'userDownlinkRateLimiting'])
+  ]
+
+  useEffect(() => {
+    setEmbeddedObject({
+      l2AclPolicyId: l2AclEnable ? l2AclPolicyId : null,
+      l3AclPolicyId: l3AclEnable ? l3AclPolicyId : null,
+      devicePolicyId: enableDeviceOs ? devicePolicyId: null,
+      applicationPolicyId: applicationPolicyEnable ? applicationPolicyId : null,
+      uplinkLimit: uplinkLimit,
+      downlinkLimit: downlinkLimit
+    })
+  }, [
+    l2AclEnable, l2AclPolicyId,
+    l3AclEnable, l3AclPolicyId,
+    enableDeviceOs, devicePolicyId,
+    applicationPolicyEnable, applicationPolicyId,
+    uplinkLimit, downlinkLimit, visible
+  ])
 
   return (
     <>
@@ -131,7 +173,10 @@ function SaveAsAcProfileButton () {
       >
         <StepsFormLegacy<AccessControlFormFields>
           formRef={formRef}
-          onCancel={() => setVisible(false)}
+          onCancel={() => {
+            formRef.current?.resetFields()
+            setVisible(false)
+          }}
           onFinish={async () => {
             try {
               const aclPayloadObject = genAclPayloadObject(
@@ -155,26 +200,7 @@ function SaveAsAcProfileButton () {
             <AccessControlSettingForm
               editMode={false}
               embeddedMode={true}
-              embeddedObject={{
-                l2AclPolicyId: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'l2AclPolicyId']
-                ),
-                l3AclPolicyId: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'l3AclPolicyId']
-                ),
-                devicePolicyId: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'devicePolicyId']
-                ),
-                applicationPolicyId: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'applicationPolicyId']
-                ),
-                uplinkLimit: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'userUplinkRateLimiting']
-                ),
-                downlinkLimit: form.getFieldValue(
-                  ['wlan', 'advancedCustomization', 'userDownlinkRateLimiting']
-                )
-              }}
+              embeddedObject={embeddedObject}
             />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
